@@ -16,22 +16,19 @@
 
 package base
 
-import config.FrontendAppConfig
-import controllers.actions.{DraftIdRetrievalActionProvider, FakeDraftIdRetrievalActionProvider, FakeIdentifyForRegistration, RegistrationDataRequiredAction, RegistrationDataRequiredActionImpl, RegistrationIdentifierAction}
+import controllers.actions._
 import models.{Status, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.scalatest.TryValues
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice._
-import play.api.i18n.{Messages, MessagesApi}
+import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.inject.{Injector, bind}
 import play.api.libs.json.Json
-import play.api.test.FakeRequest
 import repositories.RegistrationsRepository
-import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolment, Enrolments}
 import uk.gov.hmrc.auth.core.AffinityGroup.Organisation
+import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolment, Enrolments}
 
 trait SpecBase extends PlaySpec
   with GuiceOneAppPerSuite
@@ -41,19 +38,21 @@ trait SpecBase extends PlaySpec
   with Mocked
   with FakeTrustsApp {
 
-  lazy val draftId = "id"
-  lazy val userInternalId = "internalId"
+  lazy val draftId: String = "id"
+  lazy val userInternalId: String = "internalId"
+  lazy val fakeDraftId: String = draftId
 
-  def emptyUserAnswers = UserAnswers(draftId, Json.obj(), internalAuthId = userInternalId)
+  def emptyUserAnswers: UserAnswers = UserAnswers(draftId, Json.obj(), internalAuthId = userInternalId)
 
-  lazy val fakeNavigator = new FakeNavigator(frontendAppConfig)
+  lazy val fakeNavigator: FakeNavigator = new FakeNavigator(frontendAppConfig)
 
-  private def fakeDraftIdAction(userAnswers: Option[UserAnswers]) = new FakeDraftIdRetrievalActionProvider(
+  private def fakeDraftIdAction(userAnswers: Option[UserAnswers]): FakeDraftIdRetrievalActionProvider =
+    new FakeDraftIdRetrievalActionProvider(
     "draftId",
-    Status.InProgress,
-    userAnswers,
-    registrationsRepository
-  )
+      Status.InProgress,
+      userAnswers,
+      registrationsRepository
+    )
 
   protected def applicationBuilder(userAnswers: Option[UserAnswers] = None,
                                    affinityGroup: AffinityGroup = AffinityGroup.Organisation,
@@ -62,6 +61,7 @@ trait SpecBase extends PlaySpec
                                   ): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
       .overrides(
+        bind[Navigator].toInstance(navigator),
         bind[RegistrationDataRequiredAction].to[RegistrationDataRequiredActionImpl],
         bind[RegistrationIdentifierAction].toInstance(
           new FakeIdentifyForRegistration(affinityGroup, frontendAppConfig)(injectedParsers, trustsAuth, enrolments)

@@ -46,7 +46,7 @@ class AffinityGroupIdentifierAction[A] @Inject()(action: Action[A],
 
     def redirectToCreateAgentServicesAccount(reason: String): Future[Result] = {
       Logger.info(s"[AuthenticatedIdentifierAction][authoriseAgent]: Agent services account required - $reason")
-      Future.successful(Redirect(config.maintainATrustFrontendUrl))
+      Future.successful(Redirect(config.createAgentServicesAccountUrl))
     }
 
     val hmrcAgentEnrolmentKey = "HMRC-AS-AGENT"
