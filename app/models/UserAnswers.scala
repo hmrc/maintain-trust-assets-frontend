@@ -1,22 +1,37 @@
-package models
+/*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-import java.time.LocalDateTime
+package models
 
 import pages._
 import play.api.libs.json._
+import queries.{Gettable, Settable}
 
 import scala.util.{Failure, Success, Try}
 
 final case class UserAnswers(
-                              id: String,
+                              draftId: String,
                               data: JsObject = Json.obj(),
-                              lastUpdated: LocalDateTime = LocalDateTime.now
+                              internalAuthId :String
                             ) {
 
-  def get[A](page: QuestionPage[A])(implicit rds: Reads[A]): Option[A] =
+  def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(page.path)).reads(data).getOrElse(None)
 
-  def set[A](page: QuestionPage[A], value: A)(implicit writes: Writes[A]): Try[UserAnswers] = {
+  def set[A](page: Settable[A], value: A)(implicit writes: Writes[A]): Try[UserAnswers] = {
 
     val updatedData = data.setObject(page.path, Json.toJson(value)) match {
       case JsSuccess(jsValue, _) =>
@@ -32,7 +47,7 @@ final case class UserAnswers(
     }
   }
 
-  def remove[A](page: QuestionPage[A]): Try[UserAnswers] = {
+  def remove[A](page: Settable[A]): Try[UserAnswers] = {
 
     val updatedData = data.setObject(page.path, JsNull) match {
       case JsSuccess(jsValue, _) =>
@@ -58,7 +73,7 @@ object UserAnswers {
     (
       (__ \ "_id").read[String] and
       (__ \ "data").read[JsObject] and
-      (__ \ "lastUpdated").read(MongoDateTimeFormats.localDateTimeRead)
+      (__ \ "internalId").read[String]
     ) (UserAnswers.apply _)
   }
 
@@ -69,7 +84,7 @@ object UserAnswers {
     (
       (__ \ "_id").write[String] and
       (__ \ "data").write[JsObject] and
-      (__ \ "lastUpdated").write(MongoDateTimeFormats.localDateTimeWrite)
+      (__ \ "internalId").write[String]
     ) (unlift(UserAnswers.unapply))
   }
 }
