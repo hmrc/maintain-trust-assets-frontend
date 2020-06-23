@@ -14,21 +14,12 @@
  * limitations under the License.
  */
 
-package views
+package mapping
 
-import views.behaviours.ViewBehaviours
-import views.html.IndexView
+import models.UserAnswers
 
-class IndexViewSpec extends ViewBehaviours {
+trait Mapping[T] {
 
-  "Index view" must {
+  def build(userAnswers: UserAnswers) : Option[T]
 
-    val application = applicationBuilder().build()
-
-    val view = application.injector.instanceOf[IndexView]
-
-    val applyView = view.apply()(fakeRequest, messages)
-
-    behave like normalPage(applyView, "index", "guidance")
-  }
 }
