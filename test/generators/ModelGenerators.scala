@@ -48,4 +48,9 @@ trait ModelGenerators {
     Arbitrary {
       Gen.oneOf(ShareClass.allValues.toSeq)
     }
+
+  implicit lazy val arbitraryAddAssets: Arbitrary[AddAssets] =
+    Arbitrary {
+      Gen.oneOf(AddAssets.values)
+    }
 }
