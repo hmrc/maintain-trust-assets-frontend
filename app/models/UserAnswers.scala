@@ -16,7 +16,6 @@
 
 package models
 
-import pages._
 import play.api.libs.json._
 import queries.{Gettable, Settable}
 
