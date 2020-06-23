@@ -37,8 +37,12 @@ site.hidden-edit = Change {0}
 site.no = No
 site.yes = Yes
 site.continue = Continue
+site.save.continue = Save and continue
+site.onlyContinue = Continue
 site.service_name = Register a Trust
 site.address = Address
+site.inprogress = In Progress
+site.complete = Completed
 site.textarea.char_limit = (Limit is {0} characters)
 
 site.address.uk.title = What is the address?
@@ -193,6 +197,10 @@ propertyOrLandAddressYesNo.heading = Does the property or land have an address?
 propertyOrLandAddressYesNo.checkYourAnswersLabel = Does the property or land have an address?
 propertyOrLandAddressYesNo.error.required = Select yes if the property or land has an address
 
+propertyOrLandInternationalAddress.title = What is the property or land’s address?
+propertyOrLandInternationalAddress.heading = What is the property or land’s address?
+propertyOrLandInternationalAddress.checkYourAnswersLabel = What is the property or land’s address?
+
 propertyOrLandAnswers.title = Check property or land details
 propertyOrLandAnswers.heading = Check property or land details
 
@@ -298,3 +306,19 @@ shareValueInTrust.error.required = Enter the current value of the shares in the 
 shareValueInTrust.error.length = Total value of shares in the trust must be 12 characters or less
 shareValueInTrust.error.invalid = Total value of shares in the trust must be a number
 shareValueInTrust.error.zero = Total value of shares in the trust must be 1 or more
+
+removeMoneyAsset.title = Are you sure you want to remove {0}?
+removeMoneyAsset.heading = Are you sure you want to remove {0}?
+removeMoneyAsset.default = the money
+removeMoneyAsset.error.required = Select yes if you want to remove the money
+
+removeShareAsset.title = Are you sure you want to remove {0}?
+removeShareAsset.heading = Are you sure you want to remove {0}?
+removeShareAsset.default = the share
+removeShareAsset.error.required = Select yes if you want to remove the shares
+
+removePropertyOrLandAsset.title = Are you sure you want to remove {0}?
+removePropertyOrLandAsset.heading = Are you sure you want to remove {0}?
+removePropertyOrLandAsset.default = the property or land
+removePropertyOrLandAsset.error.required = Select yes if you want to remove the property or land
+

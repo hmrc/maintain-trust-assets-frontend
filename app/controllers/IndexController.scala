@@ -16,18 +16,32 @@
 
 package controllers
 
+import controllers.actions.RegistrationIdentifierAction
 import javax.inject.Inject
+import models.UserAnswers
 import play.api.i18n.I18nSupport
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.IndexView
 
+import scala.concurrent.{ExecutionContext, Future}
+
 class IndexController @Inject()(
                                  val controllerComponents: MessagesControllerComponents,
-                                 view: IndexView
+                                 view: IndexView,
+                                 registrationsRepository: RegistrationsRepository,
+                                 identify: RegistrationIdentifierAction
                                ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = Action { implicit request =>
-    Ok(view())
+  implicit val executionContext: ExecutionContext =
+    scala.concurrent.ExecutionContext.Implicits.global
+
+  def onPageLoad(draftId: String): Action[AnyContent] = identify.async { implicit request =>
+    val userAnswers = UserAnswers(draftId, Json.obj(), request.identifier)
+    registrationsRepository.set(userAnswers) flatMap {
+      _ => Future.successful(Redirect(asset.routes.AssetInterruptPageController.onPageLoad(draftId)))
+    }
   }
 }

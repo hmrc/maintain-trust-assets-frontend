@@ -32,8 +32,10 @@ class DefaultRegistrationsRepository @Inject()(dateFormatter: DateFormatter,
                                                config: FrontendAppConfig
                                         )(implicit ec: ExecutionContext) extends RegistrationsRepository {
 
+  private val section = config.appName
+
   override def get(draftId: String)(implicit hc: HeaderCarrier): Future[Option[UserAnswers]] = {
-    submissionDraftConnector.getDraftMain(draftId).map {
+    submissionDraftConnector.getDraftSection(draftId, section).map {
       response => Some(response.data.as[UserAnswers])
     }
   }
@@ -42,7 +44,7 @@ class DefaultRegistrationsRepository @Inject()(dateFormatter: DateFormatter,
 
     submissionDraftConnector.setDraftSection(
       userAnswers.draftId,
-      config.appName,
+      section,
       Json.toJson(userAnswers)
     ).map {
       response => response.status == Status.OK
