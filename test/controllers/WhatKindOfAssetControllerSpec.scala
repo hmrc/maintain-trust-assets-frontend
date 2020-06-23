@@ -21,13 +21,12 @@ import forms.WhatKindOfAssetFormProvider
 import models.WhatKindOfAsset.Money
 import models.{NormalMode, WhatKindOfAsset}
 import org.scalacheck.Arbitrary.arbitrary
-import pages.WhatKindOfAssetPage
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{route, _}
-import views.html.WhatKindOfAssetView
-
 import controllers.routes._
+import pages.asset.WhatKindOfAssetPage
+import views.html.asset.WhatKindOfAssetView
 
 class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
 

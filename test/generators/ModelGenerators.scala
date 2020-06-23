@@ -36,4 +36,16 @@ trait ModelGenerators {
         postcode <- arbitrary[String]
       } yield UKAddress(line1, line2, Some(line3), Some(line4), postcode)
     }
+
+  implicit lazy val arbitraryInternationalAddress: Arbitrary[InternationalAddress] =
+    Arbitrary {
+      for {
+        str <- arbitrary[String]
+      } yield InternationalAddress(str,str,Some(str),str)
+    }
+
+  implicit lazy val arbitraryShareClass: Arbitrary[ShareClass] =
+    Arbitrary {
+      Gen.oneOf(ShareClass.allValues.toSeq)
+    }
 }

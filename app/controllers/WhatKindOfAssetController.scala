@@ -24,14 +24,14 @@ import models.WhatKindOfAsset.Money
 import models.requests.RegistrationDataRequest
 import models.{Enumerable, Mode, WhatKindOfAsset}
 import navigation.Navigator
-import pages.WhatKindOfAssetPage
+import pages.asset.WhatKindOfAssetPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import viewmodels.{AssetViewModel, MoneyAssetViewModel}
-import views.html.WhatKindOfAssetView
+import views.html.asset.WhatKindOfAssetView
 
 import scala.concurrent.{ExecutionContext, Future}
 

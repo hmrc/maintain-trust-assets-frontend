@@ -48,4 +48,13 @@ trait Mappings extends Formatters with Constraints {
                            requiredKey: String,
                            args: Seq[String] = Seq.empty): FieldMapping[LocalDate] =
     of(new LocalDateFormatter(invalidKey, allRequiredKey, twoRequiredKey, requiredKey, args))
+
+  protected def currency(requiredKey : String = "assetMoneyValue.error.required",
+                         invalidKey : String = "assetMoneyValue.error.invalidFormat") : FieldMapping[String] =
+    of(currencyFormatter(requiredKey, invalidKey))
+
+  protected def postcode(requiredKey : String = "error.required",
+                         invalidKey : String = "error.postcodeInvalid") : FieldMapping[String] =
+    of(postcodeFormatter(requiredKey, invalidKey))
+
 }

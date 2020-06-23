@@ -14,3 +14,141 @@ GET        /:draftId/asset/:index/assets-type           controllers.WhatKindOfAs
 POST       /:draftId/asset/:index/assets-type           controllers.WhatKindOfAssetController.onSubmit(mode: Mode = NormalMode, index: Int, draftId: String)
 GET        /:draftId/asset/:index/change-assets-type    controllers.WhatKindOfAssetController.onPageLoad(mode: Mode = CheckMode, index: Int, draftId: String)
 POST       /:draftId/asset/:index/change-assets-type    controllers.WhatKindOfAssetController.onSubmit(mode: Mode = CheckMode, index: Int, draftId: String)
+
+GET        /:draftId/asset/information-you-need         controllers.asset.AssetInterruptPageController.onPageLoad(draftId: String)
+POST       /:draftId/asset/information-you-need         controllers.asset.AssetInterruptPageController.onSubmit(draftId: String)
+
+GET        /:draftId/asset/:index/asset/remove          controllers.asset.DefaultRemoveAssetController.onPageLoad(index: Int, draftId: String)
+POST       /:draftId/asset/:index/asset/remove          controllers.asset.DefaultRemoveAssetController.onSubmit(index: Int, draftId: String)
+
+GET        /:draftId/asset/add                          controllers.asset.AddAssetsController.onPageLoad(mode: Mode = NormalMode, draftId: String)
+POST       /:draftId/asset/add                          controllers.asset.AddAssetsController.submitOne(mode: Mode = NormalMode, draftId: String)
+POST       /:draftId/asset/add-another                  controllers.asset.AddAssetsController.submitAnother(mode: Mode = NormalMode, draftId: String)
+
+### Money
+
+GET        /:draftId/asset/:index/money                                                             controllers.asset.money.AssetMoneyValueController.onPageLoad(mode: Mode = NormalMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/money                                                             controllers.asset.money.AssetMoneyValueController.onSubmit(mode: Mode = NormalMode, index: Int, draftId: String)
+GET        /:draftId/asset/:index/change-money                                                      controllers.asset.money.AssetMoneyValueController.onPageLoad(mode: Mode = CheckMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/change-money                                                      controllers.asset.money.AssetMoneyValueController.onSubmit(mode: Mode = CheckMode, index: Int, draftId: String)
+
+GET        /:draftId/asset/:index/money/remove                                                      controllers.asset.money.RemoveMoneyAssetController.onPageLoad(index: Int, draftId: String)
+POST       /:draftId/asset/:index/money/remove                                                      controllers.asset.money.RemoveMoneyAssetController.onSubmit(index: Int, draftId: String)
+
+### Property or Land
+
+GET        /:draftId/asset/:index/property-or-land/description/remove                               controllers.asset.property_or_land.RemovePropertyOrLandWithDescriptionController.onPageLoad(index: Int, draftId: String)
+POST       /:draftId/asset/:index/property-or-land/description/remove                               controllers.asset.property_or_land.RemovePropertyOrLandWithDescriptionController.onSubmit(index: Int, draftId: String)
+
+GET        /:draftId/asset/:index/property-or-land/address/uk/remove                                controllers.asset.property_or_land.RemovePropertyOrLandWithAddressUKController.onPageLoad(index: Int, draftId: String)
+POST       /:draftId/asset/:index/property-or-land/address/uk/remove                                controllers.asset.property_or_land.RemovePropertyOrLandWithAddressUKController.onSubmit(index: Int, draftId: String)
+
+GET        /:draftId/asset/:index/property-or-land/address/international/remove                     controllers.asset.property_or_land.RemovePropertyOrLandWithAddressInternationalController.onPageLoad(index: Int, draftId: String)
+POST       /:draftId/asset/:index/property-or-land/address/international/remove                     controllers.asset.property_or_land.RemovePropertyOrLandWithAddressInternationalController.onSubmit(index: Int, draftId: String)
+
+GET        /:draftId/asset/:index/property-or-land/description                                      controllers.asset.property_or_land.PropertyOrLandDescriptionController.onPageLoad(mode: Mode = NormalMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/property-or-land/description                                      controllers.asset.property_or_land.PropertyOrLandDescriptionController.onSubmit(mode: Mode = NormalMode, index: Int, draftId: String)
+GET        /:draftId/asset/:index/change-property-or-land/description                               controllers.asset.property_or_land.PropertyOrLandDescriptionController.onPageLoad(mode: Mode = CheckMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/change-property-or-land/description                               controllers.asset.property_or_land.PropertyOrLandDescriptionController.onSubmit(mode: Mode = CheckMode,index: Int, draftId: String)
+
+GET        /:draftId/asset/:index/property-or-land/value-trust                                      controllers.asset.property_or_land.PropertyLandValueTrustController.onPageLoad(mode: Mode = NormalMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/property-or-land/value-trust                                      controllers.asset.property_or_land.PropertyLandValueTrustController.onSubmit(mode: Mode = NormalMode, index: Int, draftId: String)
+GET        /:draftId/asset/:index/change-property-or-land/value-trust                               controllers.asset.property_or_land.PropertyLandValueTrustController.onPageLoad(mode: Mode = CheckMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/change-property-or-land/value-trust                               controllers.asset.property_or_land.PropertyLandValueTrustController.onSubmit(mode: Mode = CheckMode, index: Int, draftId: String)
+
+GET        /:draftId/asset/:index/property-or-land/is-address-in-uk                                 controllers.asset.property_or_land.PropertyOrLandAddressUkYesNoController.onPageLoad(mode: Mode = NormalMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/property-or-land/is-address-in-uk                                 controllers.asset.property_or_land.PropertyOrLandAddressUkYesNoController.onSubmit(mode: Mode = NormalMode, index: Int, draftId: String)
+GET        /:draftId/asset/:index/change-property-or-land/is-address-in-uk                          controllers.asset.property_or_land.PropertyOrLandAddressUkYesNoController.onPageLoad(mode: Mode = CheckMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/change-property-or-land/is-address-in-uk                          controllers.asset.property_or_land.PropertyOrLandAddressUkYesNoController.onSubmit(mode: Mode = CheckMode, index: Int, draftId: String)
+
+GET        /:draftId/asset/:index/property-or-land/owned                                            controllers.asset.property_or_land.TrustOwnAllThePropertyOrLandController.onPageLoad(mode: Mode = NormalMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/property-or-land/owned                                            controllers.asset.property_or_land.TrustOwnAllThePropertyOrLandController.onSubmit(mode: Mode = NormalMode, index: Int, draftId: String)
+GET        /:draftId/asset/:index/change-property-or-land/owned                                     controllers.asset.property_or_land.TrustOwnAllThePropertyOrLandController.onPageLoad(mode: Mode = CheckMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/change-property-or-land/owned                                     controllers.asset.property_or_land.TrustOwnAllThePropertyOrLandController.onSubmit(mode: Mode = CheckMode, index: Int, draftId: String)
+
+GET        /:draftId/asset/:index/property-or-land/total-value                                      controllers.asset.property_or_land.PropertyOrLandTotalValueController.onPageLoad(mode: Mode = NormalMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/property-or-land/total-value                                      controllers.asset.property_or_land.PropertyOrLandTotalValueController.onSubmit(mode: Mode = NormalMode, index: Int, draftId: String)
+GET        /:draftId/asset/:index/change-property-or-land/total-value                               controllers.asset.property_or_land.PropertyOrLandTotalValueController.onPageLoad(mode: Mode = CheckMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/change-property-or-land/total-value                               controllers.asset.property_or_land.PropertyOrLandTotalValueController.onSubmit(mode: Mode = CheckMode,index: Int, draftId: String)
+
+GET        /:draftId/asset/:index/property-or-land/uk-address                                       controllers.asset.property_or_land.PropertyOrLandUKAddressController.onPageLoad(mode: Mode = NormalMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/property-or-land/uk-address                                       controllers.asset.property_or_land.PropertyOrLandUKAddressController.onSubmit(mode: Mode = NormalMode, index: Int, draftId: String)
+GET        /:draftId/asset/:index/change-property-or-land/uk-address                                controllers.asset.property_or_land.PropertyOrLandUKAddressController.onPageLoad(mode: Mode = CheckMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/change-property-or-land/uk-address                                controllers.asset.property_or_land.PropertyOrLandUKAddressController.onSubmit(mode: Mode = CheckMode, index: Int, draftId: String)
+
+GET        /:draftId/asset/:index/property-or-land/international-address                            controllers.asset.property_or_land.PropertyOrLandInternationalAddressController.onPageLoad(mode: Mode = NormalMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/property-or-land/international-address                            controllers.asset.property_or_land.PropertyOrLandInternationalAddressController.onSubmit(mode: Mode = NormalMode, index: Int, draftId: String)
+GET        /:draftId/asset/:index/change-property-or-land/international-address                     controllers.asset.property_or_land.PropertyOrLandInternationalAddressController.onPageLoad(mode: Mode = CheckMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/change-property-or-land/international-address                     controllers.asset.property_or_land.PropertyOrLandInternationalAddressController.onSubmit(mode: Mode = CheckMode, index: Int, draftId: String)
+
+GET        /:draftId/asset/:index/property-or-land/has-address                                      controllers.asset.property_or_land.PropertyOrLandAddressYesNoController.onPageLoad(mode: Mode = NormalMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/property-or-land/has-address                                      controllers.asset.property_or_land.PropertyOrLandAddressYesNoController.onSubmit(mode: Mode = NormalMode, index: Int, draftId: String)
+GET        /:draftId/asset/:index/change-property-or-land/has-address                               controllers.asset.property_or_land.PropertyOrLandAddressYesNoController.onPageLoad(mode: Mode = CheckMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/change-property-or-land/has-address                               controllers.asset.property_or_land.PropertyOrLandAddressYesNoController.onSubmit(mode: Mode = CheckMode, index: Int, draftId: String)
+
+GET        /:draftId/asset/:index/property-or-land/check-property-or-land-answers                   controllers.asset.property_or_land.PropertyOrLandAnswerController.onPageLoad(index : Int, draftId : String)
+POST       /:draftId/asset/:index/property-or-land/check-property-or-land-answers                   controllers.asset.property_or_land.PropertyOrLandAnswerController.onSubmit(index : Int, draftId : String)
+
+### Shares
+
+GET        /:draftId/asset/:index/share-company-name                                                controllers.asset.shares.ShareCompanyNameController.onPageLoad(mode: Mode = NormalMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/share-company-name                                                controllers.asset.shares.ShareCompanyNameController.onSubmit(mode: Mode = NormalMode, index: Int, draftId: String)
+GET        /:draftId/asset/:index/change-share-company-name                                         controllers.asset.shares.ShareCompanyNameController.onPageLoad(mode: Mode = CheckMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/change-share-company-name                                         controllers.asset.shares.ShareCompanyNameController.onSubmit(mode: Mode = CheckMode, index: Int, draftId: String)
+
+GET        /:draftId/asset/:index/share-class                                                       controllers.asset.shares.ShareClassController.onPageLoad(mode: Mode = NormalMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/share-class                                                       controllers.asset.shares.ShareClassController.onSubmit(mode: Mode = NormalMode, index: Int, draftId: String)
+GET        /:draftId/asset/:index/change-share-class                                                controllers.asset.shares.ShareClassController.onPageLoad(mode: Mode = CheckMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/change-share-class                                                controllers.asset.shares.ShareClassController.onSubmit(mode: Mode = CheckMode, index: Int, draftId: String)
+
+GET        /:draftId/asset/:index/share-portfolio-name                                              controllers.asset.shares.SharePortfolioNameController.onPageLoad(mode: Mode = NormalMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/share-portfolio-name                                              controllers.asset.shares.SharePortfolioNameController.onSubmit(mode: Mode = NormalMode, index: Int, draftId: String)
+GET        /:draftId/asset/:index/change-share-portfolio-name                                       controllers.asset.shares.SharePortfolioNameController.onPageLoad(mode: Mode = CheckMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/change-share-portfolio-name                                       controllers.asset.shares.SharePortfolioNameController.onSubmit(mode: Mode = CheckMode, index: Int, draftId: String)
+
+GET        /:draftId/asset/:index/portfolio-on-stock-exchange                                       controllers.asset.shares.SharePortfolioOnStockExchangeController.onPageLoad(mode: Mode = NormalMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/portfolio-on-stock-exchange                                       controllers.asset.shares.SharePortfolioOnStockExchangeController.onSubmit(mode: Mode = NormalMode, index: Int, draftId: String)
+GET        /:draftId/asset/:index/change-portfolio-on-stock-exchange                                controllers.asset.shares.SharePortfolioOnStockExchangeController.onPageLoad(mode: Mode = CheckMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/change-portfolio-on-stock-exchange                                controllers.asset.shares.SharePortfolioOnStockExchangeController.onSubmit(mode: Mode = CheckMode, index: Int, draftId: String)
+
+GET        /:draftId/asset/:index/portfolio-quantity-in-the-trust                                   controllers.asset.shares.SharePortfolioQuantityInTrustController.onPageLoad(mode: Mode = NormalMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/portfolio-quantity-in-the-trust                                   controllers.asset.shares.SharePortfolioQuantityInTrustController.onSubmit(mode: Mode = NormalMode, index: Int, draftId: String)
+GET        /:draftId/asset/:index/change-portfolio-quantity-in-the-trust                            controllers.asset.shares.SharePortfolioQuantityInTrustController.onPageLoad(mode: Mode = CheckMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/change-portfolio-quantity-in-the-trust                            controllers.asset.shares.SharePortfolioQuantityInTrustController.onSubmit(mode: Mode = CheckMode, index: Int, draftId: String)
+
+GET        /:draftId/asset/:index/portfolio-value-in-the-trust                                      controllers.asset.shares.SharePortfolioValueInTrustController.onPageLoad(mode: Mode = NormalMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/portfolio-value-in-the-trust                                      controllers.asset.shares.SharePortfolioValueInTrustController.onSubmit(mode: Mode = NormalMode, index: Int, draftId: String)
+GET        /:draftId/asset/:index/change-portfolio-value-in-the-trust                               controllers.asset.shares.SharePortfolioValueInTrustController.onPageLoad(mode: Mode = CheckMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/change-portfolio-value-in-the-trust                               controllers.asset.shares.SharePortfolioValueInTrustController.onSubmit(mode: Mode = CheckMode, index: Int, draftId: String)
+
+GET        /:draftId/asset/:index/share-quantity-in-the-trust                                       controllers.asset.shares.ShareQuantityInTrustController.onPageLoad(mode: Mode = NormalMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/share-quantity-in-the-trust                                       controllers.asset.shares.ShareQuantityInTrustController.onSubmit(mode: Mode = NormalMode, index: Int, draftId: String)
+GET        /:draftId/asset/:index/change-share-quantity-in-the-trust                                controllers.asset.shares.ShareQuantityInTrustController.onPageLoad(mode: Mode = CheckMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/change-share-quantity-in-the-trust                                controllers.asset.shares.ShareQuantityInTrustController.onSubmit(mode: Mode = CheckMode, index: Int, draftId: String)
+
+GET        /:draftId/asset/:index/share-value-in-the-trust                                          controllers.asset.shares.ShareValueInTrustController.onPageLoad(mode: Mode = NormalMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/share-value-in-the-trust                                          controllers.asset.shares.ShareValueInTrustController.onSubmit(mode: Mode = NormalMode, index: Int, draftId: String)
+GET        /:draftId/asset/:index/change-share-value-in-the-trust                                   controllers.asset.shares.ShareValueInTrustController.onPageLoad(mode: Mode = CheckMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/change-share-value-in-the-trust                                   controllers.asset.shares.ShareValueInTrustController.onSubmit(mode: Mode = CheckMode, index: Int, draftId: String)
+
+GET        /:draftId/asset/:index/shares-in-a-portfolio                                             controllers.asset.shares.SharesInAPortfolioController.onPageLoad(mode: Mode = NormalMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/shares-in-a-portfolio                                             controllers.asset.shares.SharesInAPortfolioController.onSubmit(mode: Mode = NormalMode, index: Int, draftId: String)
+GET        /:draftId/asset/:index/change-shares-in-a-portfolio                                      controllers.asset.shares.SharesInAPortfolioController.onPageLoad(mode: Mode = CheckMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/change-shares-in-a-portfolio                                      controllers.asset.shares.SharesInAPortfolioController.onSubmit(mode: Mode = CheckMode, index: Int, draftId: String)
+
+GET        /:draftId/asset/:index/shares-on-stock-exchange                                          controllers.asset.shares.SharesOnStockExchangeController.onPageLoad(mode: Mode = NormalMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/shares-on-stock-exchange                                          controllers.asset.shares.SharesOnStockExchangeController.onSubmit(mode: Mode = NormalMode, index: Int, draftId: String)
+GET        /:draftId/asset/:index/change-shares-on-stock-exchange                                   controllers.asset.shares.SharesOnStockExchangeController.onPageLoad(mode: Mode = CheckMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/change-shares-on-stock-exchange                                   controllers.asset.shares.SharesOnStockExchangeController.onSubmit(mode: Mode = CheckMode, index: Int, draftId: String)
+
+GET        /:draftId/asset/:index/check-share-answers                                               controllers.asset.shares.ShareAnswerController.onPageLoad(index : Int, draftId : String)
+POST       /:draftId/asset/:index/check-share-answers                                               controllers.asset.shares.ShareAnswerController.onSubmit(index : Int, draftId : String)
+
+GET        /:draftId/asset/:index/share/company/remove                                              controllers.asset.shares.RemoveShareCompanyNameAssetController.onPageLoad(index: Int, draftId: String)
+POST       /:draftId/asset/:index/share/company/remove                                              controllers.asset.shares.RemoveShareCompanyNameAssetController.onSubmit(index: Int, draftId: String)
+
+GET        /:draftId/asset/:index/share/portfolio/remove                                            controllers.asset.shares.RemoveSharePortfolioAssetController.onPageLoad(index: Int, draftId: String)
+POST       /:draftId/asset/:index/share/portfolio/remove                                            controllers.asset.shares.RemoveSharePortfolioAssetController.onSubmit(index: Int, draftId: String)
+
+
+GET        /feature-not-available                       controllers.FeatureNotAvailableController.onPageLoad()
