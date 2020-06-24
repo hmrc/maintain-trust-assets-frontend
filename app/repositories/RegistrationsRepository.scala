@@ -21,33 +21,50 @@ import connectors.SubmissionDraftConnector
 import javax.inject.Inject
 import models.UserAnswers
 import play.api.http.Status
-import play.api.libs.json.Json
+import play.api.libs.json.{JsPath, JsSuccess, JsValue, Json, __}
 import uk.gov.hmrc.http.HeaderCarrier
-import utils.DateFormatter
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class DefaultRegistrationsRepository @Inject()(dateFormatter: DateFormatter,
-                                               submissionDraftConnector: SubmissionDraftConnector,
+class DefaultRegistrationsRepository @Inject()(submissionDraftConnector: SubmissionDraftConnector,
                                                config: FrontendAppConfig
                                         )(implicit ec: ExecutionContext) extends RegistrationsRepository {
 
-  private val section = config.appName
+  private val userAnswersSection = config.appName
+  private val registrationSection = "registration"
 
   override def get(draftId: String)(implicit hc: HeaderCarrier): Future[Option[UserAnswers]] = {
-    submissionDraftConnector.getDraftSection(draftId, section).map {
+    submissionDraftConnector.getDraftSection(draftId, userAnswersSection).map {
       response => Some(response.data.as[UserAnswers])
     }
   }
 
   override def set(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Boolean] = {
+    setSectionData(userAnswers.draftId, userAnswersSection, Json.toJson(userAnswers))
+  }
 
+  private def setSectionData(draftId: String, section: String, jsonData: JsValue)(implicit hc: HeaderCarrier) = {
     submissionDraftConnector.setDraftSection(
-      userAnswers.draftId,
+      draftId,
       section,
-      Json.toJson(userAnswers)
+      jsonData
     ).map {
       response => response.status == Status.OK
+    }
+  }
+
+  override def setRegistrationSection(draftId: String, path: String, registrationSectionData: JsValue)
+                                     (implicit hc: HeaderCarrier): Future[Boolean] = {
+
+    val sectionPath = (JsPath \ path).json
+
+    submissionDraftConnector.getDraftSection(draftId, registrationSection).flatMap {
+      data =>
+        val transform = __.json.update(sectionPath.prune andThen sectionPath.put(registrationSectionData))
+        data.data.transform(transform) match {
+          case JsSuccess(value, _) => setSectionData(draftId, registrationSection, value)
+          case _ => Future.successful(false)
+        }
     }
   }
 }
@@ -56,4 +73,6 @@ trait RegistrationsRepository {
   def get(draftId: String)(implicit hc: HeaderCarrier): Future[Option[UserAnswers]]
 
   def set(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Boolean]
+
+  def setRegistrationSection(draftId: String, path: String, data: JsValue)(implicit hc: HeaderCarrier): Future[Boolean]
 }

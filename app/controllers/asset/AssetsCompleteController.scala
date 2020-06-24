@@ -16,18 +16,44 @@
 
 package controllers.asset
 
+import config.FrontendAppConfig
+import controllers.actions.RegistrationIdentifierAction
 import javax.inject.Inject
+import mapping.AssetMapper
+import models.Assets
 import play.api.i18n.I18nSupport
+import play.api.libs.json.Json
+import play.api.mvc.Results.Redirect
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.SessionExpiredView
 
+import scala.concurrent.{ExecutionContext, Future}
+
 class AssetsCompleteController @Inject()(
                                           val controllerComponents: MessagesControllerComponents,
-                                          view: SessionExpiredView
+                                          view: SessionExpiredView,
+                                          registrationsRepository: RegistrationsRepository,
+                                          assetMapper: AssetMapper,
+                                          config: FrontendAppConfig,
+                                          identify: RegistrationIdentifierAction
                                         ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(draftId: String): Action[AnyContent] = Action { implicit request =>
-    Ok(view())
+  implicit val executionContext: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
+
+  def onPageLoad(draftId: String): Action[AnyContent] = identify.async {
+    implicit request =>
+      registrationsRepository.get(draftId) map {
+        case Some(userAnswers) =>
+          assetMapper.build(userAnswers) match {
+            case Some(assets) =>
+              val json = Json.toJson(assets)
+              println(s"Mapped json is => ${json}")
+              Redirect(config.registrationProgressUrl(draftId))
+            case _ => InternalServerError
+          }
+        case _ => Redirect(controllers.routes.SessionExpiredController.onPageLoad().url)
+      }
   }
 }
