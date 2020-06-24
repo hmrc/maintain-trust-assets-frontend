@@ -21,7 +21,7 @@ import connectors.SubmissionDraftConnector
 import javax.inject.Inject
 import models.UserAnswers
 import play.api.http.Status
-import play.api.libs.json.{JsPath, JsSuccess, JsValue, Json, __}
+import play.api.libs.json._
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -35,7 +35,11 @@ class DefaultRegistrationsRepository @Inject()(submissionDraftConnector: Submiss
 
   override def get(draftId: String)(implicit hc: HeaderCarrier): Future[Option[UserAnswers]] = {
     submissionDraftConnector.getDraftSection(draftId, userAnswersSection).map {
-      response => Some(response.data.as[UserAnswers])
+      response =>
+        response.data.validate[UserAnswers] match {
+          case JsSuccess(userAnswers, _) => Some(userAnswers)
+          case _ => None
+        }
     }
   }
 

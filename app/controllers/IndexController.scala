@@ -37,9 +37,24 @@ class IndexController @Inject()(
     scala.concurrent.ExecutionContext.Implicits.global
 
   def onPageLoad(draftId: String): Action[AnyContent] = identify.async { implicit request =>
-    val userAnswers = UserAnswers(draftId, Json.obj(), request.identifier)
-    registrationsRepository.set(userAnswers) flatMap {
-      _ => Future.successful(Redirect(asset.routes.AssetInterruptPageController.onPageLoad(draftId)))
+
+    registrationsRepository.get(draftId) flatMap {
+      case Some(userAnswers) =>
+        Future.successful(redirect(draftId, userAnswers))
+      case _ =>
+        val userAnswers = UserAnswers(draftId, Json.obj(), request.identifier)
+        registrationsRepository.set(userAnswers) map {
+          _ => redirect(draftId, userAnswers)
+        }
+    }
+  }
+
+  private def redirect(draftId: String, userAnswers: UserAnswers) = {
+    userAnswers.get(sections.Assets) match {
+      case Some(_ :: _) =>
+        Redirect(controllers.asset.routes.AddAssetsController.onPageLoad(draftId))
+      case _ =>
+        Redirect(controllers.asset.routes.AssetInterruptPageController.onPageLoad(draftId))
     }
   }
 }
