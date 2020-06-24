@@ -44,16 +44,17 @@ class AssetsCompleteController @Inject()(
 
   def onPageLoad(draftId: String): Action[AnyContent] = identify.async {
     implicit request =>
-      registrationsRepository.get(draftId) map {
+      registrationsRepository.get(draftId) flatMap {
         case Some(userAnswers) =>
           assetMapper.build(userAnswers) match {
             case Some(assets) =>
               val json = Json.toJson(assets)
-              println(s"Mapped json is => ${json}")
-              Redirect(config.registrationProgressUrl(draftId))
-            case _ => InternalServerError
+              registrationsRepository.setRegistrationSection(draftId, "trust/assets", json) map {
+                _ => Redirect(config.registrationProgressUrl(draftId))
+              }
+            case _ => Future.successful(InternalServerError)
           }
-        case _ => Redirect(controllers.routes.SessionExpiredController.onPageLoad().url)
+        case _ => Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad().url))
       }
   }
 }
