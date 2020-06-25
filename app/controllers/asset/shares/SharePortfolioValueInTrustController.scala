@@ -26,7 +26,7 @@ import pages.asset.shares.SharePortfolioValueInTrustPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.RegistrationsRepository
+import repositories.AssetsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.asset.shares.SharePortfolioValueInTrustView
 
@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SharePortfolioValueInTrustController @Inject()(
                                                       override val messagesApi: MessagesApi,
-                                                      registrationsRepository: RegistrationsRepository,
+                                                      repository: AssetsRepository,
                                                       navigator: Navigator,
                                                       identify: RegistrationIdentifierAction,
                                                       getData: DraftIdRetrievalActionProvider,
@@ -45,7 +45,7 @@ class SharePortfolioValueInTrustController @Inject()(
                                                       validateIndex: IndexActionFilterProvider
                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider()
+  private val form = formProvider()
 
   private def actions(mode: Mode, index : Int, draftId: String) =
     identify andThen getData(draftId) andThen
@@ -73,7 +73,7 @@ class SharePortfolioValueInTrustController @Inject()(
         value => {
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(SharePortfolioValueInTrustPage(index), value))
-            _              <- registrationsRepository.set(updatedAnswers)
+            _              <- repository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(SharePortfolioValueInTrustPage(index), mode, draftId)(updatedAnswers))
         }
       )

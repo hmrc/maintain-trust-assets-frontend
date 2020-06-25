@@ -24,7 +24,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, ActionBuilder, AnyContent, Call}
 import play.twirl.api.HtmlFormat
 import queries.Settable
-import repositories.RegistrationsRepository
+import repositories.AssetsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.RemoveIndexView
 
@@ -42,7 +42,7 @@ trait RemoveIndexController extends FrontendBaseController with I18nSupport {
 
   def page(index: Int) : QuestionPage[_]
 
-  def registrationsRepository : RegistrationsRepository
+  def repository : AssetsRepository
 
   def actions(draftId: String, index: Int) : ActionBuilder[RegistrationDataRequest, AnyContent]
 
@@ -64,7 +64,7 @@ trait RemoveIndexController extends FrontendBaseController with I18nSupport {
       Ok(view(form, index, draftId))
   }
 
-  def onSubmit(index: Int, draftId : String) = actions(draftId, index).async {
+  def onSubmit(index: Int, draftId : String): Action[AnyContent] = actions(draftId, index).async {
     implicit request =>
 
       import scala.concurrent.ExecutionContext.Implicits._
@@ -76,7 +76,7 @@ trait RemoveIndexController extends FrontendBaseController with I18nSupport {
           if (value) {
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.remove(removeQuery(index)))
-              _              <- registrationsRepository.set(updatedAnswers)
+              _              <- repository.set(updatedAnswers)
             } yield Redirect(redirect(draftId).url)
           } else {
             Future.successful(Redirect(redirect(draftId).url))

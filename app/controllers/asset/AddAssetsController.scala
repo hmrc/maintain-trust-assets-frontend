@@ -25,7 +25,7 @@ import pages.asset.{AddAnAssetYesNoPage, AddAssetsPage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi, MessagesProvider}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.RegistrationsRepository
+import repositories.AssetsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.AddAssetViewHelper
 import views.html.asset.{AddAnAssetYesNoView, AddAssetsView}
@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AddAssetsController @Inject()(
                                      override val messagesApi: MessagesApi,
-                                     registrationsRepository: RegistrationsRepository,
+                                     repository: AssetsRepository,
                                      navigator: Navigator,
                                      identify: RegistrationIdentifierAction,
                                      getData: DraftIdRetrievalActionProvider,
@@ -83,7 +83,7 @@ class AddAssetsController @Inject()(
         value => {
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnAssetYesNoPage, value))
-            _              <- registrationsRepository.set(updatedAnswers)
+            _              <- repository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(AddAnAssetYesNoPage, mode, draftId)(updatedAnswers))
         }
       )
@@ -103,7 +103,7 @@ class AddAssetsController @Inject()(
         value => {
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAssetsPage, value))
-            _              <- registrationsRepository.set(updatedAnswers)
+            _              <- repository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(AddAssetsPage, mode, draftId)(updatedAnswers))
         }
       )

@@ -24,13 +24,13 @@ import models.requests.RegistrationDataRequest
 import pages.QuestionPage
 import pages.asset.shares.ShareCompanyNamePage
 import play.api.i18n.{Messages, MessagesApi}
-import play.api.mvc.{AnyContent, Call, MessagesControllerComponents}
-import repositories.RegistrationsRepository
+import play.api.mvc.{ActionBuilder, AnyContent, Call, MessagesControllerComponents}
+import repositories.AssetsRepository
 import views.html.RemoveIndexView
 
 class RemoveShareCompanyNameAssetController @Inject()(
                                                        override val messagesApi: MessagesApi,
-                                                       override val registrationsRepository: RegistrationsRepository,
+                                                       override val repository: AssetsRepository,
                                                        override val formProvider: RemoveIndexFormProvider,
                                                        identify: RegistrationIdentifierAction,
                                                        getData: DraftIdRetrievalActionProvider,
@@ -44,7 +44,7 @@ class RemoveShareCompanyNameAssetController @Inject()(
 
   override val messagesPrefix : String = "removeShareAsset"
 
-  override def actions(draftId : String, index: Int) =
+  override def actions(draftId : String, index: Int): ActionBuilder[RegistrationDataRequest, AnyContent] =
     identify andThen getData(draftId) andThen requireData
 
   override def content(index: Int)(implicit request: RegistrationDataRequest[AnyContent]) : String =

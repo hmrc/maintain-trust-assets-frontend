@@ -26,7 +26,7 @@ import pages.AssetStatus
 import pages.asset.shares.{ShareAnswerPage, SharesInAPortfolioPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.RegistrationsRepository
+import repositories.AssetsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.CheckYourAnswersHelper
 import utils.countryOptions.CountryOptions
@@ -37,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class ShareAnswerController @Inject()(
                                        override val messagesApi: MessagesApi,
-                                       registrationsRepository: RegistrationsRepository,
+                                       repository: AssetsRepository,
                                        navigator: Navigator,
                                        identify: RegistrationIdentifierAction,
                                        getData: DraftIdRetrievalActionProvider,
@@ -100,7 +100,7 @@ class ShareAnswerController @Inject()(
 
       for {
         updatedAnswers <- Future.fromTry(answers)
-        _ <- registrationsRepository.set(updatedAnswers)
+        _ <- repository.set(updatedAnswers)
       } yield Redirect(navigator.nextPage(ShareAnswerPage, NormalMode, draftId)(request.userAnswers))
 
   }

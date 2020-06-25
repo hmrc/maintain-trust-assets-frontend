@@ -26,7 +26,7 @@ import pages.asset.shares.{ShareCompanyNamePage, SharesOnStockExchangePage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.RegistrationsRepository
+import repositories.AssetsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.asset.shares.SharesOnStockExchangeView
 
@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SharesOnStockExchangeController @Inject()(
                                                  override val messagesApi: MessagesApi,
-                                                 registrationsRepository: RegistrationsRepository,
+                                                 repository: AssetsRepository,
                                                  navigator: Navigator,
                                                  identify: RegistrationIdentifierAction,
                                                  getData: DraftIdRetrievalActionProvider,
@@ -70,7 +70,7 @@ class SharesOnStockExchangeController @Inject()(
       Ok(view(preparedForm, mode, draftId, index, companyName))
   }
 
-  def onSubmit(mode: Mode, index: Int, draftId: String) = actions(mode, index, draftId).async {
+  def onSubmit(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(mode, index, draftId).async {
     implicit request =>
 
       val companyName = request.userAnswers.get(ShareCompanyNamePage(index)).get.toString
@@ -82,7 +82,7 @@ class SharesOnStockExchangeController @Inject()(
         value => {
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(SharesOnStockExchangePage(index), value))
-            _              <- registrationsRepository.set(updatedAnswers)
+            _              <- repository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(SharesOnStockExchangePage(index), mode, draftId)(updatedAnswers))
         }
       )

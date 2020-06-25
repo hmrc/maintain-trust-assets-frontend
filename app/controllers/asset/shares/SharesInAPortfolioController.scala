@@ -26,7 +26,7 @@ import pages.asset.shares.SharesInAPortfolioPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.RegistrationsRepository
+import repositories.AssetsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.asset.shares.SharesInAPortfolioView
 
@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SharesInAPortfolioController @Inject()(
                                               override val messagesApi: MessagesApi,
-                                              registrationsRepository: RegistrationsRepository,
+                                              repository: AssetsRepository,
                                               navigator: Navigator,
                                               identify: RegistrationIdentifierAction,
                                               getData: DraftIdRetrievalActionProvider,
@@ -63,7 +63,7 @@ class SharesInAPortfolioController @Inject()(
       Ok(view(preparedForm, mode, draftId, index))
   }
 
-  def onSubmit(mode: Mode, index: Int, draftId: String) = actions(mode, index, draftId).async {
+  def onSubmit(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(mode, index, draftId).async {
     implicit request =>
 
       form.bindFromRequest().fold(
@@ -73,7 +73,7 @@ class SharesInAPortfolioController @Inject()(
         value => {
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(SharesInAPortfolioPage(index), value))
-            _              <- registrationsRepository.set(updatedAnswers)
+            _              <- repository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(SharesInAPortfolioPage(index), mode, draftId)(updatedAnswers))
         }
       )

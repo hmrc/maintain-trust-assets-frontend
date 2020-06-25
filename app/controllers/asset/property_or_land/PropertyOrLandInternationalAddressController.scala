@@ -26,7 +26,7 @@ import pages.asset.property_or_land.PropertyOrLandInternationalAddressPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.RegistrationsRepository
+import repositories.AssetsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.annotations.PropertyOrLand
 import utils.countryOptions.CountryOptionsNonUK
@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class PropertyOrLandInternationalAddressController @Inject()(
                                                               override val messagesApi: MessagesApi,
-                                                              registrationsRepository: RegistrationsRepository,
+                                                              repository: AssetsRepository,
                                                               @PropertyOrLand navigator: Navigator,
                                                               identify: RegistrationIdentifierAction,
                                                               getData: DraftIdRetrievalActionProvider,
@@ -77,7 +77,7 @@ class PropertyOrLandInternationalAddressController @Inject()(
         value => {
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(PropertyOrLandInternationalAddressPage(index), value))
-            _              <- registrationsRepository.set(updatedAnswers)
+            _              <- repository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(PropertyOrLandInternationalAddressPage(index), mode, draftId)(updatedAnswers))
         }
       )

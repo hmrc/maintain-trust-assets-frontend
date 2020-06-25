@@ -22,14 +22,14 @@ import models.UserAnswers
 import play.api.i18n.I18nSupport
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.RegistrationsRepository
+import repositories.AssetsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class IndexController @Inject()(
                                  val controllerComponents: MessagesControllerComponents,
-                                 registrationsRepository: RegistrationsRepository,
+                                 repository: AssetsRepository,
                                  identify: RegistrationIdentifierAction
                                ) extends FrontendBaseController with I18nSupport {
 
@@ -38,12 +38,12 @@ class IndexController @Inject()(
 
   def onPageLoad(draftId: String): Action[AnyContent] = identify.async { implicit request =>
 
-    registrationsRepository.get(draftId) flatMap {
+    repository.get(draftId) flatMap {
       case Some(userAnswers) =>
         Future.successful(redirect(draftId, userAnswers))
       case _ =>
         val userAnswers = UserAnswers(draftId, Json.obj(), request.identifier)
-        registrationsRepository.set(userAnswers) map {
+        repository.set(userAnswers) map {
           _ => redirect(draftId, userAnswers)
         }
     }

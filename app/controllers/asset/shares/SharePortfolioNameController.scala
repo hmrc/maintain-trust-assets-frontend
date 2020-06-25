@@ -26,7 +26,7 @@ import pages.asset.shares.SharePortfolioNamePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.RegistrationsRepository
+import repositories.AssetsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.asset.shares.SharePortfolioNameView
 
@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SharePortfolioNameController @Inject()(
                                               override val messagesApi: MessagesApi,
-                                              registrationsRepository: RegistrationsRepository,
+                                              repository: AssetsRepository,
                                               navigator: Navigator,
                                               identify: RegistrationIdentifierAction,
                                               getData: DraftIdRetrievalActionProvider,
@@ -73,7 +73,7 @@ class SharePortfolioNameController @Inject()(
         value => {
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(SharePortfolioNamePage(index), value))
-            _              <- registrationsRepository.set(updatedAnswers)
+            _              <- repository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(SharePortfolioNamePage(index), mode, draftId)(updatedAnswers))
         }
       )

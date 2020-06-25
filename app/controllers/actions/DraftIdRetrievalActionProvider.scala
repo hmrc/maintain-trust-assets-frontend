@@ -19,17 +19,17 @@ package controllers.actions
 import javax.inject.Inject
 import models.requests.{IdentifierRequest, OptionalRegistrationDataRequest}
 import play.api.mvc.ActionTransformer
-import repositories.RegistrationsRepository
+import repositories.AssetsRepository
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class DraftIdDataRetrievalActionProviderImpl @Inject()(registrationsRepository: RegistrationsRepository, executionContext: ExecutionContext)
+class DraftIdDataRetrievalActionProviderImpl @Inject()(repository: AssetsRepository, executionContext: ExecutionContext)
   extends DraftIdRetrievalActionProvider {
 
   def apply(draftId: String): DraftIdDataRetrievalAction =
-    new DraftIdDataRetrievalAction(draftId, registrationsRepository, executionContext)
+    new DraftIdDataRetrievalAction(draftId, repository, executionContext)
 
 }
 
@@ -41,7 +41,7 @@ trait DraftIdRetrievalActionProvider {
 
 class DraftIdDataRetrievalAction(
                                   draftId : String,
-                                  registrationsRepository: RegistrationsRepository,
+                                  repository: AssetsRepository,
                                   implicit protected val executionContext: ExecutionContext
                                 )
   extends ActionTransformer[IdentifierRequest, OptionalRegistrationDataRequest] {
@@ -49,7 +49,7 @@ class DraftIdDataRetrievalAction(
   override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalRegistrationDataRequest[A]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
-    registrationsRepository.get(draftId).map {
+    repository.get(draftId).map {
       userAnswers =>
         OptionalRegistrationDataRequest(request.request, request.identifier, userAnswers, request.affinityGroup, request.enrolments, request.agentARN)
     }

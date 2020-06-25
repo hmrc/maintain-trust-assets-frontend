@@ -27,7 +27,7 @@ import pages.asset.money.AssetMoneyValuePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.RegistrationsRepository
+import repositories.AssetsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.asset.money.AssetMoneyValueView
 
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AssetMoneyValueController @Inject()(
                                            override val messagesApi: MessagesApi,
-                                           registrationsRepository: RegistrationsRepository,
+                                           repository: AssetsRepository,
                                            navigator: Navigator,
                                            identify: RegistrationIdentifierAction,
                                            getData: DraftIdRetrievalActionProvider,
@@ -75,7 +75,7 @@ class AssetMoneyValueController @Inject()(
 
           for {
                 updatedAnswers <- Future.fromTry(answers)
-                _              <- registrationsRepository.set(updatedAnswers)
+                _              <- repository.set(updatedAnswers)
               } yield Redirect(navigator.nextPage(AssetMoneyValuePage(index), mode, draftId)(updatedAnswers))
           }
       )

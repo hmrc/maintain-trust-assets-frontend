@@ -26,7 +26,7 @@ import pages.asset.property_or_land.PropertyOrLandTotalValuePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.RegistrationsRepository
+import repositories.AssetsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.annotations.PropertyOrLand
 import views.html.asset.property_or_land.PropertyOrLandTotalValueView
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class PropertyOrLandTotalValueController @Inject()(
                                                     override val messagesApi: MessagesApi,
-                                                    registrationsRepository: RegistrationsRepository,
+                                                    repository: AssetsRepository,
                                                     @PropertyOrLand navigator: Navigator,
                                                     identify: RegistrationIdentifierAction,
                                                     getData: DraftIdRetrievalActionProvider,
@@ -46,7 +46,7 @@ class PropertyOrLandTotalValueController @Inject()(
                                                     view: PropertyOrLandTotalValueView
                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider()
+  private val form = formProvider()
 
   private def actions(index: Int, draftId: String) =
     identify andThen
@@ -75,7 +75,7 @@ class PropertyOrLandTotalValueController @Inject()(
         value => {
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(PropertyOrLandTotalValuePage(index), value))
-            _              <- registrationsRepository.set(updatedAnswers)
+            _              <- repository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(PropertyOrLandTotalValuePage(index), mode, draftId)(updatedAnswers))
         }
       )

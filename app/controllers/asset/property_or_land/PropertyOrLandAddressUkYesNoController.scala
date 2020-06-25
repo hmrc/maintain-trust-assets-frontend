@@ -26,7 +26,7 @@ import pages.asset.property_or_land.PropertyOrLandAddressUkYesNoPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.RegistrationsRepository
+import repositories.AssetsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.annotations.PropertyOrLand
 import views.html.asset.property_or_land.PropertyOrLandAddressUkYesNoView
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class PropertyOrLandAddressUkYesNoController @Inject()(
                                                         override val messagesApi: MessagesApi,
-                                                        registrationsRepository: RegistrationsRepository,
+                                                        repository: AssetsRepository,
                                                         @PropertyOrLand navigator: Navigator,
                                                         identify: RegistrationIdentifierAction,
                                                         getData: DraftIdRetrievalActionProvider,
@@ -65,7 +65,7 @@ class PropertyOrLandAddressUkYesNoController @Inject()(
       Ok(view(preparedForm, mode, draftId, index))
   }
 
-  def onSubmit(mode: Mode, index: Int, draftId : String) = actions(index, draftId).async {
+  def onSubmit(mode: Mode, index: Int, draftId : String): Action[AnyContent] = actions(index, draftId).async {
     implicit request =>
 
       form.bindFromRequest().fold(
@@ -75,7 +75,7 @@ class PropertyOrLandAddressUkYesNoController @Inject()(
         value => {
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(PropertyOrLandAddressUkYesNoPage(index), value))
-            _              <- registrationsRepository.set(updatedAnswers)
+            _              <- repository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(PropertyOrLandAddressUkYesNoPage(index), mode, draftId)(updatedAnswers))
         }
       )

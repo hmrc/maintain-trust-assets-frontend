@@ -24,9 +24,9 @@ import models.requests.RegistrationDataRequest
 import pages.QuestionPage
 import pages.asset.DefaultRemoveAssetPage
 import play.api.i18n.{Messages, MessagesApi}
-import play.api.mvc.{AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{ActionBuilder, AnyContent, Call, MessagesControllerComponents}
 import queries.{RemoveAssetQuery, Settable}
-import repositories.RegistrationsRepository
+import repositories.AssetsRepository
 import views.html.RemoveIndexView
 
 
@@ -40,7 +40,7 @@ trait RemoveAssetController extends RemoveIndexController {
 
 class DefaultRemoveAssetController @Inject()(
                                               override val messagesApi: MessagesApi,
-                                              override val registrationsRepository: RegistrationsRepository,
+                                              override val repository: AssetsRepository,
                                               override val formProvider: RemoveIndexFormProvider,
                                               identify: RegistrationIdentifierAction,
                                               getData: DraftIdRetrievalActionProvider,
@@ -53,7 +53,7 @@ class DefaultRemoveAssetController @Inject()(
 
   override val messagesPrefix : String = "removeAsset"
 
-  override def actions(draftId : String, index: Int) =
+  override def actions(draftId : String, index: Int): ActionBuilder[RegistrationDataRequest, AnyContent] =
     identify andThen getData(draftId) andThen requireData
 
   override def content(index: Int)(implicit request: RegistrationDataRequest[AnyContent]) : String = Messages(s"$messagesPrefix.default")
