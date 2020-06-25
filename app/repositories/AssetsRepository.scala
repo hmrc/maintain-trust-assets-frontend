@@ -32,14 +32,13 @@ class AssetsRepository @Inject()(
     registrationsRepository.get(draftId)
 
   def set(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Boolean] = {
-    registrationsRepository.set(userAnswers) map { success =>
-      success && setAssetsStatus(userAnswers)
+    registrationsRepository.set(userAnswers) flatMap {
+      case true => setAssetsStatus(userAnswers)
+      case _ => Future.successful(false)
     }
   }
 
-  def setAssetsStatus(userAnswers: UserAnswers): Boolean = {
-    val status = registrationProgress.assetsStatus(userAnswers)
-    println(s"%%%%%%%%%%% Status is now $status")
-    true
+  private def setAssetsStatus(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Boolean] = {
+    registrationsRepository.setStatus(userAnswers.draftId, "assets", registrationProgress.assetsStatus(userAnswers))
   }
 }

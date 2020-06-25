@@ -19,8 +19,8 @@ package repositories
 import config.FrontendAppConfig
 import connectors.SubmissionDraftConnector
 import javax.inject.Inject
-import models.UserAnswers
-import play.api.http.Status
+import models.{Status, UserAnswers}
+import play.api.http
 import play.api.libs.json._
 import uk.gov.hmrc.http.HeaderCarrier
 
@@ -32,6 +32,7 @@ class DefaultRegistrationsRepository @Inject()(submissionDraftConnector: Submiss
 
   private val userAnswersSection = config.appName
   private val registrationSection = "registration"
+  private val statusSection = "status"
 
   override def get(draftId: String)(implicit hc: HeaderCarrier): Future[Option[UserAnswers]] = {
     submissionDraftConnector.getDraftSection(draftId, userAnswersSection).map {
@@ -53,7 +54,7 @@ class DefaultRegistrationsRepository @Inject()(submissionDraftConnector: Submiss
       section,
       jsonData
     ).map {
-      response => response.status == Status.OK
+      response => response.status == http.Status.OK
     }
   }
 
@@ -64,9 +65,27 @@ class DefaultRegistrationsRepository @Inject()(submissionDraftConnector: Submiss
 
     submissionDraftConnector.getDraftSection(draftId, registrationSection).flatMap {
       data =>
-        val transform = __.json.update(sectionPath.prune andThen sectionPath.put(registrationSectionData))
+        val transform = sectionPath.prune andThen __.json.update(sectionPath.put(registrationSectionData))
         data.data.transform(transform) match {
           case JsSuccess(value, _) => setSectionData(draftId, registrationSection, value)
+          case _ => Future.successful(false)
+        }
+    }
+  }
+  override def setStatus(draftId: String, statusKey: String, statusOpt: Option[Status])
+                                     (implicit hc: HeaderCarrier): Future[Boolean] = {
+
+    println(s"setStatus for '$statusKey' to $statusOpt")
+    val sectionPath = (JsPath \ statusKey).json
+
+    submissionDraftConnector.getDraftSection(draftId, statusSection).flatMap {
+      data =>
+        val transform = statusOpt match {
+          case Some(status) => sectionPath.prune andThen __.json.update(sectionPath.put(Json.toJson(status.toString)))
+          case None => sectionPath.prune
+        }
+        data.data.transform(transform) match {
+          case JsSuccess(value, _) => setSectionData(draftId, statusSection, value)
           case _ => Future.successful(false)
         }
     }
@@ -79,4 +98,6 @@ trait RegistrationsRepository {
   def set(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Boolean]
 
   def setRegistrationSection(draftId: String, path: String, data: JsValue)(implicit hc: HeaderCarrier): Future[Boolean]
+
+  def setStatus(draftId: String, statusKey: String, status: Option[Status])(implicit hc: HeaderCarrier): Future[Boolean]
 }

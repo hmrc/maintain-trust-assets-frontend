@@ -29,4 +29,5 @@ trait Mocked extends MockitoSugar {
 
   when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(None))
   when(registrationsRepository.set(any())(any())).thenReturn(Future.successful(true))
+  when(registrationsRepository.setStatus(any(), any(), any())(any())).thenReturn(Future.successful(true))
 }
