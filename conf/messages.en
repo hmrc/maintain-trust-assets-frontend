@@ -21,6 +21,11 @@ error.number = Please enter a valid number
 error.required = Please enter a value
 error.summary.title = There is a problem
 
+entities.no.name.added = No name added
+entities.no.value.added = No value added
+entities.no.address.added = No address added
+entities.no.description.added = No description added
+
 index.title = register-trust-asset-frontend
 index.heading = register-trust-asset-frontend
 index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.

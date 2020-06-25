@@ -21,6 +21,8 @@ import controllers.actions.RegistrationIdentifierAction
 import javax.inject.Inject
 import mapping.AssetMapper
 import models.Assets
+import models.Status.Completed
+import pages.RegistrationProgress
 import play.api.i18n.I18nSupport
 import play.api.libs.json.Json
 import play.api.mvc.Results.Redirect
@@ -37,22 +39,28 @@ class AssetsCompleteController @Inject()(
                                           registrationsRepository: RegistrationsRepository,
                                           assetMapper: AssetMapper,
                                           config: FrontendAppConfig,
-                                          identify: RegistrationIdentifierAction
+                                          identify: RegistrationIdentifierAction,
+                                          registrationProgress: RegistrationProgress
                                         ) extends FrontendBaseController with I18nSupport {
 
   implicit val executionContext: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
 
   def onPageLoad(draftId: String): Action[AnyContent] = identify.async {
     implicit request =>
+
       registrationsRepository.get(draftId) flatMap {
         case Some(userAnswers) =>
-          assetMapper.build(userAnswers) match {
-            case Some(assets) =>
-              val json = Json.toJson(assets)
-              registrationsRepository.setRegistrationSection(draftId, "trust/assets", json) map {
-                _ => Redirect(config.registrationProgressUrl(draftId))
-              }
-            case _ => Future.successful(InternalServerError)
+          if (registrationProgress.assetsStatus(userAnswers).contains(Completed)) {
+            assetMapper.build(userAnswers) match {
+              case Some(assets) =>
+                val json = Json.toJson(assets)
+                registrationsRepository.setRegistrationSection(draftId, "trust/assets", json) map {
+                  _ => Redirect(config.registrationProgressUrl(draftId))
+                }
+              case _ => Future.successful(InternalServerError)
+            }
+          } else {
+            Future.successful(Redirect(config.registrationProgressUrl(draftId)))
           }
         case _ => Future.successful(Redirect(controllers.routes.SessionExpiredController.onPageLoad().url))
       }
