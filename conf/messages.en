@@ -60,6 +60,9 @@ site.address.uk.postcode = Postcode
 site.address.uk.postcode.hint = For example AB1 1AB
 site.address.uk.checkYourAnswersLabel = What is {0}’s address?
 
+address.country = Country
+address.country.select = Select a country
+
 ukAddress.error.line1.required = Enter address line 1
 ukAddress.error.line2.required = Enter address line 2
 ukAddress.error.postcode.required = Enter a postcode

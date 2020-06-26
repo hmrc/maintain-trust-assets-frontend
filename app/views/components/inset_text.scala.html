@@ -14,23 +14,9 @@
  * limitations under the License.
  *@
 
-@import viewmodels.AnswerSection
-@import views.html._
+@(messageKey: String, id: String)(implicit messages: Messages)
 
-@(answerSection: AnswerSection)(implicit messages: Messages)
+<div id="inset-text--@id" class="indent">
+    @messages(messageKey)
+</div>
 
-@if(answerSection.sectionKey.isDefined){
-    <h2 class="heading-large">@messages(answerSection.sectionKey.get)</h2>
-}
-
-@if(answerSection.headingKey.isDefined){
-    <h3 class="heading-medium">@messages(answerSection.headingKey.get)</h3>
-}
-
-@if(answerSection.rows) {
-    <ul role="list" class="govuk-check-your-answers cya-questions-long section">
-        @for(row <- answerSection.rows){
-            @components.answer_row(row)
-        }
-    </ul>
-}

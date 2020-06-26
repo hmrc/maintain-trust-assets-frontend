@@ -9,25 +9,15 @@ $(document).ready(function() {
   showHideContent.init()
 
   // =====================================================
-  // Use GOV.UK shim-links-with-button-role.js to trigger
-  // links with role="button" when space key is pressed
-  // =====================================================
-  GOVUK.shimLinksWithButtonRole.init();
-
-  // =====================================================
   // Handle number inputs
   // =====================================================
     numberInputs();
 
   // =====================================================
-  // Introduce direct skip link control, to work around voiceover failing of hash links
-  // https://bugs.webkit.org/show_bug.cgi?id=179011
-  // https://axesslab.com/skip-links/
+  // Click focus wih space bar
   // =====================================================
-  $('.skiplink').click(function(e) {
-    e.preventDefault();
-    $(':header:first').attr('tabindex', '-1').focus();
-  });
+
+  GOVUK.shimLinksWithButtonRole.init();
 
   // =====================================================
   // Back link mimics browser back functionality
@@ -38,21 +28,58 @@ $(document).ready(function() {
   if (window.history && window.history.replaceState && typeof window.history.replaceState === 'function') {
     window.history.replaceState(null, null, window.location.href);
   }
-  // back click handle, dependent upon presence of referrer & no host change
   $('#back-link').on('click', function(e){
     e.preventDefault();
-    if (window.history && window.history.back && typeof window.history.back === 'function' &&
-       (docReferrer !== "" && docReferrer.indexOf(window.location.host) !== -1)) {
-        window.history.back();
-    }
+    window.history.back();
   })
 
+    // =========================
+    // GOV.UK country lookup
+    // https://alphagov.github.io/accessible-autocomplete/#progressive-enhancement
+    // =========================
+    // auto complete country lookup, progressive enhancement
+    // using version 2.0.2
+    // need to invoke new enhanceSelectElement()
+    // =====
+
+    if(document.querySelectorAll('select[data-non-uk-countries]').length > 0) {
+       accessibleAutocomplete.enhanceSelectElement({
+            selectElement: document.querySelector("select[data-non-uk-countries]"),
+            minLength:2,
+            defaultValue: ''
+        });
+    }
+
+     if(document.querySelectorAll('select[data-all-countries]').length > 0) {
+           accessibleAutocomplete.enhanceSelectElement({
+                selectElement: document.querySelector("select[data-all-countries]"),
+                minLength:2,
+                defaultValue: ''
+            });
+        }
+
+
+    // Assign aria-labbledby to the dynamically created country input
+    if ($(".autocomplete-wrapper .error-message").length) $(".autocomplete__wrapper #value").attr('aria-labelledby', 'error-message-input');
+
+
   //======================================================
-  // Move immediate forcus to any error summary
+  // countries autocomplete
   //======================================================
-  if ($('.error-summary a').length > 0){
-    $('.error-summary').focus();
-  }
+    // temporary fix for IE not registering clicks on the text of the results list for the country autocomplete
+    $('body').on('mouseup', ".autocomplete__option > strong", function(e){
+        e.preventDefault(); $(this).parent().trigger('click');
+    })
+    // temporary fix for the autocomplete holding onto the last matching country when a user then enters an invalid or blank country
+    $('input[role="combobox"]').on('keydown', function(e){
+        if (e.which != 13 && e.which != 9) {
+             var sel = document.querySelector('.autocomplete-wrapper select');
+             sel.value = "";
+        }
+    })
+
+
+
 
   // =====================================================
   // Adds data-focuses attribute to all containers of inputs listed in an error summary
@@ -69,10 +96,16 @@ $(document).ready(function() {
       }
       assignFocus();
 
-    // =====================================================
-    // Print functionality
-    // Opens any details components so they are printed
-    // =====================================================
+
+  //======================================================
+  // Move immediate forcus to any error summary
+  //======================================================
+  if ($('.error-summary a').length > 0){
+    $('.error-summary').focus();
+  }
+
+    $('#errors').focus();
+
       function beforePrintCall(){
           if($('.no-details').length > 0){
               // store current focussed element to return focus to later
@@ -137,6 +170,17 @@ $(document).ready(function() {
       window.onafterprint = function(){
           afterPrintCall();
       }
+
+      // ------------------------------------
+      // Introduce direct skip link control, to work around voiceover failing of hash links
+      // https://bugs.webkit.org/show_bug.cgi?id=179011
+      // https://axesslab.com/skip-links/
+      // ------------------------------------
+      $('.skiplink').click(function(e) {
+          e.preventDefault();
+          $(':header:first').attr('tabindex', '-1').focus();
+      });
+
   });
 
 
