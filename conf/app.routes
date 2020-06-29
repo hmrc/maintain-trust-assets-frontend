@@ -25,9 +25,6 @@ GET        /:draftId/asset/add                          controllers.asset.AddAss
 POST       /:draftId/asset/add                          controllers.asset.AddAssetsController.submitOne(mode: Mode = NormalMode, draftId: String)
 POST       /:draftId/asset/add-another                  controllers.asset.AddAssetsController.submitAnother(mode: Mode = NormalMode, draftId: String)
 
-GET        /:draftId/asset/complete                     controllers.asset.AssetsCompleteController.onPageLoad(draftId: String)
-
-
 ### Money
 
 GET        /:draftId/asset/:index/money                                                             controllers.asset.money.AssetMoneyValueController.onPageLoad(mode: Mode = NormalMode, index: Int, draftId: String)

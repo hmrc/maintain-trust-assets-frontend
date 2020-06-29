@@ -28,5 +28,5 @@ trait Mocked extends MockitoSugar {
   val registrationsRepository : RegistrationsRepository = mock[RegistrationsRepository]
 
   when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(None))
-  when(registrationsRepository.setRegistrationSectionSet(any(), any(), any())(any())).thenReturn(Future.successful(true))
+  when(registrationsRepository.setRegistrationSectionSet(any(), any(), any(), any())(any())).thenReturn(Future.successful(true))
 }

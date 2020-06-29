@@ -19,7 +19,7 @@ package repositories
 import config.FrontendAppConfig
 import connectors.SubmissionDraftConnector
 import javax.inject.Inject
-import models.{Status, SubmissionDraftSetData, SubmissionDraftStatus, UserAnswers}
+import models.{Status, SubmissionDraftRegistrationPiece, SubmissionDraftSetData, SubmissionDraftStatus, UserAnswers}
 import play.api.http
 import play.api.libs.json._
 import uk.gov.hmrc.http.HeaderCarrier
@@ -63,12 +63,15 @@ class DefaultRegistrationsRepository @Inject()(submissionDraftConnector: Submiss
     }
   }
 
-  override def setRegistrationSectionSet(userAnswers: UserAnswers, statusKey: String, status: Option[Status])
+  override def setRegistrationSectionSet(userAnswers: UserAnswers,
+                                         statusKey: String,
+                                         status: Option[Status],
+                                         registrationPieces: List[SubmissionDraftRegistrationPiece])
                                (implicit hc: HeaderCarrier): Future[Boolean] = {
     val data = SubmissionDraftSetData(
       Json.toJson(userAnswers),
       Some(SubmissionDraftStatus(statusKey, status)),
-      List.empty
+      registrationPieces
     )
     setSectionSetData(userAnswers.draftId, userAnswersSection, data )
   }
@@ -94,5 +97,9 @@ trait RegistrationsRepository {
 
   def setRegistrationSection(draftId: String, path: String, data: JsValue)(implicit hc: HeaderCarrier): Future[Boolean]
 
-  def setRegistrationSectionSet(userAnswers: UserAnswers, statusKey: String, status: Option[Status])(implicit hc: HeaderCarrier): Future[Boolean]
+  def setRegistrationSectionSet(userAnswers: UserAnswers,
+                                statusKey: String,
+                                status: Option[Status],
+                                registrationPieces: List[SubmissionDraftRegistrationPiece]
+                               )(implicit hc: HeaderCarrier): Future[Boolean]
 }

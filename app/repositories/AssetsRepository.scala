@@ -17,24 +17,43 @@
 package repositories
 
 import javax.inject.Inject
-import models.UserAnswers
+import mapping.AssetMapper
+import models.Status.Completed
+import models.{Status, SubmissionDraftRegistrationPiece, UserAnswers}
 import pages.RegistrationProgress
+import play.api.libs.json.Json
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class AssetsRepository @Inject()(
                                   registrationsRepository: RegistrationsRepository,
-                                  registrationProgress: RegistrationProgress)
+                                  registrationProgress: RegistrationProgress,
+                                  assetMapper: AssetMapper)
                                 (implicit executionContext: ExecutionContext) {
 
   def get(draftId: String)(implicit hc: HeaderCarrier): Future[Option[UserAnswers]] =
     registrationsRepository.get(draftId)
 
   def set(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Boolean] = {
+    val status = registrationProgress.assetsStatus(userAnswers)
+    val registrationPieces = mappedDataIfCompleted(userAnswers, status)
+
     registrationsRepository.setRegistrationSectionSet(
       userAnswers,
       "assets",
-      registrationProgress.assetsStatus(userAnswers))
+      status,
+      registrationPieces)
+  }
+
+  private def mappedDataIfCompleted(userAnswers: UserAnswers, status: Option[Status]) = {
+    if (status.contains(Completed)) {
+      assetMapper.build(userAnswers) match {
+        case Some(assets) => List(SubmissionDraftRegistrationPiece("trust/assets", Json.toJson(assets)))
+        case _ => List.empty
+      }
+    } else {
+      List.empty
+    }
   }
 }

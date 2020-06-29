@@ -17,11 +17,9 @@
 package navigation
 
 import config.FrontendAppConfig
-import controllers.asset.routes
 import javax.inject.{Inject, Singleton}
-import models._
-import models.UserAnswers
 import models.WhatKindOfAsset._
+import models.{UserAnswers, _}
 import pages.Page
 import pages.asset._
 import pages.asset.money._
@@ -30,42 +28,45 @@ import play.api.mvc.Call
 import uk.gov.hmrc.auth.core.AffinityGroup
 
 object AssetsRoutes {
-  def route(draftId: String): PartialFunction[Page, AffinityGroup => UserAnswers => Call] = {
+  def route(draftId: String, config: FrontendAppConfig): PartialFunction[Page, AffinityGroup => UserAnswers => Call] = {
     case AssetMoneyValuePage(index) => _ => ua => assetMoneyValueRoute(ua, index, draftId)
     case WhatKindOfAssetPage(index) => _ => ua => whatKindOfAssetRoute(ua, index, draftId)
-    case SharesInAPortfolioPage(index) => _ => ua => sharesInAPortfolio(ua, index, draftId)
+    case SharesInAPortfolioPage(index) => _ => ua => sharesInAPortfolio(ua, index, draftId, config)
     case SharePortfolioNamePage(index) => _ => ua => controllers.asset.shares.routes.SharePortfolioOnStockExchangeController.onPageLoad(NormalMode, index, draftId)
     case SharePortfolioOnStockExchangePage(index) => _ => ua => controllers.asset.shares.routes.SharePortfolioQuantityInTrustController.onPageLoad(NormalMode, index, draftId)
     case SharePortfolioQuantityInTrustPage(index) => _ => _ => controllers.asset.shares.routes.SharePortfolioValueInTrustController.onPageLoad(NormalMode, index, draftId)
     case SharePortfolioValueInTrustPage(index) => _ => _ => controllers.asset.shares.routes.ShareAnswerController.onPageLoad(index, draftId)
     case SharesOnStockExchangePage(index) => _ => _ => controllers.asset.shares.routes.ShareClassController.onPageLoad(NormalMode, index, draftId)
     case ShareClassPage(index) => _ => _ => controllers.asset.shares.routes.ShareQuantityInTrustController.onPageLoad(NormalMode, index, draftId)
-    case AddAssetsPage => _ => addAssetsRoute(draftId)
-    case AddAnAssetYesNoPage => _ => addAnAssetYesNoRoute(draftId)
+    case AddAssetsPage => _ => addAssetsRoute(draftId, config)
+    case AddAnAssetYesNoPage => _ => addAnAssetYesNoRoute(draftId, config)
     case ShareQuantityInTrustPage(index) => _ => _ => controllers.asset.shares.routes.ShareValueInTrustController.onPageLoad(NormalMode, index, draftId)
     case ShareValueInTrustPage(index) => _ => _ => controllers.asset.shares.routes.ShareAnswerController.onPageLoad(index, draftId)
     case ShareAnswerPage => _ => _ => controllers.asset.routes.AddAssetsController.onPageLoad(draftId)
     case ShareCompanyNamePage(index) => _ => _ => controllers.asset.shares.routes.SharesOnStockExchangeController.onPageLoad(NormalMode, index, draftId)
   }
 
-  private def sharesInAPortfolio(userAnswers: UserAnswers, index : Int, draftId: String) : Call = {
+  private def assetsCompletedRoute(draftId: String, config: FrontendAppConfig) : Call = {
+    Call("GET", config.registrationProgressUrl(draftId))
+  }
+
+  private def sharesInAPortfolio(userAnswers: UserAnswers, index : Int, draftId: String, config: FrontendAppConfig) : Call = {
     userAnswers.get(SharesInAPortfolioPage(index)) match {
       case Some(true) =>
         controllers.asset.shares.routes.SharePortfolioNameController.onPageLoad(NormalMode, index, draftId)
       case Some(false) =>
         controllers.asset.shares.routes.ShareCompanyNameController.onPageLoad(NormalMode, index, draftId)
-      case _=>
-        routes.AssetsCompleteController.onPageLoad(draftId)
+      case _=> assetsCompletedRoute(draftId, config)
     }
   }
 
-  private def addAnAssetYesNoRoute(draftId: String)(userAnswers: UserAnswers) : Call = userAnswers.get(AddAnAssetYesNoPage) match {
-    case Some(false) => routes.AssetsCompleteController.onPageLoad(draftId)
+  private def addAnAssetYesNoRoute(draftId: String, config: FrontendAppConfig)(userAnswers: UserAnswers) : Call = userAnswers.get(AddAnAssetYesNoPage) match {
+    case Some(false) => assetsCompletedRoute(draftId, config)
     case Some(true) => controllers.routes.WhatKindOfAssetController.onPageLoad(NormalMode, 0, draftId)
     case _ => controllers.routes.SessionExpiredController.onPageLoad()
   }
 
-  private def addAssetsRoute(draftId: String)(answers: UserAnswers) = {
+  private def addAssetsRoute(draftId: String, config: FrontendAppConfig)(answers: UserAnswers) = {
     val addAnother = answers.get(AddAssetsPage)
 
     def routeToAssetIndex = {
@@ -82,9 +83,9 @@ object AssetsRoutes {
       case Some(AddAssets.YesNow) =>
         routeToAssetIndex
       case Some(AddAssets.YesLater) =>
-        routes.AssetsCompleteController.onPageLoad(draftId)
+        assetsCompletedRoute(draftId, config)
       case Some(AddAssets.NoComplete) =>
-        routes.AssetsCompleteController.onPageLoad(draftId)
+        assetsCompletedRoute(draftId, config)
       case _ => controllers.routes.SessionExpiredController.onPageLoad()
     }
   }
@@ -126,7 +127,7 @@ class Navigator @Inject()(
   }
 
   protected def route(draftId: String): PartialFunction[Page, AffinityGroup => UserAnswers => Call] =
-      AssetsRoutes.route(draftId) orElse
+      AssetsRoutes.route(draftId, config) orElse
       defaultRoute(draftId)
 
   def nextPage(page: Page, mode: Mode, draftId: String, af :AffinityGroup = AffinityGroup.Organisation): UserAnswers => Call = mode match {
