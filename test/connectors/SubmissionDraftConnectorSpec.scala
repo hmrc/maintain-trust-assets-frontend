@@ -19,7 +19,7 @@ package connectors
 import java.time.LocalDateTime
 
 import base.SpecBase
-import models.{SubmissionDraftData, SubmissionDraftId, SubmissionDraftResponse}
+import models.{SubmissionDraftData, SubmissionDraftId, SubmissionDraftResponse, SubmissionDraftSetData, SubmissionDraftStatus}
 import org.scalatest.{FreeSpec, MustMatchers, OptionValues}
 import play.api.Application
 import play.api.http.Status
@@ -29,6 +29,7 @@ import play.api.test.Helpers.CONTENT_TYPE
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.WireMockHelper
 import com.github.tomakehurst.wiremock.client.WireMock._
+import models.Status.InProgress
 
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
@@ -48,6 +49,7 @@ class SubmissionDraftConnectorSpec extends SpecBase with MustMatchers with Optio
   private val testSection = "section"
   private val submissionsUrl = s"/trusts/register/submission-drafts"
   private val submissionUrl = s"$submissionsUrl/$testDraftId/$testSection"
+  private val setSubmissionUrl = s"$submissionsUrl/$testDraftId/set/$testSection"
   private val mainUrl = s"$submissionsUrl/$testDraftId/MAIN"
   private val deleteUrl = s"$submissionsUrl/$testDraftId"
 
@@ -55,7 +57,7 @@ class SubmissionDraftConnectorSpec extends SpecBase with MustMatchers with Optio
 
     "submission drafts" must {
 
-      "be set for main" in {
+      "set data for main" in {
 
         val sectionData = Json.parse(
           """
@@ -80,7 +82,7 @@ class SubmissionDraftConnectorSpec extends SpecBase with MustMatchers with Optio
         val result = Await.result(connector.setDraftMain(testDraftId, sectionData, inProgress = true, Some("ref")), Duration.Inf)
         result.status mustBe Status.OK
       }
-      "can be retrieved for main" in {
+      "retrieve data for main" in {
 
         val draftData = Json.parse(
           """
@@ -114,7 +116,7 @@ class SubmissionDraftConnectorSpec extends SpecBase with MustMatchers with Optio
         result.createdAt mustBe LocalDateTime.of(2012, 2, 3, 9, 30)
         result.data mustBe draftData
       }
-      "can be set for section" in {
+      "set data for section" in {
 
         val sectionData = Json.parse(
           """
@@ -139,7 +141,36 @@ class SubmissionDraftConnectorSpec extends SpecBase with MustMatchers with Optio
         val result = Await.result(connector.setDraftSection(testDraftId, testSection, sectionData), Duration.Inf)
         result.status mustBe Status.OK
       }
-      "can be retrieved for section" in {
+
+      "set data for section set" in {
+
+        val sectionData = Json.parse(
+          """
+            |{
+            | "field1": "value1",
+            | "field2": "value2"
+            |}
+            |""".stripMargin)
+
+        val draftStatus = SubmissionDraftStatus("asset", Some(InProgress))
+
+        val submissionDraftSetData = SubmissionDraftSetData(sectionData, Some(draftStatus), List.empty)
+
+        server.stubFor(
+          post(urlEqualTo(setSubmissionUrl))
+            .withHeader(CONTENT_TYPE, containing("application/json"))
+            .withRequestBody(equalTo(Json.toJson(submissionDraftSetData).toString()))
+            .willReturn(
+              aResponse()
+                .withStatus(Status.OK)
+            )
+        )
+
+        val result = Await.result(connector.setDraftSectionSet(testDraftId, testSection, submissionDraftSetData), Duration.Inf)
+        result.status mustBe Status.OK
+      }
+
+      "retrieve data for section" in {
 
         val draftData = Json.parse(
           """
@@ -172,52 +203,6 @@ class SubmissionDraftConnectorSpec extends SpecBase with MustMatchers with Optio
         val result: SubmissionDraftResponse = Await.result(connector.getDraftSection(testDraftId, testSection), Duration.Inf)
         result.createdAt mustBe LocalDateTime.of(2012, 2, 3, 9, 30)
         result.data mustBe draftData
-      }
-      "can have list of ids retrieved" in {
-
-        val draftIdsResponseJson =
-          """
-            |[
-            | {
-            |   "draftId": "Draft1",
-            |   "createdAt": "2012-02-03T09:30:00",
-            |   "reference": "ref",
-            |   "inProgress": true
-            | },
-            | {
-            |   "draftId": "Draft2",
-            |   "createdAt": "2010-06-21T14:44:00"
-            | }
-            |]
-            |""".stripMargin
-
-        server.stubFor(
-          get(urlEqualTo(submissionsUrl))
-            .willReturn(
-              aResponse()
-                .withStatus(Status.OK)
-                .withBody(draftIdsResponseJson)
-            )
-        )
-
-        val result = Await.result(connector.getCurrentDraftIds(), Duration.Inf)
-        result mustBe List(
-          SubmissionDraftId("Draft1", LocalDateTime.of(2012, 2, 3, 9, 30), Some("ref")),
-          SubmissionDraftId("Draft2", LocalDateTime.of(2010, 6, 21, 14, 44), None)
-        )
-      }
-      "can be deleted" in {
-
-        server.stubFor(
-          delete(urlEqualTo(deleteUrl))
-            .willReturn(
-              aResponse()
-                .withStatus(Status.OK)
-            )
-        )
-
-        val result = Await.result(connector.deleteDraft(testDraftId), Duration.Inf)
-        result.status mustBe Status.OK
       }
     }
   }

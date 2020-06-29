@@ -18,7 +18,7 @@ package connectors
 
 import config.FrontendAppConfig
 import javax.inject.Inject
-import models.{SubmissionDraftData, SubmissionDraftId, SubmissionDraftResponse}
+import models.{SubmissionDraftData, SubmissionDraftId, SubmissionDraftResponse, SubmissionDraftSetData}
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
@@ -35,6 +35,11 @@ class SubmissionDraftConnector @Inject()(http: HttpClient, config : FrontendAppC
     http.POST[JsValue, HttpResponse](s"$submissionsBaseUrl/$draftId/MAIN", Json.toJson(submissionDraftData))
   }
 
+  def setDraftSectionSet(draftId: String, section: String, data: SubmissionDraftSetData)
+                        (implicit hc: HeaderCarrier, ec : ExecutionContext): Future[HttpResponse] = {
+    http.POST[JsValue, HttpResponse](s"$submissionsBaseUrl/$draftId/set/$section", Json.toJson(data))
+  }
+
   def setDraftSection(draftId : String, section: String, draftData: JsValue)
                      (implicit hc: HeaderCarrier, ec : ExecutionContext): Future[HttpResponse] = {
     val submissionDraftData = SubmissionDraftData(draftData, None, None)
@@ -47,13 +52,5 @@ class SubmissionDraftConnector @Inject()(http: HttpClient, config : FrontendAppC
 
   def getDraftSection(draftId: String, section: String)(implicit hc: HeaderCarrier, ec : ExecutionContext): Future[SubmissionDraftResponse] = {
     http.GET[SubmissionDraftResponse](s"$submissionsBaseUrl/$draftId/$section")
-  }
-
-  def getCurrentDraftIds()(implicit hc: HeaderCarrier, ec : ExecutionContext): Future[List[SubmissionDraftId]] = {
-    http.GET[List[SubmissionDraftId]](s"$submissionsBaseUrl")
-  }
-
-  def deleteDraft(draftId: String)(implicit hc: HeaderCarrier, ec : ExecutionContext): Future[HttpResponse] = {
-    http.DELETE[HttpResponse](s"$submissionsBaseUrl/$draftId")
   }
 }
