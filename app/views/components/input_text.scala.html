@@ -25,7 +25,8 @@
         symbol: Option[String] = None,
         optionalHtmlContent: Option[Html] = None,
         ariaRequired: Boolean = false,
-        symbolText: Option[String] = None
+        symbolText: Option[String] = None,
+        inputMode: Option[String] = None
 )(implicit messages: Messages)
 
 @required = @{
@@ -57,8 +58,11 @@
         id="@{field.id}"
         name="@{field.name}"
         value="@{field.value}"
+        @if(inputMode.nonEmpty){
+            inputmode="@inputMode"
+        }
         @if(symbolText.nonEmpty) {
-        aria-label='@{label} @{symbolText.get}'
+            aria-label='@{label} @{symbolText.get}'
         }
         @required
         @if(hint.nonEmpty) {
