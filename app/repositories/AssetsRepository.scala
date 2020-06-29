@@ -32,13 +32,9 @@ class AssetsRepository @Inject()(
     registrationsRepository.get(draftId)
 
   def set(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Boolean] = {
-    registrationsRepository.set(userAnswers) flatMap {
-      case true => setAssetsStatus(userAnswers)
-      case _ => Future.successful(false)
-    }
-  }
-
-  private def setAssetsStatus(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Boolean] = {
-    registrationsRepository.setStatus(userAnswers.draftId, "assets", registrationProgress.assetsStatus(userAnswers))
+    registrationsRepository.setRegistrationSectionSet(
+      userAnswers,
+      "assets",
+      registrationProgress.assetsStatus(userAnswers))
   }
 }

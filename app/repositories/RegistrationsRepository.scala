@@ -19,7 +19,7 @@ package repositories
 import config.FrontendAppConfig
 import connectors.SubmissionDraftConnector
 import javax.inject.Inject
-import models.{Status, UserAnswers}
+import models.{Status, SubmissionDraftSetData, SubmissionDraftStatus, UserAnswers}
 import play.api.http
 import play.api.libs.json._
 import uk.gov.hmrc.http.HeaderCarrier
@@ -32,7 +32,6 @@ class DefaultRegistrationsRepository @Inject()(submissionDraftConnector: Submiss
 
   private val userAnswersSection = config.appName
   private val registrationSection = "registration"
-  private val statusSection = "status"
 
   override def get(draftId: String)(implicit hc: HeaderCarrier): Future[Option[UserAnswers]] = {
     submissionDraftConnector.getDraftSection(draftId, userAnswersSection).map {
@@ -44,10 +43,6 @@ class DefaultRegistrationsRepository @Inject()(submissionDraftConnector: Submiss
     }
   }
 
-  override def set(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Boolean] = {
-    setSectionData(userAnswers.draftId, userAnswersSection, Json.toJson(userAnswers))
-  }
-
   private def setSectionData(draftId: String, section: String, jsonData: JsValue)(implicit hc: HeaderCarrier) = {
     submissionDraftConnector.setDraftSection(
       draftId,
@@ -56,6 +51,26 @@ class DefaultRegistrationsRepository @Inject()(submissionDraftConnector: Submiss
     ).map {
       response => response.status == http.Status.OK
     }
+  }
+
+  private def setSectionSetData(draftId: String, section: String, setData: SubmissionDraftSetData)(implicit hc: HeaderCarrier) = {
+    submissionDraftConnector.setDraftSectionSet(
+      draftId,
+      section,
+      setData
+    ).map {
+      response => response.status == http.Status.OK
+    }
+  }
+
+  override def setRegistrationSectionSet(userAnswers: UserAnswers, statusKey: String, status: Option[Status])
+                               (implicit hc: HeaderCarrier): Future[Boolean] = {
+    val data = SubmissionDraftSetData(
+      Json.toJson(userAnswers),
+      Some(SubmissionDraftStatus(statusKey, status)),
+      List.empty
+    )
+    setSectionSetData(userAnswers.draftId, userAnswersSection, data )
   }
 
   override def setRegistrationSection(draftId: String, path: String, registrationSectionData: JsValue)
@@ -72,32 +87,12 @@ class DefaultRegistrationsRepository @Inject()(submissionDraftConnector: Submiss
         }
     }
   }
-  override def setStatus(draftId: String, statusKey: String, statusOpt: Option[Status])
-                                     (implicit hc: HeaderCarrier): Future[Boolean] = {
-
-    println(s"setStatus for '$statusKey' to $statusOpt")
-    val sectionPath = (JsPath \ statusKey).json
-
-    submissionDraftConnector.getDraftSection(draftId, statusSection).flatMap {
-      data =>
-        val transform = statusOpt match {
-          case Some(status) => sectionPath.prune andThen __.json.update(sectionPath.put(Json.toJson(status.toString)))
-          case None => sectionPath.prune
-        }
-        data.data.transform(transform) match {
-          case JsSuccess(value, _) => setSectionData(draftId, statusSection, value)
-          case _ => Future.successful(false)
-        }
-    }
-  }
 }
 
 trait RegistrationsRepository {
   def get(draftId: String)(implicit hc: HeaderCarrier): Future[Option[UserAnswers]]
 
-  def set(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Boolean]
-
   def setRegistrationSection(draftId: String, path: String, data: JsValue)(implicit hc: HeaderCarrier): Future[Boolean]
 
-  def setStatus(draftId: String, statusKey: String, status: Option[Status])(implicit hc: HeaderCarrier): Future[Boolean]
+  def setRegistrationSectionSet(userAnswers: UserAnswers, statusKey: String, status: Option[Status])(implicit hc: HeaderCarrier): Future[Boolean]
 }

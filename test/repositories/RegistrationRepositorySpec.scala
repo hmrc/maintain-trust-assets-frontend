@@ -18,10 +18,8 @@ package repositories
 
 import java.time.LocalDateTime
 
-import base.SpecBase
 import config.FrontendAppConfig
 import connectors.SubmissionDraftConnector
-import models.Status.InProgress
 import models._
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{verify, when}
@@ -139,83 +137,5 @@ class RegistrationRepositorySpec extends PlaySpec with MustMatchers with Mockito
       }
 
     }
-    "setting status" must {
-
-      "set when defined" in {
-
-        implicit lazy val hc: HeaderCarrier = HeaderCarrier()
-
-        val draftId = "DraftId"
-
-        val mockConnector = mock[SubmissionDraftConnector]
-
-        val mockConfig = mock[FrontendAppConfig]
-        when(mockConfig.appName).thenReturn("app-name")
-
-        val repository = new DefaultRegistrationsRepository(mockConnector, mockConfig)
-
-        val existingData = Json.parse(
-          """
-            |{
-            |
-            |}
-            |""".stripMargin)
-        val existingSubmissionResponse = SubmissionDraftResponse(LocalDateTime.now(), existingData, None)
-
-        when(mockConnector.getDraftSection(any(), any())(any(), any())).thenReturn(Future.successful(existingSubmissionResponse))
-        when(mockConnector.setDraftSection(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK)))
-
-        val expectedStatusData = Json.parse(
-          """
-            |{
-            | "assets": "progress"
-            |}
-            |""".stripMargin)
-
-        val result = Await.result(repository.setStatus(draftId, "assets", Some(InProgress)), Duration.Inf)
-
-        result mustBe true
-        verify(mockConnector).getDraftSection(draftId, "status")(hc, executionContext)
-        verify(mockConnector).setDraftSection(draftId, "status", expectedStatusData)(hc, executionContext)
-      }
-      "remove when not defined" in {
-
-        implicit lazy val hc: HeaderCarrier = HeaderCarrier()
-
-        val draftId = "DraftId"
-
-        val mockConnector = mock[SubmissionDraftConnector]
-
-        val mockConfig = mock[FrontendAppConfig]
-        when(mockConfig.appName).thenReturn("app-name")
-
-        val repository = new DefaultRegistrationsRepository(mockConnector, mockConfig)
-
-        val existingData = Json.parse(
-          """
-            |{
-            | "assets": "progress"
-            |}
-            |""".stripMargin)
-        val existingSubmissionResponse = SubmissionDraftResponse(LocalDateTime.now(), existingData, None)
-
-        when(mockConnector.getDraftSection(any(), any())(any(), any())).thenReturn(Future.successful(existingSubmissionResponse))
-        when(mockConnector.setDraftSection(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK)))
-
-        val expectedStatusData = Json.parse(
-          """
-            |{
-            |
-            |}
-            |""".stripMargin)
-
-        val result = Await.result(repository.setStatus(draftId, "assets", None), Duration.Inf)
-
-        result mustBe true
-        verify(mockConnector).getDraftSection(draftId, "status")(hc, executionContext)
-        verify(mockConnector).setDraftSection(draftId, "status", expectedStatusData)(hc, executionContext)
-      }
-    }
-
    }
  }
