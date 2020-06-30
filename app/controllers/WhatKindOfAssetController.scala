@@ -20,9 +20,7 @@ import controllers.actions.{DraftIdRetrievalActionProvider, RegistrationDataRequ
 import controllers.filters.IndexActionFilterProvider
 import forms.WhatKindOfAssetFormProvider
 import javax.inject.Inject
-import models.WhatKindOfAsset.Money
-import models.requests.RegistrationDataRequest
-import models.{Enumerable, Mode, WhatKindOfAsset}
+import models.{Enumerable, Mode, UserAnswers, WhatKindOfAsset}
 import navigation.Navigator
 import pages.asset.WhatKindOfAssetPage
 import play.api.data.Form
@@ -30,7 +28,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.AssetsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import viewmodels.{AssetViewModel, MoneyAssetViewModel}
+import viewmodels.RadioOption
 import views.html.asset.WhatKindOfAssetView
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -48,22 +46,12 @@ class WhatKindOfAssetController @Inject()(
                                            view: WhatKindOfAssetView
                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
 
-  private val form = formProvider()
+  val form: Form[WhatKindOfAsset] = formProvider()
 
-  private def findAssetThatIsMoney(assets : List[AssetViewModel]): Option[(AssetViewModel, Int)] =
-    assets.zipWithIndex.find {_._1.isInstanceOf[MoneyAssetViewModel]}
+  private def options(userAnswers: UserAnswers): List[RadioOption] = {
+    val assets = userAnswers.get(sections.Assets).getOrElse(Nil)
 
-  private def options(request : RegistrationDataRequest[AnyContent], index: Int) = {
-    val assets = request.userAnswers.get(sections.Assets).getOrElse(Nil)
-
-    findAssetThatIsMoney(assets) match {
-      case Some((_, i)) if i == index =>
-        WhatKindOfAsset.options
-      case Some((_, i)) if i != index =>
-        WhatKindOfAsset.options.filterNot(_.value == Money.toString)
-      case _ =>
-        WhatKindOfAsset.options
-    }
+    WhatKindOfAsset.nonMaxedOutOptions(assets)
   }
 
   private def actions (index: Int, draftId: String) =
@@ -76,38 +64,22 @@ class WhatKindOfAssetController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, draftId, index, options(request, index)))
+      Ok(view(preparedForm, mode, draftId, index, options(request.userAnswers)))
   }
 
   def onSubmit(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async {
     implicit request =>
 
-      val assets = request.userAnswers.get(sections.Assets).getOrElse(Nil)
-
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode, draftId, index, options(request, index)))),
+          Future.successful(BadRequest(view(formWithErrors, mode, draftId, index, options(request.userAnswers)))),
 
         value => {
 
-          def insertAndRedirect() =
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(WhatKindOfAssetPage(index), value))
-              _ <- repository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(WhatKindOfAssetPage(index), mode, draftId)(updatedAnswers))
-
-          value match {
-            case Money =>
-              findAssetThatIsMoney(assets) match {
-                case Some((_ , i)) if i == index =>
-                  insertAndRedirect()
-                case Some((_, i)) if i != index =>
-                  Future.successful(BadRequest(view(form.fill(Money), mode, draftId, index, options(request, index))))
-                case _ => insertAndRedirect()
-            }
-            case _ =>
-              insertAndRedirect()
-          }
+          for {
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(WhatKindOfAssetPage(index), value))
+            _ <- repository.set(updatedAnswers)
+          } yield Redirect(navigator.nextPage(WhatKindOfAssetPage(index), mode, draftId)(updatedAnswers))
         }
       )
   }

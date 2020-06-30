@@ -122,6 +122,8 @@ addAssets.singular.title = Add assets
 
 addAssets.propertyOrLand = Property or Land
 
+assets.defaultText = the asset
+
 assets.other.description.title = What is the description of the asset?
 assets.other.description.heading = What is the description of the asset?
 assets.other.description.checkYourAnswersLabel = What is the description of the asset?
@@ -142,6 +144,10 @@ assets.other.value.error.wholeNumber = Current value of the asset must be a whol
 
 assets.other.checkDetails.title = Check asset details
 assets.other.checkDetails.heading = Check asset details
+
+assets.removeYesNo.title = Are you sure you want to remove the asset?
+assets.removeYesNo.heading = Are you sure you want to remove {0}?
+assets.removeYesNo.error.required = Select yes if you want to remove the asset
 
 assetInterruptPage.title = Assets: information you’ll need to provide
 assetInterruptPage.heading = Assets: information you’ll need to provide

@@ -17,35 +17,33 @@
 package viewmodels
 
 import models.Status.InProgress
-import models.WhatKindOfAsset.Money
+import models.WhatKindOfAsset.Partnership
 import models.{Status, WhatKindOfAsset}
 
-final case class MoneyAssetViewModel(`type` : WhatKindOfAsset,
-                                     value : String,
-                                     override val status : Status) extends AssetViewModel
+final case class PartnershipAssetViewModel(`type`: WhatKindOfAsset,
+                                           description: String,
+                                           override val status: Status) extends AssetViewModel
 
-object MoneyAssetViewModel {
+object PartnershipAssetViewModel {
 
   import play.api.libs.functional.syntax._
   import play.api.libs.json._
 
-  implicit lazy val reads: Reads[MoneyAssetViewModel] = {
+  implicit lazy val reads: Reads[PartnershipAssetViewModel] = {
 
-    def formatValue(v : String) = s"£$v"
-
-    val moneyReads: Reads[MoneyAssetViewModel] =
-      ((__ \ "assetMoneyValue").read[String] and
+    val partnershipReads: Reads[PartnershipAssetViewModel] =
+      ((__ \ "partnershipDescription").read[String] and
         (__ \ "status").readWithDefault[Status](InProgress)
-        )((value, status) => MoneyAssetViewModel(Money, formatValue(value), status))
+        )((description, status) => PartnershipAssetViewModel(Partnership, description, status))
 
     (__ \ "whatKindOfAsset").read[WhatKindOfAsset].flatMap[WhatKindOfAsset] {
       whatKindOfAsset: WhatKindOfAsset =>
-        if (whatKindOfAsset == Money) {
+        if (whatKindOfAsset == Partnership) {
           Reads(_ => JsSuccess(whatKindOfAsset))
         } else {
-          Reads(_ => JsError("money asset must be of type `Money`"))
+          Reads(_ => JsError("partnership asset must be of type `Partnership`"))
         }
-    }.andKeep(moneyReads)
+    }.andKeep(partnershipReads)
 
   }
 

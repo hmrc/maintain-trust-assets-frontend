@@ -43,6 +43,8 @@ object AssetViewModel {
     MoneyAssetViewModel.reads or
       ShareAssetViewModel.reads or
       PropertyOrLandAssetViewModel.reads or
+      OtherAssetViewModel.reads or
+      PartnershipAssetViewModel.reads or
       DefaultAssetsViewModel.reads
   }
 

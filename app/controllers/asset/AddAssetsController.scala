@@ -44,10 +44,10 @@ class AddAssetsController @Inject()(
                                      val controllerComponents: MessagesControllerComponents,
                                      addAssetsView: AddAssetsView,
                                      yesNoView: AddAnAssetYesNoView
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
+                                   )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
 
-  val addAnotherForm: Form[AddAssets] = addAnotherFormProvider()
-  val yesNoForm: Form[Boolean] = yesNoFormProvider.withPrefix("addAnAssetYesNo")
+  private val addAnotherForm: Form[AddAssets] = addAnotherFormProvider()
+  private val yesNoForm: Form[Boolean] = yesNoFormProvider.withPrefix("addAnAssetYesNo")
 
   private def actions(draftId: String) =
     identify andThen getData(draftId) andThen requireData
@@ -63,7 +63,7 @@ class AddAssetsController @Inject()(
   def onPageLoad(mode: Mode, draftId: String): Action[AnyContent] = actions(draftId) {
     implicit request =>
 
-      val assets = new AddAssetViewHelper(request.userAnswers, draftId).rows
+      val assets = new AddAssetViewHelper(request.userAnswers, mode, draftId).rows
 
       val count = assets.count
 
@@ -94,11 +94,11 @@ class AddAssetsController @Inject()(
 
       addAnotherForm.bindFromRequest().fold(
         (formWithErrors: Form[_]) => {
-          val assets = new AddAssetViewHelper(request.userAnswers, draftId).rows
+          val assets = new AddAssetViewHelper(request.userAnswers, mode, draftId).rows
 
           val count = assets.count
 
-           Future.successful(BadRequest(addAssetsView(formWithErrors, mode, draftId, assets.inProgress, assets.complete, heading(count))))
+          Future.successful(BadRequest(addAssetsView(formWithErrors, mode, draftId, assets.inProgress, assets.complete, heading(count))))
         },
         value => {
           for {
