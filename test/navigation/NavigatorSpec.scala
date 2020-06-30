@@ -17,32 +17,30 @@
 package navigation
 
 import base.SpecBase
-import controllers.routes
+import generators.Generators
+import models.NormalMode
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages._
-import models._
 
-class NavigatorSpec extends SpecBase {
+class NavigatorSpec extends SpecBase
+  with ScalaCheckPropertyChecks
+  with Generators
+  with AssetRoutes
+{
 
-//  val navigator = new Navigator
-//
-//  "Navigator" when {
-//
-//    "in Normal mode" must {
-//
-//      "go to Index from a page that doesn't exist in the route map" in {
-//
-//        case object UnknownPage extends Page
-//        navigator.nextPage(UnknownPage, NormalMode, UserAnswers("id")) mustBe routes.IndexController.onPageLoad()
-//      }
-//    }
-//
-//    "in Check mode" must {
-//
-//      "go to CheckYourAnswers from a page that doesn't exist in the edit route map" in {
-//
-//        case object UnknownPage extends Page
-//        navigator.nextPage(UnknownPage, CheckMode, UserAnswers("id")) mustBe routes.CheckYourAnswersController.onPageLoad()
-//      }
-//    }
-//  }
+  implicit val navigator : Navigator = injector.instanceOf[Navigator]
+
+  "Navigator" when {
+
+    "in Normal mode" must {
+
+      "go to Index from a page that doesn't exist in the route map" in {
+        case object UnknownPage extends Page
+        navigator.nextPage(UnknownPage, NormalMode, fakeDraftId)(emptyUserAnswers) mustBe controllers.routes.IndexController.onPageLoad(fakeDraftId)
+      }
+
+      behave like assetRoutes
+
+    }
+  }
 }
