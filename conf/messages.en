@@ -351,3 +351,24 @@ removePropertyOrLandAsset.heading = Are you sure you want to remove {0}?
 removePropertyOrLandAsset.default = the property or land
 removePropertyOrLandAsset.error.required = Select yes if you want to remove the property or land
 
+partnershipDescription.title = What is the description for the partnership?
+partnershipDescription.heading = What is the description for the partnership?
+partnershipDescription.checkYourAnswersLabel = What is the description for the partnership?
+partnershipDescription.hint = This must be 56 characters or less
+partnershipDescription.error.required = Enter a description of the partnership
+partnershipDescription.error.length = The description of the partnership must be 56 characters or less
+partnershipDescription.error.invalid = The description of the partnership must only include letters a to z, numbers, ampersands (&), apostrophes, forward slashes, hyphens and spaces
+
+partnershipStartDate.title = When did the partnership start?
+partnershipStartDate.heading = When did the partnership start?
+partnershipStartDate.checkYourAnswersLabel = When did the partnership start?
+partnershipStartDate.hint = For example, 31 3 2015
+partnershipStartDate.error.required.all = Enter the date the partnership started
+partnershipStartDate.error.required.two = The date the partnership started must include {0} and {1}
+partnershipStartDate.error.required = The date the partnership started must include {0}
+partnershipStartDate.error.invalid = Enter a real start date for the partnership start date
+partnershipStartDate.error.future = The date the partnership started must be today or in the past
+partnershipStartDate.error.past = The date the partnership started must be after 31 December 1499
+
+partnershipAnswers.title = Check asset details
+partnershipAnswers.heading = Check asset details

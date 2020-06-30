@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package pages.asset.partnership
+package utils.annotations;
 
-import pages.QuestionPage
-import play.api.libs.json.JsPath
-import sections.Assets
+import com.google.inject.BindingAnnotation;
 
-final case class  PartnershipAssetUtrPage(index : Int) extends QuestionPage[String] {
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-  override def path: JsPath = Assets.path \ index \ toString
-
-  override def toString: String = "partnershipAssetUtr"
-}
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.PARAMETER, ElementType.METHOD, ElementType.FIELD})
+@BindingAnnotation
+public @interface Partnership {}

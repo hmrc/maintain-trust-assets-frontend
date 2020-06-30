@@ -26,6 +26,7 @@ class NavigatorSpec extends SpecBase
   with ScalaCheckPropertyChecks
   with Generators
   with AssetRoutes
+  with PartnershipRoutes
 {
 
   implicit val navigator : Navigator = injector.instanceOf[Navigator]

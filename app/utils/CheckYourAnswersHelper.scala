@@ -22,6 +22,7 @@ import models.{NormalMode, UserAnswers}
 import pages.asset._
 import pages.asset.money._
 import pages.asset.other.{OtherAssetDescriptionPage, OtherAssetValuePage}
+import pages.asset.partnership._
 import pages.asset.property_or_land._
 import pages.asset.shares._
 import play.api.i18n.Messages
@@ -347,6 +348,26 @@ class CheckYourAnswersHelper @Inject()(countryOptions: CountryOptions)
         currency(x),
         Some(controllers.asset.other.routes.OtherAssetValueController.onPageLoad(NormalMode, index, draftId).url),
         description,
+        canEdit = canEdit
+      )
+  }
+
+  def partnershipStartDate(index: Int): Option[AnswerRow] = userAnswers.get(PartnershipStartDatePage(index)) map {
+    x =>
+      AnswerRow(
+        "partnershipStartDate.checkYourAnswersLabel",
+        HtmlFormat.escape(x.format(dateFormatter)),
+        Some(controllers.asset.partnership.routes.PartnershipStartDateController.onPageLoad(NormalMode, index, draftId).url),
+        canEdit = canEdit
+      )
+  }
+
+  def partnershipDescription(index: Int): Option[AnswerRow] = userAnswers.get(PartnershipDescriptionPage(index)) map {
+    x =>
+      AnswerRow(
+        "partnershipDescription.checkYourAnswersLabel",
+        HtmlFormat.escape(x),
+        Some(controllers.asset.partnership.routes.PartnershipDescriptionController.onPageLoad(NormalMode, index, draftId).url),
         canEdit = canEdit
       )
   }

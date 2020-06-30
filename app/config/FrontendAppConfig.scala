@@ -16,6 +16,8 @@
 
 package config
 
+import java.time.LocalDate
+
 import com.google.inject.{Inject, Singleton}
 import controllers.routes
 import play.api.Configuration
@@ -52,6 +54,12 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
 
   lazy val languageTranslationEnabled: Boolean =
     configuration.get[Boolean]("microservice.services.features.welsh-translation")
+
+  private val day: Int = configuration.get[Int]("minimumDate.day")
+  private val month: Int = configuration.get[Int]("minimumDate.month")
+  private val year: Int = configuration.get[Int]("minimumDate.year")
+  lazy val minDate: LocalDate = LocalDate.of(year, month, day)
+
 
   def languageMap: Map[String, Lang] = Map(
     "english" -> Lang("en"),

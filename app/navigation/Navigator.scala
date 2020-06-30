@@ -112,7 +112,7 @@ object AssetsRoutes {
       case Some(Business) =>
         controllers.routes.FeatureNotAvailableController.onPageLoad()
       case Some(Partnership) =>
-        controllers.routes.FeatureNotAvailableController.onPageLoad()
+        controllers.asset.partnership.routes.PartnershipDescriptionController.onPageLoad(NormalMode, index, draftId)
       case Some(Other) =>
         controllers.asset.other.routes.OtherAssetDescriptionController.onPageLoad(NormalMode, index, draftId)
       case _ =>

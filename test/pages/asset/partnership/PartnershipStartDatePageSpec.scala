@@ -18,13 +18,21 @@ package pages.asset.partnership
 
 import java.time.LocalDate
 
-import pages.QuestionPage
-import play.api.libs.json.JsPath
-import sections.Assets
+import org.scalacheck.Arbitrary
+import pages.behaviours.PageBehaviours
 
-final case class  PartnershipAssetStartDatePage(index : Int) extends QuestionPage[LocalDate] {
+class PartnershipStartDatePageSpec extends PageBehaviours {
 
-  override def path: JsPath = Assets.path \ index \ toString
+  "PartnershipStartDatePage" must {
 
-  override def toString: String = "partnershipAssetStartDate"
+    implicit lazy val arbitraryLocalDate: Arbitrary[LocalDate] = Arbitrary {
+      datesBetween(LocalDate.of(1900, 1, 1), LocalDate.of(2100, 1, 1))
+    }
+
+    beRetrievable[LocalDate](PartnershipStartDatePage(0))
+
+    beSettable[LocalDate](PartnershipStartDatePage(0))
+
+    beRemovable[LocalDate](PartnershipStartDatePage(0))
+  }
 }

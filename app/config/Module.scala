@@ -18,9 +18,9 @@ package config
 
 import com.google.inject.AbstractModule
 import controllers.actions._
-import navigation.{Navigator, PropertyOrLandNavigator}
+import navigation.{Navigator, PartnershipNavigator, PropertyOrLandNavigator}
 import repositories.{DefaultRegistrationsRepository, RegistrationsRepository}
-import utils.annotations.PropertyOrLand
+import utils.annotations.{Partnership, PropertyOrLand}
 
 class Module extends AbstractModule {
 
@@ -30,5 +30,6 @@ class Module extends AbstractModule {
     bind(classOf[DraftIdRetrievalActionProvider]).to(classOf[DraftIdDataRetrievalActionProviderImpl]).asEagerSingleton()
 
     bind(classOf[Navigator]).annotatedWith(classOf[PropertyOrLand]).to(classOf[PropertyOrLandNavigator])
+    bind(classOf[Navigator]).annotatedWith(classOf[Partnership]).to(classOf[PartnershipNavigator])
   }
 }

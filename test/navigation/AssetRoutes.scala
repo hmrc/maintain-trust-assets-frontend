@@ -320,22 +320,22 @@ trait AssetRoutes {
       }
     }
 
-//    "partnership assets" must {
-//
-//      "go to partnership asset description from WhatKindOfAsset when partnership is selected" in {
-//        val index = 0
-//
-//        forAll(arbitrary[UserAnswers]) {
-//          userAnswers =>
-//
-//            val answers = userAnswers.set(WhatKindOfAssetPage(index), Partnership).success.value
-//
-//            navigator.nextPage(WhatKindOfAssetPage(index), NormalMode, fakeDraftId)(answers)
-//              .mustBe(controllers.asset.partnership.routes.PartnershipDescriptionController.onPageLoad(NormalMode, index, fakeDraftId))
-//        }
-//      }
-//
-//    }
+    "partnership assets" must {
+
+      "go to partnership asset description from WhatKindOfAsset when partnership is selected" in {
+        val index = 0
+
+        forAll(arbitrary[UserAnswers]) {
+          userAnswers =>
+
+            val answers = userAnswers.set(WhatKindOfAssetPage(index), Partnership).success.value
+
+            navigator.nextPage(WhatKindOfAssetPage(index), NormalMode, fakeDraftId)(answers)
+              .mustBe(controllers.asset.partnership.routes.PartnershipDescriptionController.onPageLoad(NormalMode, index, fakeDraftId))
+        }
+      }
+
+    }
 
    "add another asset" must {
 
