@@ -52,7 +52,7 @@ object PropertyOrLandAssetViewModel {
     {
       (__ \ "propertyOrLandAddressYesNo").read[Boolean].filter(x => x).flatMap { _ =>
         (__ \ "propertyOrLandAddressUKYesNo").read[Boolean].filter(x => x).flatMap { _ =>
-          ((__ \ "address").readNullable[UKAddress].map(_.map(_.line1)) and
+          ((__ \ "ukAddress").readNullable[UKAddress].map(_.map(_.line1)) and
             (__ \ "status").readWithDefault[Status](InProgress)
             ) ((address, status) => {
             PropertyOrLandAssetUKAddressViewModel(
@@ -68,7 +68,7 @@ object PropertyOrLandAssetViewModel {
     {
       (__ \ "propertyOrLandAddressYesNo").read[Boolean].filter(x => x).flatMap { _ =>
         (__ \ "propertyOrLandAddressUKYesNo").read[Boolean].filter(x => !x).flatMap { _ =>
-          ((__ \ "address").readNullable[InternationalAddress].map(_.map(_.line1)) and
+          ((__ \ "internationalAddress").readNullable[InternationalAddress].map(_.map(_.line1)) and
             (__ \ "status").readWithDefault[Status](InProgress)
             ) ((address, status) => {
             PropertyOrLandAssetInternationalAddressViewModel(

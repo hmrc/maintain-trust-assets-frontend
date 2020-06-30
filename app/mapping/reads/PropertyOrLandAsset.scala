@@ -16,9 +16,8 @@
 
 package mapping.reads
 
-import models.Address
-import models.WhatKindOfAsset
 import models.WhatKindOfAsset.PropertyOrLand
+import models.{Address, WhatKindOfAsset}
 import play.api.libs.json.{JsError, JsSuccess, Reads, __}
 
 final case class PropertyOrLandAsset(override val whatKindOfAsset: WhatKindOfAsset,
@@ -35,7 +34,7 @@ object PropertyOrLandAsset {
 
     val landOrPropertyReads: Reads[PropertyOrLandAsset] = (
       (__ \ "propertyOrLandDescription").readNullable[String] and
-        (__ \ "address").readNullable[Address] and
+        readAddress() and
         (__ \ "propertyOrLandValueTrust").readNullable[String] and
         (__ \ "propertyOrLandTotalValue").read[String] and
         (__ \ "whatKindOfAsset").read[WhatKindOfAsset]
@@ -50,5 +49,10 @@ object PropertyOrLandAsset {
         }
     }.andKeep(landOrPropertyReads)
 
+  }
+
+  private def readAddress(): Reads[Option[Address]] = {
+    (__ \ "ukAddress").readNullable[Address] orElse
+      (__ \ "internationalAddress").readNullable[Address]
   }
 }

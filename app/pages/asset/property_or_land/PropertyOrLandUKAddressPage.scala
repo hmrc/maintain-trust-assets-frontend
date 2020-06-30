@@ -25,5 +25,5 @@ final case class PropertyOrLandUKAddressPage(index: Int) extends QuestionPage[UK
 
   override def path: JsPath = Assets.path \ index \ toString
 
-  override def toString: String = "address"
+  override def toString: String = "ukAddress"
 }
