@@ -122,6 +122,27 @@ addAssets.singular.title = Add assets
 
 addAssets.propertyOrLand = Property or Land
 
+assets.other.description.title = What is the description of the asset?
+assets.other.description.heading = What is the description of the asset?
+assets.other.description.checkYourAnswersLabel = What is the description of the asset?
+assets.other.description.hint = This must be 56 characters or less
+assets.other.description.error.required = Enter a description of the asset
+assets.other.description.error.length = The description of the asset must be 56 characters or less
+assets.other.description.error.invalid = The description of the asset must only include letters a to z, numbers, ampersands (&), apostrophes, forward slashes, full stops, hyphens, round brackets and spaces
+
+assets.other.value.title = What is the current value of the asset?
+assets.other.value.heading = What is the current value of {0}?
+assets.other.value.checkYourAnswersLabel = What is the current value of {0}?
+assets.other.value.hint = Rounded down to the nearest pound. For example, 4000
+assets.other.value.error.required = Enter the current value of the asset
+assets.other.value.error.invalid = Current value of the asset must be a number
+assets.other.value.error.zero = Current value of the asset must be 1 or more
+assets.other.value.error.length = Current value of the asset must be 999999999999 or less
+assets.other.value.error.wholeNumber = Current value of the asset must be a whole number
+
+assets.other.checkDetails.title = Check asset details
+assets.other.checkDetails.heading = Check asset details
+
 assetInterruptPage.title = Assets: information you’ll need to provide
 assetInterruptPage.heading = Assets: information you’ll need to provide
 
