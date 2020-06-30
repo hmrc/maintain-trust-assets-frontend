@@ -39,7 +39,7 @@ trait SpecBase extends PlaySpec
   with Mocked
   with FakeTrustsApp {
 
-  lazy val draftId: String = "id"
+  lazy val draftId: String = "draftId"
   lazy val userInternalId: String = "internalId"
   lazy val fakeDraftId: String = draftId
 
@@ -49,7 +49,7 @@ trait SpecBase extends PlaySpec
 
   private def fakeDraftIdAction(userAnswers: Option[UserAnswers]): FakeDraftIdRetrievalActionProvider =
     new FakeDraftIdRetrievalActionProvider(
-    "draftId",
+      draftId,
       Status.InProgress,
       userAnswers,
       registrationsRepository

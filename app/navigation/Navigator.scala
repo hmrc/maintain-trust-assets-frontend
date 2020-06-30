@@ -23,6 +23,7 @@ import models.{UserAnswers, _}
 import pages.Page
 import pages.asset._
 import pages.asset.money._
+import pages.asset.other.{OtherAssetDescriptionPage, OtherAssetValuePage}
 import pages.asset.shares._
 import play.api.mvc.Call
 import uk.gov.hmrc.auth.core.AffinityGroup
@@ -44,6 +45,8 @@ object AssetsRoutes {
     case ShareValueInTrustPage(index) => _ => _ => controllers.asset.shares.routes.ShareAnswerController.onPageLoad(index, draftId)
     case ShareAnswerPage => _ => _ => controllers.asset.routes.AddAssetsController.onPageLoad(draftId)
     case ShareCompanyNamePage(index) => _ => _ => controllers.asset.shares.routes.SharesOnStockExchangeController.onPageLoad(NormalMode, index, draftId)
+    case OtherAssetDescriptionPage(index) => _ => _ => controllers.asset.other.routes.OtherAssetValueController.onPageLoad(NormalMode, index, draftId)
+    case OtherAssetValuePage(index) => _ => _ => controllers.asset.other.routes.OtherAssetAnswersController.onPageLoad(index, draftId)
   }
 
   private def assetsCompletedRoute(draftId: String, config: FrontendAppConfig) : Call = {
@@ -111,7 +114,7 @@ object AssetsRoutes {
       case Some(Partnership) =>
         controllers.routes.FeatureNotAvailableController.onPageLoad()
       case Some(Other) =>
-        controllers.routes.FeatureNotAvailableController.onPageLoad()
+        controllers.asset.other.routes.OtherAssetDescriptionController.onPageLoad(NormalMode, index, draftId)
       case _ =>
         controllers.routes.FeatureNotAvailableController.onPageLoad()
     }

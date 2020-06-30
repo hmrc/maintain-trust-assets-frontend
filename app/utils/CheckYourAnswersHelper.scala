@@ -21,6 +21,7 @@ import mapping.reads._
 import models.{NormalMode, UserAnswers}
 import pages.asset._
 import pages.asset.money._
+import pages.asset.other.{OtherAssetDescriptionPage, OtherAssetValuePage}
 import pages.asset.property_or_land._
 import pages.asset.shares._
 import play.api.i18n.Messages
@@ -329,4 +330,24 @@ class CheckYourAnswersHelper @Inject()(countryOptions: CountryOptions)
       )
   }
 
+  def otherAssetDescription(index: Int): Option[AnswerRow] = userAnswers.get(OtherAssetDescriptionPage(index)) map {
+    x =>
+      AnswerRow(
+        "assets.other.description.checkYourAnswersLabel",
+        escape(x),
+        Some(controllers.asset.other.routes.OtherAssetDescriptionController.onPageLoad(NormalMode, index, draftId).url),
+        canEdit = canEdit
+      )
+  }
+
+  def otherAssetValue(index: Int, description: String): Option[AnswerRow] = userAnswers.get(OtherAssetValuePage(index)) map {
+    x =>
+      AnswerRow(
+        "assets.other.value.checkYourAnswersLabel",
+        currency(x),
+        Some(controllers.asset.other.routes.OtherAssetValueController.onPageLoad(NormalMode, index, draftId).url),
+        description,
+        canEdit = canEdit
+      )
+  }
 }
