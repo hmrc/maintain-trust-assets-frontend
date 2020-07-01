@@ -25,12 +25,12 @@ import pages.QuestionPage
 import pages.asset.shares.ShareCompanyNamePage
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{ActionBuilder, AnyContent, Call, MessagesControllerComponents}
-import repositories.AssetsRepository
+import repositories.RegistrationsRepository
 import views.html.RemoveIndexView
 
 class RemoveShareCompanyNameAssetController @Inject()(
                                                        override val messagesApi: MessagesApi,
-                                                       override val repository: AssetsRepository,
+                                                       override val repository: RegistrationsRepository,
                                                        override val formProvider: RemoveIndexFormProvider,
                                                        identify: RegistrationIdentifierAction,
                                                        getData: DraftIdRetrievalActionProvider,

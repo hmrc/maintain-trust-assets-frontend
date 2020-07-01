@@ -22,14 +22,14 @@ import models.UserAnswers
 import play.api.i18n.I18nSupport
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.AssetsRepository
+import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class IndexController @Inject()(
                                  val controllerComponents: MessagesControllerComponents,
-                                 repository: AssetsRepository,
+                                 repository: RegistrationsRepository,
                                  identify: RegistrationIdentifierAction
                                ) extends FrontendBaseController with I18nSupport {
 

@@ -26,7 +26,7 @@ import pages.asset.DefaultRemoveAssetPage
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{ActionBuilder, AnyContent, Call, MessagesControllerComponents}
 import queries.{RemoveAssetQuery, Settable}
-import repositories.AssetsRepository
+import repositories.RegistrationsRepository
 import views.html.RemoveIndexView
 
 
@@ -40,7 +40,7 @@ trait RemoveAssetController extends RemoveIndexController {
 
 class DefaultRemoveAssetController @Inject()(
                                               override val messagesApi: MessagesApi,
-                                              override val repository: AssetsRepository,
+                                              override val repository: RegistrationsRepository,
                                               override val formProvider: RemoveIndexFormProvider,
                                               identify: RegistrationIdentifierAction,
                                               getData: DraftIdRetrievalActionProvider,

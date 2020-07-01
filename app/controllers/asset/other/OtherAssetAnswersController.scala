@@ -25,7 +25,7 @@ import models.{Mode, NormalMode}
 import pages.AssetStatus
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
-import repositories.AssetsRepository
+import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.CheckYourAnswersHelper
 import utils.countryOptions.CountryOptions
@@ -36,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class OtherAssetAnswersController @Inject()(
                                              override val messagesApi: MessagesApi,
-                                             repository: AssetsRepository,
+                                             repository: RegistrationsRepository,
                                              identify: RegistrationIdentifierAction,
                                              getData: DraftIdRetrievalActionProvider,
                                              requireData: RegistrationDataRequiredAction,

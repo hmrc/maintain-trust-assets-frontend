@@ -25,7 +25,7 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.{JsPath, JsValue}
 import play.api.mvc._
-import repositories.{AssetsRepository, RegistrationsRepository}
+import repositories.RegistrationsRepository
 import sections.Assets
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import viewmodels._
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class RemoveAssetYesNoController @Inject()(
                                             override val messagesApi: MessagesApi,
-                                            repository: AssetsRepository,
+                                            repository: RegistrationsRepository,
                                             identify: RegistrationIdentifierAction,
                                             getData: DraftIdRetrievalActionProvider,
                                             requireData: RegistrationDataRequiredAction,

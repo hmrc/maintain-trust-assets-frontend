@@ -26,7 +26,7 @@ import pages.AssetStatus
 import pages.asset.property_or_land.{PropertyOrLandAddressYesNoPage, PropertyOrLandAnswerPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.AssetsRepository
+import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.CheckYourAnswersHelper
 import utils.annotations.PropertyOrLand
@@ -38,7 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class PropertyOrLandAnswerController @Inject()(
                                                 override val messagesApi: MessagesApi,
-                                                repository: AssetsRepository,
+                                                repository: RegistrationsRepository,
                                                 @PropertyOrLand navigator: Navigator,
                                                 identify: RegistrationIdentifierAction,
                                                 getData: DraftIdRetrievalActionProvider,

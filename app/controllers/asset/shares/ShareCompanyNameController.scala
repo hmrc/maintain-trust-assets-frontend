@@ -26,7 +26,7 @@ import pages.asset.shares.ShareCompanyNamePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.AssetsRepository
+import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.asset.shares.ShareCompanyNameView
 
@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class ShareCompanyNameController @Inject()(
                                             override val messagesApi: MessagesApi,
-                                            repository: AssetsRepository,
+                                            repository: RegistrationsRepository,
                                             navigator: Navigator,
                                             identify: RegistrationIdentifierAction,
                                             getData: DraftIdRetrievalActionProvider,

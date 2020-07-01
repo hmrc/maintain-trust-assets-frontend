@@ -19,7 +19,7 @@ package repositories
 import config.FrontendAppConfig
 import connectors.SubmissionDraftConnector
 import javax.inject.Inject
-import models.{Status, SubmissionDraftRegistrationPiece, SubmissionDraftSetData, SubmissionDraftStatus, UserAnswers}
+import models.UserAnswers
 import play.api.http
 import play.api.libs.json._
 import uk.gov.hmrc.http.HeaderCarrier
@@ -27,11 +27,21 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.{ExecutionContext, Future}
 
 class DefaultRegistrationsRepository @Inject()(submissionDraftConnector: SubmissionDraftConnector,
-                                               config: FrontendAppConfig
+                                               config: FrontendAppConfig,
+                                               submissionSetFactory: SubmissionSetFactory
                                         )(implicit ec: ExecutionContext) extends RegistrationsRepository {
 
   private val userAnswersSection = config.appName
-  private val registrationSection = "registration"
+
+  override def set(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Boolean] = {
+    submissionDraftConnector.setDraftSectionSet(
+      userAnswers.draftId,
+      userAnswersSection,
+      submissionSetFactory.createFrom(userAnswers)
+    ).map {
+      response => response.status == http.Status.OK
+    }
+  }
 
   override def get(draftId: String)(implicit hc: HeaderCarrier): Future[Option[UserAnswers]] = {
     submissionDraftConnector.getDraftSection(draftId, userAnswersSection).map {
@@ -42,64 +52,11 @@ class DefaultRegistrationsRepository @Inject()(submissionDraftConnector: Submiss
         }
     }
   }
-
-  private def setSectionData(draftId: String, section: String, jsonData: JsValue)(implicit hc: HeaderCarrier) = {
-    submissionDraftConnector.setDraftSection(
-      draftId,
-      section,
-      jsonData
-    ).map {
-      response => response.status == http.Status.OK
-    }
-  }
-
-  private def setSectionSetData(draftId: String, section: String, setData: SubmissionDraftSetData)(implicit hc: HeaderCarrier) = {
-    submissionDraftConnector.setDraftSectionSet(
-      draftId,
-      section,
-      setData
-    ).map {
-      response => response.status == http.Status.OK
-    }
-  }
-
-  override def setRegistrationSectionSet(userAnswers: UserAnswers,
-                                         statusKey: String,
-                                         status: Option[Status],
-                                         registrationPieces: List[SubmissionDraftRegistrationPiece])
-                               (implicit hc: HeaderCarrier): Future[Boolean] = {
-    val data = SubmissionDraftSetData(
-      Json.toJson(userAnswers),
-      Some(SubmissionDraftStatus(statusKey, status)),
-      registrationPieces
-    )
-    setSectionSetData(userAnswers.draftId, userAnswersSection, data )
-  }
-
-  override def setRegistrationSection(draftId: String, path: String, registrationSectionData: JsValue)
-                                     (implicit hc: HeaderCarrier): Future[Boolean] = {
-
-    val sectionPath = (JsPath \ path).json
-
-    submissionDraftConnector.getDraftSection(draftId, registrationSection).flatMap {
-      data =>
-        val transform = sectionPath.prune andThen __.json.update(sectionPath.put(registrationSectionData))
-        data.data.transform(transform) match {
-          case JsSuccess(value, _) => setSectionData(draftId, registrationSection, value)
-          case _ => Future.successful(false)
-        }
-    }
-  }
 }
 
 trait RegistrationsRepository {
+
+  def set(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Boolean]
+
   def get(draftId: String)(implicit hc: HeaderCarrier): Future[Option[UserAnswers]]
-
-  def setRegistrationSection(draftId: String, path: String, data: JsValue)(implicit hc: HeaderCarrier): Future[Boolean]
-
-  def setRegistrationSectionSet(userAnswers: UserAnswers,
-                                statusKey: String,
-                                status: Option[Status],
-                                registrationPieces: List[SubmissionDraftRegistrationPiece]
-                               )(implicit hc: HeaderCarrier): Future[Boolean]
 }

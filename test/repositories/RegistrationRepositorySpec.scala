@@ -20,6 +20,7 @@ import java.time.LocalDateTime
 
 import config.FrontendAppConfig
 import connectors.SubmissionDraftConnector
+import models.Status.InProgress
 import models._
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{verify, when}
@@ -39,31 +40,13 @@ class RegistrationRepositorySpec extends PlaySpec with MustMatchers with Mockito
 
   "RegistrationRepository" when {
 
-    "adding a registration section" must {
+    "seting answers" must {
 
-      "combine into empty sections" in {
+      "send all relevant information as a set" in {
 
         implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
         val draftId = "DraftId"
-
-        val mockConnector = mock[SubmissionDraftConnector]
-
-        val mockConfig = mock[FrontendAppConfig]
-        when(mockConfig.appName).thenReturn("app-name")
-
-        val repository = new DefaultRegistrationsRepository(mockConnector, mockConfig)
-
-        val existingData = Json.parse(
-          """
-            |{
-            |
-            |}
-            |""".stripMargin)
-        val existingSubmissionResponse = SubmissionDraftResponse(LocalDateTime.now(), existingData, None)
-
-        when(mockConnector.getDraftSection(any(), any())(any(), any())).thenReturn(Future.successful(existingSubmissionResponse))
-        when(mockConnector.setDraftSection(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK)))
 
         val newData = Json.parse(
           """
@@ -72,70 +55,30 @@ class RegistrationRepositorySpec extends PlaySpec with MustMatchers with Mockito
             |}
             |""".stripMargin)
 
-        val expectedRegistrationData = Json.parse(
-          """
-            |{
-            | "field/subfield": {
-            |   "dataField": "newData"
-            | }
-            |}
-            |""".stripMargin)
-
-        val result = Await.result(repository.setRegistrationSection(draftId, "field/subfield", newData), Duration.Inf)
-
-        result mustBe true
-        verify(mockConnector).getDraftSection(draftId, "registration")(hc, executionContext)
-        verify(mockConnector).setDraftSection(draftId, "registration", expectedRegistrationData)(hc, executionContext)
-      }
-      "replace existing sections" in {
-
-        implicit lazy val hc: HeaderCarrier = HeaderCarrier()
-
-        val draftId = "DraftId"
+        val submissionSet = SubmissionDraftSetData(
+          newData,
+          Some(SubmissionDraftStatus("myStatusTag", Some(InProgress))),
+          List.empty)
 
         val mockConnector = mock[SubmissionDraftConnector]
+
+        val mockSubmissionSetFactory = mock[SubmissionSetFactory]
+        when(mockSubmissionSetFactory.createFrom(any())).thenReturn(submissionSet)
 
         val mockConfig = mock[FrontendAppConfig]
         when(mockConfig.appName).thenReturn("app-name")
 
-        val repository = new DefaultRegistrationsRepository(mockConnector, mockConfig)
+        val repository = new DefaultRegistrationsRepository(mockConnector, mockConfig, mockSubmissionSetFactory)
 
-        val existingData = Json.parse(
-          """
-            |{
-            |"field/subfield": {
-            |   "dataField": "newData"
-            | }
-            |}
-            |""".stripMargin)
-        val existingSubmissionResponse = SubmissionDraftResponse(LocalDateTime.now(), existingData, None)
+        when(mockConnector.setDraftSectionSet(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK)))
 
-        when(mockConnector.getDraftSection(any(), any())(any(), any())).thenReturn(Future.successful(existingSubmissionResponse))
-        when(mockConnector.setDraftSection(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK)))
+        val userAnswers = UserAnswers("DraftID", Json.obj(), "InternalID")
 
-        val newData = Json.parse(
-          """
-            |{
-            | "dataField2": "value2"
-            |}
-            |""".stripMargin)
-
-        val expectedRegistrationData = Json.parse(
-          """
-            |{
-            | "field/subfield": {
-            |   "dataField2": "value2"
-            | }
-            |}
-            |""".stripMargin)
-
-        val result = Await.result(repository.setRegistrationSection(draftId, "field/subfield", newData), Duration.Inf)
+        val result = Await.result(repository.set(userAnswers), Duration.Inf)
 
         result mustBe true
-        verify(mockConnector).getDraftSection(draftId, "registration")(hc, executionContext)
-        verify(mockConnector).setDraftSection(draftId, "registration", expectedRegistrationData)(hc, executionContext)
+        verify(mockConnector).setDraftSectionSet("DraftID", "app-name", submissionSet)(hc, executionContext)
       }
-
     }
    }
  }

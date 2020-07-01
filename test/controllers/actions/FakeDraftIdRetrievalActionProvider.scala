@@ -20,7 +20,7 @@ import models.{Status, UserAnswers}
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.scalatestplus.mockito.MockitoSugar
-import repositories.{AssetsRepository, RegistrationsRepository}
+import repositories.RegistrationsRepository
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -33,7 +33,7 @@ class FakeDraftIdRetrievalActionProvider(draftId: String,
   implicit val executionContext: ExecutionContext =
     scala.concurrent.ExecutionContext.Implicits.global
 
-  val mockedRepository: AssetsRepository = mock[AssetsRepository]
+  val mockedRepository: RegistrationsRepository = mock[RegistrationsRepository]
 
   when(mockedRepository.get(any())(any())).thenReturn(Future.successful(dataToReturn))
 

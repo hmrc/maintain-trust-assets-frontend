@@ -319,7 +319,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
       redirectLocation(result).value mustEqual controllers.asset.routes.AddAssetsController.onPageLoad(fakeDraftId).url
 
       val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
-      verify(registrationsRepository).setRegistrationSectionSet(uaCaptor.capture, any(), any(), any())(any())
+      verify(registrationsRepository).set(uaCaptor.capture)(any())
       uaCaptor.getValue.get(WhatKindOfAssetPage(index)) mustNot be(defined)
       uaCaptor.getValue.get(AssetMoneyValuePage(index)) mustNot be(defined)
 

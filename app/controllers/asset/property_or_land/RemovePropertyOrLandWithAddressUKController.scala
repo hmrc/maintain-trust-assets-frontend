@@ -26,12 +26,12 @@ import pages.QuestionPage
 import pages.asset.property_or_land.PropertyOrLandUKAddressPage
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{ActionBuilder, AnyContent, Call, MessagesControllerComponents}
-import repositories.AssetsRepository
+import repositories.RegistrationsRepository
 import views.html.RemoveIndexView
 
 class RemovePropertyOrLandWithAddressUKController @Inject()(
                                                              override val messagesApi: MessagesApi,
-                                                             override val repository: AssetsRepository,
+                                                             override val repository: RegistrationsRepository,
                                                              override val formProvider: RemoveIndexFormProvider,
                                                              identify: RegistrationIdentifierAction,
                                                              getData: DraftIdRetrievalActionProvider,

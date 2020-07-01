@@ -26,7 +26,7 @@ import pages.asset.partnership.PartnershipDescriptionPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.AssetsRepository
+import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.annotations.Partnership
 import views.html.asset.partnership.PartnershipDescriptionView
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class PartnershipDescriptionController @Inject()(
                                                   override val messagesApi: MessagesApi,
-                                                  repository: AssetsRepository,
+                                                  repository: RegistrationsRepository,
                                                   @Partnership navigator: Navigator,
                                                   identify: RegistrationIdentifierAction,
                                                   getData: DraftIdRetrievalActionProvider,

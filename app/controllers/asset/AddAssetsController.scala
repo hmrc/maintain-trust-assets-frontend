@@ -25,7 +25,7 @@ import pages.asset.{AddAnAssetYesNoPage, AddAssetsPage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi, MessagesProvider}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.AssetsRepository
+import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.AddAssetViewHelper
 import views.html.asset.{AddAnAssetYesNoView, AddAssetsView}
@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AddAssetsController @Inject()(
                                      override val messagesApi: MessagesApi,
-                                     repository: AssetsRepository,
+                                     repository: RegistrationsRepository,
                                      navigator: Navigator,
                                      identify: RegistrationIdentifierAction,
                                      getData: DraftIdRetrievalActionProvider,

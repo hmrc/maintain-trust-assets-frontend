@@ -19,13 +19,13 @@ package controllers.actions
 import javax.inject.Inject
 import models.requests.{IdentifierRequest, OptionalRegistrationDataRequest}
 import play.api.mvc.ActionTransformer
-import repositories.AssetsRepository
+import repositories.RegistrationsRepository
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class DraftIdDataRetrievalActionProviderImpl @Inject()(repository: AssetsRepository, executionContext: ExecutionContext)
+class DraftIdDataRetrievalActionProviderImpl @Inject()(repository: RegistrationsRepository, executionContext: ExecutionContext)
   extends DraftIdRetrievalActionProvider {
 
   def apply(draftId: String): DraftIdDataRetrievalAction =
@@ -41,7 +41,7 @@ trait DraftIdRetrievalActionProvider {
 
 class DraftIdDataRetrievalAction(
                                   draftId : String,
-                                  repository: AssetsRepository,
+                                  repository: RegistrationsRepository,
                                   implicit protected val executionContext: ExecutionContext
                                 )
   extends ActionTransformer[IdentifierRequest, OptionalRegistrationDataRequest] {

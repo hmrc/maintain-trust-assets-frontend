@@ -19,31 +19,21 @@ package repositories
 import javax.inject.Inject
 import mapping.AssetMapper
 import models.Status.Completed
-import models.{Status, SubmissionDraftRegistrationPiece, UserAnswers}
+import models.{Status, SubmissionDraftRegistrationPiece, SubmissionDraftSetData, SubmissionDraftStatus, UserAnswers}
 import pages.RegistrationProgress
 import play.api.libs.json.Json
-import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.{ExecutionContext, Future}
+class SubmissionSetFactory @Inject()(registrationProgress: RegistrationProgress, assetMapper: AssetMapper) {
 
-class AssetsRepository @Inject()(
-                                  registrationsRepository: RegistrationsRepository,
-                                  registrationProgress: RegistrationProgress,
-                                  assetMapper: AssetMapper)
-                                (implicit executionContext: ExecutionContext) {
-
-  def get(draftId: String)(implicit hc: HeaderCarrier): Future[Option[UserAnswers]] =
-    registrationsRepository.get(draftId)
-
-  def set(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Boolean] = {
+  def createFrom(userAnswers: UserAnswers): SubmissionDraftSetData = {
     val status = registrationProgress.assetsStatus(userAnswers)
     val registrationPieces = mappedDataIfCompleted(userAnswers, status)
 
-    registrationsRepository.setRegistrationSectionSet(
-      userAnswers,
-      "assets",
-      status,
-      registrationPieces)
+    SubmissionDraftSetData(
+      Json.toJson(userAnswers),
+      Some(SubmissionDraftStatus("assets", status)),
+      registrationPieces
+    )
   }
 
   private def mappedDataIfCompleted(userAnswers: UserAnswers, status: Option[Status]) = {
