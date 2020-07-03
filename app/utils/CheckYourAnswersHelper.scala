@@ -20,6 +20,7 @@ import javax.inject.Inject
 import mapping.reads._
 import models.{NormalMode, UserAnswers}
 import pages.asset._
+import pages.asset.business._
 import pages.asset.money._
 import pages.asset.other.{OtherAssetDescriptionPage, OtherAssetValuePage}
 import pages.asset.partnership._
@@ -29,7 +30,7 @@ import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import utils.countryOptions.CountryOptions
 import viewmodels.{AnswerRow, AnswerSection}
-import utils.CheckAnswersFormatters._
+import utils.CheckAnswersFormatters.{assetName, _}
 
 class CheckYourAnswersHelper @Inject()(countryOptions: CountryOptions)
                                       (userAnswers: UserAnswers,
@@ -368,6 +369,68 @@ class CheckYourAnswersHelper @Inject()(countryOptions: CountryOptions)
         "partnershipDescription.checkYourAnswersLabel",
         HtmlFormat.escape(x),
         Some(controllers.asset.partnership.routes.PartnershipDescriptionController.onPageLoad(NormalMode, index, draftId).url),
+        canEdit = canEdit
+      )
+  }
+
+  def assetAddressUkYesNo(index: Int): Option[AnswerRow] = userAnswers.get(BusinessAddressUkYesNoPage(index)) map {
+    x =>
+      AnswerRow(
+        "assetAddressUkYesNo.checkYourAnswersLabel",
+        yesOrNo(x),
+        Some(controllers.asset.business.routes.BusinessAddressUkYesNoController.onPageLoad(NormalMode, index, draftId).url),
+        canEdit = canEdit
+      )
+  }
+
+  def assetDescription(index: Int): Option[AnswerRow] = userAnswers.get(BusinessDescriptionPage(index)) map {
+    x =>
+      AnswerRow(
+        "assetDescription.checkYourAnswersLabel",
+        HtmlFormat.escape(x),
+        Some(controllers.asset.business.routes.BusinessDescriptionController.onPageLoad(NormalMode, index, draftId).url),
+        canEdit = canEdit
+      )
+  }
+
+  def assetNamePage(index: Int): Option[AnswerRow] = userAnswers.get(BusinessNamePage(index)) map {
+    x =>
+      AnswerRow(
+        "assetName.checkYourAnswersLabel",
+        HtmlFormat.escape(x),
+        Some(controllers.asset.business.routes.BusinessNameController.onPageLoad(NormalMode, index, draftId).url),
+        canEdit = canEdit
+      )
+  }
+
+  def assetInternationalAddress(index: Int): Option[AnswerRow] = userAnswers.get(BusinessInternationalAddressPage(index)) map {
+    x =>
+      AnswerRow(
+        "assetInternationalAddress.checkYourAnswersLabel",
+        internationalAddress(x, countryOptions),
+        Some(controllers.asset.business.routes.BusinessInternationalAddressController.onPageLoad(NormalMode, index, draftId).url),
+        assetName(index, userAnswers),
+        canEdit = canEdit
+      )
+  }
+
+  def assetUkAddress(index: Int): Option[AnswerRow] = userAnswers.get(BusinessUkAddressPage(index)) map {
+    x =>
+      AnswerRow(
+        "assetUkAddress.checkYourAnswersLabel",
+        ukAddress(x),
+        Some(controllers.asset.business.routes.BusinessUkAddressController.onPageLoad(NormalMode, index, draftId).url),
+        assetName(index, userAnswers),
+        canEdit = canEdit
+      )
+  }
+
+  def currentValue(index: Int): Option[AnswerRow] = userAnswers.get(BusinessValuePage(index)) map {
+    x =>
+      AnswerRow(
+        "currentValue.checkYourAnswersLabel",
+        currency(x),
+        Some(controllers.asset.business.routes.BusinessValueController.onPageLoad(NormalMode, index, draftId).url),
         canEdit = canEdit
       )
   }

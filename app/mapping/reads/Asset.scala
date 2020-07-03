@@ -42,7 +42,8 @@ object Asset {
     MoneyAsset.reads or
       ShareNonPortfolioAsset.reads or
       SharePortfolioAsset.reads or
-      PropertyOrLandAsset.reads
+      PropertyOrLandAsset.reads or
+      BusinessAsset.reads
   }
 
 }

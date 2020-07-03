@@ -153,6 +153,41 @@ POST       /:draftId/asset/:index/share/company/remove                          
 GET        /:draftId/asset/:index/share/portfolio/remove                                            controllers.asset.shares.RemoveSharePortfolioAssetController.onPageLoad(index: Int, draftId: String)
 POST       /:draftId/asset/:index/share/portfolio/remove                                            controllers.asset.shares.RemoveSharePortfolioAssetController.onSubmit(index: Int, draftId: String)
 
+### Business
+
+GET        /:draftId/asset/:index/business/name                                                      controllers.asset.business.BusinessNameController.onPageLoad(mode: Mode = NormalMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/business/name                                                      controllers.asset.business.BusinessNameController.onSubmit(mode: Mode = NormalMode, index: Int, draftId: String)
+GET        /:draftId/asset/:index/business/name                                                      controllers.asset.business.BusinessNameController.onPageLoad(mode: Mode = CheckMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/business/name                                                      controllers.asset.business.BusinessNameController.onSubmit(mode: Mode = CheckMode, index: Int, draftId: String)
+
+GET        /:draftId/asset/:index/business/description                                               controllers.asset.business.BusinessDescriptionController.onPageLoad(mode: Mode = NormalMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/business/description                                               controllers.asset.business.BusinessDescriptionController.onSubmit(mode: Mode = NormalMode, index: Int, draftId: String)
+GET        /:draftId/asset/:index/business/description                                               controllers.asset.business.BusinessDescriptionController.onPageLoad(mode: Mode = CheckMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/business/description                                               controllers.asset.business.BusinessDescriptionController.onSubmit(mode: Mode = CheckMode, index: Int, draftId: String)
+
+GET        /:draftId/asset/:index/business/is-address-in-uk                                          controllers.asset.business.BusinessAddressUkYesNoController.onPageLoad(mode: Mode = NormalMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/business/is-address-in-uk                                          controllers.asset.business.BusinessAddressUkYesNoController.onSubmit(mode: Mode = NormalMode, index: Int, draftId: String)
+GET        /:draftId/asset/:index/business/is-address-in-uk                                          controllers.asset.business.BusinessAddressUkYesNoController.onPageLoad(mode: Mode = CheckMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/business/is-address-in-uk                                          controllers.asset.business.BusinessAddressUkYesNoController.onSubmit(mode: Mode = CheckMode, index: Int, draftId: String)
+
+GET        /:draftId/asset/:index/business/uk-address                                                controllers.asset.business.BusinessUkAddressController.onPageLoad(mode: Mode = NormalMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/business/uk-address                                                controllers.asset.business.BusinessUkAddressController.onSubmit(mode: Mode = NormalMode, index: Int, draftId: String)
+GET        /:draftId/asset/:index/business/uk-address                                                controllers.asset.business.BusinessUkAddressController.onPageLoad(mode: Mode = CheckMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/business/uk-address                                                controllers.asset.business.BusinessUkAddressController.onSubmit(mode: Mode = CheckMode, index: Int, draftId: String)
+
+GET        /:draftId/asset/:index/business/international-address                                     controllers.asset.business.BusinessInternationalAddressController.onPageLoad(mode: Mode = NormalMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/business/international-address                                     controllers.asset.business.BusinessInternationalAddressController.onSubmit(mode: Mode = NormalMode, index: Int, draftId: String)
+GET        /:draftId/asset/:index/business/international-address                                     controllers.asset.business.BusinessInternationalAddressController.onPageLoad(mode: Mode = CheckMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/business/international-address                                     controllers.asset.business.BusinessInternationalAddressController.onSubmit(mode: Mode = CheckMode, index: Int, draftId: String)
+
+GET        /:draftId/asset/:index/business/current-value                                             controllers.asset.business.BusinessValueController.onPageLoad(mode: Mode = NormalMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/business/current-value                                             controllers.asset.business.BusinessValueController.onSubmit(mode: Mode = NormalMode, index: Int, draftId: String)
+GET        /:draftId/asset/:index/business/current-value                                             controllers.asset.business.BusinessValueController.onPageLoad(mode: Mode = CheckMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/business/current-value                                             controllers.asset.business.BusinessValueController.onSubmit(mode: Mode = CheckMode, index: Int, draftId: String)
+
+GET        /:draftId/asset/:index/business/check-answers                                             controllers.asset.business.BusinessAnswersController.onPageLoad(index: Int, draftId: String)
+POST       /:draftId/asset/:index/business/check-answers                                             controllers.asset.business.BusinessAnswersController.onSubmit(index: Int, draftId: String)
+
 ## Partnership
 
 GET        /:draftId/asset/:index/partnership/description                                           controllers.asset.partnership.PartnershipDescriptionController.onPageLoad(mode: Mode = NormalMode, index : Int, draftId: String)

@@ -21,10 +21,10 @@ import pages.QuestionPage
 
 class AddressMapper  {
 
-  def build(userAnswers           : UserAnswers,
-            isUk                  : QuestionPage[Boolean],
-            ukAddress             : QuestionPage[UKAddress],
-            internationalAddress  : QuestionPage[InternationalAddress]) : Option[AddressType] = {
+  def build(userAnswers: UserAnswers,
+            isUk: QuestionPage[Boolean],
+            ukAddress: QuestionPage[UKAddress],
+            internationalAddress: QuestionPage[InternationalAddress]) : Option[AddressType] = {
 
     userAnswers.get(isUk) flatMap {
       uk =>
@@ -36,30 +36,55 @@ class AddressMapper  {
     }
   }
 
-   private def buildUkAddress(address: Option[UKAddress]): Option[AddressType] = {
-    address.map{
-      x=>
-        AddressType(
-          x.line1,
-          x.line2,
-          x.line3,
-          x.line4,
-          Some(x.postcode),
-          "GB")
+  private def buildUkAddress(address: Option[UKAddress]): Option[AddressType] = {
+    address.map { x =>
+      buildUkAddress(x)
     }
   }
 
+  private def buildUkAddress(address: UKAddress): AddressType = {
+    AddressType(
+      address.line1,
+      address.line2,
+      address.line3,
+      address.line4,
+      Some(address.postcode),
+      "GB"
+    )
+  }
+
   private def buildInternationalAddress(address: Option[InternationalAddress]): Option[AddressType] = {
-    address.map{
-      x=>
-        AddressType(
-          x.line1,
-          x.line2,
-          x.line3,
-          None,
-          None,
-          x.country
-        )
+    address.map { x =>
+      buildInternationalAddress(x)
+    }
+  }
+
+  private def buildInternationalAddress(address: InternationalAddress): AddressType = {
+    AddressType(
+      address.line1,
+      address.line2,
+      address.line3,
+      None,
+      None,
+      address.country
+    )
+  }
+
+  def buildOptional(address: Address) : Option[AddressType] = {
+    address match {
+      case a: UKAddress =>
+        buildUkAddress(Some(a))
+      case a: InternationalAddress =>
+        buildInternationalAddress(Some(a))
+    }
+  }
+
+  def build(address: Address) : AddressType = {
+    address match {
+      case a: UKAddress =>
+        buildUkAddress(a)
+      case a: InternationalAddress =>
+        buildInternationalAddress(a)
     }
   }
 
@@ -68,6 +93,5 @@ class AddressMapper  {
       case ukAddress : UKAddress => buildUkAddress(Some(ukAddress))
       case international : InternationalAddress => buildInternationalAddress(Some(international))
     }
-
   }
 }

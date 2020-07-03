@@ -19,6 +19,7 @@ package utils
 import java.time.format.DateTimeFormatter
 
 import models.{Address, InternationalAddress, UKAddress, UserAnswers}
+import pages.asset.business.BusinessNamePage
 import pages.asset.shares.ShareCompanyNamePage
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
@@ -53,7 +54,11 @@ object CheckAnswersFormatters {
   def escape(x: String) = HtmlFormat.escape(x)
 
   def shareCompName(index: Int, userAnswers: UserAnswers): String = {
-    userAnswers.get(ShareCompanyNamePage(index)).map(_.toString).getOrElse("")
+    userAnswers.get(ShareCompanyNamePage(index)).getOrElse("")
+  }
+
+  def assetName(index: Int, userAnswers: UserAnswers): String = {
+    userAnswers.get(BusinessNamePage(index)).getOrElse("")
   }
 
   def ukAddress(address: UKAddress): Html = {

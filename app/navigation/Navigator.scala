@@ -22,6 +22,7 @@ import models.WhatKindOfAsset._
 import models.{UserAnswers, _}
 import pages.Page
 import pages.asset._
+import pages.asset.business._
 import pages.asset.money._
 import pages.asset.other.{OtherAssetDescriptionPage, OtherAssetValuePage}
 import pages.asset.shares._
@@ -47,6 +48,12 @@ object AssetsRoutes {
     case ShareCompanyNamePage(index) => _ => _ => controllers.asset.shares.routes.SharesOnStockExchangeController.onPageLoad(NormalMode, index, draftId)
     case OtherAssetDescriptionPage(index) => _ => _ => controllers.asset.other.routes.OtherAssetValueController.onPageLoad(NormalMode, index, draftId)
     case OtherAssetValuePage(index) => _ => _ => controllers.asset.other.routes.OtherAssetAnswersController.onPageLoad(index, draftId)
+    case BusinessNamePage(index) => _ => _ => controllers.asset.business.routes.BusinessDescriptionController.onPageLoad(NormalMode, index, draftId)
+    case BusinessDescriptionPage(index) => _ => _ => controllers.asset.business.routes.BusinessAddressUkYesNoController.onPageLoad(NormalMode, index, draftId)
+    case BusinessAddressUkYesNoPage(index) => _ => ua => assetAddressUkYesNoRoute(ua, index, draftId)
+    case BusinessUkAddressPage(index) => _ => _ => controllers.asset.business.routes.BusinessValueController.onPageLoad(NormalMode, index, draftId)
+    case BusinessInternationalAddressPage(index) => _ => _ => controllers.asset.business.routes.BusinessValueController.onPageLoad(NormalMode, index, draftId)
+    case BusinessValuePage(index) => _ => _ => controllers.asset.business.routes.BusinessAnswersController.onPageLoad(index, draftId)
   }
 
   private def assetsCompletedRoute(draftId: String, config: FrontendAppConfig) : Call = {
@@ -60,6 +67,17 @@ object AssetsRoutes {
       case Some(false) =>
         controllers.asset.shares.routes.ShareCompanyNameController.onPageLoad(NormalMode, index, draftId)
       case _=> assetsCompletedRoute(draftId, config)
+    }
+  }
+
+  private def assetAddressUkYesNoRoute(userAnswers: UserAnswers, index : Int, draftId: String) : Call = {
+    userAnswers.get(BusinessAddressUkYesNoPage(index)) match {
+      case Some(true) =>
+        controllers.asset.business.routes.BusinessUkAddressController.onPageLoad(NormalMode, index, draftId)
+      case Some(false) =>
+        controllers.asset.business.routes.BusinessInternationalAddressController.onPageLoad(NormalMode, index, draftId)
+      case _=>
+        controllers.routes.SessionExpiredController.onPageLoad()
     }
   }
 
