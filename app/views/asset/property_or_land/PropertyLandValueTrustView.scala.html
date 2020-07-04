@@ -25,7 +25,7 @@
 @(form: Form[_], mode: Mode, index: Int, draftId: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("propertyLand.trustValue.title")}"
+    title = s"${errorPrefix(form)} ${messages("propertyLand.valueInTrust.title")}"
 ) {
 
     @formHelper(action = PropertyLandValueTrustController.onSubmit(mode, index, draftId), 'autoComplete -> "off") {
@@ -36,10 +36,10 @@
 
         @components.input_text(
             field = form("value"),
-            label = messages("propertyLand.trustValue.heading"),
+            label = messages("propertyLand.valueInTrust.heading"),
             labelClass = Some("heading-large"),
             labelAsHeading = true,
-            hint = Some(messages("propertyLand.trustValue.hint")),
+            hint = Some(messages("propertyLand.valueInTrust.hint")),
             symbolText = Some(messages(s"symbolText.asSterling")),
             symbol = Some("currency")
         )

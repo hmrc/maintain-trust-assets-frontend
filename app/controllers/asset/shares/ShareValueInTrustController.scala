@@ -18,7 +18,7 @@ package controllers.asset.shares
 
 import controllers.actions._
 import controllers.filters.IndexActionFilterProvider
-import forms.shares.ShareValueInTrustFormProvider
+import forms.ValueFormProvider
 import javax.inject.Inject
 import models.{Mode, NormalMode}
 import navigation.Navigator
@@ -40,28 +40,28 @@ class ShareValueInTrustController @Inject()(
                                              identify: RegistrationIdentifierAction,
                                              getData: DraftIdRetrievalActionProvider,
                                              requireData: RegistrationDataRequiredAction,
-                                             formProvider: ShareValueInTrustFormProvider,
+                                             formProvider: ValueFormProvider,
                                              val controllerComponents: MessagesControllerComponents,
                                              view: ShareValueInTrustView,
                                              requiredAnswer: RequiredAnswerActionProvider,
                                              validateIndex: IndexActionFilterProvider
-                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val form = formProvider()
+  private val form = formProvider.withPrefix("shares.valueInTrust")
 
-  private def actions(mode: Mode, index : Int, draftId: String) =
+  private def actions(index : Int, draftId: String) =
     identify andThen getData(draftId) andThen
       requireData andThen
       validateIndex(index, sections.Assets) andThen
       requiredAnswer(RequiredAnswer(
         ShareCompanyNamePage(index),
-        routes.ShareCompanyNameController.onPageLoad(NormalMode, index, draftId))
-      )
+        routes.ShareCompanyNameController.onPageLoad(NormalMode, index, draftId)
+      ))
 
-  def onPageLoad(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(mode, index, draftId) {
+  def onPageLoad(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
     implicit request =>
 
-      val companyName = request.userAnswers.get(ShareCompanyNamePage(index)).get.toString
+      val companyName = request.userAnswers.get(ShareCompanyNamePage(index)).get
 
       val preparedForm = request.userAnswers.get(ShareValueInTrustPage(index)) match {
         case None => form
@@ -71,10 +71,10 @@ class ShareValueInTrustController @Inject()(
       Ok(view(preparedForm, mode, draftId, index, companyName))
   }
 
-  def onSubmit(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(mode, index, draftId).async {
+  def onSubmit(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async {
     implicit request =>
 
-      val companyName = request.userAnswers.get(ShareCompanyNamePage(index)).get.toString
+      val companyName = request.userAnswers.get(ShareCompanyNamePage(index)).get
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>

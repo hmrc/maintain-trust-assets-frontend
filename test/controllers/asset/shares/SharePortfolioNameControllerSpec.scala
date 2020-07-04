@@ -18,7 +18,7 @@ package controllers.asset.shares
 
 import base.SpecBase
 import controllers.IndexValidation
-import forms.shares.SharePortfolioNameFormProvider
+import forms.NameFormProvider
 import generators.ModelGenerators
 import models.NormalMode
 import org.scalacheck.Arbitrary.arbitrary
@@ -30,8 +30,8 @@ import views.html.asset.shares.SharePortfolioNameView
 
 class SharePortfolioNameControllerSpec extends SpecBase with ModelGenerators with IndexValidation {
 
-  val formProvider = new SharePortfolioNameFormProvider()
-  val form = formProvider()
+  val formProvider = new NameFormProvider()
+  val form = formProvider.withConfig(53, "shares.portfolioName")
   val index: Int = 0
 
   lazy val sharePortfolioNameRoute = routes.SharePortfolioNameController.onPageLoad(NormalMode, index, fakeDraftId).url

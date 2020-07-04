@@ -30,7 +30,7 @@ import views.html.asset.shares.SharesOnStockExchangeView
 
 class SharesOnStockExchangeControllerSpec extends SpecBase with ModelGenerators with IndexValidation {
 
-  val form = new YesNoFormProvider().withPrefix("sharesOnStockExchange")
+  val form = new YesNoFormProvider().withPrefix("shares.onStockExchangeYesNo")
   val index: Int = 0
   val companyName = "Company"
 

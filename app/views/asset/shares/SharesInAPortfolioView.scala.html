@@ -25,8 +25,8 @@
 @(form: Form[_], mode: Mode, draftId: String, index : Int)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("sharesInAPortfolio.title")}"
-    ) {
+    title = s"${errorPrefix(form)} ${messages("shares.inAPortfolioYesNo.title")}"
+) {
 
     @formHelper(action = SharesInAPortfolioController.onSubmit(mode, index, draftId), 'autoComplete -> "off") {
 
@@ -36,7 +36,7 @@
 
         @components.input_yes_no(
             field = form("value"),
-            label = messages("sharesInAPortfolio.heading"),
+            label = messages("shares.inAPortfolioYesNo.heading"),
             legendClass = Some("heading-large"),
             legendAsHeading = true
         )

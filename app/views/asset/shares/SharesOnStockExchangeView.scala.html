@@ -25,8 +25,8 @@
 @(form: Form[_], mode: Mode, draftId: String, index : Int, companyName: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("sharesOnStockExchange.title")}"
-    ) {
+    title = s"${errorPrefix(form)} ${messages("shares.onStockExchangeYesNo.title")}"
+) {
 
     @formHelper(action = SharesOnStockExchangeController.onSubmit(mode, index, draftId), 'autoComplete -> "off") {
 
@@ -36,9 +36,9 @@
 
         @components.input_yes_no(
             field = form("value"),
-            label = messages("sharesOnStockExchange.heading", companyName),
+            label = messages("shares.onStockExchangeYesNo.heading", companyName),
             legendClass = Some("heading-large"),
-            hint = Some(messages("sharesOnStockExchange.hint")),
+            hint = Some(messages("shares.onStockExchangeYesNo.hint")),
             legendAsHeading = true
         )
 

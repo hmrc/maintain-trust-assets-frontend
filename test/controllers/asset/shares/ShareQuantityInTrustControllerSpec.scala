@@ -18,7 +18,7 @@ package controllers.asset.shares
 
 import base.SpecBase
 import controllers.IndexValidation
-import forms.shares.ShareQuantityInTrustFormProvider
+import forms.QuantityFormProvider
 import generators.ModelGenerators
 import models.NormalMode
 import org.scalacheck.Arbitrary.arbitrary
@@ -30,8 +30,8 @@ import views.html.asset.shares.ShareQuantityInTrustView
 
 class ShareQuantityInTrustControllerSpec extends SpecBase with ModelGenerators with IndexValidation {
 
-  val formProvider = new ShareQuantityInTrustFormProvider()
-  val form = formProvider()
+  val formProvider = new QuantityFormProvider()
+  val form = formProvider.withPrefix("shares.quantityInTrust")
   val index: Int = 0
   val companyName = "Company"
 

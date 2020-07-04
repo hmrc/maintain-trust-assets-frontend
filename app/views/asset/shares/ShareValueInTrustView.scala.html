@@ -25,8 +25,8 @@
 @(form: Form[_], mode: Mode, draftId: String, index : Int, companyName: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("shareValueInTrust.title")}"
-    ) {
+    title = s"${errorPrefix(form)} ${messages("shares.valueInTrust.title")}"
+) {
 
     @formHelper(action = ShareValueInTrustController.onSubmit(mode, index, draftId), 'autoComplete -> "off") {
 
@@ -36,12 +36,12 @@
 
         @components.input_text(
           field = form("value"),
-          label = messages("shareValueInTrust.heading", companyName),
+          label = messages("shares.valueInTrust.heading", companyName),
           symbolText = Some(messages(s"symbolText.asSterling")),
           symbol = Some("currency"),
           labelClass = Some("heading-large"),
           labelAsHeading = true,
-          hint = Some(messages("shareValueInTrust.hint"))
+          hint = Some(messages("shares.valueInTrust.hint"))
         )
 
         @components.submit_button()

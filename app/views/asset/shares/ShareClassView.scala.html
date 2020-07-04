@@ -26,8 +26,8 @@
 @(form: Form[_], mode: Mode, draftId: String, index : Int, companyName: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("shareClass.title")}"
-    ) {
+    title = s"${errorPrefix(form)} ${messages("shares.class.title")}"
+) {
 
     @formHelper(action = ShareClassController.onSubmit(mode, index, draftId), 'autoComplete -> "off") {
 
@@ -37,7 +37,7 @@
 
         @components.input_radio(
             field = form("value"),
-            legend = messages("shareClass.heading", companyName),
+            legend = messages("shares.class.heading", companyName),
             legendClass = Some("heading-large"),
             inputs = ShareClass.allOptions,
             legendAsHeading = true

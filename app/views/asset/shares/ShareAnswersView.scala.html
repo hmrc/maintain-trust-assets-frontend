@@ -25,12 +25,12 @@ formHelper: FormWithCSRF
 @(index : Int, draftId: String, answerSections: Seq[Section])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-title = messages("shareAnswers.title")
+    title = messages("shares.answers.title")
 ) {
 
 @components.back_link()
 
-@components.heading("shareAnswers.heading")
+@components.heading("shares.answers.heading")
 
     @for(section <- answerSections){
         @{section match {

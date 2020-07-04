@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-package forms.shares
+package forms
 
-import forms.Validation
 import forms.mappings.Mappings
 import javax.inject.Inject
 import play.api.data.Form
 
-class ShareCompanyNameFormProvider @Inject() extends Mappings {
+class QuantityFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[String] =
+  def withPrefix(prefix: String): Form[String] =
     Form(
-      "value" -> text("shareCompanyName.error.required")
+      "value" -> currency(s"$prefix.error.required")
         .verifying(
           firstError(
-            maxLength(53, "shareCompanyName.error.length"),
-            isNotEmpty("value","shareCompanyName.error.required"),
-            regexp(Validation.nameRegex, "shareCompanyName.error.invalid")
+            maxLength(12, s"$prefix.error.length"),
+            isNotEmpty("value", s"$prefix.error.required"),
+            regexp(Validation.onlyNumbersRegex, s"$prefix.error.invalid"),
+            minimumValue("1", s"$prefix.error.zero")
           )
         )
     )

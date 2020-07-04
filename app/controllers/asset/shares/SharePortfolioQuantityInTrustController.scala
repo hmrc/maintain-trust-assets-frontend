@@ -18,7 +18,7 @@ package controllers.asset.shares
 
 import controllers.actions.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
 import controllers.filters.IndexActionFilterProvider
-import forms.shares.SharePortfolioQuantityInTrustFormProvider
+import forms.QuantityFormProvider
 import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
@@ -40,20 +40,20 @@ class SharePortfolioQuantityInTrustController @Inject()(
                                                          identify: RegistrationIdentifierAction,
                                                          getData: DraftIdRetrievalActionProvider,
                                                          requireData: RegistrationDataRequiredAction,
-                                                         formProvider: SharePortfolioQuantityInTrustFormProvider,
+                                                         formProvider: QuantityFormProvider,
                                                          val controllerComponents: MessagesControllerComponents,
                                                          view: SharePortfolioQuantityInTrustView,
                                                          validateIndex: IndexActionFilterProvider
-                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val form = formProvider()
+  private val form = formProvider.withPrefix("shares.portfolioQuantityInTrust")
 
-  private def actions(mode: Mode, index : Int, draftId: String) =
+  private def actions(index : Int, draftId: String) =
     identify andThen getData(draftId) andThen
       requireData andThen
       validateIndex(index, sections.Assets)
 
-  def onPageLoad(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(mode, index, draftId) {
+  def onPageLoad(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(SharePortfolioQuantityInTrustPage(index)) match {
@@ -64,7 +64,7 @@ class SharePortfolioQuantityInTrustController @Inject()(
       Ok(view(preparedForm, mode, draftId, index))
   }
 
-  def onSubmit(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(mode, index, draftId).async {
+  def onSubmit(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async {
     implicit request =>
 
       form.bindFromRequest().fold(

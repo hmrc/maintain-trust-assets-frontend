@@ -17,7 +17,6 @@
 package controllers.asset.shares
 
 import controllers.actions._
-import controllers.filters.IndexActionFilterProvider
 import javax.inject.Inject
 import models.NormalMode
 import models.Status.Completed
@@ -44,7 +43,6 @@ class ShareAnswerController @Inject()(
                                        getData: DraftIdRetrievalActionProvider,
                                        requireData: RegistrationDataRequiredAction,
                                        requiredAnswer: RequiredAnswerActionProvider,
-                                       validateIndex: IndexActionFilterProvider,
                                        view: ShareAnswersView,
                                        countryOptions: CountryOptions,
                                        val controllerComponents: MessagesControllerComponents
@@ -55,7 +53,6 @@ class ShareAnswerController @Inject()(
       getData(draftId) andThen
       requireData andThen
       requiredAnswer(RequiredAnswer(SharesInAPortfolioPage(index), routes.SharesInAPortfolioController.onPageLoad(NormalMode, index, draftId)))
-
 
   def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
     implicit request =>

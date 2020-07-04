@@ -18,7 +18,7 @@ package controllers.asset.shares
 
 import controllers.actions.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
 import controllers.filters.IndexActionFilterProvider
-import forms.shares.SharePortfolioNameFormProvider
+import forms.NameFormProvider
 import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
@@ -41,19 +41,19 @@ class SharePortfolioNameController @Inject()(
                                               getData: DraftIdRetrievalActionProvider,
                                               requireData: RegistrationDataRequiredAction,
                                               validateIndex: IndexActionFilterProvider,
-                                              formProvider: SharePortfolioNameFormProvider,
+                                              formProvider: NameFormProvider,
                                               val controllerComponents: MessagesControllerComponents,
                                               view: SharePortfolioNameView
-                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                            )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val form = formProvider()
+  private val form = formProvider.withConfig(53, "shares.portfolioName")
 
-  private def actions(mode: Mode, index : Int, draftId: String) =
+  private def actions(index : Int, draftId: String) =
     identify andThen getData(draftId) andThen
       requireData andThen
       validateIndex(index, sections.Assets)
 
-  def onPageLoad(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(mode, index, draftId) {
+  def onPageLoad(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(SharePortfolioNamePage(index)) match {
@@ -64,7 +64,7 @@ class SharePortfolioNameController @Inject()(
       Ok(view(preparedForm, mode, draftId, index))
   }
 
-  def onSubmit(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(mode, index, draftId).async {
+  def onSubmit(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async {
     implicit request =>
 
       form.bindFromRequest().fold(

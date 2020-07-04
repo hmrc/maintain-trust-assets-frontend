@@ -18,7 +18,7 @@ package controllers.asset.shares
 
 import base.SpecBase
 import controllers.IndexValidation
-import forms.shares.SharePortfolioQuantityInTrustFormProvider
+import forms.QuantityFormProvider
 import generators.ModelGenerators
 import models.NormalMode
 import org.scalacheck.Arbitrary.arbitrary
@@ -30,8 +30,8 @@ import views.html.asset.shares.SharePortfolioQuantityInTrustView
 
 class SharePortfolioQuantityInTrustControllerSpec extends SpecBase with ModelGenerators with IndexValidation {
 
-  val formProvider = new SharePortfolioQuantityInTrustFormProvider()
-  val form = formProvider()
+  val formProvider = new QuantityFormProvider()
+  val form = formProvider.withPrefix("shares.portfolioQuantityInTrust")
   val index: Int = 0
 
   lazy val sharePortfolioQuantityInTrustRoute = routes.SharePortfolioQuantityInTrustController.onPageLoad(NormalMode, index, fakeDraftId).url

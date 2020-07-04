@@ -45,11 +45,11 @@ class SharesOnStockExchangeController @Inject()(
                                                  view: SharesOnStockExchangeView,
                                                  requiredAnswer: RequiredAnswerActionProvider,
                                                  validateIndex: IndexActionFilterProvider
-                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                               )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form: Form[Boolean] = formProvider.withPrefix("sharesOnStockExchange")
+  val form: Form[Boolean] = formProvider.withPrefix("shares.onStockExchangeYesNo")
 
-  private def actions(mode: Mode, index : Int, draftId: String) =
+  private def actions(index : Int, draftId: String) =
     identify andThen getData(draftId) andThen
       requireData andThen
       validateIndex(index, sections.Assets) andThen
@@ -58,10 +58,10 @@ class SharesOnStockExchangeController @Inject()(
         routes.ShareCompanyNameController.onPageLoad(NormalMode, index, draftId))
       )
 
-  def onPageLoad(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(mode, index, draftId) {
+  def onPageLoad(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
     implicit request =>
 
-      val companyName = request.userAnswers.get(ShareCompanyNamePage(index)).get.toString
+      val companyName = request.userAnswers.get(ShareCompanyNamePage(index)).get
 
       val preparedForm = request.userAnswers.get(SharesOnStockExchangePage(index)) match {
         case None => form
@@ -71,10 +71,10 @@ class SharesOnStockExchangeController @Inject()(
       Ok(view(preparedForm, mode, draftId, index, companyName))
   }
 
-  def onSubmit(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(mode, index, draftId).async {
+  def onSubmit(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async {
     implicit request =>
 
-      val companyName = request.userAnswers.get(ShareCompanyNamePage(index)).get.toString
+      val companyName = request.userAnswers.get(ShareCompanyNamePage(index)).get
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
