@@ -28,7 +28,7 @@
 
 @main_template(
     title = s"${errorPrefix(form)} ${messages("money.value.title")}"
-    ) {
+) {
 
     @formHelper(action = AssetMoneyValueController.onSubmit(mode, index, draftId), 'autoComplete -> "off") {
 

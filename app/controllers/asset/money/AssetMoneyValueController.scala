@@ -17,7 +17,7 @@
 package controllers.asset.money
 
 import controllers.actions.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
-import forms.AssetMoneyValueFormProvider
+import forms.ValueFormProvider
 import javax.inject.Inject
 import models.Mode
 import models.Status.Completed
@@ -41,15 +41,14 @@ class AssetMoneyValueController @Inject()(
                                            identify: RegistrationIdentifierAction,
                                            getData: DraftIdRetrievalActionProvider,
                                            requireData: RegistrationDataRequiredAction,
-                                           formProvider: AssetMoneyValueFormProvider,
+                                           formProvider: ValueFormProvider,
                                            val controllerComponents: MessagesControllerComponents,
                                            view: AssetMoneyValueView
-                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
-
+                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private def actions(draftId: String) = identify andThen getData(draftId) andThen requireData
 
-  val form = formProvider()
+  val form: Form[String] = formProvider.withPrefix("money.value")
 
   def onPageLoad(mode: Mode,  index: Int, draftId: String): Action[AnyContent] = actions(draftId) {
     implicit request =>
