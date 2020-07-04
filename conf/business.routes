@@ -1,0 +1,32 @@
+GET        /name                                                      controllers.asset.business.BusinessNameController.onPageLoad(mode: Mode = NormalMode, index: Int, draftId: String)
+POST       /name                                                      controllers.asset.business.BusinessNameController.onSubmit(mode: Mode = NormalMode, index: Int, draftId: String)
+GET        /name                                                      controllers.asset.business.BusinessNameController.onPageLoad(mode: Mode = CheckMode, index: Int, draftId: String)
+POST       /name                                                      controllers.asset.business.BusinessNameController.onSubmit(mode: Mode = CheckMode, index: Int, draftId: String)
+
+GET        /description                                               controllers.asset.business.BusinessDescriptionController.onPageLoad(mode: Mode = NormalMode, index: Int, draftId: String)
+POST       /description                                               controllers.asset.business.BusinessDescriptionController.onSubmit(mode: Mode = NormalMode, index: Int, draftId: String)
+GET        /description                                               controllers.asset.business.BusinessDescriptionController.onPageLoad(mode: Mode = CheckMode, index: Int, draftId: String)
+POST       /description                                               controllers.asset.business.BusinessDescriptionController.onSubmit(mode: Mode = CheckMode, index: Int, draftId: String)
+
+GET        /is-address-in-uk                                          controllers.asset.business.BusinessAddressUkYesNoController.onPageLoad(mode: Mode = NormalMode, index: Int, draftId: String)
+POST       /is-address-in-uk                                          controllers.asset.business.BusinessAddressUkYesNoController.onSubmit(mode: Mode = NormalMode, index: Int, draftId: String)
+GET        /is-address-in-uk                                          controllers.asset.business.BusinessAddressUkYesNoController.onPageLoad(mode: Mode = CheckMode, index: Int, draftId: String)
+POST       /is-address-in-uk                                          controllers.asset.business.BusinessAddressUkYesNoController.onSubmit(mode: Mode = CheckMode, index: Int, draftId: String)
+
+GET        /uk-address                                                controllers.asset.business.BusinessUkAddressController.onPageLoad(mode: Mode = NormalMode, index: Int, draftId: String)
+POST       /uk-address                                                controllers.asset.business.BusinessUkAddressController.onSubmit(mode: Mode = NormalMode, index: Int, draftId: String)
+GET        /uk-address                                                controllers.asset.business.BusinessUkAddressController.onPageLoad(mode: Mode = CheckMode, index: Int, draftId: String)
+POST       /uk-address                                                controllers.asset.business.BusinessUkAddressController.onSubmit(mode: Mode = CheckMode, index: Int, draftId: String)
+
+GET        /international-address                                     controllers.asset.business.BusinessInternationalAddressController.onPageLoad(mode: Mode = NormalMode, index: Int, draftId: String)
+POST       /international-address                                     controllers.asset.business.BusinessInternationalAddressController.onSubmit(mode: Mode = NormalMode, index: Int, draftId: String)
+GET        /international-address                                     controllers.asset.business.BusinessInternationalAddressController.onPageLoad(mode: Mode = CheckMode, index: Int, draftId: String)
+POST       /international-address                                     controllers.asset.business.BusinessInternationalAddressController.onSubmit(mode: Mode = CheckMode, index: Int, draftId: String)
+
+GET        /current-value                                             controllers.asset.business.BusinessValueController.onPageLoad(mode: Mode = NormalMode, index: Int, draftId: String)
+POST       /current-value                                             controllers.asset.business.BusinessValueController.onSubmit(mode: Mode = NormalMode, index: Int, draftId: String)
+GET        /current-value                                             controllers.asset.business.BusinessValueController.onPageLoad(mode: Mode = CheckMode, index: Int, draftId: String)
+POST       /current-value                                             controllers.asset.business.BusinessValueController.onSubmit(mode: Mode = CheckMode, index: Int, draftId: String)
+
+GET        /check-answers                                             controllers.asset.business.BusinessAnswersController.onPageLoad(index: Int, draftId: String)
+POST       /check-answers                                             controllers.asset.business.BusinessAnswersController.onSubmit(index: Int, draftId: String)

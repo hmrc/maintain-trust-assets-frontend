@@ -1,0 +1,12 @@
+GET        /description                                           controllers.asset.partnership.PartnershipDescriptionController.onPageLoad(mode: Mode = NormalMode, index : Int, draftId: String)
+POST       /description                                           controllers.asset.partnership.PartnershipDescriptionController.onSubmit(mode: Mode = NormalMode, index : Int, draftId: String)
+GET        /change-description                                    controllers.asset.partnership.PartnershipDescriptionController.onPageLoad(mode: Mode = CheckMode, index : Int, draftId: String)
+POST       /change-description                                    controllers.asset.partnership.PartnershipDescriptionController.onSubmit(mode: Mode = CheckMode, index : Int, draftId: String)
+
+GET        /start-date                                            controllers.asset.partnership.PartnershipStartDateController.onPageLoad(mode: Mode = NormalMode, index : Int, draftId: String)
+POST       /start-date                                            controllers.asset.partnership.PartnershipStartDateController.onSubmit(mode: Mode = NormalMode, index : Int, draftId: String)
+GET        /change-start-date                                     controllers.asset.partnership.PartnershipStartDateController.onPageLoad(mode: Mode = CheckMode, index : Int, draftId: String)
+POST       /change-start-date                                     controllers.asset.partnership.PartnershipStartDateController.onSubmit(mode: Mode = CheckMode, index : Int, draftId: String)
+
+GET        /check-partnership-answers                             controllers.asset.partnership.PartnershipAnswerController.onPageLoad(index : Int, draftId : String)
+POST       /check-partnership-answers                             controllers.asset.partnership.PartnershipAnswerController.onSubmit(index : Int, draftId : String)
