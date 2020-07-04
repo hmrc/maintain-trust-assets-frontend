@@ -175,17 +175,17 @@ whatKindOfAsset.Other = Other
 whatKindOfAsset.checkYourAnswersLabel = What kind of asset do you need to add first?
 whatKindOfAsset.error.required = Select the kind of asset you need to add
 
-assetMoneyValue.title = What is the total amount of money in the trust?
-assetMoneyValue.heading = What is the total amount of money in the trust?
-assetMoneyValue.checkYourAnswersLabel = What is the total amount of money in the trust?
-assetMoneyValue.paragraph1 = Add all current amounts together.
-assetMoneyValue.hint = Rounded down to the nearest pound. For example, 4000
-assetMoneyValue.error.required = Enter the current total amount of money in the trust
-assetMoneyValue.error.length = Total assets value must be 999999999999 or less
-assetMoneyValue.error.invalidFormat = Total assets value must be a number
-assetMoneyValue.error.wholeNumber = Total assets value must be a whole number
-assetMoneyValue.error.zero = Total amount of money in the trust must be 1 or more
-assetMoneyValue.link = Return to registration progress
+money.value.title = What is the total amount of money in the trust?
+money.value.heading = What is the total amount of money in the trust?
+money.value.checkYourAnswersLabel = What is the total amount of money in the trust?
+money.value.paragraph1 = Add all current amounts together.
+money.value.hint = Rounded down to the nearest pound. For example, 4000
+money.value.error.required = Enter the current total amount of money in the trust
+money.value.error.length = Total assets value must be 999999999999 or less
+money.value.error.invalidFormat = Total assets value must be a number
+money.value.error.wholeNumber = Total assets value must be a whole number
+money.value.error.zero = Total amount of money in the trust must be 1 or more
+money.value.link = Return to registration progress
 
 
 propertyOrLandAddressYesNo.title = Does the property or land have an address?

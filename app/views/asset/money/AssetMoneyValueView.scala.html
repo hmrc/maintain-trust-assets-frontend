@@ -24,10 +24,10 @@
 
 @(form: Form[_], mode: Mode, draftId: String, index: Int)(implicit request: Request[_], messages: Messages)
 
-@optionalHtmlContent = {<p>@messages("assetMoneyValue.paragraph1")</p>}
+@optionalHtmlContent = {<p>@messages("money.value.paragraph1")</p>}
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("assetMoneyValue.title")}"
+    title = s"${errorPrefix(form)} ${messages("money.value.title")}"
     ) {
 
     @formHelper(action = AssetMoneyValueController.onSubmit(mode, index, draftId), 'autoComplete -> "off") {
@@ -38,11 +38,11 @@
 
         @components.input_text(
           field = form("value"),
-          label = messages("assetMoneyValue.heading"),
+          label = messages("money.value.heading"),
           labelClass=Some("heading-large"),
           symbol = Some("currency"),
           symbolText = Some(messages(s"symbolText.asSterling")),
-          hint = Some(messages(s"assetMoneyValue.hint")),
+          hint = Some(messages(s"money.value.hint")),
           optionalHtmlContent = Some(optionalHtmlContent),
           labelAsHeading = true,
           ariaRequired = true

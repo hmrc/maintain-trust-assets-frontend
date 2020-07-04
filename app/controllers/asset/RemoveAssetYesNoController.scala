@@ -107,6 +107,7 @@ class RemoveAssetYesNoController @Inject()(
         case money: MoneyAssetViewModel => money.value
         case propertyOrLand: PropertyOrLandAssetViewModel => propertyOrLandLabel(propertyOrLand)
         case shares: ShareAssetViewModel => shares.name.getOrElse(default)
+        case business: BusinessAssetViewModel => business.name
         case partnership: PartnershipAssetViewModel => partnership.description
         case other: OtherAssetViewModel => other.description
         case _ => default

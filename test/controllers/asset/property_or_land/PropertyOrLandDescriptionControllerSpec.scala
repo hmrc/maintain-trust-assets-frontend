@@ -131,7 +131,7 @@ class PropertyOrLandDescriptionControllerSpec extends SpecBase with IndexValidat
       val document = Jsoup.parse(contentAsString(result))
       document.getElementById("error-message-value-input").text() mustBe
         "The description of the property or land must only include letters a to z, numbers, ampersands (&), " +
-          "apostrophes, forward slashes, hyphens and spaces"
+          "apostrophes, hyphens and spaces"
 
       application.stop()
     }
