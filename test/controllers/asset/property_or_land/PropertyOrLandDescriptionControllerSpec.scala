@@ -17,9 +17,9 @@
 package controllers.asset.property_or_land
 
 import base.SpecBase
-import controllers.routes._
 import controllers.IndexValidation
-import forms.property_or_land.PropertyOrLandDescriptionFormProvider
+import controllers.routes._
+import forms.DescriptionFormProvider
 import models.NormalMode
 import org.jsoup.Jsoup
 import org.scalacheck.Arbitrary.arbitrary
@@ -31,8 +31,8 @@ import views.html.asset.property_or_land.PropertyOrLandDescriptionView
 
 class PropertyOrLandDescriptionControllerSpec extends SpecBase with IndexValidation {
 
-  val formProvider = new PropertyOrLandDescriptionFormProvider()
-  val form = formProvider()
+  val formProvider = new DescriptionFormProvider()
+  val form = formProvider.withConfig(56, "propertyOrLand.description")
   val index = 0
 
   lazy val propertyOrLandDescriptionRoute = routes.PropertyOrLandDescriptionController.onPageLoad(NormalMode, index, fakeDraftId).url

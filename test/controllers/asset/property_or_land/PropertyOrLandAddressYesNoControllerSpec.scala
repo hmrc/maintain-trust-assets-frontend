@@ -30,7 +30,7 @@ import views.html.asset.property_or_land.PropertyOrLandAddressYesNoView
 
 class PropertyOrLandAddressYesNoControllerSpec extends SpecBase with IndexValidation {
 
-  val form = new YesNoFormProvider().withPrefix("propertyOrLandAddressYesNo")
+  val form = new YesNoFormProvider().withPrefix("propertyOrLand.addressYesNo")
 
   val index = 0
 

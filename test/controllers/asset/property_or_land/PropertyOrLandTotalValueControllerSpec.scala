@@ -17,9 +17,9 @@
 package controllers.asset.property_or_land
 
 import base.SpecBase
-import controllers.routes._
 import controllers.IndexValidation
-import forms.property_or_land.PropertyOrLandTotalValueFormProvider
+import controllers.routes._
+import forms.ValueFormProvider
 import models.NormalMode
 import org.scalacheck.Arbitrary.arbitrary
 import pages.asset.property_or_land.PropertyOrLandTotalValuePage
@@ -30,8 +30,8 @@ import views.html.asset.property_or_land.PropertyOrLandTotalValueView
 
 class PropertyOrLandTotalValueControllerSpec extends SpecBase with IndexValidation {
 
-  val formProvider = new PropertyOrLandTotalValueFormProvider()
-  val form = formProvider()
+  val formProvider = new ValueFormProvider()
+  val form = formProvider.withPrefix("propertyOrLand.totalValue")
   val index = 0
 
   lazy val propertyOrLandTotalValueRoute = routes.PropertyOrLandTotalValueController.onPageLoad(NormalMode, index, fakeDraftId).url

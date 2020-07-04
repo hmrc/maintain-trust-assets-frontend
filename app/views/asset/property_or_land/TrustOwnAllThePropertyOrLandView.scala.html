@@ -25,8 +25,8 @@
 @(form: Form[_], mode: Mode, index:Int, draftId: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("trustOwnAllThePropertyOrLand.title")}"
-    ) {
+    title = s"${errorPrefix(form)} ${messages("propertyOrLand.trustOwnAllYesNo.title")}"
+) {
 
     @formHelper(action = TrustOwnAllThePropertyOrLandController.onSubmit(mode, index, draftId), 'autoComplete -> "off") {
 
@@ -36,7 +36,7 @@
 
         @components.input_yes_no(
             field = form("value"),
-            label = messages("trustOwnAllThePropertyOrLand.heading"),
+            label = messages("propertyOrLand.trustOwnAllYesNo.heading"),
             legendClass = Some("heading-large"),
             legendAsHeading = true
         )

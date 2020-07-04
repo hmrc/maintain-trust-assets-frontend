@@ -44,7 +44,7 @@ class PropertyOrLandUKAddressController @Inject()(
                                                    formProvider: UKAddressFormProvider,
                                                    val controllerComponents: MessagesControllerComponents,
                                                    view: PropertyOrLandUKAddressView
-                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
 

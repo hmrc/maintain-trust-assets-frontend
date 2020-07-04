@@ -17,9 +17,9 @@
 package controllers.asset.property_or_land
 
 import base.SpecBase
-import controllers.routes._
 import controllers.IndexValidation
-import forms.property_or_land.PropertyLandValueTrustFormProvider
+import controllers.routes._
+import forms.ValueFormProvider
 import models.{NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.asset.property_or_land.PropertyLandValueTrustPage
@@ -31,8 +31,8 @@ import views.html.asset.property_or_land.PropertyLandValueTrustView
 
 class PropertyLandValueTrustControllerSpec extends SpecBase with IndexValidation {
 
-  val formProvider = new PropertyLandValueTrustFormProvider()
-  val form = formProvider()
+  val formProvider = new ValueFormProvider()
+  val form = formProvider.withPrefix("propertyOrLand.trustValue")
 
   val index: Int = 0
 

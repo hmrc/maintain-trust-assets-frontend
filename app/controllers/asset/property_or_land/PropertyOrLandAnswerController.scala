@@ -17,7 +17,6 @@
 package controllers.asset.property_or_land
 
 import controllers.actions._
-import controllers.filters.IndexActionFilterProvider
 import javax.inject.Inject
 import models.NormalMode
 import models.Status.Completed
@@ -44,18 +43,16 @@ class PropertyOrLandAnswerController @Inject()(
                                                 getData: DraftIdRetrievalActionProvider,
                                                 requireData: RegistrationDataRequiredAction,
                                                 requiredAnswer: RequiredAnswerActionProvider,
-                                                validateIndex: IndexActionFilterProvider,
                                                 view: PropertyOrLandAnswersView,
                                                 countryOptions: CountryOptions,
                                                 val controllerComponents: MessagesControllerComponents
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private def actions(index: Int, draftId: String) =
     identify andThen
       getData(draftId) andThen
       requireData andThen
       requiredAnswer(RequiredAnswer(PropertyOrLandAddressYesNoPage(index), routes.PropertyOrLandAddressYesNoController.onPageLoad(NormalMode, index, draftId)))
-
 
   def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
     implicit request =>

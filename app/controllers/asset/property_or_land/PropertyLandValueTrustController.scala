@@ -18,7 +18,7 @@ package controllers.asset.property_or_land
 
 import controllers.actions.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
 import controllers.filters.IndexActionFilterProvider
-import forms.property_or_land.PropertyLandValueTrustFormProvider
+import forms.ValueFormProvider
 import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
@@ -41,12 +41,12 @@ class PropertyLandValueTrustController @Inject()(
                                                   getData: DraftIdRetrievalActionProvider,
                                                   requireData: RegistrationDataRequiredAction,
                                                   validateIndex: IndexActionFilterProvider,
-                                                  formProvider: PropertyLandValueTrustFormProvider,
+                                                  formProvider: ValueFormProvider,
                                                   val controllerComponents: MessagesControllerComponents,
                                                   view: PropertyLandValueTrustView
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val form = formProvider()
+  private val form = formProvider.withPrefix("propertyOrLand.trustValue")
 
   private def actions(index: Int, draftId: String) =
     identify andThen

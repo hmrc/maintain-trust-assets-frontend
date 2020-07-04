@@ -44,9 +44,9 @@ class TrustOwnAllThePropertyOrLandController @Inject()(
                                                         yesNoFormProvider: YesNoFormProvider,
                                                         val controllerComponents: MessagesControllerComponents,
                                                         view: TrustOwnAllThePropertyOrLandView
-                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form: Form[Boolean] = yesNoFormProvider.withPrefix("trustOwnAllThePropertyOrLand")
+  val form: Form[Boolean] = yesNoFormProvider.withPrefix("propertyOrLand.trustOwnAllYesNo")
 
   private def actions(index: Int, draftId: String) =
     identify andThen

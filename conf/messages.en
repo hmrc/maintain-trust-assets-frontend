@@ -188,59 +188,59 @@ money.value.error.zero = Total amount of money in the trust must be 1 or more
 money.value.link = Return to registration progress
 
 
-propertyOrLandAddressYesNo.title = Does the property or land have an address?
-propertyOrLandAddressYesNo.heading = Does the property or land have an address?
-propertyOrLandAddressYesNo.checkYourAnswersLabel = Does the property or land have an address?
-propertyOrLandAddressYesNo.error.required = Select yes if the property or land has an address
+propertyOrLand.addressYesNo.title = Does the property or land have an address?
+propertyOrLand.addressYesNo.heading = Does the property or land have an address?
+propertyOrLand.addressYesNo.checkYourAnswersLabel = Does the property or land have an address?
+propertyOrLand.addressYesNo.error.required = Select yes if the property or land has an address
 
-propertyOrLandAddressUkYesNo.title = Is the property or land’s address in the UK?
-propertyOrLandAddressUkYesNo.heading = Is the property or land’s address in the UK?
-propertyOrLandAddressUkYesNo.checkYourAnswersLabel = Is the property or land’s address in the UK?
-propertyOrLandAddressUkYesNo.error.required = Select yes if the property or land has an address in the UK
+propertyOrLand.addressUkYesNo.title = Is the property or land’s address in the UK?
+propertyOrLand.addressUkYesNo.heading = Is the property or land’s address in the UK?
+propertyOrLand.addressUkYesNo.checkYourAnswersLabel = Is the property or land’s address in the UK?
+propertyOrLand.addressUkYesNo.error.required = Select yes if the property or land has an address in the UK
 
-propertyOrLandUKAddress.title = What is the property or land’s address?
-propertyOrLandUKAddress.heading = What is the property or land’s address?
-propertyOrLandUKAddress.checkYourAnswersLabel = What is the property or land’s address?
+propertyOrLand.uKAddress.title = What is the property or land’s address?
+propertyOrLand.uKAddress.heading = What is the property or land’s address?
+propertyOrLand.uKAddress.checkYourAnswersLabel = What is the property or land’s address?
 
-propertyOrLandInternationalAddress.title = What is the property or land’s address?
-propertyOrLandInternationalAddress.heading = What is the property or land’s address?
-propertyOrLandInternationalAddress.checkYourAnswersLabel = What is the property or land’s address?
+propertyOrLand.internationalAddress.title = What is the property or land’s address?
+propertyOrLand.internationalAddress.heading = What is the property or land’s address?
+propertyOrLand.internationalAddress.checkYourAnswersLabel = What is the property or land’s address?
 
-propertyOrLandDescription.title = What is the description of the property or land?
-propertyOrLandDescription.heading = What is the description of the property or land?
-propertyOrLandDescription.checkYourAnswersLabel = What is the description of the property or land?
-propertyOrLandDescription.hint = This must be 56 characters or less
-propertyOrLandDescription.error.required = Enter a description of the property or land
-propertyOrLandDescription.error.length = The description of the property or land must be 56 characters or less
-propertyOrLandDescription.error.invalid = The description of the property or land must only include letters a to z, numbers, ampersands (&), apostrophes, hyphens and spaces
+propertyOrLand.description.title = What is the description of the property or land?
+propertyOrLand.description.heading = What is the description of the property or land?
+propertyOrLand.description.checkYourAnswersLabel = What is the description of the property or land?
+propertyOrLand.description.hint = This must be 56 characters or less
+propertyOrLand.description.error.required = Enter a description of the property or land
+propertyOrLand.description.error.length = The description of the property or land must be 56 characters or less
+propertyOrLand.description.error.invalid = The description of the property or land must only include letters a to z, numbers, ampersands (&), apostrophes, hyphens and spaces
 
-propertyOrLandTotalValue.title = What is the current total value of the property or land?
-propertyOrLandTotalValue.heading = What is the current total value of the property or land?
-propertyOrLandTotalValue.checkYourAnswersLabel = What is the current total value of the property or land?
-propertyOrLandTotalValue.hint = This can be an estimate. Rounded down to the nearest pound. For example, 4000
-propertyOrLandTotalValue.error.required = Enter the current total value of the property or land
-propertyOrLandTotalValue.error.length = Current total value of the property or land must be 999999999999 or less
-propertyOrLandTotalValue.error.invalid = Current total value of the property or land must be a number
-propertyOrLandTotalValue.error.zero = Current total value of the property or land must be 1 or more
-propertyOrLandTotalValue.error.wholeNumber = Current total value of the property or land must be a whole number
+propertyOrLand.totalValue.title = What is the current total value of the property or land?
+propertyOrLand.totalValue.heading = What is the current total value of the property or land?
+propertyOrLand.totalValue.checkYourAnswersLabel = What is the current total value of the property or land?
+propertyOrLand.totalValue.hint = This can be an estimate. Rounded down to the nearest pound. For example, 4000
+propertyOrLand.totalValue.error.required = Enter the current total value of the property or land
+propertyOrLand.totalValue.error.length = Current total value of the property or land must be 999999999999 or less
+propertyOrLand.totalValue.error.invalid = Current total value of the property or land must be a number
+propertyOrLand.totalValue.error.zero = Current total value of the property or land must be 1 or more
+propertyOrLand.totalValue.error.wholeNumber = Current total value of the property or land must be a whole number
 
-trustOwnAllThePropertyOrLand.title = Does the trust own all of the property or land?
-trustOwnAllThePropertyOrLand.heading = Does the trust own all of the property or land?
-trustOwnAllThePropertyOrLand.checkYourAnswersLabel = Does the trust own all of the property or land?
-trustOwnAllThePropertyOrLand.error.required = Select yes if the trust owns all of the property or land
+propertyOrLand.trustOwnAllYesNo.title = Does the trust own all of the property or land?
+propertyOrLand.trustOwnAllYesNo.heading = Does the trust own all of the property or land?
+propertyOrLand.trustOwnAllYesNo.checkYourAnswersLabel = Does the trust own all of the property or land?
+propertyOrLand.trustOwnAllYesNo.error.required = Select yes if the trust owns all of the property or land
 
-propertyLandValueTrust.title = What is the value of the property or land owned by the trust?
-propertyLandValueTrust.heading = What is the value of the property or land owned by the trust?
-propertyLandValueTrust.hint = This can be an estimate. Rounded down to the nearest pound. For example, 4000
-propertyLandValueTrust.checkYourAnswersLabel = What is the value of the property or land owned by the trust?
-propertyLandValueTrust.error.required = Enter the current value of the property or land owned by the trust
-propertyLandValueTrust.error.invalid = Current value of the property or land owned by the trust must be a number
-propertyLandValueTrust.error.whole = Current value of the property or land owned by the trust must be a whole number
-propertyLandValueTrust.error.zero = Current value of the property or land owned by the trust must be 1 or more
-propertyLandValueTrust.error.length = Current value of the property or land owned by the trust must be 12 characters or less
+propertyLand.trustValue.title = What is the value of the property or land owned by the trust?
+propertyLand.trustValue.heading = What is the value of the property or land owned by the trust?
+propertyLand.trustValue.hint = This can be an estimate. Rounded down to the nearest pound. For example, 4000
+propertyLand.trustValue.checkYourAnswersLabel = What is the value of the property or land owned by the trust?
+propertyLand.trustValue.error.required = Enter the current value of the property or land owned by the trust
+propertyLand.trustValue.error.invalid = Current value of the property or land owned by the trust must be a number
+propertyLand.trustValue.error.wholeNumber = Current value of the property or land owned by the trust must be a whole number
+propertyLand.trustValue.error.zero = Current value of the property or land owned by the trust must be 1 or more
+propertyLand.trustValue.error.length = Current value of the property or land owned by the trust must be 12 characters or less
 
-propertyOrLandAnswers.title = Check property or land details
-propertyOrLandAnswers.heading = Check property or land details
+propertyOrLand.answers.title = Check property or land details
+propertyOrLand.answers.heading = Check property or land details
 
 
 shareClass.title = What class are the shares?

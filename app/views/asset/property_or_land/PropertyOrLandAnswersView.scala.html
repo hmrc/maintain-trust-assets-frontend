@@ -25,12 +25,12 @@ formHelper: FormWithCSRF
 @(index : Int, draftId: String, answerSections: Seq[Section])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-title = messages("propertyOrLandAnswers.title")
+    title = messages("propertyOrLand.answers.title")
 ) {
 
 @components.back_link()
 
-@components.heading("propertyOrLandAnswers.heading")
+@components.heading("propertyOrLand.answers.heading")
 
     @for(section <- answerSections){
         @{section match {

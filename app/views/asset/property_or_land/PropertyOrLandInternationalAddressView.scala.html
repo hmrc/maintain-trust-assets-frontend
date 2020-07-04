@@ -26,8 +26,8 @@
 @(form: Form[_], countryOptions: Seq[InputOption], mode: Mode, draftId: String, index: Int)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("site.address.international.title")}"
-    ) {
+    title = s"${errorPrefix(form)} ${messages("propertyOrLand.internationalAddress.title")}"
+) {
 
     @formHelper(action = PropertyOrLandInternationalAddressController.onSubmit(mode, index, draftId), 'autoComplete -> "off") {
 
@@ -38,7 +38,7 @@
         <fieldset>
 
             <legend>
-                @components.heading("propertyOrLandInternationalAddress.heading")
+                @components.heading("propertyOrLand.internationalAddress.heading")
             </legend>
 
             @components.international_address(form, countryOptions)

@@ -18,7 +18,7 @@ package controllers.asset.property_or_land
 
 import controllers.actions.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
 import controllers.filters.IndexActionFilterProvider
-import forms.property_or_land.PropertyOrLandDescriptionFormProvider
+import forms.DescriptionFormProvider
 import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
@@ -41,12 +41,12 @@ class PropertyOrLandDescriptionController @Inject()(
                                                      getData: DraftIdRetrievalActionProvider,
                                                      requireData: RegistrationDataRequiredAction,
                                                      validateIndex: IndexActionFilterProvider,
-                                                     formProvider: PropertyOrLandDescriptionFormProvider,
+                                                     formProvider: DescriptionFormProvider,
                                                      val controllerComponents: MessagesControllerComponents,
                                                      view: PropertyOrLandDescriptionView
-                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                   )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form: Form[String] = formProvider()
+  val form: Form[String] = formProvider.withConfig(56, "propertyOrLand.description")
 
   private def actions(index: Int, draftId: String) =
     identify andThen

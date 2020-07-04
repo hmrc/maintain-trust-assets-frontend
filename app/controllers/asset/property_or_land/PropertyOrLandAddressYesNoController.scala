@@ -44,9 +44,9 @@ class PropertyOrLandAddressYesNoController @Inject()(
                                                       yesNoFormProvider: YesNoFormProvider,
                                                       val controllerComponents: MessagesControllerComponents,
                                                       view: PropertyOrLandAddressYesNoView
-                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form: Form[Boolean] = yesNoFormProvider.withPrefix("propertyOrLandAddressYesNo")
+  val form: Form[Boolean] = yesNoFormProvider.withPrefix("propertyOrLand.addressYesNo")
 
   private def actions(index: Int, draftId: String) =
     identify andThen

@@ -25,8 +25,8 @@
 @(form: Form[_], mode: Mode, index: Int, draftId: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("propertyOrLandDescription.title")}"
-    ) {
+    title = s"${errorPrefix(form)} ${messages("propertyOrLand.description.title")}"
+) {
 
     @formHelper(action = PropertyOrLandDescriptionController.onSubmit(mode, index, draftId), 'autoComplete -> "off") {
 
@@ -36,10 +36,10 @@
 
         @components.input_text(
           field = form("value"),
-          label = messages("propertyOrLandDescription.heading"),
+          label = messages("propertyOrLand.description.heading"),
           labelClass = Some("heading-large"),
           labelAsHeading = true,
-          hint = Some(messages("propertyOrLandDescription.hint"))
+          hint = Some(messages("propertyOrLand.description.hint"))
         )
 
         @components.submit_button()
