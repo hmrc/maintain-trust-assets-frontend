@@ -16,6 +16,7 @@
 
 package navigation
 
+import controllers.asset.routes
 import config.FrontendAppConfig
 import javax.inject.{Inject, Singleton}
 import models.{NormalMode, UserAnswers}
@@ -34,8 +35,8 @@ class MoneyNavigator @Inject()(config: FrontendAppConfig) extends Navigator(conf
   private def assetMoneyValueRoute(answers: UserAnswers, index: Int, draftId: String) = {
     val assets = answers.get(sections.Assets).getOrElse(List.empty)
     assets match  {
-      case Nil => controllers.routes.WhatKindOfAssetController.onPageLoad(NormalMode, index, draftId)
-      case _ => controllers.asset.routes.AddAssetsController.onPageLoad(draftId)
+      case Nil => routes.WhatKindOfAssetController.onPageLoad(NormalMode, index, draftId)
+      case _ => routes.AddAssetsController.onPageLoad(draftId)
     }
   }
 

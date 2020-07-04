@@ -327,7 +327,7 @@ class CheckYourAnswersHelper @Inject()(countryOptions: CountryOptions)
       AnswerRow(
         "whatKindOfAsset.checkYourAnswersLabel",
         HtmlFormat.escape(messages(s"whatKindOfAsset.$x")),
-        Some(controllers.routes.WhatKindOfAssetController.onPageLoad(NormalMode, index, draftId).url),
+        Some(controllers.asset.routes.WhatKindOfAssetController.onPageLoad(NormalMode, index, draftId).url),
         canEdit = canEdit
       )
   }

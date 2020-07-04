@@ -43,7 +43,7 @@ class AssetInterruptPageController @Inject()(
   def onSubmit(draftId: String): Action[AnyContent] = (identify andThen getData(draftId) andThen requireData) {
     implicit request =>
 
-      Redirect(controllers.routes.WhatKindOfAssetController.onPageLoad(NormalMode, 0, draftId))
+      Redirect(routes.WhatKindOfAssetController.onPageLoad(NormalMode, 0, draftId))
 
   }
 

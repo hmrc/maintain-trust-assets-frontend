@@ -49,7 +49,7 @@ class OtherAssetDescriptionController @Inject()(
 
   private def actions(mode: Mode, index: Int, draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] = {
     identify andThen getData(draftId) andThen requireData andThen
-      requiredAnswer(RequiredAnswer(WhatKindOfAssetPage(index), controllers.routes.WhatKindOfAssetController.onPageLoad(mode, index, draftId)))
+      requiredAnswer(RequiredAnswer(WhatKindOfAssetPage(index), controllers.asset.routes.WhatKindOfAssetController.onPageLoad(mode, index, draftId)))
   }
 
   val form: Form[String] = formProvider.withConfig(length = 56, prefix = "other.description")

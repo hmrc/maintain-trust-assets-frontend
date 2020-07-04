@@ -46,7 +46,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           val answers = userAnswers.set(AddAnAssetYesNoPage, true).success.value
 
           navigator.nextPage(AddAnAssetYesNoPage, NormalMode, fakeDraftId)(answers)
-            .mustBe(controllers.routes.WhatKindOfAssetController.onPageLoad(NormalMode, index, fakeDraftId))
+            .mustBe(controllers.asset.routes.WhatKindOfAssetController.onPageLoad(NormalMode, index, fakeDraftId))
       }
     }
 
@@ -70,7 +70,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           .set(AddAssetsPage, AddAssets.YesNow).success.value
 
         navigator.nextPage(AddAssetsPage, NormalMode, fakeDraftId)(answers)
-          .mustBe(controllers.routes.WhatKindOfAssetController.onPageLoad(NormalMode, 1, fakeDraftId))
+          .mustBe(controllers.asset.routes.WhatKindOfAssetController.onPageLoad(NormalMode, 1, fakeDraftId))
       }
 
       "go to RegistrationProgress from AddAssetsPage when selecting add them later" in {

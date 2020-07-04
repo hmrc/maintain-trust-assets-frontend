@@ -17,6 +17,7 @@
 package navigation
 
 import config.FrontendAppConfig
+import controllers.asset.routes
 import javax.inject.{Inject, Singleton}
 import models.WhatKindOfAsset._
 import models.{UserAnswers, _}
@@ -39,7 +40,7 @@ object AssetsRoutes {
 
   private def addAnAssetYesNoRoute(draftId: String, config: FrontendAppConfig)(userAnswers: UserAnswers) : Call = userAnswers.get(AddAnAssetYesNoPage) match {
     case Some(false) => assetsCompletedRoute(draftId, config)
-    case Some(true) => controllers.routes.WhatKindOfAssetController.onPageLoad(NormalMode, 0, draftId)
+    case Some(true) => routes.WhatKindOfAssetController.onPageLoad(NormalMode, 0, draftId)
     case _ => controllers.routes.SessionExpiredController.onPageLoad()
   }
 
@@ -50,9 +51,9 @@ object AssetsRoutes {
       val assets = answers.get(sections.Assets).getOrElse(List.empty)
       assets match {
         case Nil =>
-          controllers.routes.WhatKindOfAssetController.onPageLoad(NormalMode, 0, draftId)
+          routes.WhatKindOfAssetController.onPageLoad(NormalMode, 0, draftId)
         case t if t.nonEmpty =>
-          controllers.routes.WhatKindOfAssetController.onPageLoad(NormalMode, t.size, draftId)
+          routes.WhatKindOfAssetController.onPageLoad(NormalMode, t.size, draftId)
       }
     }
 

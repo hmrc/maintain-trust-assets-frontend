@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.asset
 
 import base.SpecBase
+import controllers.IndexValidation
+import controllers.routes._
 import forms.WhatKindOfAssetFormProvider
-import models.{NormalMode, WhatKindOfAsset}
 import models.WhatKindOfAsset.Money
+import models.{NormalMode, WhatKindOfAsset}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.asset.WhatKindOfAssetPage
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
@@ -148,7 +150,7 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation  {
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad().url
 
       application.stop()
     }
@@ -165,7 +167,7 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation  {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad().url
 
       application.stop()
     }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.asset
 
 import controllers.actions.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
 import controllers.filters.IndexActionFilterProvider
