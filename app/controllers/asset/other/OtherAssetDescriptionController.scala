@@ -47,7 +47,7 @@ class OtherAssetDescriptionController @Inject()(
 
   private def actions(draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] = identify andThen getData(draftId) andThen requireData
 
-  val form: Form[String] = formProvider.withConfig(length = 56, prefix = "assets.other.description")
+  val form: Form[String] = formProvider.withConfig(length = 56, prefix = "other.description")
 
   def onPageLoad(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(draftId) {
     implicit request =>

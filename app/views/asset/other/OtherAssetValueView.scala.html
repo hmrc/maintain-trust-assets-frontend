@@ -25,8 +25,8 @@
 @(form: Form[_], mode: Mode, draftId: String, index: Int, description: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("assets.other.value.title")}"
-    ) {
+    title = s"${errorPrefix(form)} ${messages("other.value.title")}"
+) {
 
     @formHelper(action = OtherAssetValueController.onSubmit(mode, index, draftId), 'autoComplete -> "off") {
 
@@ -36,11 +36,11 @@
 
         @components.input_text(
             field = form("value"),
-            label = messages("assets.other.value.heading", description),
+            label = messages("other.value.heading", description),
             labelClass=Some("heading-large"),
             symbol = Some("currency"),
             symbolText = Some(messages(s"symbolText.asSterling")),
-            hint = Some(messages(s"assets.other.value.hint")),
+            hint = Some(messages(s"other.value.hint")),
             labelAsHeading = true,
             inputMode = Some("numeric")
         )

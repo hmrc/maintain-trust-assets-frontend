@@ -28,7 +28,7 @@ import views.html.asset.other.OtherAssetDescriptionView
 class OtherAssetDescriptionControllerSpec extends SpecBase {
 
   val formProvider = new DescriptionFormProvider()
-  val form: Form[String] = formProvider.withConfig(56, "assets.other.description")
+  val form: Form[String] = formProvider.withConfig(56, "other.description")
   val index = 0
   val validAnswer: String = "Description"
 

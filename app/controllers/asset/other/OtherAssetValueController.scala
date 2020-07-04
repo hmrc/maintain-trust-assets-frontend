@@ -49,7 +49,7 @@ class OtherAssetValueController @Inject()(
   private def actions(mode: Mode, index: Int, draftId: String): ActionBuilder[OtherAssetDescriptionRequest, AnyContent] =
     identify andThen getData(draftId) andThen requireData andThen new RequireOtherAssetDescriptionAction(mode, index, draftId)
 
-  val form: Form[String] = formProvider.withPrefix(prefix = "assets.other.value")
+  val form: Form[String] = formProvider.withPrefix(prefix = "other.value")
 
   def onPageLoad(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(mode, index, draftId) {
     implicit request =>
