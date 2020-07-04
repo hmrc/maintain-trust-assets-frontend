@@ -32,7 +32,7 @@ import views.html.asset.buisness.BusinessNameView
 class BusinessNameControllerSpec extends SpecBase  with IndexValidation {
 
   val formProvider = new NameFormProvider()
-  val prefix: String = "assetName"
+  val prefix: String = "business.name"
   val maxLength: Int = 105
   val form: Form[String] = formProvider.withConfig(maxLength, prefix)
   val index = 0

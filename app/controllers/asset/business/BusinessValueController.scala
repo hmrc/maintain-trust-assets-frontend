@@ -50,7 +50,7 @@ class BusinessValueController @Inject()(
                                          view: BusinessValueView
                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form: Form[String] = formProvider.withPrefix("currentValue")
+  val form: Form[String] = formProvider.withPrefix("business.currentValue")
 
   private def actions(index: Int, draftId: String) =
     identify andThen

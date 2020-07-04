@@ -26,7 +26,7 @@
 @(form: Form[_], countryOptions:Seq[InputOption], mode: Mode, index:Int, draftId: String, businessName: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("assetInternationalAddress.title")}"
+    title = s"${errorPrefix(form)} ${messages("business.internationalAddress.title")}"
 ) {
 
     @formHelper(action = BusinessInternationalAddressController.onSubmit(mode, index, draftId), 'autoComplete -> "off") {
@@ -38,7 +38,7 @@
         <fieldset>
 
             <legend>
-                @components.heading("assetInternationalAddress.heading", Some(businessName))
+                @components.heading("business.internationalAddress.heading", Some(businessName))
             </legend>
 
             @components.international_address(form, countryOptions)

@@ -32,7 +32,7 @@ import views.html.asset.buisness.BusinessAddressUkYesNoView
 class BusinessAddressUkYesNoControllerSpec extends SpecBase with IndexValidation {
 
   val formProvider = new YesNoFormProvider()
-  val form: Form[Boolean] = formProvider.withPrefix("assetAddressUkYesNo")
+  val form: Form[Boolean] = formProvider.withPrefix("business.addressUkYesNo")
 
   val index = 0
   val businessName = "Test"

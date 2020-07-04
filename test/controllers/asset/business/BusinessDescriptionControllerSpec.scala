@@ -32,7 +32,7 @@ import views.html.asset.buisness.BusinessDescriptionView
 class BusinessDescriptionControllerSpec extends SpecBase  with IndexValidation {
 
   val formProvider = new DescriptionFormProvider()
-  val prefix: String = "assetDescription"
+  val prefix: String = "business.description"
   val maxLength: Int = 56
   val form: Form[String] = formProvider.withConfig(maxLength, prefix)
   val index = 0

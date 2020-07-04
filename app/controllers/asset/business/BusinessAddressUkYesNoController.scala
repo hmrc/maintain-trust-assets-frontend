@@ -60,7 +60,7 @@ class BusinessAddressUkYesNoController @Inject()(
 
       val businessName = request.userAnswers.get(BusinessNamePage(index)).get
 
-      val form: Form[Boolean] = formProvider.withPrefix("assetAddressUkYesNo")
+      val form: Form[Boolean] = formProvider.withPrefix("business.addressUkYesNo")
 
       val preparedForm = request.userAnswers.get(BusinessAddressUkYesNoPage(index)) match {
         case None => form

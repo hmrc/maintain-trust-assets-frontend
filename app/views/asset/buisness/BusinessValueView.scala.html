@@ -25,7 +25,7 @@
 @(form: Form[_], mode: Mode, draftId: String, index: Int, businessName: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("currentValue.title")}"
+    title = s"${errorPrefix(form)} ${messages("business.currentValue.title")}"
 ) {
 
     @formHelper(action = BusinessValueController.onSubmit(mode, index, draftId), 'autoComplete -> "off") {
@@ -36,11 +36,11 @@
 
         @components.input_text(
           field = form("value"),
-          label = messages("currentValue.heading", businessName),
+          label = messages("business.currentValue.heading", businessName),
           labelClass=Some("heading-large"),
           symbol = Some("currency"),
           symbolText = Some(messages(s"symbolText.asSterling")),
-          hint = Some(messages(s"currentValue.hint")),
+          hint = Some(messages(s"business.currentValue.hint")),
           labelAsHeading = true
         )
 

@@ -25,7 +25,7 @@
 @(form: Form[_], mode: Mode, draftId: String, index: Int, businessName: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("site.address.uk.title")}"
+    title = s"${errorPrefix(form)} ${messages("business.ukAddress.title")}"
 ) {
 
     @formHelper(action = BusinessUkAddressController.onSubmit(mode, index, draftId), 'autoComplete -> "off") {
@@ -37,7 +37,7 @@
         <fieldset>
 
             <legend>
-                @components.heading("site.address.uk.heading", optionalParam = Some(businessName))
+                @components.heading("business.ukAddress.heading", optionalParam = Some(businessName))
             </legend>
 
             @components.uk_address(form)

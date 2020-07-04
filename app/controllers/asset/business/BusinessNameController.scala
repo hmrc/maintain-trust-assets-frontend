@@ -47,7 +47,7 @@ class BusinessNameController @Inject()(
                                         view: BusinessNameView
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form: Form[String] = formProvider.withConfig(105, "assetName")
+  val form: Form[String] = formProvider.withConfig(105, "business.name")
 
   private def actions(index: Int, draftId: String) =
     identify andThen getData(draftId) andThen

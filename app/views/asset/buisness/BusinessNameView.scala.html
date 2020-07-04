@@ -22,10 +22,10 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], mode: Mode,draftId: String, index : Int)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode,draftId: String, index: Int)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("assetName.title")}"
+    title = s"${errorPrefix(form)} ${messages("business.name.title")}"
 ) {
 
     @formHelper(action = BusinessNameController.onSubmit(mode, index, draftId), 'autoComplete -> "off") {
@@ -36,7 +36,7 @@
 
         @components.input_text(
           field = form("value"),
-          label = messages("assetName.heading"),
+          label = messages("business.name.heading"),
           inputClass = Some("form-control-3-4"),
           labelAsHeading = true,
           labelClass=Some("heading-large")

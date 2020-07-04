@@ -48,7 +48,7 @@ class BusinessDescriptionController @Inject()(
                                                view: BusinessDescriptionView
                                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form: Form[String] = formProvider.withConfig(length = 56, prefix = "assetDescription")
+  val form: Form[String] = formProvider.withConfig(length = 56, prefix = "business.description")
 
   private def actions(index: Int, draftId: String) =
     identify andThen getData(draftId) andThen
