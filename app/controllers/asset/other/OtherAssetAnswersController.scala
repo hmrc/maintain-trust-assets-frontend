@@ -16,13 +16,13 @@
 
 package controllers.asset.other
 
-import controllers.actions.asset.RequireOtherAssetDescriptionAction
-import controllers.actions.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
+import controllers.actions._
 import javax.inject.Inject
 import models.Status.Completed
-import models.requests.asset.OtherAssetDescriptionRequest
+import models.requests.RegistrationDataRequest
 import models.{Mode, NormalMode}
 import pages.AssetStatus
+import pages.asset.other.{OtherAssetDescriptionPage, OtherAssetValuePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
 import repositories.RegistrationsRepository
@@ -40,18 +40,23 @@ class OtherAssetAnswersController @Inject()(
                                              identify: RegistrationIdentifierAction,
                                              getData: DraftIdRetrievalActionProvider,
                                              requireData: RegistrationDataRequiredAction,
+                                             requiredAnswer: RequiredAnswerActionProvider,
                                              view: OtherAssetAnswersView,
                                              countryOptions: CountryOptions,
                                              val controllerComponents: MessagesControllerComponents
                                            )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private def actions(mode: Mode, index: Int, draftId: String): ActionBuilder[OtherAssetDescriptionRequest, AnyContent] =
-    identify andThen getData(draftId) andThen requireData andThen new RequireOtherAssetDescriptionAction(mode, index, draftId)
+  private def actions(mode: Mode, index: Int, draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] = {
+    identify andThen getData(draftId) andThen requireData andThen
+      requiredAnswer(RequiredAnswer(OtherAssetDescriptionPage(index), routes.OtherAssetDescriptionController.onPageLoad(mode, index, draftId))) andThen
+      requiredAnswer(RequiredAnswer(OtherAssetValuePage(index), routes.OtherAssetValueController.onPageLoad(mode, index, draftId)))
+  }
 
   def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(NormalMode, index, draftId) {
     implicit request =>
 
       val answers = new CheckYourAnswersHelper(countryOptions)(request.userAnswers, draftId, canEdit = true)
+      val description = request.userAnswers.get(OtherAssetDescriptionPage(index)).get
 
       val sections = Seq(
         AnswerSection(
@@ -59,7 +64,7 @@ class OtherAssetAnswersController @Inject()(
           Seq(
             answers.whatKindOfAsset(index),
             answers.otherAssetDescription(index),
-            answers.otherAssetValue(index, request.description)
+            answers.otherAssetValue(index, description)
           ).flatten
         )
       )

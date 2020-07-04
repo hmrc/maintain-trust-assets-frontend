@@ -16,12 +16,13 @@
 
 package controllers.asset.other
 
-import controllers.actions.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
+import controllers.actions.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction, RequiredAnswer, RequiredAnswerActionProvider}
 import forms.DescriptionFormProvider
 import javax.inject.Inject
 import models.Mode
 import models.requests.RegistrationDataRequest
 import navigation.Navigator
+import pages.asset.WhatKindOfAssetPage
 import pages.asset.other.OtherAssetDescriptionPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -40,16 +41,20 @@ class OtherAssetDescriptionController @Inject()(
                                                  identify: RegistrationIdentifierAction,
                                                  getData: DraftIdRetrievalActionProvider,
                                                  requireData: RegistrationDataRequiredAction,
+                                                 requiredAnswer: RequiredAnswerActionProvider,
                                                  formProvider: DescriptionFormProvider,
                                                  val controllerComponents: MessagesControllerComponents,
                                                  view: OtherAssetDescriptionView
                                                )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private def actions(draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] = identify andThen getData(draftId) andThen requireData
+  private def actions(mode: Mode, index: Int, draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] = {
+    identify andThen getData(draftId) andThen requireData andThen
+      requiredAnswer(RequiredAnswer(WhatKindOfAssetPage(index), controllers.routes.WhatKindOfAssetController.onPageLoad(mode, index, draftId)))
+  }
 
   val form: Form[String] = formProvider.withConfig(length = 56, prefix = "other.description")
 
-  def onPageLoad(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(draftId) {
+  def onPageLoad(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(mode, index, draftId) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(OtherAssetDescriptionPage(index)) match {
@@ -60,7 +65,7 @@ class OtherAssetDescriptionController @Inject()(
       Ok(view(preparedForm, mode, draftId, index))
   }
 
-  def onSubmit(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(draftId).async {
+  def onSubmit(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(mode, index, draftId).async {
     implicit request =>
 
       form.bindFromRequest().fold(

@@ -18,12 +18,18 @@ package controllers.asset.other
 
 import base.SpecBase
 import forms.ValueFormProvider
+import models.WhatKindOfAsset.Other
 import models.{NormalMode, UserAnswers}
+import pages.asset.WhatKindOfAssetPage
 import pages.asset.other.{OtherAssetDescriptionPage, OtherAssetValuePage}
+import play.api.Application
 import play.api.data.Form
+import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.asset.other.OtherAssetValueView
+
+import scala.concurrent.Future
 
 class OtherAssetValueControllerSpec extends SpecBase {
 
@@ -75,6 +81,25 @@ class OtherAssetValueControllerSpec extends SpecBase {
 
       contentAsString(result) mustEqual
         view(form.fill(validAnswer), NormalMode, fakeDraftId, index, description)(fakeRequest, messages).toString
+
+      application.stop()
+    }
+
+    "redirect to description page if no description found" in {
+
+      val userAnswers: UserAnswers = emptyUserAnswers
+        .set(WhatKindOfAssetPage(index), Other).success.value
+
+      val application: Application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+
+      val request = FakeRequest(GET, valueRoute)
+
+      val result: Future[Result] = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual
+        controllers.asset.other.routes.OtherAssetDescriptionController.onPageLoad(NormalMode, index, fakeDraftId).url
 
       application.stop()
     }

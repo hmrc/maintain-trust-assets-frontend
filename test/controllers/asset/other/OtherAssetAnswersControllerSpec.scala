@@ -17,7 +17,7 @@
 package controllers.asset.other
 
 import base.SpecBase
-import models.UserAnswers
+import models.{NormalMode, UserAnswers}
 import models.WhatKindOfAsset.Other
 import pages.asset._
 import pages.asset.other._
@@ -41,17 +41,16 @@ class OtherAssetAnswersControllerSpec extends SpecBase {
 
     lazy val answersRoute = routes.OtherAssetAnswersController.onPageLoad(index, fakeDraftId).url
 
-    "return OK and the correct view for a GET" in {
+    val baseAnswers: UserAnswers = emptyUserAnswers
+      .set(WhatKindOfAssetPage(index), Other).success.value
+      .set(OtherAssetDescriptionPage(index), description).success.value
+      .set(OtherAssetValuePage(index), "4000").success.value
 
-      val answers: UserAnswers =
-        emptyUserAnswers
-          .set(WhatKindOfAssetPage(index), Other).success.value
-          .set(OtherAssetDescriptionPage(index), description).success.value
-          .set(OtherAssetValuePage(index), "4000").success.value
+    "return OK and the correct view for a GET" in {
 
       val countryOptions: CountryOptions = injector.instanceOf[CountryOptions]
 
-      val checkYourAnswersHelper = new CheckYourAnswersHelper(countryOptions)(answers, fakeDraftId, canEdit = true)
+      val checkYourAnswersHelper = new CheckYourAnswersHelper(countryOptions)(baseAnswers, fakeDraftId, canEdit = true)
 
       val expectedSections = Seq(
         AnswerSection(
@@ -64,7 +63,7 @@ class OtherAssetAnswersControllerSpec extends SpecBase {
         )
       )
 
-      val application: Application = applicationBuilder(userAnswers = Some(answers)).build()
+      val application: Application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
 
       val request = FakeRequest(GET, answersRoute)
 
@@ -80,12 +79,48 @@ class OtherAssetAnswersControllerSpec extends SpecBase {
       application.stop()
     }
 
-    "redirect to add assets on submission" in {
+    "redirect to description page if no description found" in {
 
       val userAnswers: UserAnswers = emptyUserAnswers
+        .set(WhatKindOfAssetPage(index), Other).success.value
+
+      val application: Application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+
+      val request = FakeRequest(GET, answersRoute)
+
+      val result: Future[Result] = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual
+        controllers.asset.other.routes.OtherAssetDescriptionController.onPageLoad(NormalMode, index, fakeDraftId).url
+
+      application.stop()
+    }
+
+    "redirect to value page if description found but no value found" in {
+
+      val userAnswers: UserAnswers = emptyUserAnswers
+        .set(WhatKindOfAssetPage(index), Other).success.value
         .set(OtherAssetDescriptionPage(index), description).success.value
 
       val application: Application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+
+      val request = FakeRequest(GET, answersRoute)
+
+      val result: Future[Result] = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual
+        controllers.asset.other.routes.OtherAssetValueController.onPageLoad(NormalMode, index, fakeDraftId).url
+
+      application.stop()
+    }
+
+    "redirect to add assets on submission" in {
+
+      val application: Application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
 
       val request = FakeRequest(POST, answersRoute)
 
@@ -93,7 +128,8 @@ class OtherAssetAnswersControllerSpec extends SpecBase {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.asset.routes.AddAssetsController.onPageLoad(fakeDraftId).url
+      redirectLocation(result).value mustEqual
+        controllers.asset.routes.AddAssetsController.onPageLoad(fakeDraftId).url
 
       application.stop()
     }
@@ -108,7 +144,8 @@ class OtherAssetAnswersControllerSpec extends SpecBase {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual
+        controllers.routes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }
@@ -123,7 +160,8 @@ class OtherAssetAnswersControllerSpec extends SpecBase {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual
+        controllers.routes.SessionExpiredController.onPageLoad().url
 
       application.stop()
     }

@@ -25,6 +25,7 @@ entities.no.name.added = No name added
 entities.no.value.added = No value added
 entities.no.address.added = No address added
 entities.no.description.added = No description added
+entities.no.addressOrDescription.added = No address or description added
 
 index.title = register-trust-asset-frontend
 index.heading = register-trust-asset-frontend

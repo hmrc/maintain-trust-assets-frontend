@@ -18,12 +18,18 @@ package controllers.asset.other
 
 import base.SpecBase
 import forms.DescriptionFormProvider
-import models.NormalMode
+import models.WhatKindOfAsset.Other
+import models.{NormalMode, UserAnswers}
+import pages.asset.WhatKindOfAssetPage
 import pages.asset.other.OtherAssetDescriptionPage
+import play.api.Application
 import play.api.data.Form
+import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.asset.other.OtherAssetDescriptionView
+
+import scala.concurrent.Future
 
 class OtherAssetDescriptionControllerSpec extends SpecBase {
 
@@ -34,11 +40,14 @@ class OtherAssetDescriptionControllerSpec extends SpecBase {
 
   lazy val descriptionRoute: String = routes.OtherAssetDescriptionController.onPageLoad(NormalMode, index, fakeDraftId).url
 
+  val baseAnswers: UserAnswers = emptyUserAnswers
+    .set(WhatKindOfAssetPage(index), Other).success.value
+
   "OtherAssetDescriptionController" must {
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
 
       val request = FakeRequest(GET, descriptionRoute)
 
@@ -56,7 +65,8 @@ class OtherAssetDescriptionControllerSpec extends SpecBase {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(OtherAssetDescriptionPage(index), validAnswer).success.value
+      val userAnswers = baseAnswers
+        .set(OtherAssetDescriptionPage(index), validAnswer).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -74,10 +84,26 @@ class OtherAssetDescriptionControllerSpec extends SpecBase {
       application.stop()
     }
 
+    "redirect to what kind of asset page if no kind of asset found" in {
+
+      val application: Application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+      val request = FakeRequest(GET, descriptionRoute)
+
+      val result: Future[Result] = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual
+        controllers.routes.WhatKindOfAssetController.onPageLoad(NormalMode, index, fakeDraftId).url
+
+      application.stop()
+    }
+
     "redirect to the next page when valid data is submitted" in {
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+        applicationBuilder(userAnswers = Some(baseAnswers)).build()
 
       val request =
         FakeRequest(POST, descriptionRoute)
@@ -93,7 +119,7 @@ class OtherAssetDescriptionControllerSpec extends SpecBase {
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
 
       val request =
         FakeRequest(POST, descriptionRoute)

@@ -85,7 +85,7 @@ class AddAssetViewHelper(userAnswers: UserAnswers, mode: Mode, draftId: String)(
         case PropertyOrLandAssetInternationalAddressViewModel(_, address, _) => address.getOrElse(defaultAddressName)
         case PropertyOrLandAssetAddressViewModel(_, address, _) => address.getOrElse(defaultAddressName)
         case PropertyOrLandAssetDescriptionViewModel(_, description, _) => description.getOrElse(defaultDescriptionName)
-        case PropertyOrLandDefaultViewModel(_, _) => messages("entities.propertyOrLand.default")
+        case PropertyOrLandDefaultViewModel(_, _) => messages("entities.no.addressOrDescription.added")
       },
       typeLabel,
       property_or_land.routes.PropertyOrLandAddressYesNoController.onPageLoad(mode, index, draftId).url,
@@ -116,7 +116,7 @@ class AddAssetViewHelper(userAnswers: UserAnswers, mode: Mode, draftId: String)(
     AddRow(
       ovm.description,
       ovm.`type`.toString,
-      other.routes.OtherAssetDescriptionController.onPageLoad(mode, index, draftId).url,
+      other.routes.OtherAssetAnswersController.onPageLoad(index, draftId).url,
       routes.RemoveAssetYesNoController.onPageLoad(index, draftId).url
     )
   }
