@@ -19,23 +19,20 @@ package navigation
 import java.time.{LocalDate, ZoneOffset}
 
 import base.SpecBase
+import controllers.asset.partnership.routes._
 import generators.Generators
 import models.{NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.asset.partnership._
-import controllers.asset.partnership.routes
 
-trait PartnershipRoutes {
-
-  self: ScalaCheckPropertyChecks with Generators with SpecBase =>
-
-  private val index = 0
-  val validDate: LocalDate = LocalDate.now(ZoneOffset.UTC)
+class PartnershipNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   private val navigator: Navigator = injector.instanceOf[PartnershipNavigator]
+  private val index: Int = 0
+  private val validDate: LocalDate = LocalDate.now(ZoneOffset.UTC)
 
-  def partnershipRoutes(): Unit = {
+  "Partnership Navigator" must {
 
     "navigate from PartnershipDescriptionPage to PartnershipStartDatePage" in {
 
@@ -45,25 +42,24 @@ trait PartnershipRoutes {
         userAnswers =>
           val answers = userAnswers.set(page, "Partnership Description").success.value
           navigator.nextPage(page, NormalMode, fakeDraftId)(answers)
-            .mustBe(routes.PartnershipStartDateController.onPageLoad(NormalMode, index, fakeDraftId))
+            .mustBe(PartnershipStartDateController.onPageLoad(NormalMode, index, fakeDraftId))
       }
     }
 
     "navigate from PartnershipStartDatePage to PartnershipAnswersPage" in {
 
-      val page = PartnershipDescriptionPage(index)
+      val page = PartnershipStartDatePage(index)
 
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
           val answers = userAnswers
-            .set(page, "Partnership Description").success.value
             .set(PartnershipStartDatePage(index), validDate).success.value
           navigator.nextPage(page, NormalMode, fakeDraftId)(answers)
-            .mustBe(routes.PartnershipAnswerController.onPageLoad(index, fakeDraftId))
+            .mustBe(PartnershipAnswerController.onPageLoad(index, fakeDraftId))
       }
     }
 
-    "navigate from PartnershipAnswerPage" in {
+    "navigate from PartnershipAnswerPage to AddAssetsPage" in {
 
       val page = PartnershipAnswerPage
 
@@ -73,7 +69,6 @@ trait PartnershipRoutes {
             .mustBe(controllers.asset.routes.AddAssetsController.onPageLoad(fakeDraftId))
       }
     }
-
   }
 
 }

@@ -28,6 +28,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
 import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import utils.annotations.Other
 import views.html.asset.other.OtherAssetDescriptionView
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -35,7 +36,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class OtherAssetDescriptionController @Inject()(
                                                  override val messagesApi: MessagesApi,
                                                  repository: RegistrationsRepository,
-                                                 navigator: Navigator,
+                                                 @Other navigator: Navigator,
                                                  identify: RegistrationIdentifierAction,
                                                  getData: DraftIdRetrievalActionProvider,
                                                  requireData: RegistrationDataRequiredAction,

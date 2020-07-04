@@ -29,6 +29,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.CheckYourAnswersHelper
+import utils.annotations.Shares
 import utils.countryOptions.CountryOptions
 import viewmodels.AnswerSection
 import views.html.asset.shares.ShareAnswersView
@@ -38,7 +39,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class ShareAnswerController @Inject()(
                                        override val messagesApi: MessagesApi,
                                        repository: RegistrationsRepository,
-                                       navigator: Navigator,
+                                       @Shares navigator: Navigator,
                                        identify: RegistrationIdentifierAction,
                                        getData: DraftIdRetrievalActionProvider,
                                        requireData: RegistrationDataRequiredAction,

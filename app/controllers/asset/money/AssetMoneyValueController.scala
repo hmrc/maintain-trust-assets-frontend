@@ -29,6 +29,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import utils.annotations.Money
 import views.html.asset.money.AssetMoneyValueView
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -36,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AssetMoneyValueController @Inject()(
                                            override val messagesApi: MessagesApi,
                                            repository: RegistrationsRepository,
-                                           navigator: Navigator,
+                                           @Money navigator: Navigator,
                                            identify: RegistrationIdentifierAction,
                                            getData: DraftIdRetrievalActionProvider,
                                            requireData: RegistrationDataRequiredAction,

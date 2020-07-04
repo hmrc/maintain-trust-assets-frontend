@@ -18,9 +18,9 @@ package config
 
 import com.google.inject.AbstractModule
 import controllers.actions._
-import navigation.{Navigator, PartnershipNavigator, PropertyOrLandNavigator}
+import navigation._
 import repositories.{DefaultRegistrationsRepository, RegistrationsRepository}
-import utils.annotations.{Partnership, PropertyOrLand}
+import utils.annotations._
 
 class Module extends AbstractModule {
 
@@ -29,7 +29,11 @@ class Module extends AbstractModule {
     bind(classOf[RegistrationDataRequiredAction]).to(classOf[RegistrationDataRequiredActionImpl]).asEagerSingleton()
     bind(classOf[DraftIdRetrievalActionProvider]).to(classOf[DraftIdDataRetrievalActionProviderImpl]).asEagerSingleton()
 
+    bind(classOf[Navigator]).annotatedWith(classOf[Money]).to(classOf[MoneyNavigator])
     bind(classOf[Navigator]).annotatedWith(classOf[PropertyOrLand]).to(classOf[PropertyOrLandNavigator])
+    bind(classOf[Navigator]).annotatedWith(classOf[Shares]).to(classOf[SharesNavigator])
+    bind(classOf[Navigator]).annotatedWith(classOf[Business]).to(classOf[BusinessNavigator])
     bind(classOf[Navigator]).annotatedWith(classOf[Partnership]).to(classOf[PartnershipNavigator])
+    bind(classOf[Navigator]).annotatedWith(classOf[Other]).to(classOf[OtherNavigator])
   }
 }

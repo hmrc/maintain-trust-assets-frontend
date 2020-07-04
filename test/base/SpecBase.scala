@@ -29,7 +29,7 @@ import play.api.libs.json.Json
 import repositories.RegistrationsRepository
 import uk.gov.hmrc.auth.core.AffinityGroup.Organisation
 import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolment, Enrolments}
-import utils.annotations.{Partnership, PropertyOrLand}
+import utils.annotations.{Business, Money, Other, Partnership, PropertyOrLand, Shares}
 
 trait SpecBase extends PlaySpec
   with GuiceOneAppPerSuite
@@ -63,8 +63,12 @@ trait SpecBase extends PlaySpec
     new GuiceApplicationBuilder()
       .overrides(
         bind[Navigator].toInstance(navigator),
+        bind[Navigator].qualifiedWith(classOf[Money]).toInstance(navigator),
         bind[Navigator].qualifiedWith(classOf[PropertyOrLand]).toInstance(navigator),
+        bind[Navigator].qualifiedWith(classOf[Shares]).toInstance(navigator),
+        bind[Navigator].qualifiedWith(classOf[Business]).toInstance(navigator),
         bind[Navigator].qualifiedWith(classOf[Partnership]).toInstance(navigator),
+        bind[Navigator].qualifiedWith(classOf[Other]).toInstance(navigator),
         bind[RegistrationDataRequiredAction].to[RegistrationDataRequiredActionImpl],
         bind[RegistrationIdentifierAction].toInstance(
           new FakeIdentifyForRegistration(affinityGroup, frontendAppConfig)(injectedParsers, trustsAuth, enrolments)

@@ -22,63 +22,19 @@ import models.WhatKindOfAsset._
 import models.{UserAnswers, _}
 import pages.Page
 import pages.asset._
-import pages.asset.business._
-import pages.asset.money._
-import pages.asset.other.{OtherAssetDescriptionPage, OtherAssetValuePage}
-import pages.asset.shares._
 import play.api.mvc.Call
 import uk.gov.hmrc.auth.core.AffinityGroup
 
 object AssetsRoutes {
+
   def route(draftId: String, config: FrontendAppConfig): PartialFunction[Page, AffinityGroup => UserAnswers => Call] = {
-    case AssetMoneyValuePage(index) => _ => ua => assetMoneyValueRoute(ua, index, draftId)
     case WhatKindOfAssetPage(index) => _ => ua => whatKindOfAssetRoute(ua, index, draftId)
-    case SharesInAPortfolioPage(index) => _ => ua => sharesInAPortfolio(ua, index, draftId, config)
-    case SharePortfolioNamePage(index) => _ => ua => controllers.asset.shares.routes.SharePortfolioOnStockExchangeController.onPageLoad(NormalMode, index, draftId)
-    case SharePortfolioOnStockExchangePage(index) => _ => ua => controllers.asset.shares.routes.SharePortfolioQuantityInTrustController.onPageLoad(NormalMode, index, draftId)
-    case SharePortfolioQuantityInTrustPage(index) => _ => _ => controllers.asset.shares.routes.SharePortfolioValueInTrustController.onPageLoad(NormalMode, index, draftId)
-    case SharePortfolioValueInTrustPage(index) => _ => _ => controllers.asset.shares.routes.ShareAnswerController.onPageLoad(index, draftId)
-    case SharesOnStockExchangePage(index) => _ => _ => controllers.asset.shares.routes.ShareClassController.onPageLoad(NormalMode, index, draftId)
-    case ShareClassPage(index) => _ => _ => controllers.asset.shares.routes.ShareQuantityInTrustController.onPageLoad(NormalMode, index, draftId)
     case AddAssetsPage => _ => addAssetsRoute(draftId, config)
     case AddAnAssetYesNoPage => _ => addAnAssetYesNoRoute(draftId, config)
-    case ShareQuantityInTrustPage(index) => _ => _ => controllers.asset.shares.routes.ShareValueInTrustController.onPageLoad(NormalMode, index, draftId)
-    case ShareValueInTrustPage(index) => _ => _ => controllers.asset.shares.routes.ShareAnswerController.onPageLoad(index, draftId)
-    case ShareAnswerPage => _ => _ => controllers.asset.routes.AddAssetsController.onPageLoad(draftId)
-    case ShareCompanyNamePage(index) => _ => _ => controllers.asset.shares.routes.SharesOnStockExchangeController.onPageLoad(NormalMode, index, draftId)
-    case OtherAssetDescriptionPage(index) => _ => _ => controllers.asset.other.routes.OtherAssetValueController.onPageLoad(NormalMode, index, draftId)
-    case OtherAssetValuePage(index) => _ => _ => controllers.asset.other.routes.OtherAssetAnswersController.onPageLoad(index, draftId)
-    case BusinessNamePage(index) => _ => _ => controllers.asset.business.routes.BusinessDescriptionController.onPageLoad(NormalMode, index, draftId)
-    case BusinessDescriptionPage(index) => _ => _ => controllers.asset.business.routes.BusinessAddressUkYesNoController.onPageLoad(NormalMode, index, draftId)
-    case BusinessAddressUkYesNoPage(index) => _ => ua => assetAddressUkYesNoRoute(ua, index, draftId)
-    case BusinessUkAddressPage(index) => _ => _ => controllers.asset.business.routes.BusinessValueController.onPageLoad(NormalMode, index, draftId)
-    case BusinessInternationalAddressPage(index) => _ => _ => controllers.asset.business.routes.BusinessValueController.onPageLoad(NormalMode, index, draftId)
-    case BusinessValuePage(index) => _ => _ => controllers.asset.business.routes.BusinessAnswersController.onPageLoad(index, draftId)
   }
 
-  private def assetsCompletedRoute(draftId: String, config: FrontendAppConfig) : Call = {
+  def assetsCompletedRoute(draftId: String, config: FrontendAppConfig) : Call = {
     Call("GET", config.registrationProgressUrl(draftId))
-  }
-
-  private def sharesInAPortfolio(userAnswers: UserAnswers, index : Int, draftId: String, config: FrontendAppConfig) : Call = {
-    userAnswers.get(SharesInAPortfolioPage(index)) match {
-      case Some(true) =>
-        controllers.asset.shares.routes.SharePortfolioNameController.onPageLoad(NormalMode, index, draftId)
-      case Some(false) =>
-        controllers.asset.shares.routes.ShareCompanyNameController.onPageLoad(NormalMode, index, draftId)
-      case _=> assetsCompletedRoute(draftId, config)
-    }
-  }
-
-  private def assetAddressUkYesNoRoute(userAnswers: UserAnswers, index : Int, draftId: String) : Call = {
-    userAnswers.get(BusinessAddressUkYesNoPage(index)) match {
-      case Some(true) =>
-        controllers.asset.business.routes.BusinessUkAddressController.onPageLoad(NormalMode, index, draftId)
-      case Some(false) =>
-        controllers.asset.business.routes.BusinessInternationalAddressController.onPageLoad(NormalMode, index, draftId)
-      case _=>
-        controllers.routes.SessionExpiredController.onPageLoad()
-    }
   }
 
   private def addAnAssetYesNoRoute(draftId: String, config: FrontendAppConfig)(userAnswers: UserAnswers) : Call = userAnswers.get(AddAnAssetYesNoPage) match {
@@ -111,30 +67,22 @@ object AssetsRoutes {
     }
   }
 
-  private def assetMoneyValueRoute(answers: UserAnswers, index: Int, draftId: String) = {
-    val assets = answers.get(sections.Assets).getOrElse(List.empty)
-    assets match  {
-      case Nil => controllers.routes.WhatKindOfAssetController.onPageLoad(NormalMode, 0, draftId)
-      case _ => controllers.asset.routes.AddAssetsController.onPageLoad(draftId)
-    }
-  }
-
   private def whatKindOfAssetRoute(answers: UserAnswers, index: Int, draftId: String) =
     answers.get(WhatKindOfAssetPage(index)) match {
       case Some(Money) =>
         controllers.asset.money.routes.AssetMoneyValueController.onPageLoad(NormalMode, index, draftId)
-      case Some(Shares) =>
-        controllers.asset.shares.routes.SharesInAPortfolioController.onPageLoad(NormalMode, index, draftId)
       case Some(PropertyOrLand) =>
         controllers.asset.property_or_land.routes.PropertyOrLandAddressYesNoController.onPageLoad(NormalMode, index, draftId)
+      case Some(Shares) =>
+        controllers.asset.shares.routes.SharesInAPortfolioController.onPageLoad(NormalMode, index, draftId)
       case Some(Business) =>
-        controllers.routes.FeatureNotAvailableController.onPageLoad()
+        controllers.asset.business.routes.BusinessNameController.onPageLoad(NormalMode, index, draftId)
       case Some(Partnership) =>
         controllers.asset.partnership.routes.PartnershipDescriptionController.onPageLoad(NormalMode, index, draftId)
       case Some(Other) =>
         controllers.asset.other.routes.OtherAssetDescriptionController.onPageLoad(NormalMode, index, draftId)
       case _ =>
-        controllers.routes.FeatureNotAvailableController.onPageLoad()
+        controllers.routes.SessionExpiredController.onPageLoad()
     }
 }
 

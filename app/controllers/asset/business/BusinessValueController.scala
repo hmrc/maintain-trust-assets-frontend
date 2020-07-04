@@ -31,6 +31,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.RegistrationsRepository
 import sections.Assets
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import utils.annotations.Business
 import views.html.asset.buisness.BusinessValueView
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,7 +39,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class BusinessValueController @Inject()(
                                          override val messagesApi: MessagesApi,
                                          registrationsRepository: RegistrationsRepository,
-                                         navigator: Navigator,
+                                         @Business navigator: Navigator,
                                          identify: RegistrationIdentifierAction,
                                          getData: DraftIdRetrievalActionProvider,
                                          requireData: RegistrationDataRequiredAction,

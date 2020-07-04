@@ -18,9 +18,6 @@ POST       /:draftId/asset/:index/change-assets-type    controllers.WhatKindOfAs
 GET        /:draftId/asset/information-you-need         controllers.asset.AssetInterruptPageController.onPageLoad(draftId: String)
 POST       /:draftId/asset/information-you-need         controllers.asset.AssetInterruptPageController.onSubmit(draftId: String)
 
-GET        /:draftId/asset/:index/asset/remove          controllers.asset.DefaultRemoveAssetController.onPageLoad(index: Int, draftId: String)
-POST       /:draftId/asset/:index/asset/remove          controllers.asset.DefaultRemoveAssetController.onSubmit(index: Int, draftId: String)
-
 GET        /:draftId/asset/add                          controllers.asset.AddAssetsController.onPageLoad(mode: Mode = NormalMode, draftId: String)
 POST       /:draftId/asset/add                          controllers.asset.AddAssetsController.submitOne(mode: Mode = NormalMode, draftId: String)
 POST       /:draftId/asset/add-another                  controllers.asset.AddAssetsController.submitAnother(mode: Mode = NormalMode, draftId: String)
@@ -35,19 +32,7 @@ POST       /:draftId/asset/:index/money                                         
 GET        /:draftId/asset/:index/change-money                                                      controllers.asset.money.AssetMoneyValueController.onPageLoad(mode: Mode = CheckMode, index: Int, draftId: String)
 POST       /:draftId/asset/:index/change-money                                                      controllers.asset.money.AssetMoneyValueController.onSubmit(mode: Mode = CheckMode, index: Int, draftId: String)
 
-GET        /:draftId/asset/:index/money/remove                                                      controllers.asset.money.RemoveMoneyAssetController.onPageLoad(index: Int, draftId: String)
-POST       /:draftId/asset/:index/money/remove                                                      controllers.asset.money.RemoveMoneyAssetController.onSubmit(index: Int, draftId: String)
-
 ### Property or Land
-
-GET        /:draftId/asset/:index/property-or-land/description/remove                               controllers.asset.property_or_land.RemovePropertyOrLandWithDescriptionController.onPageLoad(index: Int, draftId: String)
-POST       /:draftId/asset/:index/property-or-land/description/remove                               controllers.asset.property_or_land.RemovePropertyOrLandWithDescriptionController.onSubmit(index: Int, draftId: String)
-
-GET        /:draftId/asset/:index/property-or-land/address/uk/remove                                controllers.asset.property_or_land.RemovePropertyOrLandWithAddressUKController.onPageLoad(index: Int, draftId: String)
-POST       /:draftId/asset/:index/property-or-land/address/uk/remove                                controllers.asset.property_or_land.RemovePropertyOrLandWithAddressUKController.onSubmit(index: Int, draftId: String)
-
-GET        /:draftId/asset/:index/property-or-land/address/international/remove                     controllers.asset.property_or_land.RemovePropertyOrLandWithAddressInternationalController.onPageLoad(index: Int, draftId: String)
-POST       /:draftId/asset/:index/property-or-land/address/international/remove                     controllers.asset.property_or_land.RemovePropertyOrLandWithAddressInternationalController.onSubmit(index: Int, draftId: String)
 
 GET        /:draftId/asset/:index/property-or-land/description                                      controllers.asset.property_or_land.PropertyOrLandDescriptionController.onPageLoad(mode: Mode = NormalMode, index: Int, draftId: String)
 POST       /:draftId/asset/:index/property-or-land/description                                      controllers.asset.property_or_land.PropertyOrLandDescriptionController.onSubmit(mode: Mode = NormalMode, index: Int, draftId: String)
@@ -146,12 +131,6 @@ POST       /:draftId/asset/:index/change-shares-on-stock-exchange               
 
 GET        /:draftId/asset/:index/check-share-answers                                               controllers.asset.shares.ShareAnswerController.onPageLoad(index : Int, draftId : String)
 POST       /:draftId/asset/:index/check-share-answers                                               controllers.asset.shares.ShareAnswerController.onSubmit(index : Int, draftId : String)
-
-GET        /:draftId/asset/:index/share/company/remove                                              controllers.asset.shares.RemoveShareCompanyNameAssetController.onPageLoad(index: Int, draftId: String)
-POST       /:draftId/asset/:index/share/company/remove                                              controllers.asset.shares.RemoveShareCompanyNameAssetController.onSubmit(index: Int, draftId: String)
-
-GET        /:draftId/asset/:index/share/portfolio/remove                                            controllers.asset.shares.RemoveSharePortfolioAssetController.onPageLoad(index: Int, draftId: String)
-POST       /:draftId/asset/:index/share/portfolio/remove                                            controllers.asset.shares.RemoveSharePortfolioAssetController.onSubmit(index: Int, draftId: String)
 
 ### Business
 

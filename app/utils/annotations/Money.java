@@ -14,19 +14,16 @@
  * limitations under the License.
  */
 
-package navigation
+package utils.annotations;
 
-import config.FrontendAppConfig
-import play.api.mvc.Call
-import pages._
-import models.{Mode, NormalMode, UserAnswers}
-import uk.gov.hmrc.auth.core.AffinityGroup
+import com.google.inject.BindingAnnotation;
 
-class FakeNavigator(config: FrontendAppConfig,
-                    val desiredRoute: Call = Call("GET", "/foo"),
-                    mode: Mode = NormalMode
-                   ) extends Navigator(config) {
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-  override def nextPage(page: Page, mode: Mode, fakeDraftId: String, affinityGroup: AffinityGroup): UserAnswers => Call = _ => desiredRoute
-}
-
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.PARAMETER, ElementType.METHOD, ElementType.FIELD})
+@BindingAnnotation
+public @interface Money {}

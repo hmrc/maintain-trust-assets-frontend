@@ -29,6 +29,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.RegistrationsRepository
 import sections.Assets
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import utils.annotations.Business
 import views.html.asset.buisness.BusinessUkAddressView
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -36,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class BusinessUkAddressController @Inject()(
                                              override val messagesApi: MessagesApi,
                                              registrationsRepository: RegistrationsRepository,
-                                             navigator: Navigator,
+                                             @Business navigator: Navigator,
                                              validateIndex: IndexActionFilterProvider,
                                              identify: RegistrationIdentifierAction,
                                              getData: DraftIdRetrievalActionProvider,
