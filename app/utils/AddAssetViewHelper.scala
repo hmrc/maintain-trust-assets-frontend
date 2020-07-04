@@ -46,6 +46,7 @@ class AddAssetViewHelper(userAnswers: UserAnswers, mode: Mode, draftId: String)(
       case money: MoneyAssetViewModel => Some(parseMoney(money, index))
       case share: ShareAssetViewModel => Some(parseShare(share, index))
       case propertyOrLand: PropertyOrLandAssetViewModel => Some(parsePropertyOrLand(propertyOrLand, index))
+      case business: BusinessAssetViewModel => Some(parseBusiness(business, index))
       case partnership: PartnershipAssetViewModel => Some(parsePartnership(partnership, index))
       case other: OtherAssetViewModel => Some(parseOther(other, index))
       case _ => None
@@ -93,11 +94,11 @@ class AddAssetViewHelper(userAnswers: UserAnswers, mode: Mode, draftId: String)(
 
   }
 
-  private def parseOther(ovm: OtherAssetViewModel, index: Int) : AddRow = {
+  private def parseBusiness(bvm: BusinessAssetViewModel, index: Int) : AddRow = {
     AddRow(
-      ovm.description,
-      ovm.`type`.toString,
-      other.routes.OtherAssetDescriptionController.onPageLoad(mode, index, draftId).url,
+      bvm.name,
+      bvm.`type`.toString,
+      business.routes.BusinessNameController.onPageLoad(mode, index, draftId).url,
       routes.RemoveAssetYesNoController.onPageLoad(index, draftId).url
     )
   }
@@ -107,6 +108,15 @@ class AddAssetViewHelper(userAnswers: UserAnswers, mode: Mode, draftId: String)(
       pvm.description,
       pvm.`type`.toString,
       partnership.routes.PartnershipDescriptionController.onPageLoad(mode, index, draftId).url,
+      routes.RemoveAssetYesNoController.onPageLoad(index, draftId).url
+    )
+  }
+
+  private def parseOther(ovm: OtherAssetViewModel, index: Int) : AddRow = {
+    AddRow(
+      ovm.description,
+      ovm.`type`.toString,
+      other.routes.OtherAssetDescriptionController.onPageLoad(mode, index, draftId).url,
       routes.RemoveAssetYesNoController.onPageLoad(index, draftId).url
     )
   }
