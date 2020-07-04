@@ -24,7 +24,7 @@
 @(form: Form[_], mode: Mode, index: Int, draftId: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("partnershipStartDate.title")}"
+    title = s"${errorPrefix(form)} ${messages("partnership.startDate.title")}"
 ) {
 
     @formHelper(action = PartnershipStartDateController.onSubmit(mode, index, draftId), 'autoComplete -> "off") {
@@ -35,10 +35,10 @@
 
         @components.input_date(
             field = form("value"),
-            legend = messages("partnershipStartDate.heading"),
+            legend = messages("partnership.startDate.heading"),
             legendClass = "heading-large",
             legendAsHeading = true,
-            hint = Some(messages("partnershipStartDate.hint"))
+            hint = Some(messages("partnership.startDate.hint"))
         )
 
         @components.submit_button()

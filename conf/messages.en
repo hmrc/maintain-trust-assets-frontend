@@ -369,27 +369,27 @@ business.answers.title = Check asset details
 business.answers.heading = Check asset details
 
 
-partnershipDescription.title = What is the description for the partnership?
-partnershipDescription.heading = What is the description for the partnership?
-partnershipDescription.checkYourAnswersLabel = What is the description for the partnership?
-partnershipDescription.hint = This must be 56 characters or less
-partnershipDescription.error.required = Enter a description of the partnership
-partnershipDescription.error.length = The description of the partnership must be 56 characters or less
-partnershipDescription.error.invalid = The description of the partnership must only include letters a to z, numbers, ampersands (&), apostrophes, hyphens and spaces
+partnership.description.title = What is the description for the partnership?
+partnership.description.heading = What is the description for the partnership?
+partnership.description.checkYourAnswersLabel = What is the description for the partnership?
+partnership.description.hint = This must be 56 characters or less
+partnership.description.error.required = Enter a description of the partnership
+partnership.description.error.length = The description of the partnership must be 56 characters or less
+partnership.description.error.invalid = The description of the partnership must only include letters a to z, numbers, ampersands (&), apostrophes, hyphens and spaces
 
-partnershipStartDate.title = When did the partnership start?
-partnershipStartDate.heading = When did the partnership start?
-partnershipStartDate.checkYourAnswersLabel = When did the partnership start?
-partnershipStartDate.hint = For example, 31 3 2015
-partnershipStartDate.error.required.all = Enter the date the partnership started
-partnershipStartDate.error.required.two = The date the partnership started must include {0} and {1}
-partnershipStartDate.error.required = The date the partnership started must include {0}
-partnershipStartDate.error.invalid = Enter a real start date for the partnership start date
-partnershipStartDate.error.future = The date the partnership started must be today or in the past
-partnershipStartDate.error.past = The date the partnership started must be after 31 December 1499
+partnership.startDate.title = When did the partnership start?
+partnership.startDate.heading = When did the partnership start?
+partnership.startDate.checkYourAnswersLabel = When did the partnership start?
+partnership.startDate.hint = For example, 31 3 2015
+partnership.startDate.error.required.all = Enter the date the partnership started
+partnership.startDate.error.required.two = The date the partnership started must include {0} and {1}
+partnership.startDate.error.required = The date the partnership started must include {0}
+partnership.startDate.error.invalid = Enter a real start date for the partnership start date
+partnership.startDate.error.future = The date the partnership started must be today or in the past
+partnership.startDate.error.past = The date the partnership started must be after 31 December 1499
 
-partnershipAnswers.title = Check asset details
-partnershipAnswers.heading = Check asset details
+partnership.answers.title = Check asset details
+partnership.answers.heading = Check asset details
 
 
 assets.other.description.title = What is the description of the asset?

@@ -18,7 +18,7 @@ package controllers.asset.partnership
 
 import base.SpecBase
 import controllers.IndexValidation
-import forms.partnership.PartnershipDescriptionFormProvider
+import forms.DescriptionFormProvider
 import models.NormalMode
 import org.scalacheck.Arbitrary.arbitrary
 import pages.asset.partnership.PartnershipDescriptionPage
@@ -29,8 +29,8 @@ import views.html.asset.partnership.PartnershipDescriptionView
 
 class PartnershipDescriptionControllerSpec extends SpecBase with IndexValidation {
 
-  private val formProvider = new PartnershipDescriptionFormProvider()
-  private val form = formProvider()
+  private val formProvider = new DescriptionFormProvider()
+  private val form = formProvider.withConfig(56, "partnership.description")
   private val index = 0
 
   private lazy val partnershipDescriptionRoute = routes.PartnershipDescriptionController.onPageLoad(NormalMode, index, fakeDraftId).url

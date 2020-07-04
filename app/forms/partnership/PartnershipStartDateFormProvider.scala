@@ -25,16 +25,16 @@ import play.api.data.Form
 
 class PartnershipStartDateFormProvider @Inject()(appConfig: FrontendAppConfig) extends Mappings {
 
-  def withConfig(maximumDate: (LocalDate, String) = (LocalDate.now, "future")): Form[LocalDate] =
+  def apply(): Form[LocalDate] =
     Form(
       "value" -> localDate(
-        invalidKey     = "partnershipStartDate.error.invalid",
-        allRequiredKey = "partnershipStartDate.error.required.all",
-        twoRequiredKey = "partnershipStartDate.error.required.two",
-        requiredKey    = "partnershipStartDate.error.required"
+        invalidKey     = "partnership.startDate.error.invalid",
+        allRequiredKey = "partnership.startDate.error.required.all",
+        twoRequiredKey = "partnership.startDate.error.required.two",
+        requiredKey    = "partnership.startDate.error.required"
       ).verifying(firstError(
-        maxDate(LocalDate.now, s"partnershipStartDate.error.future", "day", "month", "year"),
-        minDate(appConfig.minDate, s"partnershipStartDate.error.past", "day", "month", "year")
+        maxDate(LocalDate.now, s"partnership.startDate.error.future", "day", "month", "year"),
+        minDate(appConfig.minDate, s"partnership.startDate.error.past", "day", "month", "year")
       ))
     )
 }

@@ -17,7 +17,6 @@
 package controllers.asset.partnership
 
 import controllers.actions._
-import controllers.filters.IndexActionFilterProvider
 import javax.inject.Inject
 import models.NormalMode
 import models.Status.Completed
@@ -44,11 +43,10 @@ class PartnershipAnswerController @Inject()(
                                              getData: DraftIdRetrievalActionProvider,
                                              requireData: RegistrationDataRequiredAction,
                                              requiredAnswer: RequiredAnswerActionProvider,
-                                             validateIndex: IndexActionFilterProvider,
                                              view: PartnershipAnswersView,
                                              countryOptions: CountryOptions,
                                              val controllerComponents: MessagesControllerComponents
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private def actions(index: Int, draftId: String) =
     identify andThen
@@ -56,7 +54,6 @@ class PartnershipAnswerController @Inject()(
       requireData andThen
       requiredAnswer(RequiredAnswer(PartnershipDescriptionPage(index), routes.PartnershipDescriptionController.onPageLoad(NormalMode, index, draftId))) andThen
       requiredAnswer(RequiredAnswer(PartnershipStartDatePage(index), routes.PartnershipStartDateController.onPageLoad(NormalMode, index, draftId)))
-
 
   def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
     implicit request =>

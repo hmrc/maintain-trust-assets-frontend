@@ -18,7 +18,7 @@ package controllers.asset.partnership
 
 import controllers.actions.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
 import controllers.filters.IndexActionFilterProvider
-import forms.partnership.PartnershipDescriptionFormProvider
+import forms.DescriptionFormProvider
 import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
@@ -41,12 +41,12 @@ class PartnershipDescriptionController @Inject()(
                                                   getData: DraftIdRetrievalActionProvider,
                                                   requireData: RegistrationDataRequiredAction,
                                                   validateIndex: IndexActionFilterProvider,
-                                                  formProvider: PartnershipDescriptionFormProvider,
+                                                  formProvider: DescriptionFormProvider,
                                                   val controllerComponents: MessagesControllerComponents,
                                                   view: PartnershipDescriptionView
-                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                                )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val form = formProvider()
+  private val form = formProvider.withConfig(56, "partnership.description")
 
   private def actions(index: Int, draftId: String) =
     identify andThen

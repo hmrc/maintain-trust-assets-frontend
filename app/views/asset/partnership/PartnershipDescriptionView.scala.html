@@ -25,8 +25,8 @@
 @(form: Form[_], mode: Mode, index: Int, draftId: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("partnershipDescription.title")}"
-    ) {
+    title = s"${errorPrefix(form)} ${messages("partnership.description.title")}"
+) {
 
     @formHelper(action = PartnershipDescriptionController.onSubmit(mode, index, draftId), 'autoComplete -> "off") {
 
@@ -36,10 +36,10 @@
 
         @components.input_text(
             field = form("value"),
-            label = messages("partnershipDescription.heading"),
+            label = messages("partnership.description.heading"),
             labelClass = Some("heading-large"),
             labelAsHeading = true,
-            hint = Some(messages("partnershipDescription.hint"))
+            hint = Some(messages("partnership.description.hint"))
         )
 
         @components.submit_button()

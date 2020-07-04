@@ -27,7 +27,7 @@ class PartnershipStartDateFormProviderSpec extends DateBehaviours with FakeTrust
   private val min = frontendAppConfig.minDate
   private val max = LocalDate.now(ZoneOffset.UTC)
 
-  private val form = new PartnershipStartDateFormProvider(frontendAppConfig).withConfig()
+  private val form = new PartnershipStartDateFormProvider(frontendAppConfig)()
 
   ".value" should {
 
@@ -38,16 +38,16 @@ class PartnershipStartDateFormProviderSpec extends DateBehaviours with FakeTrust
 
     behave like dateField(form, "value", validData)
 
-    behave like mandatoryDateField(form, "value", "partnershipStartDate.error.required.all")
+    behave like mandatoryDateField(form, "value", "partnership.startDate.error.required.all")
 
     behave like dateFieldWithMax(form, "value",
       max = max,
-      FormError("value", s"partnershipStartDate.error.future", List("day", "month", "year"))
+      FormError("value", s"partnership.startDate.error.future", List("day", "month", "year"))
     )
 
     behave like dateFieldWithMin(form, "value",
       min = min,
-      FormError("value", s"partnershipStartDate.error.past", List("day", "month", "year"))
+      FormError("value", s"partnership.startDate.error.past", List("day", "month", "year"))
     )
 
   }
