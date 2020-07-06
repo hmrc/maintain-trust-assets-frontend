@@ -17,7 +17,7 @@
 package controllers.asset.property_or_land
 
 import controllers.actions._
-import controllers.actions.property_or_land.PostActionRequirements
+import controllers.actions.property_or_land.MandatoryAnswers
 import javax.inject.Inject
 import models.NormalMode
 import models.Status.Completed
@@ -49,7 +49,7 @@ class PropertyOrLandAnswerController @Inject()(
   def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions.authWithData(draftId) {
     implicit request =>
 
-      val requirements = new PostActionRequirements(request.userAnswers, NormalMode, index, draftId)
+      val requirements = new MandatoryAnswers(request.userAnswers, NormalMode, index, draftId)
 
       requirements() match {
         case Left(redirect) =>

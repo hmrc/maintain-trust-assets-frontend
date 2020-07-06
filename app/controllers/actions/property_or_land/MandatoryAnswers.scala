@@ -23,10 +23,10 @@ import pages.asset.WhatKindOfAssetPage
 import pages.asset.property_or_land._
 import play.api.mvc.Call
 
-class PostActionRequirements @Inject()(userAnswers: UserAnswers,
-                                       mode: Mode,
-                                       index: Int,
-                                       draftId: String) {
+class MandatoryAnswers @Inject()(userAnswers: UserAnswers,
+                                 mode: Mode,
+                                 index: Int,
+                                 draftId: String) {
 
   def apply(): Either[Call, Unit] = {
     requireWhatKindOfAsset()
