@@ -18,9 +18,9 @@ package controllers.asset.property_or_land
 
 import base.SpecBase
 import controllers.routes._
-import models.{InternationalAddress, NormalMode, UKAddress}
 import models.Status.Completed
-import models.WhatKindOfAsset.PropertyOrLand
+import models.WhatKindOfAsset.{Other, PropertyOrLand}
+import models.{InternationalAddress, NormalMode, UKAddress}
 import pages.AssetStatus
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.property_or_land._
@@ -338,13 +338,46 @@ class PropertyOrLandAnswerControllerSpec extends SpecBase {
 
     }
 
-    "redirect to PropertyOrLandAddressYesNoPage on a GET if no answer for 'Does the property or land have an address' at index" in {
+    "redirect to 'what kind of asset' on a GET" when {
+
+      "answer to it is not PropertyOrLand" in {
+        val answers =
+          emptyUserAnswers
+            .set(WhatKindOfAssetPage(index), Other).success.value
+
+        val application = applicationBuilder(userAnswers = Some(answers)).build()
+
+        val request = FakeRequest(GET, propertyOrLandAnswerRoute)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual controllers.asset.routes.WhatKindOfAssetController.onPageLoad(NormalMode, index, fakeDraftId).url
+
+        application.stop()
+      }
+
+      "no answer for it" in {
+
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+        val request = FakeRequest(GET, propertyOrLandAnswerRoute)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual controllers.asset.routes.WhatKindOfAssetController.onPageLoad(NormalMode, index, fakeDraftId).url
+
+        application.stop()
+      }
+    }
+
+    "redirect to 'does property or land have address' on a GET if no answer for it at index" in {
       val answers =
         emptyUserAnswers
           .set(WhatKindOfAssetPage(index), PropertyOrLand).success.value
-          .set(PropertyOrLandDescriptionPage(index), "Property Land Description").success.value
-          .set(PropertyOrLandTotalValuePage(index), "10000").success.value
-          .set(TrustOwnAllThePropertyOrLandPage(index), true).success.value
 
       val application = applicationBuilder(userAnswers = Some(answers)).build()
 
@@ -355,6 +388,147 @@ class PropertyOrLandAnswerControllerSpec extends SpecBase {
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual routes.PropertyOrLandAddressYesNoController.onPageLoad(NormalMode, index, fakeDraftId).url
+
+      application.stop()
+    }
+
+    "redirect to 'is address in UK' on a GET if no answer for it at index" in {
+      val answers =
+        emptyUserAnswers
+          .set(WhatKindOfAssetPage(index), PropertyOrLand).success.value
+          .set(PropertyOrLandAddressYesNoPage(index), true).success.value
+
+      val application = applicationBuilder(userAnswers = Some(answers)).build()
+
+      val request = FakeRequest(GET, propertyOrLandAnswerRoute)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual routes.PropertyOrLandAddressUkYesNoController.onPageLoad(NormalMode, index, fakeDraftId).url
+
+      application.stop()
+    }
+
+    "redirect to 'UK address' on a GET if no answer for it at index" in {
+      val answers =
+        emptyUserAnswers
+          .set(WhatKindOfAssetPage(index), PropertyOrLand).success.value
+          .set(PropertyOrLandAddressYesNoPage(index), true).success.value
+          .set(PropertyOrLandAddressUkYesNoPage(index), true).success.value
+
+      val application = applicationBuilder(userAnswers = Some(answers)).build()
+
+      val request = FakeRequest(GET, propertyOrLandAnswerRoute)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual routes.PropertyOrLandUKAddressController.onPageLoad(NormalMode, index, fakeDraftId).url
+
+      application.stop()
+    }
+
+    "redirect to 'international address' on a GET if no answer for it at index" in {
+      val answers =
+        emptyUserAnswers
+          .set(WhatKindOfAssetPage(index), PropertyOrLand).success.value
+          .set(PropertyOrLandAddressYesNoPage(index), true).success.value
+          .set(PropertyOrLandAddressUkYesNoPage(index), false).success.value
+
+      val application = applicationBuilder(userAnswers = Some(answers)).build()
+
+      val request = FakeRequest(GET, propertyOrLandAnswerRoute)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual routes.PropertyOrLandInternationalAddressController.onPageLoad(NormalMode, index, fakeDraftId).url
+
+      application.stop()
+    }
+
+    "redirect to 'description' on a GET if no answer for it at index" in {
+      val answers =
+        emptyUserAnswers
+          .set(WhatKindOfAssetPage(index), PropertyOrLand).success.value
+          .set(PropertyOrLandAddressYesNoPage(index), false).success.value
+
+      val application = applicationBuilder(userAnswers = Some(answers)).build()
+
+      val request = FakeRequest(GET, propertyOrLandAnswerRoute)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual routes.PropertyOrLandDescriptionController.onPageLoad(NormalMode, index, fakeDraftId).url
+
+      application.stop()
+    }
+
+    "redirect to 'current total value' on a GET if no answer for it at index" in {
+      val answers =
+        emptyUserAnswers
+          .set(WhatKindOfAssetPage(index), PropertyOrLand).success.value
+          .set(PropertyOrLandAddressYesNoPage(index), false).success.value
+          .set(PropertyOrLandDescriptionPage(index), "Description").success.value
+
+      val application = applicationBuilder(userAnswers = Some(answers)).build()
+
+      val request = FakeRequest(GET, propertyOrLandAnswerRoute)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual routes.PropertyOrLandTotalValueController.onPageLoad(NormalMode, index, fakeDraftId).url
+
+      application.stop()
+    }
+
+    "redirect to 'does trust own all the property or land' on a GET if no answer for it at index" in {
+      val answers =
+        emptyUserAnswers
+          .set(WhatKindOfAssetPage(index), PropertyOrLand).success.value
+          .set(PropertyOrLandAddressYesNoPage(index), false).success.value
+          .set(PropertyOrLandDescriptionPage(index), "Description").success.value
+          .set(PropertyOrLandTotalValuePage(index), "4000").success.value
+
+      val application = applicationBuilder(userAnswers = Some(answers)).build()
+
+      val request = FakeRequest(GET, propertyOrLandAnswerRoute)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual routes.TrustOwnAllThePropertyOrLandController.onPageLoad(NormalMode, index, fakeDraftId).url
+
+      application.stop()
+    }
+
+    "redirect to 'value owned by trust' on a GET if no answer for it at index" in {
+      val answers =
+        emptyUserAnswers
+          .set(WhatKindOfAssetPage(index), PropertyOrLand).success.value
+          .set(PropertyOrLandAddressYesNoPage(index), false).success.value
+          .set(PropertyOrLandDescriptionPage(index), "Description").success.value
+          .set(PropertyOrLandTotalValuePage(index), "4000").success.value
+          .set(TrustOwnAllThePropertyOrLandPage(index), false).success.value
+
+      val application = applicationBuilder(userAnswers = Some(answers)).build()
+
+      val request = FakeRequest(GET, propertyOrLandAnswerRoute)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual routes.PropertyLandValueTrustController.onPageLoad(NormalMode, index, fakeDraftId).url
 
       application.stop()
     }

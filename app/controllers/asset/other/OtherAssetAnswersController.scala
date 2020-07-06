@@ -22,6 +22,7 @@ import models.Status.Completed
 import models.requests.RegistrationDataRequest
 import models.{Mode, NormalMode}
 import pages.AssetStatus
+import pages.asset.WhatKindOfAssetPage
 import pages.asset.other.{OtherAssetDescriptionPage, OtherAssetValuePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
@@ -48,6 +49,7 @@ class OtherAssetAnswersController @Inject()(
 
   private def actions(mode: Mode, index: Int, draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] = {
     identify andThen getData(draftId) andThen requireData andThen
+      requiredAnswer(RequiredAnswer(WhatKindOfAssetPage(index), controllers.asset.routes.WhatKindOfAssetController.onPageLoad(mode, index, draftId))) andThen
       requiredAnswer(RequiredAnswer(OtherAssetDescriptionPage(index), routes.OtherAssetDescriptionController.onPageLoad(mode, index, draftId))) andThen
       requiredAnswer(RequiredAnswer(OtherAssetValuePage(index), routes.OtherAssetValueController.onPageLoad(mode, index, draftId)))
   }

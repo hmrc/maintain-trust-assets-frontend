@@ -88,7 +88,7 @@ class AddAssetViewHelper(userAnswers: UserAnswers, mode: Mode, draftId: String)(
         case PropertyOrLandDefaultViewModel(_, _) => messages("entities.no.addressOrDescription.added")
       },
       typeLabel,
-      property_or_land.routes.PropertyOrLandAddressYesNoController.onPageLoad(mode, index, draftId).url,
+      property_or_land.routes.PropertyOrLandAnswerController.onPageLoad(index, draftId).url,
       routes.RemoveAssetYesNoController.onPageLoad(index, draftId).url
     )
 

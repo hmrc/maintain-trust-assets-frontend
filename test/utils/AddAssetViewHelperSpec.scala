@@ -39,7 +39,7 @@ class AddAssetViewHelperSpec extends SpecBase {
     money.routes.AssetMoneyValueController.onPageLoad(NormalMode, index, fakeDraftId).url
 
   def changePropertyOrLandAssetRoute(index: Int): String =
-    property_or_land.routes.PropertyOrLandAddressYesNoController.onPageLoad(NormalMode, index, fakeDraftId).url
+    property_or_land.routes.PropertyOrLandAnswerController.onPageLoad(index, fakeDraftId).url
 
   def changeSharesAssetRoute(index: Int): String =
     shares.routes.SharesInAPortfolioController.onPageLoad(NormalMode, index, fakeDraftId).url
