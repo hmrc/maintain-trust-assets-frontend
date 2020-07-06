@@ -48,7 +48,7 @@ object WhatKindOfAsset extends Enumerable.Implicits {
       (Money, assets.count(_.isInstanceOf[MoneyAssetViewModel])),
       (PropertyOrLand, assets.count(_.isInstanceOf[PropertyOrLandAssetViewModel])),
       (Shares, assets.count(_.isInstanceOf[ShareAssetViewModel])),
-      (Business, 0),
+      (Business, assets.count(_.isInstanceOf[BusinessAssetViewModel])),
       (Partnership, assets.count(_.isInstanceOf[PartnershipAssetViewModel])),
       (Other, assets.count(_.isInstanceOf[OtherAssetViewModel]))
     )
