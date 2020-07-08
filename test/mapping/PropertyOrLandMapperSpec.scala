@@ -40,36 +40,69 @@ class PropertyOrLandMapperSpec extends SpecBase with MustMatchers
 
     }
 
-    "be able to create a property or land Asset with address" in {
+    "be able to create a property or land Asset" when {
 
-      val userAnswers = emptyUserAnswers
-        .set(WhatKindOfAssetPage(0), WhatKindOfAsset.PropertyOrLand).success.value
-        .set(PropertyOrLandAddressYesNoPage(0), true).success.value
-        .set(PropertyOrLandAddressUkYesNoPage(0), true).success.value
-        .set(PropertyOrLandUKAddressPage(0), UKAddress("26", "Grangetown", Some("Tyne and Wear"), Some("Newcastle"), "Z99 2YY")).success.value
-        .set(PropertyOrLandTotalValuePage(0), "1000").success.value
-        .set(TrustOwnAllThePropertyOrLandPage(0), false).success.value
-        .set(PropertyLandValueTrustPage(0), "750").success.value
+      "uk address" in {
 
+        val userAnswers = emptyUserAnswers
+          .set(WhatKindOfAssetPage(0), WhatKindOfAsset.PropertyOrLand).success.value
+          .set(PropertyOrLandAddressYesNoPage(0), true).success.value
+          .set(PropertyOrLandAddressUkYesNoPage(0), true).success.value
+          .set(PropertyOrLandUKAddressPage(0), UKAddress("26", "Grangetown", Some("Tyne and Wear"), Some("Newcastle"), "Z99 2YY")).success.value
+          .set(PropertyOrLandTotalValuePage(0), "1000").success.value
+          .set(TrustOwnAllThePropertyOrLandPage(0), false).success.value
+          .set(PropertyLandValueTrustPage(0), "750").success.value
 
-      propertyOrLandMapper.build(userAnswers).value mustBe
-        List(
-          PropertyLandType(
-            buildingLandName = None,
-            address = Some(
-              AddressType(
-                line1 = "26",
-                line2 = "Grangetown",
-                line3 = Some("Tyne and Wear"),
-                line4 = Some("Newcastle"),
-                postCode = Some("Z99 2YY"),
-                country = "GB"
-              )),
-            valueFull = 1000L,
-            valuePrevious = 750L
+        propertyOrLandMapper.build(userAnswers).value mustBe
+          List(
+            PropertyLandType(
+              buildingLandName = None,
+              address = Some(
+                AddressType(
+                  line1 = "26",
+                  line2 = "Grangetown",
+                  line3 = Some("Tyne and Wear"),
+                  line4 = Some("Newcastle"),
+                  postCode = Some("Z99 2YY"),
+                  country = "GB"
+                )),
+              valueFull = 1000L,
+              valuePrevious = 750L
 
+            )
           )
-        )
+      }
+
+      "international address" in {
+
+        val userAnswers = emptyUserAnswers
+          .set(WhatKindOfAssetPage(0), WhatKindOfAsset.PropertyOrLand).success.value
+          .set(PropertyOrLandAddressYesNoPage(0), true).success.value
+          .set(PropertyOrLandAddressUkYesNoPage(0), false).success.value
+          .set(PropertyOrLandInternationalAddressPage(0), InternationalAddress("1", "Broadway", Some("New York"), "US")).success.value
+          .set(PropertyOrLandTotalValuePage(0), "1000").success.value
+          .set(TrustOwnAllThePropertyOrLandPage(0), false).success.value
+          .set(PropertyLandValueTrustPage(0), "750").success.value
+
+        propertyOrLandMapper.build(userAnswers).value mustBe
+          List(
+            PropertyLandType(
+              buildingLandName = None,
+              address = Some(
+                AddressType(
+                  line1 = "1",
+                  line2 = "Broadway",
+                  line3 = Some("New York"),
+                  line4 = None,
+                  postCode = None,
+                  country = "US"
+                )),
+              valueFull = 1000L,
+              valuePrevious = 750L
+
+            )
+          )
+      }
     }
 
     "be able to create a property or land Asset with a property description and owns full value" in {

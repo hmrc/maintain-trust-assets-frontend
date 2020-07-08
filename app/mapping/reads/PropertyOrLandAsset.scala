@@ -52,7 +52,8 @@ object PropertyOrLandAsset {
   }
 
   private def readAddress(): Reads[Option[Address]] = {
-    (__ \ "ukAddress").readNullable[Address] orElse
-      (__ \ "internationalAddress").readNullable[Address]
+    (__ \ "ukAddress").read[Address].map(Some(_): Option[Address]) orElse
+      (__ \ "internationalAddress").read[Address].map(Some(_): Option[Address]) orElse
+      Reads(_ => JsSuccess(None: Option[Address]))
   }
 }
