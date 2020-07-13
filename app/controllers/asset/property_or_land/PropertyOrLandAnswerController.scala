@@ -17,13 +17,12 @@
 package controllers.asset.property_or_land
 
 import controllers.actions._
-import controllers.actions.property_or_land.MandatoryAnswers
 import javax.inject.Inject
 import models.NormalMode
 import models.Status.Completed
 import navigation.Navigator
 import pages.AssetStatus
-import pages.asset.property_or_land.PropertyOrLandAnswerPage
+import pages.asset.property_or_land.{PropertyOrLandAddressYesNoPage, PropertyOrLandAnswerPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.RegistrationsRepository
@@ -41,44 +40,42 @@ class PropertyOrLandAnswerController @Inject()(
                                                 repository: RegistrationsRepository,
                                                 @PropertyOrLand navigator: Navigator,
                                                 actions: Actions,
+                                                requiredAnswer: RequiredAnswerActionProvider,
                                                 view: PropertyOrLandAnswersView,
                                                 countryOptions: CountryOptions,
                                                 val controllerComponents: MessagesControllerComponents
                                               )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions.authWithData(draftId) {
+  private def actionBuilder(index: Int, draftId: String) =
+    actions.authWithData(draftId) andThen
+      requiredAnswer(RequiredAnswer(PropertyOrLandAddressYesNoPage(index), routes.PropertyOrLandAddressYesNoController.onPageLoad(NormalMode, index, draftId)))
+
+  def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actionBuilder(index, draftId) {
     implicit request =>
 
-      val requirements = new MandatoryAnswers(request.userAnswers, NormalMode, index, draftId)
+      val answers = new CheckYourAnswersHelper(countryOptions)(request.userAnswers, draftId, canEdit = true)
 
-      requirements() match {
-        case Left(redirect) =>
-          Redirect(redirect)
-        case _ =>
-          val answers = new CheckYourAnswersHelper(countryOptions)(request.userAnswers, draftId, canEdit = true)
+      val sections = Seq(
+        AnswerSection(
+          None,
+          Seq(
+            answers.whatKindOfAsset(index),
+            answers.propertyOrLandAddressYesNo(index),
+            answers.propertyOrLandAddressUkYesNo(index),
+            answers.propertyOrLandUKAddress(index),
+            answers.propertyOrLandInternationalAddress(index),
+            answers.propertyOrLandDescription(index),
+            answers.propertyOrLandTotalValue(index),
+            answers.trustOwnAllThePropertyOrLand(index),
+            answers.propertyLandValueTrust(index)
+          ).flatten
+        )
+      )
 
-          val sections = Seq(
-            AnswerSection(
-              None,
-              Seq(
-                answers.whatKindOfAsset(index),
-                answers.propertyOrLandAddressYesNo(index),
-                answers.propertyOrLandAddressUkYesNo(index),
-                answers.propertyOrLandUKAddress(index),
-                answers.propertyOrLandInternationalAddress(index),
-                answers.propertyOrLandDescription(index),
-                answers.propertyOrLandTotalValue(index),
-                answers.trustOwnAllThePropertyOrLand(index),
-                answers.propertyLandValueTrust(index)
-              ).flatten
-            )
-          )
-
-          Ok(view(index, draftId, sections))
-      }
+      Ok(view(index, draftId, sections))
   }
 
-  def onSubmit(index: Int, draftId: String): Action[AnyContent] = actions.authWithData(draftId).async {
+  def onSubmit(index: Int, draftId: String): Action[AnyContent] = actionBuilder(index, draftId).async {
     implicit request =>
 
       val answers = request.userAnswers.set(AssetStatus(index), Completed)
