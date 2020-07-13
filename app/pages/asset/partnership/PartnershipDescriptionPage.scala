@@ -16,8 +16,11 @@
 
 package pages.asset.partnership
 
+import controllers.asset.partnership.routes._
+import models.NormalMode
 import pages.QuestionPage
 import play.api.libs.json.JsPath
+import play.api.mvc.Call
 import sections.Assets
 
 final case class PartnershipDescriptionPage(index : Int) extends QuestionPage[String] {
@@ -25,4 +28,7 @@ final case class PartnershipDescriptionPage(index : Int) extends QuestionPage[St
   override def path: JsPath = Assets.path \ index \ toString
 
   override def toString: String = "partnershipDescription"
+
+  override def route(draftId: String): Call =
+    PartnershipDescriptionController.onPageLoad(NormalMode, index, draftId)
 }

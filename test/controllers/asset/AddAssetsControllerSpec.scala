@@ -41,7 +41,7 @@ class AddAssetsControllerSpec extends SpecBase {
     money.routes.AssetMoneyValueController.onPageLoad(NormalMode, index, fakeDraftId).url
 
   def changeSharesAssetRoute(index: Int): String =
-    shares.routes.SharesInAPortfolioController.onPageLoad(NormalMode, index, fakeDraftId).url
+    shares.routes.ShareAnswerController.onPageLoad(index, fakeDraftId).url
 
   def removeAssetYesNoRoute(index: Int): String =
     routes.RemoveAssetYesNoController.onPageLoad(index, fakeDraftId).url

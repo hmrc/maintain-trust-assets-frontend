@@ -16,9 +16,11 @@
 
 package pages.asset.shares
 
-import models.UserAnswers
+import controllers.asset.shares.routes._
+import models.{NormalMode, UserAnswers}
 import pages.{AssetStatus, QuestionPage}
 import play.api.libs.json.JsPath
+import play.api.mvc.Call
 import sections.Assets
 
 import scala.util.Try
@@ -28,6 +30,9 @@ final case class SharesInAPortfolioPage(index : Int) extends QuestionPage[Boolea
   override def path: JsPath = Assets.path \ index \ toString
 
   override def toString: String = "sharesInAPortfolio"
+
+  override def route(draftId: String): Call =
+    SharesInAPortfolioController.onPageLoad(NormalMode, index, draftId)
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
     value match {

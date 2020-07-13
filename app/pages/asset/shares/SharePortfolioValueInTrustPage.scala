@@ -16,8 +16,11 @@
 
 package pages.asset.shares
 
+import controllers.asset.shares.routes._
+import models.NormalMode
 import pages.QuestionPage
 import play.api.libs.json.JsPath
+import play.api.mvc.Call
 import sections.Assets
 
 final case class SharePortfolioValueInTrustPage(index : Int) extends QuestionPage[String] {
@@ -25,4 +28,7 @@ final case class SharePortfolioValueInTrustPage(index : Int) extends QuestionPag
   override def path: JsPath = Assets.path \ index \ toString
 
   override def toString: String = "value"
+
+  override def route(draftId: String): Call =
+    SharePortfolioValueInTrustController.onPageLoad(NormalMode, index, draftId)
 }

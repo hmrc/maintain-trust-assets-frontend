@@ -16,6 +16,7 @@
 
 package utils
 
+import controllers.actions.RedirectToPageInJourney
 import models.Mode
 import models.UserAnswers
 import models.Status.Completed
@@ -24,8 +25,13 @@ import sections.Assets
 import viewmodels._
 import viewmodels.{AddRow, AddToRows}
 import controllers.asset._
+import navigation.AddAssetViewHelperNavigator
 
 class AddAssetViewHelper(userAnswers: UserAnswers, mode: Mode, draftId: String)(implicit messages: Messages) {
+
+  private val redirectToPageInJourney: RedirectToPageInJourney = new RedirectToPageInJourney(userAnswers, draftId)
+
+  private val navigationPages: AddAssetViewHelperNavigator = new AddAssetViewHelperNavigator
 
   def rows: AddToRows = {
 
@@ -55,21 +61,13 @@ class AddAssetViewHelper(userAnswers: UserAnswers, mode: Mode, draftId: String)(
 
   private def parseMoney(mvm: MoneyAssetViewModel, index: Int) : AddRow = {
     AddRow(
-      mvm.value,
-      mvm.`type`.toString,
-      money.routes.AssetMoneyValueController.onPageLoad(mode, index, draftId).url,
-      routes.RemoveAssetYesNoController.onPageLoad(index, draftId).url
-    )
-  }
-
-  private def parseShare(svm: ShareAssetViewModel, index : Int) : AddRow = {
-    val defaultName = messages("entities.no.name.added")
-
-    AddRow(
-      svm.name.getOrElse(defaultName),
-      svm.`type`.toString,
-      shares.routes.SharesInAPortfolioController.onPageLoad(mode, index, draftId).url,
-      routes.RemoveAssetYesNoController.onPageLoad(index, draftId).url
+      name = mvm.value,
+      typeLabel = mvm.`type`.toString,
+      changeUrl = redirectToPageInJourney.redirect(
+        money.routes.AssetMoneyValueController.onPageLoad(mode, index, draftId),
+        navigationPages.money(index)
+      ).url,
+      removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index, draftId).url
     )
   }
 
@@ -80,44 +78,69 @@ class AddAssetViewHelper(userAnswers: UserAnswers, mode: Mode, draftId: String)(
     val typeLabel : String = messages("addAssets.propertyOrLand")
 
     AddRow(
-      plvm match {
+      name = plvm match {
         case PropertyOrLandAssetUKAddressViewModel(_, address, _) => address.getOrElse(defaultAddressName)
         case PropertyOrLandAssetInternationalAddressViewModel(_, address, _) => address.getOrElse(defaultAddressName)
         case PropertyOrLandAssetAddressViewModel(_, address, _) => address.getOrElse(defaultAddressName)
         case PropertyOrLandAssetDescriptionViewModel(_, description, _) => description.getOrElse(defaultDescriptionName)
         case PropertyOrLandDefaultViewModel(_, _) => messages("entities.no.addressOrDescription.added")
       },
-      typeLabel,
-      property_or_land.routes.PropertyOrLandAnswerController.onPageLoad(index, draftId).url,
-      routes.RemoveAssetYesNoController.onPageLoad(index, draftId).url
+      typeLabel = typeLabel,
+      changeUrl = redirectToPageInJourney.redirect(
+        property_or_land.routes.PropertyOrLandAnswerController.onPageLoad(index, draftId),
+        navigationPages.propertyOrLand(index)
+      ).url,
+      removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index, draftId).url
     )
+  }
 
+  private def parseShare(svm: ShareAssetViewModel, index : Int) : AddRow = {
+    val defaultName = messages("entities.no.name.added")
+
+    AddRow(
+      name = svm.name.getOrElse(defaultName),
+      typeLabel = svm.`type`.toString,
+      changeUrl = redirectToPageInJourney.redirect(
+        shares.routes.ShareAnswerController.onPageLoad(index, draftId),
+        navigationPages.shares(index)
+      ).url,
+      removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index, draftId).url
+    )
   }
 
   private def parseBusiness(bvm: BusinessAssetViewModel, index: Int) : AddRow = {
     AddRow(
-      bvm.name,
-      bvm.`type`.toString,
-      business.routes.BusinessNameController.onPageLoad(mode, index, draftId).url,
-      routes.RemoveAssetYesNoController.onPageLoad(index, draftId).url
+      name = bvm.name,
+      typeLabel = bvm.`type`.toString,
+      changeUrl = redirectToPageInJourney.redirect(
+        business.routes.BusinessAnswersController.onPageLoad(index, draftId),
+        navigationPages.business(index)
+      ).url,
+      removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index, draftId).url
     )
   }
 
   private def parsePartnership(pvm: PartnershipAssetViewModel, index: Int) : AddRow = {
     AddRow(
-      pvm.description,
-      pvm.`type`.toString,
-      partnership.routes.PartnershipDescriptionController.onPageLoad(mode, index, draftId).url,
-      routes.RemoveAssetYesNoController.onPageLoad(index, draftId).url
+      name = pvm.description,
+      typeLabel = pvm.`type`.toString,
+      changeUrl = redirectToPageInJourney.redirect(
+        partnership.routes.PartnershipAnswerController.onPageLoad(index, draftId),
+        navigationPages.partnership(index)
+      ).url,
+      removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index, draftId).url
     )
   }
 
   private def parseOther(ovm: OtherAssetViewModel, index: Int) : AddRow = {
     AddRow(
-      ovm.description,
-      ovm.`type`.toString,
-      other.routes.OtherAssetAnswersController.onPageLoad(index, draftId).url,
-      routes.RemoveAssetYesNoController.onPageLoad(index, draftId).url
+      name = ovm.description,
+      typeLabel = ovm.`type`.toString,
+      changeUrl = redirectToPageInJourney.redirect(
+        other.routes.OtherAssetAnswersController.onPageLoad(index, draftId),
+        navigationPages.other(index)
+      ).url,
+      removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index, draftId).url
     )
   }
 

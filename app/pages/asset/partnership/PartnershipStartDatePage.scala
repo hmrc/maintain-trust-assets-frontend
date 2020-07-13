@@ -18,8 +18,11 @@ package pages.asset.partnership
 
 import java.time.LocalDate
 
+import controllers.asset.partnership.routes._
+import models.NormalMode
 import pages.QuestionPage
 import play.api.libs.json.JsPath
+import play.api.mvc.Call
 import sections.Assets
 
 final case class PartnershipStartDatePage(index : Int) extends QuestionPage[LocalDate] {
@@ -27,4 +30,7 @@ final case class PartnershipStartDatePage(index : Int) extends QuestionPage[Loca
   override def path: JsPath = Assets.path \ index \ toString
 
   override def toString: String = "partnershipStartDate"
+
+  override def route(draftId: String): Call =
+    PartnershipStartDateController.onPageLoad(NormalMode, index, draftId)
 }

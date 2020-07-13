@@ -16,8 +16,11 @@
 
 package pages.asset.business
 
+import controllers.asset.business.routes._
+import models.NormalMode
 import pages.QuestionPage
 import play.api.libs.json.JsPath
+import play.api.mvc.Call
 import sections.Assets
 
 final case class BusinessValuePage(index : Int) extends QuestionPage[String] {
@@ -25,4 +28,7 @@ final case class BusinessValuePage(index : Int) extends QuestionPage[String] {
   override def path: JsPath = JsPath \ Assets \ index \ toString
 
   override def toString: String = "value"
+
+  override def route(draftId: String): Call =
+    BusinessValueController.onPageLoad(NormalMode, index, draftId)
 }

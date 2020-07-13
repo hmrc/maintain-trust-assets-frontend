@@ -40,6 +40,7 @@ class OtherAssetValueControllerSpec extends SpecBase {
   val validAnswer: String = "4000"
 
   val requiredAnswers: UserAnswers = emptyUserAnswers
+    .set(WhatKindOfAssetPage(index), Other).success.value
     .set(OtherAssetDescriptionPage(index), description).success.value
 
   lazy val valueRoute: String = routes.OtherAssetValueController.onPageLoad(NormalMode, index, fakeDraftId).url

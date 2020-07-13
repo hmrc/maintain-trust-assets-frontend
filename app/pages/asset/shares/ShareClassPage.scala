@@ -16,9 +16,11 @@
 
 package pages.asset.shares
 
-import models.ShareClass
+import controllers.asset.shares.routes._
+import models.{NormalMode, ShareClass}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
+import play.api.mvc.Call
 import sections.Assets
 
 final case class ShareClassPage(index : Int) extends QuestionPage[ShareClass] {
@@ -26,4 +28,7 @@ final case class ShareClassPage(index : Int) extends QuestionPage[ShareClass] {
   override def path: JsPath = Assets.path \ index \ toString
 
   override def toString: String = "class"
+
+  override def route(draftId: String): Call =
+    ShareClassController.onPageLoad(NormalMode, index, draftId)
 }

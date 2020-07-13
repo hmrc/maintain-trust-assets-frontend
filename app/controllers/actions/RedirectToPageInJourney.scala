@@ -21,7 +21,7 @@ import models.{PageInJourney, LinearPageInJourney, UserAnswers, NonLinearPageInJ
 import play.api.libs.json.{JsFalse, JsTrue}
 import play.api.mvc.Call
 
-class MandatoryAnswers @Inject()(userAnswers: UserAnswers, draftId: String) {
+class RedirectToPageInJourney @Inject()(userAnswers: UserAnswers, draftId: String) {
 
   def redirect[A](cya: Call, pages: List[PageInJourney]): Call = {
     @scala.annotation.tailrec

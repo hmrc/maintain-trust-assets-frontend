@@ -16,9 +16,11 @@
 
 package pages.asset.business
 
-import models.UKAddress
+import controllers.asset.business.routes._
+import models.{NormalMode, UKAddress}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
+import play.api.mvc.Call
 import sections.Assets
 
 final case class BusinessUkAddressPage(index : Int) extends QuestionPage[UKAddress] {
@@ -26,4 +28,7 @@ final case class BusinessUkAddressPage(index : Int) extends QuestionPage[UKAddre
   override def path: JsPath = JsPath \ Assets \ index \ toString
 
   override def toString: String = "ukAddress"
+
+  override def route(draftId: String): Call =
+    BusinessUkAddressController.onPageLoad(NormalMode, index, draftId)
 }

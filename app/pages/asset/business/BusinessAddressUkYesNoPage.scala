@@ -16,9 +16,11 @@
 
 package pages.asset.business
 
-import models.UserAnswers
+import controllers.asset.business.routes._
+import models.{NormalMode, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
+import play.api.mvc.Call
 import sections.Assets
 
 import scala.util.Try
@@ -28,6 +30,9 @@ final case class BusinessAddressUkYesNoPage(index : Int) extends QuestionPage[Bo
   override def path: JsPath = JsPath \ Assets \ index \ toString
 
   override def toString: String = "addressUkYesNo"
+
+  override def route(draftId: String): Call =
+    BusinessAddressUkYesNoController.onPageLoad(NormalMode, index, draftId)
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
     value match {

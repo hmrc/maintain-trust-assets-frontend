@@ -23,7 +23,7 @@ import pages.asset.WhatKindOfAssetPage
 import pages.asset.other._
 import pages.asset.property_or_land._
 
-class MandatoryAnswersSpec extends SpecBase {
+class RedirectToPageInJourneySpec extends SpecBase {
 
   private val index: Int = 0
 
@@ -48,7 +48,7 @@ class MandatoryAnswersSpec extends SpecBase {
             .set(OtherAssetDescriptionPage(index), "Description").success.value
             .set(OtherAssetValuePage(index), "4000").success.value
 
-          val mandatoryAnswers = new MandatoryAnswers(userAnswers, fakeDraftId)
+          val mandatoryAnswers = new RedirectToPageInJourney(userAnswers, fakeDraftId)
 
           val expected  = cya.url
 
@@ -60,7 +60,7 @@ class MandatoryAnswersSpec extends SpecBase {
 
         "redirect to what kind of asset page if not answered" in {
 
-          val mandatoryAnswers = new MandatoryAnswers(emptyUserAnswers, fakeDraftId)
+          val mandatoryAnswers = new RedirectToPageInJourney(emptyUserAnswers, fakeDraftId)
 
           val expected = controllers.asset.routes.WhatKindOfAssetController.onPageLoad(NormalMode, index, fakeDraftId).url
 
@@ -72,7 +72,7 @@ class MandatoryAnswersSpec extends SpecBase {
           val userAnswers = emptyUserAnswers
             .set(WhatKindOfAssetPage(index), Other).success.value
 
-          val mandatoryAnswers = new MandatoryAnswers(userAnswers, fakeDraftId)
+          val mandatoryAnswers = new RedirectToPageInJourney(userAnswers, fakeDraftId)
 
           val expected = controllers.asset.other.routes.OtherAssetDescriptionController.onPageLoad(NormalMode, index, fakeDraftId).url
 
@@ -85,7 +85,7 @@ class MandatoryAnswersSpec extends SpecBase {
             .set(WhatKindOfAssetPage(index), Other).success.value
             .set(OtherAssetDescriptionPage(index), "Description").success.value
 
-          val mandatoryAnswers = new MandatoryAnswers(userAnswers, fakeDraftId)
+          val mandatoryAnswers = new RedirectToPageInJourney(userAnswers, fakeDraftId)
 
           val expected = controllers.asset.other.routes.OtherAssetValueController.onPageLoad(NormalMode, index, fakeDraftId).url
 
@@ -130,7 +130,7 @@ class MandatoryAnswersSpec extends SpecBase {
             .set(PropertyOrLandTotalValuePage(index), "4000").success.value
             .set(TrustOwnAllThePropertyOrLandPage(index), true).success.value
 
-          val mandatoryAnswers = new MandatoryAnswers(userAnswers, fakeDraftId)
+          val mandatoryAnswers = new RedirectToPageInJourney(userAnswers, fakeDraftId)
 
           val expected  = cya.url
 
@@ -142,7 +142,7 @@ class MandatoryAnswersSpec extends SpecBase {
 
         "redirect to what kind of asset page if not answered" in {
 
-          val mandatoryAnswers = new MandatoryAnswers(emptyUserAnswers, fakeDraftId)
+          val mandatoryAnswers = new RedirectToPageInJourney(emptyUserAnswers, fakeDraftId)
 
           val expected = controllers.asset.routes.WhatKindOfAssetController.onPageLoad(NormalMode, index, fakeDraftId).url
 
@@ -155,7 +155,7 @@ class MandatoryAnswersSpec extends SpecBase {
             .set(WhatKindOfAssetPage(index), PropertyOrLand).success.value
             .set(PropertyOrLandAddressYesNoPage(index), true).success.value
 
-          val mandatoryAnswers = new MandatoryAnswers(userAnswers, fakeDraftId)
+          val mandatoryAnswers = new RedirectToPageInJourney(userAnswers, fakeDraftId)
 
           val expected = controllers.asset.property_or_land.routes.PropertyOrLandAddressUkYesNoController.onPageLoad(NormalMode, index, fakeDraftId).url
 
@@ -168,7 +168,7 @@ class MandatoryAnswersSpec extends SpecBase {
             .set(WhatKindOfAssetPage(index), PropertyOrLand).success.value
             .set(PropertyOrLandAddressYesNoPage(index), false).success.value
 
-          val mandatoryAnswers = new MandatoryAnswers(userAnswers, fakeDraftId)
+          val mandatoryAnswers = new RedirectToPageInJourney(userAnswers, fakeDraftId)
 
           val expected = controllers.asset.property_or_land.routes.PropertyOrLandDescriptionController.onPageLoad(NormalMode, index, fakeDraftId).url
 
@@ -182,7 +182,7 @@ class MandatoryAnswersSpec extends SpecBase {
             .set(PropertyOrLandAddressYesNoPage(index), true).success.value
             .set(PropertyOrLandAddressUkYesNoPage(index), true).success.value
 
-          val mandatoryAnswers = new MandatoryAnswers(userAnswers, fakeDraftId)
+          val mandatoryAnswers = new RedirectToPageInJourney(userAnswers, fakeDraftId)
 
           val expected = controllers.asset.property_or_land.routes.PropertyOrLandUKAddressController.onPageLoad(NormalMode, index, fakeDraftId).url
 
@@ -196,7 +196,7 @@ class MandatoryAnswersSpec extends SpecBase {
             .set(PropertyOrLandAddressYesNoPage(index), true).success.value
             .set(PropertyOrLandAddressUkYesNoPage(index), false).success.value
 
-          val mandatoryAnswers = new MandatoryAnswers(userAnswers, fakeDraftId)
+          val mandatoryAnswers = new RedirectToPageInJourney(userAnswers, fakeDraftId)
 
           val expected = controllers.asset.property_or_land.routes.PropertyOrLandInternationalAddressController.onPageLoad(NormalMode, index, fakeDraftId).url
 

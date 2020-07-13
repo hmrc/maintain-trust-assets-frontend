@@ -35,27 +35,6 @@ import pages.asset.other._
 
 class AddAssetViewHelperSpec extends SpecBase {
 
-  def changeMoneyAssetRoute(index: Int): String =
-    money.routes.AssetMoneyValueController.onPageLoad(NormalMode, index, fakeDraftId).url
-
-  def changePropertyOrLandAssetRoute(index: Int): String =
-    property_or_land.routes.PropertyOrLandAnswerController.onPageLoad(index, fakeDraftId).url
-
-  def changeSharesAssetRoute(index: Int): String =
-    shares.routes.SharesInAPortfolioController.onPageLoad(NormalMode, index, fakeDraftId).url
-
-  def changeBusinessAssetRoute(index: Int): String =
-    business.routes.BusinessNameController.onPageLoad(NormalMode, index, fakeDraftId).url
-
-  def changePartnershipAssetRoute(index: Int): String =
-    partnership.routes.PartnershipDescriptionController.onPageLoad(NormalMode, index, fakeDraftId).url
-
-  def changeOtherAssetRoute(index: Int): String =
-    other.routes.OtherAssetAnswersController.onPageLoad(index, fakeDraftId).url
-
-  def removeAssetYesNoRoute(index: Int): String =
-    routes.RemoveAssetYesNoController.onPageLoad(index, fakeDraftId).url
-
   "AddAssetViewHelper" when {
 
     ".row" must {
@@ -67,6 +46,27 @@ class AddAssetViewHelperSpec extends SpecBase {
       }
 
       "generate rows from user answers for assets in progress" in {
+
+        def propertyOrLandUkAddressRoute(index: Int): String =
+          property_or_land.routes.PropertyOrLandUKAddressController.onPageLoad(NormalMode, index, fakeDraftId).url
+
+        def propertyOrLandDescriptionRoute(index: Int): String =
+          property_or_land.routes.PropertyOrLandDescriptionController.onPageLoad(NormalMode, index, fakeDraftId).url
+
+        def propertyOrLandAddressYesNoRoute(index: Int): String =
+          property_or_land.routes.PropertyOrLandAddressYesNoController.onPageLoad(NormalMode, index, fakeDraftId).url
+
+        def sharesRoute(index: Int): String =
+          shares.routes.SharePortfolioNameController.onPageLoad(NormalMode, index, fakeDraftId).url
+
+        def partnershipRoute(index: Int): String =
+          partnership.routes.PartnershipStartDateController.onPageLoad(NormalMode, index, fakeDraftId).url
+
+        def otherRoute(index: Int): String =
+          other.routes.OtherAssetValueController.onPageLoad(NormalMode, index, fakeDraftId).url
+
+        def removeAssetYesNoRoute(index: Int): String =
+          routes.RemoveAssetYesNoController.onPageLoad(index, fakeDraftId).url
 
         val userAnswers = emptyUserAnswers
           .set(WhatKindOfAssetPage(0), Shares).success.value
@@ -85,17 +85,38 @@ class AddAssetViewHelperSpec extends SpecBase {
 
         val rows = new AddAssetViewHelper(userAnswers, NormalMode, fakeDraftId).rows
         rows.inProgress mustBe List(
-          AddRow("No name added", typeLabel = "Shares", changeSharesAssetRoute(0), removeAssetYesNoRoute(0)),
-          AddRow("No address added", typeLabel = "Property or Land", changePropertyOrLandAssetRoute(2), removeAssetYesNoRoute(2)),
-          AddRow("No description added", typeLabel = "Property or Land", changePropertyOrLandAssetRoute(3), removeAssetYesNoRoute(3)),
-          AddRow("No address or description added", typeLabel = "Property or Land", changePropertyOrLandAssetRoute(4), removeAssetYesNoRoute(4)),
-          AddRow("Description", typeLabel = "Other", changeOtherAssetRoute(5), removeAssetYesNoRoute(5)),
-          AddRow("Partnership Description", typeLabel = "Partnership", changePartnershipAssetRoute(6), removeAssetYesNoRoute(6))
+          AddRow("No name added", typeLabel = "Shares", sharesRoute(0), removeAssetYesNoRoute(0)),
+          AddRow("No address added", typeLabel = "Property or Land", propertyOrLandUkAddressRoute(2), removeAssetYesNoRoute(2)),
+          AddRow("No description added", typeLabel = "Property or Land", propertyOrLandDescriptionRoute(3), removeAssetYesNoRoute(3)),
+          AddRow("No address or description added", typeLabel = "Property or Land", propertyOrLandAddressYesNoRoute(4), removeAssetYesNoRoute(4)),
+          AddRow("Description", typeLabel = "Other", otherRoute(5), removeAssetYesNoRoute(5)),
+          AddRow("Partnership Description", typeLabel = "Partnership", partnershipRoute(6), removeAssetYesNoRoute(6))
         )
         rows.complete mustBe Nil
       }
 
       "generate rows from user answers for complete assets" in {
+
+        def moneyRoute(index: Int): String =
+          money.routes.AssetMoneyValueController.onPageLoad(NormalMode, index, fakeDraftId).url
+
+        def propertyOrLandRoute(index: Int): String =
+          property_or_land.routes.PropertyOrLandAnswerController.onPageLoad(index, fakeDraftId).url
+
+        def sharesRoute(index: Int): String =
+          shares.routes.ShareAnswerController.onPageLoad(index, fakeDraftId).url
+
+        def businessRoute(index: Int): String =
+          business.routes.BusinessAnswersController.onPageLoad(index, fakeDraftId).url
+
+        def partnershipRoute(index: Int): String =
+          partnership.routes.PartnershipAnswerController.onPageLoad(index, fakeDraftId).url
+
+        def otherRoute(index: Int): String =
+          other.routes.OtherAssetAnswersController.onPageLoad(index, fakeDraftId).url
+
+        def removeAssetYesNoRoute(index: Int): String =
+          routes.RemoveAssetYesNoController.onPageLoad(index, fakeDraftId).url
 
         val userAnswers = emptyUserAnswers
           .set(WhatKindOfAssetPage(0), Shares).success.value
@@ -140,13 +161,13 @@ class AddAssetViewHelperSpec extends SpecBase {
 
         val rows = new AddAssetViewHelper(userAnswers, NormalMode, fakeDraftId).rows
         rows.complete mustBe List(
-          AddRow("Share Company Name", typeLabel = "Shares", changeSharesAssetRoute(0), removeAssetYesNoRoute(0)),
-          AddRow("£200", typeLabel = "Money", changeMoneyAssetRoute(1), removeAssetYesNoRoute(1)),
-          AddRow("line 1", typeLabel = "Property or Land", changePropertyOrLandAssetRoute(2), removeAssetYesNoRoute(2)),
-          AddRow("1 hectare of land", typeLabel = "Property or Land", changePropertyOrLandAssetRoute(3), removeAssetYesNoRoute(3)),
-          AddRow("Description", typeLabel = "Other", changeOtherAssetRoute(4), removeAssetYesNoRoute(4)),
-          AddRow("Partnership Description", typeLabel = "Partnership", changePartnershipAssetRoute(5), removeAssetYesNoRoute(5)),
-          AddRow("Test", typeLabel = "Business", changeBusinessAssetRoute(6), removeAssetYesNoRoute(6))
+          AddRow("Share Company Name", typeLabel = "Shares", sharesRoute(0), removeAssetYesNoRoute(0)),
+          AddRow("£200", typeLabel = "Money", moneyRoute(1), removeAssetYesNoRoute(1)),
+          AddRow("line 1", typeLabel = "Property or Land", propertyOrLandRoute(2), removeAssetYesNoRoute(2)),
+          AddRow("1 hectare of land", typeLabel = "Property or Land", propertyOrLandRoute(3), removeAssetYesNoRoute(3)),
+          AddRow("Description", typeLabel = "Other", otherRoute(4), removeAssetYesNoRoute(4)),
+          AddRow("Partnership Description", typeLabel = "Partnership", partnershipRoute(5), removeAssetYesNoRoute(5)),
+          AddRow("Test", typeLabel = "Business", businessRoute(6), removeAssetYesNoRoute(6))
         )
         rows.inProgress mustBe Nil
       }
