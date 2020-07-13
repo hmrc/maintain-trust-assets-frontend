@@ -16,8 +16,11 @@
 
 package pages.asset.property_or_land
 
+import controllers.asset.property_or_land.routes._
+import models.NormalMode
 import pages.QuestionPage
 import play.api.libs.json.JsPath
+import play.api.mvc.Call
 import sections.Assets
 
 case class PropertyLandValueTrustPage(index: Int) extends QuestionPage[String] {
@@ -25,4 +28,7 @@ case class PropertyLandValueTrustPage(index: Int) extends QuestionPage[String] {
   override def path: JsPath = Assets.path \ index \ toString
 
   override def toString: String = "propertyOrLandValueTrust"
+
+  override def route(draftId: String): Call =
+    PropertyLandValueTrustController.onPageLoad(NormalMode, index, draftId)
 }

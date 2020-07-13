@@ -16,9 +16,11 @@
 
 package pages.asset.property_or_land
 
-import models.UserAnswers
+import controllers.asset.property_or_land.routes._
+import models.{NormalMode, UserAnswers}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
+import play.api.mvc.Call
 import sections.Assets
 
 import scala.util.Try
@@ -28,6 +30,9 @@ final case class PropertyOrLandAddressUkYesNoPage(index: Int) extends QuestionPa
   override def path: JsPath = Assets.path \ index \ toString
 
   override def toString: String = "propertyOrLandAddressUKYesNo"
+
+  override def route(draftId: String): Call =
+    PropertyOrLandAddressUkYesNoController.onPageLoad(NormalMode, index, draftId)
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {

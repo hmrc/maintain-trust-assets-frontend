@@ -16,13 +16,19 @@
 
 package pages.asset.other
 
+import controllers.asset.other.routes._
+import models.NormalMode
 import pages.QuestionPage
 import play.api.libs.json.JsPath
+import play.api.mvc.Call
 import sections.Assets
 
-final case class  OtherAssetValuePage(index : Int) extends QuestionPage[String] {
+final case class OtherAssetValuePage(index: Int) extends QuestionPage[String] {
 
   override def path: JsPath = Assets.path \ index \ toString
 
   override def toString: String = "otherAssetValue"
+
+  override def route(draftId: String): Call =
+    OtherAssetValueController.onPageLoad(NormalMode, index, draftId)
 }

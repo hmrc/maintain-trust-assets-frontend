@@ -16,9 +16,11 @@
 
 package pages.asset.property_or_land
 
-import models.UKAddress
+import controllers.asset.property_or_land.routes._
+import models.{NormalMode, UKAddress}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
+import play.api.mvc.Call
 import sections.Assets
 
 final case class PropertyOrLandUKAddressPage(index: Int) extends QuestionPage[UKAddress] {
@@ -26,4 +28,7 @@ final case class PropertyOrLandUKAddressPage(index: Int) extends QuestionPage[UK
   override def path: JsPath = Assets.path \ index \ toString
 
   override def toString: String = "ukAddress"
+
+  override def route(draftId: String): Call =
+    PropertyOrLandUKAddressController.onPageLoad(NormalMode, index, draftId)
 }

@@ -17,7 +17,7 @@
 package pages.asset
 
 import models.WhatKindOfAsset._
-import models.{UserAnswers, WhatKindOfAsset}
+import models.{NormalMode, UserAnswers, WhatKindOfAsset}
 import pages.{AssetStatus, QuestionPage}
 import pages.asset.money._
 import pages.asset.property_or_land._
@@ -26,6 +26,7 @@ import pages.asset.business._
 import pages.asset.partnership._
 import pages.asset.other._
 import play.api.libs.json.JsPath
+import play.api.mvc.Call
 import sections.Assets
 
 import scala.util.Try
@@ -35,6 +36,9 @@ final case class WhatKindOfAssetPage(index: Int) extends QuestionPage[WhatKindOf
   override def path: JsPath = JsPath \ Assets \ index \ toString
 
   override def toString: String = "whatKindOfAsset"
+
+  override def route(draftId: String): Call =
+    controllers.asset.routes.WhatKindOfAssetController.onPageLoad(NormalMode, index, draftId)
 
   override def cleanup(value: Option[WhatKindOfAsset], userAnswers: UserAnswers): Try[UserAnswers] = {
     value match {

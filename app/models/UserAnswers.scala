@@ -37,6 +37,15 @@ final case class UserAnswers(
     }
   }
 
+  def getAtPath(path: JsPath): Option[JsValue] = {
+    data.transform(path.json.pick) match {
+      case JsSuccess(value, _) => Some(value)
+      case JsError(errors) =>
+        Logger.info(s"[UserAnswers] tried to read path $path errors: $errors")
+        None
+    }
+  }
+
   def set[A](page: Settable[A], value: A)(implicit writes: Writes[A]): Try[UserAnswers] = {
 
     val updatedData = data.setObject(page.path, Json.toJson(value)) match {

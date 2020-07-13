@@ -16,7 +16,9 @@
 
 package pages
 
-import models.UserAnswers
+import play.api.mvc.Call
 import queries.{Gettable, Settable}
 
-trait QuestionPage[A] extends Page with Gettable[A] with Settable[A]
+trait QuestionPage[A] extends Page with Gettable[A] with Settable[A] {
+  def route(draftId: String): Call = controllers.routes.FeatureNotAvailableController.onPageLoad()
+}

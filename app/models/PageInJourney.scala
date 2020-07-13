@@ -14,21 +14,14 @@
  * limitations under the License.
  */
 
-package pages.asset.property_or_land
+package models
 
-import controllers.asset.property_or_land.routes._
-import models.{InternationalAddress, NormalMode}
 import pages.QuestionPage
-import play.api.libs.json.JsPath
-import play.api.mvc.Call
-import sections.Assets
 
-final case class PropertyOrLandInternationalAddressPage(index: Int) extends QuestionPage[InternationalAddress] {
+trait PageInJourney
 
-  override def path: JsPath = Assets.path \ index \ toString
+case class LinearPageInJourney[A](page: QuestionPage[A]) extends PageInJourney
 
-  override def toString: String = "internationalAddress"
-
-  override def route(draftId: String): Call =
-    PropertyOrLandInternationalAddressController.onPageLoad(NormalMode, index, draftId)
-}
+case class NonLinearPageInJourney(page: QuestionPage[Boolean],
+                                  yesPages: List[PageInJourney],
+                                  noPages: List[PageInJourney]) extends PageInJourney
