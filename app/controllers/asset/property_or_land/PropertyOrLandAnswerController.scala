@@ -17,7 +17,6 @@
 package controllers.asset.property_or_land
 
 import controllers.actions._
-import controllers.actions.property_or_land.MandatoryAnswers
 import javax.inject.Inject
 import models.NormalMode
 import models.Status.Completed
@@ -49,33 +48,26 @@ class PropertyOrLandAnswerController @Inject()(
   def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions.authWithData(draftId) {
     implicit request =>
 
-      val requirements = new MandatoryAnswers(request.userAnswers, NormalMode, index, draftId)
+      val answers = new CheckYourAnswersHelper(countryOptions)(request.userAnswers, draftId, canEdit = true)
 
-      requirements() match {
-        case Left(redirect) =>
-          Redirect(redirect)
-        case _ =>
-          val answers = new CheckYourAnswersHelper(countryOptions)(request.userAnswers, draftId, canEdit = true)
+      val sections = Seq(
+        AnswerSection(
+          None,
+          Seq(
+            answers.whatKindOfAsset(index),
+            answers.propertyOrLandAddressYesNo(index),
+            answers.propertyOrLandAddressUkYesNo(index),
+            answers.propertyOrLandUKAddress(index),
+            answers.propertyOrLandInternationalAddress(index),
+            answers.propertyOrLandDescription(index),
+            answers.propertyOrLandTotalValue(index),
+            answers.trustOwnAllThePropertyOrLand(index),
+            answers.propertyLandValueTrust(index)
+          ).flatten
+        )
+      )
 
-          val sections = Seq(
-            AnswerSection(
-              None,
-              Seq(
-                answers.whatKindOfAsset(index),
-                answers.propertyOrLandAddressYesNo(index),
-                answers.propertyOrLandAddressUkYesNo(index),
-                answers.propertyOrLandUKAddress(index),
-                answers.propertyOrLandInternationalAddress(index),
-                answers.propertyOrLandDescription(index),
-                answers.propertyOrLandTotalValue(index),
-                answers.trustOwnAllThePropertyOrLand(index),
-                answers.propertyLandValueTrust(index)
-              ).flatten
-            )
-          )
-
-          Ok(view(index, draftId, sections))
-      }
+      Ok(view(index, draftId, sections))
   }
 
   def onSubmit(index: Int, draftId: String): Action[AnyContent] = actions.authWithData(draftId).async {

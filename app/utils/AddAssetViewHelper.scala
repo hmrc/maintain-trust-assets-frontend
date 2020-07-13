@@ -16,8 +16,7 @@
 
 package utils
 
-import models.Mode
-import models.UserAnswers
+import models.{Mode, UserAnswers}
 import models.Status.Completed
 import play.api.i18n.Messages
 import sections.Assets
@@ -55,21 +54,10 @@ class AddAssetViewHelper(userAnswers: UserAnswers, mode: Mode, draftId: String)(
 
   private def parseMoney(mvm: MoneyAssetViewModel, index: Int) : AddRow = {
     AddRow(
-      mvm.value,
-      mvm.`type`.toString,
-      money.routes.AssetMoneyValueController.onPageLoad(mode, index, draftId).url,
-      routes.RemoveAssetYesNoController.onPageLoad(index, draftId).url
-    )
-  }
-
-  private def parseShare(svm: ShareAssetViewModel, index : Int) : AddRow = {
-    val defaultName = messages("entities.no.name.added")
-
-    AddRow(
-      svm.name.getOrElse(defaultName),
-      svm.`type`.toString,
-      shares.routes.SharesInAPortfolioController.onPageLoad(mode, index, draftId).url,
-      routes.RemoveAssetYesNoController.onPageLoad(index, draftId).url
+      name = mvm.value,
+      typeLabel = mvm.`type`.toString,
+      changeUrl = money.routes.AssetMoneyValueController.onPageLoad(mode, index, draftId).url,
+      removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index, draftId).url
     )
   }
 
@@ -80,44 +68,74 @@ class AddAssetViewHelper(userAnswers: UserAnswers, mode: Mode, draftId: String)(
     val typeLabel : String = messages("addAssets.propertyOrLand")
 
     AddRow(
-      plvm match {
+      name = plvm match {
         case PropertyOrLandAssetUKAddressViewModel(_, address, _) => address.getOrElse(defaultAddressName)
         case PropertyOrLandAssetInternationalAddressViewModel(_, address, _) => address.getOrElse(defaultAddressName)
         case PropertyOrLandAssetAddressViewModel(_, address, _) => address.getOrElse(defaultAddressName)
         case PropertyOrLandAssetDescriptionViewModel(_, description, _) => description.getOrElse(defaultDescriptionName)
         case PropertyOrLandDefaultViewModel(_, _) => messages("entities.no.addressOrDescription.added")
       },
-      typeLabel,
-      property_or_land.routes.PropertyOrLandAnswerController.onPageLoad(index, draftId).url,
-      routes.RemoveAssetYesNoController.onPageLoad(index, draftId).url
+      typeLabel = typeLabel,
+      changeUrl = if (plvm.status == Completed) {
+        property_or_land.routes.PropertyOrLandAnswerController.onPageLoad(index, draftId).url
+      } else {
+        property_or_land.routes.PropertyOrLandAddressYesNoController.onPageLoad(mode, index, draftId).url
+      },
+      removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index, draftId).url
     )
+  }
 
+  private def parseShare(svm: ShareAssetViewModel, index : Int) : AddRow = {
+    val defaultName = messages("entities.no.name.added")
+
+    AddRow(
+      name = svm.name.getOrElse(defaultName),
+      typeLabel = svm.`type`.toString,
+      changeUrl = if (svm.status == Completed) {
+        shares.routes.ShareAnswerController.onPageLoad(index, draftId).url
+      } else {
+        shares.routes.SharesInAPortfolioController.onPageLoad(mode, index, draftId).url
+      },
+      removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index, draftId).url
+    )
   }
 
   private def parseBusiness(bvm: BusinessAssetViewModel, index: Int) : AddRow = {
     AddRow(
-      bvm.name,
-      bvm.`type`.toString,
-      business.routes.BusinessNameController.onPageLoad(mode, index, draftId).url,
-      routes.RemoveAssetYesNoController.onPageLoad(index, draftId).url
+      name = bvm.name,
+      typeLabel = bvm.`type`.toString,
+      changeUrl = if (bvm.status == Completed) {
+        business.routes.BusinessAnswersController.onPageLoad(index, draftId).url
+      } else {
+        business.routes.BusinessNameController.onPageLoad(mode, index, draftId).url
+      },
+      removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index, draftId).url
     )
   }
 
   private def parsePartnership(pvm: PartnershipAssetViewModel, index: Int) : AddRow = {
     AddRow(
-      pvm.description,
-      pvm.`type`.toString,
-      partnership.routes.PartnershipDescriptionController.onPageLoad(mode, index, draftId).url,
-      routes.RemoveAssetYesNoController.onPageLoad(index, draftId).url
+      name = pvm.description,
+      typeLabel = pvm.`type`.toString,
+      changeUrl = if (pvm.status == Completed) {
+        partnership.routes.PartnershipAnswerController.onPageLoad(index, draftId).url
+      } else {
+        partnership.routes.PartnershipDescriptionController.onPageLoad(mode, index, draftId).url
+      },
+      removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index, draftId).url
     )
   }
 
   private def parseOther(ovm: OtherAssetViewModel, index: Int) : AddRow = {
     AddRow(
-      ovm.description,
-      ovm.`type`.toString,
-      other.routes.OtherAssetAnswersController.onPageLoad(index, draftId).url,
-      routes.RemoveAssetYesNoController.onPageLoad(index, draftId).url
+      name = ovm.description,
+      typeLabel = ovm.`type`.toString,
+      changeUrl = if (ovm.status == Completed) {
+        other.routes.OtherAssetAnswersController.onPageLoad(index, draftId).url
+      } else {
+        other.routes.OtherAssetDescriptionController.onPageLoad(mode, index, draftId).url
+      },
+      removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index, draftId).url
     )
   }
 
