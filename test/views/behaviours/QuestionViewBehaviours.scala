@@ -95,7 +95,6 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
           // error id is that of the input field
           errorSpan.attr("id") must include(field)
           errorSpan.getElementsByClass("visually-hidden").first().text() must include("Error:")
-          println(">>" + errorSpan.siblingElements())
 
           // input is described by error to screen readers
           doc.getElementById(field).attr("aria-describedby") must include(errorSpan.attr("id"))
