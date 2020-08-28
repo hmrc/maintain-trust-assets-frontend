@@ -11,3 +11,7 @@ GET        /this-service-has-been-reset                 controllers.SessionExpir
 GET        /check-your-answers                          controllers.CheckYourAnswersController.onPageLoad
 
 GET        /unauthorised                                controllers.UnauthorisedController.onPageLoad
+
+GET        /keep-alive                                  controllers.SessionTimeoutController.keepAlive
+
+GET        /timeout                                     controllers.SessionTimeoutController.timeout

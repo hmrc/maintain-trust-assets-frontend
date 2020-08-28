@@ -40,5 +40,10 @@ site.continue = Continue
 site.service_name = register-trust-asset-frontend
 site.textarea.char_limit = (Limit is {0} characters)
 
+#timeout dialog
+timeout.title=Your application will time out soon
+timeout.message=We will reset your application if you do not respond in
+timeout.keep-alive-button=Continue application
+
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
