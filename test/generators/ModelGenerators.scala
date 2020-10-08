@@ -16,5 +16,41 @@
 
 package generators
 
+import models._
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalacheck.{Arbitrary, Gen}
+
 trait ModelGenerators {
+  implicit lazy val arbitraryWhatKindOfAsset: Arbitrary[WhatKindOfAsset] =
+    Arbitrary {
+      Gen.oneOf(WhatKindOfAsset.values)
+    }
+
+  implicit lazy val arbitraryUkAddress: Arbitrary[UKAddress] =
+    Arbitrary {
+      for {
+        line1 <- arbitrary[String]
+        line2 <- arbitrary[String]
+        line3 <- arbitrary[String]
+        line4 <- arbitrary[String]
+        postcode <- arbitrary[String]
+      } yield UKAddress(line1, line2, Some(line3), Some(line4), postcode)
+    }
+
+  implicit lazy val arbitraryInternationalAddress: Arbitrary[InternationalAddress] =
+    Arbitrary {
+      for {
+        str <- arbitrary[String]
+      } yield InternationalAddress(str,str,Some(str),str)
+    }
+
+  implicit lazy val arbitraryShareClass: Arbitrary[ShareClass] =
+    Arbitrary {
+      Gen.oneOf(ShareClass.allValues.toSeq)
+    }
+
+  implicit lazy val arbitraryAddAssets: Arbitrary[AddAssets] =
+    Arbitrary {
+      Gen.oneOf(AddAssets.values)
+    }
 }

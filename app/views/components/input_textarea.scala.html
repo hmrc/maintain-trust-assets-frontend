@@ -39,7 +39,10 @@
             id="@{field.id}"
             name="@{field.id}"
             @if(field.hasErrors) { aria-describedby="error-message-@{field.id}-input" }
-            rows="5"
-        >@{field.value}</textarea>
+            rows="5">
+
+            @{field.value}
+        </textarea>
     </div>
 </div>
+

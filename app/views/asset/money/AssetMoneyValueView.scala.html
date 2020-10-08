@@ -1,0 +1,54 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.asset.money.routes._
+@import models.Mode
+
+@this(
+    main_template: MainTemplate,
+    formHelper: FormWithCSRF
+)
+
+@(form: Form[_], mode: Mode, draftId: String, index: Int)(implicit request: Request[_], messages: Messages)
+
+@optionalHtmlContent = {<p>@messages("money.value.paragraph1")</p>}
+
+@main_template(
+    title = s"${errorPrefix(form)} ${messages("money.value.title")}"
+) {
+
+    @formHelper(action = AssetMoneyValueController.onSubmit(mode, index, draftId), 'autoComplete -> "off") {
+
+        @components.back_link()
+
+        @components.error_summary(form.errors)
+
+        @components.input_text(
+          field = form("value"),
+          label = messages("money.value.heading"),
+          labelClass=Some("heading-large"),
+          symbol = Some("currency"),
+          symbolText = Some(messages(s"symbolText.asSterling")),
+          hint = Some(messages(s"money.value.hint")),
+          optionalHtmlContent = Some(optionalHtmlContent),
+          labelAsHeading = true,
+          ariaRequired = true
+        )
+
+        @components.submit_button()
+
+    }
+}

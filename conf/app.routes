@@ -1,6 +1,13 @@
 # microservice specific routes
 
-GET        /                                            controllers.IndexController.onPageLoad
+->         /:draftId/asset/:index/money                 money.Routes
+->         /:draftId/asset/:index/property-or-land      propertyOrLand.Routes
+->         /:draftId/asset/:index/shares                shares.Routes
+->         /:draftId/asset/:index/business              business.Routes
+->         /:draftId/asset/:index/partnership           partnership.Routes
+->         /:draftId/asset/:index/other                 other.Routes
+
+GET        /:draftId/index                              controllers.IndexController.onPageLoad(draftId: String)
 
 GET        /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)
 
@@ -8,9 +15,24 @@ GET        /language/:lang                              controllers.LanguageSwit
 
 GET        /this-service-has-been-reset                 controllers.SessionExpiredController.onPageLoad
 
-GET        /check-your-answers                          controllers.CheckYourAnswersController.onPageLoad
-
 GET        /unauthorised                                controllers.UnauthorisedController.onPageLoad
+
+GET        /:draftId/asset/:index/assets-type           controllers.asset.WhatKindOfAssetController.onPageLoad(mode: Mode = NormalMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/assets-type           controllers.asset.WhatKindOfAssetController.onSubmit(mode: Mode = NormalMode, index: Int, draftId: String)
+GET        /:draftId/asset/:index/change-assets-type    controllers.asset.WhatKindOfAssetController.onPageLoad(mode: Mode = CheckMode, index: Int, draftId: String)
+POST       /:draftId/asset/:index/change-assets-type    controllers.asset.WhatKindOfAssetController.onSubmit(mode: Mode = CheckMode, index: Int, draftId: String)
+
+GET        /:draftId/asset/information-you-need         controllers.asset.AssetInterruptPageController.onPageLoad(draftId: String)
+POST       /:draftId/asset/information-you-need         controllers.asset.AssetInterruptPageController.onSubmit(draftId: String)
+
+GET        /:draftId/asset/add                          controllers.asset.AddAssetsController.onPageLoad(mode: Mode = NormalMode, draftId: String)
+POST       /:draftId/asset/add                          controllers.asset.AddAssetsController.submitOne(mode: Mode = NormalMode, draftId: String)
+POST       /:draftId/asset/add-another                  controllers.asset.AddAssetsController.submitAnother(mode: Mode = NormalMode, draftId: String)
+
+GET        /:draftId/asset/:index/remove                controllers.asset.RemoveAssetYesNoController.onPageLoad(index: Int, draftId: String)
+POST       /:draftId/asset/:index/remove                controllers.asset.RemoveAssetYesNoController.onSubmit(index: Int, draftId: String)
+
+GET        /feature-not-available                       controllers.FeatureNotAvailableController.onPageLoad()
 
 GET        /keep-alive                                  controllers.SessionTimeoutController.keepAlive
 

@@ -1,0 +1,84 @@
+@*
+ * Copyright 2020 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import controllers.asset.routes._
+@import models.Mode
+
+@this(
+    main_template: MainTemplate,
+    formHelper: FormWithCSRF
+)
+
+@(draftId: String)(implicit request: Request[_], messages: Messages)
+
+@main_template(
+    title = messages("assetInterruptPage.title")
+    ) {
+
+@formHelper(action = AssetInterruptPageController.onSubmit(draftId), 'autoComplete -> "off") {
+
+    @components.back_link()
+
+
+<span class="govuk-caption-xl">Assets</span>
+@components.heading("assetInterruptPage.heading", headingSize = "heading-large govuk-fieldset__heading")
+
+    <h2>@messages("assetInterruptPage.subheading1")</h2>
+    <p>@messages("assetInterruptPage.paragraph1")</p>
+
+    <h2>@messages("assetInterruptPage.subheading2")</h2>
+    <p>@messages("assetInterruptPage.paragraph2")</p>
+    @components.bullet_list("assetInterruptPage", List(
+            "bullet1",
+            "bullet2",
+            "bullet3"
+        )
+    )
+
+    <p>@messages("assetInterruptPage.paragraph3")</p>
+
+    <h2>@messages("assetInterruptPage.subheading3")</h2>
+    <p>@messages("assetInterruptPage.paragraph4")</p>
+    @components.bullet_list("assetInterruptPage", List(
+            "bullet4",
+            "bullet5",
+            "bullet6"
+        )
+    )
+    <p>@messages("assetInterruptPage.paragraph5")</p>
+
+    <p>@messages("assetInterruptPage.paragraph6")</p>
+
+    <h2>@messages("assetInterruptPage.subheading4")</h2>
+    <p>@messages("assetInterruptPage.paragraph7")</p>
+    @components.bullet_list("assetInterruptPage", List(
+            "bullet7",
+            "bullet8",
+            "bullet9",
+            "bullet10"
+        )
+    )
+
+    <h2>@messages("assetInterruptPage.subheading5")</h2>
+    <p>@messages("assetInterruptPage.paragraph8")</p>
+
+    <h2>@messages("assetInterruptPage.subheading6")</h2>
+    <p>@messages("assetInterruptPage.paragraph9")</p>
+
+
+@components.submit_button(Some("site.onlyContinue"))
+}
+}

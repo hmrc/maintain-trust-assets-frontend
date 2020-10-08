@@ -21,6 +21,12 @@ error.number = Please enter a valid number
 error.required = Please enter a value
 error.summary.title = There is a problem
 
+entities.no.name.added = No name added
+entities.no.value.added = No value added
+entities.no.address.added = No address added
+entities.no.description.added = No description added
+entities.no.addressOrDescription.added = No address or description added
+
 index.title = register-trust-asset-frontend
 index.heading = register-trust-asset-frontend
 index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
@@ -37,8 +43,57 @@ site.hidden-edit = Change {0}
 site.no = No
 site.yes = Yes
 site.continue = Continue
-site.service_name = register-trust-asset-frontend
+site.save.continue = Save and continue
+site.onlyContinue = Continue
+site.service_name = Register a Trust
+site.address = Address
+site.inprogress = In Progress
+site.complete = Completed
 site.textarea.char_limit = (Limit is {0} characters)
+
+site.address.uk.title = What is the address?
+site.address.uk.heading = What is {0}’s address?
+site.address.uk.line1 = Address line 1
+site.address.uk.line2 = Address line 2
+site.address.uk.line3 = Address line 3 (optional)
+site.address.uk.line4 = Address line 4 (optional)
+site.address.uk.postcode = Postcode
+site.address.uk.postcode.hint = For example AB1 1AB.
+site.address.uk.checkYourAnswersLabel = What is {0}’s address?
+
+address.country = Country
+address.country.select = Select a country
+
+ukAddress.error.line1.required = Enter address line 1
+ukAddress.error.line2.required = Enter address line 2
+ukAddress.error.postcode.required = Enter a postcode
+ukAddress.error.line1.length = Address line 1 must be 35 characters or less
+ukAddress.error.line2.length = Address line 2 must be 35 characters or less
+ukAddress.error.line3.length = Address line 3 must be 35 characters or less
+ukAddress.error.line4.length = Address line 4 must be 35 characters or less
+ukAddress.error.line1.invalidCharacters = Address line 1 must only include letters a to z, numbers, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
+ukAddress.error.line2.invalidCharacters = Address line 2 must only include letters a to z, numbers, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
+ukAddress.error.line3.invalidCharacters = Address line 3 must only include letters a to z, numbers, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
+ukAddress.error.line4.invalidCharacters = Address line 4 must only include letters a to z, numbers, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
+ukAddress.error.postcode.invalidCharacters = Enter a real postcode
+
+site.address.international.title = What is the address?
+site.address.international.heading = What is {0}’s address?
+site.address.international.checkYourAnswersLabel = What is {0}’s address?
+site.address.international.line1 = Address line 1
+site.address.international.line2 = Address line 2
+site.address.international.line3 = Address line 3 (optional)
+site.address.international.country = Country
+
+internationalAddress.error.line1.required = Enter address line 1
+internationalAddress.error.line2.required = Enter address line 2
+internationalAddress.error.country.required = Select a country
+internationalAddress.error.line1.length = Address line 1 must be 35 characters or less
+internationalAddress.error.line2.length = Address line 2 must be 35 characters or less
+internationalAddress.error.line3.length = Address line 3 must be 35 characters or less
+internationalAddress.error.line1.invalidCharacters = Address line 1 must only include letters a to z, numbers, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
+internationalAddress.error.line2.invalidCharacters = Address line 2 must only include letters a to z, numbers, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
+internationalAddress.error.line3.invalidCharacters = Address line 3 must only include letters a to z, numbers, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
 
 #timeout dialog
 timeout.title=Your application will time out soon
@@ -47,3 +102,319 @@ timeout.keep-alive-button=Continue application
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
+
+featureNotAvailable.title = This part of the online service is not available yet
+featureNotAvailable.heading = This part of the online service is not available yet
+featureNotAvailable.p1 = If you need to make any changes to the trust you can
+featureNotAvailable.link = contact our trusts helpline (opens in a new window or tab)
+featureNotAvailable.p2 = You will be able to update these details online in the future.
+
+addAnAssetYesNo.title = Do you want to add an asset?
+addAnAssetYesNo.heading = Do you want to add an asset?
+addAnAssetYesNo.error.required = Select yes if you want to add an asset
+
+addAssets.title = Add assets
+addAssets.heading = Add assets
+addAssets.additional-content = Do you want to add another asset?
+addAssets.add-them-now = Yes, I want to add them now
+addAssets.add-them-later = Yes, I want to add them later
+addAssets.no-complete = No, I have added all assets
+addAssets.checkYourAnswersLabel = Do you want to add another asset?
+addAssets.error.required = Select yes if you want to add another asset
+addAssets.count.heading = You have added {0} assets
+addAssets.count.title = You have added {0} assets
+addAssets.singular.heading = Add assets
+addAssets.singular.title = Add assets
+
+addAssets.propertyOrLand = Property or Land
+
+assets.defaultText = the asset
+
+assets.removeYesNo.title = Are you sure you want to remove the asset?
+assets.removeYesNo.heading = Are you sure you want to remove {0}?
+assets.removeYesNo.error.required = Select yes if you want to remove the asset
+
+assetInterruptPage.title = Assets: information you’ll need to provide
+assetInterruptPage.heading = Assets: information you’ll need to provide
+
+assetInterruptPage.subheading1 = Money
+assetInterruptPage.paragraph1 = Tell us the total amount of money in the trust. If more than one amount has been added to the trust, add them together.
+
+assetInterruptPage.subheading2 = Property or land
+assetInterruptPage.paragraph2 = For property or land in the trust deed, you need to give:
+assetInterruptPage.bullet1 = a description of the property or land, or address if you know it
+assetInterruptPage.bullet2 = the estimated total value of the property or land
+assetInterruptPage.bullet3 = the estimated value of the proportion of the property or land that the trust owns
+assetInterruptPage.paragraph3 = You must tell us the current value of the property or land, not the value when it first entered the trust. This can be an estimate.
+
+assetInterruptPage.subheading3 = Shares
+assetInterruptPage.paragraph4 = Tell us the:
+assetInterruptPage.bullet4 = share company or share portfolio name
+assetInterruptPage.bullet5 = number of shares (for a share portfolio you need to estimate the total number of shares across all share holdings)
+assetInterruptPage.bullet6 = total current value
+assetInterruptPage.paragraph5 = You also need to tell us whether the shares are listed on a stock exchange (quoted shares) or not.
+assetInterruptPage.paragraph6 = For individual shares, you need to tell us the class type.
+
+assetInterruptPage.subheading4 = Business
+assetInterruptPage.paragraph7 = Tell us the:
+assetInterruptPage.bullet7 = business’s name
+assetInterruptPage.bullet8 = description of the business
+assetInterruptPage.bullet9 = business address
+assetInterruptPage.bullet10 = current estimated value
+
+assetInterruptPage.subheading5 = Partnerships
+assetInterruptPage.paragraph8 = Tell us the name of the partnership, a description of the partnership and the start date.
+
+assetInterruptPage.subheading6 = Other assets
+assetInterruptPage.paragraph9 = You need to give a description of the asset and an estimate of its current value.
+
+whatKindOfAsset.first.title = What kind of asset do you need to add first?
+whatKindOfAsset.next.title = What kind of asset do you need to add next?
+whatKindOfAsset.first.heading = What kind of asset do you need to add first?
+whatKindOfAsset.next.heading = What kind of asset do you need to add next?
+whatKindOfAsset.Money = Money
+whatKindOfAsset.PropertyOrLand = Property or land
+whatKindOfAsset.Shares = Shares
+whatKindOfAsset.Business = Business
+whatKindOfAsset.Partnership = Partnership
+whatKindOfAsset.Other = Other
+whatKindOfAsset.checkYourAnswersLabel = What kind of asset do you need to add first?
+whatKindOfAsset.error.required = Select the kind of asset you need to add
+
+money.value.title = What is the total amount of money in the trust?
+money.value.heading = What is the total amount of money in the trust?
+money.value.checkYourAnswersLabel = What is the total amount of money in the trust?
+money.value.paragraph1 = Add all current amounts together.
+money.value.hint = Rounded down to the nearest pound. For example, 4000.
+money.value.error.required = Enter the current total amount of money in the trust
+money.value.error.length = Total assets value must be 999999999999 or less
+money.value.error.invalidFormat = Total assets value must be a number
+money.value.error.wholeNumber = Total assets value must be a whole number
+money.value.error.zero = Total amount of money in the trust must be 1 or more
+money.value.link = Return to registration progress
+
+
+propertyOrLand.addressYesNo.title = Does the property or land have an address?
+propertyOrLand.addressYesNo.heading = Does the property or land have an address?
+propertyOrLand.addressYesNo.checkYourAnswersLabel = Does the property or land have an address?
+propertyOrLand.addressYesNo.error.required = Select yes if the property or land has an address
+
+propertyOrLand.addressUkYesNo.title = Is the property or land’s address in the UK?
+propertyOrLand.addressUkYesNo.heading = Is the property or land’s address in the UK?
+propertyOrLand.addressUkYesNo.checkYourAnswersLabel = Is the property or land’s address in the UK?
+propertyOrLand.addressUkYesNo.error.required = Select yes if the property or land has an address in the UK
+
+propertyOrLand.uKAddress.title = What is the property or land’s address?
+propertyOrLand.uKAddress.heading = What is the property or land’s address?
+propertyOrLand.uKAddress.checkYourAnswersLabel = What is the property or land’s address?
+
+propertyOrLand.internationalAddress.title = What is the property or land’s address?
+propertyOrLand.internationalAddress.heading = What is the property or land’s address?
+propertyOrLand.internationalAddress.checkYourAnswersLabel = What is the property or land’s address?
+
+propertyOrLand.description.title = What is the description of the property or land?
+propertyOrLand.description.heading = What is the description of the property or land?
+propertyOrLand.description.checkYourAnswersLabel = What is the description of the property or land?
+propertyOrLand.description.hint = This must be 56 characters or less.
+propertyOrLand.description.error.required = Enter a description of the property or land
+propertyOrLand.description.error.length = The description of the property or land must be 56 characters or less
+propertyOrLand.description.error.invalid = The description of the property or land must only include letters a to z, numbers, ampersands (&), apostrophes, hyphens and spaces
+
+propertyOrLand.totalValue.title = What is the current total value of the property or land?
+propertyOrLand.totalValue.heading = What is the current total value of the property or land?
+propertyOrLand.totalValue.checkYourAnswersLabel = What is the current total value of the property or land?
+propertyOrLand.totalValue.hint = This can be an estimate. Rounded down to the nearest pound. For example, 4000.
+propertyOrLand.totalValue.error.required = Enter the current total value of the property or land
+propertyOrLand.totalValue.error.length = Current total value of the property or land must be 999999999999 or less
+propertyOrLand.totalValue.error.invalid = Current total value of the property or land must be a number
+propertyOrLand.totalValue.error.zero = Current total value of the property or land must be 1 or more
+propertyOrLand.totalValue.error.wholeNumber = Current total value of the property or land must be a whole number
+
+propertyOrLand.trustOwnAllYesNo.title = Does the trust own all of the property or land?
+propertyOrLand.trustOwnAllYesNo.heading = Does the trust own all of the property or land?
+propertyOrLand.trustOwnAllYesNo.checkYourAnswersLabel = Does the trust own all of the property or land?
+propertyOrLand.trustOwnAllYesNo.error.required = Select yes if the trust owns all of the property or land
+
+propertyLand.valueInTrust.title = What is the value of the property or land owned by the trust?
+propertyLand.valueInTrust.heading = What is the value of the property or land owned by the trust?
+propertyLand.valueInTrust.hint = This can be an estimate. Rounded down to the nearest pound. For example, 4000.
+propertyLand.valueInTrust.checkYourAnswersLabel = What is the value of the property or land owned by the trust?
+propertyLand.valueInTrust.error.required = Enter the current value of the property or land owned by the trust
+propertyLand.valueInTrust.error.invalid = Current value of the property or land owned by the trust must be a number
+propertyLand.valueInTrust.error.wholeNumber = Current value of the property or land owned by the trust must be a whole number
+propertyLand.valueInTrust.error.zero = Current value of the property or land owned by the trust must be 1 or more
+propertyLand.valueInTrust.error.length = Current value of the property or land owned by the trust must be 12 characters or less
+
+propertyOrLand.answers.title = Check property or land details
+propertyOrLand.answers.heading = Check property or land details
+
+
+shares.class.title = What class are the shares?
+shares.class.heading = What class are the {0} shares?
+shares.class.ordinary = Ordinary
+shares.class.preference = Preference
+shares.class.deferred = Deferred
+shares.class.growth = Growth
+shares.class.other = Other
+shares.class.checkYourAnswersLabel = What class are the {0} shares?
+shares.class.error.required = Select the class of shares
+
+shares.companyName.title = What is the share company’s name?
+shares.companyName.heading = What is the share company’s name?
+shares.companyName.checkYourAnswersLabel = What is the share company’s name?
+shares.companyName.error.required = Enter the share company’s name
+shares.companyName.error.length = Share company’s name must be 53 characters or less
+shares.companyName.error.invalid = Share company’s name must only include letters a to z, numbers, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
+
+shares.portfolioName.title = What is the share portfolio’s name?
+shares.portfolioName.heading = What is the share portfolio’s name?
+shares.portfolioName.checkYourAnswersLabel = What is the share portfolio’s name?
+shares.portfolioName.error.required = Enter the share portfolio’s name
+shares.portfolioName.error.length = Share portfolio’s name cannot be more than 53 characters
+shares.portfolioName.error.invalid = Share portfolio’s name must only include letters a to z, numbers, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
+
+shares.portfolioOnStockExchangeYesNo.title = Are the majority of the shares in the portfolio listed on a stock exchange?
+shares.portfolioOnStockExchangeYesNo.heading = Are the majority of the shares in the portfolio listed on a stock exchange?
+shares.portfolioOnStockExchangeYesNo.checkYourAnswersLabel = Are the majority of the shares in the portfolio listed on a stock exchange?
+shares.portfolioOnStockExchangeYesNo.error.required = Select yes if the majority of the shares are listed on a stock exchange
+shares.portfolioOnStockExchangeYesNo.hint = A quoted share is listed on a stock exchange.
+
+shares.portfolioQuantityInTrust.title = How many individual shares are in the portfolio?
+shares.portfolioQuantityInTrust.heading = How many individual shares are in the portfolio?
+shares.portfolioQuantityInTrust.checkYourAnswersLabel = How many individual shares are in the portfolio?
+shares.portfolioQuantityInTrust.error.required = Enter the current number of shares in the portfolio
+shares.portfolioQuantityInTrust.error.length = Total amount of individual shares in the portfolio must be 999999999999 or less
+shares.portfolioQuantityInTrust.error.invalid = Total amount of individual shares in the portfolio must be a number
+shares.portfolioQuantityInTrust.hint = Add together the total number of shares across all share holdings. This can be an estimate.
+shares.portfolioQuantityInTrust.error.zero = Total amount of individual shares in the portfolio must be 1 or more
+
+shares.portfolioValueInTrust.title = What is the current value of the portfolio?
+shares.portfolioValueInTrust.heading = What is the current value of the portfolio?
+shares.portfolioValueInTrust.checkYourAnswersLabel = What is the current value of the portfolio?
+shares.portfolioValueInTrust.hint = Rounded down to the nearest pound. For example, 4000.
+shares.portfolioValueInTrust.error.required = Enter the current value of the portfolio
+shares.portfolioValueInTrust.error.length = Total current value of the portfolio must be 999999999999 or less
+shares.portfolioValueInTrust.error.invalid = Total current value of the portfolio must be a number
+shares.portfolioValueInTrust.error.zero = Total current value of the portfolio must be 1 or more
+shares.portfolioValueInTrust.error.wholeNumber = Total current value of the portfolio must be a whole number
+
+shares.quantityInTrust.title = How many shares are in the trust?
+shares.quantityInTrust.heading = How many {0} shares are in the trust?
+shares.quantityInTrust.checkYourAnswersLabel = How many {0} shares are in the trust?
+shares.quantityInTrust.hint = Add together the total number of shares across all share holdings. This can be an estimate.
+shares.quantityInTrust.error.invalid = Total shares in the trust must be a number
+shares.quantityInTrust.error.length = Total shares in the trust must be 999999999999 or less
+shares.quantityInTrust.error.required = Enter the current number of shares in the trust
+shares.quantityInTrust.error.zero = Total shares in the trust must be 1 or more
+
+shares.inAPortfolioYesNo.title = Are the shares in a portfolio?
+shares.inAPortfolioYesNo.heading = Are the shares in a portfolio?
+shares.inAPortfolioYesNo.checkYourAnswersLabel = Are the shares in a portfolio?
+shares.inAPortfolioYesNo.error.required = Select yes if the shares are in a portfolio
+
+shares.onStockExchangeYesNo.title = Are the shares listed on a stock exchange?
+shares.onStockExchangeYesNo.heading = Are {0}’s shares listed on a stock exchange?
+shares.onStockExchangeYesNo.checkYourAnswersLabel = Are {0}’s shares listed on a stock exchange?
+shares.onStockExchangeYesNo.error.required = Select yes if the shares are listed on a stock exchange
+shares.onStockExchangeYesNo.hint = A quoted share is listed on a stock exchange.
+
+shares.valueInTrust.title = What is the current value of shares in the trust?
+shares.valueInTrust.heading = What is the current value of {0} shares in the trust?
+shares.valueInTrust.checkYourAnswersLabel = What is the current value of {0} shares in the trust?
+shares.valueInTrust.hint = Rounded down to the nearest pound. For example, 4000.
+shares.valueInTrust.error.required = Enter the current value of the shares in the trust
+shares.valueInTrust.error.length = Total value of shares in the trust must be 12 characters or less
+shares.valueInTrust.error.invalid = Total value of shares in the trust must be a number
+shares.valueInTrust.error.zero = Total value of shares in the trust must be 1 or more
+shares.valueInTrust.error.wholeNumber = Total value of shares in the trust must be a whole number
+
+shares.answers.title = Check share details
+shares.answers.heading = Check share details
+
+
+business.name.title = What is the business’s name?
+business.name.heading = What is the business’s name?
+business.name.checkYourAnswersLabel = What is the business’s name?
+business.name.error.required = Enter the business’s name
+business.name.error.length = Business’s name cannot be more than 105 characters
+business.name.error.invalid = Business’s name must only include letters a to z, numbers 0 to 9, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
+
+business.description.title = What is the description for the business asset?
+business.description.heading = What is the description for {0}?
+business.description.checkYourAnswersLabel = What is the description for {0}?
+business.description.hint = This must be 56 characters or less.
+business.description.error.required = Enter a description of the business
+business.description.error.invalid = The description of the business asset must only include letters a to z, numbers, ampersands (&), apostrophes, hyphens and spaces
+business.description.error.length = The description of the business asset must be 56 characters or less
+
+business.addressUkYesNo.title = Is the business asset address in the UK?
+business.addressUkYesNo.heading = Is {0}’s address in the UK?
+business.addressUkYesNo.checkYourAnswersLabel = Is {0} address in the UK?
+business.addressUkYesNo.error.required = Select yes if the business asset’s address in the UK
+
+business.ukAddress.title = What is the business asset’s address?
+business.ukAddress.heading = What is {0}’s address?
+business.ukAddress.checkYourAnswersLabel = What is {0}’s address?
+
+business.InternationalAddress.title = What is the business asset’s address?
+business.InternationalAddress.heading = What is {0}’s address?
+business.InternationalAddress.checkYourAnswersLabel = What is {0}’s address?
+
+business.currentValue.title = What is the current value of the business?
+business.currentValue.heading = What is the current value of the business?
+business.currentValue.checkYourAnswersLabel = What is the current value of the business?
+business.currentValue.hint = Rounded down to the nearest pound. For example, 4000.
+business.currentValue.error.required = Enter the current value of the business
+business.currentValue.error.max.length = Assets current value must be 999999999999 or less
+business.currentValue.error.min.length = Assets current value must be 1 or more
+business.currentValue.error.invalid = Assets current value must be a number
+business.currentValue.error.wholeNumber = Assets current value must be a whole number
+business.currentValue.link = Return to registration progress
+
+business.answers.title = Check asset details
+business.answers.heading = Check asset details
+
+
+partnership.description.title = What is the description for the partnership?
+partnership.description.heading = What is the description for the partnership?
+partnership.description.checkYourAnswersLabel = What is the description for the partnership?
+partnership.description.hint = This must be 56 characters or less.
+partnership.description.error.required = Enter a description of the partnership
+partnership.description.error.length = The description of the partnership must be 56 characters or less
+partnership.description.error.invalid = The description of the partnership must only include letters a to z, numbers, ampersands (&), apostrophes, hyphens and spaces
+
+partnership.startDate.title = When did the partnership start?
+partnership.startDate.heading = When did the partnership start?
+partnership.startDate.checkYourAnswersLabel = When did the partnership start?
+partnership.startDate.hint = For example, 31 3 2015.
+partnership.startDate.error.required.all = Enter the date the partnership started
+partnership.startDate.error.required.two = The date the partnership started must include {0} and {1}
+partnership.startDate.error.required = The date the partnership started must include {0}
+partnership.startDate.error.invalid = Enter a real start date for the partnership start date
+partnership.startDate.error.future = The date the partnership started must be today or in the past
+partnership.startDate.error.past = The date the partnership started must be after 31 December 1499
+
+partnership.answers.title = Check asset details
+partnership.answers.heading = Check asset details
+
+
+other.description.title = What is the description of the asset?
+other.description.heading = What is the description of the asset?
+other.description.checkYourAnswersLabel = What is the description of the asset?
+other.description.hint = This must be 56 characters or less.
+other.description.error.required = Enter a description of the asset
+other.description.error.length = The description of the asset must be 56 characters or less
+other.description.error.invalid = The description of the asset must only include letters a to z, numbers, ampersands (&), apostrophes, hyphens and spaces
+
+other.value.title = What is the current value of the asset?
+other.value.heading = What is the current value of {0}?
+other.value.checkYourAnswersLabel = What is the current value of {0}?
+other.value.hint = Rounded down to the nearest pound. For example, 4000.
+other.value.error.required = Enter the current value of the asset
+other.value.error.invalid = Current value of the asset must be a number
+other.value.error.zero = Current value of the asset must be 1 or more
+other.value.error.length = Current value of the asset must be 999999999999 or less
+other.value.error.wholeNumber = Current value of the asset must be a whole number
+
+other.answers.title = Check asset details
+other.answers.heading = Check asset details

@@ -1,0 +1,42 @@
+GET        /description                                      controllers.asset.property_or_land.PropertyOrLandDescriptionController.onPageLoad(mode: Mode = NormalMode, index: Int, draftId: String)
+POST       /description                                      controllers.asset.property_or_land.PropertyOrLandDescriptionController.onSubmit(mode: Mode = NormalMode, index: Int, draftId: String)
+GET        /change-description                               controllers.asset.property_or_land.PropertyOrLandDescriptionController.onPageLoad(mode: Mode = CheckMode, index: Int, draftId: String)
+POST       /change-description                               controllers.asset.property_or_land.PropertyOrLandDescriptionController.onSubmit(mode: Mode = CheckMode,index: Int, draftId: String)
+
+GET        /value-trust                                      controllers.asset.property_or_land.PropertyLandValueTrustController.onPageLoad(mode: Mode = NormalMode, index: Int, draftId: String)
+POST       /value-trust                                      controllers.asset.property_or_land.PropertyLandValueTrustController.onSubmit(mode: Mode = NormalMode, index: Int, draftId: String)
+GET        /change-value-trust                               controllers.asset.property_or_land.PropertyLandValueTrustController.onPageLoad(mode: Mode = CheckMode, index: Int, draftId: String)
+POST       /change-value-trust                               controllers.asset.property_or_land.PropertyLandValueTrustController.onSubmit(mode: Mode = CheckMode, index: Int, draftId: String)
+
+GET        /is-address-in-uk                                 controllers.asset.property_or_land.PropertyOrLandAddressUkYesNoController.onPageLoad(mode: Mode = NormalMode, index: Int, draftId: String)
+POST       /is-address-in-uk                                 controllers.asset.property_or_land.PropertyOrLandAddressUkYesNoController.onSubmit(mode: Mode = NormalMode, index: Int, draftId: String)
+GET        /change-is-address-in-uk                          controllers.asset.property_or_land.PropertyOrLandAddressUkYesNoController.onPageLoad(mode: Mode = CheckMode, index: Int, draftId: String)
+POST       /change-is-address-in-uk                          controllers.asset.property_or_land.PropertyOrLandAddressUkYesNoController.onSubmit(mode: Mode = CheckMode, index: Int, draftId: String)
+
+GET        /owned                                            controllers.asset.property_or_land.TrustOwnAllThePropertyOrLandController.onPageLoad(mode: Mode = NormalMode, index: Int, draftId: String)
+POST       /owned                                            controllers.asset.property_or_land.TrustOwnAllThePropertyOrLandController.onSubmit(mode: Mode = NormalMode, index: Int, draftId: String)
+GET        /change-owned                                     controllers.asset.property_or_land.TrustOwnAllThePropertyOrLandController.onPageLoad(mode: Mode = CheckMode, index: Int, draftId: String)
+POST       /change-owned                                     controllers.asset.property_or_land.TrustOwnAllThePropertyOrLandController.onSubmit(mode: Mode = CheckMode, index: Int, draftId: String)
+
+GET        /total-value                                      controllers.asset.property_or_land.PropertyOrLandTotalValueController.onPageLoad(mode: Mode = NormalMode, index: Int, draftId: String)
+POST       /total-value                                      controllers.asset.property_or_land.PropertyOrLandTotalValueController.onSubmit(mode: Mode = NormalMode, index: Int, draftId: String)
+GET        /change-total-value                               controllers.asset.property_or_land.PropertyOrLandTotalValueController.onPageLoad(mode: Mode = CheckMode, index: Int, draftId: String)
+POST       /change-total-value                               controllers.asset.property_or_land.PropertyOrLandTotalValueController.onSubmit(mode: Mode = CheckMode,index: Int, draftId: String)
+
+GET        /uk-address                                       controllers.asset.property_or_land.PropertyOrLandUKAddressController.onPageLoad(mode: Mode = NormalMode, index: Int, draftId: String)
+POST       /uk-address                                       controllers.asset.property_or_land.PropertyOrLandUKAddressController.onSubmit(mode: Mode = NormalMode, index: Int, draftId: String)
+GET        /change-uk-address                                controllers.asset.property_or_land.PropertyOrLandUKAddressController.onPageLoad(mode: Mode = CheckMode, index: Int, draftId: String)
+POST       /change-uk-address                                controllers.asset.property_or_land.PropertyOrLandUKAddressController.onSubmit(mode: Mode = CheckMode, index: Int, draftId: String)
+
+GET        /international-address                            controllers.asset.property_or_land.PropertyOrLandInternationalAddressController.onPageLoad(mode: Mode = NormalMode, index: Int, draftId: String)
+POST       /international-address                            controllers.asset.property_or_land.PropertyOrLandInternationalAddressController.onSubmit(mode: Mode = NormalMode, index: Int, draftId: String)
+GET        /change-international-address                     controllers.asset.property_or_land.PropertyOrLandInternationalAddressController.onPageLoad(mode: Mode = CheckMode, index: Int, draftId: String)
+POST       /change-international-address                     controllers.asset.property_or_land.PropertyOrLandInternationalAddressController.onSubmit(mode: Mode = CheckMode, index: Int, draftId: String)
+
+GET        /has-address                                      controllers.asset.property_or_land.PropertyOrLandAddressYesNoController.onPageLoad(mode: Mode = NormalMode, index: Int, draftId: String)
+POST       /has-address                                      controllers.asset.property_or_land.PropertyOrLandAddressYesNoController.onSubmit(mode: Mode = NormalMode, index: Int, draftId: String)
+GET        /change-has-address                               controllers.asset.property_or_land.PropertyOrLandAddressYesNoController.onPageLoad(mode: Mode = CheckMode, index: Int, draftId: String)
+POST       /change-has-address                               controllers.asset.property_or_land.PropertyOrLandAddressYesNoController.onSubmit(mode: Mode = CheckMode, index: Int, draftId: String)
+
+GET        /check-property-or-land-answers                   controllers.asset.property_or_land.PropertyOrLandAnswerController.onPageLoad(index : Int, draftId : String)
+POST       /check-property-or-land-answers                   controllers.asset.property_or_land.PropertyOrLandAnswerController.onSubmit(index : Int, draftId : String)

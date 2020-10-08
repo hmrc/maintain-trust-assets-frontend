@@ -16,40 +16,65 @@
 
 package base
 
-import config.FrontendAppConfig
 import controllers.actions._
-import models.UserAnswers
+import models.{Status, UserAnswers}
+import navigation.{FakeNavigator, Navigator}
 import org.scalatest.TryValues
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice._
-import play.api.i18n.{Messages, MessagesApi}
+import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.inject.{Injector, bind}
 import play.api.libs.json.Json
-import play.api.test.FakeRequest
+import repositories.RegistrationsRepository
+import uk.gov.hmrc.auth.core.AffinityGroup.Organisation
+import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolment, Enrolments}
+import utils.annotations.{Business, Money, Other, Partnership, PropertyOrLand, Shares}
 
-trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues with ScalaFutures with IntegrationPatience {
+trait SpecBase extends PlaySpec
+  with GuiceOneAppPerSuite
+  with TryValues
+  with ScalaFutures
+  with IntegrationPatience
+  with Mocked
+  with FakeTrustsApp {
 
-  val userAnswersId = "id"
+  lazy val draftId: String = "draftId"
+  lazy val userInternalId: String = "internalId"
+  lazy val fakeDraftId: String = draftId
 
-  def emptyUserAnswers = UserAnswers(userAnswersId, Json.obj())
+  def emptyUserAnswers: UserAnswers = UserAnswers(draftId, Json.obj(), internalAuthId = userInternalId)
 
-  def injector: Injector = app.injector
+  lazy val fakeNavigator: FakeNavigator = new FakeNavigator(frontendAppConfig)
 
-  def frontendAppConfig: FrontendAppConfig = injector.instanceOf[FrontendAppConfig]
+  private def fakeDraftIdAction(userAnswers: Option[UserAnswers]): FakeDraftIdRetrievalActionProvider =
+    new FakeDraftIdRetrievalActionProvider(
+      draftId,
+      Status.InProgress,
+      userAnswers,
+      registrationsRepository
+    )
 
-  def messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
-
-  def fakeRequest = FakeRequest("", "")
-
-  implicit def messages: Messages = messagesApi.preferred(fakeRequest)
-
-  protected def applicationBuilder(userAnswers: Option[UserAnswers] = None): GuiceApplicationBuilder =
+  protected def applicationBuilder(userAnswers: Option[UserAnswers] = None,
+                                   affinityGroup: AffinityGroup = AffinityGroup.Organisation,
+                                   enrolments: Enrolments = Enrolments(Set.empty[Enrolment]),
+                                   navigator: Navigator = fakeNavigator
+                                  ): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
       .overrides(
-        bind[DataRequiredAction].to[DataRequiredActionImpl],
-        bind[IdentifierAction].to[FakeIdentifierAction],
-        bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers))
+        bind[Navigator].toInstance(navigator),
+        bind[Navigator].qualifiedWith(classOf[Money]).toInstance(navigator),
+        bind[Navigator].qualifiedWith(classOf[PropertyOrLand]).toInstance(navigator),
+        bind[Navigator].qualifiedWith(classOf[Shares]).toInstance(navigator),
+        bind[Navigator].qualifiedWith(classOf[Business]).toInstance(navigator),
+        bind[Navigator].qualifiedWith(classOf[Partnership]).toInstance(navigator),
+        bind[Navigator].qualifiedWith(classOf[Other]).toInstance(navigator),
+        bind[RegistrationDataRequiredAction].to[RegistrationDataRequiredActionImpl],
+        bind[RegistrationIdentifierAction].toInstance(
+          new FakeIdentifyForRegistration(affinityGroup, frontendAppConfig)(injectedParsers, trustsAuth, enrolments)
+        ),
+        bind[DraftIdRetrievalActionProvider].toInstance(fakeDraftIdAction(userAnswers)),
+        bind[RegistrationsRepository].toInstance(registrationsRepository),
+        bind[AffinityGroup].toInstance(Organisation)
       )
 }

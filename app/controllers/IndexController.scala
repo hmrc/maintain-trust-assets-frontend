@@ -16,18 +16,45 @@
 
 package controllers
 
+import controllers.actions.RegistrationIdentifierAction
 import javax.inject.Inject
+import models.UserAnswers
 import play.api.i18n.I18nSupport
+import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import views.html.IndexView
+
+import scala.concurrent.{ExecutionContext, Future}
 
 class IndexController @Inject()(
                                  val controllerComponents: MessagesControllerComponents,
-                                 view: IndexView
+                                 repository: RegistrationsRepository,
+                                 identify: RegistrationIdentifierAction
                                ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = Action { implicit request =>
-    Ok(view())
+  implicit val executionContext: ExecutionContext =
+    scala.concurrent.ExecutionContext.Implicits.global
+
+  def onPageLoad(draftId: String): Action[AnyContent] = identify.async { implicit request =>
+
+    repository.get(draftId) flatMap {
+      case Some(userAnswers) =>
+        Future.successful(redirect(draftId, userAnswers))
+      case _ =>
+        val userAnswers = UserAnswers(draftId, Json.obj(), request.identifier)
+        repository.set(userAnswers) map {
+          _ => redirect(draftId, userAnswers)
+        }
+    }
+  }
+
+  private def redirect(draftId: String, userAnswers: UserAnswers) = {
+    userAnswers.get(sections.Assets) match {
+      case Some(_ :: _) =>
+        Redirect(controllers.asset.routes.AddAssetsController.onPageLoad(draftId))
+      case _ =>
+        Redirect(controllers.asset.routes.AssetInterruptPageController.onPageLoad(draftId))
+    }
   }
 }

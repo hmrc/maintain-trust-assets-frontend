@@ -18,18 +18,22 @@ package config
 
 import com.google.inject.AbstractModule
 import controllers.actions._
-import repositories.{DefaultSessionRepository, SessionRepository}
+import navigation._
+import repositories.{DefaultRegistrationsRepository, RegistrationsRepository}
+import utils.annotations._
 
 class Module extends AbstractModule {
 
   override def configure(): Unit = {
+    bind(classOf[RegistrationsRepository]).to(classOf[DefaultRegistrationsRepository]).asEagerSingleton()
+    bind(classOf[RegistrationDataRequiredAction]).to(classOf[RegistrationDataRequiredActionImpl]).asEagerSingleton()
+    bind(classOf[DraftIdRetrievalActionProvider]).to(classOf[DraftIdDataRetrievalActionProviderImpl]).asEagerSingleton()
 
-    bind(classOf[DataRetrievalAction]).to(classOf[DataRetrievalActionImpl]).asEagerSingleton()
-    bind(classOf[DataRequiredAction]).to(classOf[DataRequiredActionImpl]).asEagerSingleton()
-
-    // For session based storage instead of cred based, change to SessionIdentifierAction
-    bind(classOf[IdentifierAction]).to(classOf[AuthenticatedIdentifierAction]).asEagerSingleton()
-
-    bind(classOf[SessionRepository]).to(classOf[DefaultSessionRepository]).asEagerSingleton()
+    bind(classOf[Navigator]).annotatedWith(classOf[Money]).to(classOf[MoneyNavigator])
+    bind(classOf[Navigator]).annotatedWith(classOf[PropertyOrLand]).to(classOf[PropertyOrLandNavigator])
+    bind(classOf[Navigator]).annotatedWith(classOf[Shares]).to(classOf[SharesNavigator])
+    bind(classOf[Navigator]).annotatedWith(classOf[Business]).to(classOf[BusinessNavigator])
+    bind(classOf[Navigator]).annotatedWith(classOf[Partnership]).to(classOf[PartnershipNavigator])
+    bind(classOf[Navigator]).annotatedWith(classOf[Other]).to(classOf[OtherNavigator])
   }
 }

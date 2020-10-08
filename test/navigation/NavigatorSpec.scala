@@ -17,31 +17,160 @@
 package navigation
 
 import base.SpecBase
-import controllers.routes
-import models._
-import pages._
+import controllers.asset._
+import generators.Generators
+import models.WhatKindOfAsset._
+import models.{AddAssets, NormalMode, UserAnswers}
+import org.scalacheck.Arbitrary.arbitrary
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.asset.{AddAnAssetYesNoPage, AddAssetsPage, WhatKindOfAssetPage}
+import play.api.mvc.Call
 
-class NavigatorSpec extends SpecBase {
+class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  val navigator = new Navigator
+  private val navigator: Navigator = injector.instanceOf[Navigator]
+  val index = 0
 
-  "Navigator" when {
+  private val assetsCompletedRoute: Call = {
+    Call("GET", frontendAppConfig.registrationProgressUrl(fakeDraftId))
+  }
 
-    "in Normal mode" must {
+  "Navigator" must {
 
-      "go to Index from a page that doesn't exist in the route map" in {
+    "go to WhatKindOfAssetPage from from AddAnAssetYesNoPage when selected Yes" in {
+      val index = 0
 
-        case object UnknownPage extends Page
-        navigator.nextPage(UnknownPage, NormalMode, UserAnswers("id")) mustBe routes.IndexController.onPageLoad()
+      forAll(arbitrary[UserAnswers]) {
+        userAnswers =>
+
+          val answers = userAnswers.set(AddAnAssetYesNoPage, true).success.value
+
+          navigator.nextPage(AddAnAssetYesNoPage, NormalMode, fakeDraftId)(answers)
+            .mustBe(controllers.asset.routes.WhatKindOfAssetController.onPageLoad(NormalMode, index, fakeDraftId))
       }
     }
 
-    "in Check mode" must {
+    "go to RegistrationProgress from from AddAnAssetYesNoPage when selected No" in {
+      forAll(arbitrary[UserAnswers]) {
+        userAnswers =>
 
-      "go to CheckYourAnswers from a page that doesn't exist in the edit route map" in {
+          val answers = userAnswers.set(AddAnAssetYesNoPage, false).success.value
 
-        case object UnknownPage extends Page
-        navigator.nextPage(UnknownPage, CheckMode, UserAnswers("id")) mustBe routes.CheckYourAnswersController.onPageLoad()
+          navigator.nextPage(AddAnAssetYesNoPage, NormalMode, fakeDraftId)(answers)
+            .mustBe(assetsCompletedRoute)
+      }
+    }
+
+    "add another asset" must {
+
+      "go to the WhatKindOfAssetPage from AddAssetsPage when selected add them now" in {
+
+        val answers = emptyUserAnswers
+          .set(WhatKindOfAssetPage(0), Money).success.value
+          .set(AddAssetsPage, AddAssets.YesNow).success.value
+
+        navigator.nextPage(AddAssetsPage, NormalMode, fakeDraftId)(answers)
+          .mustBe(controllers.asset.routes.WhatKindOfAssetController.onPageLoad(NormalMode, 1, fakeDraftId))
+      }
+
+      "go to RegistrationProgress from AddAssetsPage when selecting add them later" in {
+
+        val answers = emptyUserAnswers
+          .set(WhatKindOfAssetPage(0), Money).success.value
+          .set(AddAssetsPage, AddAssets.YesLater).success.value
+
+        navigator.nextPage(AddAssetsPage, NormalMode, fakeDraftId)(answers)
+          .mustBe(assetsCompletedRoute)
+      }
+
+      "go to RegistrationProgress from AddAssetsPage when selecting no complete" in {
+
+        val answers = emptyUserAnswers
+          .set(WhatKindOfAssetPage(0), Money).success.value
+          .set(AddAssetsPage, AddAssets.NoComplete).success.value
+
+        navigator.nextPage(AddAssetsPage, NormalMode, fakeDraftId)(answers)
+          .mustBe(assetsCompletedRoute)
+      }
+    }
+
+    "what kind of asset page" when {
+
+      "go to AssetMoneyValuePage when money is selected" in {
+        val index = 0
+
+        forAll(arbitrary[UserAnswers]) {
+          userAnswers =>
+
+            val answers = userAnswers.set(WhatKindOfAssetPage(index), Money).success.value
+
+            navigator.nextPage(WhatKindOfAssetPage(index), NormalMode, fakeDraftId)(answers)
+              .mustBe(controllers.asset.money.routes.AssetMoneyValueController.onPageLoad(NormalMode, index, fakeDraftId))
+        }
+      }
+
+      "go to PropertyOrLandAddressYesNoController when PropertyOrLand is selected" in {
+        val index = 0
+
+        forAll(arbitrary[UserAnswers]) {
+          userAnswers =>
+
+            val answers = userAnswers.set(WhatKindOfAssetPage(index), PropertyOrLand).success.value
+
+            navigator.nextPage(WhatKindOfAssetPage(index), NormalMode, fakeDraftId)(answers)
+              .mustBe(controllers.asset.property_or_land.routes.PropertyOrLandAddressYesNoController.onPageLoad(NormalMode, index, fakeDraftId))
+        }
+      }
+
+      "go to SharesInAPortfolio from WhatKindOfAsset when Shares is selected" in {
+        val index = 0
+
+        forAll(arbitrary[UserAnswers]) {
+          userAnswers =>
+
+            val answers = userAnswers.set(WhatKindOfAssetPage(index), Shares).success.value
+
+            navigator.nextPage(WhatKindOfAssetPage(index), NormalMode, fakeDraftId)(answers)
+              .mustBe(controllers.asset.shares.routes.SharesInAPortfolioController.onPageLoad(NormalMode, index, fakeDraftId))
+        }
+      }
+
+      "go to business asset name from WhatKindOfAsset when Business is selected" in {
+        val index = 0
+
+        forAll(arbitrary[UserAnswers]) {
+          userAnswers =>
+
+            val answers = userAnswers.set(WhatKindOfAssetPage(index), Business).success.value
+
+            navigator.nextPage(WhatKindOfAssetPage(index), NormalMode, fakeDraftId)(answers)
+              .mustBe(controllers.asset.business.routes.BusinessNameController.onPageLoad(NormalMode, index, fakeDraftId))
+        }
+      }
+
+      "go to partnership asset description from WhatKindOfAsset when Partnership is selected" in {
+        val index = 0
+
+        forAll(arbitrary[UserAnswers]) {
+          userAnswers =>
+
+            val answers = userAnswers.set(WhatKindOfAssetPage(index), Partnership).success.value
+
+            navigator.nextPage(WhatKindOfAssetPage(index), NormalMode, fakeDraftId)(answers)
+              .mustBe(controllers.asset.partnership.routes.PartnershipDescriptionController.onPageLoad(NormalMode, index, fakeDraftId))
+        }
+      }
+
+      "go to other asset description when Other is selected" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          userAnswers =>
+
+            val answers = userAnswers.set(WhatKindOfAssetPage(index), Other).success.value
+
+            navigator.nextPage(WhatKindOfAssetPage(index), NormalMode, fakeDraftId)(answers)
+              .mustBe(other.routes.OtherAssetDescriptionController.onPageLoad(NormalMode, index, fakeDraftId))
+        }
       }
     }
   }
