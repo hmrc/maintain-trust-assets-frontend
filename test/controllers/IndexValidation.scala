@@ -53,6 +53,9 @@ trait IndexValidation extends SpecBase with ScalaCheckPropertyChecks with Mockit
                               )(implicit writes: Writes[A], writeable: Writeable[B]): Unit = {
 
     "return not found if a given index is out of bounds" in {
+      implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfiguration(
+        minSuccessful=2
+      )
 
       val gen = for {
         answers <- Gen.listOf(generator).map(_.zipWithIndex)

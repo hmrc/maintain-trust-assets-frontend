@@ -20,7 +20,7 @@ import base.SpecBase
 import generators.Generators
 import models.Status.{Completed, InProgress}
 import models.{ShareClass, SharesType, WhatKindOfAsset}
-import org.scalatest.{FreeSpec, MustMatchers, OptionValues}
+import org.scalatest.{MustMatchers, OptionValues}
 import pages.AssetStatus
 import pages.asset._
 import pages.asset.shares._

@@ -16,8 +16,6 @@
 
 package repositories
 
-import java.time.LocalDateTime
-
 import config.FrontendAppConfig
 import connectors.SubmissionDraftConnector
 import models.Status.InProgress
@@ -45,8 +43,6 @@ class RegistrationRepositorySpec extends PlaySpec with MustMatchers with Mockito
       "send all relevant information as a set" in {
 
         implicit lazy val hc: HeaderCarrier = HeaderCarrier()
-
-        val draftId = "DraftId"
 
         val newData = Json.parse(
           """

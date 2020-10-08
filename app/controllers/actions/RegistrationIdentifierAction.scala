@@ -21,8 +21,6 @@ import config.FrontendAppConfig
 import models.requests.IdentifierRequest
 import org.slf4j.LoggerFactory
 import play.api.mvc.{Request, Result, _}
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -34,8 +32,6 @@ class RegistrationIdentifierAction @Inject()(val parser: BodyParsers.Default,
   private val logger = LoggerFactory.getLogger(s"application" + classOf[RegistrationIdentifierAction].getCanonicalName)
 
   override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
-
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
     request match {
       case req: IdentifierRequest[A] =>

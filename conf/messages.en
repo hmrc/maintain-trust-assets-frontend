@@ -95,6 +95,11 @@ internationalAddress.error.line1.invalidCharacters = Address line 1 must only in
 internationalAddress.error.line2.invalidCharacters = Address line 2 must only include letters a to z, numbers, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
 internationalAddress.error.line3.invalidCharacters = Address line 3 must only include letters a to z, numbers, ampersands (&), apostrophes, commas, forward slashes, full stops, hyphens, round brackets and spaces
 
+#timeout dialog
+timeout.title=Your application will time out soon
+timeout.message=We will reset your application if you do not respond in
+timeout.keep-alive-button=Continue application
+
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
 

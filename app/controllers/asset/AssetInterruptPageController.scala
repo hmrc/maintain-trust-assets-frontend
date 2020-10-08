@@ -24,8 +24,6 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.asset.AssetInterruptPageView
 
-import scala.concurrent.ExecutionContext
-
 class AssetInterruptPageController @Inject()(
                                               override val messagesApi: MessagesApi,
                                               identify: RegistrationIdentifierAction,
@@ -33,7 +31,7 @@ class AssetInterruptPageController @Inject()(
                                               requireData: RegistrationDataRequiredAction,
                                               val controllerComponents: MessagesControllerComponents,
                                               view: AssetInterruptPageView
-                                            )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                            ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(draftId: String): Action[AnyContent] = (identify andThen getData(draftId) andThen requireData) {
     implicit request =>
@@ -41,11 +39,7 @@ class AssetInterruptPageController @Inject()(
   }
 
   def onSubmit(draftId: String): Action[AnyContent] = (identify andThen getData(draftId) andThen requireData) {
-    implicit request =>
-
       Redirect(routes.WhatKindOfAssetController.onPageLoad(NormalMode, 0, draftId))
-
   }
-
 
 }

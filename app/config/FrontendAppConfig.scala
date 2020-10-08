@@ -38,6 +38,9 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   val betaFeedbackUrl = s"$contactHost/contact/beta-feedback"
   val betaFeedbackUnauthenticatedUrl = s"$contactHost/contact/beta-feedback-unauthenticated"
 
+  lazy val countdownLength: String = configuration.get[String]("timeout.countdown")
+  lazy val timeoutLength: String = configuration.get[String]("timeout.length")
+
   lazy val authUrl: String = configuration.get[Service]("auth").baseUrl
   lazy val loginUrl: String = configuration.get[String]("urls.login")
   lazy val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")

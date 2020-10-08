@@ -19,8 +19,8 @@ package controllers.asset.property_or_land
 import base.SpecBase
 import controllers.routes._
 import models.Status.Completed
-import models.WhatKindOfAsset.{Other, PropertyOrLand}
-import models.{InternationalAddress, NormalMode, UKAddress}
+import models.WhatKindOfAsset.PropertyOrLand
+import models.{InternationalAddress, UKAddress}
 import pages.AssetStatus
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.property_or_land._

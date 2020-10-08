@@ -18,7 +18,7 @@ package connectors
 
 import config.FrontendAppConfig
 import javax.inject.Inject
-import models.{SubmissionDraftData, SubmissionDraftId, SubmissionDraftResponse, SubmissionDraftSetData}
+import models.{SubmissionDraftData, SubmissionDraftResponse, SubmissionDraftSetData}
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient

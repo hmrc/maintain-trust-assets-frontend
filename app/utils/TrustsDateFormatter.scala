@@ -19,8 +19,7 @@ package utils
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-import com.google.inject.{ImplementedBy, Inject}
-import config.FrontendAppConfig
+import com.google.inject.ImplementedBy
 
 @ImplementedBy(classOf[TrustsDateFormatter])
 trait DateFormatter {

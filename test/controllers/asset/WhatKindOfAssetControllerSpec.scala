@@ -39,7 +39,6 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation  {
   private val form = formProvider()
 
   private val options = WhatKindOfAsset.options()
-  private val optionsWithoutMoney = WhatKindOfAsset.options().filterNot(_.value == Money.toString)
 
   "WhatKindOfAsset Controller" must {
 

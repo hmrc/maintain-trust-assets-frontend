@@ -20,16 +20,12 @@ import javax.inject.Inject
 import models.requests.{OptionalRegistrationDataRequest, RegistrationDataRequest}
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.HeaderCarrierConverter
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class RegistrationDataRequiredActionImpl @Inject()(implicit val executionContext: ExecutionContext) extends RegistrationDataRequiredAction {
 
   override protected def refine[A](request: OptionalRegistrationDataRequest[A]): Future[Either[Result, RegistrationDataRequest[A]]] = {
-
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
     request.userAnswers match {
       case None =>

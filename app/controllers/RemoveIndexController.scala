@@ -55,7 +55,7 @@ trait RemoveIndexController extends FrontendBaseController with I18nSupport {
   def content(index: Int)(implicit request: RegistrationDataRequest[AnyContent]) : String
 
   def view(form: Form[_], index: Int, draftId: String)
-                   (implicit request: RegistrationDataRequest[AnyContent], messagesApi: MessagesApi): HtmlFormat.Appendable = {
+                   (implicit request: RegistrationDataRequest[AnyContent]): HtmlFormat.Appendable = {
     removeView(messagesPrefix, form, index, draftId, content(index), formRoute(draftId, index))
   }
 

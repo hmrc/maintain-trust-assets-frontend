@@ -19,8 +19,10 @@ package connectors
 import java.time.LocalDateTime
 
 import base.SpecBase
-import models.{SubmissionDraftData, SubmissionDraftId, SubmissionDraftResponse, SubmissionDraftSetData, SubmissionDraftStatus}
-import org.scalatest.{FreeSpec, MustMatchers, OptionValues}
+import com.github.tomakehurst.wiremock.client.WireMock._
+import models.Status.InProgress
+import models.{SubmissionDraftData, SubmissionDraftResponse, SubmissionDraftSetData, SubmissionDraftStatus}
+import org.scalatest.{MustMatchers, OptionValues}
 import play.api.Application
 import play.api.http.Status
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -28,8 +30,6 @@ import play.api.libs.json.Json
 import play.api.test.Helpers.CONTENT_TYPE
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.WireMockHelper
-import com.github.tomakehurst.wiremock.client.WireMock._
-import models.Status.InProgress
 
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
@@ -51,7 +51,6 @@ class SubmissionDraftConnectorSpec extends SpecBase with MustMatchers with Optio
   private val submissionUrl = s"$submissionsUrl/$testDraftId/$testSection"
   private val setSubmissionUrl = s"$submissionsUrl/$testDraftId/set/$testSection"
   private val mainUrl = s"$submissionsUrl/$testDraftId/MAIN"
-  private val deleteUrl = s"$submissionsUrl/$testDraftId"
 
   "SubmissionDraftConnector" when {
 
