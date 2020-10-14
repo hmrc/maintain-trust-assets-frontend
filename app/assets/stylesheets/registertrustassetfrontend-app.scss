@@ -12,9 +12,12 @@
 @import 'conditionals';
 @import 'colours/_palette';
 @import 'partials/_focus';
-@import 'location-autocomplete.min';
 @import 'patterns/add-to-a-list';
 @import 'patterns/symbol-input';
+
+// Autocomplete country lookup
+@import 'location-autocomplete.min';
+@import 'patterns/autocomplete';
 
 @import 'partials/task-list';
 @import 'partials/_modal';
@@ -152,15 +155,6 @@
 .heading-with-top-margin {
     margin-top: .625em;
 }
-
-#value__listbox, #country__listbox {
-    width: 100%;
-   @include media(tablet) {
-    width: 49.4%;
-  }
-}
-
-.autocomplete__wrapper span {display:none;}
 
 .heading-confirmation {
   background-color: #00703c;

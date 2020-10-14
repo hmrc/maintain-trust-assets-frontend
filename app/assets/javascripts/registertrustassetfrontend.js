@@ -33,54 +33,6 @@ $(document).ready(function() {
     window.history.back();
   })
 
-    // =========================
-    // GOV.UK country lookup
-    // https://alphagov.github.io/accessible-autocomplete/#progressive-enhancement
-    // =========================
-    // auto complete country lookup, progressive enhancement
-    // using version 2.0.2
-    // need to invoke new enhanceSelectElement()
-    // =====
-
-    if(document.querySelectorAll('select[data-non-uk-countries]').length > 0) {
-       accessibleAutocomplete.enhanceSelectElement({
-            selectElement: document.querySelector("select[data-non-uk-countries]"),
-            minLength:2,
-            defaultValue: ''
-        });
-    }
-
-     if(document.querySelectorAll('select[data-all-countries]').length > 0) {
-           accessibleAutocomplete.enhanceSelectElement({
-                selectElement: document.querySelector("select[data-all-countries]"),
-                minLength:2,
-                defaultValue: ''
-            });
-        }
-
-
-    // Assign aria-labbledby to the dynamically created country input
-    if ($(".autocomplete-wrapper .error-message").length) $(".autocomplete__wrapper #value").attr('aria-labelledby', 'error-message-input');
-
-
-  //======================================================
-  // countries autocomplete
-  //======================================================
-    // temporary fix for IE not registering clicks on the text of the results list for the country autocomplete
-    $('body').on('mouseup', ".autocomplete__option > strong", function(e){
-        e.preventDefault(); $(this).parent().trigger('click');
-    })
-    // temporary fix for the autocomplete holding onto the last matching country when a user then enters an invalid or blank country
-    $('input[role="combobox"]').on('keydown', function(e){
-        if (e.which != 13 && e.which != 9) {
-             var sel = document.querySelector('.autocomplete-wrapper select');
-             sel.value = "";
-        }
-    })
-
-
-
-
   // =====================================================
   // Adds data-focuses attribute to all containers of inputs listed in an error summary
   // This allows validatorFocus to bring viewport to correct scroll point
