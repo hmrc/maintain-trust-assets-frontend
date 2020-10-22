@@ -20,7 +20,7 @@ import forms.RemoveForm
 import models.requests.RegistrationDataRequest
 import pages.QuestionPage
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, ActionBuilder, AnyContent, Call}
 import play.twirl.api.HtmlFormat
 import queries.Settable

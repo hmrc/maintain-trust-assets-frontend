@@ -27,6 +27,8 @@ class AssetMapper @Inject()(moneyAssetMapper: MoneyAssetMapper,
                             partnershipAssetMapper: PartnershipAssetMapper,
                             otherAssetMapper: OtherAssetMapper) extends Mapping[Assets] {
 
+  private val logger: Logger = Logger(getClass)
+
   override def build(userAnswers: UserAnswers): Option[Assets] = {
 
     val money = moneyAssetMapper.build(userAnswers)
@@ -38,7 +40,7 @@ class AssetMapper @Inject()(moneyAssetMapper: MoneyAssetMapper,
 
     (money, propertyOrLand, shares, business, partnership, other) match {
       case (None, None, None, None, None, None) =>
-        Logger.info(s"[AssetMapper][build] unable to map assets")
+        logger.info(s"[build] unable to map assets")
         None
       case _ =>
         Some(
