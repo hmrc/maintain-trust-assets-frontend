@@ -47,7 +47,12 @@
 
     <logger name="uk.gov" level="INFO"/>
 
-    <logger name="application" level="DEBUG"/>
+    <logger name="controllers" level="DEBUG"/>
+    <logger name="services" level="DEBUG"/>
+    <logger name="models" level="DEBUG"/>
+    <logger name="repositories" level="DEBUG"/>
+    <logger name="connectors" level="DEBUG"/>
+    <logger name="mapping" level="DEBUG"/>
 
     <logger name="org.asynchttpclient.netty" level="INFO"/>
     <logger name="io.netty.buffer" level="INFO"/>
