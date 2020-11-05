@@ -35,7 +35,7 @@ class AssetViewModelSpec extends FreeSpec with MustMatchers with ScalaCheckPrope
 
           val json = Json.obj(
             "whatKindOfAsset" -> Money.toString,
-            "assetMoneyValue" -> "4000"
+            "assetMoneyValue" -> 4000
           )
 
           json.validate[AssetViewModel] mustEqual JsSuccess(
@@ -46,7 +46,7 @@ class AssetViewModelSpec extends FreeSpec with MustMatchers with ScalaCheckPrope
         "to a view model that is complete" in {
           val json = Json.obj(
             "whatKindOfAsset" -> Money.toString,
-            "assetMoneyValue" -> "4000",
+            "assetMoneyValue" -> 4000,
             "status" -> Completed.toString
           )
 
@@ -84,7 +84,7 @@ class AssetViewModelSpec extends FreeSpec with MustMatchers with ScalaCheckPrope
               |"shareCompanyName" : "adam",
               |"sharesInAPortfolio" : false,
               |"quantityInTheTrust" : "200",
-              |"value" : "200",
+              |"value" : 200,
               |"whatKindOfAsset" : "Shares",
               |"class" : "ordinary",
               |"status": "completed"
@@ -125,7 +125,7 @@ class AssetViewModelSpec extends FreeSpec with MustMatchers with ScalaCheckPrope
               |"name" : "adam",
               |"sharesInAPortfolio" : true,
               |"quantityInTheTrust" : "200",
-              |"value" : "200",
+              |"value" : 200,
               |"whatKindOfAsset" : "Shares",
               |"status": "completed"
               |}
@@ -313,7 +313,7 @@ class AssetViewModelSpec extends FreeSpec with MustMatchers with ScalaCheckPrope
           val json = Json.obj(
             "whatKindOfAsset" -> Other.toString,
             "otherAssetDescription" -> "Description",
-            "otherAssetValue" -> "4000",
+            "otherAssetValue" -> 4000,
             "status" -> Completed.toString
           )
 

@@ -30,7 +30,7 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
       "from a money asset of the incorrect structure" in {
         val json = Json.obj(
           "whatKindOfAsset" -> "Property",
-          "assetMoneyValue" -> "4000"
+          "assetMoneyValue" -> 4000
         )
 
         json.validate[Asset] mustBe a[JsError]
@@ -45,7 +45,7 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
             |"shareCompanyName" : "adam",
             |"sharesInAPortfolio" : false,
             |"quantityInTheTrust" : "200",
-            |"value" : "200",
+            |"value" : 200,
             |"whatKindOfAsset" : "Shares"
             |}
           """.stripMargin)
@@ -60,7 +60,7 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
             |{
             |"listedOnTheStockExchange" : true,
             |"sharesInAPortfolio" : true,
-            |"value" : "290000",
+            |"value" : 290000,
             |"whatKindOfAsset" : "Shares",
             |"status" : "progress"
             |}
@@ -82,7 +82,7 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
             |     "line4" : "Newcastle",
             |     "postcode" : "Z99 2YY"
             |},
-            |"propertyOrLandValueTrust" : "75"
+            |"propertyOrLandValueTrust" : 75
             |}
           """.stripMargin)
 
@@ -95,10 +95,10 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
       "from a money asset" in {
         val json = Json.obj(
           "whatKindOfAsset" -> "Money",
-          "assetMoneyValue" -> "4000"
+          "assetMoneyValue" -> 4000
         )
 
-        json.validate[Asset] mustEqual JsSuccess(MoneyAsset(Money,"4000"))
+        json.validate[Asset] mustEqual JsSuccess(MoneyAsset(Money, 4000L))
       }
 
       "from a share asset" in {
@@ -110,7 +110,7 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
             |"shareCompanyName" : "adam",
             |"sharesInAPortfolio" : false,
             |"quantityInTheTrust" : "200",
-            |"value" : "200",
+            |"value" : 200,
             |"whatKindOfAsset" : "Shares",
             |"class" : "ordinary",
             |"status": "completed"
@@ -123,7 +123,7 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
           shareCompanyName = "adam",
           sharesInAPortfolio = false,
           quantityInTheTrust = "200",
-          value = "200",
+          value = 200L,
           whatKindOfAsset = WhatKindOfAsset.Shares,
           `class` = ShareClass.Ordinary,
           status = Status.Completed
@@ -139,7 +139,7 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
             |"sharesInAPortfolio" : true,
             |"name" : "Adam",
             |"quantityInTheTrust" : "200",
-            |"value" : "290000",
+            |"value" : 290000,
             |"whatKindOfAsset" : "Shares",
             |"status" : "completed"
             |}
@@ -151,7 +151,7 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
             name = "Adam",
             sharesInAPortfolio = true,
             quantityInTheTrust = "200",
-            value = "290000",
+            value = 290000L,
             whatKindOfAsset = WhatKindOfAsset.Shares,
             status = Status.Completed
           ))
@@ -170,8 +170,8 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
             |     "line4" : "Newcastle",
             |     "postcode" : "Z99 2YY"
             |},
-            |"propertyOrLandValueTrust" : "75",
-            |"propertyOrLandTotalValue" : "1000"
+            |"propertyOrLandValueTrust" : 75,
+            |"propertyOrLandTotalValue" : 1000
             |}
           """.stripMargin)
 
@@ -187,8 +187,8 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
                 line4 = Some("Newcastle"),
                 postcode = "Z99 2YY"
               )),
-            propertyLandValueTrust = Some("75"),
-            propertyOrLandTotalValue = "1000"
+            propertyLandValueTrust = Some(75L),
+            propertyOrLandTotalValue = 1000L
           ))
       }
 
@@ -202,7 +202,7 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
             |     "line2" : "Newcastle",
             |     "postcode" : "Z99 2YY"
             |},
-            |"propertyOrLandTotalValue" : "1000"
+            |"propertyOrLandTotalValue" : 1000
             |}
           """.stripMargin)
 
@@ -219,7 +219,7 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
                 postcode = "Z99 2YY"
               )),
             propertyLandValueTrust = None,
-            propertyOrLandTotalValue = "1000"
+            propertyOrLandTotalValue = 1000L
           ))
       }
 

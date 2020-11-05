@@ -56,7 +56,7 @@ class AddAssetsControllerSpec extends SpecBase {
 
   val userAnswersWithAssetsComplete: UserAnswers = emptyUserAnswers
     .set(WhatKindOfAssetPage(0), Money).success.value
-    .set(AssetMoneyValuePage(0), "4800").success.value
+    .set(AssetMoneyValuePage(0), 4800L).success.value
     .set(AssetStatus(0), Completed).success.value
     .set(WhatKindOfAssetPage(1), Shares).success.value
     .set(SharesInAPortfolioPage(1), false).success.value
@@ -64,7 +64,7 @@ class AddAssetsControllerSpec extends SpecBase {
     .set(SharesOnStockExchangePage(1), true).success.value
     .set(ShareClassPage(1), ShareClass.Ordinary).success.value
     .set(ShareQuantityInTrustPage(1), "1000").success.value
-    .set(ShareValueInTrustPage(1), "10").success.value
+    .set(ShareValueInTrustPage(1), 10L).success.value
     .set(AssetStatus(1), Completed).success.value
 
   "AddAssets Controller" when {

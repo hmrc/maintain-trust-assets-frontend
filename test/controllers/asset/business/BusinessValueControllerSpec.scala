@@ -28,12 +28,12 @@ import views.html.asset.buisness.BusinessValueView
 
 class BusinessValueControllerSpec extends SpecBase {
 
-  val formProvider = new ValueFormProvider()
-  val form: Form[String] = formProvider.withConfig("business.currentValue")
+  val formProvider = new ValueFormProvider(frontendAppConfig)
+  val form: Form[Long] = formProvider.withConfig("business.currentValue")
   val businessName = "Test"
 
   val index = 0
-  val validAnswer: String = "4000"
+  val validAnswer: Long = 4000L
 
   lazy val currentValueRoute: String = routes.BusinessValueController.onPageLoad(NormalMode, index, fakeDraftId).url
 
@@ -88,7 +88,7 @@ class BusinessValueControllerSpec extends SpecBase {
 
       val request =
         FakeRequest(POST, currentValueRoute)
-          .withFormUrlEncodedBody(("value", validAnswer))
+          .withFormUrlEncodedBody(("value", validAnswer.toString))
 
       val result = route(application, request).value
 

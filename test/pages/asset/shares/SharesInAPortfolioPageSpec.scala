@@ -23,6 +23,8 @@ import pages.behaviours.PageBehaviours
 
 class SharesInAPortfolioPageSpec extends PageBehaviours {
 
+  private val assetValue: Long = 2000L
+
   "SharesInAPortfolioPage" must {
 
     beRetrievable[Boolean](SharesInAPortfolioPage(0))
@@ -40,7 +42,7 @@ class SharesInAPortfolioPageSpec extends PageBehaviours {
           .set(SharesOnStockExchangePage(0), false).success.value
           .set(ShareClassPage(0), ShareClass.Ordinary).success.value
           .set(ShareQuantityInTrustPage(0), "20").success.value
-          .set(ShareValueInTrustPage(0), "2000").success.value
+          .set(ShareValueInTrustPage(0), assetValue).success.value
           .set(AssetStatus(0), Status.Completed).success.value
 
         val result = answers.set(SharesInAPortfolioPage(0), true).success.value
@@ -61,7 +63,7 @@ class SharesInAPortfolioPageSpec extends PageBehaviours {
           .set(SharePortfolioNamePage(0), "Shares").success.value
           .set(SharePortfolioOnStockExchangePage(0), true).success.value
           .set(SharePortfolioQuantityInTrustPage(0), "20").success.value
-          .set(SharePortfolioValueInTrustPage(0), "2000").success.value
+          .set(SharePortfolioValueInTrustPage(0), assetValue).success.value
           .set(AssetStatus(0), Status.Completed).success.value
 
         val result = answers.set(SharesInAPortfolioPage(0), false).success.value

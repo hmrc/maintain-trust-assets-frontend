@@ -24,7 +24,6 @@ import models.{InternationalAddress, UKAddress}
 import pages.AssetStatus
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.property_or_land._
-import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.CheckYourAnswersHelper
@@ -34,9 +33,10 @@ import views.html.asset.property_or_land.PropertyOrLandAnswersView
 
 class PropertyOrLandAnswerControllerSpec extends SpecBase {
 
-  def onwardRoute = Call("GET", "/foo")
-
   val index: Int = 0
+
+  private val totalValue: Long = 10000L
+  private val trustValue: Long = 10L
 
   lazy val propertyOrLandAnswerRoute: String = routes.PropertyOrLandAnswerController.onPageLoad(index, fakeDraftId).url
 
@@ -51,7 +51,7 @@ class PropertyOrLandAnswerControllerSpec extends SpecBase {
             .set(WhatKindOfAssetPage(index), PropertyOrLand).success.value
             .set(PropertyOrLandAddressYesNoPage(index), false).success.value
             .set(PropertyOrLandDescriptionPage(index), "Property Land Description").success.value
-            .set(PropertyOrLandTotalValuePage(index), "10000").success.value
+            .set(PropertyOrLandTotalValuePage(index), totalValue).success.value
             .set(TrustOwnAllThePropertyOrLandPage(index), true).success.value
             .set(AssetStatus(index), Completed).success.value
 
@@ -98,9 +98,9 @@ class PropertyOrLandAnswerControllerSpec extends SpecBase {
             .set(WhatKindOfAssetPage(index), PropertyOrLand).success.value
             .set(PropertyOrLandAddressYesNoPage(index), false).success.value
             .set(PropertyOrLandDescriptionPage(index), "Property Land Description").success.value
-            .set(PropertyOrLandTotalValuePage(index), "10000").success.value
+            .set(PropertyOrLandTotalValuePage(index), totalValue).success.value
             .set(TrustOwnAllThePropertyOrLandPage(index), false).success.value
-            .set(PropertyLandValueTrustPage(index), "10").success.value
+            .set(PropertyLandValueTrustPage(index), trustValue).success.value
             .set(AssetStatus(index), Completed).success.value
 
         val countryOptions = injector.instanceOf[CountryOptions]
@@ -148,7 +148,7 @@ class PropertyOrLandAnswerControllerSpec extends SpecBase {
             .set(PropertyOrLandAddressYesNoPage(index), true).success.value
             .set(PropertyOrLandAddressUkYesNoPage(index), true).success.value
             .set(PropertyOrLandUKAddressPage(index), UKAddress("Line1", "Line2", None, None, "NE62RT")).success.value
-            .set(PropertyOrLandTotalValuePage(index), "10000").success.value
+            .set(PropertyOrLandTotalValuePage(index), totalValue).success.value
             .set(TrustOwnAllThePropertyOrLandPage(index), true).success.value
             .set(AssetStatus(index), Completed).success.value
 
@@ -197,9 +197,9 @@ class PropertyOrLandAnswerControllerSpec extends SpecBase {
             .set(PropertyOrLandAddressYesNoPage(index), true).success.value
             .set(PropertyOrLandAddressUkYesNoPage(index), true).success.value
             .set(PropertyOrLandUKAddressPage(index), UKAddress("Line1", "Line2", None, None, "NE62RT")).success.value
-            .set(PropertyOrLandTotalValuePage(index), "10000").success.value
+            .set(PropertyOrLandTotalValuePage(index), totalValue).success.value
             .set(TrustOwnAllThePropertyOrLandPage(index), false).success.value
-            .set(PropertyLandValueTrustPage(index), "10").success.value
+            .set(PropertyLandValueTrustPage(index), trustValue).success.value
             .set(AssetStatus(index), Completed).success.value
 
         val countryOptions = injector.instanceOf[CountryOptions]
@@ -248,7 +248,7 @@ class PropertyOrLandAnswerControllerSpec extends SpecBase {
             .set(PropertyOrLandAddressYesNoPage(index), true).success.value
             .set(PropertyOrLandAddressUkYesNoPage(index), false).success.value
             .set(PropertyOrLandInternationalAddressPage(index), InternationalAddress("line1", "line2", Some("line3"), "ES")).success.value
-            .set(PropertyOrLandTotalValuePage(index), "10000").success.value
+            .set(PropertyOrLandTotalValuePage(index), totalValue).success.value
             .set(TrustOwnAllThePropertyOrLandPage(index), true).success.value
             .set(AssetStatus(index), Completed).success.value
 
@@ -297,9 +297,9 @@ class PropertyOrLandAnswerControllerSpec extends SpecBase {
             .set(PropertyOrLandAddressYesNoPage(index), true).success.value
             .set(PropertyOrLandAddressUkYesNoPage(index), false).success.value
             .set(PropertyOrLandInternationalAddressPage(index), InternationalAddress("line1", "line2", Some("line3"), "ES")).success.value
-            .set(PropertyOrLandTotalValuePage(index), "10000").success.value
+            .set(PropertyOrLandTotalValuePage(index), totalValue).success.value
             .set(TrustOwnAllThePropertyOrLandPage(index), false).success.value
-            .set(PropertyLandValueTrustPage(index), "10").success.value
+            .set(PropertyLandValueTrustPage(index), trustValue).success.value
             .set(AssetStatus(index), Completed).success.value
 
         val countryOptions = injector.instanceOf[CountryOptions]

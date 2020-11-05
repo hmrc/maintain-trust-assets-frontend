@@ -30,6 +30,8 @@ class MoneyAssetMapperSpec extends SpecBase with MustMatchers
 
   val moneyAssetMapper : Mapping[List[AssetMonetaryAmount]] = injector.instanceOf[MoneyAssetMapper]
 
+  private val assetValue: Long = 2000L
+
   "MoneyAssetMapper" must {
 
     "not be able to create a money asset when no value is in user answers" in {
@@ -46,10 +48,10 @@ class MoneyAssetMapperSpec extends SpecBase with MustMatchers
       val userAnswers =
         emptyUserAnswers
           .set(WhatKindOfAssetPage(0), WhatKindOfAsset.Money).success.value
-          .set(AssetMoneyValuePage(0), "2000").success.value
+          .set(AssetMoneyValuePage(0), assetValue).success.value
           .set(AssetStatus(0), Completed).success.value
 
-      moneyAssetMapper.build(userAnswers).value mustBe List(AssetMonetaryAmount(2000))
+      moneyAssetMapper.build(userAnswers).value mustBe List(AssetMonetaryAmount(assetValue))
     }
 
     "able to create multiple Monetary Assets" in {
@@ -57,10 +59,10 @@ class MoneyAssetMapperSpec extends SpecBase with MustMatchers
       val userAnswers =
         emptyUserAnswers
           .set(WhatKindOfAssetPage(0), WhatKindOfAsset.Money).success.value
-          .set(AssetMoneyValuePage(0), "2000").success.value
+          .set(AssetMoneyValuePage(0), assetValue).success.value
           .set(AssetStatus(0), Completed).success.value
           .set(WhatKindOfAssetPage(1), WhatKindOfAsset.Money).success.value
-          .set(AssetMoneyValuePage(1), "2000").success.value
+          .set(AssetMoneyValuePage(1), assetValue).success.value
           .set(AssetStatus(1), Completed).success.value
 
       moneyAssetMapper.build(userAnswers).value.length mustBe 2

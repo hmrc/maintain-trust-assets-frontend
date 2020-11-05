@@ -30,6 +30,8 @@ class BusinessAssetMapperSpec extends SpecBase with MustMatchers
 
   val businessAssetMapper: Mapping[List[BusinessAssetType]] = injector.instanceOf[BusinessAssetMapper]
 
+  private val assetValue: Long = 123L
+
   "BusinessAssetMapper" must {
 
     "must not be able to create a business asset when no description or value in user answers" in {
@@ -52,14 +54,14 @@ class BusinessAssetMapperSpec extends SpecBase with MustMatchers
             .set(BusinessDescriptionPage(0), "Description").success.value
             .set(BusinessAddressUkYesNoPage(0), true).success.value
             .set(BusinessUkAddressPage(0), UKAddress("26", "Grangetown", Some("Tyne and Wear"), Some("Newcastle"), "Z99 2YY")).success.value
-            .set(BusinessValuePage(0), "123").success.value
+            .set(BusinessValuePage(0), assetValue).success.value
             .set(AssetStatus(0), Completed).success.value
 
         businessAssetMapper.build(userAnswers).value mustBe List(BusinessAssetType(
           "Test",
           "Description",
           AddressType("26","Grangetown", Some("Tyne and Wear"), Some("Newcastle"), Some("Z99 2YY"), "GB"),
-          123L
+          assetValue
         ))
       }
 
@@ -72,14 +74,14 @@ class BusinessAssetMapperSpec extends SpecBase with MustMatchers
             .set(BusinessDescriptionPage(0), "Description").success.value
             .set(BusinessAddressUkYesNoPage(0), false).success.value
             .set(BusinessInternationalAddressPage(0), InternationalAddress("1", "Broadway", Some("New York"), "US")).success.value
-            .set(BusinessValuePage(0), "123").success.value
+            .set(BusinessValuePage(0), assetValue).success.value
             .set(AssetStatus(0), Completed).success.value
 
         businessAssetMapper.build(userAnswers).value mustBe List(BusinessAssetType(
           "Test",
           "Description",
           AddressType("1","Broadway", Some("New York"), None, None, "US"),
-          123L
+          assetValue
         ))
       }
     }
@@ -93,14 +95,14 @@ class BusinessAssetMapperSpec extends SpecBase with MustMatchers
           .set(BusinessDescriptionPage(0), "Description 1").success.value
           .set(BusinessAddressUkYesNoPage(0), true).success.value
           .set(BusinessUkAddressPage(0), UKAddress("26", "Grangetown", Some("Tyne and Wear"), Some("Newcastle"), "Z99 2YY")).success.value
-          .set(BusinessValuePage(0), "123").success.value
+          .set(BusinessValuePage(0), assetValue).success.value
           .set(AssetStatus(0), Completed).success.value
           .set(WhatKindOfAssetPage(1), WhatKindOfAsset.Business).success.value
           .set(BusinessNamePage(1), "Test 2").success.value
           .set(BusinessDescriptionPage(1), "Description 2").success.value
           .set(BusinessAddressUkYesNoPage(1), true).success.value
           .set(BusinessUkAddressPage(1), UKAddress("26", "Grangetown", Some("Tyne and Wear"), Some("Newcastle"), "Z99 2YY")).success.value
-          .set(BusinessValuePage(1), "123").success.value
+          .set(BusinessValuePage(1), assetValue).success.value
           .set(AssetStatus(1), Completed).success.value
 
       businessAssetMapper.build(userAnswers).value mustBe List(
@@ -108,13 +110,13 @@ class BusinessAssetMapperSpec extends SpecBase with MustMatchers
           "Test 1",
           "Description 1",
           AddressType("26","Grangetown", Some("Tyne and Wear"), Some("Newcastle"), Some("Z99 2YY"), "GB"),
-          123L
+          assetValue
         ),
         BusinessAssetType(
           "Test 2",
           "Description 2",
           AddressType("26","Grangetown", Some("Tyne and Wear"), Some("Newcastle"), Some("Z99 2YY"), "GB"),
-          123L
+          assetValue
         )
       )
 

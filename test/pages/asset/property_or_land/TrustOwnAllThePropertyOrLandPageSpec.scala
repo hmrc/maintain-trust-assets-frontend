@@ -38,7 +38,7 @@ class TrustOwnAllThePropertyOrLandPageSpec extends PageBehaviours {
         forAll(arbitrary[UserAnswers]) {
           initial =>
             val answers: UserAnswers = initial.set(page, false).success.value
-              .set(PropertyLandValueTrustPage(0), "100").success.value
+              .set(PropertyLandValueTrustPage(0), 100L).success.value
 
             val result = answers.set(page, true).success.value
 

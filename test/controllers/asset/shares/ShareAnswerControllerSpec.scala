@@ -33,8 +33,9 @@ import views.html.asset.shares.ShareAnswersView
 class ShareAnswerControllerSpec extends SpecBase {
 
   val index: Int = 0
+  val assetValue: Long = 10L
 
-  lazy val shareAnswerRoute = routes.ShareAnswerController.onPageLoad(index, fakeDraftId).url
+  lazy val shareAnswerRoute: String = routes.ShareAnswerController.onPageLoad(index, fakeDraftId).url
 
   "ShareAnswer Controller" must {
 
@@ -47,7 +48,7 @@ class ShareAnswerControllerSpec extends SpecBase {
         .set(SharesOnStockExchangePage(index), true).success.value
         .set(ShareClassPage(index), ShareClass.Ordinary).success.value
         .set(ShareQuantityInTrustPage(index), "1000").success.value
-        .set(ShareValueInTrustPage(index), "10").success.value
+        .set(ShareValueInTrustPage(index), assetValue).success.value
         .set(AssetStatus(index), Completed).success.value
 
       val countryOptions = injector.instanceOf[CountryOptions]
@@ -92,7 +93,7 @@ class ShareAnswerControllerSpec extends SpecBase {
           .set(SharePortfolioNamePage(index), "Share Portfolio Name").success.value
           .set(SharePortfolioOnStockExchangePage(index), true).success.value
           .set(SharePortfolioQuantityInTrustPage(index), "2000").success.value
-          .set(SharePortfolioValueInTrustPage(index), "20").success.value
+          .set(SharePortfolioValueInTrustPage(index), assetValue).success.value
 
       val countryOptions = injector.instanceOf[CountryOptions]
       val checkYourAnswersHelper = new CheckYourAnswersHelper(countryOptions)(userAnswers, fakeDraftId, canEdit = true)

@@ -36,7 +36,7 @@ class BusinessAnswersControllerSpec extends SpecBase {
     .set(BusinessDescriptionPage(index), "test test test").success.value
     .set(BusinessAddressUkYesNoPage(index), true).success.value
     .set(BusinessUkAddressPage(index), UKAddress("test", "test", None, None, "NE11NE")).success.value
-    .set(BusinessValuePage(index), "12").success.value
+    .set(BusinessValuePage(index), 12L).success.value
 
   "AssetAnswerPage Controller" must {
 

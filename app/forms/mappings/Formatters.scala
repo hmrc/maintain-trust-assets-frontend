@@ -154,12 +154,12 @@ trait Formatters {
                                            maxValue: Long): Formatter[Long] =
     new Formatter[Long] {
 
-      private val baseFormatter = longFormatter(s"$prefix.error.required", s"$prefix.error.whole", s"$prefix.error.invalid")
+      private val baseFormatter = longFormatter(s"$prefix.error.required", s"$prefix.error.wholeNumber", s"$prefix.error.invalid")
 
       override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Long] = {
         val baseValue = baseFormatter.bind(key, data)
         baseValue match {
-          case Right(value) if value < 1L => Left(Seq(FormError(key, s"$prefix.zero")))
+          case Right(value) if value < 1L => Left(Seq(FormError(key, s"$prefix.error.zero")))
           case Right(value) if value >= maxValue => Left(Seq(FormError(key, maxValueKey)))
           case _ => baseValue
         }

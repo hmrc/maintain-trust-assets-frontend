@@ -48,7 +48,7 @@ class OtherNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
 
-          val answers = userAnswers.set(OtherAssetValuePage(index), "4000").success.value
+          val answers = userAnswers.set(OtherAssetValuePage(index), 4000L).success.value
 
           navigator.nextPage(OtherAssetValuePage(index), NormalMode, fakeDraftId)(answers)
             .mustBe(OtherAssetAnswersController.onPageLoad(index, fakeDraftId))
