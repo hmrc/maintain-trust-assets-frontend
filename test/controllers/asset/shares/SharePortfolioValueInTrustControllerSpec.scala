@@ -31,7 +31,7 @@ import views.html.asset.shares.SharePortfolioValueInTrustView
 class SharePortfolioValueInTrustControllerSpec extends SpecBase with ModelGenerators with IndexValidation {
 
   val formProvider = new ValueFormProvider()
-  val form = formProvider.withPrefix("shares.portfolioValueInTrust")
+  val form = formProvider.withConfig("shares.portfolioValueInTrust")
   val index: Int = 0
 
   lazy val sharePortfolioValueInTrustRoute = routes.SharePortfolioValueInTrustController.onPageLoad(NormalMode, index, fakeDraftId).url

@@ -47,7 +47,7 @@ class ShareValueInTrustController @Inject()(
                                              validateIndex: IndexActionFilterProvider
                                            )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val form = formProvider.withPrefix("shares.valueInTrust")
+  private val form = formProvider.withConfig("shares.valueInTrust")
 
   private def actions(index : Int, draftId: String) =
     identify andThen getData(draftId) andThen

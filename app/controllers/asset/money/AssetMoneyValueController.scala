@@ -48,7 +48,7 @@ class AssetMoneyValueController @Inject()(
 
   private def actions(draftId: String) = identify andThen getData(draftId) andThen requireData
 
-  val form: Form[String] = formProvider.withPrefix("money.value")
+  val form: Form[String] = formProvider.withConfig("money.value")
 
   def onPageLoad(mode: Mode,  index: Int, draftId: String): Action[AnyContent] = actions(draftId) {
     implicit request =>

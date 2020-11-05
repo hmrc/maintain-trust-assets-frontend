@@ -34,7 +34,7 @@ import scala.concurrent.Future
 class OtherAssetValueControllerSpec extends SpecBase {
 
   val formProvider = new ValueFormProvider()
-  val form: Form[String] = formProvider.withPrefix("other.value")
+  val form: Form[String] = formProvider.withConfig("other.value")
   val index = 0
   val description: String = "Description"
   val validAnswer: String = "4000"

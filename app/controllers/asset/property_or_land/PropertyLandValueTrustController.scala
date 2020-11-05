@@ -46,7 +46,7 @@ class PropertyLandValueTrustController @Inject()(
                                                   view: PropertyLandValueTrustView
                                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val form = formProvider.withPrefix("propertyOrLand.valueInTrust")
+  private val form = formProvider.withConfig("propertyOrLand.valueInTrust")
 
   private def actions(index: Int, draftId: String) =
     identify andThen

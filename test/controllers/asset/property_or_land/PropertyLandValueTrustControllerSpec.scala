@@ -32,7 +32,7 @@ import views.html.asset.property_or_land.PropertyLandValueTrustView
 class PropertyLandValueTrustControllerSpec extends SpecBase with IndexValidation {
 
   val formProvider = new ValueFormProvider()
-  val form = formProvider.withPrefix("propertyOrLand.valueInTrust")
+  val form = formProvider.withConfig("propertyOrLand.valueInTrust")
 
   val index: Int = 0
 

@@ -28,7 +28,7 @@ import views.html.asset.money.AssetMoneyValueView
 class AssetMoneyValueControllerSpec extends SpecBase {
 
   val formProvider = new ValueFormProvider()
-  val form = formProvider.withPrefix("money.value")
+  val form = formProvider.withConfig("money.value")
 
   val index = 0
 

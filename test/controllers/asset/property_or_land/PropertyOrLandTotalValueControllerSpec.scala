@@ -31,7 +31,7 @@ import views.html.asset.property_or_land.PropertyOrLandTotalValueView
 class PropertyOrLandTotalValueControllerSpec extends SpecBase with IndexValidation {
 
   val formProvider = new ValueFormProvider()
-  val form = formProvider.withPrefix("propertyOrLand.totalValue")
+  val form = formProvider.withConfig("propertyOrLand.totalValue")
   val index = 0
 
   lazy val propertyOrLandTotalValueRoute = routes.PropertyOrLandTotalValueController.onPageLoad(NormalMode, index, fakeDraftId).url
