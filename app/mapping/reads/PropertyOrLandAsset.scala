@@ -23,8 +23,8 @@ import play.api.libs.json.{JsError, JsSuccess, Reads, __}
 final case class PropertyOrLandAsset(override val whatKindOfAsset: WhatKindOfAsset,
                                      propertyOrLandDescription: Option[String],
                                      address: Option[Address],
-                                     propertyLandValueTrust: Option[String],
-                                     propertyOrLandTotalValue: String) extends Asset
+                                     propertyLandValueTrust: Option[Long],
+                                     propertyOrLandTotalValue: Long) extends Asset
 
 object PropertyOrLandAsset {
 
@@ -35,8 +35,8 @@ object PropertyOrLandAsset {
     val landOrPropertyReads: Reads[PropertyOrLandAsset] = (
       (__ \ "propertyOrLandDescription").readNullable[String] and
         readAddress() and
-        (__ \ "propertyOrLandValueTrust").readNullable[String] and
-        (__ \ "propertyOrLandTotalValue").read[String] and
+        (__ \ "propertyOrLandValueTrust").readNullable[Long] and
+        (__ \ "propertyOrLandTotalValue").read[Long] and
         (__ \ "whatKindOfAsset").read[WhatKindOfAsset]
       )((description, address, value, totalValue, kind) => PropertyOrLandAsset(kind, description, address, value, totalValue))
 

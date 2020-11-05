@@ -20,35 +20,30 @@ import javax.inject.Inject
 import mapping.reads.PropertyOrLandAsset
 import models.{PropertyLandType, UserAnswers}
 
-import scala.util.Try
+class PropertyOrLandMapper @Inject()(addressMapper: AddressMapper) extends Mapping[List[PropertyLandType]] {
 
-class PropertyOrLandMapper @Inject()(addressMapper: AddressMapper) extends Mapping[List[PropertyLandType]]{
-    override def build(userAnswers: UserAnswers): Option[List[PropertyLandType]] = {
+  override def build(userAnswers: UserAnswers): Option[List[PropertyLandType]] = {
 
-      val assets : List[PropertyOrLandAsset] =
-        userAnswers.get(mapping.reads.Assets)
-          .getOrElse(List.empty[mapping.reads.Asset])
-          .collect { case x : PropertyOrLandAsset => x }
+    val assets : List[PropertyOrLandAsset] =
+      userAnswers.get(mapping.reads.Assets)
+        .getOrElse(List.empty[mapping.reads.Asset])
+        .collect { case x : PropertyOrLandAsset => x }
 
-      assets match {
-        case Nil => None
-        case list =>
-          Some(
-            list.flatMap {
-              x =>
-                for {
-                  value <- Try(x.propertyLandValueTrust.map(_.toLong)).toOption
-                  totalValue <- Try(x.propertyOrLandTotalValue.toLong).toOption
-                } yield {
-                  value match {
-                    case Some(v) =>
-                      PropertyLandType(x.propertyOrLandDescription, addressMapper.build(x.address), totalValue, v)
-                    case None =>
-                      PropertyLandType(x.propertyOrLandDescription, addressMapper.build(x.address), totalValue, totalValue)
-                  }
-                }
-            }
-          )
-      }
+    assets match {
+      case Nil => None
+      case list =>
+        Some(
+          list.map { x =>
+            val totalValue: Long = x.propertyOrLandTotalValue
+
+            PropertyLandType(
+              x.propertyOrLandDescription,
+              addressMapper.build(x.address),
+              totalValue,
+              x.propertyLandValueTrust.getOrElse(totalValue)
+            )
+          }
+        )
     }
   }
+}

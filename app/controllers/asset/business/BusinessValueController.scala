@@ -21,13 +21,14 @@ import controllers.filters.IndexActionFilterProvider
 import forms.ValueFormProvider
 import javax.inject.Inject
 import models.Status.Completed
+import models.requests.RegistrationDataRequest
 import models.{Mode, NormalMode}
 import navigation.Navigator
 import pages.AssetStatus
 import pages.asset.business.{BusinessNamePage, BusinessValuePage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
 import repositories.RegistrationsRepository
 import sections.Assets
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
@@ -50,9 +51,9 @@ class BusinessValueController @Inject()(
                                          view: BusinessValueView
                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form: Form[String] = formProvider.withConfig("business.currentValue")
+  private val form: Form[Long] = formProvider.withConfig("business.currentValue")
 
-  private def actions(index: Int, draftId: String) =
+  private def actions(index: Int, draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] =
     identify andThen
       getData(draftId) andThen
       requireData andThen

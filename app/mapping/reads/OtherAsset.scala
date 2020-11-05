@@ -24,7 +24,7 @@ import play.api.libs.json.{JsError, JsSuccess, Reads, __}
 final case class OtherAsset(
                              override val whatKindOfAsset: WhatKindOfAsset,
                              description: String,
-                             value: String
+                             value: Long
                            ) extends Asset
 
 object OtherAsset {
@@ -33,7 +33,7 @@ object OtherAsset {
 
     val otherReads: Reads[OtherAsset] = (
       (__ \ "otherAssetDescription").read[String] and
-        (__ \ "otherAssetValue").read[String] and
+        (__ \ "otherAssetValue").read[Long] and
         (__ \ "whatKindOfAsset").read[WhatKindOfAsset]
       )((description, value, kind) => OtherAsset(kind, description, value))
 

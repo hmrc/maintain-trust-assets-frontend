@@ -20,9 +20,8 @@ import javax.inject.Inject
 import mapping.reads.MoneyAsset
 import models.{AssetMonetaryAmount, UserAnswers}
 
-import scala.util.Try
+class MoneyAssetMapper @Inject() extends Mapping[List[AssetMonetaryAmount]] {
 
-class MoneyAssetMapper @Inject() extends Mapping[List[AssetMonetaryAmount]]{
   override def build(userAnswers: UserAnswers): Option[List[AssetMonetaryAmount]] = {
 
     val assets : List[MoneyAsset] =
@@ -32,13 +31,9 @@ class MoneyAssetMapper @Inject() extends Mapping[List[AssetMonetaryAmount]]{
 
     assets match {
       case Nil => None
-      case list =>
-        Some(
-          list.flatMap {
-            x =>
-              Try(x.value.toLong).toOption.map(AssetMonetaryAmount(_))
-          }
-        )
+      case list => Some(
+        list.map(x => AssetMonetaryAmount(x.value))
+      )
     }
   }
 }

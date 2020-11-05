@@ -24,7 +24,7 @@ final case class BusinessAsset(override val whatKindOfAsset: WhatKindOfAsset,
                                assetName: String,
                                assetDescription: String,
                                address: Address,
-                               currentValue: String) extends Asset
+                               currentValue: Long) extends Asset
 
 object BusinessAsset {
 
@@ -37,7 +37,7 @@ object BusinessAsset {
         (__ \ "name").read[String] and
         (__ \ "description").read[String] and
         readAddress() and
-        (__ \ "value").read[String]
+        (__ \ "value").read[Long]
       )((kind, name, description, address, value) => BusinessAsset(kind, name, description, address, value))
 
     (__ \ "whatKindOfAsset").read[WhatKindOfAsset].flatMap[WhatKindOfAsset] {

@@ -32,7 +32,7 @@ class OtherAssetMapper @Inject() extends Mapping[List[OtherAssetType]] {
     others match {
       case Nil => None
       case list => Some(
-        list.map(x => OtherAssetType(x.description, x.value.toLong))
+        list.map(x => OtherAssetType(x.description, x.value))
       )
     }
   }

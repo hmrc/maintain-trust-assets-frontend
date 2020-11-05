@@ -21,7 +21,7 @@ import models.WhatKindOfAsset.Money
 import play.api.libs.json.{Reads, _}
 
 final case class MoneyAsset(override val whatKindOfAsset: WhatKindOfAsset,
-                            value: String) extends Asset
+                            value: Long) extends Asset
 
 object MoneyAsset {
 
@@ -30,7 +30,7 @@ object MoneyAsset {
   implicit lazy val reads: Reads[MoneyAsset] = {
 
     val moneyReads: Reads[MoneyAsset] = (
-      (__ \ "assetMoneyValue").read[String] and
+      (__ \ "assetMoneyValue").read[Long] and
         (__ \ "whatKindOfAsset").read[WhatKindOfAsset]
       )((value, kind) => MoneyAsset(kind, value))
 

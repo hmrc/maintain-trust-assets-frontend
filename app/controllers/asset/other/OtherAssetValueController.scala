@@ -51,7 +51,7 @@ class OtherAssetValueController @Inject()(
       requiredAnswer(RequiredAnswer(OtherAssetDescriptionPage(index), routes.OtherAssetDescriptionController.onPageLoad(mode, index, draftId)))
   }
 
-  val form: Form[String] = formProvider.withConfig(prefix = "other.value")
+  private val form: Form[Long] = formProvider.withConfig(prefix = "other.value")
 
   def onPageLoad(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(mode, index, draftId) {
     implicit request =>

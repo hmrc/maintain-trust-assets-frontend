@@ -32,7 +32,7 @@ class BusinessAssetMapper @Inject()(addressMapper: AddressMapper) extends Mappin
     businesses match {
       case Nil => None
       case list => Some(
-        list.map(x => BusinessAssetType(x.assetName, x.assetDescription, addressMapper.build(x.address), x.currentValue.toLong))
+        list.map(x => BusinessAssetType(x.assetName, x.assetDescription, addressMapper.build(x.address), x.currentValue))
       )
     }
   }
