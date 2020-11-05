@@ -63,6 +63,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   private val year: Int = configuration.get[Int]("minimumDate.year")
   lazy val minDate: LocalDate = LocalDate.of(year, month, day)
 
+  lazy val assetValueUpperLimitExclusive: Long = configuration.get[Long]("assetValueUpperLimitExclusive")
 
   def languageMap: Map[String, Lang] = Map(
     "english" -> Lang("en"),

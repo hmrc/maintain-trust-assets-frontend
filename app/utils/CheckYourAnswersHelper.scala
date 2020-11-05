@@ -143,7 +143,7 @@ class CheckYourAnswersHelper @Inject()(countryOptions: CountryOptions)
     x =>
       AnswerRow(
         "propertyLandValueTrust.checkYourAnswersLabel",
-        currency(x),
+        currency(x.toString),
         Some(controllers.asset.property_or_land.routes.PropertyLandValueTrustController.onPageLoad(NormalMode, index, draftId).url),
         canEdit = canEdit
       )
@@ -203,7 +203,7 @@ class CheckYourAnswersHelper @Inject()(countryOptions: CountryOptions)
     x =>
       AnswerRow(
         "propertyOrLandTotalValue.checkYourAnswersLabel",
-        currency(x),
+        currency(x.toString),
         Some(controllers.asset.property_or_land.routes.PropertyOrLandTotalValueController.onPageLoad(NormalMode, index, draftId).url),
         canEdit = canEdit
       )
@@ -244,7 +244,7 @@ class CheckYourAnswersHelper @Inject()(countryOptions: CountryOptions)
     x =>
       AnswerRow(
         "shareValueInTrust.checkYourAnswersLabel",
-        currency(x),
+        currency(x.toString),
         Some(controllers.asset.shares.routes.ShareValueInTrustController.onPageLoad(NormalMode, index, draftId).url),
         shareCompName(index, userAnswers),
         canEdit = canEdit
@@ -266,7 +266,7 @@ class CheckYourAnswersHelper @Inject()(countryOptions: CountryOptions)
     x =>
       AnswerRow(
         "sharePortfolioValueInTrust.checkYourAnswersLabel",
-        currency(x),
+        currency(x.toString),
         Some(controllers.asset.shares.routes.SharePortfolioValueInTrustController.onPageLoad(NormalMode, index, draftId).url),
         canEdit = canEdit
       )
@@ -316,7 +316,7 @@ class CheckYourAnswersHelper @Inject()(countryOptions: CountryOptions)
     x =>
       AnswerRow(
         "assetMoneyValue.checkYourAnswersLabel",
-        currency(x),
+        currency(x.toString),
         Some(controllers.asset.money.routes.AssetMoneyValueController.onPageLoad(NormalMode, index, draftId).url),
         canEdit = canEdit
       )
@@ -346,7 +346,7 @@ class CheckYourAnswersHelper @Inject()(countryOptions: CountryOptions)
     x =>
       AnswerRow(
         "assets.other.value.checkYourAnswersLabel",
-        currency(x),
+        currency(x.toString),
         Some(controllers.asset.other.routes.OtherAssetValueController.onPageLoad(NormalMode, index, draftId).url),
         description,
         canEdit = canEdit
@@ -429,7 +429,7 @@ class CheckYourAnswersHelper @Inject()(countryOptions: CountryOptions)
     x =>
       AnswerRow(
         "currentValue.checkYourAnswersLabel",
-        currency(x),
+        currency(x.toString),
         Some(controllers.asset.business.routes.BusinessValueController.onPageLoad(NormalMode, index, draftId).url),
         canEdit = canEdit
       )

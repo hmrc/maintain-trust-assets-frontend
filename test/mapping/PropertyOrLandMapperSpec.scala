@@ -28,6 +28,9 @@ class PropertyOrLandMapperSpec extends SpecBase with MustMatchers
 
   val propertyOrLandMapper : Mapping[List[PropertyLandType]] = injector.instanceOf[PropertyOrLandMapper]
 
+  private val assetTotalValue: Long = 1000L
+  private val assetTrustValue: Long = 750L
+
   "propertyOrLandMapper" must {
 
     "not be able to create a property or land asset when missing values in user answers" in {
@@ -49,9 +52,9 @@ class PropertyOrLandMapperSpec extends SpecBase with MustMatchers
           .set(PropertyOrLandAddressYesNoPage(0), true).success.value
           .set(PropertyOrLandAddressUkYesNoPage(0), true).success.value
           .set(PropertyOrLandUKAddressPage(0), UKAddress("26", "Grangetown", Some("Tyne and Wear"), Some("Newcastle"), "Z99 2YY")).success.value
-          .set(PropertyOrLandTotalValuePage(0), "1000").success.value
+          .set(PropertyOrLandTotalValuePage(0), assetTotalValue).success.value
           .set(TrustOwnAllThePropertyOrLandPage(0), false).success.value
-          .set(PropertyLandValueTrustPage(0), "750").success.value
+          .set(PropertyLandValueTrustPage(0), assetTrustValue).success.value
 
         propertyOrLandMapper.build(userAnswers).value mustBe
           List(
@@ -66,8 +69,8 @@ class PropertyOrLandMapperSpec extends SpecBase with MustMatchers
                   postCode = Some("Z99 2YY"),
                   country = "GB"
                 )),
-              valueFull = 1000L,
-              valuePrevious = 750L
+              valueFull = assetTotalValue,
+              valuePrevious = assetTrustValue
 
             )
           )
@@ -80,9 +83,9 @@ class PropertyOrLandMapperSpec extends SpecBase with MustMatchers
           .set(PropertyOrLandAddressYesNoPage(0), true).success.value
           .set(PropertyOrLandAddressUkYesNoPage(0), false).success.value
           .set(PropertyOrLandInternationalAddressPage(0), InternationalAddress("1", "Broadway", Some("New York"), "US")).success.value
-          .set(PropertyOrLandTotalValuePage(0), "1000").success.value
+          .set(PropertyOrLandTotalValuePage(0), assetTotalValue).success.value
           .set(TrustOwnAllThePropertyOrLandPage(0), false).success.value
-          .set(PropertyLandValueTrustPage(0), "750").success.value
+          .set(PropertyLandValueTrustPage(0), assetTrustValue).success.value
 
         propertyOrLandMapper.build(userAnswers).value mustBe
           List(
@@ -97,8 +100,8 @@ class PropertyOrLandMapperSpec extends SpecBase with MustMatchers
                   postCode = None,
                   country = "US"
                 )),
-              valueFull = 1000L,
-              valuePrevious = 750L
+              valueFull = assetTotalValue,
+              valuePrevious = assetTrustValue
 
             )
           )
@@ -111,7 +114,7 @@ class PropertyOrLandMapperSpec extends SpecBase with MustMatchers
         .set(WhatKindOfAssetPage(0), WhatKindOfAsset.PropertyOrLand).success.value
         .set(PropertyOrLandAddressYesNoPage(0), false).success.value
         .set(PropertyOrLandDescriptionPage(0), "Property Or Land").success.value
-        .set(PropertyOrLandTotalValuePage(0), "1000").success.value
+        .set(PropertyOrLandTotalValuePage(0), assetTotalValue).success.value
         .set(TrustOwnAllThePropertyOrLandPage(0), true).success.value
 
 
@@ -120,8 +123,8 @@ class PropertyOrLandMapperSpec extends SpecBase with MustMatchers
           PropertyLandType(
             buildingLandName = Some("Property Or Land"),
             address = None,
-            valueFull = 1000L,
-            valuePrevious = 1000L
+            valueFull = assetTotalValue,
+            valuePrevious = assetTotalValue
 
           )
         )
@@ -134,16 +137,16 @@ class PropertyOrLandMapperSpec extends SpecBase with MustMatchers
         .set(PropertyOrLandAddressYesNoPage(0), true).success.value
         .set(PropertyOrLandAddressUkYesNoPage(0), true).success.value
         .set(PropertyOrLandUKAddressPage(0), UKAddress("26", "Grangetown", Some("Tyne and Wear"), Some("Newcastle"), "Z99 2YY")).success.value
-        .set(PropertyOrLandTotalValuePage(0), "1000").success.value
+        .set(PropertyOrLandTotalValuePage(0), assetTotalValue).success.value
         .set(TrustOwnAllThePropertyOrLandPage(0), true).success.value
-        .set(PropertyLandValueTrustPage(0), "750").success.value
+        .set(PropertyLandValueTrustPage(0), assetTrustValue).success.value
         .set(WhatKindOfAssetPage(1), WhatKindOfAsset.PropertyOrLand).success.value
         .set(PropertyOrLandAddressYesNoPage(1), true).success.value
         .set(PropertyOrLandAddressUkYesNoPage(1), true).success.value
         .set(PropertyOrLandUKAddressPage(1), UKAddress("26", "Grangetown", Some("Tyne and Wear"), Some("Newcastle"), "Z99 2YY")).success.value
-        .set(PropertyOrLandTotalValuePage(1), "1000").success.value
+        .set(PropertyOrLandTotalValuePage(1), assetTotalValue).success.value
         .set(TrustOwnAllThePropertyOrLandPage(1), true).success.value
-        .set(PropertyLandValueTrustPage(1), "750").success.value
+        .set(PropertyLandValueTrustPage(1), assetTrustValue).success.value
 
       propertyOrLandMapper.build(userAnswers).value.length mustBe 2
     }

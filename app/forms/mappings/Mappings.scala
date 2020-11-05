@@ -57,4 +57,10 @@ trait Mappings extends Formatters with Constraints {
                          invalidKey : String = "error.postcodeInvalid") : FieldMapping[String] =
     of(postcodeFormatter(requiredKey, invalidKey))
 
+  protected def longValue(prefix: String, maxValueKey: String, maxValue: Long): FieldMapping[Long] =
+    of(longValueFormatter(
+      prefix,
+      maxValueKey,
+      maxValue
+    ))
 }

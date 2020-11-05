@@ -120,7 +120,7 @@ class PropertyOrLandNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
 
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
-          val answers = userAnswers.set(page, "100").success.value
+          val answers = userAnswers.set(page, 100L).success.value
           navigator.nextPage(page, NormalMode, fakeDraftId)(answers)
             .mustBe(TrustOwnAllThePropertyOrLandController.onPageLoad(NormalMode, index, fakeDraftId))
       }
@@ -148,7 +148,7 @@ class PropertyOrLandNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
 
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>
-            val answers = userAnswers.set(page, "100").success.value
+            val answers = userAnswers.set(page, 100L).success.value
             navigator.nextPage(page, NormalMode, fakeDraftId)(answers)
               .mustBe(PropertyOrLandAnswerController.onPageLoad(index, fakeDraftId))
         }

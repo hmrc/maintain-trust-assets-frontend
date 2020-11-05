@@ -42,7 +42,7 @@ class WhatKindOfAssetPageSpec extends PageBehaviours {
     forAll(arbitrary[UserAnswers], kindOfAsset) {
       (initial, kind) =>
         val answers: UserAnswers = initial
-          .set(AssetMoneyValuePage(0), "200").success.value
+          .set(AssetMoneyValuePage(0), 200L).success.value
           .set(AssetStatus(0), Status.Completed).success.value
 
         val result = answers.set(WhatKindOfAssetPage(0), kind).success.value
@@ -64,7 +64,7 @@ class WhatKindOfAssetPageSpec extends PageBehaviours {
           .set(SharePortfolioNamePage(0), "Shares").success.value
           .set(SharePortfolioOnStockExchangePage(0), true).success.value
           .set(SharePortfolioQuantityInTrustPage(0), "20").success.value
-          .set(SharePortfolioValueInTrustPage(0), "2000").success.value
+          .set(SharePortfolioValueInTrustPage(0), 2000L).success.value
           .set(AssetStatus(0), Status.Completed).success.value
 
         val result = answers.set(WhatKindOfAssetPage(0), kind).success.value
@@ -92,7 +92,7 @@ class WhatKindOfAssetPageSpec extends PageBehaviours {
           .set(SharesOnStockExchangePage(0), false).success.value
           .set(ShareClassPage(0), ShareClass.Ordinary).success.value
           .set(ShareQuantityInTrustPage(0), "20").success.value
-          .set(ShareValueInTrustPage(0), "2000").success.value
+          .set(ShareValueInTrustPage(0), 2000L).success.value
           .set(AssetStatus(0), Status.Completed).success.value
 
         val result = answers.set(WhatKindOfAssetPage(0), kind).success.value
@@ -125,7 +125,7 @@ class WhatKindOfAssetPageSpec extends PageBehaviours {
             None,
             "NE1 1NN"
           )).success.value
-          .set(PropertyOrLandTotalValuePage(0), "10,000").success.value
+          .set(PropertyOrLandTotalValuePage(0), 10000L).success.value
           .set(TrustOwnAllThePropertyOrLandPage(0), true).success.value
           .set(AssetStatus(0), Status.Completed).success.value
 

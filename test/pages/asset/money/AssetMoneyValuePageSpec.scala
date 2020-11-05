@@ -23,10 +23,10 @@ class AssetMoneyValuePageSpec extends PageBehaviours {
 
   "AssetMoneyValuePage" must {
 
-    beRetrievable[String](AssetMoneyValuePage(0))
+    beRetrievable[Long](AssetMoneyValuePage(0))
 
-    beSettable[String](AssetMoneyValuePage(0))
+    beSettable[Long](AssetMoneyValuePage(0))
 
-    beRemovable[String](AssetMoneyValuePage(0))
+    beRemovable[Long](AssetMoneyValuePage(0))
   }
 }

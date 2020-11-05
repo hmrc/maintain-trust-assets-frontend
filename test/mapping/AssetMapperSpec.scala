@@ -32,6 +32,11 @@ class AssetMapperSpec extends SpecBase with MustMatchers
 
   val assetMapper: Mapping[Assets] = injector.instanceOf[AssetMapper]
 
+  private val shareAssetValue: Long = 999999999999L
+  private val moneyAssetValue: Long = 2000L
+  private val propertyOrLandAssetTotalValue: Long = 1000L
+  private val propertyOrLandAssetTrustValue: Long = 750L
+
   "AssetMapper" when {
 
     "user answers is empty" must {
@@ -50,11 +55,11 @@ class AssetMapperSpec extends SpecBase with MustMatchers
 
         val userAnswers = emptyUserAnswers
           .set(WhatKindOfAssetPage(0), WhatKindOfAsset.Money).success.value
-          .set(AssetMoneyValuePage(0), "2000").success.value
+          .set(AssetMoneyValuePage(0), moneyAssetValue).success.value
           .set(AssetStatus(0), Completed).success.value
 
 
-        val expected = Some(Assets(Some(List(AssetMonetaryAmount(2000))),None,None,None,None,None))
+        val expected = Some(Assets(Some(List(AssetMonetaryAmount(moneyAssetValue))), None, None, None, None, None))
 
         assetMapper.build(userAnswers) mustBe expected
       }
@@ -66,12 +71,12 @@ class AssetMapperSpec extends SpecBase with MustMatchers
           .set(SharesInAPortfolioPage(0), true).success.value
           .set(SharePortfolioNamePage(0), "Portfolio").success.value
           .set(SharePortfolioQuantityInTrustPage(0), "30").success.value
-          .set(SharePortfolioValueInTrustPage(0), "999999999999").success.value
+          .set(SharePortfolioValueInTrustPage(0), shareAssetValue).success.value
           .set(SharePortfolioOnStockExchangePage(0), false).success.value
           .set(AssetStatus(0), Completed).success.value
 
 
-        val expected = Some(Assets(None,None,Some(List(SharesType("30","Portfolio","Other","Unquoted",999999999999L))),None,None,None))
+        val expected = Some(Assets(None,None,Some(List(SharesType("30", "Portfolio", "Other", "Unquoted", shareAssetValue))), None, None, None))
 
         assetMapper.build(userAnswers) mustBe expected
       }
@@ -83,15 +88,22 @@ class AssetMapperSpec extends SpecBase with MustMatchers
           .set(SharesInAPortfolioPage(0), true).success.value
           .set(SharePortfolioNamePage(0), "Portfolio").success.value
           .set(SharePortfolioQuantityInTrustPage(0), "30").success.value
-          .set(SharePortfolioValueInTrustPage(0), "999999999999").success.value
+          .set(SharePortfolioValueInTrustPage(0), shareAssetValue).success.value
           .set(SharePortfolioOnStockExchangePage(0), false).success.value
           .set(AssetStatus(0), Completed).success.value
           .set(WhatKindOfAssetPage(1), WhatKindOfAsset.Money).success.value
-          .set(AssetMoneyValuePage(1), "2000").success.value
+          .set(AssetMoneyValuePage(1), moneyAssetValue).success.value
           .set(AssetStatus(1), Completed).success.value
 
 
-        val expected = Some(Assets(Some(List(AssetMonetaryAmount(2000))),None,Some(List(SharesType("30","Portfolio","Other","Unquoted",999999999999L))),None,None,None))
+        val expected = Some(Assets(
+          Some(List(AssetMonetaryAmount(moneyAssetValue))),
+          None,
+          Some(List(SharesType("30", "Portfolio", "Other", "Unquoted", shareAssetValue))),
+          None,
+          None,
+          None
+        ))
 
         assetMapper.build(userAnswers) mustBe expected
       }
@@ -103,24 +115,29 @@ class AssetMapperSpec extends SpecBase with MustMatchers
           .set(SharesInAPortfolioPage(0), true).success.value
           .set(SharePortfolioNamePage(0), "Portfolio").success.value
           .set(SharePortfolioQuantityInTrustPage(0), "30").success.value
-          .set(SharePortfolioValueInTrustPage(0), "999999999999").success.value
+          .set(SharePortfolioValueInTrustPage(0), shareAssetValue).success.value
           .set(SharePortfolioOnStockExchangePage(0), false).success.value
           .set(AssetStatus(0), Completed).success.value
           .set(WhatKindOfAssetPage(1), WhatKindOfAsset.Money).success.value
-          .set(AssetMoneyValuePage(1), "2000").success.value
+          .set(AssetMoneyValuePage(1), moneyAssetValue).success.value
           .set(AssetStatus(1), Completed).success.value
           .set(WhatKindOfAssetPage(2), WhatKindOfAsset.PropertyOrLand).success.value
           .set(PropertyOrLandAddressYesNoPage(2), true).success.value
           .set(PropertyOrLandAddressUkYesNoPage(2), true).success.value
           .set(PropertyOrLandUKAddressPage(2), UKAddress("26", "Grangetown", Some("Tyne and Wear"), Some("Newcastle"), "Z99 2YY")).success.value
-          .set(PropertyOrLandTotalValuePage(2), "1000").success.value
+          .set(PropertyOrLandTotalValuePage(2), propertyOrLandAssetTotalValue).success.value
           .set(TrustOwnAllThePropertyOrLandPage(2), false).success.value
-          .set(PropertyLandValueTrustPage(2), "750").success.value
+          .set(PropertyLandValueTrustPage(2), propertyOrLandAssetTrustValue).success.value
 
 
-        val expected = Some(Assets(Some(List(AssetMonetaryAmount(2000))),
-          Some(List(PropertyLandType(None, Some(AddressType("26", "Grangetown", Some("Tyne and Wear"), Some("Newcastle"), Some("Z99 2YY"), "GB")), 1000, 750L))),
-          Some(List(SharesType("30","Portfolio","Other","Unquoted",999999999999L))),None,None,None))
+        val expected = Some(Assets(
+          Some(List(AssetMonetaryAmount(moneyAssetValue))),
+          Some(List(PropertyLandType(None, Some(AddressType("26", "Grangetown", Some("Tyne and Wear"), Some("Newcastle"), Some("Z99 2YY"), "GB")), propertyOrLandAssetTotalValue, propertyOrLandAssetTrustValue))),
+          Some(List(SharesType("30", "Portfolio", "Other", "Unquoted", shareAssetValue))),
+          None,
+          None,
+          None
+        ))
 
         assetMapper.build(userAnswers) mustBe expected
       }

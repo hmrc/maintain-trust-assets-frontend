@@ -46,7 +46,7 @@ class PropertyOrLandTotalValueController @Inject()(
                                                     view: PropertyOrLandTotalValueView
                                                   )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val form = formProvider.withPrefix("propertyOrLand.totalValue")
+  private val form = formProvider.withConfig("propertyOrLand.totalValue")
 
   private def actions(index: Int, draftId: String) =
     identify andThen

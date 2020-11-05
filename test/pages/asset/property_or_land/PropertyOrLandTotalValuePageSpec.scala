@@ -23,10 +23,10 @@ class PropertyOrLandTotalValuePageSpec extends PageBehaviours {
 
   "PropertyOrLandTotalValuePage" must {
 
-    beRetrievable[String](PropertyOrLandTotalValuePage(0))
+    beRetrievable[Long](PropertyOrLandTotalValuePage(0))
 
-    beSettable[String](PropertyOrLandTotalValuePage(0))
+    beSettable[Long](PropertyOrLandTotalValuePage(0))
 
-    beRemovable[String](PropertyOrLandTotalValuePage(0))
+    beRemovable[Long](PropertyOrLandTotalValuePage(0))
   }
 }

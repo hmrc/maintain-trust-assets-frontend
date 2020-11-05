@@ -21,18 +21,20 @@ import controllers.routes._
 import forms.ValueFormProvider
 import models.NormalMode
 import pages.asset.money.AssetMoneyValuePage
+import play.api.data.Form
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.asset.money.AssetMoneyValueView
 
 class AssetMoneyValueControllerSpec extends SpecBase {
 
-  val formProvider = new ValueFormProvider()
-  val form = formProvider.withPrefix("money.value")
+  val formProvider = new ValueFormProvider(frontendAppConfig)
+  val form: Form[Long] = formProvider.withConfig("money.value")
 
   val index = 0
+  val validAnswer: Long = 4000L
 
-  lazy val assetMoneyValueRoute = routes.AssetMoneyValueController.onPageLoad(NormalMode, index, fakeDraftId).url
+  lazy val assetMoneyValueRoute: String = routes.AssetMoneyValueController.onPageLoad(NormalMode, index, fakeDraftId).url
 
   "AssetMoneyValue Controller" must {
 
@@ -56,7 +58,7 @@ class AssetMoneyValueControllerSpec extends SpecBase {
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(AssetMoneyValuePage(index), "answer").success.value
+      val userAnswers = emptyUserAnswers.set(AssetMoneyValuePage(index), validAnswer).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -69,7 +71,7 @@ class AssetMoneyValueControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill("answer"), NormalMode, fakeDraftId,index)(fakeRequest, messages).toString
+        view(form.fill(validAnswer), NormalMode, fakeDraftId,index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -81,7 +83,7 @@ class AssetMoneyValueControllerSpec extends SpecBase {
 
       val request =
         FakeRequest(POST, assetMoneyValueRoute)
-          .withFormUrlEncodedBody(("value", "45000"))
+          .withFormUrlEncodedBody(("value", validAnswer.toString))
 
       val result = route(application, request).value
 
@@ -134,7 +136,7 @@ class AssetMoneyValueControllerSpec extends SpecBase {
 
       val request =
         FakeRequest(POST, assetMoneyValueRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+          .withFormUrlEncodedBody(("value", validAnswer.toString))
 
       val result = route(application, request).value
 

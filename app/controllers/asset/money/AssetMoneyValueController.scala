@@ -21,12 +21,13 @@ import forms.ValueFormProvider
 import javax.inject.Inject
 import models.Mode
 import models.Status.Completed
+import models.requests.RegistrationDataRequest
 import navigation.Navigator
 import pages.AssetStatus
 import pages.asset.money.AssetMoneyValuePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
 import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.annotations.Money
@@ -46,9 +47,9 @@ class AssetMoneyValueController @Inject()(
                                            view: AssetMoneyValueView
                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private def actions(draftId: String) = identify andThen getData(draftId) andThen requireData
+  private def actions(draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] = identify andThen getData(draftId) andThen requireData
 
-  val form: Form[String] = formProvider.withPrefix("money.value")
+  private val form: Form[Long] = formProvider.withConfig("money.value")
 
   def onPageLoad(mode: Mode,  index: Int, draftId: String): Action[AnyContent] = actions(draftId) {
     implicit request =>

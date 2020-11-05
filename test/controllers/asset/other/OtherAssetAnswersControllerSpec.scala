@@ -44,7 +44,7 @@ class OtherAssetAnswersControllerSpec extends SpecBase {
     val baseAnswers: UserAnswers = emptyUserAnswers
       .set(WhatKindOfAssetPage(index), Other).success.value
       .set(OtherAssetDescriptionPage(index), description).success.value
-      .set(OtherAssetValuePage(index), "4000").success.value
+      .set(OtherAssetValuePage(index), 4000L).success.value
 
     "return OK and the correct view for a GET" in {
 

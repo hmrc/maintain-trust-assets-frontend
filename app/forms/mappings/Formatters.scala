@@ -78,6 +78,29 @@ trait Formatters {
         baseFormatter.unbind(key, value.toString)
     }
 
+  private[mappings] def longFormatter(requiredKey: String, wholeNumberKey: String, nonNumericKey: String): Formatter[Long] =
+    new Formatter[Long] {
+
+      val decimalRegexp = """^-?(\d*\.\d*)$"""
+
+      private val baseFormatter = stringFormatter(requiredKey)
+
+      override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Long] =
+        baseFormatter
+          .bind(key, data)
+          .right.map(_.replace(",", ""))
+          .right.flatMap {
+          case s if s.matches(decimalRegexp) =>
+            Left(Seq(FormError(key, wholeNumberKey)))
+          case s =>
+            nonFatalCatch
+              .either(s.toLong)
+              .left.map(_ => Seq(FormError(key, nonNumericKey)))
+        }
+
+      override def unbind(key: String, value: Long): Map[String, String] =
+        baseFormatter.unbind(key, value.toString)
+    }
 
   private[mappings] def enumerableFormatter[A](requiredKey: String, invalidKey: String)(implicit ev: Enumerable[A]): Formatter[A] =
     new Formatter[A] {
@@ -126,4 +149,21 @@ trait Formatters {
       Map(key -> value)
   }
 
+  private[mappings] def longValueFormatter(prefix: String,
+                                           maxValueKey: String,
+                                           maxValue: Long): Formatter[Long] =
+    new Formatter[Long] {
+
+      private val baseFormatter = longFormatter(s"$prefix.error.required", s"$prefix.error.wholeNumber", s"$prefix.error.invalid")
+
+      override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Long] = {
+        val baseValue = baseFormatter.bind(key, data)
+        baseValue match {
+          case Right(value) if value < 1L => Left(Seq(FormError(key, s"$prefix.error.zero")))
+          case Right(value) if value >= maxValue => Left(Seq(FormError(key, maxValueKey)))
+          case _ => baseValue
+        }
+      }
+      override def unbind(key: String, value: Long): Map[String, String] = baseFormatter.unbind(key, value)
+    }
 }

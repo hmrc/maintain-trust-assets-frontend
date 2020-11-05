@@ -16,23 +16,19 @@
 
 package forms
 
+import config.FrontendAppConfig
 import forms.mappings.Mappings
 import javax.inject.Inject
 import play.api.data.Form
 
-class ValueFormProvider @Inject() extends Mappings {
+class ValueFormProvider @Inject()(config: FrontendAppConfig) extends Mappings {
 
-  def withPrefix(prefix: String): Form[String] =
+  def withConfig(prefix: String, maxValue: Long = config.assetValueUpperLimitExclusive): Form[Long] =
     Form(
-      "value"-> currency(s"$prefix.error.required", s"$prefix.error.invalid")
-      .verifying(
-        firstError(
-          isNotEmpty("value", s"$prefix.error.required"),
-          maxLength(12, s"$prefix.error.length"),
-          regexp(Validation.onlyNumbersRegex, s"$prefix.error.invalid"),
-          regexp(Validation.decimalCheck, s"$prefix.error.wholeNumber"),
-          minimumValue("1", s"$prefix.error.zero")
-        )
+      "value" -> longValue(
+        prefix,
+        if (maxValue == config.assetValueUpperLimitExclusive) s"$prefix.error.length" else s"$prefix.error.moreThanTotal",
+        maxValue
       )
     )
 }

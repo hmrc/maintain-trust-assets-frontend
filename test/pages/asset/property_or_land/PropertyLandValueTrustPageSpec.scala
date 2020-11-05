@@ -22,10 +22,10 @@ class PropertyLandValueTrustPageSpec extends PageBehaviours {
 
   "PropertyLandValueTrustPage" must {
 
-    beRetrievable[String](PropertyLandValueTrustPage(0))
+    beRetrievable[Long](PropertyLandValueTrustPage(0))
 
-    beSettable[String](PropertyLandValueTrustPage(0))
+    beSettable[Long](PropertyLandValueTrustPage(0))
 
-    beRemovable[String](PropertyLandValueTrustPage(0))
+    beRemovable[Long](PropertyLandValueTrustPage(0))
   }
 }

@@ -33,11 +33,11 @@ import scala.concurrent.Future
 
 class OtherAssetValueControllerSpec extends SpecBase {
 
-  val formProvider = new ValueFormProvider()
-  val form: Form[String] = formProvider.withPrefix("other.value")
+  val formProvider = new ValueFormProvider(frontendAppConfig)
+  val form: Form[Long] = formProvider.withConfig("other.value")
   val index = 0
   val description: String = "Description"
-  val validAnswer: String = "4000"
+  val validAnswer: Long = 4000L
 
   val requiredAnswers: UserAnswers = emptyUserAnswers
     .set(OtherAssetDescriptionPage(index), description).success.value
@@ -111,7 +111,7 @@ class OtherAssetValueControllerSpec extends SpecBase {
 
       val request =
         FakeRequest(POST, valueRoute)
-          .withFormUrlEncodedBody(("value", validAnswer))
+          .withFormUrlEncodedBody(("value", validAnswer.toString))
 
       val result = route(application, request).value
 
@@ -164,7 +164,7 @@ class OtherAssetValueControllerSpec extends SpecBase {
 
       val request =
         FakeRequest(POST, valueRoute)
-          .withFormUrlEncodedBody(("value", validAnswer))
+          .withFormUrlEncodedBody(("value", validAnswer.toString))
 
       val result = route(application, request).value
 

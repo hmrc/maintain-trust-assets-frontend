@@ -14,15 +14,8 @@
  * limitations under the License.
  */
 
-package pages.asset.other
+package mapping.reads
 
-import pages.QuestionPage
-import play.api.libs.json.JsPath
-import sections.Assets
-
-final case class  OtherAssetValuePage(index: Int) extends QuestionPage[Long] {
-
-  override def path: JsPath = Assets.path \ index \ toString
-
-  override def toString: String = "otherAssetValue"
+trait ShareAsset {
+  def quotedOrUnquoted(listedOnTheStockExchange: Boolean): String = if (listedOnTheStockExchange) "Quoted" else "Unquoted"
 }

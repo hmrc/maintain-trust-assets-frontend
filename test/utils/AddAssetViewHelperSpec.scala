@@ -35,6 +35,8 @@ import pages.asset.other._
 
 class AddAssetViewHelperSpec extends SpecBase {
 
+  private val assetValue: Long = 4000L
+
   def changeMoneyAssetRoute(index: Int): String =
     money.routes.AssetMoneyValueController.onPageLoad(NormalMode, index, fakeDraftId).url
 
@@ -116,27 +118,27 @@ class AddAssetViewHelperSpec extends SpecBase {
           .set(SharesOnStockExchangePage(0), true).success.value
           .set(ShareClassPage(0), ShareClass.Ordinary).success.value
           .set(ShareQuantityInTrustPage(0), "1000").success.value
-          .set(ShareValueInTrustPage(0), "10").success.value
+          .set(ShareValueInTrustPage(0), assetValue).success.value
           .set(AssetStatus(0), Completed).success.value
           .set(WhatKindOfAssetPage(1), Money).success.value
-          .set(AssetMoneyValuePage(1), "200").success.value
+          .set(AssetMoneyValuePage(1), assetValue).success.value
           .set(AssetStatus(1), Completed).success.value
           .set(WhatKindOfAssetPage(2), PropertyOrLand).success.value
           .set(PropertyOrLandAddressYesNoPage(2), true).success.value
           .set(PropertyOrLandAddressUkYesNoPage(2), true).success.value
           .set(PropertyOrLandUKAddressPage(2), UKAddress("line 1", "line 2", None, None, "NE1 1NE")).success.value
-          .set(PropertyOrLandTotalValuePage(2), "100").success.value
+          .set(PropertyOrLandTotalValuePage(2), assetValue).success.value
           .set(TrustOwnAllThePropertyOrLandPage(2), true).success.value
           .set(AssetStatus(2), Completed).success.value
           .set(WhatKindOfAssetPage(3), PropertyOrLand).success.value
           .set(PropertyOrLandAddressYesNoPage(3), false).success.value
           .set(PropertyOrLandDescriptionPage(3), "1 hectare of land").success.value
-          .set(PropertyOrLandTotalValuePage(3), "100").success.value
+          .set(PropertyOrLandTotalValuePage(3), assetValue).success.value
           .set(TrustOwnAllThePropertyOrLandPage(3), true).success.value
           .set(AssetStatus(3), Completed).success.value
           .set(WhatKindOfAssetPage(4), Other).success.value
           .set(OtherAssetDescriptionPage(4), "Description").success.value
-          .set(OtherAssetValuePage(4), "4000").success.value
+          .set(OtherAssetValuePage(4), assetValue).success.value
           .set(AssetStatus(4), Completed).success.value
           .set(WhatKindOfAssetPage(5), Partnership).success.value
           .set(PartnershipDescriptionPage(5), "Partnership Description").success.value
@@ -147,13 +149,13 @@ class AddAssetViewHelperSpec extends SpecBase {
           .set(BusinessDescriptionPage(6), "Test Test Test").success.value
           .set(BusinessAddressUkYesNoPage(6), true).success.value
           .set(BusinessUkAddressPage(6), UKAddress("Test Line 1", "Test Line 2", None, None, "NE11NE")).success.value
-          .set(BusinessValuePage(6), "12").success.value
+          .set(BusinessValuePage(6), assetValue).success.value
           .set(AssetStatus(6), Completed).success.value
 
         val rows = new AddAssetViewHelper(userAnswers, NormalMode, fakeDraftId).rows
         rows.complete mustBe List(
           AddRow("Share Company Name", typeLabel = "Shares", changeSharesAssetRoute(0), removeAssetYesNoRoute(0)),
-          AddRow("£200", typeLabel = "Money", changeMoneyAssetRoute(1), removeAssetYesNoRoute(1)),
+          AddRow("£4000", typeLabel = "Money", changeMoneyAssetRoute(1), removeAssetYesNoRoute(1)),
           AddRow("line 1", typeLabel = "Property or Land", changePropertyOrLandAssetRoute(2), removeAssetYesNoRoute(2)),
           AddRow("1 hectare of land", typeLabel = "Property or Land", changePropertyOrLandAssetRoute(3), removeAssetYesNoRoute(3)),
           AddRow("Description", typeLabel = "Other", changeOtherAssetRoute(4), removeAssetYesNoRoute(4)),

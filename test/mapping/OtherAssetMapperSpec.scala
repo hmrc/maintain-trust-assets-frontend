@@ -30,6 +30,9 @@ class OtherAssetMapperSpec extends SpecBase with MustMatchers
 
   val otherAssetMapper: Mapping[List[OtherAssetType]] = injector.instanceOf[OtherAssetMapper]
 
+  private val assetValue1: Long = 4000L
+  private val assetValue2: Long = 6000L
+
   "OtherAssetMapper" must {
 
     "must not be able to create an other asset when no description or value in user answers" in {
@@ -47,10 +50,10 @@ class OtherAssetMapperSpec extends SpecBase with MustMatchers
         emptyUserAnswers
           .set(WhatKindOfAssetPage(0), WhatKindOfAsset.Other).success.value
           .set(OtherAssetDescriptionPage(0), "Description").success.value
-          .set(OtherAssetValuePage(0), "4000").success.value
+          .set(OtherAssetValuePage(0), assetValue1).success.value
           .set(AssetStatus(0), Completed).success.value
 
-      otherAssetMapper.build(userAnswers).value mustBe List(OtherAssetType("Description", 4000))
+      otherAssetMapper.build(userAnswers).value mustBe List(OtherAssetType("Description", assetValue1))
     }
 
     "must able to create multiple Other Assets" in {
@@ -59,16 +62,16 @@ class OtherAssetMapperSpec extends SpecBase with MustMatchers
         emptyUserAnswers
           .set(WhatKindOfAssetPage(0), WhatKindOfAsset.Other).success.value
           .set(OtherAssetDescriptionPage(0), "Description 1").success.value
-          .set(OtherAssetValuePage(0), "4000").success.value
+          .set(OtherAssetValuePage(0), assetValue1).success.value
           .set(AssetStatus(0), Completed).success.value
           .set(WhatKindOfAssetPage(1), WhatKindOfAsset.Other).success.value
           .set(OtherAssetDescriptionPage(1), "Description 2").success.value
-          .set(OtherAssetValuePage(1), "6000").success.value
+          .set(OtherAssetValuePage(1), assetValue2).success.value
           .set(AssetStatus(1), Completed).success.value
 
       otherAssetMapper.build(userAnswers).value mustBe List(
-        OtherAssetType("Description 1", 4000),
-        OtherAssetType("Description 2", 6000)
+        OtherAssetType("Description 1", assetValue1),
+        OtherAssetType("Description 2", assetValue2)
       )
 
       otherAssetMapper.build(userAnswers).value.length mustBe 2

@@ -31,10 +31,10 @@ object MoneyAssetViewModel {
 
   implicit lazy val reads: Reads[MoneyAssetViewModel] = {
 
-    def formatValue(v : String) = s"£$v"
+    def formatValue(v: Long) = s"£$v"
 
     val moneyReads: Reads[MoneyAssetViewModel] =
-      ((__ \ "assetMoneyValue").read[String] and
+      ((__ \ "assetMoneyValue").read[Long] and
         (__ \ "status").readWithDefault[Status](InProgress)
         )((value, status) => MoneyAssetViewModel(Money, formatValue(value), status))
 
