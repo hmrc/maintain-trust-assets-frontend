@@ -21,7 +21,7 @@ import models.WhatKindOfAsset.Money
 import models.{Status, WhatKindOfAsset}
 
 final case class MoneyAssetViewModel(`type` : WhatKindOfAsset,
-                                     value : String,
+                                     value : Option[String],
                                      override val status : Status) extends AssetViewModel
 
 object MoneyAssetViewModel {
@@ -31,12 +31,10 @@ object MoneyAssetViewModel {
 
   implicit lazy val reads: Reads[MoneyAssetViewModel] = {
 
-    def formatValue(v: Long) = s"£$v"
-
     val moneyReads: Reads[MoneyAssetViewModel] =
-      ((__ \ "assetMoneyValue").read[Long] and
+      ((__ \ "assetMoneyValue").readNullable[Long] and
         (__ \ "status").readWithDefault[Status](InProgress)
-        )((value, status) => MoneyAssetViewModel(Money, formatValue(value), status))
+        )((value, status) => MoneyAssetViewModel(Money, value.map(_.toString), status))
 
     (__ \ "whatKindOfAsset").read[WhatKindOfAsset].flatMap[WhatKindOfAsset] {
       whatKindOfAsset: WhatKindOfAsset =>

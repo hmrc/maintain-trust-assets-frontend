@@ -52,26 +52,50 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
 
     "return OK and the correct view for a GET" when {
 
-      "Money asset" in {
+      "Money asset" when {
 
-        val userAnswers = emptyUserAnswers
-          .set(WhatKindOfAssetPage(index), Money).success.value
-          .set(AssetMoneyValuePage(index), assetValue).success.value
+        "complete" in {
 
-        val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+          val userAnswers = emptyUserAnswers
+            .set(WhatKindOfAssetPage(index), Money).success.value
+            .set(AssetMoneyValuePage(index), assetValue).success.value
 
-        val request = FakeRequest(GET, removeAssetYesNoRoute)
+          val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
-        val result = route(application, request).value
+          val request = FakeRequest(GET, removeAssetYesNoRoute)
 
-        val view = application.injector.instanceOf[RemoveAssetYesNoView]
+          val result = route(application, request).value
 
-        status(result) mustEqual OK
+          val view = application.injector.instanceOf[RemoveAssetYesNoView]
 
-        contentAsString(result) mustEqual
-          view(form, fakeDraftId, index, "£4000")(fakeRequest, messages).toString
+          status(result) mustEqual OK
 
-        application.stop()
+          contentAsString(result) mustEqual
+            view(form, fakeDraftId, index, "£4000")(fakeRequest, messages).toString
+
+          application.stop()
+        }
+
+        "in progress" in {
+
+          val userAnswers = emptyUserAnswers
+            .set(WhatKindOfAssetPage(index), Money).success.value
+
+          val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+
+          val request = FakeRequest(GET, removeAssetYesNoRoute)
+
+          val result = route(application, request).value
+
+          val view = application.injector.instanceOf[RemoveAssetYesNoView]
+
+          status(result) mustEqual OK
+
+          contentAsString(result) mustEqual
+            view(form, fakeDraftId, index, "the asset")(fakeRequest, messages).toString
+
+          application.stop()
+        }
       }
 
       "Property or land asset" when {

@@ -28,6 +28,7 @@ import play.api.mvc._
 import repositories.RegistrationsRepository
 import sections.Assets
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import utils.CheckAnswersFormatters.currencyFormat
 import viewmodels._
 import views.html.asset.RemoveAssetYesNoView
 
@@ -104,7 +105,7 @@ class RemoveAssetYesNoController @Inject()(
       asset <- pick.validate[AssetViewModel]
     } yield {
       asset match {
-        case money: MoneyAssetViewModel => money.value
+        case money: MoneyAssetViewModel => money.value.fold(default)(currencyFormat)
         case propertyOrLand: PropertyOrLandAssetViewModel => propertyOrLandLabel(propertyOrLand)
         case shares: ShareAssetViewModel => shares.name.getOrElse(default)
         case business: BusinessAssetViewModel => business.name
