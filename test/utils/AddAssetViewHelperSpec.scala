@@ -85,6 +85,7 @@ class AddAssetViewHelperSpec extends SpecBase {
         val rows = new AddAssetViewHelper(userAnswers, NormalMode, fakeDraftId).rows
         rows.inProgress mustBe List(
           AddRow("No name added", typeLabel = "Shares", changeSharesAssetRoute(0), removeAssetYesNoRoute(0)),
+          AddRow("No value added", typeLabel = "Money", changeMoneyAssetRoute(1), removeAssetYesNoRoute(1)),
           AddRow("No address added", typeLabel = "Property or Land", changePropertyOrLandAssetRoute(2), removeAssetYesNoRoute(2)),
           AddRow("No description added", typeLabel = "Property or Land", changePropertyOrLandAssetRoute(3), removeAssetYesNoRoute(3)),
           AddRow("No address or description added", typeLabel = "Property or Land", changePropertyOrLandAssetRoute(4), removeAssetYesNoRoute(4)),

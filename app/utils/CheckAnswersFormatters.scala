@@ -44,14 +44,16 @@ object CheckAnswersFormatters {
   def country(code: String, countryOptions: CountryOptions): String =
     countryOptions.options.find(_.value.equals(code)).map(_.label).getOrElse("")
 
-  def currency(value: String): Html = escape(s"£$value")
+  def currency(value: String): Html = escape(currencyFormat(value))
+
+  def currencyFormat(value: String): String = s"£$value"
 
   def percentage(value: String): Html = escape(s"$value%")
 
   def answer[T](key: String, answer: T)(implicit messages: Messages): Html =
     HtmlFormat.escape(messages(s"$key.$answer"))
 
-  def escape(x: String) = HtmlFormat.escape(x)
+  def escape(x: String): Html = HtmlFormat.escape(x)
 
   def shareCompName(index: Int, userAnswers: UserAnswers): String = {
     userAnswers.get(ShareCompanyNamePage(index)).getOrElse("")
