@@ -20,12 +20,14 @@ import controllers.actions.{DraftIdRetrievalActionProvider, RegistrationDataRequ
 import controllers.filters.IndexActionFilterProvider
 import forms.WhatKindOfAssetFormProvider
 import javax.inject.Inject
+import models.WhatKindOfAsset.Money
+import models.requests.RegistrationDataRequest
 import models.{Enumerable, Mode, UserAnswers, WhatKindOfAsset}
 import navigation.Navigator
 import pages.asset.WhatKindOfAssetPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
 import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import viewmodels.RadioOption
@@ -48,13 +50,14 @@ class WhatKindOfAssetController @Inject()(
 
   val form: Form[WhatKindOfAsset] = formProvider()
 
-  private def options(userAnswers: UserAnswers): List[RadioOption] = {
+  private def options(userAnswers: UserAnswers, index: Int): List[RadioOption] = {
     val assets = userAnswers.get(sections.Assets).getOrElse(Nil)
+    val isMoneyAssetAtIndex = userAnswers.get(WhatKindOfAssetPage(index)).contains(Money)
 
-    WhatKindOfAsset.nonMaxedOutOptions(assets)
+    WhatKindOfAsset.nonMaxedOutOptions(assets, isMoneyAssetAtIndex)
   }
 
-  private def actions (index: Int, draftId: String) =
+  private def actions (index: Int, draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] =
     identify andThen getData(draftId) andThen requireData andThen validateIndex(index, sections.Assets)
 
   def onPageLoad(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
@@ -64,7 +67,7 @@ class WhatKindOfAssetController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, draftId, index, options(request.userAnswers)))
+      Ok(view(preparedForm, mode, draftId, index, options(request.userAnswers, index)))
   }
 
   def onSubmit(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async {
@@ -72,7 +75,7 @@ class WhatKindOfAssetController @Inject()(
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode, draftId, index, options(request.userAnswers)))),
+          Future.successful(BadRequest(view(formWithErrors, mode, draftId, index, options(request.userAnswers, index)))),
 
         value => {
 
