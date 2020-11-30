@@ -20,7 +20,6 @@ import controllers.actions.{DraftIdRetrievalActionProvider, RegistrationDataRequ
 import controllers.filters.IndexActionFilterProvider
 import forms.WhatKindOfAssetFormProvider
 import javax.inject.Inject
-import models.WhatKindOfAsset.Money
 import models.requests.RegistrationDataRequest
 import models.{Enumerable, Mode, UserAnswers, WhatKindOfAsset}
 import navigation.Navigator
@@ -52,9 +51,9 @@ class WhatKindOfAssetController @Inject()(
 
   private def options(userAnswers: UserAnswers, index: Int): List[RadioOption] = {
     val assets = userAnswers.get(sections.Assets).getOrElse(Nil)
-    val isMoneyAssetAtIndex = userAnswers.get(WhatKindOfAssetPage(index)).contains(Money)
+    val assetTypeAtIndex = userAnswers.get(WhatKindOfAssetPage(index))
 
-    WhatKindOfAsset.nonMaxedOutOptions(assets, isMoneyAssetAtIndex)
+    WhatKindOfAsset.nonMaxedOutOptions(assets, assetTypeAtIndex)
   }
 
   private def actions (index: Int, draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] =

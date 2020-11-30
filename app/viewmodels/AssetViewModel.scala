@@ -45,8 +45,7 @@ object AssetViewModel {
     ShareAssetViewModel.reads or
     BusinessAssetViewModel.reads or
     PartnershipAssetViewModel.reads or
-    OtherAssetViewModel.reads or
-    DefaultAssetsViewModel.reads
+    OtherAssetViewModel.reads
   }
 
 }

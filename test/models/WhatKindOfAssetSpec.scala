@@ -68,7 +68,7 @@ class WhatKindOfAssetSpec extends WordSpec with MustMatchers with ScalaCheckProp
 
         val assets: List[AssetViewModel] = Nil
 
-        WhatKindOfAsset.nonMaxedOutOptions(assets, isMoneyAssetAtIndex = false) mustBe List(
+        WhatKindOfAsset.nonMaxedOutOptions(assets, assetTypeAtIndex = None) mustBe List(
           RadioOption("whatKindOfAsset", Money.toString),
           RadioOption("whatKindOfAsset", PropertyOrLand.toString),
           RadioOption("whatKindOfAsset", Shares.toString),
@@ -81,39 +81,24 @@ class WhatKindOfAssetSpec extends WordSpec with MustMatchers with ScalaCheckProp
 
       "there is a 'Money' asset" when {
 
-        "in progress" when {
+        val moneyAsset = MoneyAssetViewModel(Money, Some("4000"), Completed)
+        val assets: List[AssetViewModel] = List(moneyAsset)
 
-          val moneyAsset: AssetViewModel = MoneyAssetViewModel(Money, Some("4000"), InProgress)
+        "at this index" in {
 
-          "at this index" in {
-
-            WhatKindOfAsset.nonMaxedOutOptions(List(moneyAsset), isMoneyAssetAtIndex = true) mustBe List(
-              RadioOption("whatKindOfAsset", Money.toString),
-              RadioOption("whatKindOfAsset", PropertyOrLand.toString),
-              RadioOption("whatKindOfAsset", Shares.toString),
-              RadioOption("whatKindOfAsset", Business.toString),
-              RadioOption("whatKindOfAsset", Partnership.toString),
-              RadioOption("whatKindOfAsset", Other.toString)
-            )
-          }
-
-          "at a different index" in {
-
-            WhatKindOfAsset.nonMaxedOutOptions(List(moneyAsset), isMoneyAssetAtIndex = false) mustBe List(
-              RadioOption("whatKindOfAsset", PropertyOrLand.toString),
-              RadioOption("whatKindOfAsset", Shares.toString),
-              RadioOption("whatKindOfAsset", Business.toString),
-              RadioOption("whatKindOfAsset", Partnership.toString),
-              RadioOption("whatKindOfAsset", Other.toString)
-            )
-          }
+          WhatKindOfAsset.nonMaxedOutOptions(assets, assetTypeAtIndex = Some(Money)) mustBe List(
+            RadioOption("whatKindOfAsset", Money.toString),
+            RadioOption("whatKindOfAsset", PropertyOrLand.toString),
+            RadioOption("whatKindOfAsset", Shares.toString),
+            RadioOption("whatKindOfAsset", Business.toString),
+            RadioOption("whatKindOfAsset", Partnership.toString),
+            RadioOption("whatKindOfAsset", Other.toString)
+          )
         }
 
-        "complete at a different index" in {
+        "at a different index" in {
 
-          val moneyAsset = MoneyAssetViewModel(Money, Some("4000"), Completed)
-
-          WhatKindOfAsset.nonMaxedOutOptions(List(moneyAsset), isMoneyAssetAtIndex = false) mustBe List(
+          WhatKindOfAsset.nonMaxedOutOptions(assets, assetTypeAtIndex = None) mustBe List(
             RadioOption("whatKindOfAsset", PropertyOrLand.toString),
             RadioOption("whatKindOfAsset", Shares.toString),
             RadioOption("whatKindOfAsset", Business.toString),
@@ -123,22 +108,39 @@ class WhatKindOfAssetSpec extends WordSpec with MustMatchers with ScalaCheckProp
         }
       }
 
-      "there are a combined 10 Completed and InProgress assets of a particular type that isn't 'Money'" in {
+      "there are a combined 10 Completed and InProgress assets of a particular type that isn't 'Money'" when {
 
-        val otherAssetCompleted = OtherAssetViewModel(Other, "description", Completed)
-        val otherAssetInProgress = OtherAssetViewModel(Other, "description", InProgress)
+        "asset at this index is of that type" in {
+          val otherAssetCompleted = OtherAssetViewModel(Other, Some("description"), Completed)
+          val otherAssetInProgress = OtherAssetViewModel(Other, None, InProgress)
 
-        val assets: List[AssetViewModel] = List.fill(5)(otherAssetCompleted) ++ List.fill(5)(otherAssetInProgress)
+          val assets: List[AssetViewModel] = List.fill(5)(otherAssetCompleted) ++ List.fill(5)(otherAssetInProgress)
 
-        WhatKindOfAsset.nonMaxedOutOptions(assets, isMoneyAssetAtIndex = false) mustBe List(
-          RadioOption("whatKindOfAsset", Money.toString),
-          RadioOption("whatKindOfAsset", PropertyOrLand.toString),
-          RadioOption("whatKindOfAsset", Shares.toString),
-          RadioOption("whatKindOfAsset", Business.toString),
-          RadioOption("whatKindOfAsset", Partnership.toString)
-        )
+          WhatKindOfAsset.nonMaxedOutOptions(assets, assetTypeAtIndex = Some(Other)) mustBe List(
+            RadioOption("whatKindOfAsset", Money.toString),
+            RadioOption("whatKindOfAsset", PropertyOrLand.toString),
+            RadioOption("whatKindOfAsset", Shares.toString),
+            RadioOption("whatKindOfAsset", Business.toString),
+            RadioOption("whatKindOfAsset", Partnership.toString),
+            RadioOption("whatKindOfAsset", Other.toString)
+          )
+        }
+
+        "no asset at this index" in {
+          val otherAssetCompleted = OtherAssetViewModel(Other, Some("description"), Completed)
+          val otherAssetInProgress = OtherAssetViewModel(Other, None, InProgress)
+
+          val assets: List[AssetViewModel] = List.fill(5)(otherAssetCompleted) ++ List.fill(5)(otherAssetInProgress)
+
+          WhatKindOfAsset.nonMaxedOutOptions(assets, assetTypeAtIndex = None) mustBe List(
+            RadioOption("whatKindOfAsset", Money.toString),
+            RadioOption("whatKindOfAsset", PropertyOrLand.toString),
+            RadioOption("whatKindOfAsset", Shares.toString),
+            RadioOption("whatKindOfAsset", Business.toString),
+            RadioOption("whatKindOfAsset", Partnership.toString)
+          )
+        }
       }
-
     }
   }
 }
