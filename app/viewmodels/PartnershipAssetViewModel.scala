@@ -21,7 +21,7 @@ import models.WhatKindOfAsset.Partnership
 import models.{Status, WhatKindOfAsset}
 
 final case class PartnershipAssetViewModel(`type`: WhatKindOfAsset,
-                                           description: String,
+                                           description: Option[String],
                                            override val status: Status) extends AssetViewModel
 
 object PartnershipAssetViewModel {
@@ -32,7 +32,7 @@ object PartnershipAssetViewModel {
   implicit lazy val reads: Reads[PartnershipAssetViewModel] = {
 
     val partnershipReads: Reads[PartnershipAssetViewModel] =
-      ((__ \ "partnershipDescription").read[String] and
+      ((__ \ "partnershipDescription").readNullable[String] and
         (__ \ "status").readWithDefault[Status](InProgress)
         )((description, status) => PartnershipAssetViewModel(Partnership, description, status))
 

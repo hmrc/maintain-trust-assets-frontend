@@ -21,7 +21,7 @@ import models.WhatKindOfAsset.Shares
 import models.{Status, WhatKindOfAsset}
 
 final case class ShareAssetViewModel(`type` : WhatKindOfAsset,
-                                     inPortfolio: Boolean,
+                                     inPortfolio: Option[Boolean],
                                      name : Option[String],
                                      override val status : Status) extends AssetViewModel
 
@@ -46,7 +46,7 @@ object ShareAssetViewModel {
       (
         nameReads and
           (__ \ "status").readWithDefault[Status](InProgress) and
-          (__ \ "sharesInAPortfolio").read[Boolean]
+          (__ \ "sharesInAPortfolio").readNullable[Boolean]
         )((name, status, inPortfolio) =>
         ShareAssetViewModel(Shares, inPortfolio, name, status)
       )

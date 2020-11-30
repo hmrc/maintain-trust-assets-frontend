@@ -23,7 +23,7 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
 final case class OtherAssetViewModel(`type`: WhatKindOfAsset,
-                                     description: String,
+                                     description: Option[String],
                                      override val status: Status) extends AssetViewModel
 
 object OtherAssetViewModel {
@@ -31,7 +31,7 @@ object OtherAssetViewModel {
   implicit lazy val reads: Reads[OtherAssetViewModel] = {
 
     val otherReads: Reads[OtherAssetViewModel] =
-      ((__ \ "otherAssetDescription").read[String] and
+      ((__ \ "otherAssetDescription").readNullable[String] and
         (__ \ "status").readWithDefault[Status](InProgress)
         )((description, status) => OtherAssetViewModel(Other, description, status))
 

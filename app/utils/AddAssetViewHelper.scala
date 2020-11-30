@@ -38,6 +38,11 @@ class AddAssetViewHelper(userAnswers: UserAnswers, mode: Mode, draftId: String)(
     AddToRows(inProgress, completed)
   }
 
+  private val defaultValue = messages("entities.no.value.added")
+  private val defaultAddress = messages("entities.no.address.added")
+  private val defaultDescription = messages("entities.no.description.added")
+  private val defaultName = messages("entities.no.name.added")
+
   private def parseAsset(asset: (AssetViewModel, Int)): Option[AddRow] = {
     val vm = asset._1
     val index = asset._2
@@ -54,8 +59,6 @@ class AddAssetViewHelper(userAnswers: UserAnswers, mode: Mode, draftId: String)(
   }
 
   private def parseMoney(mvm: MoneyAssetViewModel, index: Int) : AddRow = {
-    val defaultValue = messages("entities.no.value.added")
-
     AddRow(
       name = mvm.value match {
         case Some(value) => currencyFormat(value)
@@ -68,20 +71,15 @@ class AddAssetViewHelper(userAnswers: UserAnswers, mode: Mode, draftId: String)(
   }
 
   private def parsePropertyOrLand(plvm : PropertyOrLandAssetViewModel, index: Int) : AddRow = {
-    val defaultAddressName = messages("entities.no.address.added")
-    val defaultDescriptionName = messages("entities.no.description.added")
-
-    val typeLabel : String = messages("addAssets.propertyOrLand")
-
     AddRow(
       name = plvm match {
-        case PropertyOrLandAssetUKAddressViewModel(_, address, _) => address.getOrElse(defaultAddressName)
-        case PropertyOrLandAssetInternationalAddressViewModel(_, address, _) => address.getOrElse(defaultAddressName)
-        case PropertyOrLandAssetAddressViewModel(_, address, _) => address.getOrElse(defaultAddressName)
-        case PropertyOrLandAssetDescriptionViewModel(_, description, _) => description.getOrElse(defaultDescriptionName)
+        case PropertyOrLandAssetUKAddressViewModel(_, address, _) => address.getOrElse(defaultAddress)
+        case PropertyOrLandAssetInternationalAddressViewModel(_, address, _) => address.getOrElse(defaultAddress)
+        case PropertyOrLandAssetAddressViewModel(_, address, _) => address.getOrElse(defaultAddress)
+        case PropertyOrLandAssetDescriptionViewModel(_, description, _) => description.getOrElse(defaultDescription)
         case PropertyOrLandDefaultViewModel(_, _) => messages("entities.no.addressOrDescription.added")
       },
-      typeLabel = typeLabel,
+      typeLabel = messages("addAssets.propertyOrLand"),
       changeUrl = if (plvm.status == Completed) {
         property_or_land.routes.PropertyOrLandAnswerController.onPageLoad(index, draftId).url
       } else {
@@ -92,8 +90,6 @@ class AddAssetViewHelper(userAnswers: UserAnswers, mode: Mode, draftId: String)(
   }
 
   private def parseShare(svm: ShareAssetViewModel, index : Int) : AddRow = {
-    val defaultName = messages("entities.no.name.added")
-
     AddRow(
       name = svm.name.getOrElse(defaultName),
       typeLabel = svm.`type`.toString,
@@ -108,7 +104,7 @@ class AddAssetViewHelper(userAnswers: UserAnswers, mode: Mode, draftId: String)(
 
   private def parseBusiness(bvm: BusinessAssetViewModel, index: Int) : AddRow = {
     AddRow(
-      name = bvm.name,
+      name = bvm.name.getOrElse(defaultName),
       typeLabel = bvm.`type`.toString,
       changeUrl = if (bvm.status == Completed) {
         business.routes.BusinessAnswersController.onPageLoad(index, draftId).url
@@ -121,7 +117,7 @@ class AddAssetViewHelper(userAnswers: UserAnswers, mode: Mode, draftId: String)(
 
   private def parsePartnership(pvm: PartnershipAssetViewModel, index: Int) : AddRow = {
     AddRow(
-      name = pvm.description,
+      name = pvm.description.getOrElse(defaultDescription),
       typeLabel = pvm.`type`.toString,
       changeUrl = if (pvm.status == Completed) {
         partnership.routes.PartnershipAnswerController.onPageLoad(index, draftId).url
@@ -134,7 +130,7 @@ class AddAssetViewHelper(userAnswers: UserAnswers, mode: Mode, draftId: String)(
 
   private def parseOther(ovm: OtherAssetViewModel, index: Int) : AddRow = {
     AddRow(
-      name = ovm.description,
+      name = ovm.description.getOrElse(defaultDescription),
       typeLabel = ovm.`type`.toString,
       changeUrl = if (ovm.status == Completed) {
         other.routes.OtherAssetAnswersController.onPageLoad(index, draftId).url
