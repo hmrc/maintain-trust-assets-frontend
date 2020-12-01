@@ -21,7 +21,6 @@ import controllers.IndexValidation
 import controllers.routes._
 import forms.DescriptionFormProvider
 import models.NormalMode
-import org.jsoup.Jsoup
 import org.scalacheck.Arbitrary.arbitrary
 import pages.asset.property_or_land.PropertyOrLandDescriptionPage
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
@@ -112,26 +111,6 @@ class PropertyOrLandDescriptionControllerSpec extends SpecBase with IndexValidat
 
       contentAsString(result) mustEqual
         view(boundForm, NormalMode, index, fakeDraftId)(fakeRequest, messages).toString
-
-      application.stop()
-    }
-
-    "return a Bad Request and errors when invalid data is submitted" in {
-
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-
-      val request =
-        FakeRequest(POST, propertyOrLandDescriptionRoute)
-          .withFormUrlEncodedBody(("value", "$$$$$$$$$"))
-
-      val result = route(application, request).value
-
-      status(result) mustEqual BAD_REQUEST
-
-      val document = Jsoup.parse(contentAsString(result))
-      document.getElementById("error-message-value-input").text() mustBe
-        "The description of the property or land must only include letters a to z, numbers, ampersands (&), " +
-          "apostrophes, hyphens and spaces"
 
       application.stop()
     }
