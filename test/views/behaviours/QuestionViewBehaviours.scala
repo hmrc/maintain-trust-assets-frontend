@@ -22,8 +22,9 @@ import play.twirl.api.HtmlFormat
 trait QuestionViewBehaviours[A] extends ViewBehaviours {
 
   val errorKey = "value"
+  val errorPrefix = "site.error"
   val errorMessage = "error.number"
-  val error = FormError(errorKey, errorMessage)
+  val error: FormError = FormError(errorKey, errorMessage)
 
   val form: Form[A]
 
@@ -31,7 +32,7 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
                          createView: Form[A] => HtmlFormat.Appendable,
                          messageKeyPrefix: String,
                          expectedFormAction: String,
-                         fields: String*) = {
+                         fields: String*): Unit = {
 
     "behave like a question page" when {
 
@@ -101,6 +102,59 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
 
           // error is linked with input
           errorSpan.parent().getElementsByAttributeValue("for", field).get(0).attr("for") mustBe field
+        }
+      }
+    }
+  }
+
+  def pageWithDateFields(form: Form[A],
+                         createView: Form[A] => HtmlFormat.Appendable,
+                         messageKeyPrefix: String,
+                         key: String,
+                         args: String*): Unit = {
+
+    val fields = Seq(s"${key}_day", s"${key}_month", s"${key}_year")
+
+    "behave like a question page" when {
+
+      "rendered" must {
+
+        for (field <- fields) {
+
+          s"contain an input for $field" in {
+            val doc = asDocument(createView(form))
+            assertRenderedById(doc, field)
+          }
+        }
+
+        "not render an error summary" in {
+
+          val doc = asDocument(createView(form))
+          assertNotRenderedById(doc, "error-summary-heading")
+        }
+      }
+
+      "rendered with any error" must {
+
+        "show an error prefix in the browser title" in {
+
+          val doc = asDocument(createView(form.withError(error)))
+          assertEqualsValue(doc, "title", s"""${messages("error.browser.title.prefix")} ${messages(s"$messageKeyPrefix.title", args: _*)}""")
+        }
+      }
+
+      s"rendered with an error" must {
+
+        "show an error summary" in {
+
+          val doc = asDocument(createView(form.withError(FormError(key, "error"))))
+          assertRenderedById(doc, "error-summary-heading")
+        }
+
+        s"show an error in the legend" in {
+
+          val doc = asDocument(createView(form.withError(FormError(key, "error"))))
+          assertRenderedById(doc, s"error-message-$key-input")
         }
       }
     }

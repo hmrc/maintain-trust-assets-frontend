@@ -19,16 +19,16 @@ package views.behaviours
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 
-trait StringViewBehaviours extends QuestionViewBehaviours[String] {
+trait LongViewBehaviours extends QuestionViewBehaviours[Long] {
 
-  val answer = "answer"
+  val answer: Long = 100L
 
-  def stringPage(form: Form[String],
-                 createView: Form[String] => HtmlFormat.Appendable,
-                 messageKeyPrefix: String,
-                 expectedHintKey: Option[String] = None): Unit = {
+  def longPage(form: Form[Long],
+               createView: Form[Long] => HtmlFormat.Appendable,
+               messageKeyPrefix: String,
+               expectedHintKey: Option[String] = None): Unit = {
 
-    "behave like a page with a string value field" when {
+    "behave like a page with a long value field" when {
 
       "rendered" must {
 
@@ -51,7 +51,7 @@ trait StringViewBehaviours extends QuestionViewBehaviours[String] {
         "include the form's value in the value input" in {
 
           val doc = asDocument(createView(form.fill(answer)))
-          doc.getElementById("value").attr("value") mustBe answer
+          doc.getElementById("value").attr("value") mustBe answer.toString
         }
       }
 
@@ -79,13 +79,13 @@ trait StringViewBehaviours extends QuestionViewBehaviours[String] {
     }
   }
 
-  def stringPageWithDynamicTitle(form: Form[String],
-                                 createView: Form[String] => HtmlFormat.Appendable,
-                                 messageKeyPrefix: String,
-                                 messageKeyParam: String,
-                                 expectedHintKey: Option[String] = None): Unit = {
+  def longPageWithDynamicTitle(form: Form[Long],
+                               createView: Form[Long] => HtmlFormat.Appendable,
+                               messageKeyPrefix: String,
+                               messageKeyParam: String,
+                               expectedHintKey: Option[String] = None): Unit = {
 
-    "behave like a page with a string value field with a dynamic title" when {
+    "behave like a page with a long value field with a dynamic title" when {
 
       "rendered" must {
 
@@ -108,7 +108,7 @@ trait StringViewBehaviours extends QuestionViewBehaviours[String] {
         "include the form's value in the value input" in {
 
           val doc = asDocument(createView(form.fill(answer)))
-          doc.getElementById("value").attr("value") mustBe answer
+          doc.getElementById("value").attr("value") mustBe answer.toString
         }
       }
 

@@ -50,6 +50,7 @@ site.address = Address
 site.inprogress = In Progress
 site.complete = Completed
 site.textarea.char_limit = (Limit is {0} characters)
+site.error = Error:
 
 site.address.uk.title = What is the address?
 site.address.uk.heading = What is {0}’s address?
