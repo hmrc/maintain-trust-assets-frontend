@@ -38,7 +38,7 @@ session_expired.guidance = The details you have given have been deleted because 
 site.back = Back
 site.delete = Remove
 site.edit = Change
-site.hidden-delete = Delete {0}
+site.hidden-delete = Remove {0}
 site.hidden-edit = Change {0}
 site.no = No
 site.yes = Yes
@@ -50,6 +50,7 @@ site.address = Address
 site.inprogress = In Progress
 site.complete = Completed
 site.textarea.char_limit = (Limit is {0} characters)
+site.error = Error:
 
 site.address.uk.title = What is the address?
 site.address.uk.heading = What is {0}’s address?
@@ -127,6 +128,9 @@ addAssets.singular.heading = Add assets
 addAssets.singular.title = Add assets
 
 addAssets.propertyOrLand = Property or Land
+
+addAssets.maxedOut.p1 = You cannot add another asset as you have entered a maximum of 51.
+addAssets.maxedOut.p2 = You can add another asset by removing an existing one, or write to HMRC with details of any additional assets.
 
 assets.defaultText = the asset
 

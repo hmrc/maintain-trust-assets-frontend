@@ -19,16 +19,18 @@ package controllers.asset
 import controllers.actions.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
 import forms.{AddAssetsFormProvider, YesNoFormProvider}
 import javax.inject.Inject
+import models.AddAssets.NoComplete
+import models.requests.RegistrationDataRequest
 import models.{AddAssets, Enumerable, Mode}
 import navigation.Navigator
 import pages.asset.{AddAnAssetYesNoPage, AddAssetsPage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi, MessagesProvider}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
 import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.AddAssetViewHelper
-import views.html.asset.{AddAnAssetYesNoView, AddAssetsView}
+import views.html.asset.{AddAnAssetYesNoView, AddAssetsView, MaxedOutView}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -43,16 +45,17 @@ class AddAssetsController @Inject()(
                                      yesNoFormProvider: YesNoFormProvider,
                                      val controllerComponents: MessagesControllerComponents,
                                      addAssetsView: AddAssetsView,
-                                     yesNoView: AddAnAssetYesNoView
+                                     yesNoView: AddAnAssetYesNoView,
+                                     maxedOutView: MaxedOutView
                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
 
   private val addAnotherForm: Form[AddAssets] = addAnotherFormProvider()
   private val yesNoForm: Form[Boolean] = yesNoFormProvider.withPrefix("addAnAssetYesNo")
 
-  private def actions(draftId: String) =
+  private def actions(draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] =
     identify andThen getData(draftId) andThen requireData
 
-  private def heading(count: Int)(implicit mp : MessagesProvider) = {
+  private def heading(count: Int)(implicit mp : MessagesProvider): String = {
     count match {
       case 0 => Messages("addAssets.heading")
       case 1 => Messages("addAssets.singular.heading")
@@ -65,11 +68,10 @@ class AddAssetsController @Inject()(
 
       val assets = new AddAssetViewHelper(request.userAnswers, mode, draftId).rows
 
-      val count = assets.count
-
-      count match {
+      assets.count match {
         case 0 => Ok(yesNoView(addAnotherForm, mode, draftId))
-        case _ => Ok(addAssetsView(addAnotherForm, mode, draftId, assets.inProgress, assets.complete, heading(count)))
+        case c if c >= 51 => Ok(maxedOutView(mode, draftId, assets.inProgress, assets.complete, heading(c)))
+        case c => Ok(addAssetsView(addAnotherForm, mode, draftId, assets.inProgress, assets.complete, heading(c)))
       }
   }
 
@@ -96,9 +98,7 @@ class AddAssetsController @Inject()(
         (formWithErrors: Form[_]) => {
           val assets = new AddAssetViewHelper(request.userAnswers, mode, draftId).rows
 
-          val count = assets.count
-
-          Future.successful(BadRequest(addAssetsView(formWithErrors, mode, draftId, assets.inProgress, assets.complete, heading(count))))
+          Future.successful(BadRequest(addAssetsView(formWithErrors, mode, draftId, assets.inProgress, assets.complete, heading(assets.count))))
         },
         value => {
           for {
@@ -107,5 +107,14 @@ class AddAssetsController @Inject()(
           } yield Redirect(navigator.nextPage(AddAssetsPage, mode, draftId)(updatedAnswers))
         }
       )
+  }
+
+  def submitComplete(mode: Mode, draftId: String): Action[AnyContent] = actions(draftId).async {
+    implicit request =>
+
+      for {
+        updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAssetsPage, NoComplete))
+        _              <- repository.set(updatedAnswers)
+      } yield Redirect(navigator.nextPage(AddAssetsPage, mode, draftId)(updatedAnswers))
   }
 }

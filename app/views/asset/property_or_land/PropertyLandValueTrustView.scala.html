@@ -41,7 +41,9 @@
             labelAsHeading = true,
             hint = Some(messages("propertyOrLand.valueInTrust.hint")),
             symbolText = Some(messages(s"symbolText.asSterling")),
-            symbol = Some("currency")
+            symbol = Some("currency"),
+            inputMode = Some("numeric"),
+            pattern = Some("[0-9],*")
         )
 
         @components.submit_button()

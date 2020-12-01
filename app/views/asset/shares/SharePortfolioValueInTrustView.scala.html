@@ -35,13 +35,15 @@
         @components.error_summary(form.errors)
 
         @components.input_text(
-          field = form("value"),
-          label = messages("shares.portfolioValueInTrust.heading"),
-          symbolText = Some(messages(s"symbolText.asSterling")),
-          symbol = Some("currency"),
-          labelClass = Some("heading-large"),
-          labelAsHeading = true,
-          hint = Some(messages("shares.portfolioValueInTrust.hint"))
+            field = form("value"),
+            label = messages("shares.portfolioValueInTrust.heading"),
+            symbolText = Some(messages(s"symbolText.asSterling")),
+            symbol = Some("currency"),
+            labelClass = Some("heading-large"),
+            labelAsHeading = true,
+            hint = Some(messages("shares.portfolioValueInTrust.hint")),
+            inputMode = Some("numeric"),
+            pattern = Some("[0-9],*")
         )
 
         @components.submit_button()

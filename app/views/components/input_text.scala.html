@@ -15,63 +15,59 @@
  *@
 
 @(
-        field: Field,
-        label: String,
-        labelAsHeading: Boolean = false,
-        inputClass: Option[String] = None,
-        hint: Option[String] = None,
-        readerHint: Option[String] = None,
-        labelClass: Option[String] = None,
-        symbol: Option[String] = None,
-        optionalHtmlContent: Option[Html] = None,
-        ariaRequired: Boolean = false,
-        symbolText: Option[String] = None,
-        inputMode: Option[String] = None
+    field: Field,
+    label: String,
+    labelAsHeading: Boolean = false,
+    inputClass: Option[String] = None,
+    hint: Option[String] = None,
+    labelClass: Option[String] = None,
+    symbol: Option[String] = None,
+    optionalHtmlContent: Option[Html] = None,
+    symbolText: Option[String] = None,
+    inputMode: Option[String] = None,
+    autocomplete: Option[String] = None,
+    pattern: Option[String] = None
 )(implicit messages: Messages)
-
-@required = @{
-    ariaRequired match {
-        case true => {"aria-required=true"}
-        case false => {"aria-required=false"}
-    }
-}
 
 <div class="form-group @if(field.hasErrors){form-group-error}">
     @if(labelAsHeading){<h1 class="label-as-heading">}
-    <label class="form-label" for="@{field.id}">
-        <span class="bold @if(labelClass.nonEmpty){@labelClass}">@label</span>
-    </label>
+        <label class="form-label" for="@{field.id}">
+            <span class="bold @if(labelClass.nonEmpty){@labelClass}">@label</span>
+        </label>
     @if(labelAsHeading){</h1>}
     @if(optionalHtmlContent.nonEmpty){@optionalHtmlContent}
     @if(hint.nonEmpty){
         <div id="@{field.id}_hint">
-            <span class="form-hint form-field" @if(readerHint.nonEmpty){aria-label="@readerHint"}>@hint</span>
+            <span class="form-hint form-field">@hint</span>
         </div>
     }
     @field.errors.map { error =>
-    <span class="error-message" id="error-message-@{field.id}-input">@messages(error.message, error.args: _*)</span>
+        <span class="error-message" id="error-message-@{field.id}-input">
+            <span class="visually-hidden">@messages("site.error")</span> @messages(error.message, error.args: _*)
+        </span>
     }
     <div class="form-control-wrapper" @if(symbol.isDefined){data-type="@{symbol}"}>
         <input
-        class="form-control @inputClass"
-        type="text"
-        id="@{field.id}"
-        name="@{field.name}"
-        value="@{field.value}"
-        @if(inputMode.nonEmpty){
-            inputmode="@inputMode"
-        }
-        @if(symbolText.nonEmpty) {
-            aria-label='@{label} @{symbolText.get}'
-        }
-        @required
-        @if(hint.nonEmpty) {
-            aria-describedby="@{field.id}_hint"
-        }
-        @if(field.hasErrors) {
-            aria-labelledby="error-message-@{field.id}-input"
-        }
+                class="form-control @inputClass @if(field.hasErrors){field-error}"
+                type="text"
+                id="@{field.id}"
+                name="@{field.name}"
+                value="@{field.value}"
+                @if(autocomplete.nonEmpty){
+                    autocomplete="@{autocomplete.get}"
+                }
+                @if(inputMode.nonEmpty) {
+                    inputmode="@{inputMode.get}"
+                }
+                @if(pattern.nonEmpty) {
+                    pattern="@{pattern.get}"
+                }
+                @if(symbolText.nonEmpty) {
+                    aria-label='@{label} @{symbolText.get}'
+                }
+                @if(hint.nonEmpty || field.hasErrors) {
+                    aria-describedby="@if(hint.nonEmpty){@{field.id}_hint}@if(field.hasErrors && hint.nonEmpty){ }@if(field.hasErrors){error-message-@{field.id}-input}"
+                }
         />
     </div>
 </div>
-

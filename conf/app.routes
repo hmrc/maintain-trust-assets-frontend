@@ -28,6 +28,7 @@ POST       /:draftId/asset/information-you-need         controllers.asset.AssetI
 GET        /:draftId/asset/add                          controllers.asset.AddAssetsController.onPageLoad(mode: Mode = NormalMode, draftId: String)
 POST       /:draftId/asset/add                          controllers.asset.AddAssetsController.submitOne(mode: Mode = NormalMode, draftId: String)
 POST       /:draftId/asset/add-another                  controllers.asset.AddAssetsController.submitAnother(mode: Mode = NormalMode, draftId: String)
+POST       /:draftId/asset/complete                     controllers.asset.AddAssetsController.submitComplete(mode: Mode = NormalMode, draftId: String)
 
 GET        /:draftId/asset/:index/remove                controllers.asset.RemoveAssetYesNoController.onPageLoad(index: Int, draftId: String)
 POST       /:draftId/asset/:index/remove                controllers.asset.RemoveAssetYesNoController.onSubmit(index: Int, draftId: String)

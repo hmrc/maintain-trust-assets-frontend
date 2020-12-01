@@ -37,18 +37,18 @@
         @components.error_summary(form.errors)
 
         @components.input_text(
-          field = form("value"),
-          label = messages("money.value.heading"),
-          labelClass=Some("heading-large"),
-          symbol = Some("currency"),
-          symbolText = Some(messages(s"symbolText.asSterling")),
-          hint = Some(messages(s"money.value.hint")),
-          optionalHtmlContent = Some(optionalHtmlContent),
-          labelAsHeading = true,
-          ariaRequired = true
+            field = form("value"),
+            label = messages("money.value.heading"),
+            labelClass = Some("heading-large"),
+            symbol = Some("currency"),
+            symbolText = Some(messages(s"symbolText.asSterling")),
+            hint = Some(messages(s"money.value.hint")),
+            optionalHtmlContent = Some(optionalHtmlContent),
+            labelAsHeading = true,
+            inputMode = Some("numeric"),
+            pattern = Some("[0-9],*")
         )
 
         @components.submit_button()
-
     }
 }
