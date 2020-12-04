@@ -20,10 +20,11 @@ import models.UKAddress
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 import sections.Assets
+import pages.asset.UkAddressPage.key
 
-final case class BusinessUkAddressPage(index : Int) extends QuestionPage[UKAddress] {
+final case class BusinessUkAddressPage(index: Int) extends QuestionPage[UKAddress] {
 
   override def path: JsPath = JsPath \ Assets \ index \ toString
 
-  override def toString: String = "ukAddress"
+  override def toString: String = key
 }

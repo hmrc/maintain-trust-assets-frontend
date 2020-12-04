@@ -18,6 +18,8 @@ package mapping.reads
 
 import models.WhatKindOfAsset.Shares
 import models.{ShareClass, Status, WhatKindOfAsset}
+import pages.asset.WhatKindOfAssetPage
+import pages.asset.shares._
 import play.api.libs.json._
 
 final case class ShareNonPortfolioAsset(override val whatKindOfAsset: WhatKindOfAsset,
@@ -27,8 +29,7 @@ final case class ShareNonPortfolioAsset(override val whatKindOfAsset: WhatKindOf
                                         quantityInTheTrust: String,
                                         value: Long,
                                         `class`: ShareClass,
-                                        status: Status
-                                       ) extends Asset with ShareAsset {
+                                        status: Status) extends Asset with ShareAsset {
 
   val quoted: String = quotedOrUnquoted(listedOnTheStockExchange)
 }
@@ -42,8 +43,8 @@ object ShareNonPortfolioAsset {
     val shareReads : Reads[ShareNonPortfolioAsset] = Json.reads[ShareNonPortfolioAsset]
 
     (
-      (__ \ "whatKindOfAsset").read[WhatKindOfAsset] and
-      (__ \ "sharesInAPortfolio").read[Boolean]
+      (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset] and
+      (__ \ SharesInAPortfolioPage.key).read[Boolean]
     )((_, _)).flatMap[(WhatKindOfAsset, Boolean)] {
       case (whatKindOfAsset, portfolio) =>
         if (whatKindOfAsset == Shares && !portfolio) {

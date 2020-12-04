@@ -17,6 +17,7 @@
 package pages.asset.business
 
 import pages.QuestionPage
+import pages.asset.business.BusinessDescriptionPage.key
 import play.api.libs.json.JsPath
 import sections.Assets
 
@@ -24,5 +25,9 @@ final case class BusinessDescriptionPage(index : Int) extends QuestionPage[Strin
 
   override def path: JsPath = JsPath \ Assets \ index \ toString
 
-  override def toString: String = "description"
+  override def toString: String = key
+}
+
+object BusinessDescriptionPage {
+  val key: String = "description"
 }

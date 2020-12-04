@@ -20,26 +20,26 @@ import java.time.LocalDate
 
 import models.WhatKindOfAsset
 import models.WhatKindOfAsset.Partnership
+import pages.asset.WhatKindOfAssetPage
+import pages.asset.partnership._
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsError, JsSuccess, Reads, __}
 
-final case class PartnershipAsset(
-                                   override val whatKindOfAsset: WhatKindOfAsset,
-                                   description: String,
-                                   startDate: LocalDate
-                                 ) extends Asset
+final case class PartnershipAsset(override val whatKindOfAsset: WhatKindOfAsset,
+                                  description: String,
+                                  startDate: LocalDate) extends Asset
 
 object PartnershipAsset {
 
   implicit lazy val reads: Reads[PartnershipAsset] = {
 
     val partnershipReads: Reads[PartnershipAsset] = (
-      (__ \ "partnershipDescription").read[String] and
-        (__ \ "partnershipStartDate").read[LocalDate] and
-        (__ \ "whatKindOfAsset").read[WhatKindOfAsset]
+      (__ \ PartnershipDescriptionPage.key).read[String] and
+        (__ \ PartnershipStartDatePage.key).read[LocalDate] and
+        (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset]
       )((description, startDate, kind) => PartnershipAsset(kind, description, startDate))
 
-    (__ \ "whatKindOfAsset").read[WhatKindOfAsset].flatMap[WhatKindOfAsset] {
+    (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].flatMap[WhatKindOfAsset] {
       whatKindOfAsset: WhatKindOfAsset =>
         if (whatKindOfAsset == Partnership) {
           Reads(_ => JsSuccess(whatKindOfAsset))

@@ -18,6 +18,8 @@ package mapping.reads
 
 import models.WhatKindOfAsset.PropertyOrLand
 import models.{Address, WhatKindOfAsset}
+import pages.asset.WhatKindOfAssetPage
+import pages.asset.property_or_land._
 import play.api.libs.json.{JsError, JsSuccess, Reads, __}
 
 final case class PropertyOrLandAsset(override val whatKindOfAsset: WhatKindOfAsset,
@@ -26,21 +28,21 @@ final case class PropertyOrLandAsset(override val whatKindOfAsset: WhatKindOfAss
                                      propertyLandValueTrust: Option[Long],
                                      propertyOrLandTotalValue: Long) extends Asset
 
-object PropertyOrLandAsset {
+object PropertyOrLandAsset extends AssetReads {
 
   import play.api.libs.functional.syntax._
 
   implicit lazy val reads: Reads[PropertyOrLandAsset] = {
 
     val landOrPropertyReads: Reads[PropertyOrLandAsset] = (
-      (__ \ "propertyOrLandDescription").readNullable[String] and
-        readAddress() and
-        (__ \ "propertyOrLandValueTrust").readNullable[Long] and
-        (__ \ "propertyOrLandTotalValue").read[Long] and
-        (__ \ "whatKindOfAsset").read[WhatKindOfAsset]
+      (__ \ PropertyOrLandDescriptionPage.key).readNullable[String] and
+        optionalAddressReads() and
+        (__ \ PropertyLandValueTrustPage.key).readNullable[Long] and
+        (__ \ PropertyOrLandTotalValuePage.key).read[Long] and
+        (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset]
       )((description, address, value, totalValue, kind) => PropertyOrLandAsset(kind, description, address, value, totalValue))
 
-    (__ \ "whatKindOfAsset").read[WhatKindOfAsset].flatMap[WhatKindOfAsset] {
+    (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].flatMap[WhatKindOfAsset] {
       whatKindOfAsset: WhatKindOfAsset =>
         if (whatKindOfAsset == PropertyOrLand) {
           Reads(_ => JsSuccess(whatKindOfAsset))
@@ -49,11 +51,5 @@ object PropertyOrLandAsset {
         }
     }.andKeep(landOrPropertyReads)
 
-  }
-
-  private def readAddress(): Reads[Option[Address]] = {
-    (__ \ "ukAddress").read[Address].map(Some(_): Option[Address]) orElse
-      (__ \ "internationalAddress").read[Address].map(Some(_): Option[Address]) orElse
-      Reads(_ => JsSuccess(None: Option[Address]))
   }
 }

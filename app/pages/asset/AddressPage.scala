@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package pages.asset.other
+package pages.asset
 
-import pages.QuestionPage
-import pages.asset.other.OtherAssetValuePage.key
-import play.api.libs.json.JsPath
-import sections.Assets
-
-final case class OtherAssetValuePage(index: Int) extends QuestionPage[Long] {
-
-  override def path: JsPath = Assets.path \ index \ toString
-
-  override def toString: String = key
+sealed trait AddressPage {
+  val key: String
 }
 
-object OtherAssetValuePage {
-  val key: String = "otherAssetValue"
+trait UkAddressPage extends AddressPage {
+  override val key: String = "ukAddress"
 }
+
+object UkAddressPage extends UkAddressPage
+
+trait InternationalAddressPage extends AddressPage {
+  override val key: String = "internationalAddress"
+}
+
+object InternationalAddressPage extends InternationalAddressPage

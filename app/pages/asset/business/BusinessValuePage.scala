@@ -17,6 +17,7 @@
 package pages.asset.business
 
 import pages.QuestionPage
+import pages.asset.business.BusinessValuePage.key
 import play.api.libs.json.JsPath
 import sections.Assets
 
@@ -24,5 +25,9 @@ final case class BusinessValuePage(index: Int) extends QuestionPage[Long] {
 
   override def path: JsPath = JsPath \ Assets \ index \ toString
 
-  override def toString: String = "value"
+  override def toString: String = key
+}
+
+object BusinessValuePage {
+  val key: String = "value"
 }
