@@ -21,11 +21,12 @@ import models.Address
 trait AssetViewModelReads {
 
   implicit class OptionalString(s: String) {
-    def toOption: Option[String] = if(s.isEmpty) None else Some(s)
+    def toOption: Option[String] = if (s.isEmpty) None else Some(s)
   }
 
   implicit class OptionalAddress[T <: Address](a: T) {
-    def toOption: Option[T] = if(a.line1.isEmpty) None else Some(a)
+    def toOption: Option[T] = if (a.line1.isEmpty) None else Some(a)
+    def toLine1: Option[String] = a.toOption.map(_.line1)
   }
 
 }

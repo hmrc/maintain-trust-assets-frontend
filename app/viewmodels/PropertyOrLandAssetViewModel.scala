@@ -34,8 +34,8 @@ object PropertyOrLandAssetViewModel extends AssetViewModelReads {
   implicit lazy val reads: Reads[PropertyOrLandAssetViewModel] = {
 
     val addressReads : Reads[Option[String]] =
-      (__ \ "ukAddress").read[UKAddress].map(_.toOption).map(_.map(_.line1)) orElse
-        (__ \ "internationalAddress").read[InternationalAddress].map(_.toOption).map(_.map(_.line1)) orElse
+      (__ \ "ukAddress").read[UKAddress].map(_.toLine1) orElse
+        (__ \ "internationalAddress").read[InternationalAddress].map(_.toLine1) orElse
         Reads(_ => JsSuccess(None))
 
     val propertyOrLandReads: Reads[PropertyOrLandAssetViewModel] =
