@@ -19,10 +19,13 @@ package viewmodels
 import models.Status.InProgress
 import models.WhatKindOfAsset.Shares
 import models.{Status, WhatKindOfAsset}
+import pages.AssetStatus
+import pages.asset.WhatKindOfAssetPage
+import pages.asset.shares._
 
-final case class ShareAssetViewModel(`type` : WhatKindOfAsset,
-                                     name : Option[String],
-                                     override val status : Status) extends AssetViewModel
+final case class ShareAssetViewModel(`type`: WhatKindOfAsset,
+                                     name: Option[String],
+                                     override val status: Status) extends AssetViewModel
 
 object ShareAssetViewModel extends AssetViewModelReads {
 
@@ -32,18 +35,18 @@ object ShareAssetViewModel extends AssetViewModelReads {
   implicit lazy val reads: Reads[ShareAssetViewModel] = {
 
     val nameReads : Reads[Option[String]] =
-      (__ \ "name").read[String].map(_.toOption) orElse
-        (__ \ "shareCompanyName").readNullable[String]
+      (__ \ SharePortfolioNamePage.key).read[String].map(_.toOption) orElse
+        (__ \ ShareCompanyNamePage.key).readNullable[String]
 
     val shareReads: Reads[ShareAssetViewModel] =
       (
         nameReads and
-          (__ \ "status").readWithDefault[Status](InProgress)
+          (__ \ AssetStatus.key).readWithDefault[Status](InProgress)
         )((name, status) =>
         ShareAssetViewModel(Shares, name, status)
       )
 
-    (__ \ "whatKindOfAsset").read[WhatKindOfAsset].flatMap[WhatKindOfAsset] {
+    (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].flatMap[WhatKindOfAsset] {
       whatKindOfAsset: WhatKindOfAsset =>
         if (whatKindOfAsset == Shares) {
           Reads(_ => JsSuccess(whatKindOfAsset))

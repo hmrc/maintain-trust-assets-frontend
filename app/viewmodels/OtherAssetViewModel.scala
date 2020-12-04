@@ -19,6 +19,9 @@ package viewmodels
 import models.Status.InProgress
 import models.WhatKindOfAsset.Other
 import models.{Status, WhatKindOfAsset}
+import pages.AssetStatus
+import pages.asset.WhatKindOfAssetPage
+import pages.asset.other.OtherAssetDescriptionPage
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
@@ -31,11 +34,11 @@ object OtherAssetViewModel {
   implicit lazy val reads: Reads[OtherAssetViewModel] = {
 
     val otherReads: Reads[OtherAssetViewModel] =
-      ((__ \ "otherAssetDescription").readNullable[String] and
-        (__ \ "status").readWithDefault[Status](InProgress)
+      ((__ \ OtherAssetDescriptionPage.key).readNullable[String] and
+        (__ \ AssetStatus.key).readWithDefault[Status](InProgress)
         )((description, status) => OtherAssetViewModel(Other, description, status))
 
-    (__ \ "whatKindOfAsset").read[WhatKindOfAsset].flatMap[WhatKindOfAsset] {
+    (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].flatMap[WhatKindOfAsset] {
       whatKindOfAsset: WhatKindOfAsset =>
         if (whatKindOfAsset == Other) {
           Reads(_ => JsSuccess(whatKindOfAsset))

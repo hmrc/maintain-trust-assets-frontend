@@ -17,6 +17,7 @@
 package pages.asset.shares
 
 import pages.QuestionPage
+import pages.asset.shares.ShareCompanyNamePage.key
 import play.api.libs.json.JsPath
 import sections.Assets
 
@@ -24,5 +25,9 @@ final case class ShareCompanyNamePage(index : Int) extends QuestionPage[String] 
 
   override def path: JsPath = Assets.path \ index \ toString
 
-  override def toString: String = "shareCompanyName"
+  override def toString: String = key
+}
+
+object ShareCompanyNamePage {
+  val key: String = "shareCompanyName"
 }

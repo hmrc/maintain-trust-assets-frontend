@@ -19,10 +19,13 @@ package viewmodels
 import models.Status.InProgress
 import models.WhatKindOfAsset.Money
 import models.{Status, WhatKindOfAsset}
+import pages.AssetStatus
+import pages.asset.WhatKindOfAssetPage
+import pages.asset.money.AssetMoneyValuePage
 
-final case class MoneyAssetViewModel(`type` : WhatKindOfAsset,
-                                     value : Option[String],
-                                     override val status : Status) extends AssetViewModel
+final case class MoneyAssetViewModel(`type`: WhatKindOfAsset,
+                                     value: Option[String],
+                                     override val status: Status) extends AssetViewModel
 
 object MoneyAssetViewModel {
 
@@ -32,11 +35,11 @@ object MoneyAssetViewModel {
   implicit lazy val reads: Reads[MoneyAssetViewModel] = {
 
     val moneyReads: Reads[MoneyAssetViewModel] =
-      ((__ \ "assetMoneyValue").readNullable[Long] and
-        (__ \ "status").readWithDefault[Status](InProgress)
+      ((__ \ AssetMoneyValuePage.key).readNullable[Long] and
+        (__ \ AssetStatus.key).readWithDefault[Status](InProgress)
         )((value, status) => MoneyAssetViewModel(Money, value.map(_.toString), status))
 
-    (__ \ "whatKindOfAsset").read[WhatKindOfAsset].flatMap[WhatKindOfAsset] {
+    (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].flatMap[WhatKindOfAsset] {
       whatKindOfAsset: WhatKindOfAsset =>
         if (whatKindOfAsset == Money) {
           Reads(_ => JsSuccess(whatKindOfAsset))
