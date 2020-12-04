@@ -20,32 +20,30 @@ import play.api.libs.json.{Json, OFormat, Reads, Writes}
 
 import scala.language.implicitConversions
 
-final case class UKAddress(
-                            line1: String,
-                            line2: String,
-                            line3: Option[String] = None,
-                            line4: Option[String] = None,
-                            postcode: String
-                          ) extends Address
+final case class UKAddress(override val line1: String,
+                           line2: String,
+                           line3: Option[String] = None,
+                           line4: Option[String] = None,
+                           postcode: String) extends Address
 
 object UKAddress {
 
   implicit lazy val formats: OFormat[UKAddress] = Json.format[UKAddress]
 }
 
-final case class InternationalAddress(
-                                       line1: String,
-                                       line2: String,
-                                       line3: Option[String] = None,
-                                       country: String
-                                     ) extends Address
+final case class InternationalAddress(override val line1: String,
+                                      line2: String,
+                                      line3: Option[String] = None,
+                                      country: String) extends Address
 
 object InternationalAddress {
 
   implicit lazy val formats: OFormat[InternationalAddress] = Json.format[InternationalAddress]
 }
 
-sealed trait Address
+sealed abstract class Address {
+  val line1: String
+}
 
 object Address {
 

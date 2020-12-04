@@ -20,103 +20,42 @@ import models.Status.InProgress
 import models.WhatKindOfAsset.PropertyOrLand
 import models.{InternationalAddress, Status, UKAddress, WhatKindOfAsset}
 
-sealed trait PropertyOrLandAssetViewModel extends AssetViewModel
+final case class PropertyOrLandAssetViewModel(`type`: WhatKindOfAsset,
+                                              hasAddress: Option[Boolean],
+                                              address: Option[String],
+                                              description: Option[String],
+                                              override val status: Status) extends AssetViewModel
 
-final case class PropertyOrLandAssetUKAddressViewModel(`type` : WhatKindOfAsset,
-                                                       address : Option[String],
-                                                       override val status : Status) extends PropertyOrLandAssetViewModel
-
-final case class PropertyOrLandAssetInternationalAddressViewModel(`type` : WhatKindOfAsset,
-                                                                  address : Option[String],
-                                                                  override val status : Status) extends PropertyOrLandAssetViewModel
-
-final case class PropertyOrLandAssetAddressViewModel(`type` : WhatKindOfAsset,
-                                                     address : Option[String],
-                                                     override val status : Status) extends PropertyOrLandAssetViewModel
-
-final case class PropertyOrLandAssetDescriptionViewModel(`type` : WhatKindOfAsset,
-                                                         description : Option[String],
-                                                         override val status : Status) extends PropertyOrLandAssetViewModel
-
-final case class PropertyOrLandDefaultViewModel(`type`: WhatKindOfAsset,
-                                                override val status: Status) extends PropertyOrLandAssetViewModel
-
-object PropertyOrLandAssetViewModel {
+object PropertyOrLandAssetViewModel extends AssetViewModelReads {
 
   import play.api.libs.functional.syntax._
   import play.api.libs.json._
 
   implicit lazy val reads: Reads[PropertyOrLandAssetViewModel] = {
 
-    val ukReads: Reads[PropertyOrLandAssetViewModel] =
-    {
-      (__ \ "propertyOrLandAddressYesNo").read[Boolean].filter(x => x).flatMap { _ =>
-        (__ \ "propertyOrLandAddressUKYesNo").read[Boolean].filter(x => x).flatMap { _ =>
-          ((__ \ "ukAddress").readNullable[UKAddress].map(_.map(_.line1)) and
-            (__ \ "status").readWithDefault[Status](InProgress)
-            ) ((address, status) => {
-            PropertyOrLandAssetUKAddressViewModel(
-              PropertyOrLand,
-              address,
-              status)
-          })
-        }
-      }
-    }
+    val addressReads : Reads[Option[String]] =
+      (__ \ "ukAddress").read[UKAddress].map(_.toOption).map(_.map(_.line1)) orElse
+        (__ \ "internationalAddress").read[InternationalAddress].map(_.toOption).map(_.map(_.line1)) orElse
+        Reads(_ => JsSuccess(None))
 
-    val internationalReads: Reads[PropertyOrLandAssetViewModel] =
-    {
-      (__ \ "propertyOrLandAddressYesNo").read[Boolean].filter(x => x).flatMap { _ =>
-        (__ \ "propertyOrLandAddressUKYesNo").read[Boolean].filter(x => !x).flatMap { _ =>
-          ((__ \ "internationalAddress").readNullable[InternationalAddress].map(_.map(_.line1)) and
-            (__ \ "status").readWithDefault[Status](InProgress)
-            ) ((address, status) => {
-            PropertyOrLandAssetInternationalAddressViewModel(
-              PropertyOrLand,
-              address,
-              status)
-          })
-        }
-      }
-    }
-
-    val addressReads: Reads[PropertyOrLandAssetViewModel] =
-    {
-      (__ \ "propertyOrLandAddressYesNo").read[Boolean].filter{ x => x }.map { _ =>
-      {
-        PropertyOrLandAssetAddressViewModel(
-          PropertyOrLand,
-          None,
-          InProgress)
-      }
-      }
-    }
-
-    val descriptionReads: Reads[PropertyOrLandAssetViewModel] = {
-      (__ \ "propertyOrLandAddressYesNo").read[Boolean].filter(x => !x).flatMap { _ =>
-        ((__ \ "propertyOrLandDescription").readNullable[String] and
+    val propertyOrLandReads: Reads[PropertyOrLandAssetViewModel] =
+      (
+        (__ \ "propertyOrLandAddressYesNo").readNullable[Boolean] and
+          addressReads and
+          (__ \ "propertyOrLandDescription").readNullable[String] and
           (__ \ "status").readWithDefault[Status](InProgress)
-          ) ((description, status) => {
-          PropertyOrLandAssetDescriptionViewModel(
-            PropertyOrLand,
-            description,
-            status)
-        })
-      }
-    }
+        )((hasAddress, address, description, status) =>
+        PropertyOrLandAssetViewModel(PropertyOrLand, hasAddress, address, description, status)
+      )
 
-    val defaultReads : Reads[PropertyOrLandAssetViewModel] = {
-      (__ \ "whatKindOfAsset").read[WhatKindOfAsset].filter(x => x == PropertyOrLand).flatMap {
-        kind =>
-          (__ \ "status").readWithDefault[Status](InProgress).map {
-            status =>
-              PropertyOrLandDefaultViewModel(kind, status)
-          }
-      }
-    }
-
-    ukReads orElse internationalReads orElse addressReads orElse descriptionReads orElse defaultReads
-
+    (__ \ "whatKindOfAsset").read[WhatKindOfAsset].flatMap[WhatKindOfAsset] {
+      whatKindOfAsset: WhatKindOfAsset =>
+        if (whatKindOfAsset == PropertyOrLand) {
+          Reads(_ => JsSuccess(whatKindOfAsset))
+        } else {
+          Reads(_ => JsError("property or land asset must be of type `PropertyOrLand`"))
+        }
+    }.andKeep(propertyOrLandReads)
   }
 
 }

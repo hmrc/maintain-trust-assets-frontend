@@ -89,11 +89,9 @@ class RemoveAssetYesNoController @Inject()(
     val default: String = request.messages(messagesApi)("assets.defaultText")
 
     def propertyOrLandLabel(propertyOrLand: PropertyOrLandAssetViewModel): String = {
-      propertyOrLand match {
-        case PropertyOrLandAssetUKAddressViewModel(_, Some(address), _) => address
-        case PropertyOrLandAssetInternationalAddressViewModel(_, Some(address), _) => address
-        case PropertyOrLandAssetAddressViewModel(_, Some(address), _) => address
-        case PropertyOrLandAssetDescriptionViewModel(_, Some(description), _) => description
+      (propertyOrLand.address, propertyOrLand.description) match {
+        case (Some(address), _) => address
+        case (_, Some(description)) => description
         case _ => default
       }
     }

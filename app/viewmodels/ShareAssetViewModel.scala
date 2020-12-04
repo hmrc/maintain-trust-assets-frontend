@@ -21,20 +21,13 @@ import models.WhatKindOfAsset.Shares
 import models.{Status, WhatKindOfAsset}
 
 final case class ShareAssetViewModel(`type` : WhatKindOfAsset,
-                                     inPortfolio: Option[Boolean],
                                      name : Option[String],
                                      override val status : Status) extends AssetViewModel
 
-object ShareAssetViewModel {
+object ShareAssetViewModel extends AssetViewModelReads {
 
   import play.api.libs.functional.syntax._
   import play.api.libs.json._
-
-  implicit class OptionString(s : String) {
-
-    def toOption : Option[String] = if(s.isEmpty) None else Some(s)
-
-  }
 
   implicit lazy val reads: Reads[ShareAssetViewModel] = {
 
@@ -45,10 +38,9 @@ object ShareAssetViewModel {
     val shareReads: Reads[ShareAssetViewModel] =
       (
         nameReads and
-          (__ \ "status").readWithDefault[Status](InProgress) and
-          (__ \ "sharesInAPortfolio").readNullable[Boolean]
-        )((name, status, inPortfolio) =>
-        ShareAssetViewModel(Shares, inPortfolio, name, status)
+          (__ \ "status").readWithDefault[Status](InProgress)
+        )((name, status) =>
+        ShareAssetViewModel(Shares, name, status)
       )
 
     (__ \ "whatKindOfAsset").read[WhatKindOfAsset].flatMap[WhatKindOfAsset] {

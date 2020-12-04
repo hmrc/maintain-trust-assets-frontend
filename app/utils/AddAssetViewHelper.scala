@@ -70,14 +70,12 @@ class AddAssetViewHelper(userAnswers: UserAnswers, mode: Mode, draftId: String)(
     )
   }
 
-  private def parsePropertyOrLand(plvm : PropertyOrLandAssetViewModel, index: Int) : AddRow = {
+  private def parsePropertyOrLand(plvm: PropertyOrLandAssetViewModel, index: Int) : AddRow = {
     AddRow(
-      name = plvm match {
-        case PropertyOrLandAssetUKAddressViewModel(_, address, _) => address.getOrElse(defaultAddress)
-        case PropertyOrLandAssetInternationalAddressViewModel(_, address, _) => address.getOrElse(defaultAddress)
-        case PropertyOrLandAssetAddressViewModel(_, address, _) => address.getOrElse(defaultAddress)
-        case PropertyOrLandAssetDescriptionViewModel(_, description, _) => description.getOrElse(defaultDescription)
-        case PropertyOrLandDefaultViewModel(_, _) => messages("entities.no.addressOrDescription.added")
+      name = (plvm.hasAddress, plvm.address, plvm.description) match {
+        case (Some(true), address, _) => address.getOrElse(defaultAddress)
+        case (Some(false), _, description) => description.getOrElse(defaultDescription)
+        case _ => messages("entities.no.addressOrDescription.added")
       },
       typeLabel = messages("addAssets.propertyOrLand"),
       changeUrl = if (plvm.status == Completed) {

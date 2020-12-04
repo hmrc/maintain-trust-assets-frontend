@@ -21,7 +21,7 @@ import models.Status.{Completed, InProgress}
 import models.WhatKindOfAsset._
 import org.scalatest.{FreeSpec, MustMatchers}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import play.api.libs.json.{JsPath, JsSuccess, Json, KeyPathNode}
+import play.api.libs.json.{JsSuccess, Json}
 
 class AssetViewModelSpec extends FreeSpec with MustMatchers with ScalaCheckPropertyChecks with Generators with ModelGenerators {
 
@@ -70,37 +70,21 @@ class AssetViewModelSpec extends FreeSpec with MustMatchers with ScalaCheckPrope
             """.stripMargin)
 
             json.validate[AssetViewModel] mustEqual JsSuccess(
-              ShareAssetViewModel(Shares, None, None, InProgress)
+              ShareAssetViewModel(Shares, None, InProgress)
             )
           }
 
-          "'are shares in a portfolio?' is true and name question is unanswered" in {
+          "name question is unanswered" in {
             val json = Json.parse(
               """
                 |{
                 |"whatKindOfAsset" : "Shares",
-                |"sharesInAPortfolio" : true,
                 |"status": "progress"
                 |}
             """.stripMargin)
 
             json.validate[AssetViewModel] mustEqual JsSuccess(
-              ShareAssetViewModel(Shares, Some(true), None, InProgress)
-            )
-          }
-
-          "'are shares in a portfolio?' is false and name question is unanswered" in {
-            val json = Json.parse(
-              """
-                |{
-                |"whatKindOfAsset" : "Shares",
-                |"sharesInAPortfolio" : false,
-                |"status": "progress"
-                |}
-            """.stripMargin)
-
-            json.validate[AssetViewModel] mustEqual JsSuccess(
-              ShareAssetViewModel(Shares, Some(false), None, InProgress)
+              ShareAssetViewModel(Shares, None, InProgress)
             )
           }
         }
@@ -122,7 +106,7 @@ class AssetViewModelSpec extends FreeSpec with MustMatchers with ScalaCheckPrope
             """.stripMargin)
 
             json.validate[AssetViewModel] mustEqual JsSuccess(
-              ShareAssetViewModel(Shares, Some(true), Some("adam"), Completed)
+              ShareAssetViewModel(Shares, Some("adam"), Completed)
             )
           }
 
@@ -142,7 +126,7 @@ class AssetViewModelSpec extends FreeSpec with MustMatchers with ScalaCheckPrope
             """.stripMargin)
 
             json.validate[AssetViewModel] mustEqual JsSuccess(
-              ShareAssetViewModel(Shares, Some(false), Some("adam"), Completed)
+              ShareAssetViewModel(Shares, Some("adam"), Completed)
             )
           }
         }
@@ -164,7 +148,7 @@ class AssetViewModelSpec extends FreeSpec with MustMatchers with ScalaCheckPrope
             """.stripMargin)
 
             json.validate[AssetViewModel] mustEqual JsSuccess(
-              PropertyOrLandAssetDescriptionViewModel(PropertyOrLand, None, InProgress)
+              PropertyOrLandAssetViewModel(PropertyOrLand, Some(false), None, None, InProgress)
             )
           }
 
@@ -180,7 +164,7 @@ class AssetViewModelSpec extends FreeSpec with MustMatchers with ScalaCheckPrope
             """.stripMargin)
 
             json.validate[AssetViewModel] mustEqual JsSuccess(
-              PropertyOrLandAssetDescriptionViewModel(PropertyOrLand, Some("1 hectare"), Completed)
+              PropertyOrLandAssetViewModel(PropertyOrLand, Some(false), None, Some("1 hectare"), Completed)
             )
           }
 
@@ -202,7 +186,7 @@ class AssetViewModelSpec extends FreeSpec with MustMatchers with ScalaCheckPrope
             """.stripMargin)
 
               json.validate[AssetViewModel] mustEqual JsSuccess(
-                PropertyOrLandAssetUKAddressViewModel(`type` = PropertyOrLand, address = None, status = InProgress)
+                PropertyOrLandAssetViewModel(PropertyOrLand, Some(true), None, None, InProgress)
               )
             }
 
@@ -223,7 +207,7 @@ class AssetViewModelSpec extends FreeSpec with MustMatchers with ScalaCheckPrope
             """.stripMargin)
 
               json.validate[AssetViewModel] mustEqual JsSuccess(
-                PropertyOrLandAssetUKAddressViewModel(PropertyOrLand, Some("line 1"), Completed)
+                PropertyOrLandAssetViewModel(PropertyOrLand, Some(true), Some("line 1"), None, Completed)
               )
             }
 
@@ -242,7 +226,7 @@ class AssetViewModelSpec extends FreeSpec with MustMatchers with ScalaCheckPrope
             """.stripMargin)
 
               json.validate[AssetViewModel] mustEqual JsSuccess(
-                PropertyOrLandAssetInternationalAddressViewModel(`type` = PropertyOrLand, address = None, status = InProgress)
+                PropertyOrLandAssetViewModel(PropertyOrLand, Some(true), None, None, InProgress)
               )
             }
 
@@ -263,7 +247,7 @@ class AssetViewModelSpec extends FreeSpec with MustMatchers with ScalaCheckPrope
             """.stripMargin)
 
               json.validate[AssetViewModel] mustEqual JsSuccess(
-                PropertyOrLandAssetInternationalAddressViewModel(PropertyOrLand, Some("line 1"), Completed)
+                PropertyOrLandAssetViewModel(PropertyOrLand, Some(true), Some("line 1"), None, Completed)
               )
             }
 
@@ -275,14 +259,13 @@ class AssetViewModelSpec extends FreeSpec with MustMatchers with ScalaCheckPrope
                 """
                   |{
                   |"propertyOrLandAddressYesNo": true,
-                  |"whatKindOfAsset" : "PropertyOrLand",
+                  |"whatKindOfAsset": "PropertyOrLand",
                   |"status": "progress"
                   |}
             """.stripMargin)
 
               json.validate[AssetViewModel] mustEqual JsSuccess(
-                PropertyOrLandAssetAddressViewModel(`type` = PropertyOrLand, address = None, status = InProgress),
-                JsPath(List(KeyPathNode("propertyOrLandAddressYesNo")))
+                PropertyOrLandAssetViewModel(PropertyOrLand, Some(true), None, None, InProgress)
               )
             }
 
@@ -299,7 +282,7 @@ class AssetViewModelSpec extends FreeSpec with MustMatchers with ScalaCheckPrope
             """.stripMargin)
 
           json.validate[AssetViewModel] mustEqual JsSuccess(
-            PropertyOrLandDefaultViewModel(`type` = PropertyOrLand, status = InProgress)
+            PropertyOrLandAssetViewModel(PropertyOrLand, None, None, None, InProgress)
           )
         }
 
