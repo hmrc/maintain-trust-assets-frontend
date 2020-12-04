@@ -19,6 +19,9 @@ package viewmodels
 import models.Status.InProgress
 import models.WhatKindOfAsset.PropertyOrLand
 import models.{InternationalAddress, Status, UKAddress, WhatKindOfAsset}
+import pages.AssetStatus
+import pages.asset.WhatKindOfAssetPage
+import pages.asset.property_or_land._
 
 final case class PropertyOrLandAssetViewModel(`type`: WhatKindOfAsset,
                                               hasAddress: Option[Boolean],
@@ -34,21 +37,21 @@ object PropertyOrLandAssetViewModel extends AssetViewModelReads {
   implicit lazy val reads: Reads[PropertyOrLandAssetViewModel] = {
 
     val addressReads : Reads[Option[String]] =
-      (__ \ "ukAddress").read[UKAddress].map(_.toLine1) orElse
-        (__ \ "internationalAddress").read[InternationalAddress].map(_.toLine1) orElse
+      (__ \ PropertyOrLandUKAddressPage.key).read[UKAddress].map(_.toLine1) orElse
+        (__ \ PropertyOrLandInternationalAddressPage.key).read[InternationalAddress].map(_.toLine1) orElse
         Reads(_ => JsSuccess(None))
 
     val propertyOrLandReads: Reads[PropertyOrLandAssetViewModel] =
       (
-        (__ \ "propertyOrLandAddressYesNo").readNullable[Boolean] and
+        (__ \ PropertyOrLandAddressYesNoPage.key).readNullable[Boolean] and
           addressReads and
-          (__ \ "propertyOrLandDescription").readNullable[String] and
-          (__ \ "status").readWithDefault[Status](InProgress)
+          (__ \ PropertyOrLandDescriptionPage.key).readNullable[String] and
+          (__ \ AssetStatus.key).readWithDefault[Status](InProgress)
         )((hasAddress, address, description, status) =>
         PropertyOrLandAssetViewModel(PropertyOrLand, hasAddress, address, description, status)
       )
 
-    (__ \ "whatKindOfAsset").read[WhatKindOfAsset].flatMap[WhatKindOfAsset] {
+    (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].flatMap[WhatKindOfAsset] {
       whatKindOfAsset: WhatKindOfAsset =>
         if (whatKindOfAsset == PropertyOrLand) {
           Reads(_ => JsSuccess(whatKindOfAsset))

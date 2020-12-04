@@ -18,6 +18,7 @@ package pages.asset
 
 import models.WhatKindOfAsset._
 import models.{UserAnswers, WhatKindOfAsset}
+import pages.asset.WhatKindOfAssetPage.key
 import pages.{AssetStatus, QuestionPage}
 import pages.asset.money._
 import pages.asset.property_or_land._
@@ -34,7 +35,7 @@ final case class WhatKindOfAssetPage(index: Int) extends QuestionPage[WhatKindOf
 
   override def path: JsPath = JsPath \ Assets \ index \ toString
 
-  override def toString: String = "whatKindOfAsset"
+  override def toString: String = key
 
   override def cleanup(value: Option[WhatKindOfAsset], userAnswers: UserAnswers): Try[UserAnswers] = {
     value match {
@@ -134,4 +135,8 @@ final case class WhatKindOfAssetPage(index: Int) extends QuestionPage[WhatKindOf
       .flatMap(_.remove(BusinessValuePage(index)))
   }
 
+}
+
+object WhatKindOfAssetPage {
+  val key: String = "whatKindOfAsset"
 }

@@ -18,6 +18,7 @@ package pages.asset.property_or_land
 
 import models.UserAnswers
 import pages.QuestionPage
+import pages.asset.property_or_land.PropertyOrLandAddressYesNoPage.key
 import play.api.libs.json.JsPath
 import sections.Assets
 
@@ -27,7 +28,7 @@ final case class PropertyOrLandAddressYesNoPage(index: Int) extends QuestionPage
 
   override def path: JsPath = Assets.path \ index \ toString
 
-  override def toString: String = "propertyOrLandAddressYesNo"
+  override def toString: String = key
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
@@ -39,4 +40,8 @@ final case class PropertyOrLandAddressYesNoPage(index: Int) extends QuestionPage
         userAnswers.remove(PropertyOrLandDescriptionPage(index))
       case _ => super.cleanup(value, userAnswers)
     }
+}
+
+object PropertyOrLandAddressYesNoPage {
+  val key: String = "propertyOrLandAddressYesNo"
 }

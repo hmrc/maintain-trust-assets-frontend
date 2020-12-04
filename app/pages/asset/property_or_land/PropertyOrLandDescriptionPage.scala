@@ -17,6 +17,7 @@
 package pages.asset.property_or_land
 
 import pages.QuestionPage
+import pages.asset.property_or_land.PropertyOrLandDescriptionPage.key
 import play.api.libs.json.JsPath
 import sections.Assets
 
@@ -24,5 +25,9 @@ final case class PropertyOrLandDescriptionPage(index: Int) extends QuestionPage[
 
   override def path: JsPath = Assets.path \ index \ toString
 
-  override def toString: String = "propertyOrLandDescription"
+  override def toString: String = key
+}
+
+object PropertyOrLandDescriptionPage {
+  val key: String = "propertyOrLandDescription"
 }
