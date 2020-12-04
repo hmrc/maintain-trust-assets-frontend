@@ -18,17 +18,13 @@ package pages.asset.property_or_land
 
 import models.UKAddress
 import pages.QuestionPage
-import pages.asset.property_or_land.PropertyOrLandUKAddressPage.key
+import pages.asset.UkAddressPage
 import play.api.libs.json.JsPath
 import sections.Assets
 
-final case class PropertyOrLandUKAddressPage(index: Int) extends QuestionPage[UKAddress] {
+final case class PropertyOrLandUKAddressPage(index: Int) extends QuestionPage[UKAddress] with UkAddressPage {
 
   override def path: JsPath = Assets.path \ index \ toString
 
   override def toString: String = key
-}
-
-object PropertyOrLandUKAddressPage {
-  val key: String = "ukAddress"
 }

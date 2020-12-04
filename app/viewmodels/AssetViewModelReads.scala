@@ -16,7 +16,9 @@
 
 package viewmodels
 
-import models.Address
+import models.{Address, InternationalAddress, UKAddress}
+import pages.asset.{InternationalAddressPage, UkAddressPage}
+import play.api.libs.json.{JsSuccess, Reads, __}
 
 trait AssetViewModelReads {
 
@@ -28,5 +30,10 @@ trait AssetViewModelReads {
     def toOption: Option[T] = if (a.line1.isEmpty) None else Some(a)
     def toLine1: Option[String] = a.toOption.map(_.line1)
   }
+
+  val addressLine1Reads: Reads[Option[String]] =
+    (__ \ UkAddressPage.key).read[UKAddress].map(_.toLine1) orElse
+      (__ \ InternationalAddressPage.key).read[InternationalAddress].map(_.toLine1) orElse
+      Reads(_ => JsSuccess(None))
 
 }

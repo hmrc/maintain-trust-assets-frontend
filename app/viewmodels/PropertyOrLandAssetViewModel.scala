@@ -18,7 +18,7 @@ package viewmodels
 
 import models.Status.InProgress
 import models.WhatKindOfAsset.PropertyOrLand
-import models.{InternationalAddress, Status, UKAddress, WhatKindOfAsset}
+import models.{Status, WhatKindOfAsset}
 import pages.AssetStatus
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.property_or_land._
@@ -36,15 +36,10 @@ object PropertyOrLandAssetViewModel extends AssetViewModelReads {
 
   implicit lazy val reads: Reads[PropertyOrLandAssetViewModel] = {
 
-    val addressReads : Reads[Option[String]] =
-      (__ \ PropertyOrLandUKAddressPage.key).read[UKAddress].map(_.toLine1) orElse
-        (__ \ PropertyOrLandInternationalAddressPage.key).read[InternationalAddress].map(_.toLine1) orElse
-        Reads(_ => JsSuccess(None))
-
     val propertyOrLandReads: Reads[PropertyOrLandAssetViewModel] =
       (
         (__ \ PropertyOrLandAddressYesNoPage.key).readNullable[Boolean] and
-          addressReads and
+          addressLine1Reads and
           (__ \ PropertyOrLandDescriptionPage.key).readNullable[String] and
           (__ \ AssetStatus.key).readWithDefault[Status](InProgress)
         )((hasAddress, address, description, status) =>
