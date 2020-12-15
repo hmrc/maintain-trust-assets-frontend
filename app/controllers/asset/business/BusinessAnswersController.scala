@@ -59,8 +59,8 @@ class BusinessAnswersController @Inject()(
         userAnswers = request.userAnswers,
         arg = name,
         index = index,
-        draftId = draftId)
-
+        draftId = draftId
+      )
 
       Ok(view(index, draftId, section))
   }

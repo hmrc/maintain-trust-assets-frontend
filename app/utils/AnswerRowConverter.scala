@@ -16,6 +16,7 @@
 
 package utils
 
+import controllers.asset.routes.WhatKindOfAssetController
 import com.google.inject.Inject
 import models.{Address, NormalMode, ShareClass, UserAnswers}
 import pages.asset.WhatKindOfAssetPage
@@ -120,7 +121,7 @@ class AnswerRowConverter @Inject()(countryOptions: CountryOptions,
       AnswerRow(
         s"whatKindOfAsset.$label.checkYourAnswersLabel",
         HtmlFormat.escape(messages(s"whatKindOfAsset.$x")),
-        Some(controllers.asset.routes.WhatKindOfAssetController.onPageLoad(NormalMode, index, draftId).url),
+        Some(WhatKindOfAssetController.onPageLoad(NormalMode, index, draftId).url),
       )
     }
   }
