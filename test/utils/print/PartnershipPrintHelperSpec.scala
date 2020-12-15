@@ -19,8 +19,8 @@ package utils.print
 import base.SpecBase
 import controllers.asset.partnership.routes._
 import controllers.asset.routes.WhatKindOfAssetController
+import models.UserAnswers
 import models.WhatKindOfAsset.Partnership
-import models.{NormalMode, UserAnswers}
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.partnership._
 import play.twirl.api.Html
@@ -45,9 +45,9 @@ class PartnershipPrintHelperSpec extends SpecBase {
     .set(PartnershipStartDatePage(index), date).success.value
 
   private val rows: Seq[AnswerRow] = Seq(
-    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Partnership"), Some(WhatKindOfAssetController.onPageLoad(NormalMode, index, fakeDraftId).url)),
-    AnswerRow("partnership.description.checkYourAnswersLabel", Html(description), Some(PartnershipDescriptionController.onPageLoad(NormalMode, index, fakeDraftId).url)),
-    AnswerRow("partnership.startDate.checkYourAnswersLabel", Html("3 February 1996"), Some(PartnershipStartDateController.onPageLoad(NormalMode, index, fakeDraftId).url))
+    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Partnership"), Some(WhatKindOfAssetController.onPageLoad(index, fakeDraftId).url)),
+    AnswerRow("partnership.description.checkYourAnswersLabel", Html(description), Some(PartnershipDescriptionController.onPageLoad(index, fakeDraftId).url)),
+    AnswerRow("partnership.startDate.checkYourAnswersLabel", Html("3 February 1996"), Some(PartnershipStartDateController.onPageLoad(index, fakeDraftId).url))
   )
 
   "PartnershipPrintHelper" when {

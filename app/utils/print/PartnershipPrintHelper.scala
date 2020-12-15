@@ -17,7 +17,7 @@
 package utils.print
 
 import controllers.asset.partnership.routes._
-import models.{NormalMode, UserAnswers}
+import models.UserAnswers
 import pages.asset.partnership._
 import play.api.i18n.Messages
 import utils.countryOptions.CountryOptions
@@ -48,8 +48,8 @@ class PartnershipPrintHelper @Inject()(countryOptions: CountryOptions,
 
     Seq(
       converter.assetTypeQuestion(index, draftId),
-      converter.stringQuestion(PartnershipDescriptionPage(index), "partnership.description", PartnershipDescriptionController.onPageLoad(NormalMode, index, draftId).url),
-      converter.dateQuestion(PartnershipStartDatePage(index), "partnership.startDate", PartnershipStartDateController.onPageLoad(NormalMode, index, draftId).url)
+      converter.stringQuestion(PartnershipDescriptionPage(index), "partnership.description", PartnershipDescriptionController.onPageLoad(index, draftId).url),
+      converter.dateQuestion(PartnershipStartDatePage(index), "partnership.startDate", PartnershipStartDateController.onPageLoad(index, draftId).url)
     ).flatten
   }
 }

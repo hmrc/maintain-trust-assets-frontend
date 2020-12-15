@@ -17,7 +17,6 @@
 package controllers.asset.partnership
 
 import base.SpecBase
-import models.NormalMode
 import models.Status.Completed
 import models.WhatKindOfAsset.Partnership
 import org.mockito.Matchers.any
@@ -89,7 +88,7 @@ class PartnershipAnswerControllerSpec extends SpecBase {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual routes.PartnershipDescriptionController.onPageLoad(NormalMode, index, fakeDraftId).url
+        redirectLocation(result).value mustEqual routes.PartnershipDescriptionController.onPageLoad(index, fakeDraftId).url
 
         application.stop()
 
@@ -110,7 +109,7 @@ class PartnershipAnswerControllerSpec extends SpecBase {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.PartnershipStartDateController.onPageLoad(NormalMode, index, fakeDraftId).url
+      redirectLocation(result).value mustEqual routes.PartnershipStartDateController.onPageLoad(index, fakeDraftId).url
 
       application.stop()
 

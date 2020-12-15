@@ -19,8 +19,8 @@ package utils.print
 import base.SpecBase
 import controllers.asset.other.routes._
 import controllers.asset.routes.WhatKindOfAssetController
+import models.UserAnswers
 import models.WhatKindOfAsset.Other
-import models.{NormalMode, UserAnswers}
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.other._
 import play.twirl.api.Html
@@ -43,9 +43,9 @@ class OtherPrintHelperSpec extends SpecBase {
     .set(OtherAssetValuePage(index), amount).success.value
 
   private val rows: Seq[AnswerRow] = Seq(
-    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Other"), Some(WhatKindOfAssetController.onPageLoad(NormalMode, index, fakeDraftId).url)),
-    AnswerRow("other.description.checkYourAnswersLabel", Html(description), Some(OtherAssetDescriptionController.onPageLoad(NormalMode, index, fakeDraftId).url)),
-    AnswerRow("other.value.checkYourAnswersLabel", Html("£100"), Some(OtherAssetValueController.onPageLoad(NormalMode, index, fakeDraftId).url))
+    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Other"), Some(WhatKindOfAssetController.onPageLoad(index, fakeDraftId).url)),
+    AnswerRow("other.description.checkYourAnswersLabel", Html(description), Some(OtherAssetDescriptionController.onPageLoad(index, fakeDraftId).url)),
+    AnswerRow("other.value.checkYourAnswersLabel", Html("£100"), Some(OtherAssetValueController.onPageLoad(index, fakeDraftId).url))
   )
 
   "OtherPrintHelper" when {

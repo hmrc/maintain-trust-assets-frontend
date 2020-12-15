@@ -26,59 +26,58 @@
 
 @main_template(
     title = messages("assetInterruptPage.title")
-    ) {
+) {
 
-@formHelper(action = AssetInterruptPageController.onSubmit(draftId), 'autoComplete -> "off") {
+    @formHelper(action = AssetInterruptPageController.onSubmit(draftId), 'autoComplete -> "off") {
 
-    @components.back_link()
+        @components.back_link()
 
+        <span class="govuk-caption-xl">Assets</span>
+        @components.heading("assetInterruptPage.heading", headingSize = "heading-large govuk-fieldset__heading")
 
-<span class="govuk-caption-xl">Assets</span>
-@components.heading("assetInterruptPage.heading", headingSize = "heading-large govuk-fieldset__heading")
+        <h2>@messages("assetInterruptPage.subheading1")</h2>
+        <p>@messages("assetInterruptPage.paragraph1")</p>
 
-    <h2>@messages("assetInterruptPage.subheading1")</h2>
-    <p>@messages("assetInterruptPage.paragraph1")</p>
-
-    <h2>@messages("assetInterruptPage.subheading2")</h2>
-    <p>@messages("assetInterruptPage.paragraph2")</p>
-    @components.bullet_list("assetInterruptPage", List(
-            "bullet1",
-            "bullet2",
-            "bullet3"
+        <h2>@messages("assetInterruptPage.subheading2")</h2>
+        <p>@messages("assetInterruptPage.paragraph2")</p>
+        @components.bullet_list("assetInterruptPage", List(
+                "bullet1",
+                "bullet2",
+                "bullet3"
+            )
         )
-    )
 
-    <p>@messages("assetInterruptPage.paragraph3")</p>
+        <p>@messages("assetInterruptPage.paragraph3")</p>
 
-    <h2>@messages("assetInterruptPage.subheading3")</h2>
-    <p>@messages("assetInterruptPage.paragraph4")</p>
-    @components.bullet_list("assetInterruptPage", List(
-            "bullet4",
-            "bullet5",
-            "bullet6"
+        <h2>@messages("assetInterruptPage.subheading3")</h2>
+        <p>@messages("assetInterruptPage.paragraph4")</p>
+        @components.bullet_list("assetInterruptPage", List(
+                "bullet4",
+                "bullet5",
+                "bullet6"
+            )
         )
-    )
-    <p>@messages("assetInterruptPage.paragraph5")</p>
+        <p>@messages("assetInterruptPage.paragraph5")</p>
 
-    <p>@messages("assetInterruptPage.paragraph6")</p>
+        <p>@messages("assetInterruptPage.paragraph6")</p>
 
-    <h2>@messages("assetInterruptPage.subheading4")</h2>
-    <p>@messages("assetInterruptPage.paragraph7")</p>
-    @components.bullet_list("assetInterruptPage", List(
-            "bullet7",
-            "bullet8",
-            "bullet9",
-            "bullet10"
+        <h2>@messages("assetInterruptPage.subheading4")</h2>
+        <p>@messages("assetInterruptPage.paragraph7")</p>
+        @components.bullet_list("assetInterruptPage", List(
+                "bullet7",
+                "bullet8",
+                "bullet9",
+                "bullet10"
+            )
         )
-    )
 
-    <h2>@messages("assetInterruptPage.subheading5")</h2>
-    <p>@messages("assetInterruptPage.paragraph8")</p>
+        <h2>@messages("assetInterruptPage.subheading5")</h2>
+        <p>@messages("assetInterruptPage.paragraph8")</p>
 
-    <h2>@messages("assetInterruptPage.subheading6")</h2>
-    <p>@messages("assetInterruptPage.paragraph9")</p>
+        <h2>@messages("assetInterruptPage.subheading6")</h2>
+        <p>@messages("assetInterruptPage.paragraph9")</p>
 
 
-@components.submit_button(Some("site.onlyContinue"))
-}
+        @components.submit_button(Some("site.onlyContinue"))
+    }
 }

@@ -18,7 +18,6 @@ package controllers.asset.partnership
 
 import config.annotations.Partnership
 import controllers.actions._
-import models.NormalMode
 import models.Status.Completed
 import models.requests.RegistrationDataRequest
 import navigation.Navigator
@@ -51,8 +50,8 @@ class PartnershipAnswerController @Inject()(
     identify andThen
       getData(draftId) andThen
       requireData andThen
-      requiredAnswer(RequiredAnswer(PartnershipDescriptionPage(index), routes.PartnershipDescriptionController.onPageLoad(NormalMode, index, draftId))) andThen
-      requiredAnswer(RequiredAnswer(PartnershipStartDatePage(index), routes.PartnershipStartDateController.onPageLoad(NormalMode, index, draftId)))
+      requiredAnswer(RequiredAnswer(PartnershipDescriptionPage(index), routes.PartnershipDescriptionController.onPageLoad(index, draftId))) andThen
+      requiredAnswer(RequiredAnswer(PartnershipStartDatePage(index), routes.PartnershipStartDateController.onPageLoad(index, draftId)))
 
   def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
     implicit request =>
@@ -74,7 +73,7 @@ class PartnershipAnswerController @Inject()(
       for {
         updatedAnswers <- Future.fromTry(answers)
         _ <- repository.set(updatedAnswers)
-      } yield Redirect(navigator.nextPage(PartnershipAnswerPage, NormalMode, draftId)(request.userAnswers))
+      } yield Redirect(navigator.nextPage(PartnershipAnswerPage, draftId)(request.userAnswers))
 
   }
 }

@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.asset.property_or_land.routes._
 import controllers.asset.routes.WhatKindOfAssetController
 import models.WhatKindOfAsset.PropertyOrLand
-import models.{InternationalAddress, NormalMode, UKAddress, UserAnswers}
+import models.{InternationalAddress, UKAddress, UserAnswers}
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.property_or_land._
 import play.twirl.api.Html
@@ -63,30 +63,30 @@ class PropertyOrLandPrintHelperSpec extends SpecBase {
     .set(PropertyLandValueTrustPage(index), secondaryAmount).success.value
 
   private val ukAddressTrustOwnsAllRows: Seq[AnswerRow] = Seq(
-    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Property or land"), Some(WhatKindOfAssetController.onPageLoad(NormalMode, index, fakeDraftId).url)),
-    AnswerRow("propertyOrLand.addressYesNo.checkYourAnswersLabel", Html("Yes"), Some(PropertyOrLandAddressYesNoController.onPageLoad(NormalMode, index, draftId).url)),
-    AnswerRow("propertyOrLand.addressUkYesNo.checkYourAnswersLabel", Html("Yes"), Some(PropertyOrLandAddressUkYesNoController.onPageLoad(NormalMode, index, draftId).url)),
-    AnswerRow("propertyOrLand.ukAddress.checkYourAnswersLabel", Html("Line 1<br />Line 2<br />AB1 1AB"), Some(PropertyOrLandUKAddressController.onPageLoad(NormalMode, index, draftId).url)),
-    AnswerRow("propertyOrLand.totalValue.checkYourAnswersLabel", Html("£100"), Some(PropertyOrLandTotalValueController.onPageLoad(NormalMode, index, draftId).url)),
-    AnswerRow("propertyOrLand.trustOwnAllYesNo.checkYourAnswersLabel", Html("Yes"), Some(TrustOwnAllThePropertyOrLandController.onPageLoad(NormalMode, index, draftId).url))
+    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Property or land"), Some(WhatKindOfAssetController.onPageLoad(index, fakeDraftId).url)),
+    AnswerRow("propertyOrLand.addressYesNo.checkYourAnswersLabel", Html("Yes"), Some(PropertyOrLandAddressYesNoController.onPageLoad(index, draftId).url)),
+    AnswerRow("propertyOrLand.addressUkYesNo.checkYourAnswersLabel", Html("Yes"), Some(PropertyOrLandAddressUkYesNoController.onPageLoad(index, draftId).url)),
+    AnswerRow("propertyOrLand.ukAddress.checkYourAnswersLabel", Html("Line 1<br />Line 2<br />AB1 1AB"), Some(PropertyOrLandUKAddressController.onPageLoad(index, draftId).url)),
+    AnswerRow("propertyOrLand.totalValue.checkYourAnswersLabel", Html("£100"), Some(PropertyOrLandTotalValueController.onPageLoad(index, draftId).url)),
+    AnswerRow("propertyOrLand.trustOwnAllYesNo.checkYourAnswersLabel", Html("Yes"), Some(TrustOwnAllThePropertyOrLandController.onPageLoad(index, draftId).url))
   )
 
   private val nonUkAddressTrustOwnsAllRows: Seq[AnswerRow] = Seq(
-    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Property or land"), Some(WhatKindOfAssetController.onPageLoad(NormalMode, index, fakeDraftId).url)),
-    AnswerRow("propertyOrLand.addressYesNo.checkYourAnswersLabel", Html("Yes"), Some(PropertyOrLandAddressYesNoController.onPageLoad(NormalMode, index, draftId).url)),
-    AnswerRow("propertyOrLand.addressUkYesNo.checkYourAnswersLabel", Html("Yes"), Some(PropertyOrLandAddressUkYesNoController.onPageLoad(NormalMode, index, draftId).url)),
-    AnswerRow("propertyOrLand.internationalAddress.checkYourAnswersLabel", Html("Line 1<br />Line 2<br />France"), Some(PropertyOrLandInternationalAddressController.onPageLoad(NormalMode, index, draftId).url)),
-    AnswerRow("propertyOrLand.totalValue.checkYourAnswersLabel", Html("£100"), Some(PropertyOrLandTotalValueController.onPageLoad(NormalMode, index, draftId).url)),
-    AnswerRow("propertyOrLand.trustOwnAllYesNo.checkYourAnswersLabel", Html("Yes"), Some(TrustOwnAllThePropertyOrLandController.onPageLoad(NormalMode, index, draftId).url))
+    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Property or land"), Some(WhatKindOfAssetController.onPageLoad(index, fakeDraftId).url)),
+    AnswerRow("propertyOrLand.addressYesNo.checkYourAnswersLabel", Html("Yes"), Some(PropertyOrLandAddressYesNoController.onPageLoad(index, draftId).url)),
+    AnswerRow("propertyOrLand.addressUkYesNo.checkYourAnswersLabel", Html("Yes"), Some(PropertyOrLandAddressUkYesNoController.onPageLoad(index, draftId).url)),
+    AnswerRow("propertyOrLand.internationalAddress.checkYourAnswersLabel", Html("Line 1<br />Line 2<br />France"), Some(PropertyOrLandInternationalAddressController.onPageLoad(index, draftId).url)),
+    AnswerRow("propertyOrLand.totalValue.checkYourAnswersLabel", Html("£100"), Some(PropertyOrLandTotalValueController.onPageLoad(index, draftId).url)),
+    AnswerRow("propertyOrLand.trustOwnAllYesNo.checkYourAnswersLabel", Html("Yes"), Some(TrustOwnAllThePropertyOrLandController.onPageLoad(index, draftId).url))
   )
 
   private val descriptionTrustDoesNotOwnAllRows: Seq[AnswerRow] = Seq(
-    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Property or land"), Some(WhatKindOfAssetController.onPageLoad(NormalMode, index, fakeDraftId).url)),
-    AnswerRow("propertyOrLand.addressYesNo.checkYourAnswersLabel", Html("No"), Some(PropertyOrLandAddressYesNoController.onPageLoad(NormalMode, index, draftId).url)),
-    AnswerRow("propertyOrLand.description.checkYourAnswersLabel", Html(description), Some(PropertyOrLandDescriptionController.onPageLoad(NormalMode, index, draftId).url)),
-    AnswerRow("propertyOrLand.totalValue.checkYourAnswersLabel", Html("£100"), Some(PropertyOrLandTotalValueController.onPageLoad(NormalMode, index, draftId).url)),
-    AnswerRow("propertyOrLand.trustOwnAllYesNo.checkYourAnswersLabel", Html("No"), Some(TrustOwnAllThePropertyOrLandController.onPageLoad(NormalMode, index, draftId).url)),
-    AnswerRow("propertyOrLand.valueInTrust.checkYourAnswersLabel", Html("£50"), Some(PropertyLandValueTrustController.onPageLoad(NormalMode, index, draftId).url))
+    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Property or land"), Some(WhatKindOfAssetController.onPageLoad(index, fakeDraftId).url)),
+    AnswerRow("propertyOrLand.addressYesNo.checkYourAnswersLabel", Html("No"), Some(PropertyOrLandAddressYesNoController.onPageLoad(index, draftId).url)),
+    AnswerRow("propertyOrLand.description.checkYourAnswersLabel", Html(description), Some(PropertyOrLandDescriptionController.onPageLoad(index, draftId).url)),
+    AnswerRow("propertyOrLand.totalValue.checkYourAnswersLabel", Html("£100"), Some(PropertyOrLandTotalValueController.onPageLoad(index, draftId).url)),
+    AnswerRow("propertyOrLand.trustOwnAllYesNo.checkYourAnswersLabel", Html("No"), Some(TrustOwnAllThePropertyOrLandController.onPageLoad(index, draftId).url)),
+    AnswerRow("propertyOrLand.valueInTrust.checkYourAnswersLabel", Html("£50"), Some(PropertyLandValueTrustController.onPageLoad(index, draftId).url))
   )
 
   "PropertyOrLandPrintHelper" when {

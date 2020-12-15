@@ -18,7 +18,7 @@ package controllers.asset.business
 
 import base.SpecBase
 import controllers.routes._
-import models.{NormalMode, UKAddress, UserAnswers}
+import models.{UKAddress, UserAnswers}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import pages.asset.business._
@@ -90,7 +90,7 @@ class BusinessAnswersControllerSpec extends SpecBase {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.BusinessNameController.onPageLoad(NormalMode, index, fakeDraftId).url
+      redirectLocation(result).value mustEqual routes.BusinessNameController.onPageLoad(index, fakeDraftId).url
 
       application.stop()
     }

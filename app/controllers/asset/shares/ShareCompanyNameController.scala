@@ -16,11 +16,10 @@
 
 package controllers.asset.shares
 
+import config.annotations.Shares
 import controllers.actions.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
 import controllers.filters.IndexActionFilterProvider
 import forms.NameFormProvider
-import javax.inject.Inject
-import models.Mode
 import navigation.Navigator
 import pages.asset.shares.ShareCompanyNamePage
 import play.api.data.Form
@@ -28,9 +27,9 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import config.annotations.Shares
 import views.html.asset.shares.ShareCompanyNameView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ShareCompanyNameController @Inject()(
@@ -53,7 +52,7 @@ class ShareCompanyNameController @Inject()(
 
   private val form = formProvider.withConfig(53, "shares.companyName")
 
-  def onPageLoad(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
+  def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(ShareCompanyNamePage(index)) match {
@@ -61,21 +60,21 @@ class ShareCompanyNameController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, draftId, index))
+      Ok(view(preparedForm, draftId, index))
   }
 
-  def onSubmit(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async {
+  def onSubmit(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode, draftId, index))),
+          Future.successful(BadRequest(view(formWithErrors, draftId, index))),
 
         value => {
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(ShareCompanyNamePage(index), value))
             _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(ShareCompanyNamePage(index), mode, draftId)(updatedAnswers))
+          } yield Redirect(navigator.nextPage(ShareCompanyNamePage(index), draftId)(updatedAnswers))
         }
       )
   }

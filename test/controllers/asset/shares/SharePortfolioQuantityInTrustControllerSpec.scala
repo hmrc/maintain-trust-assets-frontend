@@ -20,7 +20,6 @@ import base.SpecBase
 import controllers.IndexValidation
 import forms.QuantityFormProvider
 import generators.ModelGenerators
-import models.NormalMode
 import org.scalacheck.Arbitrary.arbitrary
 import pages.asset.shares.SharePortfolioQuantityInTrustPage
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
@@ -34,7 +33,7 @@ class SharePortfolioQuantityInTrustControllerSpec extends SpecBase with ModelGen
   val form = formProvider.withPrefix("shares.portfolioQuantityInTrust")
   val index: Int = 0
 
-  lazy val sharePortfolioQuantityInTrustRoute = routes.SharePortfolioQuantityInTrustController.onPageLoad(NormalMode, index, fakeDraftId).url
+  lazy val sharePortfolioQuantityInTrustRoute = routes.SharePortfolioQuantityInTrustController.onPageLoad(index, fakeDraftId).url
 
   "SharePortfolioQuantityInTrust Controller" must {
 
@@ -51,7 +50,7 @@ class SharePortfolioQuantityInTrustControllerSpec extends SpecBase with ModelGen
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode, fakeDraftId, index)(fakeRequest, messages).toString
+        view(form, fakeDraftId, index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -71,7 +70,7 @@ class SharePortfolioQuantityInTrustControllerSpec extends SpecBase with ModelGen
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill("answer"), NormalMode, fakeDraftId, index)(fakeRequest, messages).toString
+        view(form.fill("answer"), fakeDraftId, index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -110,7 +109,7 @@ class SharePortfolioQuantityInTrustControllerSpec extends SpecBase with ModelGen
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode, fakeDraftId, index)(fakeRequest, messages).toString
+        view(boundForm, fakeDraftId, index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -152,7 +151,7 @@ class SharePortfolioQuantityInTrustControllerSpec extends SpecBase with ModelGen
   "for a GET" must {
 
     def getForIndex(index: Int) : FakeRequest[AnyContentAsEmpty.type] = {
-      val route = routes.SharePortfolioQuantityInTrustController.onPageLoad(NormalMode, index, fakeDraftId).url
+      val route = routes.SharePortfolioQuantityInTrustController.onPageLoad(index, fakeDraftId).url
 
       FakeRequest(GET, route)
     }
@@ -169,7 +168,7 @@ class SharePortfolioQuantityInTrustControllerSpec extends SpecBase with ModelGen
     def postForIndex(index: Int): FakeRequest[AnyContentAsFormUrlEncoded] = {
 
       val route =
-        routes.SharePortfolioQuantityInTrustController.onPageLoad(NormalMode, index, fakeDraftId).url
+        routes.SharePortfolioQuantityInTrustController.onPageLoad(index, fakeDraftId).url
 
       FakeRequest(POST, route)
         .withFormUrlEncodedBody(("currency", "1234"))

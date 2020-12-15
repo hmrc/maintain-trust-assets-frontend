@@ -38,23 +38,18 @@ object AssetsRoutes {
     Call("GET", config.registrationProgressUrl(draftId))
   }
 
-  private def addAnAssetYesNoRoute(draftId: String, config: FrontendAppConfig)(userAnswers: UserAnswers) : Call = userAnswers.get(AddAnAssetYesNoPage) match {
+  private def addAnAssetYesNoRoute(draftId: String, config: FrontendAppConfig)(userAnswers: UserAnswers): Call = userAnswers.get(AddAnAssetYesNoPage) match {
     case Some(false) => assetsCompletedRoute(draftId, config)
-    case Some(true) => routes.WhatKindOfAssetController.onPageLoad(NormalMode, 0, draftId)
+    case Some(true) => routes.WhatKindOfAssetController.onPageLoad(0, draftId)
     case _ => controllers.routes.SessionExpiredController.onPageLoad()
   }
 
-  private def addAssetsRoute(draftId: String, config: FrontendAppConfig)(answers: UserAnswers) = {
+  private def addAssetsRoute(draftId: String, config: FrontendAppConfig)(answers: UserAnswers): Call = {
     val addAnother = answers.get(AddAssetsPage)
 
-    def routeToAssetIndex = {
+    def routeToAssetIndex: Call = {
       val assets = answers.get(sections.Assets).getOrElse(List.empty)
-      assets match {
-        case Nil =>
-          routes.WhatKindOfAssetController.onPageLoad(NormalMode, 0, draftId)
-        case t if t.nonEmpty =>
-          routes.WhatKindOfAssetController.onPageLoad(NormalMode, t.size, draftId)
-      }
+      routes.WhatKindOfAssetController.onPageLoad(assets.size, draftId)
     }
 
     addAnother match {
@@ -68,29 +63,27 @@ object AssetsRoutes {
     }
   }
 
-  private def whatKindOfAssetRoute(answers: UserAnswers, index: Int, draftId: String) =
+  private def whatKindOfAssetRoute(answers: UserAnswers, index: Int, draftId: String): Call =
     answers.get(WhatKindOfAssetPage(index)) match {
       case Some(Money) =>
-        controllers.asset.money.routes.AssetMoneyValueController.onPageLoad(NormalMode, index, draftId)
+        controllers.asset.money.routes.AssetMoneyValueController.onPageLoad(index, draftId)
       case Some(PropertyOrLand) =>
-        controllers.asset.property_or_land.routes.PropertyOrLandAddressYesNoController.onPageLoad(NormalMode, index, draftId)
+        controllers.asset.property_or_land.routes.PropertyOrLandAddressYesNoController.onPageLoad(index, draftId)
       case Some(Shares) =>
-        controllers.asset.shares.routes.SharesInAPortfolioController.onPageLoad(NormalMode, index, draftId)
+        controllers.asset.shares.routes.SharesInAPortfolioController.onPageLoad(index, draftId)
       case Some(Business) =>
-        controllers.asset.business.routes.BusinessNameController.onPageLoad(NormalMode, index, draftId)
+        controllers.asset.business.routes.BusinessNameController.onPageLoad(index, draftId)
       case Some(Partnership) =>
-        controllers.asset.partnership.routes.PartnershipDescriptionController.onPageLoad(NormalMode, index, draftId)
+        controllers.asset.partnership.routes.PartnershipDescriptionController.onPageLoad(index, draftId)
       case Some(Other) =>
-        controllers.asset.other.routes.OtherAssetDescriptionController.onPageLoad(NormalMode, index, draftId)
+        controllers.asset.other.routes.OtherAssetDescriptionController.onPageLoad(index, draftId)
       case _ =>
         controllers.routes.SessionExpiredController.onPageLoad()
     }
 }
 
 @Singleton
-class Navigator @Inject()(
-                           config: FrontendAppConfig
-                         ) {
+class Navigator @Inject()(config: FrontendAppConfig) {
 
   private def defaultRoute(draftId: String): PartialFunction[Page, AffinityGroup => UserAnswers => Call] = {
     case _ => _ => _ => controllers.routes.IndexController.onPageLoad(draftId)
@@ -100,10 +93,7 @@ class Navigator @Inject()(
       AssetsRoutes.route(draftId, config) orElse
       defaultRoute(draftId)
 
-  def nextPage(page: Page, mode: Mode, draftId: String, af :AffinityGroup = AffinityGroup.Organisation): UserAnswers => Call = mode match {
-    case NormalMode =>
-      route(draftId)(page)(af)
-    case CheckMode =>
-      route(draftId)(page)(af)
+  def nextPage(page: Page, draftId: String, af :AffinityGroup = AffinityGroup.Organisation): UserAnswers => Call = {
+    route(draftId)(page)(af)
   }
 }

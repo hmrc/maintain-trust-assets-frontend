@@ -16,14 +16,15 @@
 
 package navigation
 
-import controllers.asset.routes
 import config.FrontendAppConfig
-import javax.inject.{Inject, Singleton}
-import models.{NormalMode, UserAnswers}
+import controllers.asset.routes
+import models.UserAnswers
 import pages.Page
 import pages.asset.money._
 import play.api.mvc.Call
 import uk.gov.hmrc.auth.core.AffinityGroup
+
+import javax.inject.{Inject, Singleton}
 
 @Singleton
 class MoneyNavigator @Inject()(config: FrontendAppConfig) extends Navigator(config) {
@@ -32,10 +33,10 @@ class MoneyNavigator @Inject()(config: FrontendAppConfig) extends Navigator(conf
     case AssetMoneyValuePage(index) => _ => ua => assetMoneyValueRoute(ua, index, draftId)
   }
 
-  private def assetMoneyValueRoute(answers: UserAnswers, index: Int, draftId: String) = {
+  private def assetMoneyValueRoute(answers: UserAnswers, index: Int, draftId: String): Call = {
     val assets = answers.get(sections.Assets).getOrElse(List.empty)
     assets match  {
-      case Nil => routes.WhatKindOfAssetController.onPageLoad(NormalMode, index, draftId)
+      case Nil => routes.WhatKindOfAssetController.onPageLoad(index, draftId)
       case _ => routes.AddAssetsController.onPageLoad(draftId)
     }
   }

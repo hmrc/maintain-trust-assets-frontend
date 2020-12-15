@@ -20,7 +20,6 @@ import base.SpecBase
 import controllers.IndexValidation
 import forms.QuantityFormProvider
 import generators.ModelGenerators
-import models.NormalMode
 import org.scalacheck.Arbitrary.arbitrary
 import pages.asset.shares.{ShareCompanyNamePage, ShareQuantityInTrustPage}
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
@@ -35,7 +34,7 @@ class ShareQuantityInTrustControllerSpec extends SpecBase with ModelGenerators w
   val index: Int = 0
   val companyName = "Company"
 
-  lazy val shareQuantityInTrustRoute = routes.ShareQuantityInTrustController.onPageLoad(NormalMode, index, fakeDraftId).url
+  lazy val shareQuantityInTrustRoute = routes.ShareQuantityInTrustController.onPageLoad(index, fakeDraftId).url
 
   "ShareQuantityInTrustController" must {
 
@@ -54,7 +53,7 @@ class ShareQuantityInTrustControllerSpec extends SpecBase with ModelGenerators w
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode, fakeDraftId, index, companyName)(fakeRequest, messages).toString
+        view(form, fakeDraftId, index, companyName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -75,7 +74,7 @@ class ShareQuantityInTrustControllerSpec extends SpecBase with ModelGenerators w
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill("answer"), NormalMode, fakeDraftId, index, companyName)(fakeRequest, messages).toString
+        view(form.fill("answer"), fakeDraftId, index, companyName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -118,7 +117,7 @@ class ShareQuantityInTrustControllerSpec extends SpecBase with ModelGenerators w
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode, fakeDraftId, index, companyName)(fakeRequest, messages).toString
+        view(boundForm, fakeDraftId, index, companyName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -165,7 +164,7 @@ class ShareQuantityInTrustControllerSpec extends SpecBase with ModelGenerators w
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.ShareCompanyNameController.onPageLoad(NormalMode, index, fakeDraftId).url
+      redirectLocation(result).value mustEqual routes.ShareCompanyNameController.onPageLoad(index, fakeDraftId).url
 
       application.stop()
     }
@@ -174,7 +173,7 @@ class ShareQuantityInTrustControllerSpec extends SpecBase with ModelGenerators w
   "for a GET" must {
 
     def getForIndex(index: Int) : FakeRequest[AnyContentAsEmpty.type] = {
-      val route = routes.ShareQuantityInTrustController.onPageLoad(NormalMode, index, fakeDraftId).url
+      val route = routes.ShareQuantityInTrustController.onPageLoad(index, fakeDraftId).url
 
       FakeRequest(GET, route)
     }
@@ -191,7 +190,7 @@ class ShareQuantityInTrustControllerSpec extends SpecBase with ModelGenerators w
     def postForIndex(index: Int): FakeRequest[AnyContentAsFormUrlEncoded] = {
 
       val route =
-        routes.ShareQuantityInTrustController.onPageLoad(NormalMode, index, fakeDraftId).url
+        routes.ShareQuantityInTrustController.onPageLoad(index, fakeDraftId).url
 
       FakeRequest(POST, route)
         .withFormUrlEncodedBody(("currency", "1234"))

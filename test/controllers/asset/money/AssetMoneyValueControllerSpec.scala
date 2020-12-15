@@ -19,7 +19,6 @@ package controllers.asset.money
 import base.SpecBase
 import controllers.routes._
 import forms.ValueFormProvider
-import models.NormalMode
 import pages.asset.money.AssetMoneyValuePage
 import play.api.data.Form
 import play.api.test.FakeRequest
@@ -34,7 +33,7 @@ class AssetMoneyValueControllerSpec extends SpecBase {
   val index = 0
   val validAnswer: Long = 4000L
 
-  lazy val assetMoneyValueRoute: String = routes.AssetMoneyValueController.onPageLoad(NormalMode, index, fakeDraftId).url
+  lazy val assetMoneyValueRoute: String = routes.AssetMoneyValueController.onPageLoad(index, fakeDraftId).url
 
   "AssetMoneyValue Controller" must {
 
@@ -51,7 +50,7 @@ class AssetMoneyValueControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode, fakeDraftId,index)(fakeRequest, messages).toString
+        view(form, fakeDraftId,index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -71,7 +70,7 @@ class AssetMoneyValueControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), NormalMode, fakeDraftId,index)(fakeRequest, messages).toString
+        view(form.fill(validAnswer), fakeDraftId,index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -110,7 +109,7 @@ class AssetMoneyValueControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode, fakeDraftId,index)(fakeRequest, messages).toString
+        view(boundForm, fakeDraftId,index)(fakeRequest, messages).toString
 
       application.stop()
     }

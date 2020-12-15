@@ -17,13 +17,14 @@
 package controllers.asset.property_or_land
 
 import base.SpecBase
-import controllers.routes._
 import controllers.IndexValidation
+import controllers.routes._
 import forms.UKAddressFormProvider
 import generators.ModelGenerators
-import models.{NormalMode, UKAddress}
+import models.UKAddress
 import org.scalacheck.Arbitrary.arbitrary
 import pages.asset.property_or_land.PropertyOrLandUKAddressPage
+import play.api.data.Form
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{route, _}
@@ -32,10 +33,10 @@ import views.html.asset.property_or_land.PropertyOrLandUKAddressView
 class PropertyOrLandUKAddressControllerSpec extends SpecBase with ModelGenerators with IndexValidation {
 
   val formProvider = new UKAddressFormProvider()
-  val form = formProvider()
+  val form: Form[UKAddress] = formProvider()
   val index = 0
 
-  lazy val PropertyOrLandUKAddressRoute: String = routes.PropertyOrLandUKAddressController.onPageLoad(NormalMode,index ,fakeDraftId).url
+  lazy val PropertyOrLandUKAddressRoute: String = routes.PropertyOrLandUKAddressController.onPageLoad(index, fakeDraftId).url
 
   "WhatIsThePropertyOrLandAddress Controller" must {
 
@@ -52,7 +53,7 @@ class PropertyOrLandUKAddressControllerSpec extends SpecBase with ModelGenerator
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode, fakeDraftId, index)(fakeRequest, messages).toString
+        view(form, fakeDraftId, index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -73,7 +74,7 @@ class PropertyOrLandUKAddressControllerSpec extends SpecBase with ModelGenerator
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(UKAddress("line 1", "line 2", Some("line 3"), Some("line 4"),"line 5")), NormalMode, fakeDraftId, index)(fakeRequest, messages).toString
+        view(form.fill(UKAddress("line 1", "line 2", Some("line 3"), Some("line 4"),"line 5")), fakeDraftId, index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -112,7 +113,7 @@ class PropertyOrLandUKAddressControllerSpec extends SpecBase with ModelGenerator
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode, fakeDraftId, index)(fakeRequest, messages).toString
+        view(boundForm, fakeDraftId, index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -153,7 +154,7 @@ class PropertyOrLandUKAddressControllerSpec extends SpecBase with ModelGenerator
   "for a GET" must {
 
     def getForIndex(index: Int) : FakeRequest[AnyContentAsEmpty.type] = {
-      val route = routes.PropertyOrLandUKAddressController.onPageLoad(NormalMode, index, fakeDraftId).url
+      val route = routes.PropertyOrLandUKAddressController.onPageLoad(index, fakeDraftId).url
 
       FakeRequest(GET, route)
     }
@@ -170,7 +171,7 @@ class PropertyOrLandUKAddressControllerSpec extends SpecBase with ModelGenerator
     def postForIndex(index: Int): FakeRequest[AnyContentAsFormUrlEncoded] = {
 
       val route =
-       routes.PropertyOrLandUKAddressController.onPageLoad(NormalMode, index, fakeDraftId).url
+       routes.PropertyOrLandUKAddressController.onPageLoad(index, fakeDraftId).url
 
       FakeRequest(POST, route)
         .withFormUrlEncodedBody(("value", "true"))

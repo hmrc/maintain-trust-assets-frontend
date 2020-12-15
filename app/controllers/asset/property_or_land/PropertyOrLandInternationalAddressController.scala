@@ -16,11 +16,10 @@
 
 package controllers.asset.property_or_land
 
+import config.annotations.PropertyOrLand
 import controllers.actions.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
 import controllers.filters.IndexActionFilterProvider
 import forms.InternationalAddressFormProvider
-import javax.inject.Inject
-import models.Mode
 import navigation.Navigator
 import pages.asset.property_or_land.PropertyOrLandInternationalAddressPage
 import play.api.data.Form
@@ -28,10 +27,10 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import config.annotations.PropertyOrLand
 import utils.countryOptions.CountryOptionsNonUK
 import views.html.asset.property_or_land.PropertyOrLandInternationalAddressView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class PropertyOrLandInternationalAddressController @Inject()(
@@ -56,7 +55,7 @@ class PropertyOrLandInternationalAddressController @Inject()(
       requireData andThen
       validateIndex(index, sections.Assets)
 
-  def onPageLoad(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
+  def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(PropertyOrLandInternationalAddressPage(index)) match {
@@ -64,21 +63,21 @@ class PropertyOrLandInternationalAddressController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, countryOptions.options, mode, draftId, index))
+      Ok(view(preparedForm, countryOptions.options, draftId, index))
   }
 
-  def onSubmit(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async {
+  def onSubmit(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, countryOptions.options, mode, draftId, index))),
+          Future.successful(BadRequest(view(formWithErrors, countryOptions.options, draftId, index))),
 
         value => {
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(PropertyOrLandInternationalAddressPage(index), value))
             _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(PropertyOrLandInternationalAddressPage(index), mode, draftId)(updatedAnswers))
+          } yield Redirect(navigator.nextPage(PropertyOrLandInternationalAddressPage(index), draftId)(updatedAnswers))
         }
       )
   }

@@ -20,7 +20,6 @@ import base.SpecBase
 import controllers.IndexValidation
 import forms.YesNoFormProvider
 import generators.ModelGenerators
-import models.NormalMode
 import org.scalacheck.Arbitrary.arbitrary
 import pages.asset.shares.{ShareCompanyNamePage, SharesOnStockExchangePage}
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
@@ -34,7 +33,7 @@ class SharesOnStockExchangeControllerSpec extends SpecBase with ModelGenerators 
   val index: Int = 0
   val companyName = "Company"
 
-  lazy val sharesOnStockExchangeRoute = routes.SharesOnStockExchangeController.onPageLoad(NormalMode, index, fakeDraftId).url
+  lazy val sharesOnStockExchangeRoute = routes.SharesOnStockExchangeController.onPageLoad(index, fakeDraftId).url
 
   "SharesOnStockExchange Controller" must {
 
@@ -53,7 +52,7 @@ class SharesOnStockExchangeControllerSpec extends SpecBase with ModelGenerators 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode, fakeDraftId, index, companyName)(fakeRequest, messages).toString
+        view(form, fakeDraftId, index, companyName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -74,7 +73,7 @@ class SharesOnStockExchangeControllerSpec extends SpecBase with ModelGenerators 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), NormalMode, fakeDraftId, index, companyName)(fakeRequest, messages).toString
+        view(form.fill(true), fakeDraftId, index, companyName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -118,7 +117,7 @@ class SharesOnStockExchangeControllerSpec extends SpecBase with ModelGenerators 
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode, fakeDraftId, index, companyName)(fakeRequest, messages).toString
+        view(boundForm, fakeDraftId, index, companyName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -165,7 +164,7 @@ class SharesOnStockExchangeControllerSpec extends SpecBase with ModelGenerators 
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.ShareCompanyNameController.onPageLoad(NormalMode, index, fakeDraftId).url
+      redirectLocation(result).value mustEqual routes.ShareCompanyNameController.onPageLoad(index, fakeDraftId).url
 
       application.stop()
     }
@@ -175,7 +174,7 @@ class SharesOnStockExchangeControllerSpec extends SpecBase with ModelGenerators 
 
     def getForIndex(index: Int) : FakeRequest[AnyContentAsEmpty.type] = {
       val route =
-        routes.SharesOnStockExchangeController.onPageLoad(NormalMode, index, fakeDraftId).url
+        routes.SharesOnStockExchangeController.onPageLoad(index, fakeDraftId).url
 
       FakeRequest(GET, route)
     }
@@ -192,7 +191,7 @@ class SharesOnStockExchangeControllerSpec extends SpecBase with ModelGenerators 
     def postForIndex(index: Int): FakeRequest[AnyContentAsFormUrlEncoded] = {
 
       val route =
-        routes.SharesOnStockExchangeController.onPageLoad(NormalMode, index, fakeDraftId).url
+        routes.SharesOnStockExchangeController.onPageLoad(index, fakeDraftId).url
 
       FakeRequest(POST, route)
         .withFormUrlEncodedBody(("value", "true"))

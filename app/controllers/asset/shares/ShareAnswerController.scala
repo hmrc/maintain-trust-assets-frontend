@@ -18,7 +18,6 @@ package controllers.asset.shares
 
 import config.annotations.Shares
 import controllers.actions._
-import models.NormalMode
 import models.Status.Completed
 import models.requests.RegistrationDataRequest
 import navigation.Navigator
@@ -52,7 +51,7 @@ class ShareAnswerController @Inject()(
     identify andThen
       getData(draftId) andThen
       requireData andThen
-      requiredAnswer(RequiredAnswer(SharesInAPortfolioPage(index), routes.SharesInAPortfolioController.onPageLoad(NormalMode, index, draftId)))
+      requiredAnswer(RequiredAnswer(SharesInAPortfolioPage(index), routes.SharesInAPortfolioController.onPageLoad(index, draftId)))
 
   def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
     implicit request =>
@@ -85,7 +84,7 @@ class ShareAnswerController @Inject()(
       for {
         updatedAnswers <- Future.fromTry(answers)
         _ <- repository.set(updatedAnswers)
-      } yield Redirect(navigator.nextPage(ShareAnswerPage, NormalMode, draftId)(request.userAnswers))
+      } yield Redirect(navigator.nextPage(ShareAnswerPage, draftId)(request.userAnswers))
 
   }
 }

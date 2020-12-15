@@ -18,7 +18,6 @@ package controllers.asset.property_or_land
 
 import config.annotations.PropertyOrLand
 import controllers.actions._
-import models.NormalMode
 import models.Status.Completed
 import navigation.Navigator
 import pages.AssetStatus
@@ -63,7 +62,7 @@ class PropertyOrLandAnswerController @Inject()(
       for {
         updatedAnswers <- Future.fromTry(answers)
         _ <- repository.set(updatedAnswers)
-      } yield Redirect(navigator.nextPage(PropertyOrLandAnswerPage, NormalMode, draftId)(request.userAnswers))
+      } yield Redirect(navigator.nextPage(PropertyOrLandAnswerPage, draftId)(request.userAnswers))
 
   }
 }

@@ -19,7 +19,7 @@ package navigation
 import base.SpecBase
 import controllers.asset.business.routes._
 import generators.Generators
-import models.{NormalMode, UserAnswers}
+import models.UserAnswers
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.asset.business._
@@ -37,8 +37,8 @@ class BusinessNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
-          navigator.nextPage(page, NormalMode, fakeDraftId)(userAnswers)
-            .mustBe(BusinessDescriptionController.onPageLoad(NormalMode, index, fakeDraftId))
+          navigator.nextPage(page, fakeDraftId)(userAnswers)
+            .mustBe(BusinessDescriptionController.onPageLoad(index, fakeDraftId))
       }
     }
 
@@ -48,8 +48,8 @@ class BusinessNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
-          navigator.nextPage(page, NormalMode, fakeDraftId)(userAnswers)
-            .mustBe(BusinessAddressUkYesNoController.onPageLoad(NormalMode, index, fakeDraftId))
+          navigator.nextPage(page, fakeDraftId)(userAnswers)
+            .mustBe(BusinessAddressUkYesNoController.onPageLoad(index, fakeDraftId))
       }
     }
 
@@ -62,8 +62,8 @@ class BusinessNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>
             val answers = userAnswers.set(page, true).success.value
-            navigator.nextPage(page, NormalMode, fakeDraftId)(answers)
-              .mustBe(BusinessUkAddressController.onPageLoad(NormalMode, index, fakeDraftId))
+            navigator.nextPage(page, fakeDraftId)(answers)
+              .mustBe(BusinessUkAddressController.onPageLoad(index, fakeDraftId))
         }
       }
 
@@ -72,8 +72,8 @@ class BusinessNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>
             val answers = userAnswers.set(page, false).success.value
-            navigator.nextPage(page, NormalMode, fakeDraftId)(answers)
-              .mustBe(BusinessInternationalAddressController.onPageLoad(NormalMode, index, fakeDraftId))
+            navigator.nextPage(page, fakeDraftId)(answers)
+              .mustBe(BusinessInternationalAddressController.onPageLoad(index, fakeDraftId))
         }
       }
     }
@@ -84,8 +84,8 @@ class BusinessNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
-          navigator.nextPage(page, NormalMode, fakeDraftId)(userAnswers)
-            .mustBe(BusinessValueController.onPageLoad(NormalMode, index, fakeDraftId))
+          navigator.nextPage(page, fakeDraftId)(userAnswers)
+            .mustBe(BusinessValueController.onPageLoad(index, fakeDraftId))
       }
     }
 
@@ -95,8 +95,8 @@ class BusinessNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
-          navigator.nextPage(page, NormalMode, fakeDraftId)(userAnswers)
-            .mustBe(BusinessValueController.onPageLoad(NormalMode, index, fakeDraftId))
+          navigator.nextPage(page, fakeDraftId)(userAnswers)
+            .mustBe(BusinessValueController.onPageLoad(index, fakeDraftId))
       }
     }
   }

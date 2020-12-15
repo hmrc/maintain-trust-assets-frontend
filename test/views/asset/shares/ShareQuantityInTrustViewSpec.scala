@@ -17,7 +17,6 @@
 package views.asset.shares
 
 import forms.QuantityFormProvider
-import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.StringViewBehaviours
@@ -36,7 +35,7 @@ class ShareQuantityInTrustViewSpec extends StringViewBehaviours {
     val view = viewFor[ShareQuantityInTrustView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, NormalMode, fakeDraftId, index, companyName)(fakeRequest, messages)
+      view.apply(form, fakeDraftId, index, companyName)(fakeRequest, messages)
 
     behave like pageWithBackLink(applyView(form))
 

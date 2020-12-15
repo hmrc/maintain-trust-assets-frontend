@@ -20,7 +20,6 @@ import base.SpecBase
 import controllers.IndexValidation
 import forms.YesNoFormProvider
 import generators.ModelGenerators
-import models.NormalMode
 import org.scalacheck.Arbitrary.arbitrary
 import pages.asset.shares.SharePortfolioOnStockExchangePage
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
@@ -33,7 +32,7 @@ class SharePortfolioOnStockExchangeControllerSpec extends SpecBase with ModelGen
   val form = new YesNoFormProvider().withPrefix("shares.portfolioOnStockExchangeYesNo")
   val index: Int = 0
 
-  lazy val sharePortfolioOnStockExchangeRoute = routes.SharePortfolioOnStockExchangeController.onPageLoad(NormalMode, index, fakeDraftId).url
+  lazy val sharePortfolioOnStockExchangeRoute = routes.SharePortfolioOnStockExchangeController.onPageLoad(index, fakeDraftId).url
 
   "SharePortfolioOnStockExchange Controller" must {
 
@@ -50,7 +49,7 @@ class SharePortfolioOnStockExchangeControllerSpec extends SpecBase with ModelGen
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode, fakeDraftId, index)(fakeRequest, messages).toString
+        view(form, fakeDraftId, index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -70,7 +69,7 @@ class SharePortfolioOnStockExchangeControllerSpec extends SpecBase with ModelGen
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), NormalMode, fakeDraftId, index)(fakeRequest, messages).toString
+        view(form.fill(true), fakeDraftId, index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -110,7 +109,7 @@ class SharePortfolioOnStockExchangeControllerSpec extends SpecBase with ModelGen
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode, fakeDraftId, index)(fakeRequest, messages).toString
+        view(boundForm, fakeDraftId, index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -152,7 +151,7 @@ class SharePortfolioOnStockExchangeControllerSpec extends SpecBase with ModelGen
   "for a GET" must {
 
     def getForIndex(index: Int) : FakeRequest[AnyContentAsEmpty.type] = {
-      val route = routes.SharePortfolioOnStockExchangeController.onPageLoad(NormalMode, index, fakeDraftId).url
+      val route = routes.SharePortfolioOnStockExchangeController.onPageLoad(index, fakeDraftId).url
 
       FakeRequest(GET, route)
     }
@@ -169,7 +168,7 @@ class SharePortfolioOnStockExchangeControllerSpec extends SpecBase with ModelGen
     def postForIndex(index: Int): FakeRequest[AnyContentAsFormUrlEncoded] = {
 
       val route =
-        routes.SharePortfolioOnStockExchangeController.onPageLoad(NormalMode, index, fakeDraftId).url
+        routes.SharePortfolioOnStockExchangeController.onPageLoad(index, fakeDraftId).url
 
       FakeRequest(POST, route)
         .withFormUrlEncodedBody(("value", "true"))

@@ -17,7 +17,7 @@
 package utils.print
 
 import controllers.asset.business.routes._
-import models.{NormalMode, UserAnswers}
+import models.UserAnswers
 import pages.asset.business._
 import play.api.i18n.Messages
 import utils.countryOptions.CountryOptions
@@ -48,12 +48,12 @@ class BusinessPrintHelper @Inject()(countryOptions: CountryOptions,
 
     Seq(
       converter.assetTypeQuestion(index, draftId),
-      converter.stringQuestion(BusinessNamePage(index), "business.name", BusinessNameController.onPageLoad(NormalMode, index, draftId).url),
-      converter.stringQuestion(BusinessDescriptionPage(index), "business.description", BusinessDescriptionController.onPageLoad(NormalMode, index, draftId).url),
-      converter.yesNoQuestion(BusinessAddressUkYesNoPage(index), "business.addressUkYesNo", BusinessAddressUkYesNoController.onPageLoad(NormalMode, index, draftId).url),
-      converter.addressQuestion(BusinessUkAddressPage(index), "business.ukAddress", BusinessUkAddressController.onPageLoad(NormalMode, index, draftId).url),
-      converter.addressQuestion(BusinessInternationalAddressPage(index), "business.internationalAddress", BusinessInternationalAddressController.onPageLoad(NormalMode, index, draftId).url),
-      converter.currencyQuestion(BusinessValuePage(index), "business.currentValue", BusinessValueController.onPageLoad(NormalMode, index, draftId).url)
+      converter.stringQuestion(BusinessNamePage(index), "business.name", BusinessNameController.onPageLoad(index, draftId).url),
+      converter.stringQuestion(BusinessDescriptionPage(index), "business.description", BusinessDescriptionController.onPageLoad(index, draftId).url),
+      converter.yesNoQuestion(BusinessAddressUkYesNoPage(index), "business.addressUkYesNo", BusinessAddressUkYesNoController.onPageLoad(index, draftId).url),
+      converter.addressQuestion(BusinessUkAddressPage(index), "business.ukAddress", BusinessUkAddressController.onPageLoad(index, draftId).url),
+      converter.addressQuestion(BusinessInternationalAddressPage(index), "business.internationalAddress", BusinessInternationalAddressController.onPageLoad(index, draftId).url),
+      converter.currencyQuestion(BusinessValuePage(index), "business.currentValue", BusinessValueController.onPageLoad(index, draftId).url)
     ).flatten
   }
 }

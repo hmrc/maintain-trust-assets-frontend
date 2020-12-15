@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.IndexValidation
 import controllers.routes._
 import forms.ValueFormProvider
-import models.{NormalMode, UserAnswers}
+import models.UserAnswers
 import org.scalacheck.Arbitrary.arbitrary
 import pages.asset.property_or_land.{PropertyLandValueTrustPage, PropertyOrLandTotalValuePage}
 import play.api.data.Form
@@ -37,7 +37,7 @@ class PropertyLandValueTrustControllerSpec extends SpecBase with IndexValidation
   val index: Int = 0
   val validAnswer: Long = 4000L
 
-  lazy val propertyLandValueTrustRoute: String = routes.PropertyLandValueTrustController.onPageLoad(NormalMode, index, fakeDraftId).url
+  lazy val propertyLandValueTrustRoute: String = routes.PropertyLandValueTrustController.onPageLoad(index, fakeDraftId).url
 
   val baseAnswers: UserAnswers = emptyUserAnswers.set(PropertyOrLandTotalValuePage(index), 5000L).success.value
 
@@ -56,7 +56,7 @@ class PropertyLandValueTrustControllerSpec extends SpecBase with IndexValidation
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode, index, fakeDraftId)(request, messages).toString
+        view(form, index, fakeDraftId)(request, messages).toString
 
       application.stop()
     }
@@ -76,7 +76,7 @@ class PropertyLandValueTrustControllerSpec extends SpecBase with IndexValidation
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), NormalMode, index, fakeDraftId)(fakeRequest, messages).toString
+        view(form.fill(validAnswer), index, fakeDraftId)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -109,7 +109,7 @@ class PropertyLandValueTrustControllerSpec extends SpecBase with IndexValidation
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual routes.PropertyOrLandTotalValueController.onPageLoad(NormalMode, index, fakeDraftId).url
+        redirectLocation(result).value mustEqual routes.PropertyOrLandTotalValueController.onPageLoad(index, fakeDraftId).url
 
         application.stop()
       }
@@ -124,7 +124,7 @@ class PropertyLandValueTrustControllerSpec extends SpecBase with IndexValidation
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual routes.PropertyOrLandTotalValueController.onPageLoad(NormalMode, index, fakeDraftId).url
+        redirectLocation(result).value mustEqual routes.PropertyOrLandTotalValueController.onPageLoad(index, fakeDraftId).url
 
         application.stop()
       }
@@ -146,7 +146,7 @@ class PropertyLandValueTrustControllerSpec extends SpecBase with IndexValidation
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode, index, fakeDraftId)(fakeRequest, messages).toString
+        view(boundForm, index, fakeDraftId)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -184,7 +184,7 @@ class PropertyLandValueTrustControllerSpec extends SpecBase with IndexValidation
     "for a GET" must {
 
       def getForIndex(index: Int) : FakeRequest[AnyContentAsEmpty.type] = {
-        val route = routes.PropertyLandValueTrustController.onPageLoad(NormalMode, index, fakeDraftId).url
+        val route = routes.PropertyLandValueTrustController.onPageLoad(index, fakeDraftId).url
 
         FakeRequest(GET, route)
       }
@@ -202,7 +202,7 @@ class PropertyLandValueTrustControllerSpec extends SpecBase with IndexValidation
       def postForIndex(index: Int): FakeRequest[AnyContentAsFormUrlEncoded] = {
 
         val route =
-          routes.PropertyLandValueTrustController.onPageLoad(NormalMode, index, fakeDraftId).url
+          routes.PropertyLandValueTrustController.onPageLoad(index, fakeDraftId).url
 
         FakeRequest(POST, route)
           .withFormUrlEncodedBody(("value", validAnswer.toString))

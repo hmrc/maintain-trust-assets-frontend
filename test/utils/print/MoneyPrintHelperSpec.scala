@@ -19,8 +19,8 @@ package utils.print
 import base.SpecBase
 import controllers.asset.money.routes._
 import controllers.asset.routes.WhatKindOfAssetController
+import models.UserAnswers
 import models.WhatKindOfAsset.Money
-import models.{NormalMode, UserAnswers}
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.money._
 import play.twirl.api.Html
@@ -41,8 +41,8 @@ class MoneyPrintHelperSpec extends SpecBase {
     .set(AssetMoneyValuePage(index), amount).success.value
 
   private val rows: Seq[AnswerRow] = Seq(
-    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Money"), Some(WhatKindOfAssetController.onPageLoad(NormalMode, index, draftId).url)),
-    AnswerRow("money.value.checkYourAnswersLabel", Html(s"£100"), Some(AssetMoneyValueController.onPageLoad(NormalMode, index, fakeDraftId).url))
+    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Money"), Some(WhatKindOfAssetController.onPageLoad(index, draftId).url)),
+    AnswerRow("money.value.checkYourAnswersLabel", Html(s"£100"), Some(AssetMoneyValueController.onPageLoad(index, fakeDraftId).url))
   )
 
   "MoneyPrintHelper" when {

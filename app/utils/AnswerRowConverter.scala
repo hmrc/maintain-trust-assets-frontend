@@ -16,9 +16,9 @@
 
 package utils
 
-import controllers.asset.routes.WhatKindOfAssetController
 import com.google.inject.Inject
-import models.{Address, NormalMode, ShareClass, UserAnswers}
+import controllers.asset.routes.WhatKindOfAssetController
+import models.{Address, ShareClass, UserAnswers}
 import pages.asset.WhatKindOfAssetPage
 import play.api.i18n.Messages
 import play.api.libs.json.Reads
@@ -121,7 +121,7 @@ class AnswerRowConverter @Inject()(countryOptions: CountryOptions,
       AnswerRow(
         s"whatKindOfAsset.$label.checkYourAnswersLabel",
         HtmlFormat.escape(messages(s"whatKindOfAsset.$x")),
-        Some(WhatKindOfAssetController.onPageLoad(NormalMode, index, draftId).url),
+        Some(WhatKindOfAssetController.onPageLoad(index, draftId).url),
       )
     }
   }

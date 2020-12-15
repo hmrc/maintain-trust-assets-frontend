@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.asset._
 import generators.Generators
 import models.WhatKindOfAsset._
-import models.{AddAssets, NormalMode, UserAnswers}
+import models.{AddAssets, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.asset.{AddAnAssetYesNoPage, AddAssetsPage, WhatKindOfAssetPage}
@@ -45,8 +45,8 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
 
           val answers = userAnswers.set(AddAnAssetYesNoPage, true).success.value
 
-          navigator.nextPage(AddAnAssetYesNoPage, NormalMode, fakeDraftId)(answers)
-            .mustBe(controllers.asset.routes.WhatKindOfAssetController.onPageLoad(NormalMode, index, fakeDraftId))
+          navigator.nextPage(AddAnAssetYesNoPage, fakeDraftId)(answers)
+            .mustBe(controllers.asset.routes.WhatKindOfAssetController.onPageLoad(index, fakeDraftId))
       }
     }
 
@@ -56,7 +56,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
 
           val answers = userAnswers.set(AddAnAssetYesNoPage, false).success.value
 
-          navigator.nextPage(AddAnAssetYesNoPage, NormalMode, fakeDraftId)(answers)
+          navigator.nextPage(AddAnAssetYesNoPage, fakeDraftId)(answers)
             .mustBe(assetsCompletedRoute)
       }
     }
@@ -69,8 +69,8 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           .set(WhatKindOfAssetPage(0), Money).success.value
           .set(AddAssetsPage, AddAssets.YesNow).success.value
 
-        navigator.nextPage(AddAssetsPage, NormalMode, fakeDraftId)(answers)
-          .mustBe(controllers.asset.routes.WhatKindOfAssetController.onPageLoad(NormalMode, 1, fakeDraftId))
+        navigator.nextPage(AddAssetsPage, fakeDraftId)(answers)
+          .mustBe(controllers.asset.routes.WhatKindOfAssetController.onPageLoad(1, fakeDraftId))
       }
 
       "go to RegistrationProgress from AddAssetsPage when selecting add them later" in {
@@ -79,7 +79,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           .set(WhatKindOfAssetPage(0), Money).success.value
           .set(AddAssetsPage, AddAssets.YesLater).success.value
 
-        navigator.nextPage(AddAssetsPage, NormalMode, fakeDraftId)(answers)
+        navigator.nextPage(AddAssetsPage, fakeDraftId)(answers)
           .mustBe(assetsCompletedRoute)
       }
 
@@ -89,7 +89,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           .set(WhatKindOfAssetPage(0), Money).success.value
           .set(AddAssetsPage, AddAssets.NoComplete).success.value
 
-        navigator.nextPage(AddAssetsPage, NormalMode, fakeDraftId)(answers)
+        navigator.nextPage(AddAssetsPage, fakeDraftId)(answers)
           .mustBe(assetsCompletedRoute)
       }
     }
@@ -104,8 +104,8 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
 
             val answers = userAnswers.set(WhatKindOfAssetPage(index), Money).success.value
 
-            navigator.nextPage(WhatKindOfAssetPage(index), NormalMode, fakeDraftId)(answers)
-              .mustBe(controllers.asset.money.routes.AssetMoneyValueController.onPageLoad(NormalMode, index, fakeDraftId))
+            navigator.nextPage(WhatKindOfAssetPage(index), fakeDraftId)(answers)
+              .mustBe(controllers.asset.money.routes.AssetMoneyValueController.onPageLoad(index, fakeDraftId))
         }
       }
 
@@ -117,8 +117,8 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
 
             val answers = userAnswers.set(WhatKindOfAssetPage(index), PropertyOrLand).success.value
 
-            navigator.nextPage(WhatKindOfAssetPage(index), NormalMode, fakeDraftId)(answers)
-              .mustBe(controllers.asset.property_or_land.routes.PropertyOrLandAddressYesNoController.onPageLoad(NormalMode, index, fakeDraftId))
+            navigator.nextPage(WhatKindOfAssetPage(index), fakeDraftId)(answers)
+              .mustBe(controllers.asset.property_or_land.routes.PropertyOrLandAddressYesNoController.onPageLoad(index, fakeDraftId))
         }
       }
 
@@ -130,8 +130,8 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
 
             val answers = userAnswers.set(WhatKindOfAssetPage(index), Shares).success.value
 
-            navigator.nextPage(WhatKindOfAssetPage(index), NormalMode, fakeDraftId)(answers)
-              .mustBe(controllers.asset.shares.routes.SharesInAPortfolioController.onPageLoad(NormalMode, index, fakeDraftId))
+            navigator.nextPage(WhatKindOfAssetPage(index), fakeDraftId)(answers)
+              .mustBe(controllers.asset.shares.routes.SharesInAPortfolioController.onPageLoad(index, fakeDraftId))
         }
       }
 
@@ -143,8 +143,8 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
 
             val answers = userAnswers.set(WhatKindOfAssetPage(index), Business).success.value
 
-            navigator.nextPage(WhatKindOfAssetPage(index), NormalMode, fakeDraftId)(answers)
-              .mustBe(controllers.asset.business.routes.BusinessNameController.onPageLoad(NormalMode, index, fakeDraftId))
+            navigator.nextPage(WhatKindOfAssetPage(index), fakeDraftId)(answers)
+              .mustBe(controllers.asset.business.routes.BusinessNameController.onPageLoad(index, fakeDraftId))
         }
       }
 
@@ -156,8 +156,8 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
 
             val answers = userAnswers.set(WhatKindOfAssetPage(index), Partnership).success.value
 
-            navigator.nextPage(WhatKindOfAssetPage(index), NormalMode, fakeDraftId)(answers)
-              .mustBe(controllers.asset.partnership.routes.PartnershipDescriptionController.onPageLoad(NormalMode, index, fakeDraftId))
+            navigator.nextPage(WhatKindOfAssetPage(index), fakeDraftId)(answers)
+              .mustBe(controllers.asset.partnership.routes.PartnershipDescriptionController.onPageLoad(index, fakeDraftId))
         }
       }
 
@@ -168,8 +168,8 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
 
             val answers = userAnswers.set(WhatKindOfAssetPage(index), Other).success.value
 
-            navigator.nextPage(WhatKindOfAssetPage(index), NormalMode, fakeDraftId)(answers)
-              .mustBe(other.routes.OtherAssetDescriptionController.onPageLoad(NormalMode, index, fakeDraftId))
+            navigator.nextPage(WhatKindOfAssetPage(index), fakeDraftId)(answers)
+              .mustBe(other.routes.OtherAssetDescriptionController.onPageLoad(index, fakeDraftId))
         }
       }
     }

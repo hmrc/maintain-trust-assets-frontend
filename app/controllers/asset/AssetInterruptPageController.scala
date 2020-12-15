@@ -17,12 +17,12 @@
 package controllers.asset
 
 import controllers.actions.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
-import javax.inject.Inject
-import models.NormalMode
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.asset.AssetInterruptPageView
+
+import javax.inject.Inject
 
 class AssetInterruptPageController @Inject()(
                                               override val messagesApi: MessagesApi,
@@ -39,7 +39,7 @@ class AssetInterruptPageController @Inject()(
   }
 
   def onSubmit(draftId: String): Action[AnyContent] = (identify andThen getData(draftId) andThen requireData) {
-      Redirect(routes.WhatKindOfAssetController.onPageLoad(NormalMode, 0, draftId))
+      Redirect(routes.WhatKindOfAssetController.onPageLoad(0, draftId))
   }
 
 }

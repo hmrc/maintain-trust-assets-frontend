@@ -16,10 +16,9 @@
 
 package controllers.asset.money
 
+import config.annotations.Money
 import controllers.actions.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
 import forms.ValueFormProvider
-import javax.inject.Inject
-import models.Mode
 import models.Status.Completed
 import models.requests.RegistrationDataRequest
 import navigation.Navigator
@@ -30,9 +29,9 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
 import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import config.annotations.Money
 import views.html.asset.money.AssetMoneyValueView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AssetMoneyValueController @Inject()(
@@ -51,7 +50,7 @@ class AssetMoneyValueController @Inject()(
 
   private val form: Form[Long] = formProvider.withConfig("money.value")
 
-  def onPageLoad(mode: Mode,  index: Int, draftId: String): Action[AnyContent] = actions(draftId) {
+  def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(draftId) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(AssetMoneyValuePage(index)) match {
@@ -59,15 +58,15 @@ class AssetMoneyValueController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, draftId, index))
+      Ok(view(preparedForm, draftId, index))
   }
 
-  def onSubmit(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(draftId).async {
+  def onSubmit(index: Int, draftId: String): Action[AnyContent] = actions(draftId).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode, draftId, index))),
+          Future.successful(BadRequest(view(formWithErrors, draftId, index))),
 
         value => {
 
@@ -77,7 +76,7 @@ class AssetMoneyValueController @Inject()(
           for {
                 updatedAnswers <- Future.fromTry(answers)
                 _              <- repository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(AssetMoneyValuePage(index), mode, draftId)(updatedAnswers))
+              } yield Redirect(navigator.nextPage(AssetMoneyValuePage(index), draftId)(updatedAnswers))
           }
       )
   }

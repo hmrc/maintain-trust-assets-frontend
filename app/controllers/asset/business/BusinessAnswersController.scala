@@ -17,7 +17,6 @@
 package controllers.asset.business
 
 import controllers.actions._
-import models.NormalMode
 import models.Status.Completed
 import models.requests.RegistrationDataRequest
 import pages.AssetStatus
@@ -48,7 +47,7 @@ class BusinessAnswersController @Inject()(
     identify andThen
       getData(draftId) andThen
       requireData andThen
-      requiredAnswer(RequiredAnswer(BusinessNamePage(index), routes.BusinessNameController.onPageLoad(NormalMode, index, draftId)))
+      requiredAnswer(RequiredAnswer(BusinessNamePage(index), routes.BusinessNameController.onPageLoad(index, draftId)))
 
   def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
     implicit request =>

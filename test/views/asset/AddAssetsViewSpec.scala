@@ -17,7 +17,7 @@
 package views.asset
 
 import forms.AddAssetsFormProvider
-import models.{AddAssets, NormalMode, WhatKindOfAsset}
+import models.{AddAssets, WhatKindOfAsset}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewmodels.AddRow
@@ -42,11 +42,11 @@ class AddAssetsViewSpec extends OptionsViewBehaviours with TabularDataViewBehavi
   private val view: AddAssetsView = viewFor[AddAssetsView](Some(emptyUserAnswers))
 
   private def applyView(form: Form[_]): HtmlFormat.Appendable =
-    view.apply(form, NormalMode, fakeDraftId, Nil, Nil, "Add assets")(fakeRequest, messages)
+    view.apply(form, fakeDraftId, Nil, Nil, "Add assets")(fakeRequest, messages)
 
   private def applyView(form: Form[_], inProgressAssets: Seq[AddRow], completeAssets: Seq[AddRow], count : Int): HtmlFormat.Appendable = {
     val title = if (count > 1) s"You have added $count assets" else "Add assets"
-    view.apply(form, NormalMode, fakeDraftId, inProgressAssets, completeAssets, title)(fakeRequest, messages)
+    view.apply(form, fakeDraftId, inProgressAssets, completeAssets, title)(fakeRequest, messages)
   }
 
   "AddAssetsView" when {

@@ -17,7 +17,6 @@
 package views.asset.property_or_land
 
 import forms.ValueFormProvider
-import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.LongViewBehaviours
@@ -36,7 +35,7 @@ class PropertyLandValueTrustViewSpec extends LongViewBehaviours {
     val view = viewFor[PropertyLandValueTrustView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, NormalMode, index, fakeDraftId)(fakeRequest, messages)
+      view.apply(form, index, fakeDraftId)(fakeRequest, messages)
 
 
     behave like normalPage(applyView(form), messageKeyPrefix)

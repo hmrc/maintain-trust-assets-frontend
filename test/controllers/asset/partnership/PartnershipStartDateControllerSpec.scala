@@ -16,18 +16,17 @@
 
 package controllers.asset.partnership
 
-import java.time.{LocalDate, ZoneOffset}
-
 import base.SpecBase
 import controllers.IndexValidation
 import forms.partnership.PartnershipStartDateFormProvider
-import models.NormalMode
 import org.scalacheck.Gen
 import pages.asset.partnership.PartnershipStartDatePage
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{route, _}
 import views.html.asset.partnership.PartnershipStartDateView
+
+import java.time.{LocalDate, ZoneOffset}
 
 class PartnershipStartDateControllerSpec extends SpecBase with IndexValidation {
 
@@ -37,7 +36,7 @@ class PartnershipStartDateControllerSpec extends SpecBase with IndexValidation {
 
   private val validAnswer = LocalDate.now(ZoneOffset.UTC)
 
-  private lazy val partnershipStartDateRoute = routes.PartnershipStartDateController.onPageLoad(NormalMode, index, fakeDraftId).url
+  private lazy val partnershipStartDateRoute = routes.PartnershipStartDateController.onPageLoad(index, fakeDraftId).url
 
   "PartnershipStartDate Controller" must {
 
@@ -54,7 +53,7 @@ class PartnershipStartDateControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode, index, fakeDraftId)(fakeRequest, messages).toString
+        view(form, index, fakeDraftId)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -74,7 +73,7 @@ class PartnershipStartDateControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), NormalMode, index, fakeDraftId)(fakeRequest, messages).toString
+        view(form.fill(validAnswer), index, fakeDraftId)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -118,7 +117,7 @@ class PartnershipStartDateControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode, index, fakeDraftId)(fakeRequest, messages).toString
+        view(boundForm, index, fakeDraftId)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -162,7 +161,7 @@ class PartnershipStartDateControllerSpec extends SpecBase with IndexValidation {
   "for a GET" must {
 
     def getForIndex(index: Int): FakeRequest[AnyContentAsEmpty.type] = {
-      val route = routes.PartnershipStartDateController.onPageLoad(NormalMode, index, fakeDraftId).url
+      val route = routes.PartnershipStartDateController.onPageLoad(index, fakeDraftId).url
 
       FakeRequest(GET, route)
     }
@@ -179,7 +178,7 @@ class PartnershipStartDateControllerSpec extends SpecBase with IndexValidation {
     def postForIndex(index: Int): FakeRequest[AnyContentAsFormUrlEncoded] = {
 
       val route =
-        routes.PartnershipStartDateController.onPageLoad(NormalMode, index, fakeDraftId).url
+        routes.PartnershipStartDateController.onPageLoad(index, fakeDraftId).url
 
       FakeRequest(POST, route)
         .withFormUrlEncodedBody(

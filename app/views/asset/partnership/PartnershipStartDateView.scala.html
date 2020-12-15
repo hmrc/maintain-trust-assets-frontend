@@ -17,17 +17,17 @@
 @import controllers.asset.partnership.routes._
 
 @this(
-        main_template: MainTemplate,
-        formHelper: FormWithCSRF
+    main_template: MainTemplate,
+    formHelper: FormWithCSRF
 )
 
-@(form: Form[_], mode: Mode, index: Int, draftId: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], index: Int, draftId: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = s"${errorPrefix(form)} ${messages("partnership.startDate.title")}"
 ) {
 
-    @formHelper(action = PartnershipStartDateController.onSubmit(mode, index, draftId), 'autoComplete -> "off") {
+    @formHelper(action = PartnershipStartDateController.onSubmit(index, draftId), 'autoComplete -> "off") {
 
         @components.back_link()
 

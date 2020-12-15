@@ -17,10 +17,9 @@
 package controllers.asset.property_or_land
 
 import base.SpecBase
-import controllers.routes._
 import controllers.IndexValidation
+import controllers.routes._
 import forms.YesNoFormProvider
-import models.NormalMode
 import org.scalacheck.Arbitrary.arbitrary
 import pages.asset.property_or_land.{PropertyOrLandAddressYesNoPage, PropertyOrLandDescriptionPage}
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
@@ -34,7 +33,7 @@ class PropertyOrLandAddressYesNoControllerSpec extends SpecBase with IndexValida
 
   val index = 0
 
-  lazy val propertyOrLandAddressYesNoRoute = routes.PropertyOrLandAddressYesNoController.onPageLoad(NormalMode, index, fakeDraftId).url
+  lazy val propertyOrLandAddressYesNoRoute = routes.PropertyOrLandAddressYesNoController.onPageLoad(index, fakeDraftId).url
 
   "PropertyOrLandAddressYesNo Controller" must {
 
@@ -51,7 +50,7 @@ class PropertyOrLandAddressYesNoControllerSpec extends SpecBase with IndexValida
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode, index, fakeDraftId)(fakeRequest, messages).toString
+        view(form, index, fakeDraftId)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -71,7 +70,7 @@ class PropertyOrLandAddressYesNoControllerSpec extends SpecBase with IndexValida
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), NormalMode, index, fakeDraftId)(fakeRequest, messages).toString
+        view(form.fill(true), index, fakeDraftId)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -111,7 +110,7 @@ class PropertyOrLandAddressYesNoControllerSpec extends SpecBase with IndexValida
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode, index, fakeDraftId)(fakeRequest, messages).toString
+        view(boundForm, index, fakeDraftId)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -152,7 +151,7 @@ class PropertyOrLandAddressYesNoControllerSpec extends SpecBase with IndexValida
   "for a GET" must {
 
     def getForIndex(index: Int) : FakeRequest[AnyContentAsEmpty.type] = {
-      val route = routes.PropertyOrLandAddressYesNoController.onPageLoad(NormalMode, index, fakeDraftId).url
+      val route = routes.PropertyOrLandAddressYesNoController.onPageLoad(index, fakeDraftId).url
 
       FakeRequest(GET, route)
     }
@@ -169,7 +168,7 @@ class PropertyOrLandAddressYesNoControllerSpec extends SpecBase with IndexValida
     def postForIndex(index: Int): FakeRequest[AnyContentAsFormUrlEncoded] = {
 
       val route =
-        routes.PropertyOrLandAddressYesNoController.onPageLoad(NormalMode, index, fakeDraftId).url
+        routes.PropertyOrLandAddressYesNoController.onPageLoad(index, fakeDraftId).url
 
       FakeRequest(POST, route)
         .withFormUrlEncodedBody(("value", "true"))

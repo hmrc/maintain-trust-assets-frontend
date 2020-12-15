@@ -19,7 +19,7 @@ package navigation
 import base.SpecBase
 import controllers.asset.other.routes._
 import generators.Generators
-import models.{NormalMode, UserAnswers}
+import models.UserAnswers
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.asset.other._
@@ -38,8 +38,8 @@ class OtherNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
 
           val answers = userAnswers.set(OtherAssetDescriptionPage(index), "Description").success.value
 
-          navigator.nextPage(OtherAssetDescriptionPage(index), NormalMode, fakeDraftId)(answers)
-            .mustBe(OtherAssetValueController.onPageLoad(NormalMode, index, fakeDraftId))
+          navigator.nextPage(OtherAssetDescriptionPage(index), fakeDraftId)(answers)
+            .mustBe(OtherAssetValueController.onPageLoad(index, fakeDraftId))
       }
     }
 
@@ -50,7 +50,7 @@ class OtherNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
 
           val answers = userAnswers.set(OtherAssetValuePage(index), 4000L).success.value
 
-          navigator.nextPage(OtherAssetValuePage(index), NormalMode, fakeDraftId)(answers)
+          navigator.nextPage(OtherAssetValuePage(index), fakeDraftId)(answers)
             .mustBe(OtherAssetAnswersController.onPageLoad(index, fakeDraftId))
       }
     }

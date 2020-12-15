@@ -16,22 +16,22 @@
 
 package controllers.asset.business
 
+import config.annotations.Business
 import controllers.actions._
 import controllers.filters.IndexActionFilterProvider
 import forms.YesNoFormProvider
-import javax.inject.Inject
-import models.{Mode, NormalMode}
+import models.requests.RegistrationDataRequest
 import navigation.Navigator
 import pages.asset.business.{BusinessAddressUkYesNoPage, BusinessNamePage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
 import repositories.RegistrationsRepository
 import sections.Assets
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import config.annotations.Business
 import views.html.asset.buisness.BusinessAddressUkYesNoView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class BusinessAddressUkYesNoController @Inject()(
@@ -48,14 +48,14 @@ class BusinessAddressUkYesNoController @Inject()(
                                                   view: BusinessAddressUkYesNoView
                                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private def actions(index: Int, draftId: String) =
+  private def actions(index: Int, draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] =
     identify andThen
       getData(draftId) andThen
       requireData andThen
       validateIndex(index, Assets) andThen
-      requiredAnswer(RequiredAnswer(BusinessNamePage(index), routes.BusinessNameController.onPageLoad(NormalMode, index, draftId)))
+      requiredAnswer(RequiredAnswer(BusinessNamePage(index), routes.BusinessNameController.onPageLoad(index, draftId)))
 
-  def onPageLoad(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
+  def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
     implicit request =>
 
       val businessName = request.userAnswers.get(BusinessNamePage(index)).get
@@ -67,10 +67,10 @@ class BusinessAddressUkYesNoController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, draftId, index, businessName))
+      Ok(view(preparedForm, draftId, index, businessName))
   }
 
-  def onSubmit(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async {
+  def onSubmit(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async {
     implicit request =>
 
       val businessName = request.userAnswers.get(BusinessNamePage(index)).get
@@ -79,13 +79,13 @@ class BusinessAddressUkYesNoController @Inject()(
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode, draftId, index, businessName))),
+          Future.successful(BadRequest(view(formWithErrors, draftId, index, businessName))),
 
         value => {
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(BusinessAddressUkYesNoPage(index), value))
             _              <- registrationsRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(BusinessAddressUkYesNoPage(index), mode, draftId)(updatedAnswers))
+          } yield Redirect(navigator.nextPage(BusinessAddressUkYesNoPage(index), draftId)(updatedAnswers))
         }
       )
   }

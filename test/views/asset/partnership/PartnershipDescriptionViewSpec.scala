@@ -17,7 +17,6 @@
 package views.asset.partnership
 
 import forms.DescriptionFormProvider
-import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.StringViewBehaviours
@@ -35,7 +34,7 @@ class PartnershipDescriptionViewSpec extends StringViewBehaviours {
     val view = viewFor[PartnershipDescriptionView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, NormalMode, 0, fakeDraftId)(fakeRequest, messages)
+      view.apply(form, 0, fakeDraftId)(fakeRequest, messages)
 
     behave like normalPage(applyView(form), messageKeyPrefix)
 

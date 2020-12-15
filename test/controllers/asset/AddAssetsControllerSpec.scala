@@ -21,7 +21,7 @@ import forms.{AddAssetsFormProvider, YesNoFormProvider}
 import models.AddAssets.NoComplete
 import models.Status.Completed
 import models.WhatKindOfAsset.{Money, Other, Shares}
-import models.{AddAssets, NormalMode, ShareClass, UserAnswers}
+import models.{AddAssets, ShareClass, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{reset, verify, when}
@@ -46,7 +46,7 @@ class AddAssetsControllerSpec extends SpecBase {
   lazy val completePostRoute: String = routes.AddAssetsController.submitComplete(fakeDraftId).url
 
   def changeMoneyAssetRoute(index: Int): String =
-    money.routes.AssetMoneyValueController.onPageLoad(NormalMode, index, fakeDraftId).url
+    money.routes.AssetMoneyValueController.onPageLoad(index, fakeDraftId).url
 
   def changeSharesAssetRoute(index: Int): String =
     shares.routes.ShareAnswerController.onPageLoad(index, fakeDraftId).url
@@ -128,7 +128,7 @@ class AddAssetsControllerSpec extends SpecBase {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(addAssetsForm, NormalMode,fakeDraftId)(fakeRequest, messages).toString
+          view(addAssetsForm, fakeDraftId)(fakeRequest, messages).toString
 
         application.stop()
       }
@@ -168,7 +168,7 @@ class AddAssetsControllerSpec extends SpecBase {
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm, NormalMode, fakeDraftId)(fakeRequest, messages).toString
+          view(boundForm, fakeDraftId)(fakeRequest, messages).toString
 
         application.stop()
       }
@@ -189,7 +189,7 @@ class AddAssetsControllerSpec extends SpecBase {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(addAssetsForm, NormalMode,fakeDraftId, Nil, assets, "You have added 2 assets")(fakeRequest, messages).toString
+          view(addAssetsForm, fakeDraftId, Nil, assets, "You have added 2 assets")(fakeRequest, messages).toString
 
         application.stop()
       }
@@ -229,7 +229,7 @@ class AddAssetsControllerSpec extends SpecBase {
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm, NormalMode, fakeDraftId, Nil, assets, "You have added 2 assets")(fakeRequest, messages).toString
+          view(boundForm, fakeDraftId, Nil, assets, "You have added 2 assets")(fakeRequest, messages).toString
 
         application.stop()
       }
@@ -266,7 +266,7 @@ class AddAssetsControllerSpec extends SpecBase {
         val content = contentAsString(result)
 
         content mustEqual
-          view(NormalMode, fakeDraftId, Nil, assets, "You have added 51 assets")(request, messages).toString
+          view(fakeDraftId, Nil, assets, "You have added 51 assets")(request, messages).toString
 
         content must include("You cannot add another asset as you have entered a maximum of 51.")
         content must include("You can add another asset by removing an existing one, or write to HMRC with details of any additional assets.")

@@ -22,9 +22,9 @@ import models.WhatKindOfAsset.Money
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{verify, when}
 import pages.asset.WhatKindOfAssetPage
+import pages.asset.money._
 import utils.print.MoneyPrintHelper
 import viewmodels.AnswerSection
-import pages.asset.money._
 
 class MoneyAnswersHelperSpec extends SpecBase {
 

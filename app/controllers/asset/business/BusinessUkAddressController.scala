@@ -16,22 +16,23 @@
 
 package controllers.asset.business
 
+import config.annotations.Business
 import controllers.actions._
 import controllers.filters.IndexActionFilterProvider
 import forms.UKAddressFormProvider
-import javax.inject.Inject
-import models.{Mode, NormalMode, UKAddress}
+import models.UKAddress
+import models.requests.RegistrationDataRequest
 import navigation.Navigator
 import pages.asset.business.{BusinessNamePage, BusinessUkAddressPage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
 import repositories.RegistrationsRepository
 import sections.Assets
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import config.annotations.Business
 import views.html.asset.buisness.BusinessUkAddressView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class BusinessUkAddressController @Inject()(
@@ -50,14 +51,14 @@ class BusinessUkAddressController @Inject()(
 
   val form: Form[UKAddress] = formProvider()
 
-  private def actions(index: Int, draftId: String) =
+  private def actions(index: Int, draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] =
     identify andThen
       getData(draftId) andThen
       requireData andThen
       validateIndex(index, Assets) andThen
-      requiredAnswer(RequiredAnswer(BusinessNamePage(index), routes.BusinessNameController.onPageLoad(NormalMode, index, draftId)))
+      requiredAnswer(RequiredAnswer(BusinessNamePage(index), routes.BusinessNameController.onPageLoad(index, draftId)))
 
-  def onPageLoad(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
+  def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
     implicit request =>
 
       val businessName = request.userAnswers.get(BusinessNamePage(index)).get
@@ -67,24 +68,24 @@ class BusinessUkAddressController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, draftId, index, businessName))
+      Ok(view(preparedForm, draftId, index, businessName))
   }
 
 
-  def onSubmit(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async {
+  def onSubmit(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async {
     implicit request =>
 
       val businessName = request.userAnswers.get(BusinessNamePage(index)).get
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode, draftId, index, businessName))),
+          Future.successful(BadRequest(view(formWithErrors, draftId, index, businessName))),
 
         value => {
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(BusinessUkAddressPage(index), value))
             _              <- registrationsRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(BusinessUkAddressPage(index), mode, draftId)(updatedAnswers))
+          } yield Redirect(navigator.nextPage(BusinessUkAddressPage(index), draftId)(updatedAnswers))
         }
       )
   }

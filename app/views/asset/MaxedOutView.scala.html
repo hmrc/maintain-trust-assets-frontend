@@ -15,7 +15,6 @@
  *@
 
 @import controllers.asset.routes._
-@import models.Mode
 @import models.AddAssets
 @import viewmodels.AddRow
 
@@ -24,7 +23,7 @@
     formHelper: FormWithCSRF
 )
 
-@(mode: Mode, draftId: String, inProgressAssets: Seq[AddRow], completeAssets: Seq[AddRow], heading: String)(implicit request: Request[_], messages: Messages)
+@(draftId: String, inProgressAssets: Seq[AddRow], completeAssets: Seq[AddRow], heading: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = heading

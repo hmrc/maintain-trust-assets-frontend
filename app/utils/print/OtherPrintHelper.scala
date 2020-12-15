@@ -17,7 +17,7 @@
 package utils.print
 
 import controllers.asset.other.routes._
-import models.{NormalMode, UserAnswers}
+import models.UserAnswers
 import pages.asset.other._
 import play.api.i18n.Messages
 import utils.countryOptions.CountryOptions
@@ -48,8 +48,8 @@ class OtherPrintHelper @Inject()(countryOptions: CountryOptions,
 
     Seq(
       converter.assetTypeQuestion(index, draftId),
-      converter.stringQuestion(OtherAssetDescriptionPage(index), "other.description", OtherAssetDescriptionController.onPageLoad(NormalMode, index, draftId).url),
-      converter.currencyQuestion(OtherAssetValuePage(index), "other.value", OtherAssetValueController.onPageLoad(NormalMode, index, draftId).url)
+      converter.stringQuestion(OtherAssetDescriptionPage(index), "other.description", OtherAssetDescriptionController.onPageLoad(index, draftId).url),
+      converter.currencyQuestion(OtherAssetValuePage(index), "other.value", OtherAssetValueController.onPageLoad(index, draftId).url)
     ).flatten
   }
 }

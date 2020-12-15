@@ -19,9 +19,8 @@ package controllers.asset
 import controllers.actions.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
 import controllers.filters.IndexActionFilterProvider
 import forms.WhatKindOfAssetFormProvider
-import javax.inject.Inject
 import models.requests.RegistrationDataRequest
-import models.{Enumerable, Mode, UserAnswers, WhatKindOfAsset}
+import models.{Enumerable, UserAnswers, WhatKindOfAsset}
 import navigation.Navigator
 import pages.asset.WhatKindOfAssetPage
 import play.api.data.Form
@@ -32,6 +31,7 @@ import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import viewmodels.RadioOption
 import views.html.asset.WhatKindOfAssetView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class WhatKindOfAssetController @Inject()(
@@ -59,29 +59,29 @@ class WhatKindOfAssetController @Inject()(
   private def actions (index: Int, draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] =
     identify andThen getData(draftId) andThen requireData andThen validateIndex(index, sections.Assets)
 
-  def onPageLoad(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
+  def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
     implicit request =>
       val preparedForm = request.userAnswers.get(WhatKindOfAssetPage(index)) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, draftId, index, options(request.userAnswers, index)))
+      Ok(view(preparedForm, draftId, index, options(request.userAnswers, index)))
   }
 
-  def onSubmit(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async {
+  def onSubmit(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode, draftId, index, options(request.userAnswers, index)))),
+          Future.successful(BadRequest(view(formWithErrors, draftId, index, options(request.userAnswers, index)))),
 
         value => {
 
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(WhatKindOfAssetPage(index), value))
             _ <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(WhatKindOfAssetPage(index), mode, draftId)(updatedAnswers))
+          } yield Redirect(navigator.nextPage(WhatKindOfAssetPage(index), draftId)(updatedAnswers))
         }
       )
   }

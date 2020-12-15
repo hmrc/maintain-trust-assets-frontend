@@ -21,8 +21,8 @@ import controllers.IndexValidation
 import controllers.routes._
 import forms.WhatKindOfAssetFormProvider
 import models.Status.Completed
+import models.WhatKindOfAsset
 import models.WhatKindOfAsset._
-import models.{NormalMode, WhatKindOfAsset}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.AssetStatus
 import pages.asset.WhatKindOfAssetPage
@@ -35,7 +35,7 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
 
   private val index = 0
 
-  private def whatKindOfAssetRoute(index: Int = index): String = routes.WhatKindOfAssetController.onPageLoad(NormalMode, index, fakeDraftId).url
+  private def whatKindOfAssetRoute(index: Int = index): String = routes.WhatKindOfAssetController.onPageLoad(index, fakeDraftId).url
 
   private val formProvider = new WhatKindOfAssetFormProvider()
   private val form = formProvider()
@@ -58,7 +58,7 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode, fakeDraftId, index, options)(fakeRequest, messages).toString
+        view(form, fakeDraftId, index, options)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -78,7 +78,7 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(Shares), NormalMode, fakeDraftId, index, options)(fakeRequest, messages).toString
+        view(form.fill(Shares), fakeDraftId, index, options)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -99,7 +99,7 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(Money), NormalMode, fakeDraftId, index, options)(request, messages).toString
+        view(form.fill(Money), fakeDraftId, index, options)(request, messages).toString
 
       application.stop()
     }
@@ -122,7 +122,7 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form, NormalMode, fakeDraftId, 1, optionsWithoutMoney)(request, messages).toString
+          view(form, fakeDraftId, 1, optionsWithoutMoney)(request, messages).toString
 
         application.stop()
       }
@@ -143,7 +143,7 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form, NormalMode, fakeDraftId, 1, optionsWithoutMoney)(request, messages).toString
+          view(form, fakeDraftId, 1, optionsWithoutMoney)(request, messages).toString
 
         application.stop()
       }
@@ -185,7 +185,7 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode, fakeDraftId, index, options)(fakeRequest, messages).toString
+        view(boundForm, fakeDraftId, index, options)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -224,7 +224,7 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
     "for a GET" must {
 
       def getForIndex(index: Int): FakeRequest[AnyContentAsEmpty.type] = {
-        val route = routes.WhatKindOfAssetController.onPageLoad(NormalMode, index, fakeDraftId).url
+        val route = routes.WhatKindOfAssetController.onPageLoad(index, fakeDraftId).url
 
         FakeRequest(GET, route)
       }
@@ -241,7 +241,7 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
       def postForIndex(index: Int): FakeRequest[AnyContentAsFormUrlEncoded] = {
 
         val route =
-          routes.WhatKindOfAssetController.onPageLoad(NormalMode, index, fakeDraftId).url
+          routes.WhatKindOfAssetController.onPageLoad(index, fakeDraftId).url
 
         FakeRequest(POST, route)
           .withFormUrlEncodedBody(("value", WhatKindOfAsset.values.head.toString))

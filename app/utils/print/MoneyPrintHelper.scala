@@ -16,13 +16,13 @@
 
 package utils.print
 
-import models.{NormalMode, UserAnswers}
+import controllers.asset.money.routes._
+import models.UserAnswers
 import pages.asset.money._
 import play.api.i18n.Messages
-import utils.{AnswerRowConverter, CheckAnswersFormatters}
 import utils.countryOptions.CountryOptions
+import utils.{AnswerRowConverter, CheckAnswersFormatters}
 import viewmodels.{AnswerRow, AnswerSection}
-import controllers.asset.money.routes._
 
 import javax.inject.Inject
 
@@ -48,7 +48,7 @@ class MoneyPrintHelper @Inject()(countryOptions: CountryOptions,
 
     Seq(
       converter.assetTypeQuestion(index, draftId),
-      converter.currencyQuestion(AssetMoneyValuePage(index), "money.value", AssetMoneyValueController.onPageLoad(NormalMode, index, draftId).url)
+      converter.currencyQuestion(AssetMoneyValuePage(index), "money.value", AssetMoneyValueController.onPageLoad(index, draftId).url)
     ).flatten
   }
 }

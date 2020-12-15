@@ -20,7 +20,7 @@ import controllers.actions.{DraftIdRetrievalActionProvider, RegistrationDataRequ
 import forms.{AddAssetsFormProvider, YesNoFormProvider}
 import models.AddAssets.NoComplete
 import models.requests.RegistrationDataRequest
-import models.{AddAssets, Enumerable, Mode}
+import models.{AddAssets, Enumerable}
 import navigation.Navigator
 import pages.asset.{AddAnAssetYesNoPage, AddAssetsPage}
 import play.api.data.Form
@@ -56,7 +56,7 @@ class AddAssetsController @Inject()(
   private def actions(draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] =
     identify andThen getData(draftId) andThen requireData
 
-  private def heading(count: Int)(implicit mp : MessagesProvider): String = {
+  private def heading(count: Int)(implicit mp: MessagesProvider): String = {
     count match {
       case 0 => Messages("addAssets.heading")
       case 1 => Messages("addAssets.singular.heading")
@@ -64,58 +64,58 @@ class AddAssetsController @Inject()(
     }
   }
 
-  def onPageLoad(mode: Mode, draftId: String): Action[AnyContent] = actions(draftId) {
+  def onPageLoad(draftId: String): Action[AnyContent] = actions(draftId) {
     implicit request =>
 
-      val assets = new AddAssetViewHelper(checkAnswersFormatters)(request.userAnswers, mode, draftId).rows
+      val assets = new AddAssetViewHelper(checkAnswersFormatters)(request.userAnswers, draftId).rows
 
       assets.count match {
-        case 0 => Ok(yesNoView(addAnotherForm, mode, draftId))
-        case c if c >= 51 => Ok(maxedOutView(mode, draftId, assets.inProgress, assets.complete, heading(c)))
-        case c => Ok(addAssetsView(addAnotherForm, mode, draftId, assets.inProgress, assets.complete, heading(c)))
+        case 0 => Ok(yesNoView(addAnotherForm, draftId))
+        case c if c >= 51 => Ok(maxedOutView(draftId, assets.inProgress, assets.complete, heading(c)))
+        case c => Ok(addAssetsView(addAnotherForm, draftId, assets.inProgress, assets.complete, heading(c)))
       }
   }
 
-  def submitOne(mode: Mode, draftId: String): Action[AnyContent] = actions(draftId).async {
+  def submitOne(draftId: String): Action[AnyContent] = actions(draftId).async {
     implicit request =>
 
       yesNoForm.bindFromRequest().fold(
         (formWithErrors: Form[_]) => {
-          Future.successful(BadRequest(yesNoView(formWithErrors, mode, draftId)))
+          Future.successful(BadRequest(yesNoView(formWithErrors, draftId)))
         },
         value => {
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnAssetYesNoPage, value))
             _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(AddAnAssetYesNoPage, mode, draftId)(updatedAnswers))
+          } yield Redirect(navigator.nextPage(AddAnAssetYesNoPage, draftId)(updatedAnswers))
         }
       )
   }
 
-  def submitAnother(mode: Mode, draftId: String): Action[AnyContent] = actions(draftId).async {
+  def submitAnother(draftId: String): Action[AnyContent] = actions(draftId).async {
     implicit request =>
 
       addAnotherForm.bindFromRequest().fold(
         (formWithErrors: Form[_]) => {
-          val assets = new AddAssetViewHelper(checkAnswersFormatters)(request.userAnswers, mode, draftId).rows
+          val assets = new AddAssetViewHelper(checkAnswersFormatters)(request.userAnswers, draftId).rows
 
-          Future.successful(BadRequest(addAssetsView(formWithErrors, mode, draftId, assets.inProgress, assets.complete, heading(assets.count))))
+          Future.successful(BadRequest(addAssetsView(formWithErrors, draftId, assets.inProgress, assets.complete, heading(assets.count))))
         },
         value => {
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAssetsPage, value))
             _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(AddAssetsPage, mode, draftId)(updatedAnswers))
+          } yield Redirect(navigator.nextPage(AddAssetsPage, draftId)(updatedAnswers))
         }
       )
   }
 
-  def submitComplete(mode: Mode, draftId: String): Action[AnyContent] = actions(draftId).async {
+  def submitComplete(draftId: String): Action[AnyContent] = actions(draftId).async {
     implicit request =>
 
       for {
         updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAssetsPage, NoComplete))
         _              <- repository.set(updatedAnswers)
-      } yield Redirect(navigator.nextPage(AddAssetsPage, mode, draftId)(updatedAnswers))
+      } yield Redirect(navigator.nextPage(AddAssetsPage, draftId)(updatedAnswers))
   }
 }

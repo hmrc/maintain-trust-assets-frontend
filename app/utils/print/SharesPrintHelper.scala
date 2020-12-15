@@ -17,7 +17,7 @@
 package utils.print
 
 import controllers.asset.shares.routes._
-import models.{NormalMode, UserAnswers}
+import models.UserAnswers
 import pages.asset.shares._
 import play.api.i18n.Messages
 import utils.countryOptions.CountryOptions
@@ -48,16 +48,16 @@ class SharesPrintHelper @Inject()(countryOptions: CountryOptions,
 
     Seq(
       converter.assetTypeQuestion(index, draftId),
-      converter.yesNoQuestion(SharesInAPortfolioPage(index), "shares.inAPortfolioYesNo", SharesInAPortfolioController.onPageLoad(NormalMode, index, draftId).url),
-      converter.stringQuestion(ShareCompanyNamePage(index), "shares.companyName", ShareCompanyNameController.onPageLoad(NormalMode, index, draftId).url),
-      converter.stringQuestion(SharePortfolioNamePage(index), "shares.portfolioName", SharePortfolioNameController.onPageLoad(NormalMode, index, draftId).url),
-      converter.yesNoQuestion(SharesOnStockExchangePage(index), "shares.onStockExchangeYesNo", SharesOnStockExchangeController.onPageLoad(NormalMode, index, draftId).url),
-      converter.yesNoQuestion(SharePortfolioOnStockExchangePage(index), "shares.portfolioOnStockExchangeYesNo", SharePortfolioOnStockExchangeController.onPageLoad(NormalMode, index, draftId).url),
-      converter.shareClassQuestion(ShareClassPage(index), "shares.class", ShareClassController.onPageLoad(NormalMode, index, draftId).url),
-      converter.stringQuestion(ShareQuantityInTrustPage(index), "shares.quantityInTrust", ShareQuantityInTrustController.onPageLoad(NormalMode, index, draftId).url),
-      converter.stringQuestion(SharePortfolioQuantityInTrustPage(index), "shares.portfolioQuantityInTrust", SharePortfolioQuantityInTrustController.onPageLoad(NormalMode, index, draftId).url),
-      converter.currencyQuestion(ShareValueInTrustPage(index), "shares.valueInTrust", ShareValueInTrustController.onPageLoad(NormalMode, index, draftId).url),
-      converter.currencyQuestion(SharePortfolioValueInTrustPage(index), "shares.portfolioValueInTrust", SharePortfolioValueInTrustController.onPageLoad(NormalMode, index, draftId).url)
+      converter.yesNoQuestion(SharesInAPortfolioPage(index), "shares.inAPortfolioYesNo", SharesInAPortfolioController.onPageLoad(index, draftId).url),
+      converter.stringQuestion(ShareCompanyNamePage(index), "shares.companyName", ShareCompanyNameController.onPageLoad(index, draftId).url),
+      converter.stringQuestion(SharePortfolioNamePage(index), "shares.portfolioName", SharePortfolioNameController.onPageLoad(index, draftId).url),
+      converter.yesNoQuestion(SharesOnStockExchangePage(index), "shares.onStockExchangeYesNo", SharesOnStockExchangeController.onPageLoad(index, draftId).url),
+      converter.yesNoQuestion(SharePortfolioOnStockExchangePage(index), "shares.portfolioOnStockExchangeYesNo", SharePortfolioOnStockExchangeController.onPageLoad(index, draftId).url),
+      converter.shareClassQuestion(ShareClassPage(index), "shares.class", ShareClassController.onPageLoad(index, draftId).url),
+      converter.stringQuestion(ShareQuantityInTrustPage(index), "shares.quantityInTrust", ShareQuantityInTrustController.onPageLoad(index, draftId).url),
+      converter.stringQuestion(SharePortfolioQuantityInTrustPage(index), "shares.portfolioQuantityInTrust", SharePortfolioQuantityInTrustController.onPageLoad(index, draftId).url),
+      converter.currencyQuestion(ShareValueInTrustPage(index), "shares.valueInTrust", ShareValueInTrustController.onPageLoad(index, draftId).url),
+      converter.currencyQuestion(SharePortfolioValueInTrustPage(index), "shares.portfolioValueInTrust", SharePortfolioValueInTrustController.onPageLoad(index, draftId).url)
     ).flatten
   }
 }

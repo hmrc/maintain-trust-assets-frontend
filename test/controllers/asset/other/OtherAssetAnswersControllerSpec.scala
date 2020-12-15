@@ -17,8 +17,8 @@
 package controllers.asset.other
 
 import base.SpecBase
+import models.UserAnswers
 import models.WhatKindOfAsset.Other
-import models.{NormalMode, UserAnswers}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import pages.asset._
@@ -85,7 +85,7 @@ class OtherAssetAnswersControllerSpec extends SpecBase {
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual
-        controllers.asset.other.routes.OtherAssetDescriptionController.onPageLoad(NormalMode, index, fakeDraftId).url
+        controllers.asset.other.routes.OtherAssetDescriptionController.onPageLoad(index, fakeDraftId).url
 
       application.stop()
     }
@@ -105,7 +105,7 @@ class OtherAssetAnswersControllerSpec extends SpecBase {
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual
-        controllers.asset.other.routes.OtherAssetValueController.onPageLoad(NormalMode, index, fakeDraftId).url
+        controllers.asset.other.routes.OtherAssetValueController.onPageLoad(index, fakeDraftId).url
 
       application.stop()
     }

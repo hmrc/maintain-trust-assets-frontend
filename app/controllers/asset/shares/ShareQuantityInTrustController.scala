@@ -16,21 +16,21 @@
 
 package controllers.asset.shares
 
+import config.annotations.Shares
 import controllers.actions._
 import controllers.filters.IndexActionFilterProvider
 import forms.QuantityFormProvider
-import javax.inject.Inject
-import models.{Mode, NormalMode}
+import models.requests.RegistrationDataRequest
 import navigation.Navigator
 import pages.asset.shares.{ShareCompanyNamePage, ShareQuantityInTrustPage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
 import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import config.annotations.Shares
 import views.html.asset.shares.ShareQuantityInTrustView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ShareQuantityInTrustController @Inject()(
@@ -49,16 +49,16 @@ class ShareQuantityInTrustController @Inject()(
 
   private val form = formProvider.withPrefix("shares.quantityInTrust")
 
-  private def actions(index : Int, draftId: String) =
+  private def actions(index : Int, draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] =
     identify andThen getData(draftId) andThen
       requireData andThen
       validateIndex(index, sections.Assets) andThen
       requiredAnswer(RequiredAnswer(
         ShareCompanyNamePage(index),
-        routes.ShareCompanyNameController.onPageLoad(NormalMode, index, draftId))
+        routes.ShareCompanyNameController.onPageLoad(index, draftId))
       )
 
-  def onPageLoad(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
+  def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
     implicit request =>
 
       val companyName = request.userAnswers.get(ShareCompanyNamePage(index)).get
@@ -68,23 +68,23 @@ class ShareQuantityInTrustController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, draftId, index, companyName))
+      Ok(view(preparedForm, draftId, index, companyName))
   }
 
-  def onSubmit(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async {
+  def onSubmit(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async {
     implicit request =>
 
       val companyName = request.userAnswers.get(ShareCompanyNamePage(index)).get
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode, draftId, index, companyName))),
+          Future.successful(BadRequest(view(formWithErrors, draftId, index, companyName))),
 
         value => {
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(ShareQuantityInTrustPage(index), value))
             _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(ShareQuantityInTrustPage(index), mode, draftId)(updatedAnswers))
+          } yield Redirect(navigator.nextPage(ShareQuantityInTrustPage(index), draftId)(updatedAnswers))
         }
       )
   }

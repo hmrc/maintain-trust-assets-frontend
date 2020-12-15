@@ -18,7 +18,7 @@ package utils
 
 import controllers.asset._
 import models.Status.Completed
-import models.{Mode, UserAnswers}
+import models.UserAnswers
 import play.api.i18n.Messages
 import sections.Assets
 import viewmodels.{AddRow, AddToRows, _}
@@ -26,7 +26,7 @@ import viewmodels.{AddRow, AddToRows, _}
 import javax.inject.Inject
 
 class AddAssetViewHelper @Inject()(checkAnswersFormatters: CheckAnswersFormatters)
-                                  (userAnswers: UserAnswers, mode: Mode, draftId: String)
+                                  (userAnswers: UserAnswers, draftId: String)
                                   (implicit messages: Messages) {
 
   def rows: AddToRows = {
@@ -67,7 +67,7 @@ class AddAssetViewHelper @Inject()(checkAnswersFormatters: CheckAnswersFormatter
         case None => defaultValue
       },
       typeLabel = mvm.`type`.toString,
-      changeUrl = money.routes.AssetMoneyValueController.onPageLoad(mode, index, draftId).url,
+      changeUrl = money.routes.AssetMoneyValueController.onPageLoad(index, draftId).url,
       removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index, draftId).url
     )
   }
@@ -83,7 +83,7 @@ class AddAssetViewHelper @Inject()(checkAnswersFormatters: CheckAnswersFormatter
       changeUrl = if (plvm.status == Completed) {
         property_or_land.routes.PropertyOrLandAnswerController.onPageLoad(index, draftId).url
       } else {
-        property_or_land.routes.PropertyOrLandAddressYesNoController.onPageLoad(mode, index, draftId).url
+        property_or_land.routes.PropertyOrLandAddressYesNoController.onPageLoad(index, draftId).url
       },
       removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index, draftId).url
     )
@@ -96,7 +96,7 @@ class AddAssetViewHelper @Inject()(checkAnswersFormatters: CheckAnswersFormatter
       changeUrl = if (svm.status == Completed) {
         shares.routes.ShareAnswerController.onPageLoad(index, draftId).url
       } else {
-        shares.routes.SharesInAPortfolioController.onPageLoad(mode, index, draftId).url
+        shares.routes.SharesInAPortfolioController.onPageLoad(index, draftId).url
       },
       removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index, draftId).url
     )
@@ -109,7 +109,7 @@ class AddAssetViewHelper @Inject()(checkAnswersFormatters: CheckAnswersFormatter
       changeUrl = if (bvm.status == Completed) {
         business.routes.BusinessAnswersController.onPageLoad(index, draftId).url
       } else {
-        business.routes.BusinessNameController.onPageLoad(mode, index, draftId).url
+        business.routes.BusinessNameController.onPageLoad(index, draftId).url
       },
       removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index, draftId).url
     )
@@ -122,7 +122,7 @@ class AddAssetViewHelper @Inject()(checkAnswersFormatters: CheckAnswersFormatter
       changeUrl = if (pvm.status == Completed) {
         partnership.routes.PartnershipAnswerController.onPageLoad(index, draftId).url
       } else {
-        partnership.routes.PartnershipDescriptionController.onPageLoad(mode, index, draftId).url
+        partnership.routes.PartnershipDescriptionController.onPageLoad(index, draftId).url
       },
       removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index, draftId).url
     )
@@ -135,7 +135,7 @@ class AddAssetViewHelper @Inject()(checkAnswersFormatters: CheckAnswersFormatter
       changeUrl = if (ovm.status == Completed) {
         other.routes.OtherAssetAnswersController.onPageLoad(index, draftId).url
       } else {
-        other.routes.OtherAssetDescriptionController.onPageLoad(mode, index, draftId).url
+        other.routes.OtherAssetDescriptionController.onPageLoad(index, draftId).url
       },
       removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index, draftId).url
     )

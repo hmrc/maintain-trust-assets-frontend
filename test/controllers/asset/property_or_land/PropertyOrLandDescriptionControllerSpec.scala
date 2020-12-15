@@ -20,7 +20,6 @@ import base.SpecBase
 import controllers.IndexValidation
 import controllers.routes._
 import forms.DescriptionFormProvider
-import models.NormalMode
 import org.scalacheck.Arbitrary.arbitrary
 import pages.asset.property_or_land.PropertyOrLandDescriptionPage
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
@@ -34,7 +33,7 @@ class PropertyOrLandDescriptionControllerSpec extends SpecBase with IndexValidat
   val form = formProvider.withConfig(56, "propertyOrLand.description")
   val index = 0
 
-  lazy val propertyOrLandDescriptionRoute = routes.PropertyOrLandDescriptionController.onPageLoad(NormalMode, index, fakeDraftId).url
+  lazy val propertyOrLandDescriptionRoute = routes.PropertyOrLandDescriptionController.onPageLoad(index, fakeDraftId).url
 
   "PropertyOrLandDescription Controller" must {
 
@@ -51,7 +50,7 @@ class PropertyOrLandDescriptionControllerSpec extends SpecBase with IndexValidat
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode, index, fakeDraftId)(fakeRequest, messages).toString
+        view(form, index, fakeDraftId)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -71,7 +70,7 @@ class PropertyOrLandDescriptionControllerSpec extends SpecBase with IndexValidat
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill("answer"), NormalMode, index, fakeDraftId)(fakeRequest, messages).toString
+        view(form.fill("answer"), index, fakeDraftId)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -110,7 +109,7 @@ class PropertyOrLandDescriptionControllerSpec extends SpecBase with IndexValidat
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode, index, fakeDraftId)(fakeRequest, messages).toString
+        view(boundForm, index, fakeDraftId)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -151,7 +150,7 @@ class PropertyOrLandDescriptionControllerSpec extends SpecBase with IndexValidat
   "for a GET" must {
 
     def getForIndex(index: Int) : FakeRequest[AnyContentAsEmpty.type] = {
-      val route = routes.PropertyOrLandDescriptionController.onPageLoad(NormalMode, index, fakeDraftId).url
+      val route = routes.PropertyOrLandDescriptionController.onPageLoad(index, fakeDraftId).url
 
       FakeRequest(GET, route)
     }
@@ -168,7 +167,7 @@ class PropertyOrLandDescriptionControllerSpec extends SpecBase with IndexValidat
     def postForIndex(index: Int): FakeRequest[AnyContentAsFormUrlEncoded] = {
 
       val route =
-        routes.PropertyOrLandDescriptionController.onPageLoad(NormalMode, index, fakeDraftId).url
+        routes.PropertyOrLandDescriptionController.onPageLoad(index, fakeDraftId).url
 
       FakeRequest(POST, route)
         .withFormUrlEncodedBody(("value", "true"))

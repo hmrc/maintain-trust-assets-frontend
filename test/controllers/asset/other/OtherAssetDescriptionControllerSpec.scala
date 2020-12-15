@@ -18,8 +18,8 @@ package controllers.asset.other
 
 import base.SpecBase
 import forms.DescriptionFormProvider
+import models.UserAnswers
 import models.WhatKindOfAsset.Other
-import models.{NormalMode, UserAnswers}
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.other.OtherAssetDescriptionPage
 import play.api.Application
@@ -38,7 +38,7 @@ class OtherAssetDescriptionControllerSpec extends SpecBase {
   val index = 0
   val validAnswer: String = "Description"
 
-  lazy val descriptionRoute: String = routes.OtherAssetDescriptionController.onPageLoad(NormalMode, index, fakeDraftId).url
+  lazy val descriptionRoute: String = routes.OtherAssetDescriptionController.onPageLoad(index, fakeDraftId).url
 
   val baseAnswers: UserAnswers = emptyUserAnswers
     .set(WhatKindOfAssetPage(index), Other).success.value
@@ -58,7 +58,7 @@ class OtherAssetDescriptionControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode, fakeDraftId, index)(fakeRequest, messages).toString
+        view(form, fakeDraftId, index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -79,7 +79,7 @@ class OtherAssetDescriptionControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), NormalMode, fakeDraftId, index)(fakeRequest, messages).toString
+        view(form.fill(validAnswer), fakeDraftId, index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -95,7 +95,7 @@ class OtherAssetDescriptionControllerSpec extends SpecBase {
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual
-        controllers.asset.routes.WhatKindOfAssetController.onPageLoad(NormalMode, index, fakeDraftId).url
+        controllers.asset.routes.WhatKindOfAssetController.onPageLoad(index, fakeDraftId).url
 
       application.stop()
     }
@@ -134,7 +134,7 @@ class OtherAssetDescriptionControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode, fakeDraftId, index)(fakeRequest, messages).toString
+        view(boundForm, fakeDraftId, index)(fakeRequest, messages).toString
 
       application.stop()
     }

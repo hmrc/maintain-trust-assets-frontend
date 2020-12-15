@@ -16,11 +16,10 @@
 
 package controllers.asset.property_or_land
 
+import config.annotations.PropertyOrLand
 import controllers.actions.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
 import controllers.filters.IndexActionFilterProvider
 import forms.ValueFormProvider
-import javax.inject.Inject
-import models.Mode
 import models.requests.RegistrationDataRequest
 import navigation.Navigator
 import pages.asset.property_or_land.{PropertyLandValueTrustPage, PropertyOrLandTotalValuePage}
@@ -30,9 +29,9 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import config.annotations.PropertyOrLand
 import views.html.asset.property_or_land.PropertyLandValueTrustView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class PropertyLandValueTrustController @Inject()(
@@ -58,10 +57,10 @@ class PropertyLandValueTrustController @Inject()(
       requireData andThen
       validateIndex(index, sections.Assets)
 
-  def onPageLoad(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
+  def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
     implicit request =>
 
-      totalValue(mode, index, draftId) match {
+      totalValue(index, draftId) match {
         case Left(value) =>
           val form = formProvider.withConfig(prefix, value)
 
@@ -70,28 +69,28 @@ class PropertyLandValueTrustController @Inject()(
             case Some(value) => form.fill(value)
           }
 
-          Ok(view(preparedForm, mode, index, draftId))
+          Ok(view(preparedForm, index, draftId))
         case Right(redirect) =>
           redirect
       }
   }
 
-  def onSubmit(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async {
+  def onSubmit(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async {
     implicit request =>
 
-      totalValue(mode, index, draftId) match {
+      totalValue(index, draftId) match {
         case Left(value) =>
           val form = formProvider.withConfig(prefix, value)
 
           form.bindFromRequest().fold(
             (formWithErrors: Form[_]) =>
-              Future.successful(BadRequest(view(formWithErrors, mode, index, draftId))),
+              Future.successful(BadRequest(view(formWithErrors, index, draftId))),
 
             value => {
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.set(PropertyLandValueTrustPage(index), value))
                 _              <- repository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(PropertyLandValueTrustPage(index), mode, draftId)(updatedAnswers))
+              } yield Redirect(navigator.nextPage(PropertyLandValueTrustPage(index), draftId)(updatedAnswers))
             }
           )
         case Right(redirect) =>
@@ -99,13 +98,13 @@ class PropertyLandValueTrustController @Inject()(
       }
   }
 
-  private def totalValue(mode: Mode, index: Int, draftId: String)(implicit request: RegistrationDataRequest[AnyContent]): Either[Long, Result] = {
+  private def totalValue(index: Int, draftId: String)(implicit request: RegistrationDataRequest[AnyContent]): Either[Long, Result] = {
     request.userAnswers.get(PropertyOrLandTotalValuePage(index)) match {
       case Some(value) =>
         Left(value)
       case _ =>
         logger.info(s"[totalValue][Session ID: ${request.sessionId}] Total value not found. Redirecting to total value page.")
-        Right(Redirect(routes.PropertyOrLandTotalValueController.onPageLoad(mode, index, draftId)))
+        Right(Redirect(routes.PropertyOrLandTotalValueController.onPageLoad(index, draftId)))
     }
   }
 }

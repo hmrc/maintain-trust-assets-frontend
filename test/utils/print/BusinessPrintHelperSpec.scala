@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.asset.business.routes._
 import controllers.asset.routes.WhatKindOfAssetController
 import models.WhatKindOfAsset.Business
-import models.{InternationalAddress, NormalMode, UKAddress, UserAnswers}
+import models.{InternationalAddress, UKAddress, UserAnswers}
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.business._
 import play.twirl.api.Html
@@ -55,21 +55,21 @@ class BusinessPrintHelperSpec extends SpecBase {
     .set(BusinessInternationalAddressPage(index), nonUkAddress).success.value
 
   private val ukAddressRows: Seq[AnswerRow] = Seq(
-    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Business"), Some(WhatKindOfAssetController.onPageLoad(NormalMode, index, fakeDraftId).url)),
-    AnswerRow("business.name.checkYourAnswersLabel", Html(name), Some(BusinessNameController.onPageLoad(NormalMode, index, draftId).url)),
-    AnswerRow("business.description.checkYourAnswersLabel", Html(description), Some(BusinessDescriptionController.onPageLoad(NormalMode, index, draftId).url)),
-    AnswerRow("business.addressUkYesNo.checkYourAnswersLabel", Html("Yes"), Some(BusinessAddressUkYesNoController.onPageLoad(NormalMode, index, draftId).url)),
-    AnswerRow("business.ukAddress.checkYourAnswersLabel", Html("Line 1<br />Line 2<br />AB1 1AB"), Some(BusinessUkAddressController.onPageLoad(NormalMode, index, draftId).url)),
-    AnswerRow("business.currentValue.checkYourAnswersLabel", Html("£100"), Some(BusinessValueController.onPageLoad(NormalMode, index, draftId).url))
+    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Business"), Some(WhatKindOfAssetController.onPageLoad(index, fakeDraftId).url)),
+    AnswerRow("business.name.checkYourAnswersLabel", Html(name), Some(BusinessNameController.onPageLoad(index, draftId).url)),
+    AnswerRow("business.description.checkYourAnswersLabel", Html(description), Some(BusinessDescriptionController.onPageLoad(index, draftId).url)),
+    AnswerRow("business.addressUkYesNo.checkYourAnswersLabel", Html("Yes"), Some(BusinessAddressUkYesNoController.onPageLoad(index, draftId).url)),
+    AnswerRow("business.ukAddress.checkYourAnswersLabel", Html("Line 1<br />Line 2<br />AB1 1AB"), Some(BusinessUkAddressController.onPageLoad(index, draftId).url)),
+    AnswerRow("business.currentValue.checkYourAnswersLabel", Html("£100"), Some(BusinessValueController.onPageLoad(index, draftId).url))
   )
 
   private val nonUkAddressRows: Seq[AnswerRow] = Seq(
-    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Business"), Some(WhatKindOfAssetController.onPageLoad(NormalMode, index, fakeDraftId).url)),
-    AnswerRow("business.name.checkYourAnswersLabel", Html(name), Some(BusinessNameController.onPageLoad(NormalMode, index, draftId).url)),
-    AnswerRow("business.description.checkYourAnswersLabel", Html(description), Some(BusinessDescriptionController.onPageLoad(NormalMode, index, draftId).url)),
-    AnswerRow("business.addressUkYesNo.checkYourAnswersLabel", Html("No"), Some(BusinessAddressUkYesNoController.onPageLoad(NormalMode, index, draftId).url)),
-    AnswerRow("business.internationalAddress.checkYourAnswersLabel", Html("Line 1<br />Line 2<br />France"), Some(BusinessInternationalAddressController.onPageLoad(NormalMode, index, draftId).url)),
-    AnswerRow("business.currentValue.checkYourAnswersLabel", Html("£100"), Some(BusinessValueController.onPageLoad(NormalMode, index, draftId).url))
+    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Business"), Some(WhatKindOfAssetController.onPageLoad(index, fakeDraftId).url)),
+    AnswerRow("business.name.checkYourAnswersLabel", Html(name), Some(BusinessNameController.onPageLoad(index, draftId).url)),
+    AnswerRow("business.description.checkYourAnswersLabel", Html(description), Some(BusinessDescriptionController.onPageLoad(index, draftId).url)),
+    AnswerRow("business.addressUkYesNo.checkYourAnswersLabel", Html("No"), Some(BusinessAddressUkYesNoController.onPageLoad(index, draftId).url)),
+    AnswerRow("business.internationalAddress.checkYourAnswersLabel", Html("Line 1<br />Line 2<br />France"), Some(BusinessInternationalAddressController.onPageLoad(index, draftId).url)),
+    AnswerRow("business.currentValue.checkYourAnswersLabel", Html("£100"), Some(BusinessValueController.onPageLoad(index, draftId).url))
   )
 
   "BusinessPrintHelper" when {

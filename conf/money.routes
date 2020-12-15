@@ -1,4 +1,2 @@
-GET        /:draftId/:index/value                          controllers.asset.money.AssetMoneyValueController.onPageLoad(mode: Mode = NormalMode, index: Int, draftId: String)
-POST       /:draftId/:index/value                          controllers.asset.money.AssetMoneyValueController.onSubmit(mode: Mode = NormalMode, index: Int, draftId: String)
-GET        /:draftId/:index/change-value                   controllers.asset.money.AssetMoneyValueController.onPageLoad(mode: Mode = CheckMode, index: Int, draftId: String)
-POST       /:draftId/:index/change-value                   controllers.asset.money.AssetMoneyValueController.onSubmit(mode: Mode = CheckMode, index: Int, draftId: String)
+GET        /:draftId/:index/value                          controllers.asset.money.AssetMoneyValueController.onPageLoad(index: Int, draftId: String)
+POST       /:draftId/:index/value                          controllers.asset.money.AssetMoneyValueController.onSubmit(index: Int, draftId: String)

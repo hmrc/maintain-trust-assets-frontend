@@ -15,20 +15,19 @@
  *@
 
 @import controllers.asset.other.routes._
-@import models.Mode
 
 @this(
     main_template: MainTemplate,
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], mode: Mode, draftId: String, index: Int)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], draftId: String, index: Int)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = s"${errorPrefix(form)} ${messages("other.description.title")}"
 ) {
 
-    @formHelper(action = OtherAssetDescriptionController.onSubmit(mode, index, draftId), 'autoComplete -> "off") {
+    @formHelper(action = OtherAssetDescriptionController.onSubmit(index, draftId), 'autoComplete -> "off") {
 
         @components.back_link()
 
