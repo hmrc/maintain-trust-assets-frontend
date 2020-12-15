@@ -360,9 +360,9 @@ business.ukAddress.title = What is the business asset’s address?
 business.ukAddress.heading = What is {0}’s address?
 business.ukAddress.checkYourAnswersLabel = What is {0}’s address?
 
-business.InternationalAddress.title = What is the business asset’s address?
-business.InternationalAddress.heading = What is {0}’s address?
-business.InternationalAddress.checkYourAnswersLabel = What is {0}’s address?
+business.internationalAddress.title = What is the business asset’s address?
+business.internationalAddress.heading = What is {0}’s address?
+business.internationalAddress.checkYourAnswersLabel = What is {0}’s address?
 
 business.currentValue.title = What is the current value of the business?
 business.currentValue.heading = What is the current value of the business?

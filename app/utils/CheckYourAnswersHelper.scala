@@ -212,7 +212,7 @@ class CheckYourAnswersHelper @Inject()(countryOptions: CountryOptions)
   def shareCompanyName(index: Int): Option[AnswerRow] = userAnswers.get(ShareCompanyNamePage(index)) map {
     x =>
       AnswerRow(
-        "shareCompanyName.checkYourAnswersLabel",
+        "shares.companyName.checkYourAnswersLabel",
         HtmlFormat.escape(x),
         Some(controllers.asset.shares.routes.ShareCompanyNameController.onPageLoad(NormalMode, index, draftId).url),
         canEdit = canEdit
@@ -222,7 +222,7 @@ class CheckYourAnswersHelper @Inject()(countryOptions: CountryOptions)
   def sharesOnStockExchange(index: Int): Option[AnswerRow] = userAnswers.get(SharesOnStockExchangePage(index)) map {
     x =>
       AnswerRow(
-        "sharesOnStockExchange.checkYourAnswersLabel",
+        "shares.onStockExchangeYesNo.checkYourAnswersLabel",
         yesOrNo(x),
         Some(controllers.asset.shares.routes.SharesOnStockExchangeController.onPageLoad(NormalMode, index, draftId).url),
         shareCompName(index, userAnswers),
@@ -233,7 +233,7 @@ class CheckYourAnswersHelper @Inject()(countryOptions: CountryOptions)
   def sharesInAPortfolio(index: Int): Option[AnswerRow] = userAnswers.get(SharesInAPortfolioPage(index)) map {
     x =>
       AnswerRow(
-        "sharesInAPortfolio.checkYourAnswersLabel",
+        "shares.inAPortfolioYesNo.checkYourAnswersLabel",
         yesOrNo(x),
         Some(controllers.asset.shares.routes.SharesInAPortfolioController.onPageLoad(NormalMode, index, draftId).url),
         canEdit = canEdit
@@ -243,7 +243,7 @@ class CheckYourAnswersHelper @Inject()(countryOptions: CountryOptions)
   def shareValueInTrust(index: Int): Option[AnswerRow] = userAnswers.get(ShareValueInTrustPage(index)) map {
     x =>
       AnswerRow(
-        "shareValueInTrust.checkYourAnswersLabel",
+        "shares.valueInTrust.checkYourAnswersLabel",
         currency(x.toString),
         Some(controllers.asset.shares.routes.ShareValueInTrustController.onPageLoad(NormalMode, index, draftId).url),
         shareCompName(index, userAnswers),
@@ -254,7 +254,7 @@ class CheckYourAnswersHelper @Inject()(countryOptions: CountryOptions)
   def shareQuantityInTrust(index: Int): Option[AnswerRow] = userAnswers.get(ShareQuantityInTrustPage(index)) map {
     x =>
       AnswerRow(
-        "shareQuantityInTrust.checkYourAnswersLabel",
+        "shares.quantityInTrust.checkYourAnswersLabel",
         HtmlFormat.escape(x),
         Some(controllers.asset.shares.routes.ShareQuantityInTrustController.onPageLoad(NormalMode, index, draftId).url),
         shareCompName(index, userAnswers),
@@ -265,7 +265,7 @@ class CheckYourAnswersHelper @Inject()(countryOptions: CountryOptions)
   def sharePortfolioValueInTrust(index: Int): Option[AnswerRow] = userAnswers.get(SharePortfolioValueInTrustPage(index)) map {
     x =>
       AnswerRow(
-        "sharePortfolioValueInTrust.checkYourAnswersLabel",
+        "shares.portfolioValueInTrust.checkYourAnswersLabel",
         currency(x.toString),
         Some(controllers.asset.shares.routes.SharePortfolioValueInTrustController.onPageLoad(NormalMode, index, draftId).url),
         canEdit = canEdit
@@ -275,7 +275,7 @@ class CheckYourAnswersHelper @Inject()(countryOptions: CountryOptions)
   def sharePortfolioQuantityInTrust(index: Int): Option[AnswerRow] = userAnswers.get(SharePortfolioQuantityInTrustPage(index)) map {
     x =>
       AnswerRow(
-        "sharePortfolioQuantityInTrust.checkYourAnswersLabel",
+        "shares.portfolioQuantityInTrust.checkYourAnswersLabel",
         HtmlFormat.escape(x),
         Some(controllers.asset.shares.routes.SharePortfolioQuantityInTrustController.onPageLoad(NormalMode, index, draftId).url),
         canEdit = canEdit
@@ -285,7 +285,7 @@ class CheckYourAnswersHelper @Inject()(countryOptions: CountryOptions)
   def sharePortfolioOnStockExchange(index: Int): Option[AnswerRow] = userAnswers.get(SharePortfolioOnStockExchangePage(index)) map {
     x =>
       AnswerRow(
-        "sharePortfolioOnStockExchange.checkYourAnswersLabel",
+        "shares.portfolioOnStockExchangeYesNo.checkYourAnswersLabel",
         yesOrNo(x),
         Some(controllers.asset.shares.routes.SharePortfolioOnStockExchangeController.onPageLoad(NormalMode, index, draftId).url),
         canEdit = canEdit
@@ -295,7 +295,7 @@ class CheckYourAnswersHelper @Inject()(countryOptions: CountryOptions)
   def sharePortfolioName(index: Int): Option[AnswerRow] = userAnswers.get(SharePortfolioNamePage(index)) map {
     x =>
       AnswerRow(
-        "sharePortfolioName.checkYourAnswersLabel",
+        "shares.portfolioName.checkYourAnswersLabel",
         HtmlFormat.escape(x),
         Some(controllers.asset.shares.routes.SharePortfolioNameController.onPageLoad(NormalMode, index, draftId).url),
         canEdit = canEdit
@@ -305,7 +305,7 @@ class CheckYourAnswersHelper @Inject()(countryOptions: CountryOptions)
   def shareClass(index: Int): Option[AnswerRow] = userAnswers.get(ShareClassPage(index)) map {
     x =>
       AnswerRow(
-        "shareClass.checkYourAnswersLabel",
+        "shares.class.checkYourAnswersLabel",
         HtmlFormat.escape(messages(s"shareClass.$x")),
         Some(controllers.asset.shares.routes.ShareClassController.onPageLoad(NormalMode, index, draftId).url),
         canEdit = canEdit
@@ -315,7 +315,7 @@ class CheckYourAnswersHelper @Inject()(countryOptions: CountryOptions)
   def assetMoneyValue(index: Int): Option[AnswerRow] = userAnswers.get(AssetMoneyValuePage(index)) map {
     x =>
       AnswerRow(
-        "assetMoneyValue.checkYourAnswersLabel",
+        "money.value.checkYourAnswersLabel",
         currency(x.toString),
         Some(controllers.asset.money.routes.AssetMoneyValueController.onPageLoad(NormalMode, index, draftId).url),
         canEdit = canEdit
@@ -335,7 +335,7 @@ class CheckYourAnswersHelper @Inject()(countryOptions: CountryOptions)
   def otherAssetDescription(index: Int): Option[AnswerRow] = userAnswers.get(OtherAssetDescriptionPage(index)) map {
     x =>
       AnswerRow(
-        "assets.other.description.checkYourAnswersLabel",
+        "other.description.checkYourAnswersLabel",
         escape(x),
         Some(controllers.asset.other.routes.OtherAssetDescriptionController.onPageLoad(NormalMode, index, draftId).url),
         canEdit = canEdit
@@ -345,7 +345,7 @@ class CheckYourAnswersHelper @Inject()(countryOptions: CountryOptions)
   def otherAssetValue(index: Int, description: String): Option[AnswerRow] = userAnswers.get(OtherAssetValuePage(index)) map {
     x =>
       AnswerRow(
-        "assets.other.value.checkYourAnswersLabel",
+        "other.value.checkYourAnswersLabel",
         currency(x.toString),
         Some(controllers.asset.other.routes.OtherAssetValueController.onPageLoad(NormalMode, index, draftId).url),
         description,
@@ -356,7 +356,7 @@ class CheckYourAnswersHelper @Inject()(countryOptions: CountryOptions)
   def partnershipStartDate(index: Int): Option[AnswerRow] = userAnswers.get(PartnershipStartDatePage(index)) map {
     x =>
       AnswerRow(
-        "partnershipStartDate.checkYourAnswersLabel",
+        "partnership.startDate.checkYourAnswersLabel",
         HtmlFormat.escape(x.format(dateFormatter)),
         Some(controllers.asset.partnership.routes.PartnershipStartDateController.onPageLoad(NormalMode, index, draftId).url),
         canEdit = canEdit
@@ -366,7 +366,7 @@ class CheckYourAnswersHelper @Inject()(countryOptions: CountryOptions)
   def partnershipDescription(index: Int): Option[AnswerRow] = userAnswers.get(PartnershipDescriptionPage(index)) map {
     x =>
       AnswerRow(
-        "partnershipDescription.checkYourAnswersLabel",
+        "partnership.description.checkYourAnswersLabel",
         HtmlFormat.escape(x),
         Some(controllers.asset.partnership.routes.PartnershipDescriptionController.onPageLoad(NormalMode, index, draftId).url),
         canEdit = canEdit
@@ -376,7 +376,7 @@ class CheckYourAnswersHelper @Inject()(countryOptions: CountryOptions)
   def assetAddressUkYesNo(index: Int): Option[AnswerRow] = userAnswers.get(BusinessAddressUkYesNoPage(index)) map {
     x =>
       AnswerRow(
-        "assetAddressUkYesNo.checkYourAnswersLabel",
+        "business.addressUkYesNo.checkYourAnswersLabel",
         yesOrNo(x),
         Some(controllers.asset.business.routes.BusinessAddressUkYesNoController.onPageLoad(NormalMode, index, draftId).url),
         canEdit = canEdit
@@ -386,7 +386,7 @@ class CheckYourAnswersHelper @Inject()(countryOptions: CountryOptions)
   def assetDescription(index: Int): Option[AnswerRow] = userAnswers.get(BusinessDescriptionPage(index)) map {
     x =>
       AnswerRow(
-        "assetDescription.checkYourAnswersLabel",
+        "business.description.checkYourAnswersLabel",
         HtmlFormat.escape(x),
         Some(controllers.asset.business.routes.BusinessDescriptionController.onPageLoad(NormalMode, index, draftId).url),
         canEdit = canEdit
@@ -396,7 +396,7 @@ class CheckYourAnswersHelper @Inject()(countryOptions: CountryOptions)
   def assetNamePage(index: Int): Option[AnswerRow] = userAnswers.get(BusinessNamePage(index)) map {
     x =>
       AnswerRow(
-        "assetName.checkYourAnswersLabel",
+        "business.name.checkYourAnswersLabel",
         HtmlFormat.escape(x),
         Some(controllers.asset.business.routes.BusinessNameController.onPageLoad(NormalMode, index, draftId).url),
         canEdit = canEdit
@@ -406,7 +406,7 @@ class CheckYourAnswersHelper @Inject()(countryOptions: CountryOptions)
   def assetInternationalAddress(index: Int): Option[AnswerRow] = userAnswers.get(BusinessInternationalAddressPage(index)) map {
     x =>
       AnswerRow(
-        "assetInternationalAddress.checkYourAnswersLabel",
+        "business.internationalAddress.checkYourAnswersLabel",
         internationalAddress(x, countryOptions),
         Some(controllers.asset.business.routes.BusinessInternationalAddressController.onPageLoad(NormalMode, index, draftId).url),
         assetName(index, userAnswers),
@@ -417,7 +417,7 @@ class CheckYourAnswersHelper @Inject()(countryOptions: CountryOptions)
   def assetUkAddress(index: Int): Option[AnswerRow] = userAnswers.get(BusinessUkAddressPage(index)) map {
     x =>
       AnswerRow(
-        "assetUkAddress.checkYourAnswersLabel",
+        "business.ukAddress.checkYourAnswersLabel",
         ukAddress(x),
         Some(controllers.asset.business.routes.BusinessUkAddressController.onPageLoad(NormalMode, index, draftId).url),
         assetName(index, userAnswers),
@@ -428,7 +428,7 @@ class CheckYourAnswersHelper @Inject()(countryOptions: CountryOptions)
   def currentValue(index: Int): Option[AnswerRow] = userAnswers.get(BusinessValuePage(index)) map {
     x =>
       AnswerRow(
-        "currentValue.checkYourAnswersLabel",
+        "business.currentValue.checkYourAnswersLabel",
         currency(x.toString),
         Some(controllers.asset.business.routes.BusinessValueController.onPageLoad(NormalMode, index, draftId).url),
         canEdit = canEdit
