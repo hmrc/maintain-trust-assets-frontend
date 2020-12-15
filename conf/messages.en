@@ -45,7 +45,7 @@ site.yes = Yes
 site.continue = Continue
 site.save.continue = Save and continue
 site.onlyContinue = Continue
-site.service_name = Register a Trust
+site.service_name = Register and Maintain a Trust
 site.address = Address
 site.inprogress = In Progress
 site.complete = Completed
@@ -109,6 +109,14 @@ featureNotAvailable.heading = This part of the online service is not available y
 featureNotAvailable.p1 = If you need to make any changes to the trust you can
 featureNotAvailable.link = contact our trusts helpline (opens in a new window or tab)
 featureNotAvailable.p2 = You will be able to update these details online in the future.
+
+answerPage.section.assets.heading = Assets
+answerPage.section.moneyAsset.subheading = Money
+answerPage.section.shareAsset.subheading = Share
+answerPage.section.propertyOrLandAsset.subheading = Property or land
+answerPage.section.partnershipAsset.subheading = Partnership
+answerPage.section.businessAsset.subheading = Business
+answerPage.section.otherAsset.subheading = Other
 
 addAnAssetYesNo.title = Do you want to add an asset?
 addAnAssetYesNo.heading = Do you want to add an asset?
@@ -182,7 +190,8 @@ whatKindOfAsset.Shares = Shares
 whatKindOfAsset.Business = Business
 whatKindOfAsset.Partnership = Partnership
 whatKindOfAsset.Other = Other
-whatKindOfAsset.checkYourAnswersLabel = What kind of asset do you need to add first?
+whatKindOfAsset.first.checkYourAnswersLabel = What kind of asset do you need to add first?
+whatKindOfAsset.next.checkYourAnswersLabel = What kind of asset do you need to add next?
 whatKindOfAsset.error.required = Select the kind of asset you need to add
 
 money.value.title = What is the total amount of money in the trust?

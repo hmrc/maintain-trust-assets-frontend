@@ -16,21 +16,22 @@
 
 package utils
 
-import java.time.format.DateTimeFormatter
-
-import models.{Address, InternationalAddress, UKAddress, UserAnswers}
-import pages.asset.business.BusinessNamePage
-import pages.asset.shares.ShareCompanyNamePage
+import models.{Address, InternationalAddress, UKAddress}
+import org.joda.time.{LocalDate => JodaDate}
 import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
+import uk.gov.hmrc.play.language.LanguageUtils
 import utils.countryOptions.CountryOptions
 
-object CheckAnswersFormatters {
+import java.time.{LocalDate => JavaDate}
+import javax.inject.Inject
 
-  val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM yyyy")
+class CheckAnswersFormatters @Inject()(languageUtils: LanguageUtils) {
 
-  def utr(answer: String): Html = {
-    HtmlFormat.escape(answer)
+  def formatDate(date: JavaDate)(implicit messages: Messages): Html = {
+    val convertedDate: JodaDate = new JodaDate(date.getYear, date.getMonthValue, date.getDayOfMonth)
+    val formattedDate: String = languageUtils.Dates.formatDate(convertedDate)
+    HtmlFormat.escape(formattedDate)
   }
 
   def yesOrNo(answer: Boolean)(implicit messages: Messages): Html = {
@@ -54,14 +55,6 @@ object CheckAnswersFormatters {
     HtmlFormat.escape(messages(s"$key.$answer"))
 
   def escape(x: String): Html = HtmlFormat.escape(x)
-
-  def shareCompName(index: Int, userAnswers: UserAnswers): String = {
-    userAnswers.get(ShareCompanyNamePage(index)).getOrElse("")
-  }
-
-  def assetName(index: Int, userAnswers: UserAnswers): String = {
-    userAnswers.get(BusinessNamePage(index)).getOrElse("")
-  }
 
   def ukAddress(address: UKAddress): Html = {
     val lines =

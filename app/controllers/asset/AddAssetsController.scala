@@ -18,7 +18,6 @@ package controllers.asset
 
 import controllers.actions.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
 import forms.{AddAssetsFormProvider, YesNoFormProvider}
-import javax.inject.Inject
 import models.AddAssets.NoComplete
 import models.requests.RegistrationDataRequest
 import models.{AddAssets, Enumerable, Mode}
@@ -29,9 +28,10 @@ import play.api.i18n.{I18nSupport, Messages, MessagesApi, MessagesProvider}
 import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
 import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.AddAssetViewHelper
+import utils.{AddAssetViewHelper, CheckAnswersFormatters}
 import views.html.asset.{AddAnAssetYesNoView, AddAssetsView, MaxedOutView}
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AddAssetsController @Inject()(
@@ -46,7 +46,8 @@ class AddAssetsController @Inject()(
                                      val controllerComponents: MessagesControllerComponents,
                                      addAssetsView: AddAssetsView,
                                      yesNoView: AddAnAssetYesNoView,
-                                     maxedOutView: MaxedOutView
+                                     maxedOutView: MaxedOutView,
+                                     checkAnswersFormatters: CheckAnswersFormatters
                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
 
   private val addAnotherForm: Form[AddAssets] = addAnotherFormProvider()
@@ -66,7 +67,7 @@ class AddAssetsController @Inject()(
   def onPageLoad(mode: Mode, draftId: String): Action[AnyContent] = actions(draftId) {
     implicit request =>
 
-      val assets = new AddAssetViewHelper(request.userAnswers, mode, draftId).rows
+      val assets = new AddAssetViewHelper(checkAnswersFormatters)(request.userAnswers, mode, draftId).rows
 
       assets.count match {
         case 0 => Ok(yesNoView(addAnotherForm, mode, draftId))
@@ -96,7 +97,7 @@ class AddAssetsController @Inject()(
 
       addAnotherForm.bindFromRequest().fold(
         (formWithErrors: Form[_]) => {
-          val assets = new AddAssetViewHelper(request.userAnswers, mode, draftId).rows
+          val assets = new AddAssetViewHelper(checkAnswersFormatters)(request.userAnswers, mode, draftId).rows
 
           Future.successful(BadRequest(addAssetsView(formWithErrors, mode, draftId, assets.inProgress, assets.complete, heading(assets.count))))
         },

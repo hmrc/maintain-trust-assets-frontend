@@ -17,12 +17,17 @@
 package pages.asset.shares
 
 import pages.QuestionPage
+import pages.asset.shares.SharePortfolioQuantityInTrustPage.key
 import play.api.libs.json.JsPath
 import sections.Assets
 
-final case class SharePortfolioQuantityInTrustPage(index : Int) extends QuestionPage[String] {
+final case class SharePortfolioQuantityInTrustPage(index: Int) extends QuestionPage[String] {
 
   override def path: JsPath = Assets.path \ index \ toString
 
-  override def toString: String = "quantityInTheTrust"
+  override def toString: String = key
+}
+
+object SharePortfolioQuantityInTrustPage {
+  val key: String = "portfolioQuantityInTheTrust"
 }

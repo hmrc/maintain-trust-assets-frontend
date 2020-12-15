@@ -16,16 +16,18 @@
 
 package utils
 
-import models.{Mode, UserAnswers}
+import controllers.asset._
 import models.Status.Completed
+import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
 import sections.Assets
-import viewmodels._
-import viewmodels.{AddRow, AddToRows}
-import controllers.asset._
-import utils.CheckAnswersFormatters.currencyFormat
+import viewmodels.{AddRow, AddToRows, _}
 
-class AddAssetViewHelper(userAnswers: UserAnswers, mode: Mode, draftId: String)(implicit messages: Messages) {
+import javax.inject.Inject
+
+class AddAssetViewHelper @Inject()(checkAnswersFormatters: CheckAnswersFormatters)
+                                  (userAnswers: UserAnswers, mode: Mode, draftId: String)
+                                  (implicit messages: Messages) {
 
   def rows: AddToRows = {
 
@@ -61,7 +63,7 @@ class AddAssetViewHelper(userAnswers: UserAnswers, mode: Mode, draftId: String)(
   private def parseMoney(mvm: MoneyAssetViewModel, index: Int) : AddRow = {
     AddRow(
       name = mvm.value match {
-        case Some(value) => currencyFormat(value)
+        case Some(value) => checkAnswersFormatters.currencyFormat(value)
         case None => defaultValue
       },
       typeLabel = mvm.`type`.toString,

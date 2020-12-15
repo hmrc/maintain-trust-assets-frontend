@@ -16,23 +16,23 @@
 
 package controllers.asset.shares
 
+import config.annotations.Shares
 import controllers.actions._
-import javax.inject.Inject
 import models.NormalMode
 import models.Status.Completed
+import models.requests.RegistrationDataRequest
 import navigation.Navigator
 import pages.AssetStatus
-import pages.asset.shares.{ShareAnswerPage, SharesInAPortfolioPage}
+import pages.asset.shares.{ShareAnswerPage, ShareCompanyNamePage, SharePortfolioNamePage, SharesInAPortfolioPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
+import queries.Gettable
 import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.CheckYourAnswersHelper
-import config.annotations.Shares
-import utils.countryOptions.CountryOptions
-import viewmodels.AnswerSection
+import utils.print.SharesPrintHelper
 import views.html.asset.shares.ShareAnswersView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ShareAnswerController @Inject()(
@@ -44,11 +44,11 @@ class ShareAnswerController @Inject()(
                                        requireData: RegistrationDataRequiredAction,
                                        requiredAnswer: RequiredAnswerActionProvider,
                                        view: ShareAnswersView,
-                                       countryOptions: CountryOptions,
-                                       val controllerComponents: MessagesControllerComponents
+                                       val controllerComponents: MessagesControllerComponents,
+                                       printHelper: SharesPrintHelper
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private def actions(index: Int, draftId: String) =
+  private def actions(index: Int, draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] =
     identify andThen
       getData(draftId) andThen
       requireData andThen
@@ -57,35 +57,21 @@ class ShareAnswerController @Inject()(
   def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
     implicit request =>
 
-      val answers = new CheckYourAnswersHelper(countryOptions)(request.userAnswers, draftId, canEdit = true)
+      def getPage(page: Gettable[String]): Option[String] = {
+        request.userAnswers.get(page)
+      }
 
-      val sections = Seq(
-        AnswerSection(
-          None,
-          request.userAnswers.get(SharesInAPortfolioPage(index)) match {
-            case Some(false) =>
-              Seq(
-                answers.whatKindOfAsset(index),
-                answers.sharesInAPortfolio(index),
-                answers.shareCompanyName(index),
-                answers.sharesOnStockExchange(index),
-                answers.shareClass(index),
-                answers.shareQuantityInTrust(index),
-                answers.shareValueInTrust(index)
-              ).flatten
-            case Some(true) =>
-              Seq(
-                answers.whatKindOfAsset(index),
-                answers.sharesInAPortfolio(index),
-                answers.sharePortfolioName(index),
-                answers.sharePortfolioOnStockExchange(index),
-                answers.sharePortfolioQuantityInTrust(index),
-                answers.sharePortfolioValueInTrust(index)
-              ).flatten
-            case None =>
-              Nil
-          }
-        )
+      val name: String = (getPage(ShareCompanyNamePage(index)), getPage(SharePortfolioNamePage(index))) match {
+        case (Some(name), None) => name
+        case (None, Some(name)) => name
+        case _ => "" // TODO - redirect to start of journey
+      }
+
+      val sections = printHelper.checkDetailsSection(
+        userAnswers = request.userAnswers,
+        arg = name,
+        index = index,
+        draftId = draftId
       )
 
       Ok(view(index, draftId, sections))

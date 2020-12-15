@@ -18,16 +18,15 @@ package controllers.asset.shares
 
 import base.SpecBase
 import models.Status.Completed
-import models.WhatKindOfAsset.Shares
 import models._
+import org.mockito.Matchers.any
+import org.mockito.Mockito.when
 import pages.AssetStatus
-import pages.asset.WhatKindOfAssetPage
 import pages.asset.shares._
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import utils.CheckYourAnswersHelper
-import utils.countryOptions.CountryOptions
-import viewmodels.AnswerSection
+import utils.print.SharesPrintHelper
 import views.html.asset.shares.ShareAnswersView
 
 class ShareAnswerControllerSpec extends SpecBase {
@@ -39,7 +38,7 @@ class ShareAnswerControllerSpec extends SpecBase {
 
   "ShareAnswer Controller" must {
 
-    "return OK and the correct view for a GET (share)" in {
+    "return OK and the correct view for a GET" in {
 
       val userAnswers =
         emptyUserAnswers
@@ -51,68 +50,13 @@ class ShareAnswerControllerSpec extends SpecBase {
         .set(ShareValueInTrustPage(index), assetValue).success.value
         .set(AssetStatus(index), Completed).success.value
 
-      val countryOptions = injector.instanceOf[CountryOptions]
-      val checkYourAnswersHelper = new CheckYourAnswersHelper(countryOptions)(userAnswers, fakeDraftId, canEdit = true)
+      val expectedSections = Nil
+      val mockPrintHelper: SharesPrintHelper = mock[SharesPrintHelper]
+      when(mockPrintHelper.checkDetailsSection(any(), any(), any(), any())(any())).thenReturn(Nil)
 
-      val expectedSections = Seq(
-        AnswerSection(
-          None,
-          Seq(
-            checkYourAnswersHelper.sharesInAPortfolio(index).value,
-            checkYourAnswersHelper.shareCompanyName(index).value,
-            checkYourAnswersHelper.sharesOnStockExchange(index).value,
-            checkYourAnswersHelper.shareClass(index).value,
-            checkYourAnswersHelper.shareQuantityInTrust(index).value,
-            checkYourAnswersHelper.shareValueInTrust(index).value
-          )
-        )
-      )
-
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
-      val request = FakeRequest(GET, shareAnswerRoute)
-
-      val result = route(application, request).value
-
-      val view = application.injector.instanceOf[ShareAnswersView]
-
-      status(result) mustEqual OK
-
-      contentAsString(result) mustEqual
-        view(index, fakeDraftId, expectedSections)(fakeRequest, messages).toString
-
-      application.stop()
-    }
-
-    "return OK and the correct view for a GET (share portfolio)" in {
-
-      val userAnswers =
-        emptyUserAnswers
-          .set(WhatKindOfAssetPage(index), Shares).success.value
-          .set(SharesInAPortfolioPage(index), true).success.value
-          .set(SharePortfolioNamePage(index), "Share Portfolio Name").success.value
-          .set(SharePortfolioOnStockExchangePage(index), true).success.value
-          .set(SharePortfolioQuantityInTrustPage(index), "2000").success.value
-          .set(SharePortfolioValueInTrustPage(index), assetValue).success.value
-
-      val countryOptions = injector.instanceOf[CountryOptions]
-      val checkYourAnswersHelper = new CheckYourAnswersHelper(countryOptions)(userAnswers, fakeDraftId, canEdit = true)
-
-      val expectedSections = Seq(
-        AnswerSection(
-          None,
-          Seq(
-            checkYourAnswersHelper.whatKindOfAsset(index).value,
-            checkYourAnswersHelper.sharesInAPortfolio(index).value,
-            checkYourAnswersHelper.sharePortfolioName(index).value,
-            checkYourAnswersHelper.sharePortfolioOnStockExchange(index).value,
-            checkYourAnswersHelper.sharePortfolioQuantityInTrust(index).value,
-            checkYourAnswersHelper.sharePortfolioValueInTrust(index).value
-          )
-        )
-      )
-
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(bind[SharesPrintHelper].toInstance(mockPrintHelper))
+        .build()
 
       val request = FakeRequest(GET, shareAnswerRoute)
 

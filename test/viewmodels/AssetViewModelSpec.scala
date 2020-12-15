@@ -95,10 +95,10 @@ class AssetViewModelSpec extends FreeSpec with MustMatchers with ScalaCheckPrope
             val json = Json.parse(
               """
                 |{
-                |"portfolioListedOnTheStockExchange" : true,
+                |"portfolioListedOnStockExchange" : true,
                 |"name" : "adam",
                 |"sharesInAPortfolio" : true,
-                |"portfolioQuantityInTheTrust" : "200",
+                |"portfolioQuantity" : "200",
                 |"portfolioValue" : 200,
                 |"whatKindOfAsset" : "Shares",
                 |"status": "completed"
@@ -114,10 +114,10 @@ class AssetViewModelSpec extends FreeSpec with MustMatchers with ScalaCheckPrope
             val json = Json.parse(
               """
                 |{
-                |"listedOnTheStockExchange" : true,
-                |"shareCompanyName" : "adam",
+                |"listedOnStockExchange" : true,
+                |"name" : "adam",
                 |"sharesInAPortfolio" : false,
-                |"quantityInTheTrust" : "200",
+                |"quantity" : "200",
                 |"value" : 200,
                 |"whatKindOfAsset" : "Shares",
                 |"class" : "ordinary",

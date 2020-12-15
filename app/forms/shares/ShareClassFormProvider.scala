@@ -25,6 +25,6 @@ class ShareClassFormProvider @Inject() extends Mappings {
 
   def apply(): Form[ShareClass] =
     Form(
-      "value" -> enumerable[ShareClass]("shareClass.error.required")
+      "value" -> enumerable[ShareClass]("shares.class.error.required")
     )
 }

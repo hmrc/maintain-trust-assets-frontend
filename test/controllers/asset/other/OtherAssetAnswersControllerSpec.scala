@@ -17,17 +17,18 @@
 package controllers.asset.other
 
 import base.SpecBase
-import models.{NormalMode, UserAnswers}
 import models.WhatKindOfAsset.Other
+import models.{NormalMode, UserAnswers}
+import org.mockito.Matchers.any
+import org.mockito.Mockito.when
 import pages.asset._
 import pages.asset.other._
 import play.api.Application
+import play.api.inject.bind
 import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import utils.CheckYourAnswersHelper
-import utils.countryOptions.CountryOptions
-import viewmodels.AnswerSection
+import utils.print.OtherPrintHelper
 import views.html.asset.other.OtherAssetAnswersView
 
 import scala.concurrent.Future
@@ -48,22 +49,13 @@ class OtherAssetAnswersControllerSpec extends SpecBase {
 
     "return OK and the correct view for a GET" in {
 
-      val countryOptions: CountryOptions = injector.instanceOf[CountryOptions]
+      val expectedSections = Nil
+      val mockPrintHelper: OtherPrintHelper = mock[OtherPrintHelper]
+      when(mockPrintHelper.checkDetailsSection(any(), any(), any(), any())(any())).thenReturn(Nil)
 
-      val checkYourAnswersHelper = new CheckYourAnswersHelper(countryOptions)(baseAnswers, fakeDraftId, canEdit = true)
-
-      val expectedSections = Seq(
-        AnswerSection(
-          None,
-          Seq(
-            checkYourAnswersHelper.whatKindOfAsset(index).value,
-            checkYourAnswersHelper.otherAssetDescription(index).value,
-            checkYourAnswersHelper.otherAssetValue(index, description).value
-          )
-        )
-      )
-
-      val application: Application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(baseAnswers))
+        .overrides(bind[OtherPrintHelper].toInstance(mockPrintHelper))
+        .build()
 
       val request = FakeRequest(GET, answersRoute)
 

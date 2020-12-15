@@ -17,22 +17,18 @@
 package mapping.reads
 
 import models.WhatKindOfAsset.Shares
-import models.{ShareClass, Status, WhatKindOfAsset}
+import models.{ShareClass, WhatKindOfAsset}
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.shares._
 import play.api.libs.json._
 
 final case class ShareNonPortfolioAsset(override val whatKindOfAsset: WhatKindOfAsset,
-                                        listedOnTheStockExchange: Boolean,
+                                        override val listedOnTheStockExchange: Boolean,
                                         shareCompanyName: String,
                                         sharesInAPortfolio: Boolean,
                                         quantityInTheTrust: String,
                                         value: Long,
-                                        `class`: ShareClass,
-                                        status: Status) extends Asset with ShareAsset {
-
-  val quoted: String = quotedOrUnquoted(listedOnTheStockExchange)
-}
+                                        `class`: ShareClass) extends ShareAsset
 
 object ShareNonPortfolioAsset {
 
@@ -40,17 +36,21 @@ object ShareNonPortfolioAsset {
 
   implicit lazy val reads: Reads[ShareNonPortfolioAsset] = {
 
-    val shareReads : Reads[ShareNonPortfolioAsset] = Json.reads[ShareNonPortfolioAsset]
+    val shareReads: Reads[ShareNonPortfolioAsset] = (
+      (__ \ ShareCompanyNamePage.key).read[String] and
+        (__ \ SharesOnStockExchangePage.key).read[Boolean] and
+        (__ \ ShareClassPage.key).read[ShareClass] and
+        (__ \ ShareQuantityInTrustPage.key).read[String] and
+        (__ \ ShareValueInTrustPage.key).read[Long] and
+        (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset]
+      )((name, listedOnStockExchange, `class`, quantity, value, kind) => ShareNonPortfolioAsset(kind, listedOnStockExchange, name, sharesInAPortfolio = false, quantity, value, `class`))
 
-    (
-      (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset] and
-      (__ \ SharesInAPortfolioPage.key).read[Boolean]
-    )((_, _)).flatMap[(WhatKindOfAsset, Boolean)] {
-      case (whatKindOfAsset, portfolio) =>
-        if (whatKindOfAsset == Shares && !portfolio) {
-          Reads(_ => JsSuccess((whatKindOfAsset, portfolio)))
+    (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].flatMap[WhatKindOfAsset] {
+      whatKindOfAsset: WhatKindOfAsset =>
+        if (whatKindOfAsset == Shares) {
+          Reads(_ => JsSuccess(whatKindOfAsset))
         } else {
-          Reads(_ => JsError("share asset must be of type `Shares`"))
+          Reads(_ => JsError("share portfolio asset must be of type `Shares`"))
         }
     }.andKeep(shareReads)
 

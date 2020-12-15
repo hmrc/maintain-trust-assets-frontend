@@ -41,7 +41,7 @@ object ShareClass extends Enumerable.Implicits {
 
   def asRadioOptions(list: List[ShareClass]): List[RadioOption] = list.map {
     value =>
-      RadioOption("shareClass", value.toString)
+      RadioOption("shares.class", value.toString)
   }
 
   val allOptions: List[RadioOption] = asRadioOptions(allValues)

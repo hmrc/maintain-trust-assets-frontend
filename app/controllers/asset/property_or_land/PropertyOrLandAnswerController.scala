@@ -16,8 +16,8 @@
 
 package controllers.asset.property_or_land
 
+import config.annotations.PropertyOrLand
 import controllers.actions._
-import javax.inject.Inject
 import models.NormalMode
 import models.Status.Completed
 import navigation.Navigator
@@ -27,12 +27,10 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.CheckYourAnswersHelper
-import config.annotations.PropertyOrLand
-import utils.countryOptions.CountryOptions
-import viewmodels.AnswerSection
+import utils.print.PropertyOrLandPrintHelper
 import views.html.asset.property_or_land.PropertyOrLandAnswersView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class PropertyOrLandAnswerController @Inject()(
@@ -41,30 +39,17 @@ class PropertyOrLandAnswerController @Inject()(
                                                 @PropertyOrLand navigator: Navigator,
                                                 actions: Actions,
                                                 view: PropertyOrLandAnswersView,
-                                                countryOptions: CountryOptions,
-                                                val controllerComponents: MessagesControllerComponents
+                                                val controllerComponents: MessagesControllerComponents,
+                                                printHelper: PropertyOrLandPrintHelper
                                               )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions.authWithData(draftId) {
     implicit request =>
 
-      val answers = new CheckYourAnswersHelper(countryOptions)(request.userAnswers, draftId, canEdit = true)
-
-      val sections = Seq(
-        AnswerSection(
-          None,
-          Seq(
-            answers.whatKindOfAsset(index),
-            answers.propertyOrLandAddressYesNo(index),
-            answers.propertyOrLandAddressUkYesNo(index),
-            answers.propertyOrLandUKAddress(index),
-            answers.propertyOrLandInternationalAddress(index),
-            answers.propertyOrLandDescription(index),
-            answers.propertyOrLandTotalValue(index),
-            answers.trustOwnAllThePropertyOrLand(index),
-            answers.propertyLandValueTrust(index)
-          ).flatten
-        )
+      val sections = printHelper.checkDetailsSection(
+        userAnswers = request.userAnswers,
+        index = index,
+        draftId = draftId
       )
 
       Ok(view(index, draftId, sections))

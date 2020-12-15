@@ -19,12 +19,13 @@ package controllers.asset.business
 import base.SpecBase
 import controllers.routes._
 import models.{NormalMode, UKAddress, UserAnswers}
+import org.mockito.Matchers.any
+import org.mockito.Mockito.when
 import pages.asset.business._
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import utils.CheckYourAnswersHelper
-import utils.countryOptions.CountryOptions
-import viewmodels.AnswerSection
+import utils.print.BusinessPrintHelper
 import views.html.asset.buisness.BusinessAnswersView
 
 class BusinessAnswersControllerSpec extends SpecBase {
@@ -42,24 +43,13 @@ class BusinessAnswersControllerSpec extends SpecBase {
 
     "return OK and the correct view for a GET" in {
 
-      val countryOptions = injector.instanceOf[CountryOptions]
+      val expectedSections = Nil
+      val mockPrintHelper: BusinessPrintHelper = mock[BusinessPrintHelper]
+      when(mockPrintHelper.checkDetailsSection(any(), any(), any(), any())(any())).thenReturn(Nil)
 
-      val checkYourAnswersHelper = new CheckYourAnswersHelper(countryOptions)(answers, fakeDraftId, canEdit = true)
-
-      val expectedSections = Seq(
-        AnswerSection(
-          None,
-          Seq(
-            checkYourAnswersHelper.assetNamePage(index).value,
-            checkYourAnswersHelper.assetDescription(index).value,
-            checkYourAnswersHelper.assetAddressUkYesNo(index).value,
-            checkYourAnswersHelper.assetUkAddress(index).value,
-            checkYourAnswersHelper.currentValue(index).value
-          )
-        )
-      )
-
-      val application = applicationBuilder(userAnswers = Some(answers)).build()
+      val application = applicationBuilder(userAnswers = Some(answers))
+        .overrides(bind[BusinessPrintHelper].toInstance(mockPrintHelper))
+        .build()
 
       val request = FakeRequest(GET, routes.BusinessAnswersController.onPageLoad(index, fakeDraftId).url)
 

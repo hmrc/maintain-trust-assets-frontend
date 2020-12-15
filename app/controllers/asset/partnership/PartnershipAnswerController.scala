@@ -16,23 +16,22 @@
 
 package controllers.asset.partnership
 
+import config.annotations.Partnership
 import controllers.actions._
-import javax.inject.Inject
 import models.NormalMode
 import models.Status.Completed
+import models.requests.RegistrationDataRequest
 import navigation.Navigator
 import pages.AssetStatus
 import pages.asset.partnership._
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
 import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.CheckYourAnswersHelper
-import config.annotations.Partnership
-import utils.countryOptions.CountryOptions
-import viewmodels.AnswerSection
+import utils.print.PartnershipPrintHelper
 import views.html.asset.partnership.PartnershipAnswersView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class PartnershipAnswerController @Inject()(
@@ -44,11 +43,11 @@ class PartnershipAnswerController @Inject()(
                                              requireData: RegistrationDataRequiredAction,
                                              requiredAnswer: RequiredAnswerActionProvider,
                                              view: PartnershipAnswersView,
-                                             countryOptions: CountryOptions,
-                                             val controllerComponents: MessagesControllerComponents
+                                             val controllerComponents: MessagesControllerComponents,
+                                             printHelper: PartnershipPrintHelper
                                            )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private def actions(index: Int, draftId: String) =
+  private def actions(index: Int, draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] =
     identify andThen
       getData(draftId) andThen
       requireData andThen
@@ -58,17 +57,10 @@ class PartnershipAnswerController @Inject()(
   def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
     implicit request =>
 
-      val answers = new CheckYourAnswersHelper(countryOptions)(request.userAnswers, draftId, canEdit = true)
-
-      val sections = Seq(
-        AnswerSection(
-          None,
-          Seq(
-            answers.whatKindOfAsset(index),
-            answers.partnershipDescription(index),
-            answers.partnershipStartDate(index)
-          ).flatten
-        )
+      val sections = printHelper.checkDetailsSection(
+        userAnswers = request.userAnswers,
+        index = index,
+        draftId = draftId
       )
 
       Ok(view(index, draftId, sections))

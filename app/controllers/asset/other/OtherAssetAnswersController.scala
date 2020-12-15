@@ -17,7 +17,6 @@
 package controllers.asset.other
 
 import controllers.actions._
-import javax.inject.Inject
 import models.Status.Completed
 import models.requests.RegistrationDataRequest
 import models.{Mode, NormalMode}
@@ -28,11 +27,10 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
 import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.CheckYourAnswersHelper
-import utils.countryOptions.CountryOptions
-import viewmodels.AnswerSection
+import utils.print.OtherPrintHelper
 import views.html.asset.other.OtherAssetAnswersView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class OtherAssetAnswersController @Inject()(
@@ -43,8 +41,8 @@ class OtherAssetAnswersController @Inject()(
                                              requireData: RegistrationDataRequiredAction,
                                              requiredAnswer: RequiredAnswerActionProvider,
                                              view: OtherAssetAnswersView,
-                                             countryOptions: CountryOptions,
-                                             val controllerComponents: MessagesControllerComponents
+                                             val controllerComponents: MessagesControllerComponents,
+                                             printHelper: OtherPrintHelper
                                            )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private def actions(mode: Mode, index: Int, draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] = {
@@ -57,21 +55,16 @@ class OtherAssetAnswersController @Inject()(
   def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(NormalMode, index, draftId) {
     implicit request =>
 
-      val answers = new CheckYourAnswersHelper(countryOptions)(request.userAnswers, draftId, canEdit = true)
       val description = request.userAnswers.get(OtherAssetDescriptionPage(index)).get
 
-      val sections = Seq(
-        AnswerSection(
-          None,
-          Seq(
-            answers.whatKindOfAsset(index),
-            answers.otherAssetDescription(index),
-            answers.otherAssetValue(index, description)
-          ).flatten
-        )
+      val section = printHelper.checkDetailsSection(
+        userAnswers = request.userAnswers,
+        arg = description,
+        index = index,
+        draftId = draftId
       )
 
-      Ok(view(index, draftId, sections))
+      Ok(view(index, draftId, section))
   }
 
   def onSubmit(index: Int, draftId: String): Action[AnyContent] = actions(NormalMode, index, draftId).async {

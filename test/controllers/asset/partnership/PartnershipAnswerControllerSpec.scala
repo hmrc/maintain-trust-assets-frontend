@@ -16,26 +16,24 @@
 
 package controllers.asset.partnership
 
-import java.time.{LocalDate, ZoneOffset}
-
 import base.SpecBase
 import models.NormalMode
 import models.Status.Completed
 import models.WhatKindOfAsset.Partnership
+import org.mockito.Matchers.any
+import org.mockito.Mockito.when
 import pages.AssetStatus
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.partnership._
-import play.api.mvc.Call
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import utils.CheckYourAnswersHelper
-import utils.countryOptions.CountryOptions
-import viewmodels.AnswerSection
+import utils.print.PartnershipPrintHelper
 import views.html.asset.partnership.PartnershipAnswersView
 
-class PartnershipAnswerControllerSpec extends SpecBase {
+import java.time.{LocalDate, ZoneOffset}
 
-  def onwardRoute = Call("GET", "/foo")
+class PartnershipAnswerControllerSpec extends SpecBase {
 
   val index: Int = 0
   val validDate: LocalDate = LocalDate.now(ZoneOffset.UTC)
@@ -53,21 +51,13 @@ class PartnershipAnswerControllerSpec extends SpecBase {
             .set(PartnershipStartDatePage(index), validDate).success.value
             .set(AssetStatus(index), Completed).success.value
 
-        val countryOptions = injector.instanceOf[CountryOptions]
-        val checkYourAnswersHelper = new CheckYourAnswersHelper(countryOptions)(userAnswers, fakeDraftId, canEdit = true)
+        val expectedSections = Nil
+        val mockPrintHelper: PartnershipPrintHelper = mock[PartnershipPrintHelper]
+        when(mockPrintHelper.checkDetailsSection(any(), any(), any(), any())(any())).thenReturn(Nil)
 
-        val expectedSections = Seq(
-          AnswerSection(
-            None,
-            Seq(
-              checkYourAnswersHelper.whatKindOfAsset(index).value,
-              checkYourAnswersHelper.partnershipDescription(index).value,
-              checkYourAnswersHelper.partnershipStartDate(index).value
-            )
-          )
-        )
-
-        val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+        val application = applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(bind[PartnershipPrintHelper].toInstance(mockPrintHelper))
+          .build()
 
         val request = FakeRequest(GET, partnershipAnswerRoute)
 
