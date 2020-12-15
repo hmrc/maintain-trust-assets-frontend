@@ -40,7 +40,7 @@ class SubmissionSetFactory @Inject()(registrationProgress: RegistrationProgress,
   private def mappedDataIfCompleted(userAnswers: UserAnswers, status: Option[Status]): List[RegistrationSubmission.MappedPiece] = {
     if (status.contains(Completed)) {
       assetMapper.build(userAnswers) match {
-        case Some(assets) => List(RegistrationSubmission.MappedPiece("trust/entities/beneficiary", Json.toJson(assets)))
+        case Some(assets) => List(RegistrationSubmission.MappedPiece("trust/entities/asset", Json.toJson(assets)))
         case _ => List.empty
       }
     } else {
