@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package utils.annotations;
+package config.annotations;
 
 import com.google.inject.BindingAnnotation;
 

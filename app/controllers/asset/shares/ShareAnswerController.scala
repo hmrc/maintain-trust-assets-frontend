@@ -28,7 +28,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import utils.CheckYourAnswersHelper
-import utils.annotations.Shares
+import config.annotations.Shares
 import utils.countryOptions.CountryOptions
 import viewmodels.AnswerSection
 import views.html.asset.shares.ShareAnswersView
