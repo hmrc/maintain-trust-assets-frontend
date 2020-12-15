@@ -15,6 +15,7 @@
  *@
 
 @import viewmodels.Link
+@import utils.DateErrorFormatter._
 
 @(
   field: Field,
@@ -41,7 +42,7 @@
         }
         @form_hint(hint = hint, readerHint = readerHint, link = link)
         @field.errors.map { error =>
-            <span class="error-message" id="error-message-@{field.id}-input">@messages(error.message, error.args: _*)</span>
+            <span class="error-message" id="error-message-@{field.id}-input">@messages(error.message, formatArgs(error.args): _*)</span>
         }
             <div class="form-date">
         @List("day", "month", "year").map { part =>
