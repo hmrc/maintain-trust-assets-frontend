@@ -32,7 +32,7 @@ class PropertyOrLandPrintHelperSpec extends SpecBase {
 
   private val index: Int = 0
 
-  private val heading: String = "Property or land"
+  private val heading: String = s"Property or land ${index + 1}"
 
   private val description: String = "Description"
   private val ukAddress: UKAddress = UKAddress("Line 1", "Line 2", None, None, "AB1 1AB")

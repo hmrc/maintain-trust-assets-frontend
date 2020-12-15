@@ -32,7 +32,7 @@ class BusinessPrintHelperSpec extends SpecBase {
 
   private val index: Int = 0
 
-  private val heading: String = "Business"
+  private val heading: String = s"Business ${index + 1}"
 
   private val name: String = "Name"
   private val description: String = "Description"

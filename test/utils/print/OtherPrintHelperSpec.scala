@@ -32,7 +32,7 @@ class OtherPrintHelperSpec extends SpecBase {
 
   private val index: Int = 0
 
-  private val heading: String = "Other"
+  private val heading: String = s"Other ${index + 1}"
 
   private val description: String = "Description"
   private val amount: Long = 100L

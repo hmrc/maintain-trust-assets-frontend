@@ -35,7 +35,7 @@ class BusinessPrintHelper @Inject()(countryOptions: CountryOptions,
                    draftId: String)
                   (implicit messages: Messages): AnswerSection = {
 
-    section(userAnswers, arg, index, draftId, Some(messages("answerPage.section.businessAsset.subheading")))
+    section(userAnswers, arg, index, draftId, Some(messages("answerPage.section.businessAsset.subheading", index + 1)))
   }
 
   override def answerRows(userAnswers: UserAnswers,

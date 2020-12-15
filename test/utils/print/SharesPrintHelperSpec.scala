@@ -32,7 +32,7 @@ class SharesPrintHelperSpec extends SpecBase {
 
   private val index: Int = 0
 
-  private val heading: String = "Share"
+  private val heading: String = s"Share ${index + 1}"
 
   private val name: String = "Name"
   private val quantity: String = "100"

@@ -35,7 +35,7 @@ class PropertyOrLandPrintHelper @Inject()(countryOptions: CountryOptions,
                    draftId: String)
                   (implicit messages: Messages): AnswerSection = {
 
-    section(userAnswers, arg, index, draftId, Some(messages("answerPage.section.propertyOrLandAsset.subheading")))
+    section(userAnswers, arg, index, draftId, Some(messages("answerPage.section.propertyOrLandAsset.subheading", index + 1)))
   }
 
   override def answerRows(userAnswers: UserAnswers,

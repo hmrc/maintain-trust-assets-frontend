@@ -35,7 +35,7 @@ class PartnershipPrintHelper @Inject()(countryOptions: CountryOptions,
                    draftId: String)
                   (implicit messages: Messages): AnswerSection = {
 
-    section(userAnswers, arg, index, draftId, Some(messages("answerPage.section.partnershipAsset.subheading")))
+    section(userAnswers, arg, index, draftId, Some(messages("answerPage.section.partnershipAsset.subheading", index + 1)))
   }
 
   override def answerRows(userAnswers: UserAnswers,

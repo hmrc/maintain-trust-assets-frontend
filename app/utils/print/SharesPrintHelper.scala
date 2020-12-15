@@ -35,7 +35,7 @@ class SharesPrintHelper @Inject()(countryOptions: CountryOptions,
                    draftId: String)
                   (implicit messages: Messages): AnswerSection = {
 
-    section(userAnswers, arg, index, draftId, Some(messages("answerPage.section.shareAsset.subheading")))
+    section(userAnswers, arg, index, draftId, Some(messages("answerPage.section.shareAsset.subheading", index + 1)))
   }
 
   override def answerRows(userAnswers: UserAnswers,

@@ -112,11 +112,11 @@ featureNotAvailable.p2 = You will be able to update these details online in the 
 
 answerPage.section.assets.heading = Assets
 answerPage.section.moneyAsset.subheading = Money
-answerPage.section.shareAsset.subheading = Share
-answerPage.section.propertyOrLandAsset.subheading = Property or land
-answerPage.section.partnershipAsset.subheading = Partnership
-answerPage.section.businessAsset.subheading = Business
-answerPage.section.otherAsset.subheading = Other
+answerPage.section.shareAsset.subheading = Share {0}
+answerPage.section.propertyOrLandAsset.subheading = Property or land {0}
+answerPage.section.partnershipAsset.subheading = Partnership {0}
+answerPage.section.businessAsset.subheading = Business {0}
+answerPage.section.otherAsset.subheading = Other {0}
 
 addAnAssetYesNo.title = Do you want to add an asset?
 addAnAssetYesNo.heading = Do you want to add an asset?
