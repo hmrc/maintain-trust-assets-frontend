@@ -22,24 +22,19 @@ import pages.asset.other._
 import play.api.i18n.Messages
 import utils.countryOptions.CountryOptions
 import utils.{AnswerRowConverter, CheckAnswersFormatters}
-import viewmodels.{AnswerRow, AnswerSection}
+import viewmodels.AnswerRow
 
 import javax.inject.Inject
 
 class OtherPrintHelper @Inject()(countryOptions: CountryOptions,
                                  checkAnswersFormatters: CheckAnswersFormatters) extends PrintHelper {
 
-  def printSection(userAnswers: UserAnswers,
-                   arg: String = "",
-                   index: Int,
-                   draftId: String)
-                  (implicit messages: Messages): AnswerSection = {
-
-    section(userAnswers, arg, index, draftId, Some(messages("answerPage.section.otherAsset.subheading", index + 1)))
+  override def headingKey(index: Int)(implicit messages: Messages): String = {
+    messages("answerPage.section.otherAsset.subheading", index + 1)
   }
 
   override def answerRows(userAnswers: UserAnswers,
-                          arg: String = "",
+                          arg: String,
                           index: Int,
                           draftId: String)
                          (implicit messages: Messages): Seq[AnswerRow] = {

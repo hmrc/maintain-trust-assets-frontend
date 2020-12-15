@@ -31,7 +31,18 @@ trait PrintHelper {
     Seq(section(userAnswers, arg, index, draftId, None))
   }
 
-  def section(userAnswers: UserAnswers,
+  def headingKey(index: Int)(implicit messages: Messages): String
+
+  def printSection(userAnswers: UserAnswers,
+                   arg: String = "",
+                   index: Int,
+                   draftId: String)
+                  (implicit messages: Messages): AnswerSection = {
+
+    section(userAnswers, arg, index, draftId, Some(headingKey(index)))
+  }
+
+  private def section(userAnswers: UserAnswers,
               arg: String,
               index: Int,
               draftId: String,
@@ -48,7 +59,7 @@ trait PrintHelper {
   }
 
   def answerRows(userAnswers: UserAnswers,
-                 arg: String = "",
+                 arg: String,
                  index: Int,
                  draftId: String)
                 (implicit messages: Messages): Seq[AnswerRow]
