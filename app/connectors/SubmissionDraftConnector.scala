@@ -17,37 +17,21 @@
 package connectors
 
 import config.FrontendAppConfig
-import javax.inject.Inject
-import models.{SubmissionDraftData, SubmissionDraftResponse, SubmissionDraftSetData}
+import models.{RegistrationSubmission, SubmissionDraftResponse}
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class SubmissionDraftConnector @Inject()(http: HttpClient, config : FrontendAppConfig) {
 
-  val submissionsBaseUrl = s"${config.trustsUrl}/trusts/register/submission-drafts"
+  private val submissionsBaseUrl = s"${config.trustsUrl}/trusts/register/submission-drafts"
 
-  def setDraftMain(draftId : String, draftData: JsValue, inProgress: Boolean, reference: Option[String])
-                     (implicit hc: HeaderCarrier, ec : ExecutionContext): Future[HttpResponse] = {
-    val submissionDraftData = SubmissionDraftData(draftData, reference, Some(inProgress))
-    http.POST[JsValue, HttpResponse](s"$submissionsBaseUrl/$draftId/MAIN", Json.toJson(submissionDraftData))
-  }
-
-  def setDraftSectionSet(draftId: String, section: String, data: SubmissionDraftSetData)
+  def setDraftSectionSet(draftId: String, section: String, data: RegistrationSubmission.DataSet)
                         (implicit hc: HeaderCarrier, ec : ExecutionContext): Future[HttpResponse] = {
     http.POST[JsValue, HttpResponse](s"$submissionsBaseUrl/$draftId/set/$section", Json.toJson(data))
-  }
-
-  def setDraftSection(draftId : String, section: String, draftData: JsValue)
-                     (implicit hc: HeaderCarrier, ec : ExecutionContext): Future[HttpResponse] = {
-    val submissionDraftData = SubmissionDraftData(draftData, None, None)
-    http.POST[JsValue, HttpResponse](s"$submissionsBaseUrl/$draftId/$section", Json.toJson(submissionDraftData))
-  }
-
-  def getDraftMain(draftId: String)(implicit hc: HeaderCarrier, ec : ExecutionContext): Future[SubmissionDraftResponse] = {
-    http.GET[SubmissionDraftResponse](s"$submissionsBaseUrl/$draftId/MAIN")
   }
 
   def getDraftSection(draftId: String, section: String)(implicit hc: HeaderCarrier, ec : ExecutionContext): Future[SubmissionDraftResponse] = {

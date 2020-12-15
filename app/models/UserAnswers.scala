@@ -25,7 +25,7 @@ import scala.util.{Failure, Success, Try}
 final case class UserAnswers(
                               draftId: String,
                               data: JsObject = Json.obj(),
-                              internalAuthId :String
+                              internalAuthId: String
                             ) {
 
   private val logger: Logger = Logger(getClass)

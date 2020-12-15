@@ -16,30 +16,31 @@
 
 package repositories
 
-import javax.inject.Inject
 import mapping.AssetMapper
 import models.Status.Completed
-import models.{Status, SubmissionDraftRegistrationPiece, SubmissionDraftSetData, SubmissionDraftStatus, UserAnswers}
+import models.{RegistrationSubmission, Status, UserAnswers}
 import pages.RegistrationProgress
 import play.api.libs.json.Json
 
+import javax.inject.Inject
+
 class SubmissionSetFactory @Inject()(registrationProgress: RegistrationProgress, assetMapper: AssetMapper) {
 
-  def createFrom(userAnswers: UserAnswers): SubmissionDraftSetData = {
+  def createFrom(userAnswers: UserAnswers): RegistrationSubmission.DataSet = {
     val status = registrationProgress.assetsStatus(userAnswers)
-    val registrationPieces = mappedDataIfCompleted(userAnswers, status)
 
-    SubmissionDraftSetData(
+    RegistrationSubmission.DataSet(
       Json.toJson(userAnswers),
-      Some(SubmissionDraftStatus("assets", status)),
-      registrationPieces
+      status,
+      mappedDataIfCompleted(userAnswers, status),
+      Nil // TODO
     )
   }
 
-  private def mappedDataIfCompleted(userAnswers: UserAnswers, status: Option[Status]) = {
+  private def mappedDataIfCompleted(userAnswers: UserAnswers, status: Option[Status]): List[RegistrationSubmission.MappedPiece] = {
     if (status.contains(Completed)) {
       assetMapper.build(userAnswers) match {
-        case Some(assets) => List(SubmissionDraftRegistrationPiece("trust/assets", Json.toJson(assets)))
+        case Some(assets) => List(RegistrationSubmission.MappedPiece("trust/entities/beneficiary", Json.toJson(assets)))
         case _ => List.empty
       }
     } else {

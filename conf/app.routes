@@ -1,13 +1,13 @@
 # microservice specific routes
 
-->         /:draftId/asset/:index/money                 money.Routes
-->         /:draftId/asset/:index/property-or-land      propertyOrLand.Routes
-->         /:draftId/asset/:index/shares                shares.Routes
-->         /:draftId/asset/:index/business              business.Routes
-->         /:draftId/asset/:index/partnership           partnership.Routes
-->         /:draftId/asset/:index/other                 other.Routes
+->         /money                                       money.Routes
+->         /property-or-land                            propertyOrLand.Routes
+->         /shares                                      shares.Routes
+->         /business                                    business.Routes
+->         /partnership                                 partnership.Routes
+->         /other                                       other.Routes
 
-GET        /:draftId/index                              controllers.IndexController.onPageLoad(draftId: String)
+GET        /:draftId/start                              controllers.IndexController.onPageLoad(draftId: String)
 
 GET        /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)
 

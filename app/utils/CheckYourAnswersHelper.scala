@@ -132,7 +132,7 @@ class CheckYourAnswersHelper @Inject()(countryOptions: CountryOptions)
   def propertyOrLandAddressYesNo(index: Int): Option[AnswerRow] = userAnswers.get(PropertyOrLandAddressYesNoPage(index)) map {
     x =>
       AnswerRow(
-        "propertyOrLandAddressYesNo.checkYourAnswersLabel",
+        "propertyOrLand.addressYesNo.checkYourAnswersLabel",
         yesOrNo(x),
         Some(controllers.asset.property_or_land.routes.PropertyOrLandAddressYesNoController.onPageLoad(NormalMode, index, draftId).url),
         canEdit = canEdit
@@ -142,7 +142,7 @@ class CheckYourAnswersHelper @Inject()(countryOptions: CountryOptions)
   def propertyLandValueTrust(index: Int): Option[AnswerRow] = userAnswers.get(PropertyLandValueTrustPage(index)) map {
     x =>
       AnswerRow(
-        "propertyLandValueTrust.checkYourAnswersLabel",
+        "propertyLand.valueInTrust.checkYourAnswersLabel",
         currency(x.toString),
         Some(controllers.asset.property_or_land.routes.PropertyLandValueTrustController.onPageLoad(NormalMode, index, draftId).url),
         canEdit = canEdit
@@ -152,7 +152,7 @@ class CheckYourAnswersHelper @Inject()(countryOptions: CountryOptions)
   def propertyOrLandDescription(index: Int): Option[AnswerRow] = userAnswers.get(PropertyOrLandDescriptionPage(index)) map {
     x =>
       AnswerRow(
-        "propertyOrLandDescription.checkYourAnswersLabel",
+        "propertyOrLand.description.checkYourAnswersLabel",
         HtmlFormat.escape(x),
         Some(controllers.asset.property_or_land.routes.PropertyOrLandDescriptionController.onPageLoad(NormalMode, index, draftId).url),
         canEdit = canEdit
@@ -162,7 +162,7 @@ class CheckYourAnswersHelper @Inject()(countryOptions: CountryOptions)
   def propertyOrLandAddressUkYesNo(index: Int): Option[AnswerRow] = userAnswers.get(PropertyOrLandAddressUkYesNoPage(index)) map {
     x =>
       AnswerRow(
-        "propertyOrLandAddressUkYesNo.checkYourAnswersLabel",
+        "propertyOrLand.addressUkYesNo.checkYourAnswersLabel",
         yesOrNo(x),
         Some(controllers.asset.property_or_land.routes.PropertyOrLandAddressUkYesNoController.onPageLoad(NormalMode, index, draftId).url),
         canEdit = canEdit
@@ -172,7 +172,7 @@ class CheckYourAnswersHelper @Inject()(countryOptions: CountryOptions)
   def trustOwnAllThePropertyOrLand(index: Int): Option[AnswerRow] = userAnswers.get(TrustOwnAllThePropertyOrLandPage(index)) map {
     x =>
       AnswerRow(
-        "trustOwnAllThePropertyOrLand.checkYourAnswersLabel",
+        "propertyOrLand.trustOwnAllYesNo.checkYourAnswersLabel",
         yesOrNo(x),
         Some(controllers.asset.property_or_land.routes.TrustOwnAllThePropertyOrLandController.onPageLoad(NormalMode, index, draftId).url),
         canEdit = canEdit
@@ -182,7 +182,7 @@ class CheckYourAnswersHelper @Inject()(countryOptions: CountryOptions)
   def propertyOrLandUKAddress(index: Int): Option[AnswerRow] = userAnswers.get(PropertyOrLandUKAddressPage(index)) map {
     x =>
       AnswerRow(
-        "propertyOrLandUKAddress.checkYourAnswersLabel",
+        "propertyOrLand.ukAddress.checkYourAnswersLabel",
         ukAddress(x),
         Some(controllers.asset.property_or_land.routes.PropertyOrLandUKAddressController.onPageLoad(NormalMode, index, draftId).url),
         canEdit = canEdit
@@ -192,7 +192,7 @@ class CheckYourAnswersHelper @Inject()(countryOptions: CountryOptions)
   def propertyOrLandInternationalAddress(index: Int): Option[AnswerRow] = userAnswers.get(PropertyOrLandInternationalAddressPage(index)) map {
     x =>
       AnswerRow(
-        "propertyOrLandInternationalAddress.checkYourAnswersLabel",
+        "propertyOrLand.internationalAddress.checkYourAnswersLabel",
         internationalAddress(x, countryOptions),
         Some(controllers.asset.property_or_land.routes.PropertyOrLandInternationalAddressController.onPageLoad(NormalMode, index, draftId).url),
         canEdit = canEdit
@@ -202,7 +202,7 @@ class CheckYourAnswersHelper @Inject()(countryOptions: CountryOptions)
   def propertyOrLandTotalValue(index: Int): Option[AnswerRow] = userAnswers.get(PropertyOrLandTotalValuePage(index)) map {
     x =>
       AnswerRow(
-        "propertyOrLandTotalValue.checkYourAnswersLabel",
+        "propertyOrLand.totalValue.checkYourAnswersLabel",
         currency(x.toString),
         Some(controllers.asset.property_or_land.routes.PropertyOrLandTotalValueController.onPageLoad(NormalMode, index, draftId).url),
         canEdit = canEdit

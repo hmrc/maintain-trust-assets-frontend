@@ -25,7 +25,7 @@
 @(form: Form[_], mode: Mode, draftId: String, index: Int)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("propertyOrLand.uKAddress.title")}"
+    title = s"${errorPrefix(form)} ${messages("propertyOrLand.ukAddress.title")}"
 ) {
 
     @formHelper(action = PropertyOrLandUKAddressController.onSubmit(mode, index, draftId), 'autoComplete -> "off") {
@@ -37,7 +37,7 @@
         <fieldset>
 
             <legend>
-                @components.heading("propertyOrLand.uKAddress.heading")
+                @components.heading("propertyOrLand.ukAddress.heading")
             </legend>
 
             @components.uk_address(form)

@@ -29,9 +29,9 @@ import scala.concurrent.{ExecutionContext, Future}
 class DefaultRegistrationsRepository @Inject()(submissionDraftConnector: SubmissionDraftConnector,
                                                config: FrontendAppConfig,
                                                submissionSetFactory: SubmissionSetFactory
-                                        )(implicit ec: ExecutionContext) extends RegistrationsRepository {
+                                              )(implicit ec: ExecutionContext) extends RegistrationsRepository {
 
-  private val userAnswersSection = config.appName
+  private val userAnswersSection = config.repositoryKey
 
   override def set(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Boolean] = {
     submissionDraftConnector.setDraftSectionSet(

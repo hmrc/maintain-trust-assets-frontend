@@ -208,9 +208,9 @@ propertyOrLand.addressUkYesNo.heading = Is the property or land’s address in t
 propertyOrLand.addressUkYesNo.checkYourAnswersLabel = Is the property or land’s address in the UK?
 propertyOrLand.addressUkYesNo.error.required = Select yes if the property or land has an address in the UK
 
-propertyOrLand.uKAddress.title = What is the property or land’s address?
-propertyOrLand.uKAddress.heading = What is the property or land’s address?
-propertyOrLand.uKAddress.checkYourAnswersLabel = What is the property or land’s address?
+propertyOrLand.ukAddress.title = What is the property or land’s address?
+propertyOrLand.ukAddress.heading = What is the property or land’s address?
+propertyOrLand.ukAddress.checkYourAnswersLabel = What is the property or land’s address?
 
 propertyOrLand.internationalAddress.title = What is the property or land’s address?
 propertyOrLand.internationalAddress.heading = What is the property or land’s address?

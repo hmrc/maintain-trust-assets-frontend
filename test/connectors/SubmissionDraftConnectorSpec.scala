@@ -16,12 +16,10 @@
 
 package connectors
 
-import java.time.LocalDateTime
-
 import base.SpecBase
 import com.github.tomakehurst.wiremock.client.WireMock._
 import models.Status.InProgress
-import models.{SubmissionDraftData, SubmissionDraftResponse, SubmissionDraftSetData, SubmissionDraftStatus}
+import models.{RegistrationSubmission, SubmissionDraftResponse}
 import org.scalatest.{MustMatchers, OptionValues}
 import play.api.Application
 import play.api.http.Status
@@ -31,6 +29,7 @@ import play.api.test.Helpers.CONTENT_TYPE
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.WireMockHelper
 
+import java.time.LocalDateTime
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
@@ -50,96 +49,10 @@ class SubmissionDraftConnectorSpec extends SpecBase with MustMatchers with Optio
   private val submissionsUrl = s"/trusts/register/submission-drafts"
   private val submissionUrl = s"$submissionsUrl/$testDraftId/$testSection"
   private val setSubmissionUrl = s"$submissionsUrl/$testDraftId/set/$testSection"
-  private val mainUrl = s"$submissionsUrl/$testDraftId/MAIN"
 
   "SubmissionDraftConnector" when {
 
     "submission drafts" must {
-
-      "set data for main" in {
-
-        val sectionData = Json.parse(
-          """
-            |{
-            | "field1": "value1",
-            | "field2": "value2"
-            |}
-            |""".stripMargin)
-
-        val submissionDraftData = SubmissionDraftData(sectionData, Some("ref"), Some(true))
-
-        server.stubFor(
-          post(urlEqualTo(mainUrl))
-            .withHeader(CONTENT_TYPE, containing("application/json"))
-            .withRequestBody(equalTo(Json.toJson(submissionDraftData).toString()))
-            .willReturn(
-              aResponse()
-                .withStatus(Status.OK)
-            )
-        )
-
-        val result = Await.result(connector.setDraftMain(testDraftId, sectionData, inProgress = true, Some("ref")), Duration.Inf)
-        result.status mustBe Status.OK
-      }
-      "retrieve data for main" in {
-
-        val draftData = Json.parse(
-          """
-            |{
-            | "field1": "value1",
-            | "field2": "value2"
-            |}
-            |""".stripMargin)
-
-        val draftResponseJson =
-          """
-            |{
-            | "createdAt": "2012-02-03T09:30:00",
-            | "data": {
-            |  "field1": "value1",
-            |  "field2": "value2"
-            | }
-            |}
-            |""".stripMargin
-
-        server.stubFor(
-          get(urlEqualTo(mainUrl))
-            .willReturn(
-              aResponse()
-                .withStatus(Status.OK)
-                .withBody(draftResponseJson)
-            )
-        )
-
-        val result: SubmissionDraftResponse = Await.result(connector.getDraftMain(testDraftId), Duration.Inf)
-        result.createdAt mustBe LocalDateTime.of(2012, 2, 3, 9, 30)
-        result.data mustBe draftData
-      }
-      "set data for section" in {
-
-        val sectionData = Json.parse(
-          """
-            |{
-            | "field1": "value1",
-            | "field2": "value2"
-            |}
-            |""".stripMargin)
-
-        val submissionDraftData = SubmissionDraftData(sectionData, None, None)
-
-        server.stubFor(
-          post(urlEqualTo(submissionUrl))
-            .withHeader(CONTENT_TYPE, containing("application/json"))
-            .withRequestBody(equalTo(Json.toJson(submissionDraftData).toString()))
-            .willReturn(
-              aResponse()
-                .withStatus(Status.OK)
-            )
-        )
-
-        val result = Await.result(connector.setDraftSection(testDraftId, testSection, sectionData), Duration.Inf)
-        result.status mustBe Status.OK
-      }
 
       "set data for section set" in {
 
@@ -151,9 +64,12 @@ class SubmissionDraftConnectorSpec extends SpecBase with MustMatchers with Optio
             |}
             |""".stripMargin)
 
-        val draftStatus = SubmissionDraftStatus("asset", Some(InProgress))
-
-        val submissionDraftSetData = SubmissionDraftSetData(sectionData, Some(draftStatus), List.empty)
+        val submissionDraftSetData = RegistrationSubmission.DataSet(
+          sectionData,
+          Some(InProgress),
+          Nil,
+          Nil
+        )
 
         server.stubFor(
           post(urlEqualTo(setSubmissionUrl))
