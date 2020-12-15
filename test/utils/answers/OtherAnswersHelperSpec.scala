@@ -31,14 +31,12 @@ class OtherAnswersHelperSpec extends SpecBase {
   private val mockPrintHelper: OtherPrintHelper = mock[OtherPrintHelper]
   private val answersHelper: OtherAnswersHelper = new OtherAnswersHelper(mockPrintHelper)
 
-  private val description: String = "Description"
-
   "OtherAnswersHelper" when {
 
     "there are no assets" must {
       "return Nil" in {
 
-        val result: Seq[AnswerSection] = answersHelper(emptyUserAnswers, description)
+        val result: Seq[AnswerSection] = answersHelper(emptyUserAnswers)
         result mustBe Nil
       }
     }
@@ -49,7 +47,7 @@ class OtherAnswersHelperSpec extends SpecBase {
 
       val userAnswers: UserAnswers = emptyUserAnswers
         .set(WhatKindOfAssetPage(index), Other).success.value
-        .set(OtherAssetDescriptionPage(index), description).success.value
+        .set(OtherAssetDescriptionPage(index), "Description").success.value
         .set(OtherAssetValuePage(index), 100L).success.value
 
       "interact with OtherPrintHelper" in {
@@ -58,7 +56,7 @@ class OtherAnswersHelperSpec extends SpecBase {
 
         when(mockPrintHelper.printSection(any(), any(), any(), any())(any())).thenReturn(AnswerSection())
 
-        val result: Seq[AnswerSection] = answersHelper(userAnswers, description)
+        val result: Seq[AnswerSection] = answersHelper(userAnswers)
 
         result mustBe Seq(AnswerSection())
 

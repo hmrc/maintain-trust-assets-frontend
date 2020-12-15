@@ -26,17 +26,22 @@ import javax.inject.Inject
 
 class SharesAnswersHelper @Inject()(printHelper: SharesPrintHelper) {
 
-  def apply(userAnswers: UserAnswers, arg: String)(implicit messages: Messages): Seq[AnswerSection] = {
+  def apply(userAnswers: UserAnswers)(implicit messages: Messages): Seq[AnswerSection] = {
 
     val sharesAssets = userAnswers.get(Assets).getOrElse(Nil).zipWithIndex.collect {
       case (x: ShareAsset, index) => (x, index)
     }
 
     sharesAssets.map {
-      case (_, index) =>
+      case (vm, index) =>
+
+        val name: String = vm match {
+          case x: ShareAsset => x.name
+        }
+
         printHelper.printSection(
           userAnswers = userAnswers,
-          arg = arg,
+          arg = name,
           index = index,
           draftId = userAnswers.draftId
         )

@@ -25,7 +25,7 @@ import play.api.libs.json._
 
 final case class SharePortfolioAsset(override val whatKindOfAsset: WhatKindOfAsset,
                                      override val listedOnTheStockExchange: Boolean,
-                                     name: String,
+                                     override val name: String,
                                      sharesInAPortfolio: Boolean,
                                      quantityInTheTrust: String,
                                      value: Long) extends ShareAsset

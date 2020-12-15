@@ -24,7 +24,7 @@ import play.api.libs.json._
 
 final case class ShareNonPortfolioAsset(override val whatKindOfAsset: WhatKindOfAsset,
                                         override val listedOnTheStockExchange: Boolean,
-                                        shareCompanyName: String,
+                                        override val name: String,
                                         sharesInAPortfolio: Boolean,
                                         quantityInTheTrust: String,
                                         value: Long,

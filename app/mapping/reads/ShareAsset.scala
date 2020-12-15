@@ -18,6 +18,7 @@ package mapping.reads
 
 trait ShareAsset extends Asset {
   val listedOnTheStockExchange: Boolean
+  val name: String
 
   def quoted: String = if (listedOnTheStockExchange) "Quoted" else "Unquoted"
 }

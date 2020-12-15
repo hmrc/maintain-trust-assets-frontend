@@ -31,14 +31,12 @@ class SharesAnswersHelperSpec extends SpecBase {
   private val mockPrintHelper: SharesPrintHelper = mock[SharesPrintHelper]
   private val answersHelper: SharesAnswersHelper = new SharesAnswersHelper(mockPrintHelper)
 
-  private val name: String = "Name"
-
   "SharesAnswersHelper" when {
 
     "there are no assets" must {
       "return Nil" in {
 
-        val result: Seq[AnswerSection] = answersHelper(emptyUserAnswers, name)
+        val result: Seq[AnswerSection] = answersHelper(emptyUserAnswers)
         result mustBe Nil
       }
     }
@@ -67,7 +65,7 @@ class SharesAnswersHelperSpec extends SpecBase {
 
         when(mockPrintHelper.printSection(any(), any(), any(), any())(any())).thenReturn(AnswerSection())
 
-        val result: Seq[AnswerSection] = answersHelper(userAnswers, name)
+        val result: Seq[AnswerSection] = answersHelper(userAnswers)
 
         result mustBe Seq(AnswerSection(), AnswerSection())
 

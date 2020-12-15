@@ -277,7 +277,7 @@ class AddAssetsControllerSpec extends SpecBase {
       "redirect to next page and set AddAssetsPage to NoComplete for a POST" in {
 
         reset(registrationsRepository)
-        when(registrationsRepository.set(any())(any())).thenReturn(Future.successful(true))
+        when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
         val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
 
         val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
@@ -290,7 +290,7 @@ class AddAssetsControllerSpec extends SpecBase {
 
         redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
 
-        verify(registrationsRepository).set(uaCaptor.capture)(any())
+        verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
         uaCaptor.getValue.get(AddAssetsPage).get mustBe NoComplete
 
         application.stop()

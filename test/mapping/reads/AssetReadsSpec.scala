@@ -120,7 +120,7 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
         json.validate[Asset] mustEqual JsSuccess(
           ShareNonPortfolioAsset(
           listedOnTheStockExchange = true,
-          shareCompanyName = "adam",
+          name = "adam",
           sharesInAPortfolio = false,
           quantityInTheTrust = "200",
           value = 200L,
