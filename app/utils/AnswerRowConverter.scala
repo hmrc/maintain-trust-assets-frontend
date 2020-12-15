@@ -38,7 +38,7 @@ class AnswerRowConverter @Inject()(countryOptions: CountryOptions,
   def stringQuestion(query: Gettable[String],
                      labelKey: String,
                      changeUrl: String): Option[AnswerRow] = {
-    userAnswers.get(query) map {x =>
+    userAnswers.get(query).map { x =>
       AnswerRow(
         s"$labelKey.checkYourAnswersLabel",
         HtmlFormat.escape(x),
@@ -52,7 +52,7 @@ class AnswerRowConverter @Inject()(countryOptions: CountryOptions,
                                   labelKey: String,
                                   changeUrl: String)
                                  (implicit reads: Reads[T]): Option[AnswerRow] = {
-    userAnswers.get(query) map {x =>
+    userAnswers.get(query).map { x =>
       AnswerRow(
         s"$labelKey.checkYourAnswersLabel",
         HtmlFormat.escape(x.toString),
@@ -65,7 +65,7 @@ class AnswerRowConverter @Inject()(countryOptions: CountryOptions,
   def yesNoQuestion(query: Gettable[Boolean],
                     labelKey: String,
                     changeUrl: String): Option[AnswerRow] = {
-    userAnswers.get(query) map {x =>
+    userAnswers.get(query).map { x =>
       AnswerRow(
         s"$labelKey.checkYourAnswersLabel",
         checkAnswersFormatters.yesOrNo(x),
@@ -79,7 +79,7 @@ class AnswerRowConverter @Inject()(countryOptions: CountryOptions,
                                     labelKey: String,
                                     changeUrl: String)
                                    (implicit reads: Reads[T]): Option[AnswerRow] = {
-    userAnswers.get(query) map { x =>
+    userAnswers.get(query).map { x =>
       AnswerRow(
         s"$labelKey.checkYourAnswersLabel",
         checkAnswersFormatters.addressFormatter(x, countryOptions),
@@ -92,7 +92,7 @@ class AnswerRowConverter @Inject()(countryOptions: CountryOptions,
   def currencyQuestion(query: Gettable[Long],
                        labelKey: String,
                        changeUrl: String): Option[AnswerRow] = {
-    userAnswers.get(query) map {x =>
+    userAnswers.get(query).map { x =>
       AnswerRow(
         s"$labelKey.checkYourAnswersLabel",
         checkAnswersFormatters.currency(x.toString),
@@ -105,7 +105,7 @@ class AnswerRowConverter @Inject()(countryOptions: CountryOptions,
   def dateQuestion(query: Gettable[LocalDate],
                    labelKey: String,
                    changeUrl: String): Option[AnswerRow] = {
-    userAnswers.get(query) map {x =>
+    userAnswers.get(query).map { x =>
       AnswerRow(
         s"$labelKey.checkYourAnswersLabel",
         checkAnswersFormatters.formatDate(x),
@@ -117,7 +117,7 @@ class AnswerRowConverter @Inject()(countryOptions: CountryOptions,
 
   def assetTypeQuestion(index: Int, draftId: String): Option[AnswerRow] = {
     val label: String = if (index == 0) "first" else "next"
-    userAnswers.get(WhatKindOfAssetPage(index)) map { x =>
+    userAnswers.get(WhatKindOfAssetPage(index)).map { x =>
       AnswerRow(
         s"whatKindOfAsset.$label.checkYourAnswersLabel",
         HtmlFormat.escape(messages(s"whatKindOfAsset.$x")),
@@ -129,7 +129,7 @@ class AnswerRowConverter @Inject()(countryOptions: CountryOptions,
   def shareClassQuestion(query: Gettable[ShareClass],
                          labelKey: String,
                          changeUrl: String): Option[AnswerRow] = {
-    userAnswers.get(query) map {x =>
+    userAnswers.get(query).map { x =>
       AnswerRow(
         s"$labelKey.checkYourAnswersLabel",
         HtmlFormat.escape(messages(s"shares.class.$x")),
