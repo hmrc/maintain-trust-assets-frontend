@@ -31,15 +31,15 @@
 )
 
 @(appConfig: config.FrontendAppConfig,
-  title: String,
-  mainClass: Option[String] = None,
-  mainDataAttributes: Option[Html] = None,
-  bodyClasses: Option[String] = None,
-  sidebar: Html = HtmlFormat.empty,
-  contentHeader: Option[Html] = None,
-  mainContent: Html = HtmlFormat.empty,
-  serviceInfoContent: Html = HtmlFormat.empty,
-  scriptElem: Option[Html] = None)(implicit request: Request[_], messages: Messages)
+    title: String,
+    mainClass: Option[String] = None,
+    mainDataAttributes: Option[Html] = None,
+    bodyClasses: Option[String] = None,
+    sidebar: Html = HtmlFormat.empty,
+    contentHeader: Option[Html] = None,
+    mainContent: Html = HtmlFormat.empty,
+    serviceInfoContent: Html = HtmlFormat.empty,
+    scriptElem: Option[Html] = None)(implicit request: Request[_], messages: Messages)
 
 @headContent = {
     @head(
@@ -49,25 +49,33 @@
     <link rel="stylesheet" href='@routes.Assets.versioned("stylesheets/registertrustassetfrontend-app.css")' />
 }
 
-@headerNavLinks = {}
+@headerNavLinks = {
+    <li>
+        <a id="logOut" href="@controllers.routes.LogoutController.logout" data-target="link - click:@title:@Messages("site.sign_out")">
+            @Messages("site.sign_out")
+        </a>
+    </li>
+}
 
 @insideHeader = {
     @header_nav(
-      navTitle = Some(messages("site.service_name")),
-      navTitleLink = None,
-      showBetaLink = false,
-      navLinks = Some(headerNavLinks))
+        navTitle = Some(messages("site.service_name")),
+        navTitleLink = None,
+        showBetaLink = false,
+        navLinks = Some(headerNavLinks)
+    )
 }
 
 @afterHeader = {}
 
 @bodyEnd = {
     @footer(
-      analyticsToken = Some(appConfig.analyticsToken),
-      analyticsHost = appConfig.analyticsHost,
-      ssoUrl = None,
-      scriptElem = scriptElem,
-      gaCalls = None)
+        analyticsToken = Some(appConfig.analyticsToken),
+        analyticsHost = appConfig.analyticsHost,
+        ssoUrl = None,
+        scriptElem = scriptElem,
+        gaCalls = None
+    )
       <script src='@routes.Assets.versioned("javascripts/registertrustassetfrontend-app.min.js")'> </script>
 }
 
@@ -76,10 +84,11 @@
 
 @serviceInfoBlock = {
     @serviceInfo(
-      betaBanner = HtmlFormat.empty,
-      includeHMRCBranding = false,
-      includeGridWrapper = false,
-      serviceInfoContent = Some(serviceInfoContent))
+        betaBanner = HtmlFormat.empty,
+        includeHMRCBranding = false,
+        includeGridWrapper = false,
+        serviceInfoContent = Some(serviceInfoContent)
+    )
 }
 
 @mainContentHeader = {
@@ -88,7 +97,8 @@
         @language_selection(
             appConfig.languageMap,
             appConfig.routeToSwitchLanguage,
-            Some("translate u-align--right"))
+            Some("translate u-align--right")
+        )
     }
 
     @if(contentHeader.isDefined) {
@@ -100,13 +110,14 @@
 
 @content = {
     @main_content(
-      article = mainContent,
-      mainClass = mainClass,
-      mainDataAttributes = mainDataAttributes,
-      mainContentHeader = mainContentHeader,
-      serviceInfo = serviceInfoBlock,
-      getHelpForm = getHelpForm,
-      sidebar = sidebar)
+        article = mainContent,
+        mainClass = mainClass,
+        mainDataAttributes = mainDataAttributes,
+        mainContentHeader = mainContentHeader,
+        serviceInfo = serviceInfoBlock,
+        getHelpForm = getHelpForm,
+        sidebar = sidebar
+    )
 }
 
 @hmrcGovUkTemplate(Some(title), bodyClasses)(headContent, bodyEnd, insideHeader, afterHeader, footerTop, Some(footer_links()), true)(content)
