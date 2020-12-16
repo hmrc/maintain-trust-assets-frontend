@@ -20,11 +20,12 @@ import config.annotations.Shares
 import controllers.actions._
 import controllers.filters.IndexActionFilterProvider
 import forms.ValueFormProvider
+import models.requests.RegistrationDataRequest
 import navigation.Navigator
 import pages.asset.shares.{ShareCompanyNamePage, ShareValueInTrustPage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
 import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.asset.shares.ShareValueInTrustView
@@ -46,9 +47,9 @@ class ShareValueInTrustController @Inject()(
                                              validateIndex: IndexActionFilterProvider
                                            )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val form = formProvider.withConfig("shares.valueInTrust")
+  private val form = formProvider.withConfig(prefix = "shares.valueInTrust")
 
-  private def actions(index: Int, draftId: String) =
+  private def actions(index: Int, draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] =
     identify andThen getData(draftId) andThen
       requireData andThen
       validateIndex(index, sections.Assets) andThen

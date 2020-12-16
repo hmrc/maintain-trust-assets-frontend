@@ -48,7 +48,7 @@ class AssetMoneyValueController @Inject()(
 
   private def actions(draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] = identify andThen getData(draftId) andThen requireData
 
-  private val form: Form[Long] = formProvider.withConfig("money.value")
+  private val form: Form[Long] = formProvider.withConfig(prefix = "money.value")
 
   def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(draftId) {
     implicit request =>

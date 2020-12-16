@@ -26,7 +26,7 @@ import java.net.{URI, URLEncoder}
 import java.time.LocalDate
 
 @Singleton
-class FrontendAppConfig @Inject() (configuration: Configuration) {
+class FrontendAppConfig @Inject() (val configuration: Configuration) {
 
   private final val ENGLISH = "en"
   private final val WELSH = "cy"
@@ -72,6 +72,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val minDate: LocalDate = LocalDate.of(year, month, day)
 
   lazy val assetValueUpperLimitExclusive: Long = configuration.get[Long]("assetValueUpperLimitExclusive")
+  lazy val assetValueLowerLimitInclusive: Long = configuration.get[Long]("assetValueLowerLimitInclusive")
 
   def languageMap: Map[String, Lang] = Map(
     "english" -> Lang(ENGLISH),

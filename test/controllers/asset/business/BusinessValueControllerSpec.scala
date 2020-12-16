@@ -29,7 +29,7 @@ import views.html.asset.buisness.BusinessValueView
 class BusinessValueControllerSpec extends SpecBase {
 
   val formProvider = new ValueFormProvider(frontendAppConfig)
-  val form: Form[Long] = formProvider.withConfig("business.currentValue")
+  val form: Form[Long] = formProvider.withConfig(prefix = "business.currentValue")
   val businessName = "Test"
 
   val index = 0

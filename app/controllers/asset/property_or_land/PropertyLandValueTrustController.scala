@@ -23,7 +23,6 @@ import forms.ValueFormProvider
 import models.requests.RegistrationDataRequest
 import navigation.Navigator
 import pages.asset.property_or_land.{PropertyLandValueTrustPage, PropertyOrLandTotalValuePage}
-import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
@@ -47,10 +46,6 @@ class PropertyLandValueTrustController @Inject()(
                                                   view: PropertyLandValueTrustView
                                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val logger: Logger = Logger(getClass)
-
-  private val prefix: String = "propertyOrLand.valueInTrust"
-
   private def actions(index: Int, draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] =
     identify andThen
       getData(draftId) andThen
@@ -60,51 +55,38 @@ class PropertyLandValueTrustController @Inject()(
   def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
     implicit request =>
 
-      totalValue(index, draftId) match {
-        case Left(value) =>
-          val form = formProvider.withConfig(prefix, value)
+      val form: Form[Long] = configuredForm(index)
 
-          val preparedForm = request.userAnswers.get(PropertyLandValueTrustPage(index)) match {
-            case None => form
-            case Some(value) => form.fill(value)
-          }
-
-          Ok(view(preparedForm, index, draftId))
-        case Right(redirect) =>
-          redirect
+      val preparedForm = request.userAnswers.get(PropertyLandValueTrustPage(index)) match {
+        case None => form
+        case Some(value) => form.fill(value)
       }
+
+      Ok(view(preparedForm, index, draftId))
   }
 
   def onSubmit(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async {
     implicit request =>
 
-      totalValue(index, draftId) match {
-        case Left(value) =>
-          val form = formProvider.withConfig(prefix, value)
+      val form: Form[Long] = configuredForm(index)
 
-          form.bindFromRequest().fold(
-            (formWithErrors: Form[_]) =>
-              Future.successful(BadRequest(view(formWithErrors, index, draftId))),
+      form.bindFromRequest().fold(
+        (formWithErrors: Form[_]) =>
+          Future.successful(BadRequest(view(formWithErrors, index, draftId))),
 
-            value => {
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(PropertyLandValueTrustPage(index), value))
-                _              <- repository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(PropertyLandValueTrustPage(index), draftId)(updatedAnswers))
-            }
-          )
-        case Right(redirect) =>
-          Future.successful(redirect)
-      }
+        value => {
+          for {
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(PropertyLandValueTrustPage(index), value))
+            _              <- repository.set(updatedAnswers)
+          } yield Redirect(navigator.nextPage(PropertyLandValueTrustPage(index), draftId)(updatedAnswers))
+        }
+      )
   }
 
-  private def totalValue(index: Int, draftId: String)(implicit request: RegistrationDataRequest[AnyContent]): Either[Long, Result] = {
-    request.userAnswers.get(PropertyOrLandTotalValuePage(index)) match {
-      case Some(value) =>
-        Left(value)
-      case _ =>
-        logger.info(s"[totalValue][Session ID: ${request.sessionId}] Total value not found. Redirecting to total value page.")
-        Right(Redirect(routes.PropertyOrLandTotalValueController.onPageLoad(index, draftId)))
-    }
+  private def configuredForm(index: Int)(implicit request: RegistrationDataRequest[AnyContent]): Form[Long] = {
+    formProvider.withConfig(
+      prefix = "propertyOrLand.valueInTrust",
+      maxValue = request.userAnswers.get(PropertyOrLandTotalValuePage(index))
+    )
   }
 }

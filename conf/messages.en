@@ -237,6 +237,7 @@ propertyOrLand.totalValue.error.length = Current total value of the property or 
 propertyOrLand.totalValue.error.invalid = Current total value of the property or land must be a number
 propertyOrLand.totalValue.error.zero = Current total value of the property or land must be 1 or more
 propertyOrLand.totalValue.error.wholeNumber = Current total value of the property or land must be a whole number
+propertyOrLand.totalValue.error.lessThanValueInTrust = The current total value of the property or land must be more than the current value of the property or land owned by the trust
 
 propertyOrLand.trustOwnAllYesNo.title = Does the trust own all of the property or land?
 propertyOrLand.trustOwnAllYesNo.heading = Does the trust own all of the property or land?
@@ -252,7 +253,7 @@ propertyOrLand.valueInTrust.error.invalid = Current value of the property or lan
 propertyOrLand.valueInTrust.error.wholeNumber = Current value of the property or land owned by the trust must be a whole number
 propertyOrLand.valueInTrust.error.zero = Current value of the property or land owned by the trust must be 1 or more
 propertyOrLand.valueInTrust.error.length = Current value of the property or land owned by the trust must be less than 1,000,000,000,000
-propertyOrLand.valueInTrust.error.moreThanTotal = The current value of the property or land owned by the trust must be less than the current total value of the property or land.
+propertyOrLand.valueInTrust.error.moreThanTotal = The current value of the property or land owned by the trust must be less than the current total value of the property or land
 
 propertyOrLand.answers.title = Check property or land details
 propertyOrLand.answers.heading = Check property or land details

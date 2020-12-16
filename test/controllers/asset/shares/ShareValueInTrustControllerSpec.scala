@@ -31,7 +31,7 @@ import views.html.asset.shares.ShareValueInTrustView
 class ShareValueInTrustControllerSpec extends SpecBase with ModelGenerators with IndexValidation {
 
   val formProvider = new ValueFormProvider(frontendAppConfig)
-  val form: Form[Long] = formProvider.withConfig("shares.valueInTrust")
+  val form: Form[Long] = formProvider.withConfig(prefix = "shares.valueInTrust")
   val index: Int = 0
   val validAnswer: Long = 4000L
   val companyName = "Company"

@@ -27,9 +27,11 @@ class QuantityFormProvider @Inject()(config: FrontendAppConfig) extends Mappings
   def withPrefix(prefix: String): Form[Long] =
     Form(
       "value" -> longValue(
-        prefix,
-        s"$prefix.error.length",
-        config.assetValueUpperLimitExclusive
+        prefix = prefix,
+        minValue = config.assetValueLowerLimitInclusive,
+        maxValue = config.assetValueUpperLimitExclusive,
+        minValueKey = s"$prefix.error.zero",
+        maxValueKey = s"$prefix.error.length"
       )
     )
 }

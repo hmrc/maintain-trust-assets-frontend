@@ -24,7 +24,7 @@ class QuantityFormProviderSpec extends LongFieldBehaviours {
   private val prefix: String = "shares.portfolioQuantityInTrust"
   private val fieldName = "value"
   private val requiredKey = s"$prefix.error.required"
-  private val zeroNumberKey = s"$prefix.error.zero"
+  private val minValueKey = s"$prefix.error.zero"
   private val invalidOnlyNumbersKey = s"$prefix.error.invalid"
   private val invalidWholeNumberKey = s"$prefix.error.wholeNumber"
   private val maxValueKey = s"$prefix.error.length"
@@ -34,13 +34,12 @@ class QuantityFormProviderSpec extends LongFieldBehaviours {
     val form = new QuantityFormProvider(frontendAppConfig).withPrefix(prefix)
 
     behave like longField(
-      form,
-      fieldName,
+      form = form,
+      fieldName = fieldName,
       nonNumericError = FormError(fieldName, invalidOnlyNumbersKey),
       wholeNumberError = FormError(fieldName, invalidWholeNumberKey),
       maxNumberError = FormError(fieldName, maxValueKey),
-      zeroError = FormError(fieldName, zeroNumberKey),
-      None
+      minNumberError = FormError(fieldName, minValueKey)
     )
 
     behave like mandatoryField(

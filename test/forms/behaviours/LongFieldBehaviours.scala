@@ -26,10 +26,12 @@ trait LongFieldBehaviours extends FieldBehaviours with FakeTrustsApp {
                 nonNumericError: FormError,
                 wholeNumberError: FormError,
                 maxNumberError: FormError,
-                zeroError: FormError,
-                maxValue: Option[Long] = None): Unit = {
+                minNumberError: FormError,
+                maxValue: Option[Long] = None,
+                minValue: Option[Long] = None): Unit = {
 
     val max: Long = maxValue.getOrElse(frontendAppConfig.assetValueUpperLimitExclusive)
+    val min: Long = minValue.getOrElse(frontendAppConfig.assetValueLowerLimitInclusive)
 
     "not bind non-numeric numbers" in {
 
@@ -48,7 +50,7 @@ trait LongFieldBehaviours extends FieldBehaviours with FakeTrustsApp {
       }
     }
 
-    s"not bind longs larger than or equal to $max" in {
+    s"not bind numbers larger than or equal to $max" in {
 
       forAll(longsLargerThanOrEqualToMaxValue(max) -> "longsLargerThanOrEqualToMax") {
         num: Long =>
@@ -57,12 +59,12 @@ trait LongFieldBehaviours extends FieldBehaviours with FakeTrustsApp {
       }
     }
 
-    "not bind numbers less than 1" in {
+    s"not bind numbers less than or equal to $min" in {
 
       forAll(longsLessThan1 -> "longsLessThan1") {
         number: Long =>
           val result = form.bind(Map(fieldName -> number.toString)).apply(fieldName)
-          result.errors shouldEqual Seq(zeroError)
+          result.errors shouldEqual Seq(minNumberError)
       }
     }
   }

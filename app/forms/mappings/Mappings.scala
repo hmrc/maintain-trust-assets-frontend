@@ -41,26 +41,27 @@ trait Mappings extends Formatters with Constraints {
                               invalidKey: String = "error.invalid")(implicit ev: Enumerable[A]): FieldMapping[A] =
     of(enumerableFormatter[A](requiredKey, invalidKey))
 
-  protected def localDate(
-                           invalidKey: String,
-                           allRequiredKey: String,
-                           twoRequiredKey: String,
-                           requiredKey: String,
-                           args: Seq[String] = Seq.empty): FieldMapping[LocalDate] =
+  protected def localDate(invalidKey: String,
+                          allRequiredKey: String,
+                          twoRequiredKey: String,
+                          requiredKey: String,
+                          args: Seq[String] = Seq.empty): FieldMapping[LocalDate] =
     of(new LocalDateFormatter(invalidKey, allRequiredKey, twoRequiredKey, requiredKey, args))
-
-  protected def currency(requiredKey : String = "assetMoneyValue.error.required",
-                         invalidKey : String = "assetMoneyValue.error.invalidFormat") : FieldMapping[String] =
-    of(currencyFormatter(requiredKey, invalidKey))
 
   protected def postcode(requiredKey : String = "error.required",
                          invalidKey : String = "error.postcodeInvalid") : FieldMapping[String] =
     of(postcodeFormatter(requiredKey, invalidKey))
 
-  protected def longValue(prefix: String, maxValueKey: String, maxValue: Long): FieldMapping[Long] =
+  protected def longValue(prefix: String,
+                          minValue: Long,
+                          maxValue: Long,
+                          minValueKey: String,
+                          maxValueKey: String): FieldMapping[Long] =
     of(longValueFormatter(
       prefix,
-      maxValueKey,
-      maxValue
+      minValue,
+      maxValue,
+      minValueKey,
+      maxValueKey
     ))
 }
