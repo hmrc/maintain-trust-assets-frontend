@@ -16,30 +16,9 @@
 
 package utils.answers
 
-import mapping.reads.{Assets, MoneyAsset}
-import models.UserAnswers
-import play.api.i18n.Messages
+import mapping.reads.MoneyAsset
 import utils.print.MoneyPrintHelper
-import viewmodels.AnswerSection
 
 import javax.inject.Inject
 
-class MoneyAnswersHelper @Inject()(printHelper: MoneyPrintHelper) {
-
-  def apply(userAnswers: UserAnswers)(implicit messages: Messages): Seq[AnswerSection] = {
-
-    val moneyAssets = userAnswers.get(Assets).getOrElse(Nil).zipWithIndex.collect {
-      case (x: MoneyAsset, index: Int) => (x, index)
-    }
-
-    moneyAssets.zipWithIndex.map {
-      case ((_, index), specificIndex) =>
-        printHelper.printSection(
-          userAnswers = userAnswers,
-          index = index,
-          specificIndex = specificIndex,
-          draftId = userAnswers.draftId
-        )
-    }
-  }
-}
+class MoneyAnswersHelper @Inject()(printHelper: MoneyPrintHelper) extends AnswersHelper[MoneyAsset](printHelper)

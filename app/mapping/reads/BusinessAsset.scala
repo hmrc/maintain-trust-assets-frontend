@@ -26,7 +26,10 @@ final case class BusinessAsset(override val whatKindOfAsset: WhatKindOfAsset,
                                assetName: String,
                                assetDescription: String,
                                address: Address,
-                               currentValue: Long) extends Asset
+                               currentValue: Long) extends Asset {
+
+  override val arg: String = assetName
+}
 
 object BusinessAsset extends AssetReads {
 

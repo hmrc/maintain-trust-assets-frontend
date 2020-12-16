@@ -16,30 +16,9 @@
 
 package utils.answers
 
-import mapping.reads.{Assets, PropertyOrLandAsset}
-import models.UserAnswers
-import play.api.i18n.Messages
+import mapping.reads.PropertyOrLandAsset
 import utils.print.PropertyOrLandPrintHelper
-import viewmodels.AnswerSection
 
 import javax.inject.Inject
 
-class PropertyOrLandAnswersHelper @Inject()(printHelper: PropertyOrLandPrintHelper) {
-
-  def apply(userAnswers: UserAnswers)(implicit messages: Messages): Seq[AnswerSection] = {
-
-    val propertyOrLandAssets = userAnswers.get(Assets).getOrElse(Nil).zipWithIndex.collect {
-      case (x: PropertyOrLandAsset, index: Int) => (x, index)
-    }
-
-    propertyOrLandAssets.zipWithIndex.map {
-      case ((_, index), specificIndex) =>
-        printHelper.printSection(
-          userAnswers = userAnswers,
-          index = index,
-          specificIndex = specificIndex,
-          draftId = userAnswers.draftId
-        )
-    }
-  }
-}
+class PropertyOrLandAnswersHelper @Inject()(printHelper: PropertyOrLandPrintHelper) extends AnswersHelper[PropertyOrLandAsset](printHelper)

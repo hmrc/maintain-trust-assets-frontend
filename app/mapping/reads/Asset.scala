@@ -22,9 +22,8 @@ import play.api.libs.json.Reads
 import scala.language.implicitConversions
 
 trait Asset {
-
-  val whatKindOfAsset : WhatKindOfAsset
-
+  val whatKindOfAsset: WhatKindOfAsset
+  val arg: String = ""
 }
 
 object Asset {

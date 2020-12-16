@@ -21,4 +21,6 @@ trait ShareAsset extends Asset {
   val name: String
 
   def quoted: String = if (listedOnTheStockExchange) "Quoted" else "Unquoted"
+
+  override val arg: String = name
 }

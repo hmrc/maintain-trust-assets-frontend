@@ -16,31 +16,9 @@
 
 package utils.answers
 
-import mapping.reads.{Assets, BusinessAsset}
-import models.UserAnswers
-import play.api.i18n.Messages
+import mapping.reads.BusinessAsset
 import utils.print.BusinessPrintHelper
-import viewmodels.AnswerSection
 
 import javax.inject.Inject
 
-class BusinessAnswersHelper @Inject()(printHelper: BusinessPrintHelper) {
-
-  def apply(userAnswers: UserAnswers)(implicit messages: Messages): Seq[AnswerSection] = {
-
-    val businessAssets = userAnswers.get(Assets).getOrElse(Nil).zipWithIndex.collect {
-      case (x: BusinessAsset, index: Int) => (x, index)
-    }
-
-    businessAssets.zipWithIndex.map {
-      case ((vm, index), specificIndex) =>
-        printHelper.printSection(
-          userAnswers = userAnswers,
-          arg = vm.assetName,
-          index = index,
-          specificIndex = specificIndex,
-          draftId = userAnswers.draftId
-        )
-    }
-  }
-}
+class BusinessAnswersHelper @Inject()(printHelper: BusinessPrintHelper) extends AnswersHelper[BusinessAsset](printHelper)

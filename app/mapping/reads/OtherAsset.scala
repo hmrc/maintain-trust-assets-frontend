@@ -25,7 +25,10 @@ import play.api.libs.json.{JsError, JsSuccess, Reads, __}
 
 final case class OtherAsset(override val whatKindOfAsset: WhatKindOfAsset,
                             description: String,
-                            value: Long) extends Asset
+                            value: Long) extends Asset {
+
+  override val arg: String = description
+}
 
 object OtherAsset {
 

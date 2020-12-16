@@ -16,30 +16,9 @@
 
 package utils.answers
 
-import mapping.reads.{Assets, PartnershipAsset}
-import models.UserAnswers
-import play.api.i18n.Messages
+import mapping.reads.PartnershipAsset
 import utils.print.PartnershipPrintHelper
-import viewmodels.AnswerSection
 
 import javax.inject.Inject
 
-class PartnershipAnswersHelper @Inject()(printHelper: PartnershipPrintHelper) {
-
-  def apply(userAnswers: UserAnswers)(implicit messages: Messages): Seq[AnswerSection] = {
-
-    val partnershipAssets = userAnswers.get(Assets).getOrElse(Nil).zipWithIndex.collect {
-      case (x: PartnershipAsset, index: Int) => (x, index)
-    }
-
-    partnershipAssets.zipWithIndex.map {
-      case ((_, index), specificIndex) =>
-        printHelper.printSection(
-          userAnswers = userAnswers,
-          index = index,
-          specificIndex = specificIndex,
-          draftId = userAnswers.draftId
-        )
-    }
-  }
-}
+class PartnershipAnswersHelper @Inject()(printHelper: PartnershipPrintHelper) extends AnswersHelper[PartnershipAsset](printHelper)
