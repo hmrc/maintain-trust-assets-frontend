@@ -63,7 +63,7 @@ class ShareAnswerController @Inject()(
       val name: String = (getPage(ShareCompanyNamePage(index)), getPage(SharePortfolioNamePage(index))) match {
         case (Some(name), None) => name
         case (None, Some(name)) => name
-        case _ => "" // TODO - redirect to start of journey
+        case _ => request.messages(messagesApi)("assets.defaultText")
       }
 
       val sections = printHelper.checkDetailsSection(

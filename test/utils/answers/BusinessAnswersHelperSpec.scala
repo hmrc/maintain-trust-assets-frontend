@@ -101,8 +101,10 @@ class BusinessAnswersHelperSpec extends SpecBase {
 
         result(0).headingKey mustBe Some("Business 1")
         result(0).rows.map(_.answer).contains(Html("Business")) mustBe true
+        result(0).rows.map(_.labelArg).contains(name) mustBe true
         result(1).headingKey mustBe Some("Business 2")
         result(1).rows.map(_.answer).contains(Html("Business")) mustBe true
+        result(1).rows.map(_.labelArg).contains(name) mustBe true
       }
     }
   }
