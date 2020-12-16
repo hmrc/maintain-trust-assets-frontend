@@ -48,6 +48,8 @@ class BusinessAddressUkYesNoController @Inject()(
                                                   view: BusinessAddressUkYesNoView
                                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
+  private val form: Form[Boolean] = formProvider.withPrefix("business.addressUkYesNo")
+
   private def actions(index: Int, draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] =
     identify andThen
       getData(draftId) andThen
@@ -59,8 +61,6 @@ class BusinessAddressUkYesNoController @Inject()(
     implicit request =>
 
       val businessName = request.userAnswers.get(BusinessNamePage(index)).get
-
-      val form: Form[Boolean] = formProvider.withPrefix("business.addressUkYesNo")
 
       val preparedForm = request.userAnswers.get(BusinessAddressUkYesNoPage(index)) match {
         case None => form
@@ -74,8 +74,6 @@ class BusinessAddressUkYesNoController @Inject()(
     implicit request =>
 
       val businessName = request.userAnswers.get(BusinessNamePage(index)).get
-
-      val form: Form[Boolean] = formProvider.withPrefix("assetAddressUkYesNo")
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
