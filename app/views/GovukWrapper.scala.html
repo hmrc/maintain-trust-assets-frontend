@@ -80,7 +80,21 @@
 }
 
 @footerTop = {}
-@footerLinks = {}
+
+@additionalLinksHtml = {
+    <li>
+        <a href="@appConfig.accessibilityLinkUrl" data-sso="false" data-journey-click="footer:Click:Accessibility">
+            @Messages("footer.links.accessibility.text")
+        </a>
+    </li>
+}
+
+@footerLinks = {
+    @footer_links(
+        additionalLinks = Some(additionalLinksHtml),
+        euExitLinks = None
+    )
+}
 
 @serviceInfoBlock = {
     @serviceInfo(
@@ -120,4 +134,4 @@
     )
 }
 
-@hmrcGovUkTemplate(Some(title), bodyClasses)(headContent, bodyEnd, insideHeader, afterHeader, footerTop, Some(footer_links()), true)(content)
+@hmrcGovUkTemplate(Some(title), bodyClasses)(headContent, bodyEnd, insideHeader, afterHeader, footerTop, Some(footerLinks), true)(content)

@@ -1,7 +1,3 @@
-checkYourAnswers.title = Check Your Answers
-checkYourAnswers.heading = Check Your Answers
-checkYourAnswers.guidance = Guidance for check your answers
-
 date.day = Day
 date.month = Month
 date.year = Year
@@ -27,9 +23,7 @@ entities.no.address.added = No address added
 entities.no.description.added = No description added
 entities.no.addressOrDescription.added = No address or description added
 
-index.title = register-trust-asset-frontend
-index.heading = register-trust-asset-frontend
-index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
+footer.links.accessibility.text = Accessibility
 
 session_expired.title = For your security, this service has been reset
 session_expired.heading = For your security, this service has been reset
