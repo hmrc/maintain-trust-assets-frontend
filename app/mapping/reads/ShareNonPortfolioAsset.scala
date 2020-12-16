@@ -26,7 +26,7 @@ final case class ShareNonPortfolioAsset(override val whatKindOfAsset: WhatKindOf
                                         override val listedOnTheStockExchange: Boolean,
                                         override val name: String,
                                         sharesInAPortfolio: Boolean,
-                                        quantityInTheTrust: String,
+                                        quantityInTheTrust: Long,
                                         value: Long,
                                         `class`: ShareClass) extends ShareAsset
 
@@ -40,7 +40,7 @@ object ShareNonPortfolioAsset {
       (__ \ ShareCompanyNamePage.key).read[String] and
         (__ \ SharesOnStockExchangePage.key).read[Boolean] and
         (__ \ ShareClassPage.key).read[ShareClass] and
-        (__ \ ShareQuantityInTrustPage.key).read[String] and
+        (__ \ ShareQuantityInTrustPage.key).read[Long] and
         (__ \ ShareValueInTrustPage.key).read[Long] and
         (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset]
       )((name, listedOnStockExchange, `class`, quantity, value, kind) => ShareNonPortfolioAsset(kind, listedOnStockExchange, name, sharesInAPortfolio = false, quantity, value, `class`))

@@ -188,7 +188,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
               .set(SharesInAPortfolioPage(index), true).success.value
               .set(SharePortfolioNamePage(index), "Portfolio Name").success.value
               .set(SharePortfolioOnStockExchangePage(index), true).success.value
-              .set(SharePortfolioQuantityInTrustPage(index), "100").success.value
+              .set(SharePortfolioQuantityInTrustPage(index), 100L).success.value
               .set(SharePortfolioValueInTrustPage(index), assetValue).success.value
 
             val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
@@ -215,7 +215,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
               .set(ShareCompanyNamePage(index), "Company Name").success.value
               .set(SharesOnStockExchangePage(index), true).success.value
               .set(ShareClassPage(index), Ordinary).success.value
-              .set(ShareQuantityInTrustPage(index), "100").success.value
+              .set(ShareQuantityInTrustPage(index), 100L).success.value
               .set(ShareValueInTrustPage(index), assetValue).success.value
 
             val application = applicationBuilder(userAnswers = Some(userAnswers)).build()

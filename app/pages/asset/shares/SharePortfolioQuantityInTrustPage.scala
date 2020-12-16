@@ -21,7 +21,7 @@ import pages.asset.shares.SharePortfolioQuantityInTrustPage.key
 import play.api.libs.json.JsPath
 import sections.Assets
 
-final case class SharePortfolioQuantityInTrustPage(index: Int) extends QuestionPage[String] {
+final case class SharePortfolioQuantityInTrustPage(index: Int) extends QuestionPage[Long] {
 
   override def path: JsPath = Assets.path \ index \ toString
 
