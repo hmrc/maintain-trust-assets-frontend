@@ -19,16 +19,16 @@ package views.asset.shares
 import forms.QuantityFormProvider
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.StringViewBehaviours
+import views.behaviours.LongViewBehaviours
 import views.html.asset.shares.ShareQuantityInTrustView
 
-class ShareQuantityInTrustViewSpec extends StringViewBehaviours {
+class ShareQuantityInTrustViewSpec extends LongViewBehaviours {
 
   private val messageKeyPrefix = "shares.quantityInTrust"
   private val index = 0
   private val companyName = "Company"
 
-  override val form: Form[String] = new QuantityFormProvider().withPrefix(messageKeyPrefix)
+  override val form: Form[Long] = new QuantityFormProvider(frontendAppConfig).withPrefix(messageKeyPrefix)
 
   "ShareQuantityInTrust view" must {
 
@@ -39,7 +39,7 @@ class ShareQuantityInTrustViewSpec extends StringViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like stringPageWithDynamicTitle(form, applyView, messageKeyPrefix, companyName, Some(messages(s"$messageKeyPrefix.hint")))
+    behave like longPageWithDynamicTitle(form, applyView, messageKeyPrefix, companyName, Some(messages(s"$messageKeyPrefix.hint")))
 
     pageWithASubmitButton(applyView(form))
   }

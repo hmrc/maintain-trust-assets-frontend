@@ -35,7 +35,7 @@ class SharesPrintHelperSpec extends SpecBase {
   private val heading: String = s"Share ${index + 1}"
 
   private val name: String = "Name"
-  private val quantity: String = "100"
+  private val quantity: Long = 200L
   private val amount: Long = 100L
 
   private val nonPortfolioAnswers: UserAnswers = emptyUserAnswers
@@ -61,7 +61,7 @@ class SharesPrintHelperSpec extends SpecBase {
     AnswerRow("shares.companyName.checkYourAnswersLabel", Html(name), Some(ShareCompanyNameController.onPageLoad(index, draftId).url)),
     AnswerRow("shares.onStockExchangeYesNo.checkYourAnswersLabel", Html("Yes"), Some(SharesOnStockExchangeController.onPageLoad(index, draftId).url)),
     AnswerRow("shares.class.checkYourAnswersLabel", Html("Ordinary"), Some(ShareClassController.onPageLoad(index, draftId).url)),
-    AnswerRow("shares.quantityInTrust.checkYourAnswersLabel", Html("100"), Some(ShareQuantityInTrustController.onPageLoad(index, draftId).url)),
+    AnswerRow("shares.quantityInTrust.checkYourAnswersLabel", Html("200"), Some(ShareQuantityInTrustController.onPageLoad(index, draftId).url)),
     AnswerRow("shares.valueInTrust.checkYourAnswersLabel", Html("£100"), Some(ShareValueInTrustController.onPageLoad(index, draftId).url))
   )
 
@@ -70,7 +70,7 @@ class SharesPrintHelperSpec extends SpecBase {
     AnswerRow("shares.inAPortfolioYesNo.checkYourAnswersLabel", Html("Yes"), Some(SharesInAPortfolioController.onPageLoad(index, draftId).url)),
     AnswerRow("shares.portfolioName.checkYourAnswersLabel", Html(name), Some(SharePortfolioNameController.onPageLoad(index, draftId).url)),
     AnswerRow("shares.portfolioOnStockExchangeYesNo.checkYourAnswersLabel", Html("Yes"), Some(SharePortfolioOnStockExchangeController.onPageLoad(index, draftId).url)),
-    AnswerRow("shares.portfolioQuantityInTrust.checkYourAnswersLabel", Html("100"), Some(SharePortfolioQuantityInTrustController.onPageLoad(index, draftId).url)),
+    AnswerRow("shares.portfolioQuantityInTrust.checkYourAnswersLabel", Html("200"), Some(SharePortfolioQuantityInTrustController.onPageLoad(index, draftId).url)),
     AnswerRow("shares.portfolioValueInTrust.checkYourAnswersLabel", Html("£100"), Some(SharePortfolioValueInTrustController.onPageLoad(index, draftId).url))
   )
 

@@ -28,7 +28,7 @@ class ValueFormProviderSpec extends LongFieldBehaviours {
   private val invalidOnlyNumbersKey = s"$prefix.error.invalid"
   private val invalidWholeNumberKey = s"$prefix.error.wholeNumber"
 
-  ".value" when {
+  "ValueFormProvider" when {
 
     "max value provided" must {
 

@@ -27,7 +27,7 @@ final case class SharePortfolioAsset(override val whatKindOfAsset: WhatKindOfAss
                                      override val listedOnTheStockExchange: Boolean,
                                      override val name: String,
                                      sharesInAPortfolio: Boolean,
-                                     quantityInTheTrust: String,
+                                     quantityInTheTrust: Long,
                                      value: Long) extends ShareAsset
 
 object SharePortfolioAsset {
@@ -37,7 +37,7 @@ object SharePortfolioAsset {
     val shareReads: Reads[SharePortfolioAsset] = (
       (__ \ SharePortfolioNamePage.key).read[String] and
         (__ \ SharePortfolioOnStockExchangePage.key).read[Boolean] and
-        (__ \ SharePortfolioQuantityInTrustPage.key).read[String] and
+        (__ \ SharePortfolioQuantityInTrustPage.key).read[Long] and
         (__ \ SharePortfolioValueInTrustPage.key).read[Long] and
         (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset]
       )((name, listedOnStockExchange, quantity, value, kind) => SharePortfolioAsset(kind, listedOnStockExchange, name, sharesInAPortfolio = true, quantity, value))

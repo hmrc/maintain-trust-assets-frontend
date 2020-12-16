@@ -295,11 +295,12 @@ shares.portfolioOnStockExchangeYesNo.hint = A quoted share is listed on a stock 
 shares.portfolioQuantityInTrust.title = How many individual shares are in the portfolio?
 shares.portfolioQuantityInTrust.heading = How many individual shares are in the portfolio?
 shares.portfolioQuantityInTrust.checkYourAnswersLabel = How many individual shares are in the portfolio?
+shares.portfolioQuantityInTrust.hint = Add together the total number of shares across all share holdings. This can be an estimate.
 shares.portfolioQuantityInTrust.error.required = Enter the current number of shares in the portfolio
 shares.portfolioQuantityInTrust.error.length = Total amount of individual shares in the portfolio must be less than 1,000,000,000,000
 shares.portfolioQuantityInTrust.error.invalid = Total amount of individual shares in the portfolio must be a number
-shares.portfolioQuantityInTrust.hint = Add together the total number of shares across all share holdings. This can be an estimate.
 shares.portfolioQuantityInTrust.error.zero = Total amount of individual shares in the portfolio must be 1 or more
+shares.portfolioQuantityInTrust.error.wholeNumber = Total amount of individual shares in the portfolio must be a whole number
 
 shares.portfolioValueInTrust.title = What is the current value of the portfolio?
 shares.portfolioValueInTrust.heading = What is the current value of the portfolio?
@@ -319,6 +320,7 @@ shares.quantityInTrust.error.invalid = Total shares in the trust must be a numbe
 shares.quantityInTrust.error.length = Total shares in the trust must be less than 1,000,000,000,000
 shares.quantityInTrust.error.required = Enter the current number of shares in the trust
 shares.quantityInTrust.error.zero = Total shares in the trust must be 1 or more
+shares.quantityInTrust.error.wholeNumber = Total shares in the trust must be a whole number
 
 shares.inAPortfolioYesNo.title = Are the shares in a portfolio?
 shares.inAPortfolioYesNo.heading = Are the shares in a portfolio?

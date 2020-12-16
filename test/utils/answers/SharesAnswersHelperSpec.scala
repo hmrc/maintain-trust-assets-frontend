@@ -35,7 +35,7 @@ class SharesAnswersHelperSpec extends SpecBase {
 
   private val name: String = "Name"
   private val amount: Long = 100L
-  private val quantity: String = "100"
+  private val quantity: Long = 100L
 
   "SharesAnswersHelper" when {
 

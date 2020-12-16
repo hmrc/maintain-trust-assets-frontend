@@ -22,6 +22,7 @@ import forms.QuantityFormProvider
 import generators.ModelGenerators
 import org.scalacheck.Arbitrary.arbitrary
 import pages.asset.shares.SharePortfolioQuantityInTrustPage
+import play.api.data.Form
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{route, _}
@@ -29,11 +30,12 @@ import views.html.asset.shares.SharePortfolioQuantityInTrustView
 
 class SharePortfolioQuantityInTrustControllerSpec extends SpecBase with ModelGenerators with IndexValidation {
 
-  val formProvider = new QuantityFormProvider()
-  val form = formProvider.withPrefix("shares.portfolioQuantityInTrust")
-  val index: Int = 0
+  private val formProvider = new QuantityFormProvider(frontendAppConfig)
+  private val form: Form[Long] = formProvider.withPrefix("shares.portfolioQuantityInTrust")
+  private val index: Int = 0
+  private val validAnswer: Long = 4000L
 
-  lazy val sharePortfolioQuantityInTrustRoute = routes.SharePortfolioQuantityInTrustController.onPageLoad(index, fakeDraftId).url
+  private lazy val sharePortfolioQuantityInTrustRoute: String = routes.SharePortfolioQuantityInTrustController.onPageLoad(index, fakeDraftId).url
 
   "SharePortfolioQuantityInTrust Controller" must {
 
@@ -57,7 +59,7 @@ class SharePortfolioQuantityInTrustControllerSpec extends SpecBase with ModelGen
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(SharePortfolioQuantityInTrustPage(index), "answer").success.value
+      val userAnswers = emptyUserAnswers.set(SharePortfolioQuantityInTrustPage(index), validAnswer).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -70,7 +72,7 @@ class SharePortfolioQuantityInTrustControllerSpec extends SpecBase with ModelGen
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill("answer"), fakeDraftId, index)(fakeRequest, messages).toString
+        view(form.fill(validAnswer), fakeDraftId, index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -82,7 +84,7 @@ class SharePortfolioQuantityInTrustControllerSpec extends SpecBase with ModelGen
 
       val request =
         FakeRequest(POST, sharePortfolioQuantityInTrustRoute)
-          .withFormUrlEncodedBody(("value", "23456"))
+          .withFormUrlEncodedBody(("value", validAnswer.toString))
 
       val result = route(application, request).value
 
@@ -135,7 +137,7 @@ class SharePortfolioQuantityInTrustControllerSpec extends SpecBase with ModelGen
 
       val request =
         FakeRequest(POST, sharePortfolioQuantityInTrustRoute)
-          .withFormUrlEncodedBody(("value", "answer"))
+          .withFormUrlEncodedBody(("value", validAnswer.toString))
 
       val result = route(application, request).value
 
@@ -157,7 +159,7 @@ class SharePortfolioQuantityInTrustControllerSpec extends SpecBase with ModelGen
     }
 
     validateIndex(
-      arbitrary[String],
+      arbitrary[Long],
       SharePortfolioQuantityInTrustPage.apply,
       getForIndex
     )
@@ -171,11 +173,11 @@ class SharePortfolioQuantityInTrustControllerSpec extends SpecBase with ModelGen
         routes.SharePortfolioQuantityInTrustController.onPageLoad(index, fakeDraftId).url
 
       FakeRequest(POST, route)
-        .withFormUrlEncodedBody(("currency", "1234"))
+        .withFormUrlEncodedBody(("currency", validAnswer.toString))
     }
 
     validateIndex(
-      arbitrary[String],
+      arbitrary[Long],
       SharePortfolioQuantityInTrustPage.apply,
       postForIndex
     )

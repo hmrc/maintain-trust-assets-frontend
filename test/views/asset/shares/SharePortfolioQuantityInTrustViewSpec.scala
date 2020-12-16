@@ -19,14 +19,14 @@ package views.asset.shares
 import forms.QuantityFormProvider
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.StringViewBehaviours
+import views.behaviours.LongViewBehaviours
 import views.html.asset.shares.SharePortfolioQuantityInTrustView
 
-class SharePortfolioQuantityInTrustViewSpec extends StringViewBehaviours {
+class SharePortfolioQuantityInTrustViewSpec extends LongViewBehaviours {
 
   private val messageKeyPrefix: String = "shares.portfolioQuantityInTrust"
 
-  override val form: Form[String] = new QuantityFormProvider().withPrefix(messageKeyPrefix)
+  override val form: Form[Long] = new QuantityFormProvider(frontendAppConfig).withPrefix(messageKeyPrefix)
 
   private val index: Int = 0
 
@@ -41,7 +41,7 @@ class SharePortfolioQuantityInTrustViewSpec extends StringViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like stringPage(form, applyView, messageKeyPrefix, Some(s"$messageKeyPrefix.hint"))
+    behave like longPage(form, applyView, messageKeyPrefix, Some(s"$messageKeyPrefix.hint"))
 
     behave like pageWithASubmitButton(applyView(form))
 

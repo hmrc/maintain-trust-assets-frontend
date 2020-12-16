@@ -109,7 +109,7 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
             |"listedOnTheStockExchange" : true,
             |"shareCompanyName" : "adam",
             |"sharesInAPortfolio" : false,
-            |"quantityInTheTrust" : "200",
+            |"quantityInTheTrust" : 100,
             |"value" : 200,
             |"whatKindOfAsset" : "Shares",
             |"class" : "ordinary",
@@ -122,7 +122,7 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
           listedOnTheStockExchange = true,
           name = "adam",
           sharesInAPortfolio = false,
-          quantityInTheTrust = "200",
+          quantityInTheTrust = 100L,
           value = 200L,
           whatKindOfAsset = WhatKindOfAsset.Shares,
           `class` = ShareClass.Ordinary
@@ -137,7 +137,7 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
             |"portfolioListedOnTheStockExchange" : true,
             |"sharesInAPortfolio" : true,
             |"name" : "Adam",
-            |"portfolioQuantityInTheTrust" : "200",
+            |"portfolioQuantityInTheTrust" : 200,
             |"portfolioValue" : 290000,
             |"whatKindOfAsset" : "Shares",
             |"status" : "completed"
@@ -149,7 +149,7 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
             listedOnTheStockExchange = true,
             name = "Adam",
             sharesInAPortfolio = true,
-            quantityInTheTrust = "200",
+            quantityInTheTrust = 200L,
             value = 290000L,
             whatKindOfAsset = WhatKindOfAsset.Shares
           ))

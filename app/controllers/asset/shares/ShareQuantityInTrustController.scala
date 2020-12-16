@@ -47,7 +47,7 @@ class ShareQuantityInTrustController @Inject()(
                                                 view: ShareQuantityInTrustView
                                               )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val form = formProvider.withPrefix("shares.quantityInTrust")
+  private val form: Form[Long] = formProvider.withPrefix("shares.quantityInTrust")
 
   private def actions(index : Int, draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] =
     identify andThen getData(draftId) andThen

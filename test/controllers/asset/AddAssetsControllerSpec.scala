@@ -74,7 +74,7 @@ class AddAssetsControllerSpec extends SpecBase {
     .set(ShareCompanyNamePage(1), "Share Company Name").success.value
     .set(SharesOnStockExchangePage(1), true).success.value
     .set(ShareClassPage(1), ShareClass.Ordinary).success.value
-    .set(ShareQuantityInTrustPage(1), "1000").success.value
+    .set(ShareQuantityInTrustPage(1), 1000L).success.value
     .set(ShareValueInTrustPage(1), 10L).success.value
     .set(AssetStatus(1), Completed).success.value
 

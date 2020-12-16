@@ -41,7 +41,7 @@ class SharesInAPortfolioPageSpec extends PageBehaviours {
           .set(ShareCompanyNamePage(0), "Company").success.value
           .set(SharesOnStockExchangePage(0), false).success.value
           .set(ShareClassPage(0), ShareClass.Ordinary).success.value
-          .set(ShareQuantityInTrustPage(0), "20").success.value
+          .set(ShareQuantityInTrustPage(0), 20L).success.value
           .set(ShareValueInTrustPage(0), assetValue).success.value
           .set(AssetStatus(0), Status.Completed).success.value
 
@@ -62,7 +62,7 @@ class SharesInAPortfolioPageSpec extends PageBehaviours {
         val answers: UserAnswers = initial.set(SharesInAPortfolioPage(0), true).success.value
           .set(SharePortfolioNamePage(0), "Shares").success.value
           .set(SharePortfolioOnStockExchangePage(0), true).success.value
-          .set(SharePortfolioQuantityInTrustPage(0), "20").success.value
+          .set(SharePortfolioQuantityInTrustPage(0), 20L).success.value
           .set(SharePortfolioValueInTrustPage(0), assetValue).success.value
           .set(AssetStatus(0), Status.Completed).success.value
 

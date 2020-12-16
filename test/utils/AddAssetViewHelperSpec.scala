@@ -120,7 +120,7 @@ class AddAssetViewHelperSpec extends SpecBase {
           .set(ShareCompanyNamePage(0), "Share Company Name").success.value
           .set(SharesOnStockExchangePage(0), true).success.value
           .set(ShareClassPage(0), ShareClass.Ordinary).success.value
-          .set(ShareQuantityInTrustPage(0), "1000").success.value
+          .set(ShareQuantityInTrustPage(0), 1000L).success.value
           .set(ShareValueInTrustPage(0), assetValue).success.value
           .set(AssetStatus(0), Completed).success.value
           .set(WhatKindOfAssetPage(1), Money).success.value
