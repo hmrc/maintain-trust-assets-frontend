@@ -18,37 +18,38 @@
 @import utils.DateErrorFormatter._
 
 @(
-  field: Field,
-  legend: String,
-  legendClass: String = "",
-  hint: Option[String] = None,
-  readerHint: Option[String] = None,
-  link : Option[Link] = None,
-  legendAsHeading: Boolean = false,
-  extraText: Option[String] = None
- )(implicit messages: Messages)
+    field: Field,
+    legend: String,
+    legendClass: String = "",
+    hint: Option[String] = None,
+    link : Option[Link] = None,
+    legendAsHeading: Boolean = false,
+    extraText: Option[String] = None
+)(implicit messages: Messages)
 
 <div class="form-group @if(field("day").hasErrors || field("month").hasErrors || field("year").hasErrors || field.hasErrors){form-group-error}">
-    <fieldset>
+    <fieldset @if(hint.nonEmpty || field.hasErrors) {aria-describedby="@if(hint.nonEmpty){form-hint}@if(hint.nonEmpty && field.hasErrors){ }@if(field.hasErrors){error-message-@{field.id}-input}"}>
         <legend>
             @if(legendAsHeading){<h1 class="legend-as-heading">}
-                <span class="@legendClass">
-                    @legend
-                </span>
+            <span class="@legendClass">
+                @legend
+            </span>
             @if(legendAsHeading){</h1>}
         </legend>
         @if(extraText.nonEmpty){
             <p>@extraText</p>
         }
-        @form_hint(hint = hint, readerHint = readerHint, link = link)
+        @form_hint(hint = hint, link = link)
         @field.errors.map { error =>
-            <span class="error-message" id="error-message-@{field.id}-input">@messages(error.message, formatArgs(error.args): _*)</span>
+            <span class="error-message" id="error-message-@{field.id}-input">
+                @messages(error.message, formatArgs(error.args): _*)
+            </span>
         }
-            <div class="form-date">
-        @List("day", "month", "year").map { part =>
+        <div class="form-date">
+            @List("day", "month", "year").map { part =>
             <div class="form-control-wrapper form-group form-group-@part">
-                <label class="form-label" for="@field(part).id">@messages(s"date.$part")<span class="visually-hidden"> @messages("date.hidden")</span></label>
-                <input class="form-control @if(field(part).hasErrors || field.error.exists(_.args.contains(part))){field-error}" id="@field(part).id" name="@field(part).name" type="text" value="@field(part).value" inputmode="numeric" />
+                <label class="form-label" for="@field(part).id">@messages(s"date.$part")</label>
+                <input class="form-control @if(field(part).hasErrors || field.error.exists(_.args.contains(part))){field-error}" id="@field(part).id" name="@field(part).name" type="text" value="@field(part).value" inputmode="numeric" pattern="[0-9]*" />
             </div>
             }
         </div>
