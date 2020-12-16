@@ -28,11 +28,11 @@ class PropertyOrLandAnswersHelper @Inject()(printHelper: PropertyOrLandPrintHelp
 
   def apply(userAnswers: UserAnswers)(implicit messages: Messages): Seq[AnswerSection] = {
 
-    val propertyOrLandAssets = userAnswers.get(Assets).getOrElse(Nil).zipWithIndex.collect {
-      case (x: PropertyOrLandAsset, index) => (x, index)
+    val propertyOrLandAssets = userAnswers.get(Assets).getOrElse(Nil).collect {
+      case x: PropertyOrLandAsset => x
     }
 
-    propertyOrLandAssets.map {
+    propertyOrLandAssets.zipWithIndex.map {
       case (_, index) =>
         printHelper.printSection(
           userAnswers = userAnswers,

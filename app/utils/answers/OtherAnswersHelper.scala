@@ -28,11 +28,11 @@ class OtherAnswersHelper @Inject()(printHelper: OtherPrintHelper) {
 
   def apply(userAnswers: UserAnswers)(implicit messages: Messages): Seq[AnswerSection] = {
 
-    val otherAssets = userAnswers.get(Assets).getOrElse(Nil).zipWithIndex.collect {
-      case (x: OtherAsset, index) => (x, index)
+    val otherAssets = userAnswers.get(Assets).getOrElse(Nil).collect {
+      case x: OtherAsset => x
     }
 
-    otherAssets.map {
+    otherAssets.zipWithIndex.map {
       case (vm, index) =>
         printHelper.printSection(
           userAnswers = userAnswers,
