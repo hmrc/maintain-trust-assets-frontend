@@ -362,7 +362,7 @@ business.description.error.length = The description of the business asset must b
 
 business.addressUkYesNo.title = Is the business asset address in the UK?
 business.addressUkYesNo.heading = Is {0}’s address in the UK?
-business.addressUkYesNo.checkYourAnswersLabel = Is {0} address in the UK?
+business.addressUkYesNo.checkYourAnswersLabel = Is {0}’s address in the UK?
 business.addressUkYesNo.error.required = Select yes if the business asset’s address in the UK
 
 business.ukAddress.title = What is the business asset’s address?
@@ -378,10 +378,10 @@ business.currentValue.heading = What is the current value of the business?
 business.currentValue.checkYourAnswersLabel = What is the current value of the business?
 business.currentValue.hint = Rounded down to the nearest pound. For example, 4000.
 business.currentValue.error.required = Enter the current value of the business
-business.currentValue.error.max.length = Assets current value must be less than 1,000,000,000,000
-business.currentValue.error.min.length = Assets current value must be 1 or more
-business.currentValue.error.invalid = Assets current value must be a number
-business.currentValue.error.wholeNumber = Assets current value must be a whole number
+business.currentValue.error.max.length = Current value of the asset must be less than 1,000,000,000,000
+business.currentValue.error.min.length = Current value of the asset must be 1 or more
+business.currentValue.error.invalid = Current value of the asset must be a number
+business.currentValue.error.wholeNumber = Current value of the asset must be a whole number
 business.currentValue.link = Return to registration progress
 
 business.answers.title = Check asset details
@@ -403,7 +403,7 @@ partnership.startDate.hint = For example, 31 3 2015.
 partnership.startDate.error.required.all = Enter the date the partnership started
 partnership.startDate.error.required.two = The date the partnership started must include {0} and {1}
 partnership.startDate.error.required = The date the partnership started must include {0}
-partnership.startDate.error.invalid = Enter a real start date for the partnership start date
+partnership.startDate.error.invalid = Enter a real date for the partnership start date
 partnership.startDate.error.future = The date the partnership started must be today or in the past
 partnership.startDate.error.past = The date the partnership started must be after 31 December 1499
 
