@@ -28,16 +28,17 @@ class SharesAnswersHelper @Inject()(printHelper: SharesPrintHelper) {
 
   def apply(userAnswers: UserAnswers)(implicit messages: Messages): Seq[AnswerSection] = {
 
-    val sharesAssets = userAnswers.get(Assets).getOrElse(Nil).collect {
-      case x: ShareAsset => x
+    val sharesAssets = userAnswers.get(Assets).getOrElse(Nil).zipWithIndex.collect {
+      case (x: ShareAsset, index: Int) => (x, index)
     }
 
     sharesAssets.zipWithIndex.map {
-      case (vm, index) =>
+      case ((vm, index), specificIndex) =>
         printHelper.printSection(
           userAnswers = userAnswers,
           arg = vm.name,
           index = index,
+          specificIndex = specificIndex,
           draftId = userAnswers.draftId
         )
     }

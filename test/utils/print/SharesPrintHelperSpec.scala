@@ -84,6 +84,7 @@ class SharesPrintHelperSpec extends SpecBase {
           val result: AnswerSection = helper.printSection(
             userAnswers = nonPortfolioAnswers,
             index = index,
+            specificIndex = index,
             draftId = fakeDraftId
           )
 
@@ -98,6 +99,7 @@ class SharesPrintHelperSpec extends SpecBase {
           val result: AnswerSection = helper.printSection(
             userAnswers = portfolioAnswers,
             index = index,
+            specificIndex = index,
             draftId = fakeDraftId
           )
 

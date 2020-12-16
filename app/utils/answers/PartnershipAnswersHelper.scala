@@ -28,15 +28,16 @@ class PartnershipAnswersHelper @Inject()(printHelper: PartnershipPrintHelper) {
 
   def apply(userAnswers: UserAnswers)(implicit messages: Messages): Seq[AnswerSection] = {
 
-    val partnershipAssets = userAnswers.get(Assets).getOrElse(Nil).collect {
-      case x: PartnershipAsset => x
+    val partnershipAssets = userAnswers.get(Assets).getOrElse(Nil).zipWithIndex.collect {
+      case (x: PartnershipAsset, index: Int) => (x, index)
     }
 
     partnershipAssets.zipWithIndex.map {
-      case (_, index) =>
+      case ((_, index), specificIndex) =>
         printHelper.printSection(
           userAnswers = userAnswers,
           index = index,
+          specificIndex = specificIndex,
           draftId = userAnswers.draftId
         )
     }

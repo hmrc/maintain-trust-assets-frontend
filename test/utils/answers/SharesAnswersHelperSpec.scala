@@ -17,12 +17,14 @@
 package utils.answers
 
 import base.SpecBase
-import models.WhatKindOfAsset.Shares
+import models.WhatKindOfAsset.{Money, Shares}
 import models.{ShareClass, UserAnswers}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{reset, times, verify, when}
 import pages.asset.WhatKindOfAssetPage
+import pages.asset.money.AssetMoneyValuePage
 import pages.asset.shares._
+import play.twirl.api.Html
 import utils.print.SharesPrintHelper
 import viewmodels.AnswerSection
 
@@ -30,6 +32,10 @@ class SharesAnswersHelperSpec extends SpecBase {
 
   private val mockPrintHelper: SharesPrintHelper = mock[SharesPrintHelper]
   private val answersHelper: SharesAnswersHelper = new SharesAnswersHelper(mockPrintHelper)
+
+  private val name: String = "Name"
+  private val amount: Long = 100L
+  private val quantity: String = "100"
 
   "SharesAnswersHelper" when {
 
@@ -46,30 +52,64 @@ class SharesAnswersHelperSpec extends SpecBase {
       val userAnswers: UserAnswers = emptyUserAnswers
         .set(WhatKindOfAssetPage(0), Shares).success.value
         .set(SharesInAPortfolioPage(0), true).success.value
-        .set(SharePortfolioNamePage(0), "Name").success.value
+        .set(SharePortfolioNamePage(0), name).success.value
         .set(SharePortfolioOnStockExchangePage(0), true).success.value
-        .set(SharePortfolioQuantityInTrustPage(0), "100").success.value
-        .set(SharePortfolioValueInTrustPage(0), 100L).success.value
+        .set(SharePortfolioQuantityInTrustPage(0), quantity).success.value
+        .set(SharePortfolioValueInTrustPage(0), amount).success.value
 
         .set(WhatKindOfAssetPage(1), Shares).success.value
         .set(SharesInAPortfolioPage(1), false).success.value
-        .set(ShareCompanyNamePage(1), "Name").success.value
+        .set(ShareCompanyNamePage(1), name).success.value
         .set(SharesOnStockExchangePage(1), true).success.value
         .set(ShareClassPage(1), ShareClass.Ordinary).success.value
-        .set(ShareQuantityInTrustPage(1), "100").success.value
-        .set(ShareValueInTrustPage(1), 100L).success.value
+        .set(ShareQuantityInTrustPage(1), quantity).success.value
+        .set(ShareValueInTrustPage(1), amount).success.value
 
       "interact with SharesPrintHelper" in {
 
         reset(mockPrintHelper)
 
-        when(mockPrintHelper.printSection(any(), any(), any(), any())(any())).thenReturn(AnswerSection())
+        when(mockPrintHelper.printSection(any(), any(), any(), any(), any())(any())).thenReturn(AnswerSection())
 
         val result: Seq[AnswerSection] = answersHelper(userAnswers)
 
         result mustBe Seq(AnswerSection(), AnswerSection())
 
-        verify(mockPrintHelper, times(2)).printSection(any(), any(), any(), any())(any())
+        verify(mockPrintHelper, times(2)).printSection(any(), any(), any(), any(), any())(any())
+      }
+
+      "index headings correctly" in {
+
+        val helper = injector.instanceOf[SharesAnswersHelper]
+
+        val userAnswers: UserAnswers = emptyUserAnswers
+          .set(WhatKindOfAssetPage(0), Money).success.value
+          .set(AssetMoneyValuePage(0), amount).success.value
+
+          .set(WhatKindOfAssetPage(1), Shares).success.value
+          .set(SharesInAPortfolioPage(1), false).success.value
+          .set(ShareCompanyNamePage(1), name).success.value
+          .set(SharesOnStockExchangePage(1), true).success.value
+          .set(ShareClassPage(1), ShareClass.Ordinary).success.value
+          .set(ShareQuantityInTrustPage(1), quantity).success.value
+          .set(ShareValueInTrustPage(1), amount).success.value
+
+          .set(WhatKindOfAssetPage(2), Shares).success.value
+          .set(SharesInAPortfolioPage(2), false).success.value
+          .set(ShareCompanyNamePage(2), name).success.value
+          .set(SharesOnStockExchangePage(2), true).success.value
+          .set(ShareClassPage(2), ShareClass.Ordinary).success.value
+          .set(ShareQuantityInTrustPage(2), quantity).success.value
+          .set(ShareValueInTrustPage(2), amount).success.value
+
+        val result: Seq[AnswerSection] = helper(userAnswers)
+
+        result.size mustBe 2
+
+        result(0).headingKey mustBe Some("Share 1")
+        result(0).rows.map(_.answer).contains(Html("Shares")) mustBe true
+        result(1).headingKey mustBe Some("Share 2")
+        result(1).rows.map(_.answer).contains(Html("Shares")) mustBe true
       }
     }
   }

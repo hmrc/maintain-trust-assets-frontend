@@ -99,6 +99,7 @@ class PropertyOrLandPrintHelperSpec extends SpecBase {
           val result: AnswerSection = helper.printSection(
             userAnswers = ukAddressTrustOwnsAllAnswers,
             index = index,
+            specificIndex = index,
             draftId = fakeDraftId
           )
 
@@ -113,6 +114,7 @@ class PropertyOrLandPrintHelperSpec extends SpecBase {
           val result: AnswerSection = helper.printSection(
             userAnswers = nonUkAddressTrustOwnsAllAnswers,
             index = index,
+            specificIndex = index,
             draftId = fakeDraftId
           )
 
@@ -127,6 +129,7 @@ class PropertyOrLandPrintHelperSpec extends SpecBase {
           val result: AnswerSection = helper.printSection(
             userAnswers = descriptionTrustDoesNotOwnAllAnswers,
             index = index,
+            specificIndex = index,
             draftId = fakeDraftId
           )
 

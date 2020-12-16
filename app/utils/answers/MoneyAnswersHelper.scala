@@ -28,15 +28,16 @@ class MoneyAnswersHelper @Inject()(printHelper: MoneyPrintHelper) {
 
   def apply(userAnswers: UserAnswers)(implicit messages: Messages): Seq[AnswerSection] = {
 
-    val moneyAssets = userAnswers.get(Assets).getOrElse(Nil).collect {
-      case x: MoneyAsset => x
+    val moneyAssets = userAnswers.get(Assets).getOrElse(Nil).zipWithIndex.collect {
+      case (x: MoneyAsset, index: Int) => (x, index)
     }
 
     moneyAssets.zipWithIndex.map {
-      case (_, index) =>
+      case ((_, index), specificIndex) =>
         printHelper.printSection(
           userAnswers = userAnswers,
           index = index,
+          specificIndex = specificIndex,
           draftId = userAnswers.draftId
         )
     }

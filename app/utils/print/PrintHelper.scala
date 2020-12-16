@@ -36,10 +36,11 @@ trait PrintHelper {
   def printSection(userAnswers: UserAnswers,
                    arg: String = "",
                    index: Int,
+                   specificIndex: Int,
                    draftId: String)
                   (implicit messages: Messages): AnswerSection = {
 
-    section(userAnswers, arg, index, draftId, Some(headingKey(index)))
+    section(userAnswers, arg, index, draftId, Some(headingKey(specificIndex)))
   }
 
   private def section(userAnswers: UserAnswers,

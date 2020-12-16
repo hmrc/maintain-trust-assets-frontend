@@ -82,6 +82,7 @@ class BusinessPrintHelperSpec extends SpecBase {
           val result: AnswerSection = helper.printSection(
             userAnswers = ukAddressAnswers,
             index = index,
+            specificIndex = index,
             draftId = fakeDraftId
           )
 
@@ -96,6 +97,7 @@ class BusinessPrintHelperSpec extends SpecBase {
           val result: AnswerSection = helper.printSection(
             userAnswers = nonUkAddressAnswers,
             index = index,
+            specificIndex = index,
             draftId = fakeDraftId
           )
 

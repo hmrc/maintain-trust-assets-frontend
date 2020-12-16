@@ -18,11 +18,13 @@ package utils.answers
 
 import base.SpecBase
 import models.UserAnswers
-import models.WhatKindOfAsset.Money
+import models.WhatKindOfAsset.{Money, Other}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{verify, when}
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.money._
+import pages.asset.other.{OtherAssetDescriptionPage, OtherAssetValuePage}
+import play.twirl.api.Html
 import utils.print.MoneyPrintHelper
 import viewmodels.AnswerSection
 
@@ -30,6 +32,9 @@ class MoneyAnswersHelperSpec extends SpecBase {
 
   private val mockPrintHelper: MoneyPrintHelper = mock[MoneyPrintHelper]
   private val answersHelper: MoneyAnswersHelper = new MoneyAnswersHelper(mockPrintHelper)
+
+  private val description: String = "Description"
+  private val amount: Long = 100L
 
   "MoneyAnswersHelper" when {
 
@@ -47,17 +52,37 @@ class MoneyAnswersHelperSpec extends SpecBase {
 
       "interact with MoneyPrintHelper" in {
 
-        when(mockPrintHelper.printSection(any(), any(), any(), any())(any())).thenReturn(AnswerSection())
+        when(mockPrintHelper.printSection(any(), any(), any(), any(), any())(any())).thenReturn(AnswerSection())
 
         val userAnswers: UserAnswers = emptyUserAnswers
           .set(WhatKindOfAssetPage(index), Money).success.value
-          .set(AssetMoneyValuePage(index), 100L).success.value
+          .set(AssetMoneyValuePage(index), amount).success.value
 
         val result: Seq[AnswerSection] = answersHelper(userAnswers)
 
         result mustBe Seq(AnswerSection())
 
-        verify(mockPrintHelper).printSection(any(), any(), any(), any())(any())
+        verify(mockPrintHelper).printSection(any(), any(), any(), any(), any())(any())
+      }
+
+      "index headings correctly" in {
+
+        val helper = injector.instanceOf[MoneyAnswersHelper]
+
+        val userAnswers: UserAnswers = emptyUserAnswers
+          .set(WhatKindOfAssetPage(0), Other).success.value
+          .set(OtherAssetDescriptionPage(0), description).success.value
+          .set(OtherAssetValuePage(0), amount).success.value
+
+          .set(WhatKindOfAssetPage(1), Money).success.value
+          .set(AssetMoneyValuePage(1), amount).success.value
+
+        val result: Seq[AnswerSection] = helper(userAnswers)
+
+        result.size mustBe 1
+
+        result(0).headingKey mustBe Some("Money")
+        result(0).rows.map(_.answer).contains(Html("Money")) mustBe true
       }
     }
   }

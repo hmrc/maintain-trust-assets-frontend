@@ -18,11 +18,13 @@ package utils.answers
 
 import base.SpecBase
 import models.UserAnswers
-import models.WhatKindOfAsset.Other
+import models.WhatKindOfAsset._
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import pages.asset.WhatKindOfAssetPage
+import pages.asset.money._
 import pages.asset.other._
+import play.twirl.api.Html
 import utils.print.OtherPrintHelper
 import viewmodels.AnswerSection
 
@@ -30,6 +32,9 @@ class OtherAnswersHelperSpec extends SpecBase {
 
   private val mockPrintHelper: OtherPrintHelper = mock[OtherPrintHelper]
   private val answersHelper: OtherAnswersHelper = new OtherAnswersHelper(mockPrintHelper)
+
+  private val description: String = "Description"
+  private val amount: Long = 100L
 
   "OtherAnswersHelper" when {
 
@@ -47,20 +52,46 @@ class OtherAnswersHelperSpec extends SpecBase {
 
       val userAnswers: UserAnswers = emptyUserAnswers
         .set(WhatKindOfAssetPage(index), Other).success.value
-        .set(OtherAssetDescriptionPage(index), "Description").success.value
-        .set(OtherAssetValuePage(index), 100L).success.value
+        .set(OtherAssetDescriptionPage(index), description).success.value
+        .set(OtherAssetValuePage(index), amount).success.value
 
       "interact with OtherPrintHelper" in {
 
         reset(mockPrintHelper)
 
-        when(mockPrintHelper.printSection(any(), any(), any(), any())(any())).thenReturn(AnswerSection())
+        when(mockPrintHelper.printSection(any(), any(), any(), any(), any())(any())).thenReturn(AnswerSection())
 
         val result: Seq[AnswerSection] = answersHelper(userAnswers)
 
         result mustBe Seq(AnswerSection())
 
-        verify(mockPrintHelper).printSection(any(), any(), any(), any())(any())
+        verify(mockPrintHelper).printSection(any(), any(), any(), any(), any())(any())
+      }
+
+      "index headings correctly" in {
+
+        val helper = injector.instanceOf[OtherAnswersHelper]
+
+        val userAnswers: UserAnswers = emptyUserAnswers
+          .set(WhatKindOfAssetPage(0), Money).success.value
+          .set(AssetMoneyValuePage(0), amount).success.value
+
+          .set(WhatKindOfAssetPage(1), Other).success.value
+          .set(OtherAssetDescriptionPage(1), description).success.value
+          .set(OtherAssetValuePage(1), amount).success.value
+
+          .set(WhatKindOfAssetPage(2), Other).success.value
+          .set(OtherAssetDescriptionPage(2), description).success.value
+          .set(OtherAssetValuePage(2), amount).success.value
+
+        val result: Seq[AnswerSection] = helper(userAnswers)
+
+        result.size mustBe 2
+
+        result(0).headingKey mustBe Some("Other 1")
+        result(0).rows.map(_.answer).contains(Html("Other")) mustBe true
+        result(1).headingKey mustBe Some("Other 2")
+        result(1).rows.map(_.answer).contains(Html("Other")) mustBe true
       }
     }
   }

@@ -58,6 +58,7 @@ class PartnershipPrintHelperSpec extends SpecBase {
         val result: AnswerSection = helper.printSection(
           userAnswers = answers,
           index = index,
+          specificIndex = index,
           draftId = fakeDraftId
         )
 
