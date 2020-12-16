@@ -38,99 +38,105 @@ class AnswerRowConverter @Inject()(countryOptions: CountryOptions,
   def stringQuestion(query: Gettable[String],
                      labelKey: String,
                      changeUrl: String): Option[AnswerRow] = {
-
-    userAnswers.get(query).map(x =>
+    userAnswers.get(query) map { x =>
       AnswerRow(
-        label = s"$labelKey.checkYourAnswersLabel",
-        answer = HtmlFormat.escape(x),
-        changeUrl = Some(changeUrl),
-        labelArg = arg
+        s"$labelKey.checkYourAnswersLabel",
+        HtmlFormat.escape(x),
+        Some(changeUrl),
+        arg
       )
-    )
+    }
+  }
+
+  def numberQuestion[T <: AnyVal](query: Gettable[T],
+                                  labelKey: String,
+                                  changeUrl: String)
+                                 (implicit reads: Reads[T]): Option[AnswerRow] = {
+    userAnswers.get(query) map { x =>
+      AnswerRow(
+        s"$labelKey.checkYourAnswersLabel",
+        HtmlFormat.escape(x.toString),
+        Some(changeUrl),
+        arg
+      )
+    }
   }
 
   def yesNoQuestion(query: Gettable[Boolean],
                     labelKey: String,
                     changeUrl: String): Option[AnswerRow] = {
-
-    userAnswers.get(query).map(x =>
+    userAnswers.get(query) map { x =>
       AnswerRow(
-        label = s"$labelKey.checkYourAnswersLabel",
-        answer = checkAnswersFormatters.yesOrNo(x),
-        changeUrl = Some(changeUrl),
-        labelArg = arg
+        s"$labelKey.checkYourAnswersLabel",
+        checkAnswersFormatters.yesOrNo(x),
+        Some(changeUrl),
+        arg
       )
-    )
+    }
   }
 
   def addressQuestion[T <: Address](query: Gettable[T],
                                     labelKey: String,
                                     changeUrl: String)
                                    (implicit reads: Reads[T]): Option[AnswerRow] = {
-
-    userAnswers.get(query).map(x =>
+    userAnswers.get(query) map { x =>
       AnswerRow(
-        label = s"$labelKey.checkYourAnswersLabel",
-        answer = checkAnswersFormatters.addressFormatter(x, countryOptions),
-        changeUrl = Some(changeUrl),
-        labelArg = arg
+        s"$labelKey.checkYourAnswersLabel",
+        checkAnswersFormatters.addressFormatter(x, countryOptions),
+        Some(changeUrl),
+        arg
       )
-    )
+    }
   }
 
   def currencyQuestion(query: Gettable[Long],
                        labelKey: String,
                        changeUrl: String): Option[AnswerRow] = {
-
-    userAnswers.get(query).map(x =>
+    userAnswers.get(query) map { x =>
       AnswerRow(
-        label = s"$labelKey.checkYourAnswersLabel",
-        answer = checkAnswersFormatters.currency(x.toString),
-        changeUrl = Some(changeUrl),
-        labelArg = arg
+        s"$labelKey.checkYourAnswersLabel",
+        checkAnswersFormatters.currency(x.toString),
+        Some(changeUrl),
+        arg
       )
-    )
+    }
   }
 
   def dateQuestion(query: Gettable[LocalDate],
                    labelKey: String,
                    changeUrl: String): Option[AnswerRow] = {
-
-    userAnswers.get(query).map(x =>
+    userAnswers.get(query) map { x =>
       AnswerRow(
-        label = s"$labelKey.checkYourAnswersLabel",
-        answer = checkAnswersFormatters.formatDate(x),
-        changeUrl = Some(changeUrl),
-        labelArg = arg
+        s"$labelKey.checkYourAnswersLabel",
+        checkAnswersFormatters.formatDate(x),
+        Some(changeUrl),
+        arg
       )
-    )
+    }
   }
 
   def assetTypeQuestion(index: Int,
                         draftId: String): Option[AnswerRow] = {
-
     val label: String = if (index == 0) "first" else "next"
-
-    userAnswers.get(WhatKindOfAssetPage(index)).map(x =>
+    userAnswers.get(WhatKindOfAssetPage(index)) map { x =>
       AnswerRow(
-        label = s"whatKindOfAsset.$label.checkYourAnswersLabel",
-        answer = HtmlFormat.escape(messages(s"whatKindOfAsset.$x")),
-        changeUrl = Some(WhatKindOfAssetController.onPageLoad(index, draftId).url),
+        s"whatKindOfAsset.$label.checkYourAnswersLabel",
+        HtmlFormat.escape(messages(s"whatKindOfAsset.$x")),
+        Some(WhatKindOfAssetController.onPageLoad(index, draftId).url)
       )
-    )
+    }
   }
 
   def shareClassQuestion(query: Gettable[ShareClass],
                          labelKey: String,
                          changeUrl: String): Option[AnswerRow] = {
-
-    userAnswers.get(query).map(x =>
+    userAnswers.get(query) map { x =>
       AnswerRow(
-        label = s"$labelKey.checkYourAnswersLabel",
-        answer = HtmlFormat.escape(messages(s"shares.class.$x")),
-        changeUrl = Some(changeUrl),
-        labelArg = arg
+        s"$labelKey.checkYourAnswersLabel",
+        HtmlFormat.escape(messages(s"shares.class.$x")),
+        Some(changeUrl),
+        arg
       )
-    )
+    }
   }
 }
