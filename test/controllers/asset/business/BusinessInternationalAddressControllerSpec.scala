@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.IndexValidation
 import controllers.routes._
 import forms.InternationalAddressFormProvider
-import models.{InternationalAddress, NormalMode, UserAnswers}
+import models.{InternationalAddress, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.asset.business.{BusinessInternationalAddressPage, BusinessNamePage}
 import play.api.data.Form
@@ -41,7 +41,7 @@ class BusinessInternationalAddressControllerSpec extends SpecBase with IndexVali
 
   val validAnswer: InternationalAddress = InternationalAddress("line 1", "line 2", Some("line 3"), "country")
 
-  lazy val businessInternationalAddressRoute: String = routes.BusinessInternationalAddressController.onPageLoad(NormalMode, index, fakeDraftId).url
+  lazy val businessInternationalAddressRoute: String = routes.BusinessInternationalAddressController.onPageLoad(index, fakeDraftId).url
 
   val baseAnswers: UserAnswers = emptyUserAnswers
     .set(BusinessNamePage(index), businessName).success.value
@@ -63,7 +63,7 @@ class BusinessInternationalAddressControllerSpec extends SpecBase with IndexVali
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, countryOptions, NormalMode, index, fakeDraftId, businessName)(fakeRequest, messages).toString
+        view(form, countryOptions, index, fakeDraftId, businessName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -86,7 +86,7 @@ class BusinessInternationalAddressControllerSpec extends SpecBase with IndexVali
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), countryOptions, NormalMode, index, fakeDraftId, businessName)(fakeRequest, messages).toString
+        view(form.fill(validAnswer), countryOptions, index, fakeDraftId, businessName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -103,7 +103,7 @@ class BusinessInternationalAddressControllerSpec extends SpecBase with IndexVali
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.BusinessNameController.onPageLoad(NormalMode, index, fakeDraftId).url
+      redirectLocation(result).value mustEqual routes.BusinessNameController.onPageLoad(index, fakeDraftId).url
 
       application.stop()
     }
@@ -149,7 +149,7 @@ class BusinessInternationalAddressControllerSpec extends SpecBase with IndexVali
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, countryOptions, NormalMode, index, fakeDraftId, businessName)(fakeRequest, messages).toString
+        view(boundForm, countryOptions, index, fakeDraftId, businessName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -187,7 +187,7 @@ class BusinessInternationalAddressControllerSpec extends SpecBase with IndexVali
     "for a GET" must {
 
       def getForIndex(index: Int): FakeRequest[AnyContentAsEmpty.type] = {
-        val route = routes.BusinessInternationalAddressController.onPageLoad(NormalMode, index, fakeDraftId).url
+        val route = routes.BusinessInternationalAddressController.onPageLoad(index, fakeDraftId).url
 
         FakeRequest(GET, route)
       }
@@ -205,7 +205,7 @@ class BusinessInternationalAddressControllerSpec extends SpecBase with IndexVali
       def postForIndex(index: Int): FakeRequest[AnyContentAsFormUrlEncoded] = {
 
         val route =
-          routes.BusinessInternationalAddressController.onPageLoad(NormalMode, index, fakeDraftId).url
+          routes.BusinessInternationalAddressController.onPageLoad(index, fakeDraftId).url
 
         FakeRequest(POST, route)
           .withFormUrlEncodedBody(

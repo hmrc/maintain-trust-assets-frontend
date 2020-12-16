@@ -20,8 +20,8 @@ import models.{ShareClass, Status, UKAddress, UserAnswers, WhatKindOfAsset}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.AssetStatus
 import pages.asset.money._
-import pages.asset.shares._
 import pages.asset.property_or_land._
+import pages.asset.shares._
 import pages.behaviours.PageBehaviours
 
 class WhatKindOfAssetPageSpec extends PageBehaviours {

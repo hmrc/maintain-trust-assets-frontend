@@ -19,7 +19,6 @@ package controllers.asset
 import controllers.actions.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
 import controllers.filters.IndexActionFilterProvider
 import forms.YesNoFormProvider
-import javax.inject.Inject
 import models.requests.RegistrationDataRequest
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -28,10 +27,11 @@ import play.api.mvc._
 import repositories.RegistrationsRepository
 import sections.Assets
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.CheckAnswersFormatters.currencyFormat
+import utils.CheckAnswersFormatters
 import viewmodels._
 import views.html.asset.RemoveAssetYesNoView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class RemoveAssetYesNoController @Inject()(
@@ -43,7 +43,8 @@ class RemoveAssetYesNoController @Inject()(
                                             yesNoFormProvider: YesNoFormProvider,
                                             validateIndex: IndexActionFilterProvider,
                                             val controllerComponents: MessagesControllerComponents,
-                                            view: RemoveAssetYesNoView
+                                            view: RemoveAssetYesNoView,
+                                            checkAnswersFormatters: CheckAnswersFormatters
                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form: Form[Boolean] = yesNoFormProvider.withPrefix("assets.removeYesNo")
@@ -89,11 +90,9 @@ class RemoveAssetYesNoController @Inject()(
     val default: String = request.messages(messagesApi)("assets.defaultText")
 
     def propertyOrLandLabel(propertyOrLand: PropertyOrLandAssetViewModel): String = {
-      propertyOrLand match {
-        case PropertyOrLandAssetUKAddressViewModel(_, Some(address), _) => address
-        case PropertyOrLandAssetInternationalAddressViewModel(_, Some(address), _) => address
-        case PropertyOrLandAssetAddressViewModel(_, Some(address), _) => address
-        case PropertyOrLandAssetDescriptionViewModel(_, Some(description), _) => description
+      (propertyOrLand.address, propertyOrLand.description) match {
+        case (Some(address), _) => address
+        case (_, Some(description)) => description
         case _ => default
       }
     }
@@ -105,7 +104,7 @@ class RemoveAssetYesNoController @Inject()(
       asset <- pick.validate[AssetViewModel]
     } yield {
       asset match {
-        case money: MoneyAssetViewModel => money.value.fold(default)(currencyFormat)
+        case money: MoneyAssetViewModel => money.value.fold(default)(checkAnswersFormatters.currencyFormat)
         case propertyOrLand: PropertyOrLandAssetViewModel => propertyOrLandLabel(propertyOrLand)
         case shares: ShareAssetViewModel => shares.name.getOrElse(default)
         case business: BusinessAssetViewModel => business.name.getOrElse(default)

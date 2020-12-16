@@ -16,10 +16,9 @@
 
 package controllers.asset.other
 
+import config.annotations.Other
 import controllers.actions._
 import forms.ValueFormProvider
-import javax.inject.Inject
-import models.Mode
 import models.requests.RegistrationDataRequest
 import navigation.Navigator
 import pages.asset.other.{OtherAssetDescriptionPage, OtherAssetValuePage}
@@ -28,9 +27,9 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
 import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.annotations.Other
 import views.html.asset.other.OtherAssetValueView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class OtherAssetValueController @Inject()(
@@ -46,14 +45,14 @@ class OtherAssetValueController @Inject()(
                                            view: OtherAssetValueView
                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private def actions(mode: Mode, index: Int, draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] = {
+  private def actions(index: Int, draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] = {
     identify andThen getData(draftId) andThen requireData andThen
-      requiredAnswer(RequiredAnswer(OtherAssetDescriptionPage(index), routes.OtherAssetDescriptionController.onPageLoad(mode, index, draftId)))
+      requiredAnswer(RequiredAnswer(OtherAssetDescriptionPage(index), routes.OtherAssetDescriptionController.onPageLoad(index, draftId)))
   }
 
   private val form: Form[Long] = formProvider.withConfig(prefix = "other.value")
 
-  def onPageLoad(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(mode, index, draftId) {
+  def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(OtherAssetValuePage(index)) match {
@@ -61,15 +60,15 @@ class OtherAssetValueController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, draftId, index, description(index)))
+      Ok(view(preparedForm, draftId, index, description(index)))
   }
 
-  def onSubmit(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(mode, index, draftId).async {
+  def onSubmit(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode, draftId, index, description(index)))),
+          Future.successful(BadRequest(view(formWithErrors, draftId, index, description(index)))),
 
         value => {
 
@@ -78,7 +77,7 @@ class OtherAssetValueController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(answers)
             _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(OtherAssetValuePage(index), mode, draftId)(updatedAnswers))
+          } yield Redirect(navigator.nextPage(OtherAssetValuePage(index), draftId)(updatedAnswers))
         }
       )
   }

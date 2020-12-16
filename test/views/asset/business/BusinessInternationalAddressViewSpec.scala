@@ -17,7 +17,6 @@
 package views.asset.business
 
 import forms.InternationalAddressFormProvider
-import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import utils.InputOption
@@ -40,7 +39,7 @@ class BusinessInternationalAddressViewSpec extends InternationalAddressViewBehav
   "AssetInternationalAddressView" must {
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, countryOptions, NormalMode, index, fakeDraftId, businessName)(fakeRequest, messages)
+      view.apply(form, countryOptions, index, fakeDraftId, businessName)(fakeRequest, messages)
 
     behave like pageWithBackLink(applyView(form))
 

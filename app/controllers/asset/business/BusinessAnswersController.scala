@@ -17,20 +17,18 @@
 package controllers.asset.business
 
 import controllers.actions._
-import javax.inject.Inject
-import models.NormalMode
 import models.Status.Completed
+import models.requests.RegistrationDataRequest
 import pages.AssetStatus
 import pages.asset.business.BusinessNamePage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
 import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.CheckYourAnswersHelper
-import utils.countryOptions.CountryOptions
-import viewmodels.AnswerSection
+import utils.print.BusinessPrintHelper
 import views.html.asset.buisness.BusinessAnswersView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class BusinessAnswersController @Inject()(
@@ -41,36 +39,29 @@ class BusinessAnswersController @Inject()(
                                            requireData: RegistrationDataRequiredAction,
                                            requiredAnswer: RequiredAnswerActionProvider,
                                            view: BusinessAnswersView,
-                                           countryOptions: CountryOptions,
-                                           val controllerComponents: MessagesControllerComponents
+                                           val controllerComponents: MessagesControllerComponents,
+                                           printHelper: BusinessPrintHelper
                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private def actions(index: Int, draftId: String) =
+  private def actions(index: Int, draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] =
     identify andThen
       getData(draftId) andThen
       requireData andThen
-      requiredAnswer(RequiredAnswer(BusinessNamePage(index), routes.BusinessNameController.onPageLoad(NormalMode, index, draftId)))
+      requiredAnswer(RequiredAnswer(BusinessNamePage(index), routes.BusinessNameController.onPageLoad(index, draftId)))
 
   def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
     implicit request =>
 
-      val answers = new CheckYourAnswersHelper(countryOptions)(request.userAnswers, draftId, canEdit = true)
+      val name = request.userAnswers.get(BusinessNamePage(index)).get
 
-      val sections = Seq(
-        AnswerSection(
-          None,
-          Seq(
-            answers.assetNamePage(index),
-            answers.assetDescription(index),
-            answers.assetAddressUkYesNo(index),
-            answers.assetInternationalAddress(index),
-            answers.assetUkAddress(index),
-            answers.currentValue(index)
-          ).flatten
-        )
+      val section = printHelper.checkDetailsSection(
+        userAnswers = request.userAnswers,
+        arg = name,
+        index = index,
+        draftId = draftId
       )
 
-      Ok(view(index, draftId, sections))
+      Ok(view(index, draftId, section))
   }
 
   def onSubmit(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async {

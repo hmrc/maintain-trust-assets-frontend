@@ -1,13 +1,13 @@
 # microservice specific routes
 
-->         /:draftId/asset/:index/money                 money.Routes
-->         /:draftId/asset/:index/property-or-land      propertyOrLand.Routes
-->         /:draftId/asset/:index/shares                shares.Routes
-->         /:draftId/asset/:index/business              business.Routes
-->         /:draftId/asset/:index/partnership           partnership.Routes
-->         /:draftId/asset/:index/other                 other.Routes
+->         /money                                       money.Routes
+->         /property-or-land                            propertyOrLand.Routes
+->         /shares                                      shares.Routes
+->         /business                                    business.Routes
+->         /partnership                                 partnership.Routes
+->         /other                                       other.Routes
 
-GET        /:draftId/index                              controllers.IndexController.onPageLoad(draftId: String)
+GET        /:draftId/start                              controllers.IndexController.onPageLoad(draftId: String)
 
 GET        /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)
 
@@ -17,18 +17,16 @@ GET        /this-service-has-been-reset                 controllers.SessionExpir
 
 GET        /unauthorised                                controllers.UnauthorisedController.onPageLoad
 
-GET        /:draftId/asset/:index/assets-type           controllers.asset.WhatKindOfAssetController.onPageLoad(mode: Mode = NormalMode, index: Int, draftId: String)
-POST       /:draftId/asset/:index/assets-type           controllers.asset.WhatKindOfAssetController.onSubmit(mode: Mode = NormalMode, index: Int, draftId: String)
-GET        /:draftId/asset/:index/change-assets-type    controllers.asset.WhatKindOfAssetController.onPageLoad(mode: Mode = CheckMode, index: Int, draftId: String)
-POST       /:draftId/asset/:index/change-assets-type    controllers.asset.WhatKindOfAssetController.onSubmit(mode: Mode = CheckMode, index: Int, draftId: String)
+GET        /:draftId/asset/:index/assets-type           controllers.asset.WhatKindOfAssetController.onPageLoad(index: Int, draftId: String)
+POST       /:draftId/asset/:index/assets-type           controllers.asset.WhatKindOfAssetController.onSubmit(index: Int, draftId: String)
 
 GET        /:draftId/asset/information-you-need         controllers.asset.AssetInterruptPageController.onPageLoad(draftId: String)
 POST       /:draftId/asset/information-you-need         controllers.asset.AssetInterruptPageController.onSubmit(draftId: String)
 
-GET        /:draftId/asset/add                          controllers.asset.AddAssetsController.onPageLoad(mode: Mode = NormalMode, draftId: String)
-POST       /:draftId/asset/add                          controllers.asset.AddAssetsController.submitOne(mode: Mode = NormalMode, draftId: String)
-POST       /:draftId/asset/add-another                  controllers.asset.AddAssetsController.submitAnother(mode: Mode = NormalMode, draftId: String)
-POST       /:draftId/asset/complete                     controllers.asset.AddAssetsController.submitComplete(mode: Mode = NormalMode, draftId: String)
+GET        /:draftId/asset/add                          controllers.asset.AddAssetsController.onPageLoad(draftId: String)
+POST       /:draftId/asset/add                          controllers.asset.AddAssetsController.submitOne(draftId: String)
+POST       /:draftId/asset/add-another                  controllers.asset.AddAssetsController.submitAnother(draftId: String)
+POST       /:draftId/asset/complete                     controllers.asset.AddAssetsController.submitComplete(draftId: String)
 
 GET        /:draftId/asset/:index/remove                controllers.asset.RemoveAssetYesNoController.onPageLoad(index: Int, draftId: String)
 POST       /:draftId/asset/:index/remove                controllers.asset.RemoveAssetYesNoController.onSubmit(index: Int, draftId: String)

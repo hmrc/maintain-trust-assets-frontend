@@ -17,7 +17,6 @@
 package views.asset.business
 
 import forms.NameFormProvider
-import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.StringViewBehaviours
@@ -32,7 +31,7 @@ class BusinessNameViewSpec extends StringViewBehaviours {
   "BusinessName view" must {
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, NormalMode, fakeDraftId, 0)(fakeRequest, messages)
+      view.apply(form, fakeDraftId, 0)(fakeRequest, messages)
 
     behave like normalPage(applyView(form), messageKeyPrefix)
 

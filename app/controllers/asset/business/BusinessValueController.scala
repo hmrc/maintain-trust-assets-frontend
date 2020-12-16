@@ -16,13 +16,12 @@
 
 package controllers.asset.business
 
+import config.annotations.Business
 import controllers.actions._
 import controllers.filters.IndexActionFilterProvider
 import forms.ValueFormProvider
-import javax.inject.Inject
 import models.Status.Completed
 import models.requests.RegistrationDataRequest
-import models.{Mode, NormalMode}
 import navigation.Navigator
 import pages.AssetStatus
 import pages.asset.business.{BusinessNamePage, BusinessValuePage}
@@ -32,9 +31,9 @@ import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerCompon
 import repositories.RegistrationsRepository
 import sections.Assets
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.annotations.Business
 import views.html.asset.buisness.BusinessValueView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class BusinessValueController @Inject()(
@@ -58,9 +57,9 @@ class BusinessValueController @Inject()(
       getData(draftId) andThen
       requireData andThen
       validateIndex(index, Assets) andThen
-    requiredAnswer(RequiredAnswer(BusinessNamePage(index), routes.BusinessNameController.onPageLoad(NormalMode, index, draftId)))
+    requiredAnswer(RequiredAnswer(BusinessNamePage(index), routes.BusinessNameController.onPageLoad(index, draftId)))
 
-  def onPageLoad(mode: Mode,  index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
+  def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
     implicit request =>
 
       val businessName = request.userAnswers.get(BusinessNamePage(index)).get
@@ -70,17 +69,17 @@ class BusinessValueController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, draftId, index, businessName))
+      Ok(view(preparedForm, draftId, index, businessName))
   }
 
-  def onSubmit(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async {
+  def onSubmit(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async {
     implicit request =>
 
       val businessName = request.userAnswers.get(BusinessNamePage(index)).get
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode, draftId, index, businessName))),
+          Future.successful(BadRequest(view(formWithErrors, draftId, index, businessName))),
 
         value => {
 
@@ -90,7 +89,7 @@ class BusinessValueController @Inject()(
           for {
                 updatedAnswers <- Future.fromTry(answers)
                 _              <- registrationsRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(BusinessValuePage(index), mode, draftId)(updatedAnswers))
+              } yield Redirect(navigator.nextPage(BusinessValuePage(index), draftId)(updatedAnswers))
           }
       )
   }

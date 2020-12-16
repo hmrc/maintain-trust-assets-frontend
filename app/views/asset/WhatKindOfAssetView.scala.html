@@ -15,7 +15,6 @@
  *@
 
 @import controllers.asset.routes._
-@import models.Mode
 @import models.WhatKindOfAsset
 @import viewmodels.RadioOption
 
@@ -24,7 +23,7 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], mode: Mode, draftId: String, index: Int, options : List[RadioOption])(implicit request: Request[_], messages: Messages)
+@(form: Form[_], draftId: String, index: Int, options: List[RadioOption])(implicit request: Request[_], messages: Messages)
 
 @title = {
     @if(index == 0) {
@@ -46,7 +45,7 @@
     title = s"${errorPrefix(form)} $title"
     ) {
 
-    @formHelper(action = WhatKindOfAssetController.onSubmit(mode, index, draftId), 'autoComplete -> "off") {
+    @formHelper(action = WhatKindOfAssetController.onSubmit(index, draftId), 'autoComplete -> "off") {
 
         @components.back_link()
 

@@ -17,7 +17,6 @@
 package controllers.asset
 
 import base.SpecBase
-import models.NormalMode
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.asset.AssetInterruptPageView
@@ -54,7 +53,7 @@ class AssetInterruptPageControllerSpec extends SpecBase {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe controllers.asset.routes.WhatKindOfAssetController.onPageLoad(NormalMode, 0,fakeDraftId).url
+      redirectLocation(result).value mustBe controllers.asset.routes.WhatKindOfAssetController.onPageLoad(0,fakeDraftId).url
 
       application.stop()
     }

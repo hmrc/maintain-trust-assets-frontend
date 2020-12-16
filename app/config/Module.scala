@@ -20,7 +20,7 @@ import com.google.inject.AbstractModule
 import controllers.actions._
 import navigation._
 import repositories.{DefaultRegistrationsRepository, RegistrationsRepository}
-import utils.annotations._
+import config.annotations._
 
 class Module extends AbstractModule {
 

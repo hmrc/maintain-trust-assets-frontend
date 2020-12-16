@@ -45,7 +45,7 @@ site.yes = Yes
 site.continue = Continue
 site.save.continue = Save and continue
 site.onlyContinue = Continue
-site.service_name = Register a Trust
+site.service_name = Register and Maintain a Trust
 site.address = Address
 site.inprogress = In Progress
 site.complete = Completed
@@ -109,6 +109,14 @@ featureNotAvailable.heading = This part of the online service is not available y
 featureNotAvailable.p1 = If you need to make any changes to the trust you can
 featureNotAvailable.link = contact our trusts helpline (opens in a new window or tab)
 featureNotAvailable.p2 = You will be able to update these details online in the future.
+
+answerPage.section.assets.heading = Assets
+answerPage.section.moneyAsset.subheading = Money
+answerPage.section.shareAsset.subheading = Share {0}
+answerPage.section.propertyOrLandAsset.subheading = Property or land {0}
+answerPage.section.partnershipAsset.subheading = Partnership {0}
+answerPage.section.businessAsset.subheading = Business {0}
+answerPage.section.otherAsset.subheading = Other {0}
 
 addAnAssetYesNo.title = Do you want to add an asset?
 addAnAssetYesNo.heading = Do you want to add an asset?
@@ -182,7 +190,8 @@ whatKindOfAsset.Shares = Shares
 whatKindOfAsset.Business = Business
 whatKindOfAsset.Partnership = Partnership
 whatKindOfAsset.Other = Other
-whatKindOfAsset.checkYourAnswersLabel = What kind of asset do you need to add first?
+whatKindOfAsset.first.checkYourAnswersLabel = What kind of asset do you need to add first?
+whatKindOfAsset.next.checkYourAnswersLabel = What kind of asset do you need to add next?
 whatKindOfAsset.error.required = Select the kind of asset you need to add
 
 money.value.title = What is the total amount of money in the trust?
@@ -208,9 +217,9 @@ propertyOrLand.addressUkYesNo.heading = Is the property or land’s address in t
 propertyOrLand.addressUkYesNo.checkYourAnswersLabel = Is the property or land’s address in the UK?
 propertyOrLand.addressUkYesNo.error.required = Select yes if the property or land has an address in the UK
 
-propertyOrLand.uKAddress.title = What is the property or land’s address?
-propertyOrLand.uKAddress.heading = What is the property or land’s address?
-propertyOrLand.uKAddress.checkYourAnswersLabel = What is the property or land’s address?
+propertyOrLand.ukAddress.title = What is the property or land’s address?
+propertyOrLand.ukAddress.heading = What is the property or land’s address?
+propertyOrLand.ukAddress.checkYourAnswersLabel = What is the property or land’s address?
 
 propertyOrLand.internationalAddress.title = What is the property or land’s address?
 propertyOrLand.internationalAddress.heading = What is the property or land’s address?
@@ -353,26 +362,26 @@ business.description.error.length = The description of the business asset must b
 
 business.addressUkYesNo.title = Is the business asset address in the UK?
 business.addressUkYesNo.heading = Is {0}’s address in the UK?
-business.addressUkYesNo.checkYourAnswersLabel = Is {0} address in the UK?
+business.addressUkYesNo.checkYourAnswersLabel = Is {0}’s address in the UK?
 business.addressUkYesNo.error.required = Select yes if the business asset’s address in the UK
 
 business.ukAddress.title = What is the business asset’s address?
 business.ukAddress.heading = What is {0}’s address?
 business.ukAddress.checkYourAnswersLabel = What is {0}’s address?
 
-business.InternationalAddress.title = What is the business asset’s address?
-business.InternationalAddress.heading = What is {0}’s address?
-business.InternationalAddress.checkYourAnswersLabel = What is {0}’s address?
+business.internationalAddress.title = What is the business asset’s address?
+business.internationalAddress.heading = What is {0}’s address?
+business.internationalAddress.checkYourAnswersLabel = What is {0}’s address?
 
 business.currentValue.title = What is the current value of the business?
 business.currentValue.heading = What is the current value of the business?
 business.currentValue.checkYourAnswersLabel = What is the current value of the business?
 business.currentValue.hint = Rounded down to the nearest pound. For example, 4000.
 business.currentValue.error.required = Enter the current value of the business
-business.currentValue.error.max.length = Assets current value must be less than 1,000,000,000,000
-business.currentValue.error.min.length = Assets current value must be 1 or more
-business.currentValue.error.invalid = Assets current value must be a number
-business.currentValue.error.wholeNumber = Assets current value must be a whole number
+business.currentValue.error.max.length = Current value of the asset must be less than 1,000,000,000,000
+business.currentValue.error.min.length = Current value of the asset must be 1 or more
+business.currentValue.error.invalid = Current value of the asset must be a number
+business.currentValue.error.wholeNumber = Current value of the asset must be a whole number
 business.currentValue.link = Return to registration progress
 
 business.answers.title = Check asset details
@@ -394,7 +403,7 @@ partnership.startDate.hint = For example, 31 3 2015.
 partnership.startDate.error.required.all = Enter the date the partnership started
 partnership.startDate.error.required.two = The date the partnership started must include {0} and {1}
 partnership.startDate.error.required = The date the partnership started must include {0}
-partnership.startDate.error.invalid = Enter a real start date for the partnership start date
+partnership.startDate.error.invalid = Enter a real date for the partnership start date
 partnership.startDate.error.future = The date the partnership started must be today or in the past
 partnership.startDate.error.past = The date the partnership started must be after 31 December 1499
 

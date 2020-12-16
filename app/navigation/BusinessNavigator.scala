@@ -17,31 +17,32 @@
 package navigation
 
 import config.FrontendAppConfig
-import javax.inject.{Inject, Singleton}
-import models.{NormalMode, UserAnswers}
+import models.UserAnswers
 import pages.Page
 import pages.asset.business._
 import play.api.mvc.Call
 import uk.gov.hmrc.auth.core.AffinityGroup
 
+import javax.inject.{Inject, Singleton}
+
 @Singleton
 class BusinessNavigator @Inject()(config: FrontendAppConfig) extends Navigator(config) {
 
   override protected def route(draftId: String): PartialFunction[Page, AffinityGroup => UserAnswers => Call] = {
-    case BusinessNamePage(index) => _ => _ => controllers.asset.business.routes.BusinessDescriptionController.onPageLoad(NormalMode, index, draftId)
-    case BusinessDescriptionPage(index) => _ => _ => controllers.asset.business.routes.BusinessAddressUkYesNoController.onPageLoad(NormalMode, index, draftId)
+    case BusinessNamePage(index) => _ => _ => controllers.asset.business.routes.BusinessDescriptionController.onPageLoad(index, draftId)
+    case BusinessDescriptionPage(index) => _ => _ => controllers.asset.business.routes.BusinessAddressUkYesNoController.onPageLoad(index, draftId)
     case BusinessAddressUkYesNoPage(index) => _ => ua => addressUkYesNoRoute(ua, index, draftId)
-    case BusinessUkAddressPage(index) => _ => _ => controllers.asset.business.routes.BusinessValueController.onPageLoad(NormalMode, index, draftId)
-    case BusinessInternationalAddressPage(index) => _ => _ => controllers.asset.business.routes.BusinessValueController.onPageLoad(NormalMode, index, draftId)
+    case BusinessUkAddressPage(index) => _ => _ => controllers.asset.business.routes.BusinessValueController.onPageLoad(index, draftId)
+    case BusinessInternationalAddressPage(index) => _ => _ => controllers.asset.business.routes.BusinessValueController.onPageLoad(index, draftId)
     case BusinessValuePage(index) => _ => _ => controllers.asset.business.routes.BusinessAnswersController.onPageLoad(index, draftId)
   }
 
   private def addressUkYesNoRoute(userAnswers: UserAnswers, index : Int, draftId: String) : Call = {
     userAnswers.get(BusinessAddressUkYesNoPage(index)) match {
       case Some(true) =>
-        controllers.asset.business.routes.BusinessUkAddressController.onPageLoad(NormalMode, index, draftId)
+        controllers.asset.business.routes.BusinessUkAddressController.onPageLoad(index, draftId)
       case Some(false) =>
-        controllers.asset.business.routes.BusinessInternationalAddressController.onPageLoad(NormalMode, index, draftId)
+        controllers.asset.business.routes.BusinessInternationalAddressController.onPageLoad(index, draftId)
       case _=>
         controllers.routes.SessionExpiredController.onPageLoad()
     }

@@ -17,6 +17,7 @@
 package pages.asset.money
 
 import pages.QuestionPage
+import pages.asset.money.AssetMoneyValuePage.key
 import play.api.libs.json.JsPath
 import sections.Assets
 
@@ -24,5 +25,9 @@ final case class AssetMoneyValuePage(index: Int) extends QuestionPage[Long] {
 
   override def path: JsPath = JsPath \ Assets \ index \ toString
 
-  override def toString: String = "assetMoneyValue"
+  override def toString: String = key
+}
+
+object AssetMoneyValuePage {
+  val key: String = "assetMoneyValue"
 }

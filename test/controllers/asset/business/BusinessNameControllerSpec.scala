@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.IndexValidation
 import controllers.routes._
 import forms.NameFormProvider
-import models.{NormalMode, UserAnswers}
+import models.UserAnswers
 import org.scalacheck.Arbitrary.arbitrary
 import pages.asset.business.BusinessNamePage
 import play.api.data.Form
@@ -38,7 +38,7 @@ class BusinessNameControllerSpec extends SpecBase  with IndexValidation {
   val index = 0
   val validAnswer: String = "Name"
 
-  lazy val assetNameRoute: String = routes.BusinessNameController.onPageLoad(NormalMode, index, fakeDraftId).url
+  lazy val assetNameRoute: String = routes.BusinessNameController.onPageLoad(index, fakeDraftId).url
 
   "AssetName Controller" must {
 
@@ -55,7 +55,7 @@ class BusinessNameControllerSpec extends SpecBase  with IndexValidation {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode,fakeDraftId, index)(fakeRequest, messages).toString
+        view(form, fakeDraftId, index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -76,7 +76,7 @@ class BusinessNameControllerSpec extends SpecBase  with IndexValidation {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), NormalMode,fakeDraftId, index)(fakeRequest, messages).toString
+        view(form.fill(validAnswer), fakeDraftId, index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -115,7 +115,7 @@ class BusinessNameControllerSpec extends SpecBase  with IndexValidation {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode,fakeDraftId, index)(fakeRequest, messages).toString
+        view(boundForm, fakeDraftId, index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -155,7 +155,7 @@ class BusinessNameControllerSpec extends SpecBase  with IndexValidation {
     "for a GET" must {
 
       def getForIndex(index: Int): FakeRequest[AnyContentAsEmpty.type] = {
-        val route = routes.BusinessNameController.onPageLoad(NormalMode, index, fakeDraftId).url
+        val route = routes.BusinessNameController.onPageLoad(index, fakeDraftId).url
 
         FakeRequest(GET, route)
       }
@@ -173,7 +173,7 @@ class BusinessNameControllerSpec extends SpecBase  with IndexValidation {
       def postForIndex(index: Int): FakeRequest[AnyContentAsFormUrlEncoded] = {
 
         val route =
-          routes.BusinessNameController.onPageLoad(NormalMode, index, fakeDraftId).url
+          routes.BusinessNameController.onPageLoad(index, fakeDraftId).url
 
         FakeRequest(POST, route)
           .withFormUrlEncodedBody(("value", "true"))

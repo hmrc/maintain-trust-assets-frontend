@@ -15,7 +15,6 @@
  *@
 
 @import controllers.asset.property_or_land.routes._
-@import models.Mode
 @import utils.InputOption
 
 @this(
@@ -23,13 +22,13 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], countryOptions: Seq[InputOption], mode: Mode, draftId: String, index: Int)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], countryOptions: Seq[InputOption], draftId: String, index: Int)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = s"${errorPrefix(form)} ${messages("propertyOrLand.internationalAddress.title")}"
 ) {
 
-    @formHelper(action = PropertyOrLandInternationalAddressController.onSubmit(mode, index, draftId), 'autoComplete -> "off") {
+    @formHelper(action = PropertyOrLandInternationalAddressController.onSubmit(index, draftId), 'autoComplete -> "off") {
 
         @components.back_link()
 

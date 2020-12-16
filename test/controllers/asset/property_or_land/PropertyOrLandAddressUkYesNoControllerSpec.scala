@@ -20,7 +20,6 @@ import base.SpecBase
 import controllers.asset.property_or_land.routes._
 import controllers.routes._
 import forms.YesNoFormProvider
-import models.NormalMode
 import pages.asset.property_or_land.PropertyOrLandAddressUkYesNoPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -32,7 +31,7 @@ class PropertyOrLandAddressUkYesNoControllerSpec extends SpecBase {
 
   val index: Int = 0
 
-  lazy val propertyOrLandAddressRoute: String = PropertyOrLandAddressUkYesNoController.onPageLoad(NormalMode, index, fakeDraftId).url
+  lazy val propertyOrLandAddressRoute: String = PropertyOrLandAddressUkYesNoController.onPageLoad(index, fakeDraftId).url
 
   "PropertyOrLandAddress Controller" must {
 
@@ -49,7 +48,7 @@ class PropertyOrLandAddressUkYesNoControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode, fakeDraftId, index)(fakeRequest, messages).toString
+        view(form, fakeDraftId, index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -69,7 +68,7 @@ class PropertyOrLandAddressUkYesNoControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), NormalMode, fakeDraftId, index)(fakeRequest, messages).toString
+        view(form.fill(true), fakeDraftId, index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -109,7 +108,7 @@ class PropertyOrLandAddressUkYesNoControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode, fakeDraftId, index)(fakeRequest, messages).toString
+        view(boundForm, fakeDraftId, index)(fakeRequest, messages).toString
 
       application.stop()
     }

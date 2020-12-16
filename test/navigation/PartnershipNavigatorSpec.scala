@@ -16,15 +16,15 @@
 
 package navigation
 
-import java.time.{LocalDate, ZoneOffset}
-
 import base.SpecBase
 import controllers.asset.partnership.routes._
 import generators.Generators
-import models.{NormalMode, UserAnswers}
+import models.UserAnswers
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.asset.partnership._
+
+import java.time.{LocalDate, ZoneOffset}
 
 class PartnershipNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -41,8 +41,8 @@ class PartnershipNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks wi
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
           val answers = userAnswers.set(page, "Partnership Description").success.value
-          navigator.nextPage(page, NormalMode, fakeDraftId)(answers)
-            .mustBe(PartnershipStartDateController.onPageLoad(NormalMode, index, fakeDraftId))
+          navigator.nextPage(page, fakeDraftId)(answers)
+            .mustBe(PartnershipStartDateController.onPageLoad(index, fakeDraftId))
       }
     }
 
@@ -54,7 +54,7 @@ class PartnershipNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks wi
         userAnswers =>
           val answers = userAnswers
             .set(PartnershipStartDatePage(index), validDate).success.value
-          navigator.nextPage(page, NormalMode, fakeDraftId)(answers)
+          navigator.nextPage(page, fakeDraftId)(answers)
             .mustBe(PartnershipAnswerController.onPageLoad(index, fakeDraftId))
       }
     }
@@ -65,7 +65,7 @@ class PartnershipNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks wi
 
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
-          navigator.nextPage(page, NormalMode, fakeDraftId)(userAnswers)
+          navigator.nextPage(page, fakeDraftId)(userAnswers)
             .mustBe(controllers.asset.routes.AddAssetsController.onPageLoad(fakeDraftId))
       }
     }

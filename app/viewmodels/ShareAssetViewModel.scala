@@ -19,39 +19,34 @@ package viewmodels
 import models.Status.InProgress
 import models.WhatKindOfAsset.Shares
 import models.{Status, WhatKindOfAsset}
+import pages.AssetStatus
+import pages.asset.WhatKindOfAssetPage
+import pages.asset.shares._
 
-final case class ShareAssetViewModel(`type` : WhatKindOfAsset,
-                                     inPortfolio: Option[Boolean],
-                                     name : Option[String],
-                                     override val status : Status) extends AssetViewModel
+final case class ShareAssetViewModel(`type`: WhatKindOfAsset,
+                                     name: Option[String],
+                                     override val status: Status) extends AssetViewModel
 
-object ShareAssetViewModel {
+object ShareAssetViewModel extends AssetViewModelReads {
 
   import play.api.libs.functional.syntax._
   import play.api.libs.json._
 
-  implicit class OptionString(s : String) {
-
-    def toOption : Option[String] = if(s.isEmpty) None else Some(s)
-
-  }
-
   implicit lazy val reads: Reads[ShareAssetViewModel] = {
 
     val nameReads : Reads[Option[String]] =
-      (__ \ "name").read[String].map(_.toOption) orElse
-        (__ \ "shareCompanyName").readNullable[String]
+      (__ \ SharePortfolioNamePage.key).read[String].map(_.toOption) orElse
+        (__ \ ShareCompanyNamePage.key).readNullable[String]
 
     val shareReads: Reads[ShareAssetViewModel] =
       (
         nameReads and
-          (__ \ "status").readWithDefault[Status](InProgress) and
-          (__ \ "sharesInAPortfolio").readNullable[Boolean]
-        )((name, status, inPortfolio) =>
-        ShareAssetViewModel(Shares, inPortfolio, name, status)
+          (__ \ AssetStatus.key).readWithDefault[Status](InProgress)
+        )((name, status) =>
+        ShareAssetViewModel(Shares, name, status)
       )
 
-    (__ \ "whatKindOfAsset").read[WhatKindOfAsset].flatMap[WhatKindOfAsset] {
+    (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].flatMap[WhatKindOfAsset] {
       whatKindOfAsset: WhatKindOfAsset =>
         if (whatKindOfAsset == Shares) {
           Reads(_ => JsSuccess(whatKindOfAsset))

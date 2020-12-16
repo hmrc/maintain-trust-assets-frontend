@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.IndexValidation
 import controllers.routes._
 import forms.YesNoFormProvider
-import models.{NormalMode, UserAnswers}
+import models.UserAnswers
 import org.scalacheck.Arbitrary.arbitrary
 import pages.asset.business.{BusinessAddressUkYesNoPage, BusinessNamePage}
 import play.api.data.Form
@@ -37,7 +37,7 @@ class BusinessAddressUkYesNoControllerSpec extends SpecBase with IndexValidation
   val index = 0
   val businessName = "Test"
 
-  lazy val businessAssetAddressUkYesNoRoute: String = routes.BusinessAddressUkYesNoController.onPageLoad(NormalMode, index, fakeDraftId).url
+  lazy val businessAssetAddressUkYesNoRoute: String = routes.BusinessAddressUkYesNoController.onPageLoad(index, fakeDraftId).url
 
   val baseAnswers: UserAnswers = emptyUserAnswers
     .set(BusinessNamePage(index), businessName).success.value
@@ -57,7 +57,7 @@ class BusinessAddressUkYesNoControllerSpec extends SpecBase with IndexValidation
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode, fakeDraftId, index, businessName)(fakeRequest, messages).toString
+        view(form, fakeDraftId, index, businessName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -78,7 +78,7 @@ class BusinessAddressUkYesNoControllerSpec extends SpecBase with IndexValidation
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), NormalMode, fakeDraftId, index, businessName)(fakeRequest, messages).toString
+        view(form.fill(true), fakeDraftId, index, businessName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -93,7 +93,7 @@ class BusinessAddressUkYesNoControllerSpec extends SpecBase with IndexValidation
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.BusinessNameController.onPageLoad(NormalMode, index, fakeDraftId).url
+      redirectLocation(result).value mustEqual routes.BusinessNameController.onPageLoad(index, fakeDraftId).url
 
       application.stop()
     }
@@ -133,7 +133,7 @@ class BusinessAddressUkYesNoControllerSpec extends SpecBase with IndexValidation
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode, fakeDraftId, index, businessName)(fakeRequest, messages).toString
+        view(boundForm, fakeDraftId, index, businessName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -171,7 +171,7 @@ class BusinessAddressUkYesNoControllerSpec extends SpecBase with IndexValidation
     "for a GET" must {
 
       def getForIndex(index: Int): FakeRequest[AnyContentAsEmpty.type] = {
-        val route = routes.BusinessAddressUkYesNoController.onPageLoad(NormalMode, index, fakeDraftId).url
+        val route = routes.BusinessAddressUkYesNoController.onPageLoad(index, fakeDraftId).url
 
         FakeRequest(GET, route)
       }
@@ -188,7 +188,7 @@ class BusinessAddressUkYesNoControllerSpec extends SpecBase with IndexValidation
 
       def postForIndex(index: Int): FakeRequest[AnyContentAsFormUrlEncoded] = {
 
-        val route = routes.BusinessAddressUkYesNoController.onPageLoad(NormalMode, index, fakeDraftId).url
+        val route = routes.BusinessAddressUkYesNoController.onPageLoad(index, fakeDraftId).url
 
         FakeRequest(POST, route)
           .withFormUrlEncodedBody(("value", "true"))

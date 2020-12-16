@@ -16,8 +16,6 @@
 
 package controllers.asset
 
-import java.time.LocalDate
-
 import base.SpecBase
 import forms.YesNoFormProvider
 import models.ShareClass.Ordinary
@@ -37,6 +35,8 @@ import play.api.data.Form
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.asset.RemoveAssetYesNoView
+
+import java.time.LocalDate
 
 class RemoveAssetYesNoControllerSpec extends SpecBase {
 
@@ -367,7 +367,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
       redirectLocation(result).value mustEqual controllers.asset.routes.AddAssetsController.onPageLoad(fakeDraftId).url
 
       val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
-      verify(registrationsRepository).set(uaCaptor.capture)(any())
+      verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
       uaCaptor.getValue.get(WhatKindOfAssetPage(index)) mustNot be(defined)
       uaCaptor.getValue.get(AssetMoneyValuePage(index)) mustNot be(defined)
 

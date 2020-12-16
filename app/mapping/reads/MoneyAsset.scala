@@ -18,6 +18,8 @@ package mapping.reads
 
 import models.WhatKindOfAsset
 import models.WhatKindOfAsset.Money
+import pages.asset.WhatKindOfAssetPage
+import pages.asset.money._
 import play.api.libs.json.{Reads, _}
 
 final case class MoneyAsset(override val whatKindOfAsset: WhatKindOfAsset,
@@ -30,11 +32,11 @@ object MoneyAsset {
   implicit lazy val reads: Reads[MoneyAsset] = {
 
     val moneyReads: Reads[MoneyAsset] = (
-      (__ \ "assetMoneyValue").read[Long] and
-        (__ \ "whatKindOfAsset").read[WhatKindOfAsset]
+      (__ \ AssetMoneyValuePage.key).read[Long] and
+        (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset]
       )((value, kind) => MoneyAsset(kind, value))
 
-    (__ \ "whatKindOfAsset").read[WhatKindOfAsset].flatMap[WhatKindOfAsset] {
+    (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].flatMap[WhatKindOfAsset] {
       whatKindOfAsset: WhatKindOfAsset =>
         if (whatKindOfAsset == Money) {
           Reads(_ => JsSuccess(whatKindOfAsset))

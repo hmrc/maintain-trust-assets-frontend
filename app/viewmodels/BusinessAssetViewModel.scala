@@ -19,6 +19,9 @@ package viewmodels
 import models.Status.InProgress
 import models.WhatKindOfAsset.Business
 import models.{Status, WhatKindOfAsset}
+import pages.AssetStatus
+import pages.asset.WhatKindOfAssetPage
+import pages.asset.business.BusinessNamePage
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
@@ -31,12 +34,12 @@ object BusinessAssetViewModel {
   implicit lazy val reads: Reads[BusinessAssetViewModel] = {
 
     val businessReads: Reads[BusinessAssetViewModel] =
-      ((__ \ "name").readNullable[String] and
-        (__ \ "status").readWithDefault[Status](InProgress)
+      ((__ \ BusinessNamePage.key).readNullable[String] and
+        (__ \ AssetStatus.key).readWithDefault[Status](InProgress)
         )((name, status) =>
         BusinessAssetViewModel(Business, name, status))
 
-    (__ \ "whatKindOfAsset").read[WhatKindOfAsset].flatMap[WhatKindOfAsset] {
+    (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].flatMap[WhatKindOfAsset] {
       whatKindOfAsset: WhatKindOfAsset =>
         if (whatKindOfAsset == Business) {
           Reads(_ => JsSuccess(whatKindOfAsset))

@@ -16,11 +16,10 @@
 
 package controllers.asset.partnership
 
+import config.annotations.Partnership
 import controllers.actions.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
 import controllers.filters.IndexActionFilterProvider
 import forms.partnership.PartnershipStartDateFormProvider
-import javax.inject.Inject
-import models.Mode
 import navigation.Navigator
 import pages.asset.partnership.PartnershipStartDatePage
 import play.api.data.Form
@@ -28,9 +27,9 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.annotations.Partnership
 import views.html.asset.partnership.PartnershipStartDateView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class PartnershipStartDateController @Inject()(
@@ -54,7 +53,7 @@ class PartnershipStartDateController @Inject()(
       requireData andThen
       validateIndex(index, sections.Assets)
 
-  def onPageLoad(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
+  def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(PartnershipStartDatePage(index)) match {
@@ -62,21 +61,21 @@ class PartnershipStartDateController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, index, draftId))
+      Ok(view(preparedForm, index, draftId))
   }
 
-  def onSubmit(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async {
+  def onSubmit(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode, index, draftId))),
+          Future.successful(BadRequest(view(formWithErrors, index, draftId))),
 
         value => {
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(PartnershipStartDatePage(index), value))
             _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(PartnershipStartDatePage(index), mode, draftId)(updatedAnswers))
+          } yield Redirect(navigator.nextPage(PartnershipStartDatePage(index), draftId)(updatedAnswers))
         }
       )
   }

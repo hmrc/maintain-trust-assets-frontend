@@ -17,7 +17,6 @@
 package views.asset.shares
 
 import forms.QuantityFormProvider
-import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.StringViewBehaviours
@@ -36,7 +35,7 @@ class SharePortfolioQuantityInTrustViewSpec extends StringViewBehaviours {
     val view = viewFor[SharePortfolioQuantityInTrustView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, NormalMode, fakeDraftId, index)(fakeRequest, messages)
+      view.apply(form, fakeDraftId, index)(fakeRequest, messages)
 
     behave like normalPage(applyView(form), messageKeyPrefix)
 

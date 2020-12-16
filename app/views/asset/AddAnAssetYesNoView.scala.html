@@ -15,17 +15,16 @@
  *@
 
 @import controllers.asset.routes._
-@import models.Mode
 
 @this(
-  main_template: MainTemplate,
-  formHelper: FormWithCSRF
+    main_template: MainTemplate,
+    formHelper: FormWithCSRF
 )
 
-@(form: Form[_], mode: Mode, draftId: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], draftId: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-  title = s"${errorPrefix(form)} ${messages("addAnAssetYesNo.title")}"
+    title = s"${errorPrefix(form)} ${messages("addAnAssetYesNo.title")}"
 ) {
 
 @formHelper(action = AddAssetsController.submitOne(draftId), 'autoComplete -> "off") {

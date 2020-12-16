@@ -18,26 +18,29 @@ package mapping.reads
 
 import models.WhatKindOfAsset
 import models.WhatKindOfAsset.Other
+import pages.asset.WhatKindOfAssetPage
+import pages.asset.other._
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsError, JsSuccess, Reads, __}
 
-final case class OtherAsset(
-                             override val whatKindOfAsset: WhatKindOfAsset,
-                             description: String,
-                             value: Long
-                           ) extends Asset
+final case class OtherAsset(override val whatKindOfAsset: WhatKindOfAsset,
+                            description: String,
+                            value: Long) extends Asset {
+
+  override val arg: String = description
+}
 
 object OtherAsset {
 
   implicit lazy val reads: Reads[OtherAsset] = {
 
     val otherReads: Reads[OtherAsset] = (
-      (__ \ "otherAssetDescription").read[String] and
-        (__ \ "otherAssetValue").read[Long] and
-        (__ \ "whatKindOfAsset").read[WhatKindOfAsset]
+      (__ \ OtherAssetDescriptionPage.key).read[String] and
+        (__ \ OtherAssetValuePage.key).read[Long] and
+        (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset]
       )((description, value, kind) => OtherAsset(kind, description, value))
 
-    (__ \ "whatKindOfAsset").read[WhatKindOfAsset].flatMap[WhatKindOfAsset] {
+    (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].flatMap[WhatKindOfAsset] {
       whatKindOfAsset: WhatKindOfAsset =>
         if (whatKindOfAsset == Other) {
           Reads(_ => JsSuccess(whatKindOfAsset))

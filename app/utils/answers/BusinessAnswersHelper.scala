@@ -14,16 +14,11 @@
  * limitations under the License.
  */
 
-package utils.annotations;
+package utils.answers
 
-import com.google.inject.BindingAnnotation;
+import mapping.reads.BusinessAsset
+import utils.print.BusinessPrintHelper
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import javax.inject.Inject
 
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER, ElementType.METHOD, ElementType.FIELD})
-@BindingAnnotation
-public @interface Shares {}
+class BusinessAnswersHelper @Inject()(printHelper: BusinessPrintHelper) extends AnswersHelper[BusinessAsset](printHelper)

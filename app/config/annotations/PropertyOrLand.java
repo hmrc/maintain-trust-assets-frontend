@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package utils.annotations;
+package config.annotations;
 
 import com.google.inject.BindingAnnotation;
 
@@ -26,4 +26,4 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER, ElementType.METHOD, ElementType.FIELD})
 @BindingAnnotation
-public @interface Money {}
+public @interface PropertyOrLand {}

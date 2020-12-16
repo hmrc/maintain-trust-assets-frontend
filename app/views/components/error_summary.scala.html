@@ -14,6 +14,8 @@
  * limitations under the License.
  *@
 
+@import utils.DateErrorFormatter._
+
 @(errors: Seq[FormError])(implicit messages: Messages)
 @if(errors.nonEmpty) {
     <div id="errors" class="error-summary error-summary--show" role="alert" tabindex="-1">
@@ -24,7 +26,7 @@
 
         <ul role="list" class="error-summary-list">
             @for(error <- errors) {
-                <li><a href="#@{error.key}@if(error.args.contains("day") || error.args.contains("month") || error.args.contains("year")){_@error.args.head}">@messages(error.message, error.args:_*)</a></li>
+                <li><a href="#@{error.key}@if(error.args.contains("day") || error.args.contains("month") || error.args.contains("year")){_@error.args.head}">@messages(error.message, formatArgs(error.args): _*)</a></li>
             }
         </ul>
 

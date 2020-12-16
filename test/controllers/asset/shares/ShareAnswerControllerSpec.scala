@@ -17,115 +17,111 @@
 package controllers.asset.shares
 
 import base.SpecBase
-import models.Status.Completed
-import models.WhatKindOfAsset.Shares
-import models._
-import pages.AssetStatus
-import pages.asset.WhatKindOfAssetPage
+import org.mockito.Matchers.{any, eq => eqTo}
+import org.mockito.Mockito.when
 import pages.asset.shares._
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import utils.CheckYourAnswersHelper
-import utils.countryOptions.CountryOptions
-import viewmodels.AnswerSection
+import utils.print.SharesPrintHelper
 import views.html.asset.shares.ShareAnswersView
 
 class ShareAnswerControllerSpec extends SpecBase {
 
-  val index: Int = 0
-  val assetValue: Long = 10L
+  private val index: Int = 0
 
-  lazy val shareAnswerRoute: String = routes.ShareAnswerController.onPageLoad(index, fakeDraftId).url
+  private lazy val shareAnswerRoute: String = routes.ShareAnswerController.onPageLoad(index, fakeDraftId).url
 
   "ShareAnswer Controller" must {
 
-    "return OK and the correct view for a GET (share)" in {
+    "return OK and the correct view for a GET" when {
 
-      val userAnswers =
-        emptyUserAnswers
-        .set(SharesInAPortfolioPage(index), false).success.value
-        .set(ShareCompanyNamePage(index), "Share Company Name").success.value
-        .set(SharesOnStockExchangePage(index), true).success.value
-        .set(ShareClassPage(index), ShareClass.Ordinary).success.value
-        .set(ShareQuantityInTrustPage(index), "1000").success.value
-        .set(ShareValueInTrustPage(index), assetValue).success.value
-        .set(AssetStatus(index), Completed).success.value
+      "share company name" in {
 
-      val countryOptions = injector.instanceOf[CountryOptions]
-      val checkYourAnswersHelper = new CheckYourAnswersHelper(countryOptions)(userAnswers, fakeDraftId, canEdit = true)
+        val name: String = "Company Name"
 
-      val expectedSections = Seq(
-        AnswerSection(
-          None,
-          Seq(
-            checkYourAnswersHelper.sharesInAPortfolio(index).value,
-            checkYourAnswersHelper.shareCompanyName(index).value,
-            checkYourAnswersHelper.sharesOnStockExchange(index).value,
-            checkYourAnswersHelper.shareClass(index).value,
-            checkYourAnswersHelper.shareQuantityInTrust(index).value,
-            checkYourAnswersHelper.shareValueInTrust(index).value
-          )
-        )
-      )
+        val userAnswers = emptyUserAnswers
+          .set(SharesInAPortfolioPage(index), false).success.value
+          .set(ShareCompanyNamePage(index), name).success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+        val expectedSections = Nil
+        val mockPrintHelper: SharesPrintHelper = mock[SharesPrintHelper]
+        when(mockPrintHelper.checkDetailsSection(any(), eqTo(name), any(), any())(any())).thenReturn(Nil)
 
-      val request = FakeRequest(GET, shareAnswerRoute)
+        val application = applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(bind[SharesPrintHelper].toInstance(mockPrintHelper))
+          .build()
 
-      val result = route(application, request).value
+        val request = FakeRequest(GET, shareAnswerRoute)
 
-      val view = application.injector.instanceOf[ShareAnswersView]
+        val result = route(application, request).value
 
-      status(result) mustEqual OK
+        val view = application.injector.instanceOf[ShareAnswersView]
 
-      contentAsString(result) mustEqual
-        view(index, fakeDraftId, expectedSections)(fakeRequest, messages).toString
+        status(result) mustEqual OK
 
-      application.stop()
-    }
+        contentAsString(result) mustEqual
+          view(index, fakeDraftId, expectedSections)(fakeRequest, messages).toString
 
-    "return OK and the correct view for a GET (share portfolio)" in {
+        application.stop()
+      }
 
-      val userAnswers =
-        emptyUserAnswers
-          .set(WhatKindOfAssetPage(index), Shares).success.value
+      "portfolio name" in {
+
+        val name: String = "Portfolio Name"
+
+        val userAnswers = emptyUserAnswers
           .set(SharesInAPortfolioPage(index), true).success.value
-          .set(SharePortfolioNamePage(index), "Share Portfolio Name").success.value
-          .set(SharePortfolioOnStockExchangePage(index), true).success.value
-          .set(SharePortfolioQuantityInTrustPage(index), "2000").success.value
-          .set(SharePortfolioValueInTrustPage(index), assetValue).success.value
+          .set(SharePortfolioNamePage(index), name).success.value
 
-      val countryOptions = injector.instanceOf[CountryOptions]
-      val checkYourAnswersHelper = new CheckYourAnswersHelper(countryOptions)(userAnswers, fakeDraftId, canEdit = true)
+        val expectedSections = Nil
+        val mockPrintHelper: SharesPrintHelper = mock[SharesPrintHelper]
+        when(mockPrintHelper.checkDetailsSection(any(), eqTo(name), any(), any())(any())).thenReturn(Nil)
 
-      val expectedSections = Seq(
-        AnswerSection(
-          None,
-          Seq(
-            checkYourAnswersHelper.whatKindOfAsset(index).value,
-            checkYourAnswersHelper.sharesInAPortfolio(index).value,
-            checkYourAnswersHelper.sharePortfolioName(index).value,
-            checkYourAnswersHelper.sharePortfolioOnStockExchange(index).value,
-            checkYourAnswersHelper.sharePortfolioQuantityInTrust(index).value,
-            checkYourAnswersHelper.sharePortfolioValueInTrust(index).value
-          )
-        )
-      )
+        val application = applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(bind[SharesPrintHelper].toInstance(mockPrintHelper))
+          .build()
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+        val request = FakeRequest(GET, shareAnswerRoute)
 
-      val request = FakeRequest(GET, shareAnswerRoute)
+        val result = route(application, request).value
 
-      val result = route(application, request).value
+        val view = application.injector.instanceOf[ShareAnswersView]
 
-      val view = application.injector.instanceOf[ShareAnswersView]
+        status(result) mustEqual OK
 
-      status(result) mustEqual OK
+        contentAsString(result) mustEqual
+          view(index, fakeDraftId, expectedSections)(fakeRequest, messages).toString
 
-      contentAsString(result) mustEqual
-        view(index, fakeDraftId, expectedSections)(fakeRequest, messages).toString
+        application.stop()
+      }
 
-      application.stop()
+      "no name" in {
+
+        val userAnswers = emptyUserAnswers
+          .set(SharesInAPortfolioPage(index), true).success.value
+
+        val expectedSections = Nil
+        val mockPrintHelper: SharesPrintHelper = mock[SharesPrintHelper]
+        when(mockPrintHelper.checkDetailsSection(any(), eqTo("the asset"), any(), any())(any())).thenReturn(Nil)
+
+        val application = applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(bind[SharesPrintHelper].toInstance(mockPrintHelper))
+          .build()
+
+        val request = FakeRequest(GET, shareAnswerRoute)
+
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[ShareAnswersView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(index, fakeDraftId, expectedSections)(fakeRequest, messages).toString
+
+        application.stop()
+      }
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {

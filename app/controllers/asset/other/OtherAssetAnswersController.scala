@@ -17,10 +17,8 @@
 package controllers.asset.other
 
 import controllers.actions._
-import javax.inject.Inject
 import models.Status.Completed
 import models.requests.RegistrationDataRequest
-import models.{Mode, NormalMode}
 import pages.AssetStatus
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.other.{OtherAssetDescriptionPage, OtherAssetValuePage}
@@ -28,11 +26,10 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
 import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.CheckYourAnswersHelper
-import utils.countryOptions.CountryOptions
-import viewmodels.AnswerSection
+import utils.print.OtherPrintHelper
 import views.html.asset.other.OtherAssetAnswersView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class OtherAssetAnswersController @Inject()(
@@ -43,38 +40,33 @@ class OtherAssetAnswersController @Inject()(
                                              requireData: RegistrationDataRequiredAction,
                                              requiredAnswer: RequiredAnswerActionProvider,
                                              view: OtherAssetAnswersView,
-                                             countryOptions: CountryOptions,
-                                             val controllerComponents: MessagesControllerComponents
+                                             val controllerComponents: MessagesControllerComponents,
+                                             printHelper: OtherPrintHelper
                                            )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private def actions(mode: Mode, index: Int, draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] = {
+  private def actions(index: Int, draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] = {
     identify andThen getData(draftId) andThen requireData andThen
-      requiredAnswer(RequiredAnswer(WhatKindOfAssetPage(index), controllers.asset.routes.WhatKindOfAssetController.onPageLoad(mode, index, draftId))) andThen
-      requiredAnswer(RequiredAnswer(OtherAssetDescriptionPage(index), routes.OtherAssetDescriptionController.onPageLoad(mode, index, draftId))) andThen
-      requiredAnswer(RequiredAnswer(OtherAssetValuePage(index), routes.OtherAssetValueController.onPageLoad(mode, index, draftId)))
+      requiredAnswer(RequiredAnswer(WhatKindOfAssetPage(index), controllers.asset.routes.WhatKindOfAssetController.onPageLoad(index, draftId))) andThen
+      requiredAnswer(RequiredAnswer(OtherAssetDescriptionPage(index), routes.OtherAssetDescriptionController.onPageLoad(index, draftId))) andThen
+      requiredAnswer(RequiredAnswer(OtherAssetValuePage(index), routes.OtherAssetValueController.onPageLoad(index, draftId)))
   }
 
-  def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(NormalMode, index, draftId) {
+  def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
     implicit request =>
 
-      val answers = new CheckYourAnswersHelper(countryOptions)(request.userAnswers, draftId, canEdit = true)
       val description = request.userAnswers.get(OtherAssetDescriptionPage(index)).get
 
-      val sections = Seq(
-        AnswerSection(
-          None,
-          Seq(
-            answers.whatKindOfAsset(index),
-            answers.otherAssetDescription(index),
-            answers.otherAssetValue(index, description)
-          ).flatten
-        )
+      val section = printHelper.checkDetailsSection(
+        userAnswers = request.userAnswers,
+        arg = description,
+        index = index,
+        draftId = draftId
       )
 
-      Ok(view(index, draftId, sections))
+      Ok(view(index, draftId, section))
   }
 
-  def onSubmit(index: Int, draftId: String): Action[AnyContent] = actions(NormalMode, index, draftId).async {
+  def onSubmit(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async {
     implicit request =>
 
       val answers = request.userAnswers.set(AssetStatus(index), Completed)

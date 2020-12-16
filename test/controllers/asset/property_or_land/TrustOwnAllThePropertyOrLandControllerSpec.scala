@@ -17,10 +17,9 @@
 package controllers.asset.property_or_land
 
 import base.SpecBase
-import controllers.routes._
 import controllers.IndexValidation
+import controllers.routes._
 import forms.YesNoFormProvider
-import models.NormalMode
 import org.scalacheck.Arbitrary.arbitrary
 import pages.asset.property_or_land.TrustOwnAllThePropertyOrLandPage
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
@@ -34,7 +33,7 @@ class TrustOwnAllThePropertyOrLandControllerSpec extends SpecBase with IndexVali
 
   val index: Int = 0
 
-  lazy val trustOwnAllThePropertyOrLandRoute = routes.TrustOwnAllThePropertyOrLandController.onPageLoad(NormalMode, index, fakeDraftId).url
+  lazy val trustOwnAllThePropertyOrLandRoute = routes.TrustOwnAllThePropertyOrLandController.onPageLoad(index, fakeDraftId).url
 
   "TrustOwnAllThePropertyOrLand Controller" must {
 
@@ -51,7 +50,7 @@ class TrustOwnAllThePropertyOrLandControllerSpec extends SpecBase with IndexVali
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode, index, fakeDraftId)(fakeRequest, messages).toString
+        view(form, index, fakeDraftId)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -71,7 +70,7 @@ class TrustOwnAllThePropertyOrLandControllerSpec extends SpecBase with IndexVali
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), NormalMode, index, fakeDraftId)(fakeRequest, messages).toString
+        view(form.fill(true), index, fakeDraftId)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -111,7 +110,7 @@ class TrustOwnAllThePropertyOrLandControllerSpec extends SpecBase with IndexVali
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode, index, fakeDraftId)(fakeRequest, messages).toString
+        view(boundForm, index, fakeDraftId)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -151,7 +150,7 @@ class TrustOwnAllThePropertyOrLandControllerSpec extends SpecBase with IndexVali
     "for a GET" must {
 
       def getForIndex(index: Int) : FakeRequest[AnyContentAsEmpty.type] = {
-        val route = routes.TrustOwnAllThePropertyOrLandController.onPageLoad(NormalMode, index, fakeDraftId).url
+        val route = routes.TrustOwnAllThePropertyOrLandController.onPageLoad(index, fakeDraftId).url
 
         FakeRequest(GET, route)
       }
@@ -169,7 +168,7 @@ class TrustOwnAllThePropertyOrLandControllerSpec extends SpecBase with IndexVali
       def postForIndex(index: Int): FakeRequest[AnyContentAsFormUrlEncoded] = {
 
         val route =
-          routes.TrustOwnAllThePropertyOrLandController.onPageLoad(NormalMode, index, fakeDraftId).url
+          routes.TrustOwnAllThePropertyOrLandController.onPageLoad(index, fakeDraftId).url
 
         FakeRequest(POST, route)
           .withFormUrlEncodedBody(("value", "1234"))

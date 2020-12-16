@@ -17,7 +17,7 @@
 package views.asset
 
 import forms.WhatKindOfAssetFormProvider
-import models.{NormalMode, WhatKindOfAsset}
+import models.WhatKindOfAsset
 import play.api.Application
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -36,7 +36,7 @@ class WhatKindOfAssetViewSpec extends ViewBehaviours {
   private val view: WhatKindOfAssetView = application.injector.instanceOf[WhatKindOfAssetView]
 
   def applyView(form: Form[_], index : Int): HtmlFormat.Appendable =
-    view.apply(form, NormalMode, fakeDraftId, index, WhatKindOfAsset.options())(fakeRequest, messages)
+    view.apply(form, fakeDraftId, index, WhatKindOfAsset.options())(fakeRequest, messages)
 
   "WhatKindOfAssetView" when {
 

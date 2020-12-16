@@ -18,8 +18,8 @@ package controllers.asset.other
 
 import base.SpecBase
 import forms.ValueFormProvider
+import models.UserAnswers
 import models.WhatKindOfAsset.Other
-import models.{NormalMode, UserAnswers}
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.other.{OtherAssetDescriptionPage, OtherAssetValuePage}
 import play.api.Application
@@ -42,7 +42,7 @@ class OtherAssetValueControllerSpec extends SpecBase {
   val requiredAnswers: UserAnswers = emptyUserAnswers
     .set(OtherAssetDescriptionPage(index), description).success.value
 
-  lazy val valueRoute: String = routes.OtherAssetValueController.onPageLoad(NormalMode, index, fakeDraftId).url
+  lazy val valueRoute: String = routes.OtherAssetValueController.onPageLoad(index, fakeDraftId).url
 
   "OtherAssetValueController" must {
 
@@ -59,7 +59,7 @@ class OtherAssetValueControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode, fakeDraftId, index, description)(fakeRequest, messages).toString
+        view(form, fakeDraftId, index, description)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -80,7 +80,7 @@ class OtherAssetValueControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), NormalMode, fakeDraftId, index, description)(fakeRequest, messages).toString
+        view(form.fill(validAnswer), fakeDraftId, index, description)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -99,7 +99,7 @@ class OtherAssetValueControllerSpec extends SpecBase {
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual
-        controllers.asset.other.routes.OtherAssetDescriptionController.onPageLoad(NormalMode, index, fakeDraftId).url
+        controllers.asset.other.routes.OtherAssetDescriptionController.onPageLoad(index, fakeDraftId).url
 
       application.stop()
     }
@@ -138,7 +138,7 @@ class OtherAssetValueControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode, fakeDraftId, index, description)(fakeRequest, messages).toString
+        view(boundForm, fakeDraftId, index, description)(fakeRequest, messages).toString
 
       application.stop()
     }

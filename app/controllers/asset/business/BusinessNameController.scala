@@ -16,22 +16,22 @@
 
 package controllers.asset.business
 
+import config.annotations.Business
 import controllers.actions.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
 import controllers.filters.IndexActionFilterProvider
 import forms.NameFormProvider
-import javax.inject.Inject
-import models.Mode
+import models.requests.RegistrationDataRequest
 import navigation.Navigator
 import pages.asset.business.BusinessNamePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
 import repositories.RegistrationsRepository
 import sections.Assets
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.annotations.Business
 import views.html.asset.buisness.BusinessNameView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class BusinessNameController @Inject()(
@@ -49,12 +49,12 @@ class BusinessNameController @Inject()(
 
   val form: Form[String] = formProvider.withConfig(105, "business.name")
 
-  private def actions(index: Int, draftId: String) =
+  private def actions(index: Int, draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] =
     identify andThen getData(draftId) andThen
       requireData andThen
       validateIndex(index, Assets)
 
-  def onPageLoad(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
+  def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(BusinessNamePage(index)) match {
@@ -62,22 +62,22 @@ class BusinessNameController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, draftId, index))
+      Ok(view(preparedForm, draftId, index))
 
   }
 
-  def onSubmit(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async {
+  def onSubmit(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode, draftId, index))),
+          Future.successful(BadRequest(view(formWithErrors, draftId, index))),
 
         value => {
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(BusinessNamePage(index), value))
             _ <- registrationsRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(BusinessNamePage(index), mode, draftId)(updatedAnswers))
+          } yield Redirect(navigator.nextPage(BusinessNamePage(index), draftId)(updatedAnswers))
         }
       )
   }

@@ -18,22 +18,23 @@ package repositories
 
 import config.FrontendAppConfig
 import connectors.SubmissionDraftConnector
-import javax.inject.Inject
 import models.UserAnswers
 import play.api.http
+import play.api.i18n.Messages
 import play.api.libs.json._
 import uk.gov.hmrc.http.HeaderCarrier
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class DefaultRegistrationsRepository @Inject()(submissionDraftConnector: SubmissionDraftConnector,
                                                config: FrontendAppConfig,
                                                submissionSetFactory: SubmissionSetFactory
-                                        )(implicit ec: ExecutionContext) extends RegistrationsRepository {
+                                              )(implicit ec: ExecutionContext) extends RegistrationsRepository {
 
-  private val userAnswersSection = config.appName
+  private val userAnswersSection = config.repositoryKey
 
-  override def set(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Boolean] = {
+  override def set(userAnswers: UserAnswers)(implicit hc: HeaderCarrier, messages: Messages): Future[Boolean] = {
     submissionDraftConnector.setDraftSectionSet(
       userAnswers.draftId,
       userAnswersSection,
@@ -56,7 +57,7 @@ class DefaultRegistrationsRepository @Inject()(submissionDraftConnector: Submiss
 
 trait RegistrationsRepository {
 
-  def set(userAnswers: UserAnswers)(implicit hc: HeaderCarrier): Future[Boolean]
+  def set(userAnswers: UserAnswers)(implicit hc: HeaderCarrier, messages: Messages): Future[Boolean]
 
   def get(draftId: String)(implicit hc: HeaderCarrier): Future[Option[UserAnswers]]
 }

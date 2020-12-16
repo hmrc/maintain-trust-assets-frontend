@@ -17,11 +17,11 @@
 package controllers.actions
 
 import config.FrontendAppConfig
-import javax.inject.Inject
 import models.requests.IdentifierRequest
 import play.api.mvc._
 import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolment, Enrolments}
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class FakeIdentifyForRegistration @Inject()(affinityGroup: AffinityGroup, config: FrontendAppConfig)

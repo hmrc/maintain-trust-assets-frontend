@@ -17,16 +17,15 @@
 package navigation
 
 import config.FrontendAppConfig
-import play.api.mvc.Call
+import models.UserAnswers
 import pages._
-import models.{Mode, NormalMode, UserAnswers}
+import play.api.mvc.Call
 import uk.gov.hmrc.auth.core.AffinityGroup
 
 class FakeNavigator(config: FrontendAppConfig,
-                    val desiredRoute: Call = Call("GET", "/foo"),
-                    mode: Mode = NormalMode
+                    val desiredRoute: Call = Call("GET", "/foo")
                    ) extends Navigator(config) {
 
-  override def nextPage(page: Page, mode: Mode, fakeDraftId: String, affinityGroup: AffinityGroup): UserAnswers => Call = _ => desiredRoute
+  override def nextPage(page: Page, fakeDraftId: String, affinityGroup: AffinityGroup): UserAnswers => Call = _ => desiredRoute
 }
 

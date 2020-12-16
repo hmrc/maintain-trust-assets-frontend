@@ -19,6 +19,9 @@ package viewmodels
 import models.Status.InProgress
 import models.WhatKindOfAsset.Partnership
 import models.{Status, WhatKindOfAsset}
+import pages.AssetStatus
+import pages.asset.WhatKindOfAssetPage
+import pages.asset.partnership.PartnershipDescriptionPage
 
 final case class PartnershipAssetViewModel(`type`: WhatKindOfAsset,
                                            description: Option[String],
@@ -32,11 +35,11 @@ object PartnershipAssetViewModel {
   implicit lazy val reads: Reads[PartnershipAssetViewModel] = {
 
     val partnershipReads: Reads[PartnershipAssetViewModel] =
-      ((__ \ "partnershipDescription").readNullable[String] and
-        (__ \ "status").readWithDefault[Status](InProgress)
+      ((__ \ PartnershipDescriptionPage.key).readNullable[String] and
+        (__ \ AssetStatus.key).readWithDefault[Status](InProgress)
         )((description, status) => PartnershipAssetViewModel(Partnership, description, status))
 
-    (__ \ "whatKindOfAsset").read[WhatKindOfAsset].flatMap[WhatKindOfAsset] {
+    (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].flatMap[WhatKindOfAsset] {
       whatKindOfAsset: WhatKindOfAsset =>
         if (whatKindOfAsset == Partnership) {
           Reads(_ => JsSuccess(whatKindOfAsset))

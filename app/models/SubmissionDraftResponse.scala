@@ -27,27 +27,38 @@ object SubmissionDraftData {
   implicit lazy val format: OFormat[SubmissionDraftData] = Json.format[SubmissionDraftData]
 }
 
-// Piece to be inserted into final registration data. JsNull means remove value.
-case class SubmissionDraftRegistrationPiece(elementPath: String, data: JsValue)
+object RegistrationSubmission {
+  // Piece to be inserted into final registration data. data == JsNull means remove value.
+  case class MappedPiece(elementPath: String, data: JsValue)
 
-object SubmissionDraftRegistrationPiece {
-  implicit lazy val format: OFormat[SubmissionDraftRegistrationPiece] = Json.format[SubmissionDraftRegistrationPiece]
-}
+  object MappedPiece {
+    implicit lazy val format: OFormat[MappedPiece] = Json.format[MappedPiece]
+  }
 
-// In-progress or completed status for a particular section (front end).
-case class SubmissionDraftStatus(section: String, status: Option[Status])
+  // Answer row and section, for display in print summary.
+  case class AnswerRow(label: String, answer: String, labelArg: String)
 
-object SubmissionDraftStatus {
-  implicit lazy val format: OFormat[SubmissionDraftStatus] = Json.format[SubmissionDraftStatus]
-}
+  object AnswerRow {
+    implicit lazy val format: OFormat[AnswerRow] = Json.format[AnswerRow]
+  }
 
-// Set of data sent by sub-frontend, with user answers, status and any registration pieces.
-case class SubmissionDraftSetData(data: JsValue,
-                                  status: Option[SubmissionDraftStatus],
-                                  registrationPieces: List[SubmissionDraftRegistrationPiece])
+  case class AnswerSection(headingKey: Option[String],
+                           rows: Seq[AnswerRow],
+                           sectionKey: Option[String])
 
-object SubmissionDraftSetData {
-  implicit lazy val format: OFormat[SubmissionDraftSetData] = Json.format[SubmissionDraftSetData]
+  object AnswerSection {
+    implicit lazy val format: OFormat[AnswerSection] = Json.format[AnswerSection]
+  }
+
+  // Set of data sent by sub-frontend, with user answers, status, any mapped pieces and answer sections.
+  case class DataSet(data: JsValue,
+                     status: Option[Status],
+                     registrationPieces: List[MappedPiece],
+                     answerSections: List[AnswerSection])
+
+  object DataSet {
+    implicit lazy val format: OFormat[DataSet] = Json.format[DataSet]
+  }
 }
 
 // Responses

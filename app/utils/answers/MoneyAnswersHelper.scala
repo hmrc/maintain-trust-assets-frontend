@@ -14,16 +14,11 @@
  * limitations under the License.
  */
 
-package utils.annotations;
+package utils.answers
 
-import com.google.inject.BindingAnnotation;
+import mapping.reads.MoneyAsset
+import utils.print.MoneyPrintHelper
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import javax.inject.Inject
 
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER, ElementType.METHOD, ElementType.FIELD})
-@BindingAnnotation
-public @interface Partnership {}
+class MoneyAnswersHelper @Inject()(printHelper: MoneyPrintHelper) extends AnswersHelper[MoneyAsset](printHelper)

@@ -16,6 +16,7 @@
 
 package base
 
+import config.annotations._
 import controllers.actions._
 import models.{Status, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
@@ -29,7 +30,6 @@ import play.api.libs.json.Json
 import repositories.RegistrationsRepository
 import uk.gov.hmrc.auth.core.AffinityGroup.Organisation
 import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolment, Enrolments}
-import utils.annotations.{Business, Money, Other, Partnership, PropertyOrLand, Shares}
 
 trait SpecBase extends PlaySpec
   with GuiceOneAppPerSuite

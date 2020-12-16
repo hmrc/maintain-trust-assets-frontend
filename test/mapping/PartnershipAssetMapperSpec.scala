@@ -16,8 +16,6 @@
 
 package mapping
 
-import java.time.LocalDate
-
 import base.SpecBase
 import generators.Generators
 import models.Status.Completed
@@ -26,6 +24,8 @@ import org.scalatest.{MustMatchers, OptionValues}
 import pages.AssetStatus
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.partnership._
+
+import java.time.LocalDate
 
 class PartnershipAssetMapperSpec extends SpecBase with MustMatchers
   with OptionValues with Generators {

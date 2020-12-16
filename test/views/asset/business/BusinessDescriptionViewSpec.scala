@@ -17,7 +17,6 @@
 package views.asset.business
 
 import forms.DescriptionFormProvider
-import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.StringViewBehaviours
@@ -34,7 +33,7 @@ class BusinessDescriptionViewSpec extends StringViewBehaviours {
   "AssetDescription view" must {
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, NormalMode, fakeDraftId, 0, businessName)(fakeRequest, messages)
+      view.apply(form, fakeDraftId, 0, businessName)(fakeRequest, messages)
 
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, businessName)
 

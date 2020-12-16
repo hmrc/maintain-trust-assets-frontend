@@ -16,37 +16,36 @@
 
 package mapping.reads
 
+import models.WhatKindOfAsset
 import models.WhatKindOfAsset.Shares
-import models.{Status, WhatKindOfAsset}
+import pages.asset.WhatKindOfAssetPage
+import pages.asset.shares._
+import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
 final case class SharePortfolioAsset(override val whatKindOfAsset: WhatKindOfAsset,
-                                     listedOnTheStockExchange: Boolean,
-                                     name: String,
+                                     override val listedOnTheStockExchange: Boolean,
+                                     override val name: String,
                                      sharesInAPortfolio: Boolean,
                                      quantityInTheTrust: String,
-                                     value: Long,
-                                     status: Status
-                                    ) extends Asset with ShareAsset {
-
-  val quoted: String = quotedOrUnquoted(listedOnTheStockExchange)
-}
+                                     value: Long) extends ShareAsset
 
 object SharePortfolioAsset {
 
-  import play.api.libs.functional.syntax._
-
   implicit lazy val reads: Reads[SharePortfolioAsset] = {
 
-    val shareReads : Reads[SharePortfolioAsset] = Json.reads[SharePortfolioAsset]
+    val shareReads: Reads[SharePortfolioAsset] = (
+      (__ \ SharePortfolioNamePage.key).read[String] and
+        (__ \ SharePortfolioOnStockExchangePage.key).read[Boolean] and
+        (__ \ SharePortfolioQuantityInTrustPage.key).read[String] and
+        (__ \ SharePortfolioValueInTrustPage.key).read[Long] and
+        (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset]
+      )((name, listedOnStockExchange, quantity, value, kind) => SharePortfolioAsset(kind, listedOnStockExchange, name, sharesInAPortfolio = true, quantity, value))
 
-    (
-      (__ \ "whatKindOfAsset").read[WhatKindOfAsset] and
-        (__ \ "sharesInAPortfolio").read[Boolean]
-      )((_, _)).flatMap[(WhatKindOfAsset, Boolean)] {
-      case (whatKindOfAsset, portfolio) =>
-        if (whatKindOfAsset == Shares && portfolio) {
-          Reads(_ => JsSuccess((whatKindOfAsset, portfolio)))
+    (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].flatMap[WhatKindOfAsset] {
+      whatKindOfAsset: WhatKindOfAsset =>
+        if (whatKindOfAsset == Shares) {
+          Reads(_ => JsSuccess(whatKindOfAsset))
         } else {
           Reads(_ => JsError("share portfolio asset must be of type `Shares`"))
         }
@@ -55,6 +54,3 @@ object SharePortfolioAsset {
   }
 
 }
-
-
-

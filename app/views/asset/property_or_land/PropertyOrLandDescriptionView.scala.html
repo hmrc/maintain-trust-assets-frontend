@@ -15,20 +15,19 @@
  *@
 
 @import controllers.asset.property_or_land.routes._
-@import models.Mode
 
 @this(
     main_template: MainTemplate,
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], mode: Mode, index: Int, draftId: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], index: Int, draftId: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = s"${errorPrefix(form)} ${messages("propertyOrLand.description.title")}"
 ) {
 
-    @formHelper(action = PropertyOrLandDescriptionController.onSubmit(mode, index, draftId), 'autoComplete -> "off") {
+    @formHelper(action = PropertyOrLandDescriptionController.onSubmit(index, draftId), 'autoComplete -> "off") {
 
         @components.back_link()
 

@@ -21,9 +21,7 @@ import models.Status
 import scala.language.implicitConversions
 
 trait AssetViewModel {
-
-  val status : Status
-
+  val status: Status
 }
 
 object AssetViewModel {

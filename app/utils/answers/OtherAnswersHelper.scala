@@ -14,15 +14,11 @@
  * limitations under the License.
  */
 
-package pages.asset.shares
+package utils.answers
 
-import pages.QuestionPage
-import play.api.libs.json.JsPath
-import sections.Assets
+import mapping.reads.OtherAsset
+import utils.print.OtherPrintHelper
 
-final case class ShareUtrPage(index : Int) extends QuestionPage[String] {
+import javax.inject.Inject
 
-  override def path: JsPath = Assets.path \ index \ toString
-
-  override def toString: String = "utr"
-}
+class OtherAnswersHelper @Inject()(printHelper: OtherPrintHelper) extends AnswersHelper[OtherAsset](printHelper)

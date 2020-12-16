@@ -17,7 +17,6 @@
 package views.asset.shares
 
 import forms.NameFormProvider
-import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.StringViewBehaviours
@@ -35,7 +34,7 @@ class ShareCompanyNameViewSpec extends StringViewBehaviours {
     val view = viewFor[ShareCompanyNameView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, NormalMode, fakeDraftId, index)(fakeRequest, messages)
+      view.apply(form, fakeDraftId, index)(fakeRequest, messages)
 
     behave like normalPage(applyView(form), messageKeyPrefix)
 

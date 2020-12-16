@@ -17,6 +17,7 @@
 package pages.asset.shares
 
 import models.UserAnswers
+import pages.asset.shares.SharesInAPortfolioPage.key
 import pages.{AssetStatus, QuestionPage}
 import play.api.libs.json.JsPath
 import sections.Assets
@@ -27,7 +28,7 @@ final case class SharesInAPortfolioPage(index : Int) extends QuestionPage[Boolea
 
   override def path: JsPath = Assets.path \ index \ toString
 
-  override def toString: String = "sharesInAPortfolio"
+  override def toString: String = key
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
     value match {
@@ -51,4 +52,8 @@ final case class SharesInAPortfolioPage(index : Int) extends QuestionPage[Boolea
       case _ => super.cleanup(value, userAnswers)
     }
   }
+}
+
+object SharesInAPortfolioPage {
+  val key: String = "sharesInAPortfolio"
 }

@@ -17,7 +17,6 @@
 package views.asset.shares
 
 import forms.YesNoFormProvider
-import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
@@ -35,7 +34,7 @@ class SharePortfolioOnStockExchangeViewSpec extends YesNoViewBehaviours {
     val view = viewFor[SharePortfolioOnStockExchangeView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, NormalMode, fakeDraftId, index)(fakeRequest, messages)
+      view.apply(form, fakeDraftId, index)(fakeRequest, messages)
 
     behave like normalPage(applyView(form), messageKeyPrefix)
 

@@ -17,7 +17,7 @@
 package mapping.reads
 
 import models.WhatKindOfAsset.Money
-import models.{ShareClass, Status, UKAddress, WhatKindOfAsset}
+import models.{ShareClass, UKAddress, WhatKindOfAsset}
 import org.scalatest.{FreeSpec, MustMatchers}
 import play.api.libs.json.{JsError, JsSuccess, Json}
 
@@ -120,13 +120,12 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
         json.validate[Asset] mustEqual JsSuccess(
           ShareNonPortfolioAsset(
           listedOnTheStockExchange = true,
-          shareCompanyName = "adam",
+          name = "adam",
           sharesInAPortfolio = false,
           quantityInTheTrust = "200",
           value = 200L,
           whatKindOfAsset = WhatKindOfAsset.Shares,
-          `class` = ShareClass.Ordinary,
-          status = Status.Completed
+          `class` = ShareClass.Ordinary
         ))
 
       }
@@ -135,11 +134,11 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
         val json = Json.parse(
           """
             |{
-            |"listedOnTheStockExchange" : true,
+            |"portfolioListedOnTheStockExchange" : true,
             |"sharesInAPortfolio" : true,
             |"name" : "Adam",
-            |"quantityInTheTrust" : "200",
-            |"value" : 290000,
+            |"portfolioQuantityInTheTrust" : "200",
+            |"portfolioValue" : 290000,
             |"whatKindOfAsset" : "Shares",
             |"status" : "completed"
             |}
@@ -152,8 +151,7 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
             sharesInAPortfolio = true,
             quantityInTheTrust = "200",
             value = 290000L,
-            whatKindOfAsset = WhatKindOfAsset.Shares,
-            status = Status.Completed
+            whatKindOfAsset = WhatKindOfAsset.Shares
           ))
       }
 

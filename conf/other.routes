@@ -1,12 +1,8 @@
-GET        /description                                                 controllers.asset.other.OtherAssetDescriptionController.onPageLoad(mode: Mode = NormalMode, index: Int, draftId: String)
-POST       /description                                                 controllers.asset.other.OtherAssetDescriptionController.onSubmit(mode: Mode = NormalMode, index: Int, draftId: String)
-GET        /change-description                                          controllers.asset.other.OtherAssetDescriptionController.onPageLoad(mode: Mode = CheckMode, index: Int, draftId: String)
-POST       /change-description                                          controllers.asset.other.OtherAssetDescriptionController.onSubmit(mode: Mode = CheckMode,index: Int, draftId: String)
+GET        /:draftId/:index/description                                                 controllers.asset.other.OtherAssetDescriptionController.onPageLoad(index: Int, draftId: String)
+POST       /:draftId/:index/description                                                 controllers.asset.other.OtherAssetDescriptionController.onSubmit(index: Int, draftId: String)
 
-GET        /value                                                       controllers.asset.other.OtherAssetValueController.onPageLoad(mode: Mode = NormalMode, index: Int, draftId: String)
-POST       /value                                                       controllers.asset.other.OtherAssetValueController.onSubmit(mode: Mode = NormalMode, index: Int, draftId: String)
-GET        /change-value                                                controllers.asset.other.OtherAssetValueController.onPageLoad(mode: Mode = CheckMode, index: Int, draftId: String)
-POST       /change-value                                                controllers.asset.other.OtherAssetValueController.onSubmit(mode: Mode = CheckMode,index: Int, draftId: String)
+GET        /:draftId/:index/value                                                       controllers.asset.other.OtherAssetValueController.onPageLoad(index: Int, draftId: String)
+POST       /:draftId/:index/value                                                       controllers.asset.other.OtherAssetValueController.onSubmit(index: Int, draftId: String)
 
-GET        /check-answers                                               controllers.asset.other.OtherAssetAnswersController.onPageLoad(index : Int, draftId : String)
-POST       /check-answers                                               controllers.asset.other.OtherAssetAnswersController.onSubmit(index : Int, draftId : String)
+GET        /:draftId/:index/check-answers                                               controllers.asset.other.OtherAssetAnswersController.onPageLoad(index : Int, draftId : String)
+POST       /:draftId/:index/check-answers                                               controllers.asset.other.OtherAssetAnswersController.onSubmit(index : Int, draftId : String)

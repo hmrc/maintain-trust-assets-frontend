@@ -16,11 +16,10 @@
 
 package controllers.asset.shares
 
+import config.annotations.Shares
 import controllers.actions.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
 import controllers.filters.IndexActionFilterProvider
 import forms.YesNoFormProvider
-import javax.inject.Inject
-import models.Mode
 import navigation.Navigator
 import pages.asset.shares.SharePortfolioOnStockExchangePage
 import play.api.data.Form
@@ -28,9 +27,9 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
-import utils.annotations.Shares
 import views.html.asset.shares.SharePortfolioOnStockExchangeView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class SharePortfolioOnStockExchangeController @Inject()(
@@ -53,7 +52,7 @@ class SharePortfolioOnStockExchangeController @Inject()(
       requireData andThen
       validateIndex(index, sections.Assets)
 
-  def onPageLoad(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
+  def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(SharePortfolioOnStockExchangePage(index)) match {
@@ -61,21 +60,21 @@ class SharePortfolioOnStockExchangeController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, draftId, index))
+      Ok(view(preparedForm, draftId, index))
   }
 
-  def onSubmit(mode: Mode, index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async {
+  def onSubmit(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode, draftId, index))),
+          Future.successful(BadRequest(view(formWithErrors, draftId, index))),
 
         value => {
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(SharePortfolioOnStockExchangePage(index), value))
             _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(SharePortfolioOnStockExchangePage(index), mode, draftId)(updatedAnswers))
+          } yield Redirect(navigator.nextPage(SharePortfolioOnStockExchangePage(index), draftId)(updatedAnswers))
         }
       )
   }
