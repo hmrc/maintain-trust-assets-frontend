@@ -23,12 +23,16 @@ import play.api.data.Form
 
 class ValueFormProvider @Inject()(config: FrontendAppConfig) extends Mappings {
 
-  def withConfig(prefix: String, maxValue: Long = config.assetValueUpperLimitExclusive): Form[Long] =
+  def withConfig(prefix: String,
+                 minValue: Option[Long] = None,
+                 maxValue: Option[Long] = None): Form[Long] =
     Form(
       "value" -> longValue(
-        prefix,
-        if (maxValue == config.assetValueUpperLimitExclusive) s"$prefix.error.length" else s"$prefix.error.moreThanTotal",
-        maxValue
+        prefix = prefix,
+        minValue = minValue.getOrElse(config.assetValueLowerLimitExclusive),
+        maxValue = maxValue.getOrElse(config.assetValueUpperLimitExclusive),
+        minValueKey = if (minValue.isEmpty) s"$prefix.error.zero" else s"$prefix.error.lessThanValueInTrust",
+        maxValueKey = if (maxValue.isEmpty) s"$prefix.error.length" else s"$prefix.error.moreThanTotal"
       )
     )
 }

@@ -14,24 +14,18 @@
  * limitations under the License.
  */
 
-package forms
+package controllers
 
+import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
-import forms.mappings.Mappings
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 
-import javax.inject.Inject
-import play.api.data.Form
+@Singleton
+class LogoutController @Inject()(appConfig: FrontendAppConfig,
+                                 val controllerComponents: MessagesControllerComponents) extends FrontendBaseController {
 
-class QuantityFormProvider @Inject()(config: FrontendAppConfig) extends Mappings {
-
-  def withPrefix(prefix: String): Form[Long] =
-    Form(
-      "value" -> longValue(
-        prefix = prefix,
-        minValue = config.assetValueLowerLimitExclusive,
-        maxValue = config.assetValueUpperLimitExclusive,
-        minValueKey = s"$prefix.error.zero",
-        maxValueKey = s"$prefix.error.length"
-      )
-    )
+  def logout: Action[AnyContent] = Action {
+    Redirect(appConfig.logoutUrl).withNewSession
+  }
 }

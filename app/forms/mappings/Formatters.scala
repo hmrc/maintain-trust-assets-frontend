@@ -17,9 +17,9 @@
 package forms.mappings
 
 import forms.Validation
+import models.Enumerable
 import play.api.data.FormError
 import play.api.data.format.Formatter
-import models.Enumerable
 
 import scala.util.control.Exception.nonFatalCatch
 
@@ -150,8 +150,10 @@ trait Formatters {
   }
 
   private[mappings] def longValueFormatter(prefix: String,
-                                           maxValueKey: String,
-                                           maxValue: Long): Formatter[Long] =
+                                           minValue: Long,
+                                           maxValue: Long,
+                                           minValueKey: String,
+                                           maxValueKey: String): Formatter[Long] =
     new Formatter[Long] {
 
       private val baseFormatter = longFormatter(s"$prefix.error.required", s"$prefix.error.wholeNumber", s"$prefix.error.invalid")
@@ -159,7 +161,7 @@ trait Formatters {
       override def bind(key: String, data: Map[String, String]): Either[Seq[FormError], Long] = {
         val baseValue = baseFormatter.bind(key, data)
         baseValue match {
-          case Right(value) if value < 1L => Left(Seq(FormError(key, s"$prefix.error.zero")))
+          case Right(value) if value <= minValue => Left(Seq(FormError(key, minValueKey)))
           case Right(value) if value >= maxValue => Left(Seq(FormError(key, maxValueKey)))
           case _ => baseValue
         }

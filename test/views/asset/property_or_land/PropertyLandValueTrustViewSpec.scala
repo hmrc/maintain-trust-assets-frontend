@@ -28,7 +28,8 @@ class PropertyLandValueTrustViewSpec extends LongViewBehaviours {
   private val maxValue: Long = 100L
   private val index: Int = 0
 
-  override val form: Form[Long] = new ValueFormProvider(frontendAppConfig).withConfig(messageKeyPrefix, maxValue)
+  override val form: Form[Long] = new ValueFormProvider(frontendAppConfig)
+    .withConfig(prefix = messageKeyPrefix, maxValue = Some(maxValue))
 
   "PropertyLandValueTrust view" must {
 

@@ -20,12 +20,13 @@ import com.google.inject.{Inject, Singleton}
 import controllers.routes
 import play.api.Configuration
 import play.api.i18n.{Lang, Messages}
-import play.api.mvc.Call
+import play.api.mvc.{Call, Request}
 
+import java.net.{URI, URLEncoder}
 import java.time.LocalDate
 
 @Singleton
-class FrontendAppConfig @Inject() (configuration: Configuration) {
+class FrontendAppConfig @Inject() (val configuration: Configuration) {
 
   private final val ENGLISH = "en"
   private final val WELSH = "cy"
@@ -52,6 +53,8 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val registrationProgressUrlTemplate: String = configuration.get[String]("urls.registrationProgress")
   def registrationProgressUrl(draftId: String): String = registrationProgressUrlTemplate.replace(":draftId", draftId)
 
+  lazy val logoutUrl: String = configuration.get[String]("urls.logout")
+
   lazy val trustsUrl: String = configuration.get[Service]("microservice.services.trusts").baseUrl
 
   lazy val maintainATrustFrontendUrl : String = configuration.get[String]("urls.maintainATrust")
@@ -69,6 +72,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val minDate: LocalDate = LocalDate.of(year, month, day)
 
   lazy val assetValueUpperLimitExclusive: Long = configuration.get[Long]("assetValueUpperLimitExclusive")
+  lazy val assetValueLowerLimitExclusive: Long = configuration.get[Long]("assetValueLowerLimitExclusive")
 
   def languageMap: Map[String, Lang] = Map(
     "english" -> Lang(ENGLISH),
@@ -77,6 +81,12 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
 
   def routeToSwitchLanguage: String => Call =
     (lang: String) => routes.LanguageSwitchController.switchToLanguage(lang)
+
+  def accessibilityLinkUrl(implicit request: Request[_]): String = {
+    val userAction = URLEncoder.encode(new URI(request.uri).getPath, "UTF-8")
+    lazy val accessibilityBaseLinkUrl: String = configuration.get[String]("urls.accessibility")
+    s"$accessibilityBaseLinkUrl?userAction=$userAction"
+  }
 
   def helplineUrl(implicit messages: Messages): String = {
     val path = messages.lang.code match {

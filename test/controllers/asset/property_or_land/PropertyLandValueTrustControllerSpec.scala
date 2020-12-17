@@ -32,7 +32,7 @@ import views.html.asset.property_or_land.PropertyLandValueTrustView
 class PropertyLandValueTrustControllerSpec extends SpecBase with IndexValidation {
 
   val formProvider = new ValueFormProvider(frontendAppConfig)
-  val form: Form[Long] = formProvider.withConfig("propertyOrLand.valueInTrust")
+  val form: Form[Long] = formProvider.withConfig(prefix = "propertyOrLand.valueInTrust")
 
   val index: Int = 0
   val validAnswer: Long = 4000L
@@ -95,39 +95,6 @@ class PropertyLandValueTrustControllerSpec extends SpecBase with IndexValidation
       redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
 
       application.stop()
-    }
-
-    "redirect to total value page is missing from user answers" when {
-
-      "GET" in {
-
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-
-        val request = FakeRequest(GET, propertyLandValueTrustRoute)
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual routes.PropertyOrLandTotalValueController.onPageLoad(index, fakeDraftId).url
-
-        application.stop()
-      }
-
-      "POST" in {
-
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-
-        val request = FakeRequest(POST, propertyLandValueTrustRoute)
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual routes.PropertyOrLandTotalValueController.onPageLoad(index, fakeDraftId).url
-
-        application.stop()
-      }
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {

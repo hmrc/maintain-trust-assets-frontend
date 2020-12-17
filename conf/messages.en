@@ -1,7 +1,3 @@
-checkYourAnswers.title = Check Your Answers
-checkYourAnswers.heading = Check Your Answers
-checkYourAnswers.guidance = Guidance for check your answers
-
 date.day = Day
 date.month = Month
 date.year = Year
@@ -27,9 +23,7 @@ entities.no.address.added = No address added
 entities.no.description.added = No description added
 entities.no.addressOrDescription.added = No address or description added
 
-index.title = register-trust-asset-frontend
-index.heading = register-trust-asset-frontend
-index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
+footer.links.accessibility.text = Accessibility
 
 session_expired.title = For your security, this service has been reset
 session_expired.heading = For your security, this service has been reset
@@ -51,6 +45,7 @@ site.inprogress = In Progress
 site.complete = Completed
 site.textarea.char_limit = (Limit is {0} characters)
 site.error = Error:
+site.sign_out = Sign out
 
 site.address.uk.title = What is the address?
 site.address.uk.heading = What is {0}’s address?
@@ -242,6 +237,7 @@ propertyOrLand.totalValue.error.length = Current total value of the property or 
 propertyOrLand.totalValue.error.invalid = Current total value of the property or land must be a number
 propertyOrLand.totalValue.error.zero = Current total value of the property or land must be 1 or more
 propertyOrLand.totalValue.error.wholeNumber = Current total value of the property or land must be a whole number
+propertyOrLand.totalValue.error.lessThanValueInTrust = The current total value of the property or land must be more than the current value of the property or land owned by the trust
 
 propertyOrLand.trustOwnAllYesNo.title = Does the trust own all of the property or land?
 propertyOrLand.trustOwnAllYesNo.heading = Does the trust own all of the property or land?
@@ -257,6 +253,7 @@ propertyOrLand.valueInTrust.error.invalid = Current value of the property or lan
 propertyOrLand.valueInTrust.error.wholeNumber = Current value of the property or land owned by the trust must be a whole number
 propertyOrLand.valueInTrust.error.zero = Current value of the property or land owned by the trust must be 1 or more
 propertyOrLand.valueInTrust.error.length = Current value of the property or land owned by the trust must be less than 1,000,000,000,000
+propertyOrLand.valueInTrust.error.moreThanTotal = The current value of the property or land owned by the trust must be less than the current total value of the property or land
 
 propertyOrLand.answers.title = Check property or land details
 propertyOrLand.answers.heading = Check property or land details
@@ -365,7 +362,7 @@ business.description.error.length = The description of the business asset must b
 business.addressUkYesNo.title = Is the business asset address in the UK?
 business.addressUkYesNo.heading = Is {0}’s address in the UK?
 business.addressUkYesNo.checkYourAnswersLabel = Is {0}’s address in the UK?
-business.addressUkYesNo.error.required = Select yes if the business asset’s address in the UK
+business.addressUkYesNo.error.required = Select yes if the business asset’s address is in the UK
 
 business.ukAddress.title = What is the business asset’s address?
 business.ukAddress.heading = What is {0}’s address?

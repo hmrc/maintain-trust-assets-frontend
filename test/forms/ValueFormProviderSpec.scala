@@ -24,27 +24,28 @@ class ValueFormProviderSpec extends LongFieldBehaviours {
   private val prefix: String = "propertyOrLand.valueInTrust"
   private val fieldName = "value"
   private val requiredKey = s"$prefix.error.required"
-  private val zeroNumberKey = s"$prefix.error.zero"
   private val invalidOnlyNumbersKey = s"$prefix.error.invalid"
   private val invalidWholeNumberKey = s"$prefix.error.wholeNumber"
 
   "ValueFormProvider" when {
 
-    "max value provided" must {
+    "min value provided" must {
 
-      val maxValue: Long = 100L
-      val maxValueKey = s"$prefix.error.moreThanTotal"
+      val minValue: Long = 100L
+      val minValueKey = s"$prefix.error.lessThanValueInTrust"
+      val maxValueKey = s"$prefix.error.length"
 
-      val form = new ValueFormProvider(frontendAppConfig).withConfig(prefix, maxValue)
+      val form = new ValueFormProvider(frontendAppConfig)
+        .withConfig(prefix = prefix, minValue = Some(minValue))
 
       behave like longField(
-        form,
-        fieldName,
+        form = form,
+        fieldName = fieldName,
         nonNumericError = FormError(fieldName, invalidOnlyNumbersKey),
         wholeNumberError = FormError(fieldName, invalidWholeNumberKey),
         maxNumberError = FormError(fieldName, maxValueKey),
-        zeroError = FormError(fieldName, zeroNumberKey),
-        Some(maxValue)
+        minNumberError = FormError(fieldName, minValueKey),
+        minValue = Some(minValue)
       )
 
       behave like mandatoryField(
@@ -54,8 +55,35 @@ class ValueFormProviderSpec extends LongFieldBehaviours {
       )
     }
 
-    "max value not provided" must {
+    "max value provided" must {
 
+      val maxValue: Long = 100L
+      val maxValueKey = s"$prefix.error.moreThanTotal"
+      val minValueKey = s"$prefix.error.zero"
+
+      val form = new ValueFormProvider(frontendAppConfig)
+        .withConfig(prefix = prefix, maxValue = Some(maxValue))
+
+      behave like longField(
+        form = form,
+        fieldName = fieldName,
+        nonNumericError = FormError(fieldName, invalidOnlyNumbersKey),
+        wholeNumberError = FormError(fieldName, invalidWholeNumberKey),
+        maxNumberError = FormError(fieldName, maxValueKey),
+        minNumberError = FormError(fieldName, minValueKey),
+        maxValue = Some(maxValue)
+      )
+
+      behave like mandatoryField(
+        form,
+        fieldName,
+        requiredError = FormError(fieldName, requiredKey)
+      )
+    }
+
+    "min/max values not provided" must {
+
+      val minValueKey = s"$prefix.error.zero"
       val maxValueKey = s"$prefix.error.length"
 
       val form = new ValueFormProvider(frontendAppConfig).withConfig(prefix)
@@ -66,8 +94,7 @@ class ValueFormProviderSpec extends LongFieldBehaviours {
         nonNumericError = FormError(fieldName, invalidOnlyNumbersKey),
         wholeNumberError = FormError(fieldName, invalidWholeNumberKey),
         maxNumberError = FormError(fieldName, maxValueKey),
-        zeroError = FormError(fieldName, zeroNumberKey),
-        None
+        minNumberError = FormError(fieldName, minValueKey)
       )
 
       behave like mandatoryField(

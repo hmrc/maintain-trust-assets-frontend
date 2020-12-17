@@ -16,6 +16,7 @@
 
 package base
 
+import config.FrontendAppConfig
 import config.annotations._
 import controllers.actions._
 import models.{Status, UserAnswers}
@@ -75,6 +76,7 @@ trait SpecBase extends PlaySpec
         ),
         bind[DraftIdRetrievalActionProvider].toInstance(fakeDraftIdAction(userAnswers)),
         bind[RegistrationsRepository].toInstance(registrationsRepository),
-        bind[AffinityGroup].toInstance(Organisation)
+        bind[AffinityGroup].toInstance(Organisation),
+        bind[FrontendAppConfig].to(frontendAppConfig)
       )
 }

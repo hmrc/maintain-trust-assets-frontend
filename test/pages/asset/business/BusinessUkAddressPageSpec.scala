@@ -14,24 +14,19 @@
  * limitations under the License.
  */
 
-package forms
+package pages.asset.business
 
-import config.FrontendAppConfig
-import forms.mappings.Mappings
+import models.UKAddress
+import pages.behaviours.PageBehaviours
 
-import javax.inject.Inject
-import play.api.data.Form
+class BusinessUkAddressPageSpec extends PageBehaviours {
 
-class QuantityFormProvider @Inject()(config: FrontendAppConfig) extends Mappings {
+  "BusinessUkAddressPage" must {
 
-  def withPrefix(prefix: String): Form[Long] =
-    Form(
-      "value" -> longValue(
-        prefix = prefix,
-        minValue = config.assetValueLowerLimitExclusive,
-        maxValue = config.assetValueUpperLimitExclusive,
-        minValueKey = s"$prefix.error.zero",
-        maxValueKey = s"$prefix.error.length"
-      )
-    )
+    beRetrievable[UKAddress](BusinessUkAddressPage(0))
+
+    beSettable[UKAddress](BusinessUkAddressPage(0))
+
+    beRemovable[UKAddress](BusinessUkAddressPage(0))
+  }
 }

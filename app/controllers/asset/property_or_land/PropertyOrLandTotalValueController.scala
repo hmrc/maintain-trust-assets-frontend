@@ -20,11 +20,12 @@ import config.annotations.PropertyOrLand
 import controllers.actions.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
 import controllers.filters.IndexActionFilterProvider
 import forms.ValueFormProvider
+import models.requests.RegistrationDataRequest
 import navigation.Navigator
-import pages.asset.property_or_land.PropertyOrLandTotalValuePage
+import pages.asset.property_or_land.{PropertyLandValueTrustPage, PropertyOrLandTotalValuePage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
 import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.asset.property_or_land.PropertyOrLandTotalValueView
@@ -45,9 +46,7 @@ class PropertyOrLandTotalValueController @Inject()(
                                                     view: PropertyOrLandTotalValueView
                                                   )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val form = formProvider.withConfig("propertyOrLand.totalValue")
-
-  private def actions(index: Int, draftId: String) =
+  private def actions(index: Int, draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] =
     identify andThen
       getData(draftId) andThen
       requireData andThen
@@ -55,6 +54,8 @@ class PropertyOrLandTotalValueController @Inject()(
 
   def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
     implicit request =>
+
+      val form: Form[Long] = configuredForm(index)
 
       val preparedForm = request.userAnswers.get(PropertyOrLandTotalValuePage(index)) match {
         case None => form
@@ -67,6 +68,8 @@ class PropertyOrLandTotalValueController @Inject()(
   def onSubmit(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async {
     implicit request =>
 
+      val form: Form[Long] = configuredForm(index)
+
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(view(formWithErrors, index, draftId))),
@@ -78,5 +81,12 @@ class PropertyOrLandTotalValueController @Inject()(
           } yield Redirect(navigator.nextPage(PropertyOrLandTotalValuePage(index), draftId)(updatedAnswers))
         }
       )
+  }
+
+  private def configuredForm(index: Int)(implicit request: RegistrationDataRequest[AnyContent]): Form[Long] = {
+    formProvider.withConfig(
+      prefix = "propertyOrLand.totalValue",
+      minValue = request.userAnswers.get(PropertyLandValueTrustPage(index))
+    )
   }
 }
