@@ -39,6 +39,7 @@ final case class WhatKindOfAssetPage(index: Int) extends QuestionPage[WhatKindOf
 
   override def cleanup(value: Option[WhatKindOfAsset], userAnswers: UserAnswers): Try[UserAnswers] = {
     value match {
+
       case Some(Money) =>
         removeShare(userAnswers)
           .flatMap(removePropertyOrLand)
@@ -87,7 +88,7 @@ final case class WhatKindOfAssetPage(index: Int) extends QuestionPage[WhatKindOf
 
   private def removeMoney(userAnswers: UserAnswers) : Try[UserAnswers] = {
     userAnswers.remove(AssetMoneyValuePage(index))
-      .flatMap(_.remove(AssetStatus(index)))
+      .flatMap(removeStatus)
   }
 
   private def removeShare(userAnswers: UserAnswers): Try[UserAnswers] = {
@@ -101,7 +102,7 @@ final case class WhatKindOfAssetPage(index: Int) extends QuestionPage[WhatKindOf
       .flatMap(_.remove(SharePortfolioOnStockExchangePage(index)))
       .flatMap(_.remove(SharePortfolioQuantityInTrustPage(index)))
       .flatMap(_.remove(SharePortfolioValueInTrustPage(index)))
-      .flatMap(_.remove(AssetStatus(index)))
+      .flatMap(removeStatus)
   }
 
   private def removePropertyOrLand(userAnswers: UserAnswers) : Try[UserAnswers] = {
@@ -113,17 +114,19 @@ final case class WhatKindOfAssetPage(index: Int) extends QuestionPage[WhatKindOf
       .flatMap(_.remove(TrustOwnAllThePropertyOrLandPage(index)))
       .flatMap(_.remove(PropertyOrLandDescriptionPage(index)))
       .flatMap(_.remove(PropertyLandValueTrustPage(index)))
-      .flatMap(_.remove(AssetStatus(index)))
+      .flatMap(removeStatus)
   }
 
   private def removeOther(userAnswers: UserAnswers): Try[UserAnswers] = {
     userAnswers.remove(OtherAssetDescriptionPage(index))
       .flatMap(_.remove(OtherAssetValuePage(index)))
+      .flatMap(removeStatus)
   }
 
   private def removePartnership(userAnswers: UserAnswers): Try[UserAnswers] = {
     userAnswers.remove(PartnershipDescriptionPage(index))
       .flatMap(_.remove(PartnershipStartDatePage(index)))
+      .flatMap(removeStatus)
   }
 
   private def removeBusiness(userAnswers: UserAnswers): Try[UserAnswers] = {
@@ -133,6 +136,11 @@ final case class WhatKindOfAssetPage(index: Int) extends QuestionPage[WhatKindOf
       .flatMap(_.remove(BusinessUkAddressPage(index)))
       .flatMap(_.remove(BusinessInternationalAddressPage(index)))
       .flatMap(_.remove(BusinessValuePage(index)))
+      .flatMap(removeStatus)
+  }
+
+  private def removeStatus(userAnswers: UserAnswers): Try[UserAnswers] = {
+    userAnswers.remove(AssetStatus(index))
   }
 
 }
