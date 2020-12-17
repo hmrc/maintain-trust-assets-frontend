@@ -28,7 +28,7 @@ class QuantityFormProvider @Inject()(config: FrontendAppConfig) extends Mappings
     Form(
       "value" -> longValue(
         prefix = prefix,
-        minValue = config.assetValueLowerLimitInclusive,
+        minValue = config.assetValueLowerLimitExclusive,
         maxValue = config.assetValueUpperLimitExclusive,
         minValueKey = s"$prefix.error.zero",
         maxValueKey = s"$prefix.error.length"

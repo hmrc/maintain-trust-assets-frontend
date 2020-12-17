@@ -31,7 +31,7 @@ trait LongFieldBehaviours extends FieldBehaviours with FakeTrustsApp {
                 minValue: Option[Long] = None): Unit = {
 
     val max: Long = maxValue.getOrElse(frontendAppConfig.assetValueUpperLimitExclusive)
-    val min: Long = minValue.getOrElse(frontendAppConfig.assetValueLowerLimitInclusive)
+    val min: Long = minValue.getOrElse(frontendAppConfig.assetValueLowerLimitExclusive)
 
     "not bind non-numeric numbers" in {
 
