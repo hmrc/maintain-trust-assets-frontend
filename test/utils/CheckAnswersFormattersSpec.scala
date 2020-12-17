@@ -36,19 +36,34 @@ class CheckAnswersFormattersSpec extends SpecBase {
         MessagesImpl(lang, messagesApi)
       }
 
-      val date: LocalDate = LocalDate.parse("1996-02-03")
+      val recentDate: LocalDate = LocalDate.parse("2015-01-25")
+      val oldDate: LocalDate = LocalDate.parse("1840-12-01")
 
       "in English mode" must {
-        "format date in English" in {
-          val result: Html = checkAnswersFormatters.formatDate(date)(messages("en"))
-          result mustBe Html("3 February 1996")
+        "format date in English" when {
+          "recent date" in {
+            val result: Html = checkAnswersFormatters.formatDate(recentDate)(messages("en"))
+            result mustBe Html("25 January 2015")
+          }
+
+          "old date" ignore {
+            val result: Html = checkAnswersFormatters.formatDate(oldDate)(messages("en"))
+            result mustBe Html("1 December 1840")
+          }
         }
       }
 
       "in Welsh mode" must {
-        "format date in Welsh" in {
-          val result: Html = checkAnswersFormatters.formatDate(date)(messages("cy"))
-          result mustBe Html("3 Chwefror 1996")
+        "format date in Welsh" when {
+          "recent date" in {
+            val result: Html = checkAnswersFormatters.formatDate(recentDate)(messages("cy"))
+            result mustBe Html("25 Ionawr 2015")
+          }
+
+          "old date" ignore {
+            val result: Html = checkAnswersFormatters.formatDate(oldDate)(messages("cy"))
+            result mustBe Html("1 Rhagfyr 1840")
+          }
         }
       }
     }
