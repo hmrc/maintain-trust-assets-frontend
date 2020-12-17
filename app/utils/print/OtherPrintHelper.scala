@@ -20,14 +20,12 @@ import controllers.asset.other.routes._
 import models.UserAnswers
 import pages.asset.other._
 import play.api.i18n.Messages
-import utils.countryOptions.CountryOptions
 import utils.{AnswerRowConverter, CheckAnswersFormatters}
 import viewmodels.AnswerRow
 
 import javax.inject.Inject
 
-class OtherPrintHelper @Inject()(countryOptions: CountryOptions,
-                                 checkAnswersFormatters: CheckAnswersFormatters) extends PrintHelper {
+class OtherPrintHelper @Inject()(checkAnswersFormatters: CheckAnswersFormatters) extends PrintHelper {
 
   override def headingKey(index: Int)(implicit messages: Messages): String = {
     messages("answerPage.section.otherAsset.subheading", index + 1)
@@ -39,7 +37,7 @@ class OtherPrintHelper @Inject()(countryOptions: CountryOptions,
                           draftId: String)
                          (implicit messages: Messages): Seq[AnswerRow] = {
 
-    val converter: AnswerRowConverter = new AnswerRowConverter(countryOptions, checkAnswersFormatters)(userAnswers, arg)
+    val converter: AnswerRowConverter = new AnswerRowConverter(checkAnswersFormatters)(userAnswers, arg)
 
     Seq(
       converter.assetTypeQuestion(index, draftId),

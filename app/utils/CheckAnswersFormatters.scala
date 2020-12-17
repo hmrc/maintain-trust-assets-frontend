@@ -26,24 +26,24 @@ import utils.countryOptions.CountryOptions
 import java.time.{LocalDate => JavaDate}
 import javax.inject.Inject
 
-class CheckAnswersFormatters @Inject()(languageUtils: LanguageUtils) {
+class CheckAnswersFormatters @Inject()(languageUtils: LanguageUtils,
+                                       countryOptions: CountryOptions) {
+
+  private def escape(x: String): Html = HtmlFormat.escape(x)
 
   def formatDate(date: JavaDate)(implicit messages: Messages): Html = {
     val convertedDate: JodaDate = new JodaDate(date.getYear, date.getMonthValue, date.getDayOfMonth)
     val formattedDate: String = languageUtils.Dates.formatDate(convertedDate)
-    HtmlFormat.escape(formattedDate)
+    escape(formattedDate)
   }
 
   def yesOrNo(answer: Boolean)(implicit messages: Messages): Html = {
     if (answer) {
-      HtmlFormat.escape(messages("site.yes"))
+      escape(messages("site.yes"))
     } else {
-      HtmlFormat.escape(messages("site.no"))
+      escape(messages("site.no"))
     }
   }
-
-  def country(code: String, countryOptions: CountryOptions): String =
-    countryOptions.options.find(_.value.equals(code)).map(_.label).getOrElse("")
 
   def currency(value: String): Html = escape(currencyFormat(value))
 
@@ -51,40 +51,39 @@ class CheckAnswersFormatters @Inject()(languageUtils: LanguageUtils) {
 
   def percentage(value: String): Html = escape(s"$value%")
 
-  def answer[T](key: String, answer: T)(implicit messages: Messages): Html =
-    HtmlFormat.escape(messages(s"$key.$answer"))
-
-  def escape(x: String): Html = HtmlFormat.escape(x)
-
-  def ukAddress(address: UKAddress): Html = {
-    val lines =
-      Seq(
-        Some(HtmlFormat.escape(address.line1)),
-        Some(HtmlFormat.escape(address.line2)),
-        address.line3.map(HtmlFormat.escape),
-        address.line4.map(HtmlFormat.escape),
-        Some(HtmlFormat.escape(address.postcode))
-      ).flatten
-
-    Html(lines.mkString("<br />"))
-  }
-
-  def internationalAddress(address: InternationalAddress, countryOptions: CountryOptions): Html = {
-    val lines =
-      Seq(
-        Some(HtmlFormat.escape(address.line1)),
-        Some(HtmlFormat.escape(address.line2)),
-        address.line3.map(HtmlFormat.escape),
-        Some(country(address.country, countryOptions))
-      ).flatten
-
-    Html(lines.mkString("<br />"))
-  }
-
-  def addressFormatter(address: Address, countryOptions: CountryOptions): Html = {
+  def addressFormatter(address: Address): Html = {
     address match {
-      case a:UKAddress => ukAddress(a)
-      case a:InternationalAddress => internationalAddress(a, countryOptions)
+      case a: UKAddress => ukAddress(a)
+      case a: InternationalAddress => internationalAddress(a, countryOptions)
     }
+  }
+
+  private def ukAddress(address: UKAddress): Html = {
+
+    val lines: Seq[String] = Seq(
+      Some(address.line1),
+      Some(address.line2),
+      address.line3,
+      address.line4,
+      Some(address.postcode)
+    ).flatten
+
+    Html(lines.mkString("<br />"))
+  }
+
+  private def internationalAddress(address: InternationalAddress, countryOptions: CountryOptions): Html = {
+
+    def country(code: String, countryOptions: CountryOptions): String = {
+      countryOptions.options.find(_.value.equals(code)).map(_.label).getOrElse("")
+    }
+
+    val lines: Seq[String] = Seq(
+      Some(address.line1),
+      Some(address.line2),
+      address.line3,
+      Some(country(address.country, countryOptions))
+    ).flatten
+
+    Html(lines.mkString("<br />"))
   }
 }

@@ -24,15 +24,12 @@ import play.api.i18n.Messages
 import play.api.libs.json.Reads
 import play.twirl.api.HtmlFormat
 import queries.Gettable
-import utils.countryOptions.CountryOptions
 import viewmodels.AnswerRow
 
 import java.time.LocalDate
 
-class AnswerRowConverter @Inject()(countryOptions: CountryOptions,
-                                   checkAnswersFormatters: CheckAnswersFormatters)
-                                  (userAnswers: UserAnswers,
-                                   arg: String)
+class AnswerRowConverter @Inject()(checkAnswersFormatters: CheckAnswersFormatters)
+                                  (userAnswers: UserAnswers, arg: String)
                                   (implicit messages: Messages) {
 
   def stringQuestion(query: Gettable[String],
@@ -82,7 +79,7 @@ class AnswerRowConverter @Inject()(countryOptions: CountryOptions,
     userAnswers.get(query) map { x =>
       AnswerRow(
         s"$labelKey.checkYourAnswersLabel",
-        checkAnswersFormatters.addressFormatter(x, countryOptions),
+        checkAnswersFormatters.addressFormatter(x),
         Some(changeUrl),
         arg
       )
