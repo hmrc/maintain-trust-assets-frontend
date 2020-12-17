@@ -58,17 +58,21 @@ class CheckAnswersFormatters @Inject()(languageUtils: LanguageUtils,
     }
   }
 
+  private def breakLines(lines: Seq[Html]): Html = {
+    Html(lines.mkString("<br />"))
+  }
+
   private def ukAddress(address: UKAddress): Html = {
 
-    val lines: Seq[String] = Seq(
-      Some(address.line1),
-      Some(address.line2),
-      address.line3,
-      address.line4,
-      Some(address.postcode)
+    val lines: Seq[Html] = Seq(
+      Some(escape(address.line1)),
+      Some(escape(address.line2)),
+      address.line3.map(escape),
+      address.line4.map(escape),
+      Some(escape(address.postcode))
     ).flatten
 
-    Html(lines.mkString("<br />"))
+    breakLines(lines)
   }
 
   private def internationalAddress(address: InternationalAddress, countryOptions: CountryOptions): Html = {
@@ -77,13 +81,13 @@ class CheckAnswersFormatters @Inject()(languageUtils: LanguageUtils,
       countryOptions.options.find(_.value.equals(code)).map(_.label).getOrElse("")
     }
 
-    val lines: Seq[String] = Seq(
-      Some(address.line1),
-      Some(address.line2),
-      address.line3,
-      Some(country(address.country, countryOptions))
+    val lines: Seq[Html] = Seq(
+      Some(escape(address.line1)),
+      Some(escape(address.line2)),
+      address.line3.map(escape),
+      Some(escape(country(address.country, countryOptions)))
     ).flatten
 
-    Html(lines.mkString("<br />"))
+    breakLines(lines)
   }
 }
