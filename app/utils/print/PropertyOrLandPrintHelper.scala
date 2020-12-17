@@ -20,14 +20,12 @@ import controllers.asset.property_or_land.routes._
 import models.UserAnswers
 import pages.asset.property_or_land._
 import play.api.i18n.Messages
-import utils.countryOptions.CountryOptions
 import utils.{AnswerRowConverter, CheckAnswersFormatters}
 import viewmodels.AnswerRow
 
 import javax.inject.Inject
 
-class PropertyOrLandPrintHelper @Inject()(countryOptions: CountryOptions,
-                                          checkAnswersFormatters: CheckAnswersFormatters) extends PrintHelper {
+class PropertyOrLandPrintHelper @Inject()(checkAnswersFormatters: CheckAnswersFormatters) extends PrintHelper {
 
   override def headingKey(index: Int)(implicit messages: Messages): String = {
     messages("answerPage.section.propertyOrLandAsset.subheading", index + 1)
@@ -39,7 +37,7 @@ class PropertyOrLandPrintHelper @Inject()(countryOptions: CountryOptions,
                           draftId: String)
                          (implicit messages: Messages): Seq[AnswerRow] = {
 
-    val converter: AnswerRowConverter = new AnswerRowConverter(countryOptions, checkAnswersFormatters)(userAnswers, arg)
+    val converter: AnswerRowConverter = new AnswerRowConverter(checkAnswersFormatters)(userAnswers, arg)
 
     Seq(
       converter.assetTypeQuestion(index, draftId),
