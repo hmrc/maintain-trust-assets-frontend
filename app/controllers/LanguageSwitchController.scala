@@ -30,18 +30,17 @@ class LanguageSwitchController @Inject()(
                                           val controllerComponents: MessagesControllerComponents
                                         ) extends FrontendBaseController with I18nSupport {
 
-  private def fallbackURL: String = routes.IndexController.onPageLoad("FIXME").url
+  private val fallbackURL = appConfig.registrationStartUrl
 
   private def languageMap: Map[String, Lang] = appConfig.languageMap
 
   def switchToLanguage(language: String): Action[AnyContent] = Action {
     implicit request =>
 
-      val enabled = isWelshEnabled
-      val lang = if (enabled) {
+      val lang = if (isWelshEnabled) {
         languageMap.getOrElse(language, Lang.defaultLang)
       } else {
-        Lang("en")
+        Lang(appConfig.ENGLISH)
       }
       val redirectURL = request.headers.get(REFERER).getOrElse(fallbackURL)
       Redirect(redirectURL).withLang(Lang.apply(lang.code))

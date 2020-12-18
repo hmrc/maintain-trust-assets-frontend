@@ -28,7 +28,7 @@ import java.time.LocalDate
 @Singleton
 class FrontendAppConfig @Inject() (val configuration: Configuration) {
 
-  private final val ENGLISH = "en"
+  final val ENGLISH = "en"
   private final val WELSH = "cy"
 
   private val contactHost = configuration.get[String]("contact-frontend.host")
@@ -56,6 +56,8 @@ class FrontendAppConfig @Inject() (val configuration: Configuration) {
   lazy val logoutUrl: String = configuration.get[String]("urls.logout")
 
   lazy val trustsUrl: String = configuration.get[Service]("microservice.services.trusts").baseUrl
+
+  lazy val registrationStartUrl: String = configuration.get[String]("urls.registrationStart")
 
   lazy val maintainATrustFrontendUrl : String = configuration.get[String]("urls.maintainATrust")
   lazy val createAgentServicesAccountUrl : String = configuration.get[String]("urls.createAgentServicesAccount")
