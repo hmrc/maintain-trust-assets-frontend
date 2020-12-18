@@ -29,5 +29,5 @@ final case class BusinessValuePage(index: Int) extends QuestionPage[Long] {
 }
 
 object BusinessValuePage {
-  val key: String = "value"
+  val key: String = "businessValue"
 }
