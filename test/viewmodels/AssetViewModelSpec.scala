@@ -133,6 +133,93 @@ class AssetViewModelSpec extends FreeSpec with MustMatchers with ScalaCheckPrope
 
       }
 
+      "business" - {
+
+        "with uk address" - {
+
+          "to a view model that is not complete" in {
+            val json = Json.parse(
+              """
+                |{
+                |"businessName": "Business Ltd",
+                |"businessDescription": "Some description",
+                |"businessAddressUkYesNo": true,
+                |"whatKindOfAsset" : "Business",
+                |"status": "progress"
+                |}
+            """.stripMargin)
+
+            json.validate[AssetViewModel] mustEqual JsSuccess(
+              BusinessAssetViewModel(Business, Some("Business Ltd"), InProgress)
+            )
+          }
+
+          "to a view model that is complete" in {
+            val json = Json.parse(
+              """
+                |{
+                |"businessName": "Business Ltd",
+                |"businessDescription": "Some description",
+                |"businessAddressUkYesNo": true,
+                |"ukAddress": {
+                | "line1": "line 1",
+                | "line2": "Newcastle",
+                | "postcode": "NE11TU"
+                |},
+                |"whatKindOfAsset" : "Business",
+                |"status": "completed"
+                |}
+            """.stripMargin)
+
+            json.validate[AssetViewModel] mustEqual JsSuccess(
+              BusinessAssetViewModel(Business, Some("Business Ltd"), Completed)
+            )
+          }
+
+        }
+        "with international address" - {
+
+          "to a view model that is not complete" in {
+            val json = Json.parse(
+              """
+                |{
+                |"businessName": "Business Ltd",
+                |"businessDescription": "Some description",
+                |"businessAddressUkYesNo": false,
+                |"whatKindOfAsset" : "Business",
+                |"status": "progress"
+                |}
+            """.stripMargin)
+
+            json.validate[AssetViewModel] mustEqual JsSuccess(
+              BusinessAssetViewModel(Business, Some("Business Ltd"), InProgress)
+            )
+          }
+
+          "to a view model that is complete" in {
+            val json = Json.parse(
+              """
+                |{
+                |"businessName": "Business Ltd",
+                |"businessDescription": "Some description",
+                |"businessAddressUkYesNo": false,
+                |"internationalAddress": {
+                | "line1": "line 1",
+                | "line2": "line 2",
+                | "country": "France"
+                |},
+                |"whatKindOfAsset" : "Business",
+                |"status": "completed"
+                |}
+            """.stripMargin)
+
+            json.validate[AssetViewModel] mustEqual JsSuccess(
+              BusinessAssetViewModel(Business, Some("Business Ltd"), Completed)
+            )
+          }
+        }
+      }
+
       "property or land" - {
 
         "property or land with description" - {

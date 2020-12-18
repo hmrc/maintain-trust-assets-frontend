@@ -27,7 +27,7 @@ final case class BusinessAddressUkYesNoPage(index : Int) extends QuestionPage[Bo
 
   override def path: JsPath = JsPath \ Assets \ index \ toString
 
-  override def toString: String = "addressUkYesNo"
+  override def toString: String = "businessAddressUkYesNo"
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
     value match {
