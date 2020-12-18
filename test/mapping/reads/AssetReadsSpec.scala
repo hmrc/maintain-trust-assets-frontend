@@ -110,7 +110,7 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
             |"shareCompanyName" : "adam",
             |"sharesInAPortfolio" : false,
             |"quantityInTheTrust" : 100,
-            |"value" : 200,
+            |"shareValue" : 200,
             |"whatKindOfAsset" : "Shares",
             |"class" : "ordinary",
             |"status": "completed"
@@ -136,7 +136,7 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
             |{
             |"portfolioListedOnTheStockExchange" : true,
             |"sharesInAPortfolio" : true,
-            |"name" : "Adam",
+            |"portfolioName" : "Adam",
             |"portfolioQuantityInTheTrust" : 200,
             |"portfolioValue" : 290000,
             |"whatKindOfAsset" : "Shares",

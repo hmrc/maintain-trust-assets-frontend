@@ -96,7 +96,7 @@ class AssetViewModelSpec extends FreeSpec with MustMatchers with ScalaCheckPrope
               """
                 |{
                 |"portfolioListedOnStockExchange" : true,
-                |"name" : "adam",
+                |"portfolioName" : "adam",
                 |"sharesInAPortfolio" : true,
                 |"portfolioQuantity" : "200",
                 |"portfolioValue" : 200,
@@ -115,7 +115,7 @@ class AssetViewModelSpec extends FreeSpec with MustMatchers with ScalaCheckPrope
               """
                 |{
                 |"listedOnStockExchange" : true,
-                |"name" : "adam",
+                |"portfolioName" : "adam",
                 |"sharesInAPortfolio" : false,
                 |"quantity" : "200",
                 |"value" : 200,
