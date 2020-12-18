@@ -27,7 +27,7 @@ final case class TrustOwnAllThePropertyOrLandPage(index: Int) extends QuestionPa
 
   override def path: JsPath = Assets.path \ index \ toString
 
-  override def toString: String = "trustOwnAllThePropertyOrLand"
+  override def toString: String = "propertyOrLandTrustOwnsAllYesNo"
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {

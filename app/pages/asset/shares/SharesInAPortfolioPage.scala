@@ -55,5 +55,5 @@ final case class SharesInAPortfolioPage(index : Int) extends QuestionPage[Boolea
 }
 
 object SharesInAPortfolioPage {
-  val key: String = "sharesInAPortfolio"
+  val key: String = "sharesInPortfolioYesNo"
 }

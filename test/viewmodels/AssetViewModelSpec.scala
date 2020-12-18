@@ -45,7 +45,7 @@ class AssetViewModelSpec extends FreeSpec with MustMatchers with ScalaCheckPrope
         "to a view model that is complete" in {
           val json = Json.obj(
             "whatKindOfAsset" -> Money.toString,
-            "assetMoneyValue" -> 4000,
+            "moneyValue" -> 4000,
             "status" -> Completed.toString
           )
 
@@ -95,11 +95,11 @@ class AssetViewModelSpec extends FreeSpec with MustMatchers with ScalaCheckPrope
             val json = Json.parse(
               """
                 |{
-                |"portfolioListedOnStockExchange" : true,
-                |"portfolioName" : "adam",
-                |"sharesInAPortfolio" : true,
-                |"portfolioQuantity" : "200",
-                |"portfolioValue" : 200,
+                |"portfolioSharesListedOnStockExchangeYesNo" : true,
+                |"portfolioSharesName" : "adam",
+                |"sharesInPortfolioYesNo" : true,
+                |"portfolioSharesQuantity" : "200",
+                |"portfolioSharesValue" : 200,
                 |"whatKindOfAsset" : "Shares",
                 |"status": "completed"
                 |}
@@ -114,13 +114,13 @@ class AssetViewModelSpec extends FreeSpec with MustMatchers with ScalaCheckPrope
             val json = Json.parse(
               """
                 |{
-                |"listedOnStockExchange" : true,
-                |"portfolioName" : "adam",
-                |"sharesInAPortfolio" : false,
-                |"quantity" : "200",
-                |"shareValue" : 200,
+                |"nonPortfolioSharesListedOnStockExchangeYesNo" : true,
+                |"nonPortfolioSharesName" : "adam",
+                |"sharesInPortfolioYesNo" : false,
+                |"nonPortfolioSharesQuantity" : "200",
+                |"nonPortfolioSharesValue" : 200,
                 |"whatKindOfAsset" : "Shares",
-                |"class" : "ordinary",
+                |"nonPortfolioSharesClass" : "ordinary",
                 |"status": "completed"
                 |}
             """.stripMargin)
@@ -161,7 +161,7 @@ class AssetViewModelSpec extends FreeSpec with MustMatchers with ScalaCheckPrope
                 |"businessName": "Business Ltd",
                 |"businessDescription": "Some description",
                 |"businessAddressUkYesNo": true,
-                |"ukAddress": {
+                |"businessUkAddress": {
                 | "line1": "line 1",
                 | "line2": "Newcastle",
                 | "postcode": "NE11TU"
@@ -203,7 +203,7 @@ class AssetViewModelSpec extends FreeSpec with MustMatchers with ScalaCheckPrope
                 |"businessName": "Business Ltd",
                 |"businessDescription": "Some description",
                 |"businessAddressUkYesNo": false,
-                |"internationalAddress": {
+                |"businessInternationalAddress": {
                 | "line1": "line 1",
                 | "line2": "line 2",
                 | "country": "France"
@@ -266,7 +266,7 @@ class AssetViewModelSpec extends FreeSpec with MustMatchers with ScalaCheckPrope
                 """
                   |{
                   |"propertyOrLandAddressYesNo": true,
-                  |"propertyOrLandAddressUKYesNo": true,
+                  |"propertyOrLandAddressUkYesNo": true,
                   |"whatKindOfAsset" : "PropertyOrLand",
                   |"status": "progress"
                   |}
@@ -282,8 +282,8 @@ class AssetViewModelSpec extends FreeSpec with MustMatchers with ScalaCheckPrope
                 """
                   |{
                   |"propertyOrLandAddressYesNo": true,
-                  |"propertyOrLandAddressUKYesNo": true,
-                  |"ukAddress": {
+                  |"propertyOrLandAddressUkYesNo": true,
+                  |"propertyOrLandUkAddress": {
                   | "line1": "line 1",
                   | "line2": "Newcastle",
                   | "postcode": "NE11TU"
@@ -306,7 +306,7 @@ class AssetViewModelSpec extends FreeSpec with MustMatchers with ScalaCheckPrope
                 """
                   |{
                   |"propertyOrLandAddressYesNo": true,
-                  |"propertyOrLandAddressUKYesNo": false,
+                  |"propertyOrLandAddressUkYesNo": false,
                   |"whatKindOfAsset" : "PropertyOrLand",
                   |"status": "progress"
                   |}
@@ -322,8 +322,8 @@ class AssetViewModelSpec extends FreeSpec with MustMatchers with ScalaCheckPrope
                 """
                   |{
                   |"propertyOrLandAddressYesNo": true,
-                  |"propertyOrLandAddressUKYesNo": false,
-                  |"internationalAddress": {
+                  |"propertyOrLandAddressUkYesNo": false,
+                  |"propertyOrLandInternationalAddress": {
                   | "line1": "line 1",
                   | "line2": "line 2",
                   | "country": "France"
@@ -392,8 +392,8 @@ class AssetViewModelSpec extends FreeSpec with MustMatchers with ScalaCheckPrope
         "to a view model that is complete" in {
           val json = Json.obj(
             "whatKindOfAsset" -> Other.toString,
-            "otherAssetDescription" -> "Description",
-            "otherAssetValue" -> 4000,
+            "otherDescription" -> "Description",
+            "otherValue" -> 4000,
             "status" -> Completed.toString
           )
 
@@ -429,9 +429,7 @@ class AssetViewModelSpec extends FreeSpec with MustMatchers with ScalaCheckPrope
             PartnershipAssetViewModel(Partnership, Some("Description"), Completed)
           )
         }
-
       }
     }
   }
-
 }

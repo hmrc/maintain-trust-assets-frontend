@@ -29,5 +29,5 @@ final case class SharesOnStockExchangePage(index: Int) extends QuestionPage[Bool
 }
 
 object SharesOnStockExchangePage {
-  val key: String = "listedOnTheStockExchange"
+  val key: String = "nonPortfolioSharesOnStockExchangeYesNo"
 }

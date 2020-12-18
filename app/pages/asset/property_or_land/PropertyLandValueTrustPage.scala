@@ -29,5 +29,5 @@ case class PropertyLandValueTrustPage(index: Int) extends QuestionPage[Long] {
 }
 
 object PropertyLandValueTrustPage {
-  val key: String = "propertyOrLandValueTrust"
+  val key: String = "propertyOrLandValueInTrust"
 }

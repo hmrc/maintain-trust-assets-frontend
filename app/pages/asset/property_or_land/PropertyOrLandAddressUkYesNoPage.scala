@@ -27,7 +27,7 @@ final case class PropertyOrLandAddressUkYesNoPage(index: Int) extends QuestionPa
 
   override def path: JsPath = Assets.path \ index \ toString
 
-  override def toString: String = "propertyOrLandAddressUKYesNo"
+  override def toString: String = "propertyOrLandAddressUkYesNo"
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {

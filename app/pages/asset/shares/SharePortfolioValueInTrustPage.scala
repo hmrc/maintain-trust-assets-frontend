@@ -29,5 +29,5 @@ final case class SharePortfolioValueInTrustPage(index: Int) extends QuestionPage
 }
 
 object SharePortfolioValueInTrustPage {
-  val key: String = "portfolioValue"
+  val key: String = "portfolioSharesValue"
 }

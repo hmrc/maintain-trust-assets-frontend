@@ -29,5 +29,5 @@ final case class AssetMoneyValuePage(index: Int) extends QuestionPage[Long] {
 }
 
 object AssetMoneyValuePage {
-  val key: String = "assetMoneyValue"
+  val key: String = "moneyValue"
 }
