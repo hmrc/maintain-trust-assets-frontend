@@ -69,6 +69,26 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
         json.validate[Asset] mustBe a[JsError]
       }
 
+      "from a Business asset of the incorrect structure" in {
+        val json = Json.parse(
+          """
+            |{
+            |"whatKindOfAsset" : "Business",
+            |"businessName": "Business Ltd",
+            |"ukAddress" : {
+            |     "line1" : "26",
+            |     "line2" : "Grangetown",
+            |     "line3" : "Tyne and Wear",
+            |     "line4" : "Newcastle",
+            |     "postcode" : "Z99 2YY"
+            |},
+            |"businessValue" : 75
+            |}
+          """.stripMargin)
+
+        json.validate[Asset] mustBe a[JsError]
+      }
+
       "from a PropertyOrLand asset of the incorrect structure" in {
         val json = Json.parse(
           """
@@ -152,6 +172,41 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
             quantityInTheTrust = 200L,
             value = 290000L,
             whatKindOfAsset = WhatKindOfAsset.Shares
+          ))
+      }
+
+      "from a Business asset" in {
+        val json = Json.parse(
+          """
+            |{
+            |"whatKindOfAsset" : "Business",
+            |"businessName": "Business Ltd",
+            |"businessDescription": "Some description",
+            |"businessAddressUkYesNo": false,
+            |"ukAddress" : {
+            |     "line1" : "26",
+            |     "line2" : "Grangetown",
+            |     "line3" : "Tyne and Wear",
+            |     "line4" : "Newcastle",
+            |     "postcode" : "Z99 2YY"
+            |},
+            |"businessValue" : 75
+            |}
+          """.stripMargin)
+
+        json.validate[Asset] mustEqual JsSuccess(
+          BusinessAsset(
+            whatKindOfAsset = WhatKindOfAsset.Business,
+            assetName = "Business Ltd",
+            assetDescription = "Some description",
+            address = UKAddress(
+              line1 = "26",
+              line2 = "Grangetown",
+              line3 = Some("Tyne and Wear"),
+              line4 = Some("Newcastle"),
+              postcode = "Z99 2YY"
+            ),
+            currentValue = 75L
           ))
       }
 
