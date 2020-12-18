@@ -19,7 +19,7 @@ package mapping
 import mapping.reads.{ShareAsset, ShareNonPortfolioAsset, SharePortfolioAsset}
 import models.{ShareClass, SharesType}
 
-class ShareAssetMapper extends Mapping[List[SharesType], ShareAsset] {
+class ShareAssetMapper extends Mapping[SharesType, ShareAsset] {
 
   override def mapAssets(assets: List[ShareAsset]): List[SharesType] = {
     assets.flatMap {

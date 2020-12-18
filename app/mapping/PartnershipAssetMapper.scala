@@ -19,7 +19,7 @@ package mapping
 import mapping.reads.PartnershipAsset
 import models.PartnershipType
 
-class PartnershipAssetMapper extends Mapping[List[PartnershipType], PartnershipAsset] {
+class PartnershipAssetMapper extends Mapping[PartnershipType, PartnershipAsset] {
 
   override def mapAssets(assets: List[PartnershipAsset]): List[PartnershipType] = {
     assets.map(x => PartnershipType(x.description, x.startDate))
