@@ -28,7 +28,7 @@ import pages.asset.business._
 class BusinessAssetMapperSpec extends SpecBase with MustMatchers
   with OptionValues with Generators {
 
-  val businessAssetMapper: Mapping[List[BusinessAssetType]] = injector.instanceOf[BusinessAssetMapper]
+  val businessAssetMapper: BusinessAssetMapper = injector.instanceOf[BusinessAssetMapper]
 
   private val assetValue: Long = 123L
 

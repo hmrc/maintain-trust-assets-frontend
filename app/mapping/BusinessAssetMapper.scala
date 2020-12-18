@@ -16,24 +16,16 @@
 
 package mapping
 
-import javax.inject.Inject
 import mapping.reads.BusinessAsset
-import models.{BusinessAssetType, UserAnswers}
+import models.BusinessAssetType
 
-class BusinessAssetMapper @Inject()(addressMapper: AddressMapper) extends Mapping[List[BusinessAssetType]] {
+import javax.inject.Inject
 
-  override def build(userAnswers: UserAnswers): Option[List[BusinessAssetType]] = {
+class BusinessAssetMapper @Inject()(addressMapper: AddressMapper) extends Mapping[List[BusinessAssetType], BusinessAsset] {
 
-    val businesses: List[BusinessAsset] =
-      userAnswers.get(mapping.reads.Assets)
-        .getOrElse(List.empty[mapping.reads.Asset])
-        .collect { case x: BusinessAsset => x }
-
-    businesses match {
-      case Nil => None
-      case list => Some(
-        list.map(x => BusinessAssetType(x.assetName, x.assetDescription, addressMapper.build(x.address), x.currentValue))
-      )
-    }
+  override def mapAssets(assets: List[BusinessAsset]): Option[List[BusinessAssetType]] = {
+    Some(
+      assets.map(x => BusinessAssetType(x.assetName, x.assetDescription, addressMapper.build(x.address), x.currentValue))
+    )
   }
 }

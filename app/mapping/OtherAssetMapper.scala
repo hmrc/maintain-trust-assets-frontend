@@ -16,24 +16,14 @@
 
 package mapping
 
-import javax.inject.Inject
 import mapping.reads.OtherAsset
-import models.{OtherAssetType, UserAnswers}
+import models.OtherAssetType
 
-class OtherAssetMapper @Inject() extends Mapping[List[OtherAssetType]] {
+class OtherAssetMapper extends Mapping[List[OtherAssetType], OtherAsset] {
 
-  override def build(userAnswers: UserAnswers): Option[List[OtherAssetType]] = {
-
-    val others: List[OtherAsset] =
-      userAnswers.get(mapping.reads.Assets)
-        .getOrElse(List.empty[mapping.reads.Asset])
-        .collect { case x: OtherAsset => x }
-
-    others match {
-      case Nil => None
-      case list => Some(
-        list.map(x => OtherAssetType(x.description, x.value))
-      )
-    }
+  override def mapAssets(assets: List[OtherAsset]): Option[List[OtherAssetType]] = {
+    Some(
+      assets.map(x => OtherAssetType(x.description, x.value))
+    )
   }
 }

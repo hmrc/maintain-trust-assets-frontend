@@ -28,7 +28,7 @@ import pages.asset.other._
 class OtherAssetMapperSpec extends SpecBase with MustMatchers
   with OptionValues with Generators {
 
-  val otherAssetMapper: Mapping[List[OtherAssetType]] = injector.instanceOf[OtherAssetMapper]
+  val otherAssetMapper: OtherAssetMapper = injector.instanceOf[OtherAssetMapper]
 
   private val assetValue1: Long = 4000L
   private val assetValue2: Long = 6000L

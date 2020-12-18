@@ -16,24 +16,14 @@
 
 package mapping
 
-import javax.inject.Inject
 import mapping.reads.MoneyAsset
-import models.{AssetMonetaryAmount, UserAnswers}
+import models.AssetMonetaryAmount
 
-class MoneyAssetMapper @Inject() extends Mapping[List[AssetMonetaryAmount]] {
+class MoneyAssetMapper extends Mapping[List[AssetMonetaryAmount], MoneyAsset] {
 
-  override def build(userAnswers: UserAnswers): Option[List[AssetMonetaryAmount]] = {
-
-    val assets : List[MoneyAsset] =
-      userAnswers.get(mapping.reads.Assets)
-        .getOrElse(List.empty[mapping.reads.Asset])
-        .collect { case x : MoneyAsset => x }
-
-    assets match {
-      case Nil => None
-      case list => Some(
-        list.map(x => AssetMonetaryAmount(x.value))
-      )
-    }
+  override def mapAssets(assets: List[MoneyAsset]): Option[List[AssetMonetaryAmount]] = {
+    Some(
+      assets.map(x => AssetMonetaryAmount(x.value))
+    )
   }
 }

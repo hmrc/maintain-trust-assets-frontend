@@ -28,7 +28,7 @@ import pages.asset.money._
 class MoneyAssetMapperSpec extends SpecBase with MustMatchers
   with OptionValues with Generators {
 
-  val moneyAssetMapper : Mapping[List[AssetMonetaryAmount]] = injector.instanceOf[MoneyAssetMapper]
+  val moneyAssetMapper: MoneyAssetMapper = injector.instanceOf[MoneyAssetMapper]
 
   private val assetValue: Long = 2000L
 
