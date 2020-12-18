@@ -26,11 +26,11 @@ abstract class Mapping[T, A <: Asset : ClassTag] {
   def build(userAnswers: UserAnswers): Option[T] = {
     assets(userAnswers) match {
       case Nil => None
-      case list => mapAssets(list)
+      case list => Some(mapAssets(list))
     }
   }
 
-  def mapAssets(assets: List[A]): Option[T]
+  def mapAssets(assets: List[A]): T
 
   private def assets(userAnswers: UserAnswers): List[A] = {
     val runtimeClass = implicitly[ClassTag[A]].runtimeClass

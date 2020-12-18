@@ -21,9 +21,7 @@ import models.PartnershipType
 
 class PartnershipAssetMapper extends Mapping[List[PartnershipType], PartnershipAsset] {
 
-  override def mapAssets(assets: List[PartnershipAsset]): Option[List[PartnershipType]] = {
-    Some(
-      assets.map(x => PartnershipType(x.description, x.startDate))
-    )
+  override def mapAssets(assets: List[PartnershipAsset]): List[PartnershipType] = {
+    assets.map(x => PartnershipType(x.description, x.startDate))
   }
 }

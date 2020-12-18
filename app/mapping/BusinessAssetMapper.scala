@@ -23,9 +23,7 @@ import javax.inject.Inject
 
 class BusinessAssetMapper @Inject()(addressMapper: AddressMapper) extends Mapping[List[BusinessAssetType], BusinessAsset] {
 
-  override def mapAssets(assets: List[BusinessAsset]): Option[List[BusinessAssetType]] = {
-    Some(
-      assets.map(x => BusinessAssetType(x.assetName, x.assetDescription, addressMapper.build(x.address), x.currentValue))
-    )
+  override def mapAssets(assets: List[BusinessAsset]): List[BusinessAssetType] = {
+    assets.map(x => BusinessAssetType(x.assetName, x.assetDescription, addressMapper.build(x.address), x.currentValue))
   }
 }

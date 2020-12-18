@@ -23,18 +23,16 @@ import javax.inject.Inject
 
 class PropertyOrLandMapper @Inject()(addressMapper: AddressMapper) extends Mapping[List[PropertyLandType], PropertyOrLandAsset] {
 
-  override def mapAssets(assets: List[PropertyOrLandAsset]): Option[List[PropertyLandType]] = {
-    Some(
-      assets.map { x =>
-        val totalValue: Long = x.propertyOrLandTotalValue
+  override def mapAssets(assets: List[PropertyOrLandAsset]): List[PropertyLandType] = {
+    assets.map { x =>
+      val totalValue: Long = x.propertyOrLandTotalValue
 
-        PropertyLandType(
-          x.propertyOrLandDescription,
-          addressMapper.build(x.address),
-          totalValue,
-          x.propertyLandValueTrust.getOrElse(totalValue)
-        )
-      }
-    )
+      PropertyLandType(
+        x.propertyOrLandDescription,
+        addressMapper.build(x.address),
+        totalValue,
+        x.propertyLandValueTrust.getOrElse(totalValue)
+      )
+    }
   }
 }

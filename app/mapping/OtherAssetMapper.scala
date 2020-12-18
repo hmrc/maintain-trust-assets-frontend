@@ -21,9 +21,7 @@ import models.OtherAssetType
 
 class OtherAssetMapper extends Mapping[List[OtherAssetType], OtherAsset] {
 
-  override def mapAssets(assets: List[OtherAsset]): Option[List[OtherAssetType]] = {
-    Some(
-      assets.map(x => OtherAssetType(x.description, x.value))
-    )
+  override def mapAssets(assets: List[OtherAsset]): List[OtherAssetType] = {
+    assets.map(x => OtherAssetType(x.description, x.value))
   }
 }
