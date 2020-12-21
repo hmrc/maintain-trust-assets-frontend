@@ -75,7 +75,7 @@ class AssetMapperSpec extends SpecBase with MustMatchers
           .set(SharePortfolioOnStockExchangePage(0), false).success.value
           .set(AssetStatus(0), Completed).success.value
 
-        val expected = Some(Assets(None,None,Some(List(SharesType(quantity, "Portfolio", "Other", "Unquoted", shareAssetValue))), None, None, None))
+        val expected = Some(Assets(None, None, Some(List(SharesType(quantity.toString, "Portfolio", "Other", "Unquoted", shareAssetValue))), None, None, None))
 
         assetMapper.build(userAnswers) mustBe expected
       }
@@ -97,7 +97,7 @@ class AssetMapperSpec extends SpecBase with MustMatchers
         val expected = Some(Assets(
           Some(List(AssetMonetaryAmount(moneyAssetValue))),
           None,
-          Some(List(SharesType(quantity, "Portfolio", "Other", "Unquoted", shareAssetValue))),
+          Some(List(SharesType(quantity.toString, "Portfolio", "Other", "Unquoted", shareAssetValue))),
           None,
           None,
           None
@@ -130,7 +130,7 @@ class AssetMapperSpec extends SpecBase with MustMatchers
         val expected = Some(Assets(
           Some(List(AssetMonetaryAmount(moneyAssetValue))),
           Some(List(PropertyLandType(None, Some(AddressType("26", "Grangetown", Some("Tyne and Wear"), Some("Newcastle"), Some("Z99 2YY"), "GB")), propertyOrLandAssetTotalValue, propertyOrLandAssetTrustValue))),
-          Some(List(SharesType(quantity, "Portfolio", "Other", "Unquoted", shareAssetValue))),
+          Some(List(SharesType(quantity.toString, "Portfolio", "Other", "Unquoted", shareAssetValue))),
           None,
           None,
           None

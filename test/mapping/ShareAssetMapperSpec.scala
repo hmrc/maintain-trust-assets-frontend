@@ -60,7 +60,7 @@ class ShareAssetMapperSpec extends SpecBase with MustMatchers
         shareAssetMapper.build(userAnswers).value mustBe
             List(
               SharesType(
-                numberOfShares = quantity,
+                numberOfShares = quantity.toString,
                 orgName = "Non-Portfolio",
                 shareClass = "Deferred ordinary shares",
                 typeOfShare = "Quoted",
@@ -109,7 +109,7 @@ class ShareAssetMapperSpec extends SpecBase with MustMatchers
         shareAssetMapper.build(userAnswers).value mustBe
             List(
               SharesType(
-                numberOfShares = quantity,
+                numberOfShares = quantity.toString,
                 orgName = "Portfolio",
                 shareClass = "Other",
                 typeOfShare = "Unquoted",

@@ -26,7 +26,7 @@ final case class ShareNonPortfolioAsset(override val whatKindOfAsset: WhatKindOf
                                         override val listedOnTheStockExchange: Boolean,
                                         override val name: String,
                                         sharesInAPortfolio: Boolean,
-                                        quantityInTheTrust: Long,
+                                        override val quantityInTheTrust: Long,
                                         value: Long,
                                         `class`: ShareClass) extends ShareAsset
 
