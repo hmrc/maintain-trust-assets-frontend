@@ -28,7 +28,7 @@ import pages.asset.shares._
 class ShareAssetMapperSpec extends SpecBase with MustMatchers
   with OptionValues with Generators {
 
-  val shareAssetMapper : Mapping[List[SharesType]] = injector.instanceOf[ShareAssetMapper]
+  val shareAssetMapper: ShareAssetMapper = injector.instanceOf[ShareAssetMapper]
 
   private val assetValue: Long = 300L
   private val quantity: Long = 20L

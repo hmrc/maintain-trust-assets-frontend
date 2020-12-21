@@ -16,20 +16,21 @@
 
 package mapping
 
-import javax.inject.Inject
 import models.{Assets, UserAnswers}
 import play.api.Logger
+
+import javax.inject.Inject
 
 class AssetMapper @Inject()(moneyAssetMapper: MoneyAssetMapper,
                             propertyOrLandMapper: PropertyOrLandMapper,
                             shareAssetMapper: ShareAssetMapper,
                             businessAssetMapper: BusinessAssetMapper,
                             partnershipAssetMapper: PartnershipAssetMapper,
-                            otherAssetMapper: OtherAssetMapper) extends Mapping[Assets] {
+                            otherAssetMapper: OtherAssetMapper) {
 
   private val logger: Logger = Logger(getClass)
 
-  override def build(userAnswers: UserAnswers): Option[Assets] = {
+  def build(userAnswers: UserAnswers): Option[Assets] = {
 
     val money = moneyAssetMapper.build(userAnswers)
     val propertyOrLand = propertyOrLandMapper.build(userAnswers)

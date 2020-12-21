@@ -29,5 +29,5 @@ final case class SharePortfolioNamePage(index : Int) extends QuestionPage[String
 }
 
 object SharePortfolioNamePage {
-  val key: String = "portfolioName"
+  val key: String = "portfolioSharesName"
 }

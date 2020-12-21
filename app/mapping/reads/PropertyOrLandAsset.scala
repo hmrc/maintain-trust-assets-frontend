@@ -28,15 +28,21 @@ final case class PropertyOrLandAsset(override val whatKindOfAsset: WhatKindOfAss
                                      propertyLandValueTrust: Option[Long],
                                      propertyOrLandTotalValue: Long) extends Asset
 
-object PropertyOrLandAsset extends AssetReads {
+object PropertyOrLandAsset {
 
   import play.api.libs.functional.syntax._
 
   implicit lazy val reads: Reads[PropertyOrLandAsset] = {
 
+    val optionalAddressReads: Reads[Option[Address]] = {
+      (__ \ PropertyOrLandUKAddressPage.key).read[Address].map(Some(_): Option[Address]) orElse
+        (__ \ PropertyOrLandInternationalAddressPage.key).read[Address].map(Some(_): Option[Address]) orElse
+        Reads(_ => JsSuccess(None: Option[Address]))
+    }
+
     val landOrPropertyReads: Reads[PropertyOrLandAsset] = (
       (__ \ PropertyOrLandDescriptionPage.key).readNullable[String] and
-        optionalAddressReads() and
+        optionalAddressReads and
         (__ \ PropertyLandValueTrustPage.key).readNullable[Long] and
         (__ \ PropertyOrLandTotalValuePage.key).read[Long] and
         (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset]

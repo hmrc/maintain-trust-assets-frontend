@@ -20,6 +20,8 @@ import java.time.LocalDate
 
 import play.api.libs.json._
 
+sealed trait AssetType
+
 case class Assets(monetary: Option[List[AssetMonetaryAmount]],
                   propertyOrLand: Option[List[PropertyLandType]],
                   shares: Option[List[SharesType]],
@@ -31,7 +33,7 @@ object Assets {
   implicit val assetsFormat: Format[Assets] = Json.format[Assets]
 }
 
-case class AssetMonetaryAmount(assetMonetaryAmount: Long)
+case class AssetMonetaryAmount(assetMonetaryAmount: Long) extends AssetType
 
 object AssetMonetaryAmount {
   implicit val assetMonetaryAmountFormat: Format[AssetMonetaryAmount] = Json.format[AssetMonetaryAmount]
@@ -40,7 +42,7 @@ object AssetMonetaryAmount {
 case class PropertyLandType(buildingLandName: Option[String],
                             address: Option[AddressType],
                             valueFull: Long,
-                            valuePrevious: Long)
+                            valuePrevious: Long) extends AssetType
 
 object PropertyLandType {
   implicit val propertyLandTypeFormat: Format[PropertyLandType] = Json.format[PropertyLandType]
@@ -49,21 +51,21 @@ object PropertyLandType {
 case class BusinessAssetType(orgName: String,
                              businessDescription: String,
                              address: AddressType,
-                             businessValue: Long)
+                             businessValue: Long) extends AssetType
 
 object BusinessAssetType {
   implicit val businessAssetTypeFormat: Format[BusinessAssetType] = Json.format[BusinessAssetType]
 }
 
 case class OtherAssetType(description: String,
-                          value: Long)
+                          value: Long) extends AssetType
 
 object OtherAssetType {
   implicit val otherAssetTypeFormat: Format[OtherAssetType] = Json.format[OtherAssetType]
 }
 
 case class PartnershipType(description: String,
-                           partnershipStart: LocalDate)
+                           partnershipStart: LocalDate) extends AssetType
 
 object PartnershipType {
 
@@ -74,7 +76,7 @@ case class SharesType(numberOfShares: Long,
                       orgName: String,
                       shareClass: String,
                       typeOfShare: String,
-                      value: Long)
+                      value: Long) extends AssetType
 
 object SharesType {
   implicit val sharesTypeFormat: Format[SharesType] = Json.format[SharesType]

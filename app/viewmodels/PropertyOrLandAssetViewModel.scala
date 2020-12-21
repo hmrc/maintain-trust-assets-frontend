@@ -18,7 +18,7 @@ package viewmodels
 
 import models.Status.InProgress
 import models.WhatKindOfAsset.PropertyOrLand
-import models.{Status, WhatKindOfAsset}
+import models.{InternationalAddress, Status, UKAddress, WhatKindOfAsset}
 import pages.AssetStatus
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.property_or_land._
@@ -35,6 +35,11 @@ object PropertyOrLandAssetViewModel extends AssetViewModelReads {
   import play.api.libs.json._
 
   implicit lazy val reads: Reads[PropertyOrLandAssetViewModel] = {
+
+    val addressLine1Reads: Reads[Option[String]] =
+      (__ \ PropertyOrLandUKAddressPage.key).read[UKAddress].map(_.toLine1Option) orElse
+        (__ \ PropertyOrLandInternationalAddressPage.key).read[InternationalAddress].map(_.toLine1Option) orElse
+        Reads(_ => JsSuccess(None))
 
     val propertyOrLandReads: Reads[PropertyOrLandAssetViewModel] =
       (

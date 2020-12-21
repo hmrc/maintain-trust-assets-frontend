@@ -16,24 +16,12 @@
 
 package mapping
 
-import javax.inject.Inject
 import mapping.reads.PartnershipAsset
-import models.{PartnershipType, UserAnswers}
+import models.PartnershipType
 
-class PartnershipAssetMapper @Inject() extends Mapping[List[PartnershipType]] {
+class PartnershipAssetMapper extends Mapping[PartnershipType, PartnershipAsset] {
 
-  override def build(userAnswers: UserAnswers): Option[List[PartnershipType]] = {
-
-    val partnerships: List[PartnershipAsset] =
-      userAnswers.get(mapping.reads.Assets)
-        .getOrElse(List.empty[mapping.reads.Asset])
-        .collect { case x: PartnershipAsset => x }
-
-    partnerships match {
-      case Nil => None
-      case list => Some(
-        list.map(x => PartnershipType(x.description, x.startDate))
-      )
-    }
+  override def mapAssets(assets: List[PartnershipAsset]): List[PartnershipType] = {
+    assets.map(x => PartnershipType(x.description, x.startDate))
   }
 }

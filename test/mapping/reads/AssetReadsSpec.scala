@@ -21,31 +21,32 @@ import models.{ShareClass, UKAddress, WhatKindOfAsset}
 import org.scalatest.{FreeSpec, MustMatchers}
 import play.api.libs.json.{JsError, JsSuccess, Json}
 
+import java.time.LocalDate
+
 class AssetReadsSpec extends FreeSpec with MustMatchers {
 
   "Asset" - {
 
     "must fail to deserialise" - {
 
-      "from a money asset of the incorrect structure" in {
+      "a money asset of the incorrect structure" in {
         val json = Json.obj(
           "whatKindOfAsset" -> "Property",
-          "assetMoneyValue" -> 4000
+          "moneyValue" -> 4000
         )
 
         json.validate[Asset] mustBe a[JsError]
       }
 
-      "from a share asset of the incorrect structure" in {
-
+      "a non-portfolio share asset of the incorrect structure" in {
         val json = Json.parse(
           """
             |{
-            |"listedOnTheStockExchange" : true,
-            |"shareCompanyName" : "adam",
-            |"sharesInAPortfolio" : false,
-            |"quantityInTheTrust" : "200",
-            |"shareValue" : 200,
+            |"nonPortfolioSharesListedOnStockExchangeYesNo" : true,
+            |"nonPortfolioSharesName" : "adam",
+            |"sharesInPortfolioYesNo" : false,
+            |"nonPortfolioSharesQuantity" : "200",
+            |"nonPortfolioSharesValue" : 200,
             |"whatKindOfAsset" : "Shares"
             |}
           """.stripMargin)
@@ -54,13 +55,13 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
 
       }
 
-      "from a share portfolio asset of the incorrect structure" in {
+      "a portfolio share asset of the incorrect structure" in {
         val json = Json.parse(
           """
             |{
-            |"listedOnTheStockExchange" : true,
-            |"sharesInAPortfolio" : true,
-            |"shareValue" : 290000,
+            |"portfolioSharesListedOnStockExchangeYesNo" : true,
+            |"sharesInPortfolioYesNo" : true,
+            |"portfolioSharesValue" : 290000,
             |"whatKindOfAsset" : "Shares",
             |"status" : "progress"
             |}
@@ -69,13 +70,13 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
         json.validate[Asset] mustBe a[JsError]
       }
 
-      "from a Business asset of the incorrect structure" in {
+      "a business asset of the incorrect structure" in {
         val json = Json.parse(
           """
             |{
             |"whatKindOfAsset" : "Business",
             |"businessName": "Business Ltd",
-            |"ukAddress" : {
+            |"businessUkAddress" : {
             |     "line1" : "26",
             |     "line2" : "Grangetown",
             |     "line3" : "Tyne and Wear",
@@ -89,22 +90,40 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
         json.validate[Asset] mustBe a[JsError]
       }
 
-      "from a PropertyOrLand asset of the incorrect structure" in {
+      "a property or land asset of the incorrect structure" in {
         val json = Json.parse(
           """
             |{
             |"whatKindOfAsset" : "PropertyOrLand",
             |"propertyOrLandDescription" : "Property Or Land",
-            |"ukAddress" : {
+            |"propertyOrLandUkAddress" : {
             |     "line1" : "26",
             |     "line2" : "Grangetown",
             |     "line3" : "Tyne and Wear",
             |     "line4" : "Newcastle",
             |     "postcode" : "Z99 2YY"
             |},
-            |"propertyOrLandValueTrust" : 75
+            |"propertyOrLandValueInTrust" : 75
             |}
           """.stripMargin)
+
+        json.validate[Asset] mustBe a[JsError]
+      }
+
+      "a partnership asset of the incorrect structure" in {
+        val json = Json.obj(
+          "whatKindOfAsset" -> "Partnership",
+          "partnershipDescription" -> "Description"
+        )
+
+        json.validate[Asset] mustBe a[JsError]
+      }
+
+      "an other asset of the incorrect structure" in {
+        val json = Json.obj(
+          "whatKindOfAsset" -> "Other",
+          "otherDescription" -> "Description"
+        )
 
         json.validate[Asset] mustBe a[JsError]
       }
@@ -112,27 +131,27 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
 
     "must deserialise" - {
 
-      "from a money asset" in {
+      "a money asset" in {
         val json = Json.obj(
           "whatKindOfAsset" -> "Money",
-          "assetMoneyValue" -> 4000
+          "moneyValue" -> 4000
         )
 
         json.validate[Asset] mustEqual JsSuccess(MoneyAsset(Money, 4000L))
       }
 
-      "from a share asset" in {
+      "a non-portfolio share asset" in {
 
         val json = Json.parse(
           """
             |{
-            |"listedOnTheStockExchange" : true,
-            |"shareCompanyName" : "adam",
-            |"sharesInAPortfolio" : false,
-            |"quantityInTheTrust" : 100,
-            |"shareValue" : 200,
+            |"nonPortfolioSharesOnStockExchangeYesNo" : true,
+            |"nonPortfolioSharesName" : "adam",
+            |"sharesInPortfolioYesNo" : false,
+            |"nonPortfolioSharesQuantity" : 100,
+            |"nonPortfolioSharesValue" : 200,
             |"whatKindOfAsset" : "Shares",
-            |"class" : "ordinary",
+            |"nonPortfolioSharesClass" : "ordinary",
             |"status": "completed"
             |}
           """.stripMargin)
@@ -150,15 +169,15 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
 
       }
 
-      "from a share portfolio asset" in {
+      "a portfolio share asset" in {
         val json = Json.parse(
           """
             |{
-            |"portfolioListedOnTheStockExchange" : true,
-            |"sharesInAPortfolio" : true,
-            |"portfolioName" : "Adam",
-            |"portfolioQuantityInTheTrust" : 200,
-            |"portfolioValue" : 290000,
+            |"portfolioSharesOnStockExchangeYesNo" : true,
+            |"sharesInPortfolioYesNo" : true,
+            |"portfolioSharesName" : "Adam",
+            |"portfolioSharesQuantity" : 200,
+            |"portfolioSharesValue" : 290000,
             |"whatKindOfAsset" : "Shares",
             |"status" : "completed"
             |}
@@ -175,7 +194,7 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
           ))
       }
 
-      "from a Business asset" in {
+      "a business asset" in {
         val json = Json.parse(
           """
             |{
@@ -183,7 +202,7 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
             |"businessName": "Business Ltd",
             |"businessDescription": "Some description",
             |"businessAddressUkYesNo": false,
-            |"ukAddress" : {
+            |"businessUkAddress" : {
             |     "line1" : "26",
             |     "line2" : "Grangetown",
             |     "line3" : "Tyne and Wear",
@@ -210,20 +229,20 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
           ))
       }
 
-      "from a PropertyOrLand asset" in {
+      "a property or land asset" in {
         val json = Json.parse(
           """
             |{
             |"whatKindOfAsset" : "PropertyOrLand",
             |"propertyOrLandDescription" : "Property Or Land",
-            |"ukAddress" : {
+            |"propertyOrLandUkAddress" : {
             |     "line1" : "26",
             |     "line2" : "Grangetown",
             |     "line3" : "Tyne and Wear",
             |     "line4" : "Newcastle",
             |     "postcode" : "Z99 2YY"
             |},
-            |"propertyOrLandValueTrust" : 75,
+            |"propertyOrLandValueInTrust" : 75,
             |"propertyOrLandTotalValue" : 1000
             |}
           """.stripMargin)
@@ -245,12 +264,12 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
           ))
       }
 
-      "from a PropertyOrLand asset with minimum data" in {
+      "a property or land asset with minimum data" in {
         val json = Json.parse(
           """
             |{
             |"whatKindOfAsset" : "PropertyOrLand",
-            |"ukAddress" : {
+            |"propertyOrLandUkAddress" : {
             |     "line1" : "26",
             |     "line2" : "Newcastle",
             |     "postcode" : "Z99 2YY"
@@ -276,6 +295,37 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
           ))
       }
 
+      "a partnership asset" in {
+        val json = Json.obj(
+          "whatKindOfAsset" -> "Partnership",
+          "partnershipDescription" -> "Description",
+          "partnershipStartDate" -> "1996-02-03"
+        )
+
+        json.validate[Asset] mustEqual JsSuccess(
+          PartnershipAsset(
+            whatKindOfAsset = WhatKindOfAsset.Partnership,
+            description = "Description",
+            startDate = LocalDate.parse("1996-02-03")
+          )
+        )
+      }
+
+      "an other asset" in {
+        val json = Json.obj(
+          "whatKindOfAsset" -> "Other",
+          "otherDescription" -> "Description",
+          "otherValue" -> 4000
+        )
+
+        json.validate[Asset] mustBe JsSuccess(
+          OtherAsset(
+            whatKindOfAsset = WhatKindOfAsset.Other,
+            description = "Description",
+            value = 4000L
+          )
+        )
+      }
     }
   }
 }

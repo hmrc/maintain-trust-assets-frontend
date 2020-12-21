@@ -16,33 +16,19 @@
 
 package mapping
 
-import javax.inject.Inject
-import mapping.reads.{Asset, ShareNonPortfolioAsset, SharePortfolioAsset}
-import models.WhatKindOfAsset.Shares
-import models.{ShareClass, SharesType, UserAnswers}
+import mapping.reads.{ShareAsset, ShareNonPortfolioAsset, SharePortfolioAsset}
+import models.{ShareClass, SharesType}
 
-class ShareAssetMapper @Inject() extends Mapping[List[SharesType]] {
+class ShareAssetMapper extends Mapping[SharesType, ShareAsset] {
 
-  override def build(userAnswers: UserAnswers): Option[List[SharesType]] = {
-
-    val shares: List[Asset] =
-      userAnswers.get(mapping.reads.Assets)
-        .getOrElse(List.empty[mapping.reads.Asset])
-        .filter(_.whatKindOfAsset == Shares)
-
-    shares match {
-      case Nil => None
-      case list =>
-        Some(
-          list.flatMap {
-            case x: ShareNonPortfolioAsset =>
-              Some(SharesType(x.quantityInTheTrust, x.name, ShareClass.toDES(x.`class`), x.quoted, x.value))
-            case x: SharePortfolioAsset =>
-              Some(SharesType(x.quantityInTheTrust, x.name, ShareClass.toDES(ShareClass.Other), x.quoted, x.value))
-            case _ =>
-              None
-          }
-        )
+  override def mapAssets(assets: List[ShareAsset]): List[SharesType] = {
+    assets.flatMap {
+      case x: ShareNonPortfolioAsset =>
+        Some(SharesType(x.quantityInTheTrust, x.name, ShareClass.toDES(x.`class`), x.quoted, x.value))
+      case x: SharePortfolioAsset =>
+        Some(SharesType(x.quantityInTheTrust, x.name, ShareClass.toDES(ShareClass.Other), x.quoted, x.value))
+      case _ =>
+        None
     }
   }
 }

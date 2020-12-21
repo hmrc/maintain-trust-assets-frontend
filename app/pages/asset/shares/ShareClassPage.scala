@@ -30,5 +30,5 @@ final case class ShareClassPage(index: Int) extends QuestionPage[ShareClass] {
 }
 
 object ShareClassPage {
-  val key: String = "class"
+  val key: String = "nonPortfolioSharesClass"
 }

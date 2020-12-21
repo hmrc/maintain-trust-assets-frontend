@@ -30,7 +30,7 @@ import pages.asset.shares._
 class AssetMapperSpec extends SpecBase with MustMatchers
   with OptionValues with Generators {
 
-  val assetMapper: Mapping[Assets] = injector.instanceOf[AssetMapper]
+  val assetMapper: AssetMapper = injector.instanceOf[AssetMapper]
 
   private val shareAssetValue: Long = 999999999999L
   private val moneyAssetValue: Long = 2000L
@@ -59,7 +59,6 @@ class AssetMapperSpec extends SpecBase with MustMatchers
           .set(AssetMoneyValuePage(0), moneyAssetValue).success.value
           .set(AssetStatus(0), Completed).success.value
 
-
         val expected = Some(Assets(Some(List(AssetMonetaryAmount(moneyAssetValue))), None, None, None, None, None))
 
         assetMapper.build(userAnswers) mustBe expected
@@ -75,7 +74,6 @@ class AssetMapperSpec extends SpecBase with MustMatchers
           .set(SharePortfolioValueInTrustPage(0), shareAssetValue).success.value
           .set(SharePortfolioOnStockExchangePage(0), false).success.value
           .set(AssetStatus(0), Completed).success.value
-
 
         val expected = Some(Assets(None,None,Some(List(SharesType(quantity, "Portfolio", "Other", "Unquoted", shareAssetValue))), None, None, None))
 
@@ -95,7 +93,6 @@ class AssetMapperSpec extends SpecBase with MustMatchers
           .set(WhatKindOfAssetPage(1), WhatKindOfAsset.Money).success.value
           .set(AssetMoneyValuePage(1), moneyAssetValue).success.value
           .set(AssetStatus(1), Completed).success.value
-
 
         val expected = Some(Assets(
           Some(List(AssetMonetaryAmount(moneyAssetValue))),
@@ -129,7 +126,6 @@ class AssetMapperSpec extends SpecBase with MustMatchers
           .set(PropertyOrLandTotalValuePage(2), propertyOrLandAssetTotalValue).success.value
           .set(TrustOwnAllThePropertyOrLandPage(2), false).success.value
           .set(PropertyLandValueTrustPage(2), propertyOrLandAssetTrustValue).success.value
-
 
         val expected = Some(Assets(
           Some(List(AssetMonetaryAmount(moneyAssetValue))),

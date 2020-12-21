@@ -30,7 +30,7 @@ import java.time.LocalDate
 class PartnershipAssetMapperSpec extends SpecBase with MustMatchers
   with OptionValues with Generators {
 
-  val partnershipAssetMapper: Mapping[List[PartnershipType]] = injector.instanceOf[PartnershipAssetMapper]
+  val partnershipAssetMapper: PartnershipAssetMapper = injector.instanceOf[PartnershipAssetMapper]
 
   "PartnershipAssetMapper" must {
 

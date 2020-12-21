@@ -16,10 +16,27 @@
 
 package mapping
 
-import models.UserAnswers
+import mapping.reads.{Asset, Assets}
+import models.{AssetType, UserAnswers}
 
-trait Mapping[T] {
+import scala.reflect.ClassTag
 
-  def build(userAnswers: UserAnswers) : Option[T]
+abstract class Mapping[T <: AssetType, A <: Asset : ClassTag] {
 
+  def build(userAnswers: UserAnswers): Option[List[T]] = {
+    assets(userAnswers) match {
+      case Nil => None
+      case list => Some(mapAssets(list))
+    }
+  }
+
+  def mapAssets(assets: List[A]): List[T]
+
+  private def assets(userAnswers: UserAnswers): List[A] = {
+    val runtimeClass = implicitly[ClassTag[A]].runtimeClass
+
+    userAnswers.get(Assets).getOrElse(Nil).collect {
+      case x: A if runtimeClass.isInstance(x) => x
+    }
+  }
 }

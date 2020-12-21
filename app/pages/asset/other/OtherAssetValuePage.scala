@@ -29,5 +29,5 @@ final case class OtherAssetValuePage(index: Int) extends QuestionPage[Long] {
 }
 
 object OtherAssetValuePage {
-  val key: String = "otherAssetValue"
+  val key: String = "otherValue"
 }

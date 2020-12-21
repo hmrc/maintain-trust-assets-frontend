@@ -16,34 +16,23 @@
 
 package mapping
 
-import javax.inject.Inject
 import mapping.reads.PropertyOrLandAsset
-import models.{PropertyLandType, UserAnswers}
+import models.PropertyLandType
 
-class PropertyOrLandMapper @Inject()(addressMapper: AddressMapper) extends Mapping[List[PropertyLandType]] {
+import javax.inject.Inject
 
-  override def build(userAnswers: UserAnswers): Option[List[PropertyLandType]] = {
+class PropertyOrLandMapper @Inject()(addressMapper: AddressMapper) extends Mapping[PropertyLandType, PropertyOrLandAsset] {
 
-    val assets : List[PropertyOrLandAsset] =
-      userAnswers.get(mapping.reads.Assets)
-        .getOrElse(List.empty[mapping.reads.Asset])
-        .collect { case x : PropertyOrLandAsset => x }
+  override def mapAssets(assets: List[PropertyOrLandAsset]): List[PropertyLandType] = {
+    assets.map { x =>
+      val totalValue: Long = x.propertyOrLandTotalValue
 
-    assets match {
-      case Nil => None
-      case list =>
-        Some(
-          list.map { x =>
-            val totalValue: Long = x.propertyOrLandTotalValue
-
-            PropertyLandType(
-              x.propertyOrLandDescription,
-              addressMapper.build(x.address),
-              totalValue,
-              x.propertyLandValueTrust.getOrElse(totalValue)
-            )
-          }
-        )
+      PropertyLandType(
+        x.propertyOrLandDescription,
+        addressMapper.build(x.address),
+        totalValue,
+        x.propertyLandValueTrust.getOrElse(totalValue)
+      )
     }
   }
 }

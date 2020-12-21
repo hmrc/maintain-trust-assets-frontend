@@ -29,5 +29,5 @@ final case class OtherAssetDescriptionPage(index : Int) extends QuestionPage[Str
 }
 
 object OtherAssetDescriptionPage {
-  val key: String = "otherAssetDescription"
+  val key: String = "otherDescription"
 }

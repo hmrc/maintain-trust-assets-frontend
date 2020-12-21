@@ -26,7 +26,7 @@ import pages.asset.property_or_land._
 class PropertyOrLandMapperSpec extends SpecBase with MustMatchers
   with OptionValues with Generators {
 
-  val propertyOrLandMapper : Mapping[List[PropertyLandType]] = injector.instanceOf[PropertyOrLandMapper]
+  val propertyOrLandMapper: PropertyOrLandMapper = injector.instanceOf[PropertyOrLandMapper]
 
   private val assetTotalValue: Long = 1000L
   private val assetTrustValue: Long = 750L
