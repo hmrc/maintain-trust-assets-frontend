@@ -72,7 +72,7 @@ object PartnershipType {
   implicit val partnershipTypeFormat: Format[PartnershipType] = Json.format[PartnershipType]
 }
 
-case class SharesType(numberOfShares: Long,
+case class SharesType(numberOfShares: String,
                       orgName: String,
                       shareClass: String,
                       typeOfShare: String,

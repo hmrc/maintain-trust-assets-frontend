@@ -19,8 +19,11 @@ package mapping.reads
 trait ShareAsset extends Asset {
   val listedOnTheStockExchange: Boolean
   val name: String
+  val quantityInTheTrust: Long
 
   def quoted: String = if (listedOnTheStockExchange) "Quoted" else "Unquoted"
 
   override val arg: String = name
+
+  val quantity: String = quantityInTheTrust.toString
 }
