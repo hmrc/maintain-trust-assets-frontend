@@ -29,7 +29,8 @@ import java.time.LocalDate
 class FrontendAppConfig @Inject() (val configuration: Configuration) {
 
   final val ENGLISH = "en"
-  private final val WELSH = "cy"
+  final val WELSH = "cy"
+  final val UK_COUNTRY_CODE = "GB"
 
   private val contactHost = configuration.get[String]("contact-frontend.host")
   private val contactFormServiceIdentifier = "trusts"
@@ -63,7 +64,7 @@ class FrontendAppConfig @Inject() (val configuration: Configuration) {
   lazy val createAgentServicesAccountUrl : String = configuration.get[String]("urls.createAgentServicesAccount")
 
   lazy val locationCanonicalList: String = configuration.get[String]("location.canonical.list.all")
-  lazy val locationCanonicalListNonUK: String = configuration.get[String]("location.canonical.list.nonUK")
+  lazy val locationCanonicalListCY: String = configuration.get[String]("location.canonical.list.allCY")
 
   lazy val languageTranslationEnabled: Boolean =
     configuration.get[Boolean]("microservice.services.features.welsh-translation")
