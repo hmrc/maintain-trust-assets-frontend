@@ -51,7 +51,7 @@ class CheckAnswersFormatters @Inject()(languageUtils: LanguageUtils,
 
   def percentage(value: String): Html = escape(s"$value%")
 
-  def addressFormatter(address: Address): Html = {
+  def addressFormatter(address: Address)(implicit messages: Messages): Html = {
     address match {
       case a: UKAddress => ukAddress(a)
       case a: InternationalAddress => internationalAddress(a, countryOptions)
@@ -75,7 +75,7 @@ class CheckAnswersFormatters @Inject()(languageUtils: LanguageUtils,
     breakLines(lines)
   }
 
-  private def internationalAddress(address: InternationalAddress, countryOptions: CountryOptions): Html = {
+  private def internationalAddress(address: InternationalAddress, countryOptions: CountryOptions)(implicit messages: Messages): Html = {
 
     def country(code: String, countryOptions: CountryOptions): String = {
       countryOptions.options.find(_.value.equals(code)).map(_.label).getOrElse("")

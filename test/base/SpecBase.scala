@@ -40,6 +40,9 @@ trait SpecBase extends PlaySpec
   with Mocked
   with FakeTrustsApp {
 
+  final val ENGLISH = "en"
+  final val WELSH = "cy"
+
   lazy val draftId: String = "draftId"
   lazy val userInternalId: String = "internalId"
   lazy val fakeDraftId: String = draftId
