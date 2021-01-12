@@ -1,5 +1,5 @@
 @*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ form:Form[_], countryOptions: Seq[InputOption]
   label = messages("site.address.international.country"),
   labelClasses = Set("bold"),
   options = countryOptions,
-  placeholder = Some("address.country.select"),
+  placeholder = Some(messages("site.address.country.select")),
   formGroupClasses = Set("autocomplete-wrapper  form-control-3-4"),
   selectAttribute = Set("data-non-uk-countries")
 )
