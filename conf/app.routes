@@ -19,19 +19,19 @@ GET        /unauthorised                                controllers.Unauthorised
 
 GET        /logout                                      controllers.LogoutController.logout()
 
-GET        /:draftId/asset/:index/assets-type           controllers.asset.WhatKindOfAssetController.onPageLoad(index: Int, draftId: String)
-POST       /:draftId/asset/:index/assets-type           controllers.asset.WhatKindOfAssetController.onSubmit(index: Int, draftId: String)
+GET        /:draftId/:index/assets-type           controllers.asset.WhatKindOfAssetController.onPageLoad(index: Int, draftId: String)
+POST       /:draftId/:index/assets-type           controllers.asset.WhatKindOfAssetController.onSubmit(index: Int, draftId: String)
 
-GET        /:draftId/asset/information-you-need         controllers.asset.AssetInterruptPageController.onPageLoad(draftId: String)
-POST       /:draftId/asset/information-you-need         controllers.asset.AssetInterruptPageController.onSubmit(draftId: String)
+GET        /:draftId/information-you-need         controllers.asset.AssetInterruptPageController.onPageLoad(draftId: String)
+POST       /:draftId/information-you-need         controllers.asset.AssetInterruptPageController.onSubmit(draftId: String)
 
-GET        /:draftId/asset/add                          controllers.asset.AddAssetsController.onPageLoad(draftId: String)
-POST       /:draftId/asset/add                          controllers.asset.AddAssetsController.submitOne(draftId: String)
-POST       /:draftId/asset/add-another                  controllers.asset.AddAssetsController.submitAnother(draftId: String)
-POST       /:draftId/asset/complete                     controllers.asset.AddAssetsController.submitComplete(draftId: String)
+GET        /:draftId/add                          controllers.asset.AddAssetsController.onPageLoad(draftId: String)
+POST       /:draftId/add                          controllers.asset.AddAssetsController.submitOne(draftId: String)
+POST       /:draftId/add-another                  controllers.asset.AddAssetsController.submitAnother(draftId: String)
+POST       /:draftId/complete                     controllers.asset.AddAssetsController.submitComplete(draftId: String)
 
-GET        /:draftId/asset/:index/remove                controllers.asset.RemoveAssetYesNoController.onPageLoad(index: Int, draftId: String)
-POST       /:draftId/asset/:index/remove                controllers.asset.RemoveAssetYesNoController.onSubmit(index: Int, draftId: String)
+GET        /:draftId/:index/remove                controllers.asset.RemoveAssetYesNoController.onPageLoad(index: Int, draftId: String)
+POST       /:draftId/:index/remove                controllers.asset.RemoveAssetYesNoController.onSubmit(index: Int, draftId: String)
 
 GET        /feature-not-available                       controllers.FeatureNotAvailableController.onPageLoad()
 
