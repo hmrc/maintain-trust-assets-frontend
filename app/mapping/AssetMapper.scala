@@ -17,7 +17,7 @@
 package mapping
 
 import models.{Assets, UserAnswers}
-import play.api.Logger
+import play.api.Logging
 
 import javax.inject.Inject
 
@@ -26,9 +26,7 @@ class AssetMapper @Inject()(moneyAssetMapper: MoneyAssetMapper,
                             shareAssetMapper: ShareAssetMapper,
                             businessAssetMapper: BusinessAssetMapper,
                             partnershipAssetMapper: PartnershipAssetMapper,
-                            otherAssetMapper: OtherAssetMapper) {
-
-  private val logger: Logger = Logger(getClass)
+                            otherAssetMapper: OtherAssetMapper) extends Logging {
 
   def build(userAnswers: UserAnswers): Option[Assets] = {
 
