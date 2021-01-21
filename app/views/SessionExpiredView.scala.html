@@ -24,7 +24,8 @@
 @()(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("session_expired.title")
+    title = messages("session_expired.title"),
+    canSignOut = false
     ) {
 
     @components.heading("session_expired.heading")
