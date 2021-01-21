@@ -85,7 +85,7 @@ class RegistrationRepositorySpec extends SpecBase with MustMatchers with Mockito
 
         val repository = createRepository(mockConnector, mockSubmissionSetFactory)
 
-        when(mockConnector.setDraftSectionSet(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK)))
+        when(mockConnector.setDraftSectionSet(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
 
         val userAnswers = UserAnswers(draftId = fakeDraftId, internalAuthId = "internalId")
 
