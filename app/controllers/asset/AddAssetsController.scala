@@ -19,8 +19,9 @@ package controllers.asset
 import controllers.actions.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
 import forms.{AddAssetsFormProvider, YesNoFormProvider}
 import models.AddAssets.NoComplete
+import models.Constants._
 import models.requests.RegistrationDataRequest
-import models.{AddAssets, Enumerable}
+import models.{AddAssets, Enumerable, UserAnswers}
 import navigation.Navigator
 import pages.asset.{AddAnAssetYesNoPage, AddAssetsPage}
 import play.api.data.Form
@@ -67,12 +68,19 @@ class AddAssetsController @Inject()(
   def onPageLoad(draftId: String): Action[AnyContent] = actions(draftId) {
     implicit request =>
 
-      val assets = new AddAssetViewHelper(checkAnswersFormatters)(request.userAnswers, draftId).rows
+      val userAnswers: UserAnswers = request.userAnswers
+
+      val assets = new AddAssetViewHelper(checkAnswersFormatters)(userAnswers, draftId).rows
+
+      val maxLimit: Int = if (userAnswers.is5mldEnabled) MAX_5MLD_ASSETS else MAX_4MLD_ASSETS
 
       assets.count match {
-        case 0 => Ok(yesNoView(addAnotherForm, draftId))
-        case c if c >= 51 => Ok(maxedOutView(draftId, assets.inProgress, assets.complete, heading(c)))
-        case c => Ok(addAssetsView(addAnotherForm, draftId, assets.inProgress, assets.complete, heading(c)))
+        case 0 =>
+          Ok(yesNoView(addAnotherForm, draftId))
+        case c if c >= maxLimit =>
+          Ok(maxedOutView(draftId, assets.inProgress, assets.complete, heading(c), maxLimit))
+        case c =>
+          Ok(addAssetsView(addAnotherForm, draftId, assets.inProgress, assets.complete, heading(c)))
       }
   }
 

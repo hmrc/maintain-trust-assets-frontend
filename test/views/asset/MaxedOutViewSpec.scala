@@ -32,7 +32,7 @@ class MaxedOutViewSpec extends OptionsViewBehaviours with TabularDataViewBehavio
   private val completeRows: List[AddRow] = List.fill(51)(fakeAddRow)
 
   private def applyView(): HtmlFormat.Appendable =
-    view.apply(fakeDraftId, Nil, completeRows, "Add assets")(fakeRequest, messages)
+    view.apply(fakeDraftId, Nil, completeRows, "Add assets", 51)(fakeRequest, messages)
 
   "MaxedOutView" must {
 

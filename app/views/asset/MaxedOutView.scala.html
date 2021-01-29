@@ -23,7 +23,7 @@
     formHelper: FormWithCSRF
 )
 
-@(draftId: String, inProgressAssets: Seq[AddRow], completeAssets: Seq[AddRow], heading: String)(implicit request: Request[_], messages: Messages)
+@(draftId: String, inProgressAssets: Seq[AddRow], completeAssets: Seq[AddRow], heading: String, maxLimit: Int)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = heading
@@ -40,7 +40,7 @@
         @components.data_list(completeAssets, "complete", "asset")
 
         <ul>
-            <li class="panel-indent"><p>@messages("addAssets.maxedOut.p1")</p></li>
+            <li class="panel-indent"><p>@messages("addAssets.maxedOut.p1", maxLimit)</p></li>
             <li class="panel-indent"><p>@messages("addAssets.maxedOut.p2")</p></li>
         </ul>
 

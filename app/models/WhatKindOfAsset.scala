@@ -16,6 +16,7 @@
 
 package models
 
+import models.Constants._
 import viewmodels._
 
 sealed trait WhatKindOfAsset
@@ -64,17 +65,14 @@ object WhatKindOfAsset extends Enumerable.Implicits {
         (assetTypeCount._2 < maxLimit || assetTypeAtIndex.contains(assetType)) && assetTypeCount._1 == assetType
       }
 
-      val meetsMoneyAssetConditions: Boolean = {
-        val moneyAssetLimit: Int = 1
-        meetsCondition(moneyAssetLimit, Money)
-      }
+      val meetsMoneyAssetConditions: Boolean = meetsCondition(MAX_MONEY_ASSETS, Money)
 
       val meetsNonMoneyAssetsConditions: Boolean = {
         values.filterNot(_ == Money).foldLeft(false)((conditionAlreadyMet, assetType) => {
           val limit: Int = assetType match {
-            case NonEeaBusiness if is5mldEnabled => 25
+            case NonEeaBusiness if is5mldEnabled => MAX_NON_EEA_BUSINESS_ASSETS
             case NonEeaBusiness => 0
-            case _ => 10
+            case _ => MAX_LIMIT_FOR_MOST_ASSET_TYPES
           }
           meetsCondition(limit, assetType) || conditionAlreadyMet
         })
