@@ -41,12 +41,12 @@ trait ModelGenerators {
     Arbitrary {
       for {
         str <- arbitrary[String]
-      } yield InternationalAddress(str,str,Some(str),str)
+      } yield InternationalAddress(str, str, Some(str), str)
     }
 
   implicit lazy val arbitraryShareClass: Arbitrary[ShareClass] =
     Arbitrary {
-      Gen.oneOf(ShareClass.allValues.toSeq)
+      Gen.oneOf(ShareClass.allValues)
     }
 
   implicit lazy val arbitraryAddAssets: Arbitrary[AddAssets] =
