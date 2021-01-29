@@ -187,6 +187,7 @@ whatKindOfAsset.Shares = Shares
 whatKindOfAsset.Business = Business
 whatKindOfAsset.Partnership = Partnership
 whatKindOfAsset.Other = Other
+whatKindOfAsset.NonEeaBusiness = Non-EEA Company
 whatKindOfAsset.first.checkYourAnswersLabel = What kind of asset do you need to add first?
 whatKindOfAsset.next.checkYourAnswersLabel = What kind of asset do you need to add next?
 whatKindOfAsset.error.required = Select the kind of asset you need to add

@@ -28,9 +28,10 @@ object WhatKindOfAsset extends Enumerable.Implicits {
   case object Business extends WithName("Business") with WhatKindOfAsset
   case object Partnership extends WithName("Partnership") with WhatKindOfAsset
   case object Other extends WithName("Other") with WhatKindOfAsset
+  case object NonEeaBusiness extends WithName("NonEeaBusiness") with WhatKindOfAsset
 
   val values: List[WhatKindOfAsset] = List(
-    Money, PropertyOrLand, Shares, Business, Partnership, Other
+    Money, PropertyOrLand, Shares, Business, Partnership, Other, NonEeaBusiness
   )
 
   def options(kindsOfAsset: List[WhatKindOfAsset] = values): List[RadioOption] = kindsOfAsset.map {
@@ -50,22 +51,24 @@ object WhatKindOfAsset extends Enumerable.Implicits {
       (Shares, assets.count(_.isInstanceOf[ShareAssetViewModel])),
       (Business, assets.count(_.isInstanceOf[BusinessAssetViewModel])),
       (Partnership, assets.count(_.isInstanceOf[PartnershipAssetViewModel])),
-      (Other, assets.count(_.isInstanceOf[OtherAssetViewModel]))
+      (Other, assets.count(_.isInstanceOf[OtherAssetViewModel])),
+      (NonEeaBusiness, 0) // TODO - create NonEeaBusinessAssetViewModel
     )
 
     def meetsLimitConditions(assetTypeCount: AssetTypeCount): Boolean = {
-
-      val moneyAssetLimit: Int = 1
-      val nonMoneyAssetLimit: Int = 10
 
       def meetsCondition(maxLimit: Int, assetType: WhatKindOfAsset): Boolean = {
         (assetTypeCount._2 < maxLimit || assetTypeAtIndex.contains(assetType)) && assetTypeCount._1 == assetType
       }
 
-      val meetsMoneyAssetConditions: Boolean = meetsCondition(moneyAssetLimit, Money)
+      val meetsMoneyAssetConditions: Boolean = {
+        val moneyAssetLimit: Int = 1
+        meetsCondition(moneyAssetLimit, Money)
+      }
 
       val meetsNonMoneyAssetsConditions: Boolean = values.filterNot(_ == Money).foldLeft(false)((conditionAlreadyMet, assetType) => {
-        meetsCondition(nonMoneyAssetLimit, assetType) || conditionAlreadyMet
+        val limit: Int = if (assetType == NonEeaBusiness) 25 else 10 // TODO - if 4MLD set NonEeaBusiness asset limit to 0
+        meetsCondition(limit, assetType) || conditionAlreadyMet
       })
 
       meetsMoneyAssetConditions || meetsNonMoneyAssetsConditions
