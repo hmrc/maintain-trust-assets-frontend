@@ -18,13 +18,14 @@ package navigation
 
 import config.FrontendAppConfig
 import controllers.asset.routes
-import javax.inject.{Inject, Singleton}
 import models.WhatKindOfAsset._
 import models.{UserAnswers, _}
 import pages.Page
 import pages.asset._
 import play.api.mvc.Call
 import uk.gov.hmrc.auth.core.AffinityGroup
+
+import javax.inject.{Inject, Singleton}
 
 object AssetsRoutes {
 
@@ -77,6 +78,8 @@ object AssetsRoutes {
         controllers.asset.partnership.routes.PartnershipDescriptionController.onPageLoad(index, draftId)
       case Some(Other) =>
         controllers.asset.other.routes.OtherAssetDescriptionController.onPageLoad(index, draftId)
+      case Some(NonEeaBusiness) =>
+        controllers.routes.FeatureNotAvailableController.onPageLoad()
       case _ =>
         controllers.routes.SessionExpiredController.onPageLoad()
     }
