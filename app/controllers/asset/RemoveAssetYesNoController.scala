@@ -110,6 +110,7 @@ class RemoveAssetYesNoController @Inject()(
         case business: BusinessAssetViewModel => business.name.getOrElse(default)
         case partnership: PartnershipAssetViewModel => partnership.description.getOrElse(default)
         case other: OtherAssetViewModel => other.description.getOrElse(default)
+        case nonEeaBusiness: NonEeaBusinessAssetViewModel => nonEeaBusiness.name.getOrElse(default)
         case _ => default
       }
     }).getOrElse(default)

@@ -27,6 +27,7 @@ import org.mockito.Mockito._
 import pages.asset._
 import pages.asset.business._
 import pages.asset.money._
+import pages.asset.noneeabusiness._
 import pages.asset.other._
 import pages.asset.partnership._
 import pages.asset.property_or_land._
@@ -40,11 +41,13 @@ import java.time.LocalDate
 
 class RemoveAssetYesNoControllerSpec extends SpecBase {
 
-  val formProvider = new YesNoFormProvider()
-  val prefix: String = "assets.removeYesNo"
-  val form: Form[Boolean] = formProvider.withPrefix(prefix)
-  val index: Int = 0
-  val assetValue: Long = 4000L
+  private val formProvider = new YesNoFormProvider()
+  private val prefix: String = "assets.removeYesNo"
+  private val form: Form[Boolean] = formProvider.withPrefix(prefix)
+  private val index: Int = 0
+  private val assetValue: Long = 4000L
+  private val ukAddress: UKAddress = UKAddress("Line 1", "Line 2", None, None, "POSTCODE")
+  private val date: LocalDate = LocalDate.parse("2000-02-03")
 
   lazy val removeAssetYesNoRoute: String = routes.RemoveAssetYesNoController.onPageLoad(index, fakeDraftId).url
 
@@ -108,7 +111,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
               .set(WhatKindOfAssetPage(index), PropertyOrLand).success.value
               .set(PropertyOrLandAddressYesNoPage(index), true).success.value
               .set(PropertyOrLandAddressUkYesNoPage(index), true).success.value
-              .set(PropertyOrLandUKAddressPage(index), UKAddress("Line 1", "Line 2", None, None, "POSTCODE")).success.value
+              .set(PropertyOrLandUKAddressPage(index), ukAddress).success.value
               .set(PropertyOrLandTotalValuePage(index), assetValue).success.value
               .set(TrustOwnAllThePropertyOrLandPage(index), true).success.value
 
@@ -265,7 +268,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
           .set(BusinessNamePage(index), "Business name").success.value
           .set(BusinessDescriptionPage(index), "Business description").success.value
           .set(BusinessAddressUkYesNoPage(index), true).success.value
-          .set(BusinessUkAddressPage(index), UKAddress("Line 1", "Line 2", None, None, "POSTCODE")).success.value
+          .set(BusinessUkAddressPage(index), ukAddress).success.value
           .set(BusinessValuePage(index), assetValue).success.value
 
         val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
@@ -289,7 +292,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
         val userAnswers = emptyUserAnswers
           .set(WhatKindOfAssetPage(index), Partnership).success.value
           .set(PartnershipDescriptionPage(index), "Partnership description").success.value
-          .set(PartnershipStartDatePage(index), LocalDate.parse("2000-02-03")).success.value
+          .set(PartnershipStartDatePage(index), date).success.value
 
         val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -326,6 +329,32 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
 
         contentAsString(result) mustEqual
           view(form, fakeDraftId, index, "Other description")(fakeRequest, messages).toString
+
+        application.stop()
+      }
+
+      "Non-EEA business asset" in {
+
+        val userAnswers = emptyUserAnswers
+          .set(WhatKindOfAssetPage(index), NonEeaBusiness).success.value
+          .set(NamePage(index), "Non-EEA business name").success.value
+          .set(AddressUkYesNoPage(index), true).success.value
+          .set(UkAddressPage(index), ukAddress).success.value
+          .set(GoverningCountryPage(index), "GB").success.value
+          .set(StartDatePage(index), date).success.value
+
+        val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+
+        val request = FakeRequest(GET, removeAssetYesNoRoute)
+
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[RemoveAssetYesNoView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(form, fakeDraftId, index, "Non-EEA business name")(fakeRequest, messages).toString
 
         application.stop()
       }
