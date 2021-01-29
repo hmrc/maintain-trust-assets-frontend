@@ -32,7 +32,7 @@ object WhatKindOfAsset extends Enumerable.Implicits {
   case object NonEeaBusiness extends WithName("NonEeaBusiness") with WhatKindOfAsset
 
   val values: List[WhatKindOfAsset] = List(
-    Money, PropertyOrLand, Shares, Business, Partnership, Other, NonEeaBusiness
+    Money, PropertyOrLand, Shares, Business, NonEeaBusiness, Partnership, Other
   )
 
   def options(kindsOfAsset: List[WhatKindOfAsset] = values): List[RadioOption] = kindsOfAsset.map {
@@ -54,9 +54,9 @@ object WhatKindOfAsset extends Enumerable.Implicits {
       (PropertyOrLand, assets.count(_.isInstanceOf[PropertyOrLandAssetViewModel])),
       (Shares, assets.count(_.isInstanceOf[ShareAssetViewModel])),
       (Business, assets.count(_.isInstanceOf[BusinessAssetViewModel])),
+      (NonEeaBusiness, assets.count(_.isInstanceOf[NonEeaBusinessAssetViewModel])),
       (Partnership, assets.count(_.isInstanceOf[PartnershipAssetViewModel])),
-      (Other, assets.count(_.isInstanceOf[OtherAssetViewModel])),
-      (NonEeaBusiness, assets.count(_.isInstanceOf[NonEeaBusinessAssetViewModel]))
+      (Other, assets.count(_.isInstanceOf[OtherAssetViewModel]))
     )
 
     def meetsLimitConditions(assetTypeCount: AssetTypeCount): Boolean = {

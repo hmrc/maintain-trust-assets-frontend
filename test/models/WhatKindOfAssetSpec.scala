@@ -160,9 +160,9 @@ class WhatKindOfAssetSpec extends WordSpec with MustMatchers with ScalaCheckProp
             RadioOption("whatKindOfAsset", PropertyOrLand.toString),
             RadioOption("whatKindOfAsset", Shares.toString),
             RadioOption("whatKindOfAsset", Business.toString),
+            RadioOption("whatKindOfAsset", NonEeaBusiness.toString),
             RadioOption("whatKindOfAsset", Partnership.toString),
-            RadioOption("whatKindOfAsset", Other.toString),
-            RadioOption("whatKindOfAsset", NonEeaBusiness.toString)
+            RadioOption("whatKindOfAsset", Other.toString)
           )
 
         }
@@ -179,9 +179,9 @@ class WhatKindOfAssetSpec extends WordSpec with MustMatchers with ScalaCheckProp
               RadioOption("whatKindOfAsset", PropertyOrLand.toString),
               RadioOption("whatKindOfAsset", Shares.toString),
               RadioOption("whatKindOfAsset", Business.toString),
+              RadioOption("whatKindOfAsset", NonEeaBusiness.toString),
               RadioOption("whatKindOfAsset", Partnership.toString),
-              RadioOption("whatKindOfAsset", Other.toString),
-              RadioOption("whatKindOfAsset", NonEeaBusiness.toString)
+              RadioOption("whatKindOfAsset", Other.toString)
             )
           }
 
@@ -191,9 +191,9 @@ class WhatKindOfAssetSpec extends WordSpec with MustMatchers with ScalaCheckProp
               RadioOption("whatKindOfAsset", PropertyOrLand.toString),
               RadioOption("whatKindOfAsset", Shares.toString),
               RadioOption("whatKindOfAsset", Business.toString),
+              RadioOption("whatKindOfAsset", NonEeaBusiness.toString),
               RadioOption("whatKindOfAsset", Partnership.toString),
-              RadioOption("whatKindOfAsset", Other.toString),
-              RadioOption("whatKindOfAsset", NonEeaBusiness.toString)
+              RadioOption("whatKindOfAsset", Other.toString)
             )
           }
         }
@@ -211,9 +211,9 @@ class WhatKindOfAssetSpec extends WordSpec with MustMatchers with ScalaCheckProp
               RadioOption("whatKindOfAsset", PropertyOrLand.toString),
               RadioOption("whatKindOfAsset", Shares.toString),
               RadioOption("whatKindOfAsset", Business.toString),
+              RadioOption("whatKindOfAsset", NonEeaBusiness.toString),
               RadioOption("whatKindOfAsset", Partnership.toString),
-              RadioOption("whatKindOfAsset", Other.toString),
-              RadioOption("whatKindOfAsset", NonEeaBusiness.toString)
+              RadioOption("whatKindOfAsset", Other.toString)
             )
           }
 
@@ -228,8 +228,8 @@ class WhatKindOfAssetSpec extends WordSpec with MustMatchers with ScalaCheckProp
               RadioOption("whatKindOfAsset", PropertyOrLand.toString),
               RadioOption("whatKindOfAsset", Shares.toString),
               RadioOption("whatKindOfAsset", Business.toString),
-              RadioOption("whatKindOfAsset", Partnership.toString),
-              RadioOption("whatKindOfAsset", NonEeaBusiness.toString)
+              RadioOption("whatKindOfAsset", NonEeaBusiness.toString),
+              RadioOption("whatKindOfAsset", Partnership.toString)
             )
           }
         }
@@ -247,9 +247,9 @@ class WhatKindOfAssetSpec extends WordSpec with MustMatchers with ScalaCheckProp
               RadioOption("whatKindOfAsset", PropertyOrLand.toString),
               RadioOption("whatKindOfAsset", Shares.toString),
               RadioOption("whatKindOfAsset", Business.toString),
+              RadioOption("whatKindOfAsset", NonEeaBusiness.toString),
               RadioOption("whatKindOfAsset", Partnership.toString),
-              RadioOption("whatKindOfAsset", Other.toString),
-              RadioOption("whatKindOfAsset", NonEeaBusiness.toString)
+              RadioOption("whatKindOfAsset", Other.toString)
             )
           }
 
