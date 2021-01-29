@@ -177,6 +177,13 @@ assetInterruptPage.paragraph8 = Tell us the name of the partnership, a descripti
 assetInterruptPage.subheading6 = Other assets
 assetInterruptPage.paragraph9 = You need to give a description of the asset and an estimate of its current value.
 
+assetInterruptPage.subheading7 = Non-European Economic Area (EEA) company
+assetInterruptPage.paragraph10 = Tell us the:
+assetInterruptPage.bullet11 = company name
+assetInterruptPage.bullet12 = company address
+assetInterruptPage.bullet13 = which country’s laws govern the country
+assetInterruptPage.bullet14 = the start date of the trust’s ownership or controlling interest in the company
+
 whatKindOfAsset.first.title = What kind of asset do you need to add first?
 whatKindOfAsset.next.title = What kind of asset do you need to add next?
 whatKindOfAsset.first.heading = What kind of asset do you need to add first?
