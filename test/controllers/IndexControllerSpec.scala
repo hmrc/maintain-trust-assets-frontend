@@ -17,24 +17,194 @@
 package controllers
 
 import base.SpecBase
+import controllers.asset.routes._
+import models.Status.Completed
+import models.{UserAnswers, WhatKindOfAsset}
+import org.mockito.ArgumentCaptor
+import org.mockito.Matchers.any
+import org.mockito.Mockito.{reset, verify, when}
+import pages.AssetStatus
+import pages.asset.WhatKindOfAssetPage
+import pages.asset.money.AssetMoneyValuePage
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.FeatureFlagService
+
+import scala.concurrent.Future
 
 class IndexControllerSpec extends SpecBase {
 
-  "Index Controller" must {
+  private val featureFlagService: FeatureFlagService = mock[FeatureFlagService]
 
-    "return OK and the correct view for a GET" in {
+  private lazy val onPageLoadRoute: String = routes.IndexController.onPageLoad(fakeDraftId).url
 
-      val application = applicationBuilder(userAnswers = None).build()
+  "Index Controller" when {
 
-      val request = FakeRequest(GET, routes.IndexController.onPageLoad("DRAFTID").url)
+    "pre-existing user answers" must {
 
-      val result = route(application, request).value
+      "redirect to AddAssetsController" when {
+        "existing assets" in {
 
-      status(result) mustEqual SEE_OTHER
+          reset(registrationsRepository)
 
-      application.stop()
+          val userAnswers: UserAnswers = emptyUserAnswers
+            .set(WhatKindOfAssetPage(0), WhatKindOfAsset.Money).success.value
+            .set(AssetMoneyValuePage(0), 100L).success.value
+            .set(AssetStatus(0), Completed).success.value
+
+          val application = applicationBuilder()
+            .overrides(bind[FeatureFlagService].toInstance(featureFlagService))
+            .build()
+
+          when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(Some(userAnswers)))
+          when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
+          when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
+
+          val request = FakeRequest(GET, onPageLoadRoute)
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustBe AddAssetsController.onPageLoad(fakeDraftId).url
+
+          application.stop()
+        }
+      }
+
+      "redirect to AssetInterruptPageController" when {
+        "no existing assets" in {
+
+          reset(registrationsRepository)
+
+          val application = applicationBuilder()
+            .overrides(bind[FeatureFlagService].toInstance(featureFlagService))
+            .build()
+
+          when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(Some(emptyUserAnswers)))
+          when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
+          when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
+
+          val request = FakeRequest(GET, onPageLoadRoute)
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustBe AssetInterruptPageController.onPageLoad(fakeDraftId).url
+
+          application.stop()
+        }
+      }
+
+      "update value of is5mldEnabled in user answers" in {
+
+        reset(registrationsRepository)
+
+        val userAnswers = emptyUserAnswers.copy(is5mldEnabled = false)
+
+        val application = applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(bind[FeatureFlagService].toInstance(featureFlagService))
+          .build()
+
+        when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(Some(userAnswers)))
+        when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
+        when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(true))
+
+        val request = FakeRequest(GET, onPageLoadRoute)
+
+        route(application, request).value.map { _ =>
+          val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+          verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
+
+          uaCaptor.getValue.is5mldEnabled mustBe true
+
+          application.stop()
+        }
+      }
+    }
+
+    "no pre-existing user answers" must {
+
+      "redirect to AssetInterruptPageController" in {
+
+        reset(registrationsRepository)
+
+        val application = applicationBuilder()
+          .overrides(bind[FeatureFlagService].toInstance(featureFlagService))
+          .build()
+
+        when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(None))
+        when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
+        when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
+
+        val request = FakeRequest(GET, onPageLoadRoute)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustBe AssetInterruptPageController.onPageLoad(fakeDraftId).url
+
+        application.stop()
+      }
+
+      "instantiate new set of user answers" when {
+
+        "5mld enabled" must {
+          "add is5mldEnabled = true to user answers" in {
+
+            reset(registrationsRepository)
+
+            val application = applicationBuilder(userAnswers = None)
+              .overrides(bind[FeatureFlagService].toInstance(featureFlagService))
+              .build()
+
+            when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(None))
+            when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
+            when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(true))
+
+            val request = FakeRequest(GET, onPageLoadRoute)
+
+            route(application, request).value.map { _ =>
+              val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+              verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
+
+              uaCaptor.getValue.is5mldEnabled mustBe true
+              uaCaptor.getValue.draftId mustBe fakeDraftId
+              uaCaptor.getValue.internalAuthId mustBe "internalId"
+
+              application.stop()
+            }
+          }
+        }
+
+        "5mld not enabled" must {
+          "add is5mldEnabled = false to user answers" in {
+
+            reset(registrationsRepository)
+
+            val application = applicationBuilder(userAnswers = None)
+              .overrides(bind[FeatureFlagService].toInstance(featureFlagService))
+              .build()
+
+            when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(None))
+            when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
+            when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
+
+            val request = FakeRequest(GET, onPageLoadRoute)
+
+            route(application, request).value.map { _ =>
+              val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+              verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
+
+              uaCaptor.getValue.is5mldEnabled mustBe false
+              uaCaptor.getValue.draftId mustBe fakeDraftId
+              uaCaptor.getValue.internalAuthId mustBe "internalId"
+
+              application.stop()
+            }
+          }
+        }
+      }
     }
   }
 }
