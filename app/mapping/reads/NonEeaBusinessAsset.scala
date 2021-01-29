@@ -25,12 +25,12 @@ import play.api.libs.json._
 import java.time.LocalDate
 
 final case class NonEeaBusinessAsset(override val whatKindOfAsset: WhatKindOfAsset,
-                                     orgName: String,
+                                     name: String,
                                      address: Address,
-                                     govLawCountry: String,
+                                     governingCountry: String,
                                      startDate: LocalDate) extends Asset {
 
-  override val arg: String = orgName
+  override val arg: String = name
 }
 
 object NonEeaBusinessAsset {

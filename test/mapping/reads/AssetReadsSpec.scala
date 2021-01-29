@@ -355,9 +355,9 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
         json.validate[Asset] mustBe JsSuccess(
           NonEeaBusinessAsset(
             whatKindOfAsset = WhatKindOfAsset.NonEeaBusiness,
-            orgName = "Name",
+            name = "Name",
             address = UKAddress("21 Test Lane", "Test Town", None, None, "AB1 1AB"),
-            govLawCountry = "GB",
+            governingCountry = "GB",
             startDate = LocalDate.parse("1996-02-03")
           )
         )
