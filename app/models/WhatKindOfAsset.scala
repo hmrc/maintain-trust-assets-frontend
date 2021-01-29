@@ -44,7 +44,10 @@ object WhatKindOfAsset extends Enumerable.Implicits {
 
   type AssetTypeCount = (WhatKindOfAsset, Int)
 
-  def nonMaxedOutOptions(assets: List[AssetViewModel], assetTypeAtIndex: Option[WhatKindOfAsset]): List[RadioOption] = {
+  def nonMaxedOutOptions(assets: List[AssetViewModel],
+                         assetTypeAtIndex: Option[WhatKindOfAsset],
+                         is5mldEnabled: Boolean): List[RadioOption] = {
+
     val assetTypeCounts: List[AssetTypeCount] = List(
       (Money, assets.count(_.isInstanceOf[MoneyAssetViewModel])),
       (PropertyOrLand, assets.count(_.isInstanceOf[PropertyOrLandAssetViewModel])),
@@ -52,7 +55,7 @@ object WhatKindOfAsset extends Enumerable.Implicits {
       (Business, assets.count(_.isInstanceOf[BusinessAssetViewModel])),
       (Partnership, assets.count(_.isInstanceOf[PartnershipAssetViewModel])),
       (Other, assets.count(_.isInstanceOf[OtherAssetViewModel])),
-      (NonEeaBusiness, 0) // TODO - create NonEeaBusinessAssetViewModel
+      (NonEeaBusiness, assets.count(_.isInstanceOf[NonEeaBusinessAssetViewModel]))
     )
 
     def meetsLimitConditions(assetTypeCount: AssetTypeCount): Boolean = {
@@ -66,10 +69,16 @@ object WhatKindOfAsset extends Enumerable.Implicits {
         meetsCondition(moneyAssetLimit, Money)
       }
 
-      val meetsNonMoneyAssetsConditions: Boolean = values.filterNot(_ == Money).foldLeft(false)((conditionAlreadyMet, assetType) => {
-        val limit: Int = if (assetType == NonEeaBusiness) 25 else 10 // TODO - if 4MLD set NonEeaBusiness asset limit to 0
-        meetsCondition(limit, assetType) || conditionAlreadyMet
-      })
+      val meetsNonMoneyAssetsConditions: Boolean = {
+        values.filterNot(_ == Money).foldLeft(false)((conditionAlreadyMet, assetType) => {
+          val limit: Int = assetType match {
+            case NonEeaBusiness if is5mldEnabled => 25
+            case NonEeaBusiness => 0
+            case _ => 10
+          }
+          meetsCondition(limit, assetType) || conditionAlreadyMet
+        })
+      }
 
       meetsMoneyAssetConditions || meetsNonMoneyAssetsConditions
     }
