@@ -19,7 +19,7 @@ package controllers.asset.partnership
 import config.annotations.Partnership
 import controllers.actions.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
 import controllers.filters.IndexActionFilterProvider
-import forms.partnership.PartnershipStartDateFormProvider
+import forms.StartDateFormProvider
 import navigation.Navigator
 import pages.asset.partnership.PartnershipStartDatePage
 import play.api.data.Form
@@ -40,12 +40,12 @@ class PartnershipStartDateController @Inject()(
                                                 getData: DraftIdRetrievalActionProvider,
                                                 validateIndex: IndexActionFilterProvider,
                                                 requireData: RegistrationDataRequiredAction,
-                                                formProvider: PartnershipStartDateFormProvider,
+                                                formProvider: StartDateFormProvider,
                                                 val controllerComponents: MessagesControllerComponents,
                                                 view: PartnershipStartDateView
                                               )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val form = formProvider()
+  private val form = formProvider.withPrefix("partnership.startDate")
 
   private def actions(index: Int, draftId: String) =
     identify andThen

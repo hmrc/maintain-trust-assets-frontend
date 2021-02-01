@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package views
+package config.annotations;
 
-import play.api.data.Form
-import play.api.i18n.Messages
+import com.google.inject.BindingAnnotation;
 
-object ViewUtils {
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-  def errorPrefix(form: Form[_])(implicit messages: Messages): String = {
-    if (form.hasErrors || form.hasGlobalErrors) messages("error.browser.title.prefix") else ""
-  }
-
-  def breadcrumbTitle(title: String)(implicit messages: Messages): String = {
-    s"$title - ${messages("site.service_section")} - ${messages("site.service_name")} - GOV.UK"
-  }
-}
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.PARAMETER, ElementType.METHOD, ElementType.FIELD})
+@BindingAnnotation
+public @interface NonEeaBusiness {}

@@ -15,24 +15,25 @@
  *@
 
 @import utils.InputOption
+
 @(
-field: Field,
-label: String,
-labelAsHeading: Boolean = false,
-hint: Option[String] = None,
-placeholder: Option[String] = None,
-options: Seq[InputOption],
-formGroupClasses: Set[String] = Set.empty,
-labelClasses: Set[String] = Set("form-label-bold"),
-selectClasses: Set[String] = Set.empty,
-selectAttribute: Set[String] = Set.empty
+    field: Field,
+    label: String,
+    labelAsHeading: Boolean = false,
+    hint: Option[String] = None,
+    placeholder: Option[String] = None,
+    options: Seq[InputOption],
+    formGroupClasses: Set[String] = Set.empty,
+    labelClasses: Set[String] = Set("form-label-bold"),
+    selectClasses: Set[String] = Set.empty,
+    selectAttribute: Set[String] = Set.empty
 )(implicit messages: Messages)
 
 <div id="@field.id-form" class='form-group @formGroupClasses.mkString(" ") @if(field.hasErrors) {form-group-error}'>
     @if(labelAsHeading){<h1 class="label-as-heading">}
-    <label id="@field.id-label" class="form-label" for="@field.id">
-        <span class='@labelClasses.mkString(" ")'>@messages(label)</span>
-    </label>
+        <label id="@field.id-label" class="form-label" for="@field.id">
+            <span class='@labelClasses.mkString(" ")'>@messages(label)</span>
+        </label>
     @if(labelAsHeading){</h1>}
     @hint.map{ hintText =>
         <span id="form-hint" class="form-hint">@messages(hintText)</span>

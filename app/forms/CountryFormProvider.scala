@@ -14,18 +14,24 @@
  * limitations under the License.
  */
 
-package views
+package forms
 
+import forms.mappings.Mappings
 import play.api.data.Form
-import play.api.i18n.Messages
 
-object ViewUtils {
+import javax.inject.Inject
 
-  def errorPrefix(form: Form[_])(implicit messages: Messages): String = {
-    if (form.hasErrors || form.hasGlobalErrors) messages("error.browser.title.prefix") else ""
-  }
+class CountryFormProvider @Inject() extends Mappings {
 
-  def breadcrumbTitle(title: String)(implicit messages: Messages): String = {
-    s"$title - ${messages("site.service_section")} - ${messages("site.service_name")} - GOV.UK"
-  }
+  def withPrefix(prefix: String): Form[String] =
+    Form(
+      "value" -> text(s"$prefix.error.required")
+        .verifying(
+          firstError(
+            maxLength(100, s"$prefix.error.length"),
+            regexp(Validation.countryRegex, s"$prefix.error.invalidCharacters"),
+            isNotEmpty("value", s"$prefix.error.required")
+          )
+        )
+    )
 }
