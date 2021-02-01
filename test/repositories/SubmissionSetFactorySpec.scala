@@ -55,11 +55,13 @@ class SubmissionSetFactorySpec extends SpecBase {
         val businessAnswersHelper: BusinessAnswersHelper = mock[BusinessAnswersHelper]
         val partnershipAnswersHelper: PartnershipAnswersHelper = mock[PartnershipAnswersHelper]
         val otherAnswersHelper: OtherAnswersHelper = mock[OtherAnswersHelper]
+        val nonEeaBusinessAnswersHelper: NonEeaBusinessAnswersHelper = mock[NonEeaBusinessAnswersHelper]
 
         when(moneyAnswersHelper(any())(any())).thenReturn(Nil)
         when(propertyOrLandAnswersHelper(any())(any())).thenReturn(Nil)
         when(sharesAnswersHelper(any())(any())).thenReturn(Nil)
         when(businessAnswersHelper(any())(any())).thenReturn(Nil)
+        when(nonEeaBusinessAnswersHelper(any())(any())).thenReturn(Nil)
 
         val factory = new SubmissionSetFactory(
           registrationProgress = registrationProgress,
@@ -69,7 +71,8 @@ class SubmissionSetFactorySpec extends SpecBase {
           sharesAnswersHelper = sharesAnswersHelper,
           businessAnswersHelper = businessAnswersHelper,
           partnershipAnswersHelper = partnershipAnswersHelper,
-          otherAnswersHelper = otherAnswersHelper
+          otherAnswersHelper = otherAnswersHelper,
+          nonEeaBusinessAnswersHelper = nonEeaBusinessAnswersHelper
         )
 
         def assetSection(heading: String): AnswerSection = {

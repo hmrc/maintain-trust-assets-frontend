@@ -34,7 +34,8 @@ class SubmissionSetFactory @Inject()(registrationProgress: RegistrationProgress,
                                      sharesAnswersHelper: SharesAnswersHelper,
                                      businessAnswersHelper: BusinessAnswersHelper,
                                      partnershipAnswersHelper: PartnershipAnswersHelper,
-                                     otherAnswersHelper: OtherAnswersHelper) {
+                                     otherAnswersHelper: OtherAnswersHelper,
+                                     nonEeaBusinessAnswersHelper: NonEeaBusinessAnswersHelper) {
 
   def createFrom(userAnswers: UserAnswers)(implicit messages: Messages): RegistrationSubmission.DataSet = {
     val status = registrationProgress.assetsStatus(userAnswers)
@@ -69,7 +70,8 @@ class SubmissionSetFactory @Inject()(registrationProgress: RegistrationProgress,
         sharesAnswersHelper(userAnswers),
         businessAnswersHelper(userAnswers),
         partnershipAnswersHelper(userAnswers),
-        otherAnswersHelper(userAnswers)
+        otherAnswersHelper(userAnswers),
+        nonEeaBusinessAnswersHelper(userAnswers)
       ).flatten
 
       val updatedFirstSection: AnswerSection = AnswerSection(
