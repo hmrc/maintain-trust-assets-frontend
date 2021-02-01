@@ -17,44 +17,47 @@
 package controllers
 
 import controllers.actions.RegistrationIdentifierAction
-import javax.inject.Inject
+import controllers.asset.routes._
 import models.UserAnswers
 import play.api.i18n.I18nSupport
 import play.api.libs.json.Json
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.RegistrationsRepository
+import services.FeatureFlagService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class IndexController @Inject()(
                                  val controllerComponents: MessagesControllerComponents,
                                  repository: RegistrationsRepository,
-                                 identify: RegistrationIdentifierAction
-                               ) extends FrontendBaseController with I18nSupport {
-
-  implicit val executionContext: ExecutionContext =
-    scala.concurrent.ExecutionContext.Implicits.global
+                                 identify: RegistrationIdentifierAction,
+                                 featureFlagService: FeatureFlagService
+                               )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(draftId: String): Action[AnyContent] = identify.async { implicit request =>
 
-    repository.get(draftId) flatMap {
-      case Some(userAnswers) =>
-        Future.successful(redirect(draftId, userAnswers))
-      case _ =>
-        val userAnswers = UserAnswers(draftId, Json.obj(), request.identifier)
-        repository.set(userAnswers) map {
-          _ => redirect(draftId, userAnswers)
+    def redirect(userAnswers: UserAnswers): Future[Result] = {
+      repository.set(userAnswers).map { _ =>
+        userAnswers.get(sections.Assets) match {
+          case Some(_ :: _) =>
+            Redirect(AddAssetsController.onPageLoad(draftId))
+          case _ =>
+            Redirect(AssetInterruptPageController.onPageLoad(draftId))
         }
+      }
     }
-  }
 
-  private def redirect(draftId: String, userAnswers: UserAnswers) = {
-    userAnswers.get(sections.Assets) match {
-      case Some(_ :: _) =>
-        Redirect(controllers.asset.routes.AddAssetsController.onPageLoad(draftId))
-      case _ =>
-        Redirect(controllers.asset.routes.AssetInterruptPageController.onPageLoad(draftId))
+    featureFlagService.is5mldEnabled() flatMap {
+      is5mldEnabled =>
+        repository.get(draftId) flatMap {
+          case Some(userAnswers) =>
+            redirect(userAnswers.copy(is5mldEnabled = is5mldEnabled))
+          case _ =>
+            val userAnswers = UserAnswers(draftId, Json.obj(), request.identifier, is5mldEnabled)
+            redirect(userAnswers)
+        }
     }
   }
 }

@@ -20,7 +20,10 @@ import models._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 
+import java.time.LocalDate
+
 trait ModelGenerators {
+
   implicit lazy val arbitraryWhatKindOfAsset: Arbitrary[WhatKindOfAsset] =
     Arbitrary {
       Gen.oneOf(WhatKindOfAsset.values)
@@ -41,16 +44,36 @@ trait ModelGenerators {
     Arbitrary {
       for {
         str <- arbitrary[String]
-      } yield InternationalAddress(str,str,Some(str),str)
+      } yield InternationalAddress(str, str, Some(str), str)
     }
 
   implicit lazy val arbitraryShareClass: Arbitrary[ShareClass] =
     Arbitrary {
-      Gen.oneOf(ShareClass.allValues.toSeq)
+      Gen.oneOf(ShareClass.allValues)
     }
 
   implicit lazy val arbitraryAddAssets: Arbitrary[AddAssets] =
     Arbitrary {
       Gen.oneOf(AddAssets.values)
     }
+
+  implicit lazy val arbitraryLocalDate: Arbitrary[LocalDate] = {
+    Arbitrary {
+      for {
+        year <- Gen.choose(min = 1500, max = 2099)
+        month <- Gen.choose(1, 12)
+        day <- Gen.choose(
+          min = 1,
+          max = month match {
+            case 2 if year % 4 == 0 => 29
+            case 2 => 28
+            case 4 | 6 | 9 | 11 => 30
+            case _ => 31
+          }
+        )
+      } yield {
+        LocalDate.of(year, month, day)
+      }
+    }
+  }
 }

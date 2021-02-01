@@ -26,7 +26,8 @@ class AssetMapper @Inject()(moneyAssetMapper: MoneyAssetMapper,
                             shareAssetMapper: ShareAssetMapper,
                             businessAssetMapper: BusinessAssetMapper,
                             partnershipAssetMapper: PartnershipAssetMapper,
-                            otherAssetMapper: OtherAssetMapper) extends Logging {
+                            otherAssetMapper: OtherAssetMapper,
+                            nonEeaBusinessAssetMapper: NonEeaBusinessAssetMapper) extends Logging {
 
   def build(userAnswers: UserAnswers): Option[Assets] = {
 
@@ -36,9 +37,10 @@ class AssetMapper @Inject()(moneyAssetMapper: MoneyAssetMapper,
     val business = businessAssetMapper.build(userAnswers)
     val partnership = partnershipAssetMapper.build(userAnswers)
     val other = otherAssetMapper.build(userAnswers)
+    val nonEeaBusiness = nonEeaBusinessAssetMapper.build(userAnswers)
 
-    (money, propertyOrLand, shares, business, partnership, other) match {
-      case (None, None, None, None, None, None) =>
+    (money, propertyOrLand, shares, business, partnership, other, nonEeaBusiness) match {
+      case (None, None, None, None, None, None, None) =>
         logger.info(s"[build] unable to map assets")
         None
       case _ =>
@@ -49,7 +51,8 @@ class AssetMapper @Inject()(moneyAssetMapper: MoneyAssetMapper,
             shares = shares,
             business = business,
             partnerShip = partnership,
-            other = other
+            other = other,
+            nonEeaBusiness = nonEeaBusiness
           )
         )
     }

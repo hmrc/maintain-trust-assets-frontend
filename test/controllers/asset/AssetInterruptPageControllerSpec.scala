@@ -25,22 +25,47 @@ class AssetInterruptPageControllerSpec extends SpecBase {
 
   "AssetInterruptPage Controller" must {
 
-    "return OK and the correct view for a GET" in {
+    "return OK and the correct view for a GET" when {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      "4mld" in {
 
-      val request = FakeRequest(GET, routes.AssetInterruptPageController.onPageLoad(fakeDraftId).url)
+        val is5mldEnabled: Boolean = false
 
-      val result = route(application, request).value
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(is5mldEnabled = is5mldEnabled))).build()
 
-      val view = application.injector.instanceOf[AssetInterruptPageView]
+        val request = FakeRequest(GET, routes.AssetInterruptPageController.onPageLoad(fakeDraftId).url)
 
-      status(result) mustEqual OK
+        val result = route(application, request).value
 
-      contentAsString(result) mustEqual
-        view(fakeDraftId)(fakeRequest, messages).toString
+        val view = application.injector.instanceOf[AssetInterruptPageView]
 
-      application.stop()
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(fakeDraftId, is5mldEnabled)(fakeRequest, messages).toString
+
+        application.stop()
+      }
+
+      "5mld" in {
+
+        val is5mldEnabled: Boolean = true
+
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(is5mldEnabled = is5mldEnabled))).build()
+
+        val request = FakeRequest(GET, routes.AssetInterruptPageController.onPageLoad(fakeDraftId).url)
+
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[AssetInterruptPageView]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(fakeDraftId, is5mldEnabled)(fakeRequest, messages).toString
+
+        application.stop()
+      }
     }
 
     "redirect to the correct page for a POST" in {
@@ -53,7 +78,7 @@ class AssetInterruptPageControllerSpec extends SpecBase {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe controllers.asset.routes.WhatKindOfAssetController.onPageLoad(0,fakeDraftId).url
+      redirectLocation(result).value mustBe controllers.asset.routes.WhatKindOfAssetController.onPageLoad(0, fakeDraftId).url
 
       application.stop()
     }

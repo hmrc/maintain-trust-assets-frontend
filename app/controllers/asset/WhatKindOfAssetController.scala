@@ -53,7 +53,7 @@ class WhatKindOfAssetController @Inject()(
     val assets = userAnswers.get(sections.Assets).getOrElse(Nil)
     val assetTypeAtIndex = userAnswers.get(WhatKindOfAssetPage(index))
 
-    WhatKindOfAsset.nonMaxedOutOptions(assets, assetTypeAtIndex)
+    WhatKindOfAsset.nonMaxedOutOptions(assets, assetTypeAtIndex, userAnswers.is5mldEnabled)
   }
 
   private def actions (index: Int, draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] =

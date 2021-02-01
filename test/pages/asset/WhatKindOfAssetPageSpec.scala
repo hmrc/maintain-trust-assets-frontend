@@ -204,4 +204,33 @@ class WhatKindOfAssetPageSpec extends PageBehaviours {
         result.get(AssetStatus(0)) mustNot be(defined)
     }
   }
+
+  "remove non-EEA business when changing type of asset" in {
+
+    val kindOfAsset = arbitrary[WhatKindOfAsset] suchThat (x => x != WhatKindOfAsset.NonEeaBusiness)
+
+    forAll(arbitrary[UserAnswers], kindOfAsset) {
+      (initial, kind) =>
+        val answers: UserAnswers = initial
+          .set(noneeabusiness.NamePage(0), str).success.value
+          .set(noneeabusiness.AddressUkYesNoPage(0), true).success.value
+          .set(noneeabusiness.UkAddressPage(0), ukAddress).success.value
+          .set(noneeabusiness.InternationalAddressPage(0), internationalAddress).success.value
+          .set(noneeabusiness.GoverningCountryPage(0), str).success.value
+          .set(noneeabusiness.StartDatePage(0), date).success.value
+          .set(AssetStatus(0), Status.Completed).success.value
+
+        val result = answers.set(WhatKindOfAssetPage(0), kind).success.value
+
+        result.get(WhatKindOfAssetPage(0)).value mustEqual kind
+
+        result.get(noneeabusiness.NamePage(0)) mustNot be(defined)
+        result.get(noneeabusiness.AddressUkYesNoPage(0)) mustNot be(defined)
+        result.get(noneeabusiness.UkAddressPage(0)) mustNot be(defined)
+        result.get(noneeabusiness.InternationalAddressPage(0)) mustNot be(defined)
+        result.get(noneeabusiness.GoverningCountryPage(0)) mustNot be(defined)
+        result.get(noneeabusiness.StartDatePage(0)) mustNot be(defined)
+        result.get(AssetStatus(0)) mustNot be(defined)
+    }
+  }
 }

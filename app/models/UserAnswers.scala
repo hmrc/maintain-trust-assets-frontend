@@ -25,7 +25,8 @@ import scala.util.{Failure, Success, Try}
 final case class UserAnswers(
                               draftId: String,
                               data: JsObject = Json.obj(),
-                              internalAuthId: String
+                              internalAuthId: String,
+                              is5mldEnabled: Boolean = false
                             ) extends Logging {
 
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] = {
@@ -88,7 +89,8 @@ object UserAnswers {
     (
       (__ \ "_id").read[String] and
         (__ \ "data").read[JsObject] and
-        (__ \ "internalId").read[String]
+        (__ \ "internalId").read[String] and
+        (__ \ "is5mldEnabled").read[Boolean]
       ) (UserAnswers.apply _)
   }
 
@@ -99,7 +101,8 @@ object UserAnswers {
     (
       (__ \ "_id").write[String] and
         (__ \ "data").write[JsObject] and
-        (__ \ "internalId").write[String]
+        (__ \ "internalId").write[String] and
+        (__ \ "is5mldEnabled").write[Boolean]
       ) (unlift(UserAnswers.unapply))
   }
 }

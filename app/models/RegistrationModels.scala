@@ -27,7 +27,8 @@ case class Assets(monetary: Option[List[AssetMonetaryAmount]],
                   shares: Option[List[SharesType]],
                   business: Option[List[BusinessAssetType]],
                   partnerShip: Option[List[PartnershipType]],
-                  other: Option[List[OtherAssetType]])
+                  other: Option[List[OtherAssetType]],
+                  nonEeaBusiness: Option[List[NonEeaBusinessType]])
 
 object Assets {
   implicit val assetsFormat: Format[Assets] = Json.format[Assets]
@@ -80,6 +81,15 @@ case class SharesType(numberOfShares: String,
 
 object SharesType {
   implicit val sharesTypeFormat: Format[SharesType] = Json.format[SharesType]
+}
+
+case class NonEeaBusinessType(orgName: String,
+                              address: AddressType,
+                              govLawCountry: String,
+                              startDate: LocalDate) extends AssetType
+
+object NonEeaBusinessType {
+  implicit val format: Format[NonEeaBusinessType] = Json.format[NonEeaBusinessType]
 }
 
 case class AddressType(line1: String,

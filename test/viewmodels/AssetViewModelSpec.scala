@@ -430,6 +430,111 @@ class AssetViewModelSpec extends FreeSpec with MustMatchers with ScalaCheckPrope
           )
         }
       }
+
+      "non-EEA business" - {
+
+        "with no name" - {
+
+          "to a view model that is not complete" in {
+            val json = Json.parse(
+              """
+                |{
+                |  "whatKindOfAsset" : "NonEeaBusiness",
+                |  "status": "progress"
+                |}
+            """.stripMargin)
+
+            json.validate[AssetViewModel] mustEqual JsSuccess(
+              NonEeaBusinessAssetViewModel(NonEeaBusiness, None, InProgress)
+            )
+          }
+        }
+
+        "with uk address" - {
+
+          "to a view model that is not complete" in {
+            val json = Json.parse(
+              """
+                |{
+                |  "nonEeaBusinessName": "Business Ltd",
+                |  "nonEeaBusinessAddressUkYesNo": true,
+                |  "whatKindOfAsset" : "NonEeaBusiness",
+                |  "status": "progress"
+                |}
+            """.stripMargin)
+
+            json.validate[AssetViewModel] mustEqual JsSuccess(
+              NonEeaBusinessAssetViewModel(NonEeaBusiness, Some("Business Ltd"), InProgress)
+            )
+          }
+
+          "to a view model that is complete" in {
+            val json = Json.parse(
+              """
+                |{
+                |  "nonEeaBusinessName": "Business Ltd",
+                |  "nonEeaBusinessAddressUkYesNo": true,
+                |  "nonEeaBusinessUkAddress": {
+                |    "line1": "line 1",
+                |    "line2": "Line 2",
+                |    "postcode": "AB1 1AB"
+                |  },
+                |  "nonEeaBusinessGoverningCountry": "GB",
+                |  "nonEeaBusinessStartDate": "1996-02-03",
+                |  "whatKindOfAsset": "NonEeaBusiness",
+                |  "status": "completed"
+                |}
+            """.stripMargin)
+
+            json.validate[AssetViewModel] mustEqual JsSuccess(
+              NonEeaBusinessAssetViewModel(NonEeaBusiness, Some("Business Ltd"), Completed)
+            )
+          }
+
+        }
+
+        "with international address" - {
+
+          "to a view model that is not complete" in {
+            val json = Json.parse(
+              """
+                |{
+                |  "nonEeaBusinessName": "Business Ltd",
+                |  "nonEeaBusinessAddressUkYesNo": false,
+                |  "whatKindOfAsset": "NonEeaBusiness",
+                |  "status": "progress"
+                |}
+            """.stripMargin)
+
+            json.validate[AssetViewModel] mustEqual JsSuccess(
+              NonEeaBusinessAssetViewModel(NonEeaBusiness, Some("Business Ltd"), InProgress)
+            )
+          }
+
+          "to a view model that is complete" in {
+            val json = Json.parse(
+              """
+                |{
+                |  "nonEeaBusinessName": "Business Ltd",
+                |  "nonEeaBusinessAddressUkYesNo": false,
+                |  "nonEeaBusinessInternationalAddress": {
+                |    "line1": "line 1",
+                |    "line2": "line 2",
+                |    "country": "FR"
+                |  },
+                |  "nonEeaBusinessGoverningCountry": "FR",
+                |  "nonEeaBusinessStartDate": "1996-02-03",
+                |  "whatKindOfAsset": "NonEeaBusiness",
+                |  "status": "completed"
+                |}
+            """.stripMargin)
+
+            json.validate[AssetViewModel] mustEqual JsSuccess(
+              NonEeaBusinessAssetViewModel(NonEeaBusiness, Some("Business Ltd"), Completed)
+            )
+          }
+        }
+      }
     }
   }
 }

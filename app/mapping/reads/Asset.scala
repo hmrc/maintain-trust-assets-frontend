@@ -39,12 +39,13 @@ object Asset {
 
   implicit lazy val reads : Reads[Asset] = {
     MoneyAsset.reads or
-    PropertyOrLandAsset.reads or
-    ShareNonPortfolioAsset.reads or
-    SharePortfolioAsset.reads or
-    BusinessAsset.reads or
-    PartnershipAsset.reads or
-    OtherAsset.reads
+      PropertyOrLandAsset.reads or
+      ShareNonPortfolioAsset.reads or
+      SharePortfolioAsset.reads or
+      BusinessAsset.reads or
+      PartnershipAsset.reads or
+      OtherAsset.reads or
+      NonEeaBusinessAsset.reads
   }
 
 }

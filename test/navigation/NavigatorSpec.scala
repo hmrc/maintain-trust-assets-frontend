@@ -172,6 +172,18 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
               .mustBe(other.routes.OtherAssetDescriptionController.onPageLoad(index, fakeDraftId))
         }
       }
+
+      "go to feature unavailable page when NonEeaBusiness is selected" in {
+
+        forAll(arbitrary[UserAnswers]) {
+          userAnswers =>
+
+            val answers = userAnswers.set(WhatKindOfAssetPage(index), NonEeaBusiness).success.value
+
+            navigator.nextPage(WhatKindOfAssetPage(index), fakeDraftId)(answers)
+              .mustBe(controllers.routes.FeatureNotAvailableController.onPageLoad())
+        }
+      }
     }
   }
 }

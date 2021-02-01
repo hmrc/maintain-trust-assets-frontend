@@ -127,6 +127,15 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
 
         json.validate[Asset] mustBe a[JsError]
       }
+
+      "a non-EEA business asset of the incorrect structure" in {
+        val json = Json.obj(
+          "whatKindOfAsset" -> "NonEeaBusiness",
+          "nonEeaBusinessName" -> "Name"
+        )
+
+        json.validate[Asset] mustBe a[JsError]
+      }
     }
 
     "must deserialise" - {
@@ -323,6 +332,33 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
             whatKindOfAsset = WhatKindOfAsset.Other,
             description = "Description",
             value = 4000L
+          )
+        )
+      }
+
+      "a non-EEA business asset" in {
+        val json = Json.parse(
+          """
+            |{
+            |  "whatKindOfAsset": "NonEeaBusiness",
+            |  "nonEeaBusinessName": "Name",
+            |  "nonEeaBusinessUkAddress": {
+            |     "line1": "21 Test Lane",
+            |     "line2": "Test Town",
+            |     "postcode": "AB1 1AB"
+            |  },
+            |  "nonEeaBusinessGoverningCountry": "GB",
+            |  "nonEeaBusinessStartDate": "1996-02-03"
+            |}
+          """.stripMargin)
+
+        json.validate[Asset] mustBe JsSuccess(
+          NonEeaBusinessAsset(
+            whatKindOfAsset = WhatKindOfAsset.NonEeaBusiness,
+            name = "Name",
+            address = UKAddress("21 Test Lane", "Test Town", None, None, "AB1 1AB"),
+            governingCountry = "GB",
+            startDate = LocalDate.parse("1996-02-03")
           )
         )
       }

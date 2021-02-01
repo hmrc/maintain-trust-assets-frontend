@@ -134,7 +134,7 @@ addAssets.singular.title = Add assets
 
 addAssets.propertyOrLand = Property or Land
 
-addAssets.maxedOut.p1 = You cannot add another asset as you have entered a maximum of 51.
+addAssets.maxedOut.p1 = You cannot add another asset as you have entered a maximum of {0}.
 addAssets.maxedOut.p2 = You can add another asset by removing an existing one, or write to HMRC with details of any additional assets.
 
 assets.defaultText = the asset
@@ -177,6 +177,13 @@ assetInterruptPage.paragraph8 = Tell us the name of the partnership, a descripti
 assetInterruptPage.subheading6 = Other assets
 assetInterruptPage.paragraph9 = You need to give a description of the asset and an estimate of its current value.
 
+assetInterruptPage.subheading7 = Non-European Economic Area (EEA) company
+assetInterruptPage.paragraph10 = Tell us the:
+assetInterruptPage.bullet11 = company name
+assetInterruptPage.bullet12 = company address
+assetInterruptPage.bullet13 = which country’s laws govern the country
+assetInterruptPage.bullet14 = the start date of the trust’s ownership or controlling interest in the company
+
 whatKindOfAsset.first.title = What kind of asset do you need to add first?
 whatKindOfAsset.next.title = What kind of asset do you need to add next?
 whatKindOfAsset.first.heading = What kind of asset do you need to add first?
@@ -187,6 +194,7 @@ whatKindOfAsset.Shares = Shares
 whatKindOfAsset.Business = Business
 whatKindOfAsset.Partnership = Partnership
 whatKindOfAsset.Other = Other
+whatKindOfAsset.NonEeaBusiness = Non-EEA Company
 whatKindOfAsset.first.checkYourAnswersLabel = What kind of asset do you need to add first?
 whatKindOfAsset.next.checkYourAnswersLabel = What kind of asset do you need to add next?
 whatKindOfAsset.error.required = Select the kind of asset you need to add

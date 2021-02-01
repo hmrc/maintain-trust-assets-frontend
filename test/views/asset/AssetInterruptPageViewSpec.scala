@@ -21,41 +21,88 @@ import views.html.asset.AssetInterruptPageView
 
 class AssetInterruptPageViewSpec extends ViewBehaviours {
 
-  "AssetInterruptPage view" must {
+  "AssetInterruptPage view" when {
 
-    val view = viewFor[AssetInterruptPageView](Some(emptyUserAnswers))
+    "4mld" must {
 
-    val applyView = view.apply(fakeDraftId)(fakeRequest, messages)
+      val view = viewFor[AssetInterruptPageView](Some(emptyUserAnswers))
 
-    behave like normalPage(applyView, "assetInterruptPage", "title",
-      "subheading1",
-      "paragraph1",
-      "subheading2",
-      "paragraph2",
-      "bullet1",
-      "bullet2",
-      "bullet3",
-      "paragraph3",
-      "subheading3",
-      "paragraph4",
-      "bullet4",
-      "bullet5",
-      "bullet6",
-      "paragraph5",
-      "paragraph6",
-      "subheading4",
-      "paragraph7",
-      "bullet7",
-      "bullet8",
-      "bullet9",
-      "bullet10",
-      "subheading5",
-      "paragraph8",
-      "subheading6",
-      "paragraph9")
+      val applyView = view.apply(fakeDraftId, is5mldEnabled = false)(fakeRequest, messages)
 
+      behave like normalPage(applyView, "assetInterruptPage",
+        "title",
+        "subheading1",
+        "paragraph1",
+        "subheading2",
+        "paragraph2",
+        "bullet1",
+        "bullet2",
+        "bullet3",
+        "paragraph3",
+        "subheading3",
+        "paragraph4",
+        "bullet4",
+        "bullet5",
+        "bullet6",
+        "paragraph5",
+        "paragraph6",
+        "subheading4",
+        "paragraph7",
+        "bullet7",
+        "bullet8",
+        "bullet9",
+        "bullet10",
+        "subheading5",
+        "paragraph8",
+        "subheading6",
+        "paragraph9"
+      )
 
-    behave like pageWithBackLink(applyView)
+      behave like pageWithBackLink(applyView)
+    }
 
+    "5mld" must {
+
+      val view = viewFor[AssetInterruptPageView](Some(emptyUserAnswers))
+
+      val applyView = view.apply(fakeDraftId, is5mldEnabled = true)(fakeRequest, messages)
+
+      behave like normalPage(applyView, "assetInterruptPage",
+        "title",
+        "subheading1",
+        "paragraph1",
+        "subheading2",
+        "paragraph2",
+        "bullet1",
+        "bullet2",
+        "bullet3",
+        "paragraph3",
+        "subheading3",
+        "paragraph4",
+        "bullet4",
+        "bullet5",
+        "bullet6",
+        "paragraph5",
+        "paragraph6",
+        "subheading4",
+        "paragraph7",
+        "bullet7",
+        "bullet8",
+        "bullet9",
+        "bullet10",
+        "subheading7",
+        "paragraph10",
+        "bullet11",
+        "bullet12",
+        "bullet13",
+        "bullet14",
+        "subheading5",
+        "paragraph8",
+        "subheading6",
+        "paragraph9"
+      )
+
+      behave like pageWithBackLink(applyView)
+    }
   }
 }

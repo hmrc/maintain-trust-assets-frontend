@@ -235,65 +235,125 @@ class AddAssetsControllerSpec extends SpecBase {
       }
     }
 
-    "assets maxed out" must {
+    "assets maxed out" when {
 
-      val max: Int = 51
       val description: String = "Description"
 
-      val userAnswers = 0.until(max).foldLeft(emptyUserAnswers)((ua, i) => {
-        ua
-          .set(WhatKindOfAssetPage(i), Other).success.value
-          .set(OtherAssetDescriptionPage(i), description).success.value
-          .set(AssetStatus(i), Completed).success.value
-      })
+      def userAnswers(max: Int, is5mldEnabled: Boolean): UserAnswers = {
+        0.until(max).foldLeft(emptyUserAnswers.copy(is5mldEnabled = is5mldEnabled))((ua, i) => {
+          ua
+            .set(WhatKindOfAssetPage(i), Other).success.value
+            .set(OtherAssetDescriptionPage(i), description).success.value
+            .set(AssetStatus(i), Completed).success.value
+        })
+      }
 
-      lazy val assets = 0.until(max).foldLeft[List[AddRow]](List())((acc, i) => {
+      def assets(max: Int): List[AddRow] = 0.until(max).foldLeft[List[AddRow]](List())((acc, i) => {
         acc :+ AddRow(description, typeLabel = "Other", changeOtherAssetRoute(i), removeAssetYesNoRoute(i))
       })
 
-      "return OK and the correct view for a GET" in {
+      "4mld" must {
 
-        val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+        val max: Int = 51
 
-        val request = FakeRequest(GET, addAssetsRoute)
+        val is5mldEnabled: Boolean = false
 
-        val view = application.injector.instanceOf[MaxedOutView]
+        "return OK and the correct view for a GET" in {
 
-        val result = route(application, request).value
+          val application = applicationBuilder(userAnswers = Some(userAnswers(max, is5mldEnabled))).build()
 
-        status(result) mustEqual OK
+          val request = FakeRequest(GET, addAssetsRoute)
 
-        val content = contentAsString(result)
+          val view = application.injector.instanceOf[MaxedOutView]
 
-        content mustEqual
-          view(fakeDraftId, Nil, assets, "You have added 51 assets")(request, messages).toString
+          val result = route(application, request).value
 
-        content must include("You cannot add another asset as you have entered a maximum of 51.")
-        content must include("You can add another asset by removing an existing one, or write to HMRC with details of any additional assets.")
+          status(result) mustEqual OK
 
-        application.stop()
+          val content = contentAsString(result)
+
+          content mustEqual
+            view(fakeDraftId, Nil, assets(max), "You have added 51 assets", 51)(request, messages).toString
+
+          content must include("You cannot add another asset as you have entered a maximum of 51.")
+          content must include("You can add another asset by removing an existing one, or write to HMRC with details of any additional assets.")
+
+          application.stop()
+        }
+
+        "redirect to next page and set AddAssetsPage to NoComplete for a POST" in {
+
+          reset(registrationsRepository)
+          when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
+          val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+
+          val application = applicationBuilder(userAnswers = Some(userAnswers(max, is5mldEnabled))).build()
+
+          val request = FakeRequest(POST, completePostRoute)
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+
+          redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
+
+          verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
+          uaCaptor.getValue.get(AddAssetsPage).get mustBe NoComplete
+
+          application.stop()
+        }
       }
 
-      "redirect to next page and set AddAssetsPage to NoComplete for a POST" in {
+      "5mld" must {
 
-        reset(registrationsRepository)
-        when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
-        val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+        val max: Int = 76
 
-        val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+        val is5mldEnabled: Boolean = true
 
-        val request = FakeRequest(POST, completePostRoute)
+        "return OK and the correct view for a GET" in {
 
-        val result = route(application, request).value
+          val application = applicationBuilder(userAnswers = Some(userAnswers(max, is5mldEnabled))).build()
 
-        status(result) mustEqual SEE_OTHER
+          val request = FakeRequest(GET, addAssetsRoute)
 
-        redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
+          val view = application.injector.instanceOf[MaxedOutView]
 
-        verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
-        uaCaptor.getValue.get(AddAssetsPage).get mustBe NoComplete
+          val result = route(application, request).value
 
-        application.stop()
+          status(result) mustEqual OK
+
+          val content = contentAsString(result)
+
+          content mustEqual
+            view(fakeDraftId, Nil, assets(max), "You have added 76 assets", 76)(request, messages).toString
+
+          content must include("You cannot add another asset as you have entered a maximum of 76.")
+          content must include("You can add another asset by removing an existing one, or write to HMRC with details of any additional assets.")
+
+          application.stop()
+        }
+
+        "redirect to next page and set AddAssetsPage to NoComplete for a POST" in {
+
+          reset(registrationsRepository)
+          when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
+          val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+
+          val application = applicationBuilder(userAnswers = Some(userAnswers(max, is5mldEnabled))).build()
+
+          val request = FakeRequest(POST, completePostRoute)
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+
+          redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
+
+          verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
+          uaCaptor.getValue.get(AddAssetsPage).get mustBe NoComplete
+
+          application.stop()
+        }
       }
     }
   }

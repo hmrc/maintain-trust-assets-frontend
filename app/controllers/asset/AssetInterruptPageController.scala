@@ -35,7 +35,7 @@ class AssetInterruptPageController @Inject()(
 
   def onPageLoad(draftId: String): Action[AnyContent] = (identify andThen getData(draftId) andThen requireData) {
     implicit request =>
-      Ok(view(draftId))
+      Ok(view(draftId, request.userAnswers.is5mldEnabled))
   }
 
   def onSubmit(draftId: String): Action[AnyContent] = (identify andThen getData(draftId) andThen requireData) {

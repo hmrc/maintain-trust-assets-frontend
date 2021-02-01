@@ -19,17 +19,17 @@ package pages.asset
 import models.WhatKindOfAsset._
 import models.{UserAnswers, WhatKindOfAsset}
 import pages.asset.WhatKindOfAssetPage.key
-import pages.{AssetStatus, QuestionPage}
+import pages.asset.business._
 import pages.asset.money._
+import pages.asset.other._
+import pages.asset.partnership._
 import pages.asset.property_or_land._
 import pages.asset.shares._
-import pages.asset.business._
-import pages.asset.partnership._
-import pages.asset.other._
+import pages.{AssetStatus, QuestionPage}
 import play.api.libs.json.JsPath
 import sections.Assets
 
-import scala.util.Try
+import scala.util.{Success, Try}
 
 final case class WhatKindOfAssetPage(index: Int) extends QuestionPage[WhatKindOfAsset] {
 
@@ -39,51 +39,41 @@ final case class WhatKindOfAssetPage(index: Int) extends QuestionPage[WhatKindOf
 
   override def cleanup(value: Option[WhatKindOfAsset], userAnswers: UserAnswers): Try[UserAnswers] = {
     value match {
-
       case Some(Money) =>
-        removeShare(userAnswers)
-          .flatMap(removePropertyOrLand)
-          .flatMap(removePartnership)
-          .flatMap(removeOther)
-          .flatMap(removeBusiness)
-
-      case Some(Shares) =>
-        removeMoney(userAnswers)
-          .flatMap(removePropertyOrLand)
-          .flatMap(removePartnership)
-          .flatMap(removeOther)
-          .flatMap(removeBusiness)
-
+        doCleanup(userAnswers, WhatKindOfAsset.values.filterNot(_ == Money))
       case Some(PropertyOrLand) =>
-        removeMoney(userAnswers)
-          .flatMap(removeShare)
-          .flatMap(removePartnership)
-          .flatMap(removeOther)
-          .flatMap(removeBusiness)
-
+        doCleanup(userAnswers, WhatKindOfAsset.values.filterNot(_ == PropertyOrLand))
+      case Some(Shares) =>
+        doCleanup(userAnswers, WhatKindOfAsset.values.filterNot(_ == Shares))
       case Some(Business) =>
-        removeMoney(userAnswers)
-          .flatMap(removePropertyOrLand)
-          .flatMap(removeShare)
-          .flatMap(removePartnership)
-          .flatMap(removeOther)
-
+        doCleanup(userAnswers, WhatKindOfAsset.values.filterNot(_ == Business))
       case Some(Partnership) =>
-        removeMoney(userAnswers)
-          .flatMap(removePropertyOrLand)
-          .flatMap(removeShare)
-          .flatMap(removeOther)
-          .flatMap(removeBusiness)
-
+        doCleanup(userAnswers, WhatKindOfAsset.values.filterNot(_ == Partnership))
       case Some(Other) =>
-        removeMoney(userAnswers)
-          .flatMap(removePropertyOrLand)
-          .flatMap(removePartnership)
-          .flatMap(removeShare)
-          .flatMap(removeBusiness)
-
+        doCleanup(userAnswers, WhatKindOfAsset.values.filterNot(_ == Other))
+      case Some(NonEeaBusiness) =>
+        doCleanup(userAnswers, WhatKindOfAsset.values.filterNot(_ == NonEeaBusiness))
       case _ => super.cleanup(value, userAnswers)
     }
+  }
+
+  private def doCleanup(userAnswers: UserAnswers, cleanup: List[WhatKindOfAsset]): Try[UserAnswers] = {
+    cleanup.foldLeft[Try[UserAnswers]](Success(userAnswers))((updatedAnswers, asset) => {
+      updatedAnswers match {
+        case Success(ua) =>
+          asset match {
+            case Money => removeMoney(ua)
+            case PropertyOrLand => removePropertyOrLand(ua)
+            case Shares => removeShare(ua)
+            case Business => removeBusiness(ua)
+            case Partnership => removePartnership(ua)
+            case Other => removeOther(ua)
+            case NonEeaBusiness => removeNonEeaBusiness(ua)
+          }
+        case _ =>
+          updatedAnswers
+      }
+    })
   }
 
   private def removeMoney(userAnswers: UserAnswers) : Try[UserAnswers] = {
@@ -136,6 +126,16 @@ final case class WhatKindOfAssetPage(index: Int) extends QuestionPage[WhatKindOf
       .flatMap(_.remove(BusinessUkAddressPage(index)))
       .flatMap(_.remove(BusinessInternationalAddressPage(index)))
       .flatMap(_.remove(BusinessValuePage(index)))
+      .flatMap(removeStatus)
+  }
+
+  private def removeNonEeaBusiness(userAnswers: UserAnswers): Try[UserAnswers] = {
+    userAnswers.remove(noneeabusiness.NamePage(index))
+      .flatMap(_.remove(noneeabusiness.AddressUkYesNoPage(index)))
+      .flatMap(_.remove(noneeabusiness.UkAddressPage(index)))
+      .flatMap(_.remove(noneeabusiness.InternationalAddressPage(index)))
+      .flatMap(_.remove(noneeabusiness.GoverningCountryPage(index)))
+      .flatMap(_.remove(noneeabusiness.StartDatePage(index)))
       .flatMap(removeStatus)
   }
 
