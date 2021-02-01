@@ -35,7 +35,7 @@ class NonEeaBusinessNavigator @Inject()(config: FrontendAppConfig) extends Navig
     case UkAddressPage(index) => _ => _ => GoverningCountryController.onPageLoad(index, draftId)
     case InternationalAddressPage(index) => _ => _ => GoverningCountryController.onPageLoad(index, draftId)
     case GoverningCountryPage(index) => _ => _ => StartDateController.onPageLoad(index, draftId)
-    case StartDatePage(index) => _ => _ => ???
+    case StartDatePage(index) => _ => _ => AnswersController.onPageLoad(index, draftId)
   }
 
   private def addressUkYesNoRoute(userAnswers: UserAnswers, index: Int, draftId: String) : Call = {
@@ -44,7 +44,7 @@ class NonEeaBusinessNavigator @Inject()(config: FrontendAppConfig) extends Navig
         UkAddressController.onPageLoad(index, draftId)
       case Some(false) =>
         InternationalAddressController.onPageLoad(index, draftId)
-      case _=>
+      case _ =>
         controllers.routes.SessionExpiredController.onPageLoad()
     }
   }

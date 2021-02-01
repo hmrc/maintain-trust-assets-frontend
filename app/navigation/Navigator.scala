@@ -79,7 +79,7 @@ object AssetsRoutes {
       case Some(Other) =>
         controllers.asset.other.routes.OtherAssetDescriptionController.onPageLoad(index, draftId)
       case Some(NonEeaBusiness) =>
-        controllers.routes.FeatureNotAvailableController.onPageLoad()
+        controllers.asset.noneeabusiness.routes.NameController.onPageLoad(index, draftId)
       case _ =>
         controllers.routes.SessionExpiredController.onPageLoad()
     }

@@ -100,14 +100,14 @@ class NonEeaBusinessNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
       }
     }
 
-    "navigate from StartDatePage to Check Answers" ignore {
+    "navigate from StartDatePage to Check Answers" in {
 
       val page = StartDatePage(index)
 
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
           navigator.nextPage(page, fakeDraftId)(userAnswers)
-            .mustBe(???)
+            .mustBe(AnswersController.onPageLoad(index, fakeDraftId))
       }
     }
   }
