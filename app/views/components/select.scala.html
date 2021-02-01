@@ -40,13 +40,15 @@
     }
 
     @field.errors.headOption.map{ error =>
-        <span id="error-message-input" class="error-message">@messages(error.message, error.args:_*)</span>
+        <span id="error-message-input" class="error-message">
+            <span class="visually-hidden">@messages("site.error")</span> @messages(error.message, error.args:_*)
+        </span>
     }
     <select class='form-control @selectClasses.mkString(" ")'
             id="@field.id"
             name="@field.name"
             @if(hint.nonEmpty || field.hasErrors) {
-            aria-describedby="@if(hint.nonEmpty){form-hint}@if(hint.nonEmpty && field.hasErrors){ }@if(field.hasErrors){error-message-input}"
+                aria-describedby="@if(hint.nonEmpty){form-hint}@if(hint.nonEmpty && field.hasErrors){ }@if(field.hasErrors){error-message-input}"
             }
             @selectAttribute
     >
@@ -54,11 +56,9 @@
             <option value="">@messages(ph)</option>
         }
         @options.map{ valueOption =>
-            <option id="value-@{valueOption.value}"
-                    value="@valueOption.value"
-                    @if(field.value.contains(valueOption.value)){
-                    selected
-                    }>@messages(valueOption.label)</option>
+            <option id="value-@{valueOption.value}" value="@valueOption.value" @if(field.value.contains(valueOption.value)){selected}>
+                @messages(valueOption.label)
+            </option>
         }
     </select>
 </div>

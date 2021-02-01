@@ -16,9 +16,8 @@
 
 package views.behaviours
 
-import play.api.data.{Form, FormError}
+import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.ViewUtils
 
 trait SelectCountryViewBehaviours extends QuestionViewBehaviours[String] {
 
@@ -65,21 +64,17 @@ trait SelectCountryViewBehaviours extends QuestionViewBehaviours[String] {
           assertRenderedById(doc, "error-summary-heading")
         }
 
-        "show an error in the value field's label" ignore {
-
-          val errorKey = "value"
-          val errorMessage = "error.number"
-          val error = FormError(errorKey, errorMessage)
+        "show an error in the value field's label" in {
 
           val doc = asDocument(createView(form.withError(error)))
           val errorSpan = doc.getElementsByClass("error-message").first
           errorSpan.text mustBe s"""${messages(errorPrefix)} ${messages(errorMessage)}"""
         }
 
-        "show an error prefix in the browser title" ignore {
+        "show an error prefix in the browser title" in {
 
           val doc = asDocument(createView(form.withError(error)))
-          assertEqualsValue(doc, "title", ViewUtils.breadcrumbTitle(s"""${messages("error.browser.title.prefix")} ${messages(s"$messageKeyPrefix.title")}"""))
+          assertEqualsValue(doc, "title", s"""${messages("error.browser.title.prefix")} ${messages(s"$messageKeyPrefix.title", messageKeyParam)}""")
         }
       }
     }
