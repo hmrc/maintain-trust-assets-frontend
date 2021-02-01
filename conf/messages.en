@@ -133,8 +133,6 @@ addAssets.count.title = You have added {0} assets
 addAssets.singular.heading = Add assets
 addAssets.singular.title = Add assets
 
-addAssets.propertyOrLand = Property or Land
-
 addAssets.maxedOut.p1 = You cannot add another asset as you have entered a maximum of {0}.
 addAssets.maxedOut.p2 = You can add another asset by removing an existing one, or write to HMRC with details of any additional assets.
 

@@ -26,7 +26,7 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.print.NonEeaBusinessPrintHelper
-import views.html.asset.buisness.BusinessAnswersView
+import views.html.asset.noneeabusiness.AnswersView
 
 import java.time.LocalDate
 
@@ -59,7 +59,7 @@ class AnswersControllerSpec extends SpecBase {
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[BusinessAnswersView]
+      val view = application.injector.instanceOf[AnswersView]
 
       status(result) mustEqual OK
 

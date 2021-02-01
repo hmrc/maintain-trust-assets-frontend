@@ -26,7 +26,7 @@ import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerCompon
 import repositories.RegistrationsRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.NonEeaBusinessPrintHelper
-import views.html.asset.buisness.BusinessAnswersView
+import views.html.asset.noneeabusiness.AnswersView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,7 +38,7 @@ class AnswersController @Inject()(
                                    getData: DraftIdRetrievalActionProvider,
                                    requireData: RegistrationDataRequiredAction,
                                    requiredAnswer: RequiredAnswerActionProvider,
-                                   view: BusinessAnswersView,
+                                   view: AnswersView,
                                    val controllerComponents: MessagesControllerComponents,
                                    printHelper: NonEeaBusinessPrintHelper
                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {

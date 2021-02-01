@@ -17,9 +17,15 @@
 package models
 
 import models.Constants._
+import models.WhatKindOfAsset.prefix
+import play.api.i18n.Messages
 import viewmodels._
 
-sealed trait WhatKindOfAsset
+sealed trait WhatKindOfAsset {
+  implicit class AssetLabel(asset: WhatKindOfAsset) {
+    def label(implicit messages: Messages): String = messages(s"$prefix.$asset")
+  }
+}
 
 object WhatKindOfAsset extends Enumerable.Implicits {
 
@@ -35,9 +41,11 @@ object WhatKindOfAsset extends Enumerable.Implicits {
     Money, PropertyOrLand, Shares, Business, NonEeaBusiness, Partnership, Other
   )
 
+  val prefix: String = "whatKindOfAsset"
+
   def options(kindsOfAsset: List[WhatKindOfAsset] = values): List[RadioOption] = kindsOfAsset.map {
     value =>
-      RadioOption("whatKindOfAsset", value.toString)
+      RadioOption(prefix, value.toString)
   }
 
   implicit val enumerable: Enumerable[WhatKindOfAsset] =
