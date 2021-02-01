@@ -10,8 +10,8 @@ POST       /:draftId/:index/uk-address                                          
 GET        /:draftId/:index/international-address                                     controllers.asset.noneeabusiness.InternationalAddressController.onPageLoad(index: Int, draftId: String)
 POST       /:draftId/:index/international-address                                     controllers.asset.noneeabusiness.InternationalAddressController.onSubmit(index: Int, draftId: String)
 
-GET        /:draftId/:index/current-value                                             controllers.asset.noneeabusiness.GoverningCountryController.onPageLoad(index: Int, draftId: String)
-POST       /:draftId/:index/current-value                                             controllers.asset.noneeabusiness.GoverningCountryController.onSubmit(index: Int, draftId: String)
+GET        /:draftId/:index/governing-country                                         controllers.asset.noneeabusiness.GoverningCountryController.onPageLoad(index: Int, draftId: String)
+POST       /:draftId/:index/governing-country                                         controllers.asset.noneeabusiness.GoverningCountryController.onSubmit(index: Int, draftId: String)
 
 GET        /:draftId/:index/start-date                                                controllers.asset.noneeabusiness.StartDateController.onPageLoad(index: Int, draftId: String)
 POST       /:draftId/:index/start-date                                                controllers.asset.noneeabusiness.StartDateController.onSubmit(index: Int, draftId: String)

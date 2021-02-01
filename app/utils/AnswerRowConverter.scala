@@ -136,4 +136,18 @@ class AnswerRowConverter @Inject()(checkAnswersFormatters: CheckAnswersFormatter
       )
     }
   }
+
+  def countryQuestion(query: Gettable[String],
+                      labelKey: String,
+                      changeUrl: String): Option[AnswerRow] = {
+    userAnswers.get(query) map { x =>
+      AnswerRow(
+        s"$labelKey.checkYourAnswersLabel",
+        HtmlFormat.escape(checkAnswersFormatters.country(x)),
+        Some(changeUrl),
+        arg
+      )
+    }
+  }
+
 }

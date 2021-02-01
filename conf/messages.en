@@ -114,6 +114,7 @@ answerPage.section.propertyOrLandAsset.subheading = Property or land {0}
 answerPage.section.partnershipAsset.subheading = Partnership {0}
 answerPage.section.businessAsset.subheading = Business {0}
 answerPage.section.otherAsset.subheading = Other {0}
+answerPage.section.nonEeaBusinessAsset.subheading = Non-EEA Company {0}
 
 addAnAssetYesNo.title = Do you want to add an asset?
 addAnAssetYesNo.heading = Do you want to add an asset?
