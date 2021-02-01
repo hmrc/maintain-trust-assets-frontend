@@ -21,13 +21,12 @@ import models.Status._
 import models.WhatKindOfAsset._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import org.scalatest.{MustMatchers, OptionValues}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.i18n.{Lang, MessagesImpl}
 import play.api.libs.json.{JsError, JsString, Json}
 import viewmodels._
 
-class WhatKindOfAssetSpec extends SpecBase with MustMatchers with ScalaCheckPropertyChecks with OptionValues {
+class WhatKindOfAssetSpec extends SpecBase with ScalaCheckPropertyChecks {
 
   "WhatKindOfAsset" must {
 
