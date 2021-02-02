@@ -73,6 +73,7 @@ trait SpecBase extends PlaySpec
         bind[Navigator].qualifiedWith(classOf[Business]).toInstance(navigator),
         bind[Navigator].qualifiedWith(classOf[Partnership]).toInstance(navigator),
         bind[Navigator].qualifiedWith(classOf[Other]).toInstance(navigator),
+        bind[Navigator].qualifiedWith(classOf[NonEeaBusiness]).toInstance(navigator),
         bind[RegistrationDataRequiredAction].to[RegistrationDataRequiredActionImpl],
         bind[RegistrationIdentifierAction].toInstance(
           new FakeIdentifyForRegistration(affinityGroup, frontendAppConfig)(injectedParsers, trustsAuth, enrolments)

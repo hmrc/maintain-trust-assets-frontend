@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package forms.partnership
-
-import java.time.LocalDate
+package forms
 
 import config.FrontendAppConfig
 import forms.mappings.Mappings
-import javax.inject.Inject
 import play.api.data.Form
 
-class PartnershipStartDateFormProvider @Inject()(appConfig: FrontendAppConfig) extends Mappings {
+import java.time.LocalDate
+import javax.inject.Inject
 
-  def apply(): Form[LocalDate] =
+class StartDateFormProvider @Inject()(appConfig: FrontendAppConfig) extends Mappings {
+
+  def withPrefix(prefix: String): Form[LocalDate] =
     Form(
       "value" -> localDate(
         invalidKey     = "partnership.startDate.error.invalid",

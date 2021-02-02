@@ -14,82 +14,102 @@
  * limitations under the License.
  */
 
-package controllers.asset.partnership
+package controllers.asset.noneeabusiness
 
 import base.SpecBase
 import controllers.IndexValidation
 import forms.StartDateFormProvider
-import org.scalacheck.Gen
-import pages.asset.partnership.PartnershipStartDatePage
+import models.UserAnswers
+import org.scalacheck.Arbitrary.arbitrary
+import pages.asset.noneeabusiness.{NamePage, StartDatePage}
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{route, _}
-import views.html.asset.partnership.PartnershipStartDateView
+import views.html.asset.noneeabusiness.StartDateView
 
-import java.time.{LocalDate, ZoneOffset}
+import java.time.LocalDate
 
-class PartnershipStartDateControllerSpec extends SpecBase with IndexValidation {
+class StartDateControllerSpec extends SpecBase with IndexValidation {
 
   private val formProvider = new StartDateFormProvider(frontendAppConfig)
-  private val prefix: String = "partnership.startDate"
+  private val prefix: String = "nonEeaBusiness.startDate"
   private val form = formProvider.withPrefix(prefix)
   private val index = 0
+  private val name = "Test"
 
-  private val validAnswer = LocalDate.now(ZoneOffset.UTC)
+  private val validAnswer: LocalDate = LocalDate.parse("1996-02-03")
 
-  private lazy val partnershipStartDateRoute = routes.PartnershipStartDateController.onPageLoad(index, fakeDraftId).url
+  private lazy val onPageLoadRoute = routes.StartDateController.onPageLoad(index, fakeDraftId).url
 
-  "PartnershipStartDate Controller" must {
+  private val baseAnswers: UserAnswers = emptyUserAnswers
+    .set(NamePage(index), name).success.value
+
+  "StartDateController" must {
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
 
-      val request = FakeRequest(GET, partnershipStartDateRoute)
+      val request = FakeRequest(GET, onPageLoadRoute)
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[PartnershipStartDateView]
+      val view = application.injector.instanceOf[StartDateView]
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, index, fakeDraftId)(fakeRequest, messages).toString
+        view(form, index, fakeDraftId, name)(fakeRequest, messages).toString
 
       application.stop()
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(PartnershipStartDatePage(index), validAnswer).success.value
+      val userAnswers = baseAnswers
+        .set(StartDatePage(index), validAnswer).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
-      val request = FakeRequest(GET, partnershipStartDateRoute)
+      val request = FakeRequest(GET, onPageLoadRoute)
 
-      val view = application.injector.instanceOf[PartnershipStartDateView]
+      val view = application.injector.instanceOf[StartDateView]
 
       val result = route(application, request).value
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), index, fakeDraftId)(fakeRequest, messages).toString
+        view(form.fill(validAnswer), index, fakeDraftId, name)(fakeRequest, messages).toString
+
+      application.stop()
+    }
+
+    "redirect to name page when name is not answered" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+      val request = FakeRequest(GET, onPageLoadRoute)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual routes.NameController.onPageLoad(index, fakeDraftId).url
 
       application.stop()
     }
 
     "redirect to the next page when valid data is submitted" in {
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
 
       val request =
-        FakeRequest(POST, partnershipStartDateRoute)
+        FakeRequest(POST, onPageLoadRoute)
           .withFormUrlEncodedBody(
-            "value.day"   -> validAnswer.getDayOfMonth.toString,
+            "value.day" -> validAnswer.getDayOfMonth.toString,
             "value.month" -> validAnswer.getMonthValue.toString,
-            "value.year"  -> validAnswer.getYear.toString
+            "value.year" -> validAnswer.getYear.toString
           )
 
       val result = route(application, request).value
@@ -103,22 +123,22 @@ class PartnershipStartDateControllerSpec extends SpecBase with IndexValidation {
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
 
       val request =
-        FakeRequest(POST, partnershipStartDateRoute)
+        FakeRequest(POST, onPageLoadRoute)
           .withFormUrlEncodedBody(("value", "invalid value"))
 
       val boundForm = form.bind(Map("value" -> "invalid value"))
 
-      val view = application.injector.instanceOf[PartnershipStartDateView]
+      val view = application.injector.instanceOf[StartDateView]
 
       val result = route(application, request).value
 
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, index, fakeDraftId)(fakeRequest, messages).toString
+        view(boundForm, index, fakeDraftId, name)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -127,7 +147,7 @@ class PartnershipStartDateControllerSpec extends SpecBase with IndexValidation {
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, partnershipStartDateRoute)
+      val request = FakeRequest(GET, onPageLoadRoute)
 
       val result = route(application, request).value
 
@@ -142,11 +162,11 @@ class PartnershipStartDateControllerSpec extends SpecBase with IndexValidation {
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, partnershipStartDateRoute)
+        FakeRequest(POST, onPageLoadRoute)
           .withFormUrlEncodedBody(
-            "value.day"   -> validAnswer.getDayOfMonth.toString,
+            "value.day" -> validAnswer.getDayOfMonth.toString,
             "value.month" -> validAnswer.getMonthValue.toString,
-            "value.year"  -> validAnswer.getYear.toString
+            "value.year" -> validAnswer.getYear.toString
           )
 
       val result = route(application, request).value
@@ -162,14 +182,14 @@ class PartnershipStartDateControllerSpec extends SpecBase with IndexValidation {
   "for a GET" must {
 
     def getForIndex(index: Int): FakeRequest[AnyContentAsEmpty.type] = {
-      val route = routes.PartnershipStartDateController.onPageLoad(index, fakeDraftId).url
+      val route = routes.StartDateController.onPageLoad(index, fakeDraftId).url
 
       FakeRequest(GET, route)
     }
 
     validateIndex(
-      Gen.const(LocalDate.of(2010,10,10)),
-      PartnershipStartDatePage.apply,
+      arbitrary[LocalDate],
+      StartDatePage.apply,
       getForIndex
     )
 
@@ -179,19 +199,19 @@ class PartnershipStartDateControllerSpec extends SpecBase with IndexValidation {
     def postForIndex(index: Int): FakeRequest[AnyContentAsFormUrlEncoded] = {
 
       val route =
-        routes.PartnershipStartDateController.onPageLoad(index, fakeDraftId).url
+        routes.StartDateController.onPageLoad(index, fakeDraftId).url
 
       FakeRequest(POST, route)
         .withFormUrlEncodedBody(
-          "value.day"   -> validAnswer.getDayOfMonth.toString,
+          "value.day" -> validAnswer.getDayOfMonth.toString,
           "value.month" -> validAnswer.getMonthValue.toString,
-          "value.year"  -> validAnswer.getYear.toString
+          "value.year" -> validAnswer.getYear.toString
         )
     }
 
     validateIndex(
-      Gen.const(LocalDate.of(2010,10,10)),
-      PartnershipStartDatePage.apply,
+      arbitrary[LocalDate],
+      StartDatePage.apply,
       postForIndex
     )
   }

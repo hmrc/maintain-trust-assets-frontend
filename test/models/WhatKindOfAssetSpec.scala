@@ -16,16 +16,17 @@
 
 package models
 
+import base.SpecBase
 import models.Status._
 import models.WhatKindOfAsset._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
-import org.scalatest.{MustMatchers, OptionValues, WordSpec}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import play.api.i18n.{Lang, MessagesImpl}
 import play.api.libs.json.{JsError, JsString, Json}
 import viewmodels._
 
-class WhatKindOfAssetSpec extends WordSpec with MustMatchers with ScalaCheckPropertyChecks with OptionValues {
+class WhatKindOfAssetSpec extends SpecBase with ScalaCheckPropertyChecks {
 
   "WhatKindOfAsset" must {
 
@@ -264,6 +265,28 @@ class WhatKindOfAssetSpec extends WordSpec with MustMatchers with ScalaCheckProp
             )
           }
         }
+      }
+    }
+
+    "display label in correct language" when {
+
+      val asset = WhatKindOfAsset.NonEeaBusiness
+
+      "English" in {
+
+        val messages: MessagesImpl = MessagesImpl(Lang("en"), messagesApi)
+        val result = asset.label(messages)
+
+        result mustBe "Non-EEA Company"
+
+      }
+
+      "Welsh" in {
+
+        val messages: MessagesImpl = MessagesImpl(Lang("cy"), messagesApi)
+        val result = asset.label(messages)
+
+        result mustBe "whatKindOfAsset.NonEeaBusiness" // TODO - update unit test when Welsh keys added
       }
     }
   }

@@ -54,7 +54,7 @@ class CheckAnswersFormatters @Inject()(languageUtils: LanguageUtils,
   def addressFormatter(address: Address)(implicit messages: Messages): Html = {
     address match {
       case a: UKAddress => ukAddress(a)
-      case a: InternationalAddress => internationalAddress(a, countryOptions)
+      case a: InternationalAddress => internationalAddress(a)
     }
   }
 
@@ -75,17 +75,17 @@ class CheckAnswersFormatters @Inject()(languageUtils: LanguageUtils,
     breakLines(lines)
   }
 
-  private def internationalAddress(address: InternationalAddress, countryOptions: CountryOptions)(implicit messages: Messages): Html = {
+  def country(code: String)(implicit messages: Messages): String = {
+    countryOptions.options.find(_.value.equals(code)).map(_.label).getOrElse("")
+  }
 
-    def country(code: String, countryOptions: CountryOptions): String = {
-      countryOptions.options.find(_.value.equals(code)).map(_.label).getOrElse("")
-    }
+  private def internationalAddress(address: InternationalAddress)(implicit messages: Messages): Html = {
 
     val lines: Seq[Html] = Seq(
       Some(escape(address.line1)),
       Some(escape(address.line2)),
       address.line3.map(escape),
-      Some(escape(country(address.country, countryOptions)))
+      Some(escape(country(address.country)))
     ).flatten
 
     breakLines(lines)

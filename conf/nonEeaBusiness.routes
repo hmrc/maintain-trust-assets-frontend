@@ -1,0 +1,20 @@
+GET        /:draftId/:index/name                                                      controllers.asset.noneeabusiness.NameController.onPageLoad(index: Int, draftId: String)
+POST       /:draftId/:index/name                                                      controllers.asset.noneeabusiness.NameController.onSubmit(index: Int, draftId: String)
+
+GET        /:draftId/:index/is-address-in-uk                                          controllers.asset.noneeabusiness.AddressUkYesNoController.onPageLoad(index: Int, draftId: String)
+POST       /:draftId/:index/is-address-in-uk                                          controllers.asset.noneeabusiness.AddressUkYesNoController.onSubmit(index: Int, draftId: String)
+
+GET        /:draftId/:index/uk-address                                                controllers.asset.noneeabusiness.UkAddressController.onPageLoad(index: Int, draftId: String)
+POST       /:draftId/:index/uk-address                                                controllers.asset.noneeabusiness.UkAddressController.onSubmit(index: Int, draftId: String)
+
+GET        /:draftId/:index/international-address                                     controllers.asset.noneeabusiness.InternationalAddressController.onPageLoad(index: Int, draftId: String)
+POST       /:draftId/:index/international-address                                     controllers.asset.noneeabusiness.InternationalAddressController.onSubmit(index: Int, draftId: String)
+
+GET        /:draftId/:index/governing-country                                         controllers.asset.noneeabusiness.GoverningCountryController.onPageLoad(index: Int, draftId: String)
+POST       /:draftId/:index/governing-country                                         controllers.asset.noneeabusiness.GoverningCountryController.onSubmit(index: Int, draftId: String)
+
+GET        /:draftId/:index/start-date                                                controllers.asset.noneeabusiness.StartDateController.onPageLoad(index: Int, draftId: String)
+POST       /:draftId/:index/start-date                                                controllers.asset.noneeabusiness.StartDateController.onSubmit(index: Int, draftId: String)
+
+GET        /:draftId/:index/check-answers                                             controllers.asset.noneeabusiness.AnswersController.onPageLoad(index: Int, draftId: String)
+POST       /:draftId/:index/check-answers                                             controllers.asset.noneeabusiness.AnswersController.onSubmit(index: Int, draftId: String)

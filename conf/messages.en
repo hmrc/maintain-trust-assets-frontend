@@ -114,6 +114,7 @@ answerPage.section.propertyOrLandAsset.subheading = Property or land {0}
 answerPage.section.partnershipAsset.subheading = Partnership {0}
 answerPage.section.businessAsset.subheading = Business {0}
 answerPage.section.otherAsset.subheading = Other {0}
+answerPage.section.nonEeaBusinessAsset.subheading = Non-EEA Company {0}
 
 addAnAssetYesNo.title = Do you want to add an asset?
 addAnAssetYesNo.heading = Do you want to add an asset?
@@ -131,8 +132,6 @@ addAssets.count.heading = You have added {0} assets
 addAssets.count.title = You have added {0} assets
 addAssets.singular.heading = Add assets
 addAssets.singular.title = Add assets
-
-addAssets.propertyOrLand = Property or Land
 
 addAssets.maxedOut.p1 = You cannot add another asset as you have entered a maximum of {0}.
 addAssets.maxedOut.p2 = You can add another asset by removing an existing one, or write to HMRC with details of any additional assets.
@@ -440,3 +439,45 @@ other.value.error.wholeNumber = Current value of the asset must be a whole numbe
 
 other.answers.title = Check asset details
 other.answers.heading = Check asset details
+
+
+nonEeaBusiness.name.title = What is the company’s name?
+nonEeaBusiness.name.heading = What is the company’s name?
+nonEeaBusiness.name.checkYourAnswersLabel = What is the company’s name?
+nonEeaBusiness.name.error.required = Enter the company’s name
+nonEeaBusiness.name.error.length = Company’s name cannot be more than 105 characters
+nonEeaBusiness.name.error.invalid = Company’s name must only include letters a to z, numbers, ampersands (&), apostrophes, forward slashes, full stops, hyphens, round brackets and spaces
+
+nonEeaBusiness.addressUkYesNo.title = Is the company’s address in the UK?
+nonEeaBusiness.addressUkYesNo.heading = Is {0}’s address in the UK?
+nonEeaBusiness.addressUkYesNo.checkYourAnswersLabel = Is {0}’s address in the UK?
+nonEeaBusiness.addressUkYesNo.error.required = Select yes if the company’s address is in the UK
+
+nonEeaBusiness.ukAddress.title = What is the company’s address?
+nonEeaBusiness.ukAddress.heading = What is {0}’s address?
+nonEeaBusiness.ukAddress.checkYourAnswersLabel = What is {0}’s address?
+
+nonEeaBusiness.internationalAddress.title = What is the company’s address?
+nonEeaBusiness.internationalAddress.heading = What is {0}’s address?
+nonEeaBusiness.internationalAddress.checkYourAnswersLabel = What is {0}’s address?
+
+nonEeaBusiness.governingCountry.title = Which country’s laws govern the company?
+nonEeaBusiness.governingCountry.heading = Which country’s laws govern {0}?
+nonEeaBusiness.governingCountry.checkYourAnswersLabel = Which country’s laws govern {0}?
+nonEeaBusiness.governingCountry.error.required = Enter a country
+nonEeaBusiness.governingCountry.error.length = The country must be 100 characters or less
+nonEeaBusiness.governingCountry.error.invalidCharacters = The country must only include letters a to z, apostrophes, commas, full stops, hyphens, round brackets and spaces
+
+nonEeaBusiness.startDate.title = When did the trust start their ownership or controlling interest in the company?
+nonEeaBusiness.startDate.heading = When did the trust start their ownership or controlling interest in {0}?
+nonEeaBusiness.startDate.checkYourAnswersLabel = When did the trust start their ownership or controlling interest in {0}?
+nonEeaBusiness.startDate.hint = For example, 31 3 2015.
+nonEeaBusiness.startDate.error.required.all = Enter the date that the trust started their ownership or controlling interest in the company
+nonEeaBusiness.startDate.error.required.two = The date that the trust started their ownership or controlling interest in the company must include a {0} and a {1}
+nonEeaBusiness.startDate.error.required = The date that the trust started their ownership or controlling interest in the company must include a {0}
+nonEeaBusiness.startDate.error.invalid = Enter a real date for the date that the trust started their ownership or controlling interest in the company
+nonEeaBusiness.startDate.error.future = The date that the trust started their ownership or controlling interest in the company must be today or in the past
+nonEeaBusiness.startDate.error.past = The date that the trust started their ownership or controlling interest in the company must be after 31 December 1499
+
+nonEeaBusiness.answers.title = Check asset details
+nonEeaBusiness.answers.heading = Check asset details

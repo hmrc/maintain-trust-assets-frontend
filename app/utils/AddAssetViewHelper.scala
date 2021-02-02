@@ -19,6 +19,7 @@ package utils
 import controllers.asset._
 import models.Status.Completed
 import models.UserAnswers
+import models.WhatKindOfAsset.Money.AssetLabel
 import play.api.i18n.Messages
 import sections.Assets
 import viewmodels.{AddRow, AddToRows, _}
@@ -56,30 +57,31 @@ class AddAssetViewHelper @Inject()(checkAnswersFormatters: CheckAnswersFormatter
       case business: BusinessAssetViewModel => Some(parseBusiness(business, index))
       case partnership: PartnershipAssetViewModel => Some(parsePartnership(partnership, index))
       case other: OtherAssetViewModel => Some(parseOther(other, index))
+      case nonEeaBusiness: NonEeaBusinessAssetViewModel => Some(parseNonEeaBusiness(nonEeaBusiness, index))
       case _ => None
     }
   }
 
-  private def parseMoney(mvm: MoneyAssetViewModel, index: Int) : AddRow = {
+  private def parseMoney(mvm: MoneyAssetViewModel, index: Int): AddRow = {
     AddRow(
       name = mvm.value match {
         case Some(value) => checkAnswersFormatters.currencyFormat(value)
         case None => defaultValue
       },
-      typeLabel = mvm.`type`.toString,
+      typeLabel = mvm.`type`.label,
       changeUrl = money.routes.AssetMoneyValueController.onPageLoad(index, draftId).url,
       removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index, draftId).url
     )
   }
 
-  private def parsePropertyOrLand(plvm: PropertyOrLandAssetViewModel, index: Int) : AddRow = {
+  private def parsePropertyOrLand(plvm: PropertyOrLandAssetViewModel, index: Int): AddRow = {
     AddRow(
       name = (plvm.hasAddress, plvm.address, plvm.description) match {
         case (Some(true), address, _) => address.getOrElse(defaultAddress)
         case (Some(false), _, description) => description.getOrElse(defaultDescription)
         case _ => messages("entities.no.addressOrDescription.added")
       },
-      typeLabel = messages("addAssets.propertyOrLand"),
+      typeLabel = plvm.`type`.label,
       changeUrl = if (plvm.status == Completed) {
         property_or_land.routes.PropertyOrLandAnswerController.onPageLoad(index, draftId).url
       } else {
@@ -89,10 +91,10 @@ class AddAssetViewHelper @Inject()(checkAnswersFormatters: CheckAnswersFormatter
     )
   }
 
-  private def parseShare(svm: ShareAssetViewModel, index : Int) : AddRow = {
+  private def parseShare(svm: ShareAssetViewModel, index: Int): AddRow = {
     AddRow(
       name = svm.name.getOrElse(defaultName),
-      typeLabel = svm.`type`.toString,
+      typeLabel = svm.`type`.label,
       changeUrl = if (svm.status == Completed) {
         shares.routes.ShareAnswerController.onPageLoad(index, draftId).url
       } else {
@@ -102,10 +104,10 @@ class AddAssetViewHelper @Inject()(checkAnswersFormatters: CheckAnswersFormatter
     )
   }
 
-  private def parseBusiness(bvm: BusinessAssetViewModel, index: Int) : AddRow = {
+  private def parseBusiness(bvm: BusinessAssetViewModel, index: Int): AddRow = {
     AddRow(
       name = bvm.name.getOrElse(defaultName),
-      typeLabel = bvm.`type`.toString,
+      typeLabel = bvm.`type`.label,
       changeUrl = if (bvm.status == Completed) {
         business.routes.BusinessAnswersController.onPageLoad(index, draftId).url
       } else {
@@ -115,10 +117,10 @@ class AddAssetViewHelper @Inject()(checkAnswersFormatters: CheckAnswersFormatter
     )
   }
 
-  private def parsePartnership(pvm: PartnershipAssetViewModel, index: Int) : AddRow = {
+  private def parsePartnership(pvm: PartnershipAssetViewModel, index: Int): AddRow = {
     AddRow(
       name = pvm.description.getOrElse(defaultDescription),
-      typeLabel = pvm.`type`.toString,
+      typeLabel = pvm.`type`.label,
       changeUrl = if (pvm.status == Completed) {
         partnership.routes.PartnershipAnswerController.onPageLoad(index, draftId).url
       } else {
@@ -128,14 +130,27 @@ class AddAssetViewHelper @Inject()(checkAnswersFormatters: CheckAnswersFormatter
     )
   }
 
-  private def parseOther(ovm: OtherAssetViewModel, index: Int) : AddRow = {
+  private def parseOther(ovm: OtherAssetViewModel, index: Int): AddRow = {
     AddRow(
       name = ovm.description.getOrElse(defaultDescription),
-      typeLabel = ovm.`type`.toString,
+      typeLabel = ovm.`type`.label,
       changeUrl = if (ovm.status == Completed) {
         other.routes.OtherAssetAnswersController.onPageLoad(index, draftId).url
       } else {
         other.routes.OtherAssetDescriptionController.onPageLoad(index, draftId).url
+      },
+      removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index, draftId).url
+    )
+  }
+  
+  private def parseNonEeaBusiness(nebvm: NonEeaBusinessAssetViewModel, index: Int): AddRow = {
+    AddRow(
+      name = nebvm.name.getOrElse(defaultName),
+      typeLabel = nebvm.`type`.label,
+      changeUrl = if (nebvm.status == Completed) {
+        noneeabusiness.routes.AnswersController.onPageLoad(index, draftId).url
+      } else {
+        noneeabusiness.routes.NameController.onPageLoad(index, draftId).url
       },
       removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index, draftId).url
     )

@@ -14,35 +14,31 @@
  * limitations under the License.
  */
 
-package views.asset.partnership
+package views.asset.noneeabusiness
 
-import forms.StartDateFormProvider
+import forms.NameFormProvider
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.behaviours.QuestionViewBehaviours
-import views.html.asset.partnership.PartnershipStartDateView
+import views.behaviours.StringViewBehaviours
+import views.html.asset.noneeabusiness.NameView
 
-import java.time.LocalDate
+class NameViewSpec extends StringViewBehaviours {
 
-class PartnershipStartDateViewSpec extends QuestionViewBehaviours[LocalDate] {
+  private val messageKeyPrefix: String = "nonEeaBusiness.name"
+  override val form: Form[String] = new NameFormProvider().withConfig(105, messageKeyPrefix)
+  private val view: NameView = viewFor[NameView](Some(emptyUserAnswers))
 
-  private val messageKeyPrefix: String = "partnership.startDate"
-
-  override val form: Form[LocalDate] = new StartDateFormProvider(frontendAppConfig).withPrefix(messageKeyPrefix)
-
-  "PartnershipStartDateView view" must {
-
-    val view = viewFor[PartnershipStartDateView](Some(emptyUserAnswers))
+  "NameView" must {
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, 0, fakeDraftId)(fakeRequest, messages)
-
-    val applyViewF = (form : Form[_]) => applyView(form)
+      view.apply(form, fakeDraftId, 0)(fakeRequest, messages)
 
     behave like normalPage(applyView(form), messageKeyPrefix)
 
-    behave like pageWithDateFields(form, applyViewF, messageKeyPrefix, "value")
-
     behave like pageWithBackLink(applyView(form))
+
+    behave like stringPage(form, applyView, messageKeyPrefix)
+
+    behave like pageWithASubmitButton(applyView(form))
   }
 }
