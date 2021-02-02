@@ -12,7 +12,7 @@ object AppDependencies {
     "uk.gov.hmrc"       %% "play-ui"                        % "8.12.0-play-27",
     "uk.gov.hmrc"       %% "play-conditional-form-mapping"  % "1.2.0-play-26",
     "uk.gov.hmrc"       %% "bootstrap-frontend-play-27"     % "2.25.0",
-    "uk.gov.hmrc"       %% "play-language"                  % "4.5.0-play-27"
+    "uk.gov.hmrc"       %% "play-language"                  % "4.10.0-play-27"
   )
 
   val test: Seq[ModuleID] = Seq(
