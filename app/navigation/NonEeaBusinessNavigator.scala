@@ -38,7 +38,7 @@ class NonEeaBusinessNavigator @Inject()(config: FrontendAppConfig) extends Navig
     case StartDatePage(index) => _ => _ => AnswersController.onPageLoad(index, draftId)
   }
 
-  private def addressUkYesNoRoute(userAnswers: UserAnswers, index: Int, draftId: String) : Call = {
+  private def addressUkYesNoRoute(userAnswers: UserAnswers, index: Int, draftId: String): Call = {
     userAnswers.get(AddressUkYesNoPage(index)) match {
       case Some(true) =>
         UkAddressController.onPageLoad(index, draftId)
