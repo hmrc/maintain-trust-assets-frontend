@@ -52,7 +52,7 @@ class AssetMapper @Inject()(moneyAssetMapper: MoneyAssetMapper,
             business = business,
             partnerShip = partnership,
             other = other,
-            nonEeaBusiness = nonEeaBusiness
+            nonEEABusiness = nonEeaBusiness
           )
         )
     }

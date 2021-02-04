@@ -28,7 +28,7 @@ case class Assets(monetary: Option[List[AssetMonetaryAmount]],
                   business: Option[List[BusinessAssetType]],
                   partnerShip: Option[List[PartnershipType]],
                   other: Option[List[OtherAssetType]],
-                  nonEeaBusiness: Option[List[NonEeaBusinessType]])
+                  nonEEABusiness: Option[List[NonEeaBusinessType]])
 
 object Assets {
   implicit val assetsFormat: Format[Assets] = Json.format[Assets]
