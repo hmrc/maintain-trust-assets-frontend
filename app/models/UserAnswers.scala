@@ -90,7 +90,7 @@ object UserAnswers {
       (__ \ "_id").read[String] and
         (__ \ "data").read[JsObject] and
         (__ \ "internalId").read[String] and
-        (__ \ "is5mldEnabled").read[Boolean]
+        (__ \ "is5mldEnabled").readWithDefault[Boolean](false)
       ) (UserAnswers.apply _)
   }
 
