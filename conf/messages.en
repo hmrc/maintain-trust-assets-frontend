@@ -23,6 +23,8 @@ entities.no.address.added = No address added
 entities.no.description.added = No description added
 entities.no.addressOrDescription.added = No address or description added
 
+entities.assets = Assets
+
 footer.links.accessibility.text = Accessibility
 
 session_expired.title = For your security, we signed you out
