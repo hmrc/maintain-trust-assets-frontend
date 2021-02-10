@@ -26,19 +26,11 @@
 @(form: Form[_], draftId: String, index: Int, options: List[RadioOption])(implicit request: Request[_], messages: Messages)
 
 @title = {
-    @if(index == 0) {
-        @messages("whatKindOfAsset.first.title")
-    } else {
-        @messages("whatKindOfAsset.next.title")
-    }
+    @if(index == 0) {@messages("whatKindOfAsset.first.title")} else {@messages("whatKindOfAsset.next.title")}
 }
 
 @heading = {
-    @if(index == 0) {
-        @messages("whatKindOfAsset.first.heading")
-    } else {
-        @messages("whatKindOfAsset.next.heading")
-    }
+    @if(index == 0) {@messages("whatKindOfAsset.first.heading")} else {@messages("whatKindOfAsset.next.heading")}
 }
 
 @main_template(
