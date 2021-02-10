@@ -29,9 +29,13 @@ class AssetInterruptPageViewSpec extends ViewBehaviours {
 
       val applyView = view.apply(fakeDraftId, is5mldEnabled = false)(fakeRequest, messages)
 
-      behave like normalPage(applyView, "assetInterruptPage",
-        "title",
-        "subheading1",
+      behave like normalPage(applyView, "assetInterruptPage", ignoreTitle = true)
+
+      behave like pageWithTitleAndCaption(applyView, "assetInterruptPage")
+
+      behave like pageWithGuidance(applyView,
+        messageKeyPrefix = "assetInterruptPage",
+        expectedGuidanceKeys = "subheading1",
         "paragraph1",
         "subheading2",
         "paragraph2",
@@ -67,9 +71,13 @@ class AssetInterruptPageViewSpec extends ViewBehaviours {
 
       val applyView = view.apply(fakeDraftId, is5mldEnabled = true)(fakeRequest, messages)
 
-      behave like normalPage(applyView, "assetInterruptPage",
-        "title",
-        "subheading1",
+      behave like normalPage(applyView, "assetInterruptPage.5mld", ignoreTitle = true)
+
+      behave like pageWithTitleAndCaption(applyView, "assetInterruptPage.5mld")
+
+      behave like pageWithGuidance(applyView,
+        messageKeyPrefix = "assetInterruptPage",
+        expectedGuidanceKeys = "subheading1",
         "paragraph1",
         "subheading2",
         "paragraph2",
@@ -90,12 +98,6 @@ class AssetInterruptPageViewSpec extends ViewBehaviours {
         "bullet8",
         "bullet9",
         "bullet10",
-        "subheading7",
-        "paragraph10",
-        "bullet11",
-        "bullet12",
-        "bullet13",
-        "bullet14",
         "subheading5",
         "paragraph8",
         "subheading6",

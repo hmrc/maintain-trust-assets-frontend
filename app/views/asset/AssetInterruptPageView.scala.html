@@ -25,21 +25,25 @@
 @(draftId: String, is5mldEnabled: Boolean)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("assetInterruptPage.title")
+    title = if(is5mldEnabled) {messages("assetInterruptPage.5mld.title")} else {messages("assetInterruptPage.title")}
 ) {
 
     @formHelper(action = AssetInterruptPageController.onSubmit(draftId), 'autoComplete -> "off") {
 
         @components.back_link()
 
-        <span class="govuk-caption-xl">Assets</span>
-        @components.heading("assetInterruptPage.heading", headingSize = "heading-large govuk-fieldset__heading")
+        @if(is5mldEnabled){
+            @components.heading_with_caption("assetInterruptPage.5mld")
+        } else {
+            @components.heading_with_caption("assetInterruptPage")
+        }
 
         <h2>@messages("assetInterruptPage.subheading1")</h2>
         <p>@messages("assetInterruptPage.paragraph1")</p>
 
         <h2>@messages("assetInterruptPage.subheading2")</h2>
         <p>@messages("assetInterruptPage.paragraph2")</p>
+
         @components.bullet_list(
             "assetInterruptPage",
             List(
