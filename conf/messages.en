@@ -144,6 +144,13 @@ assets.removeYesNo.error.required = Select yes if you want to remove the asset
 
 assetInterruptPage.title = Information you’ll need to provide
 assetInterruptPage.heading = Information you’ll need to provide
+assetInterruptPage.caption = Assets
+assetInterruptPage.caption.hidden = This section is
+
+assetInterruptPage.5mld.title = Information you need to know to add assets
+assetInterruptPage.5mld.heading = Information you need to know to add assets
+assetInterruptPage.5mld.caption = Assets
+assetInterruptPage.5mld.caption.hidden = This section is
 
 assetInterruptPage.subheading1 = Money
 assetInterruptPage.paragraph1 = Tell us the total amount of money in the trust. If more than one amount has been added to the trust, add them together.

@@ -23,7 +23,7 @@ trait ViewBehaviours extends ViewSpecBase {
 
   def normalPage(view: HtmlFormat.Appendable,
                  messageKeyPrefix: String,
-                 expectedGuidanceKeys: String*): Unit = {
+                 ignoreTitle : Boolean = false): Unit = {
 
     "behave like a normal page" when {
 
@@ -43,16 +43,8 @@ trait ViewBehaviours extends ViewSpecBase {
           assertEqualsMessage(doc, "title", s"$messageKeyPrefix.title")
         }
 
-        "display the correct page title" in {
-
-          val doc = asDocument(view)
-          assertPageTitleEqualsMessage(doc, s"$messageKeyPrefix.heading")
-        }
-
-        "display the correct guidance" in {
-
-          val doc = asDocument(view)
-          for (key <- expectedGuidanceKeys) assertContainsText(doc, messages(s"$messageKeyPrefix.$key"))
+        if (!ignoreTitle) {
+          pageWithTitle(view, messageKeyPrefix)
         }
 
         "display language toggles" in {
@@ -61,6 +53,30 @@ trait ViewBehaviours extends ViewSpecBase {
           assertRenderedById(doc, "cymraeg-switch")
         }
       }
+    }
+  }
+
+  def pageWithGuidance(view: HtmlFormat.Appendable, messageKeyPrefix: String, expectedGuidanceKeys: String*): Unit = {
+    "display the correct guidance" in {
+
+      val doc = asDocument(view)
+      for (key <- expectedGuidanceKeys) assertContainsText(doc, messages(s"$messageKeyPrefix.$key"))
+    }
+  }
+
+  def pageWithTitle(view: HtmlFormat.Appendable, messageKeyPrefix: String, args: Any*) : Unit = {
+    "display the correct page title" in {
+
+      val doc = asDocument(view)
+      assertPageTitleEqualsMessage(doc, s"$messageKeyPrefix", args: _*)
+    }
+  }
+
+  def pageWithTitleAndCaption(view: HtmlFormat.Appendable, messageKeyPrefix: String) : Unit = {
+    "display the correct page title with caption" in {
+
+      val doc = asDocument(view)
+      assertPageTitleWithCaptionEqualsMessage(doc, s"$messageKeyPrefix")
     }
   }
 
@@ -87,11 +103,7 @@ trait ViewBehaviours extends ViewSpecBase {
           assertEqualsMessage(doc, "title", s"$messageKeyPrefix.title", messageKeyParam)
         }
 
-        "display the correct page title" in {
-
-          val doc = asDocument(view)
-          assertPageTitleEqualsMessage(doc, s"$messageKeyPrefix.heading", messageKeyParam)
-        }
+        pageWithTitle(view, messageKeyPrefix, messageKeyParam)
 
         "display the correct guidance" in {
 
