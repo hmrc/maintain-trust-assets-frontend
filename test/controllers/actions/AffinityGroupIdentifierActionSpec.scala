@@ -45,8 +45,8 @@ class AffinityGroupIdentifierActionSpec extends SpecBase {
     Future.successful(new ~(new ~(Some("id"), Some(affinityGroup)), enrolment))
 
   private val agentEnrolment = Enrolments(Set(Enrolment("HMRC-AS-AGENT", List(EnrolmentIdentifier("AgentReferenceNumber", "SomeVal")), "Activated", None)))
-  private val trustsEnrolment = Enrolments(Set(Enrolment("HMRC-TERS-ORG", List(EnrolmentIdentifier("SAUTR", utr)), "Activated", None)))
-
+  private val trustsTaxableEnrolment = Enrolments(Set(Enrolment("HMRC-TERS-ORG", List(EnrolmentIdentifier("SAUTR", utr)), "Activated", None)))
+  private val trustsNonTaxableEnrolment = Enrolments(Set(Enrolment("HMRC-TERSNT-ORG", List(EnrolmentIdentifier("URN", utr)), "Activated", None)))
 
   "invoking an AuthenticatedIdentifier" when {
     "an Agent user" when {
@@ -97,13 +97,28 @@ class AffinityGroupIdentifierActionSpec extends SpecBase {
           application.stop()
         }
       }
-      "with trusts enrolments" must {
+      "with taxable trusts enrolments" must {
         "redirect to maintain-a-trust" in {
 
           val application = applicationBuilder(userAnswers = None).build()
 
           when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any()))
-            .thenReturn(authRetrievals(AffinityGroup.Organisation, trustsEnrolment))
+            .thenReturn(authRetrievals(AffinityGroup.Organisation, trustsTaxableEnrolment))
+
+          val result = new AffinityGroupIdentifierAction(fakeAction, trustsAuth, appConfig).apply(fakeRequest)
+
+          status(result) mustBe SEE_OTHER
+          redirectLocation(result).value mustBe s"${appConfig.maintainATrustFrontendUrl}"
+          application.stop()
+        }
+      }
+      "with non-taxable trusts enrolments" must {
+        "redirect to maintain-a-trust" in {
+
+          val application = applicationBuilder(userAnswers = None).build()
+
+          when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any()))
+            .thenReturn(authRetrievals(AffinityGroup.Organisation, trustsNonTaxableEnrolment))
 
           val result = new AffinityGroupIdentifierAction(fakeAction, trustsAuth, appConfig).apply(fakeRequest)
 
