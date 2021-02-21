@@ -92,13 +92,6 @@ class CheckAnswersFormattersSpec extends SpecBase {
       }
     }
 
-    ".percentage" must {
-      "append % symbol to value" in {
-        val result: Html = checkAnswersFormatters.percentage("100")
-        result mustBe Html("100%")
-      }
-    }
-
     ".addressFormatter" when {
 
       "UK address" must {

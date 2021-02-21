@@ -19,7 +19,8 @@ package utils
 import models.{Address, InternationalAddress, UKAddress}
 import org.joda.time.{LocalDate => JodaDate}
 import play.api.i18n.Messages
-import play.twirl.api.{Html, HtmlFormat}
+import play.twirl.api.Html
+import play.twirl.api.HtmlFormat.escape
 import uk.gov.hmrc.play.language.LanguageUtils
 import utils.countryOptions.CountryOptions
 
@@ -28,8 +29,6 @@ import javax.inject.Inject
 
 class CheckAnswersFormatters @Inject()(languageUtils: LanguageUtils,
                                        countryOptions: CountryOptions) {
-
-  private def escape(x: String): Html = HtmlFormat.escape(x)
 
   def formatDate(date: JavaDate)(implicit messages: Messages): Html = {
     val convertedDate: JodaDate = new JodaDate(date.getYear, date.getMonthValue, date.getDayOfMonth)
@@ -49,8 +48,6 @@ class CheckAnswersFormatters @Inject()(languageUtils: LanguageUtils,
 
   def currencyFormat(value: String): String = s"£$value"
 
-  def percentage(value: String): Html = escape(s"$value%")
-
   def addressFormatter(address: Address)(implicit messages: Messages): Html = {
     address match {
       case a: UKAddress => ukAddress(a)
@@ -60,6 +57,10 @@ class CheckAnswersFormatters @Inject()(languageUtils: LanguageUtils,
 
   private def breakLines(lines: Seq[Html]): Html = {
     Html(lines.mkString("<br />"))
+  }
+
+  def formatEnum[T](key: String, answer: T)(implicit messages: Messages): Html = {
+    escape(messages(s"$key.$answer"))
   }
 
   private def ukAddress(address: UKAddress): Html = {
