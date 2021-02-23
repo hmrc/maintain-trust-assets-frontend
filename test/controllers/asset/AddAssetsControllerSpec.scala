@@ -239,8 +239,8 @@ class AddAssetsControllerSpec extends SpecBase {
 
       val description: String = "Description"
 
-      def userAnswers(max: Int, is5mldEnabled: Boolean): UserAnswers = {
-        0.until(max).foldLeft(emptyUserAnswers.copy(is5mldEnabled = is5mldEnabled))((ua, i) => {
+      def userAnswers(max: Int, is5mldEnabled: Boolean, isTaxable: Boolean): UserAnswers = {
+        0.until(max).foldLeft(emptyUserAnswers.copy(is5mldEnabled = is5mldEnabled, isTaxable = isTaxable))((ua, i) => {
           ua
             .set(WhatKindOfAssetPage(i), Other).success.value
             .set(OtherAssetDescriptionPage(i), description).success.value
@@ -257,10 +257,11 @@ class AddAssetsControllerSpec extends SpecBase {
         val max: Int = 51
 
         val is5mldEnabled: Boolean = false
+        val isTaxable: Boolean = true
 
         "return OK and the correct view for a GET" in {
 
-          val application = applicationBuilder(userAnswers = Some(userAnswers(max, is5mldEnabled))).build()
+          val application = applicationBuilder(userAnswers = Some(userAnswers(max, is5mldEnabled, isTaxable))).build()
 
           val request = FakeRequest(GET, addAssetsRoute)
 
@@ -273,7 +274,7 @@ class AddAssetsControllerSpec extends SpecBase {
           val content = contentAsString(result)
 
           content mustEqual
-            view(fakeDraftId, Nil, assets(max), "You have added 51 assets", 51)(request, messages).toString
+            view(fakeDraftId, Nil, assets(max), "You have added 51 assets", max)(request, messages).toString
 
           content must include("You cannot add another asset as you have entered a maximum of 51.")
           content must include("You can add another asset by removing an existing one, or write to HMRC with details of any additional assets.")
@@ -287,7 +288,7 @@ class AddAssetsControllerSpec extends SpecBase {
           when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
           val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
 
-          val application = applicationBuilder(userAnswers = Some(userAnswers(max, is5mldEnabled))).build()
+          val application = applicationBuilder(userAnswers = Some(userAnswers(max, is5mldEnabled, isTaxable))).build()
 
           val request = FakeRequest(POST, completePostRoute)
 
@@ -304,55 +305,112 @@ class AddAssetsControllerSpec extends SpecBase {
         }
       }
 
-      "5mld" must {
+      "5mld" when {
 
-        val max: Int = 76
+        "taxable" must {
 
-        val is5mldEnabled: Boolean = true
+          val max: Int = 76
 
-        "return OK and the correct view for a GET" in {
+          val is5mldEnabled: Boolean = true
+          val isTaxable: Boolean = true
 
-          val application = applicationBuilder(userAnswers = Some(userAnswers(max, is5mldEnabled))).build()
+          "return OK and the correct view for a GET" in {
 
-          val request = FakeRequest(GET, addAssetsRoute)
+            val application = applicationBuilder(userAnswers = Some(userAnswers(max, is5mldEnabled, isTaxable))).build()
 
-          val view = application.injector.instanceOf[MaxedOutView]
+            val request = FakeRequest(GET, addAssetsRoute)
 
-          val result = route(application, request).value
+            val view = application.injector.instanceOf[MaxedOutView]
 
-          status(result) mustEqual OK
+            val result = route(application, request).value
 
-          val content = contentAsString(result)
+            status(result) mustEqual OK
 
-          content mustEqual
-            view(fakeDraftId, Nil, assets(max), "You have added 76 assets", 76)(request, messages).toString
+            val content = contentAsString(result)
 
-          content must include("You cannot add another asset as you have entered a maximum of 76.")
-          content must include("You can add another asset by removing an existing one, or write to HMRC with details of any additional assets.")
+            content mustEqual
+              view(fakeDraftId, Nil, assets(max), "You have added 76 assets", max)(request, messages).toString
 
-          application.stop()
+            content must include("You cannot add another asset as you have entered a maximum of 76.")
+            content must include("You can add another asset by removing an existing one, or write to HMRC with details of any additional assets.")
+
+            application.stop()
+          }
+
+          "redirect to next page and set AddAssetsPage to NoComplete for a POST" in {
+
+            reset(registrationsRepository)
+            when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
+            val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+
+            val application = applicationBuilder(userAnswers = Some(userAnswers(max, is5mldEnabled, isTaxable))).build()
+
+            val request = FakeRequest(POST, completePostRoute)
+
+            val result = route(application, request).value
+
+            status(result) mustEqual SEE_OTHER
+
+            redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
+
+            verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
+            uaCaptor.getValue.get(AddAssetsPage).get mustBe NoComplete
+
+            application.stop()
+          }
         }
 
-        "redirect to next page and set AddAssetsPage to NoComplete for a POST" in {
+        "non-taxable" must {
 
-          reset(registrationsRepository)
-          when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
-          val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+          val max: Int = 25
 
-          val application = applicationBuilder(userAnswers = Some(userAnswers(max, is5mldEnabled))).build()
+          val is5mldEnabled: Boolean = true
+          val isTaxable: Boolean = false
 
-          val request = FakeRequest(POST, completePostRoute)
+          "return OK and the correct view for a GET" in {
 
-          val result = route(application, request).value
+            val application = applicationBuilder(userAnswers = Some(userAnswers(max, is5mldEnabled, isTaxable))).build()
 
-          status(result) mustEqual SEE_OTHER
+            val request = FakeRequest(GET, addAssetsRoute)
 
-          redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
+            val view = application.injector.instanceOf[MaxedOutView]
 
-          verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
-          uaCaptor.getValue.get(AddAssetsPage).get mustBe NoComplete
+            val result = route(application, request).value
 
-          application.stop()
+            status(result) mustEqual OK
+
+            val content = contentAsString(result)
+
+            content mustEqual
+              view(fakeDraftId, Nil, assets(max), "You have added 25 assets", max)(request, messages).toString
+
+            content must include("You cannot add another asset as you have entered a maximum of 25.")
+            content must include("You can add another asset by removing an existing one, or write to HMRC with details of any additional assets.")
+
+            application.stop()
+          }
+
+          "redirect to next page and set AddAssetsPage to NoComplete for a POST" in {
+
+            reset(registrationsRepository)
+            when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
+            val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+
+            val application = applicationBuilder(userAnswers = Some(userAnswers(max, is5mldEnabled, isTaxable))).build()
+
+            val request = FakeRequest(POST, completePostRoute)
+
+            val result = route(application, request).value
+
+            status(result) mustEqual SEE_OTHER
+
+            redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
+
+            verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
+            uaCaptor.getValue.get(AddAssetsPage).get mustBe NoComplete
+
+            application.stop()
+          }
         }
       }
     }
