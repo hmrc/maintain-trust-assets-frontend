@@ -17,7 +17,8 @@
 package navigation
 
 import config.FrontendAppConfig
-import controllers.asset.routes
+import controllers.asset.routes._
+import controllers.routes._
 import models.WhatKindOfAsset._
 import models.{UserAnswers, _}
 import pages.Page
@@ -41,26 +42,31 @@ object AssetsRoutes {
 
   private def addAnAssetYesNoRoute(draftId: String, config: FrontendAppConfig)(userAnswers: UserAnswers): Call = userAnswers.get(AddAnAssetYesNoPage) match {
     case Some(false) => assetsCompletedRoute(draftId, config)
-    case Some(true) => routes.WhatKindOfAssetController.onPageLoad(0, draftId)
-    case _ => controllers.routes.SessionExpiredController.onPageLoad()
+    case Some(true) => routeToAssetIndex(userAnswers, draftId)
+    case _ => SessionExpiredController.onPageLoad()
   }
 
   private def addAssetsRoute(draftId: String, config: FrontendAppConfig)(answers: UserAnswers): Call = {
     val addAnother = answers.get(AddAssetsPage)
 
-    def routeToAssetIndex: Call = {
-      val assets = answers.get(sections.Assets).getOrElse(List.empty)
-      routes.WhatKindOfAssetController.onPageLoad(assets.size, draftId)
-    }
-
     addAnother match {
       case Some(AddAssets.YesNow) =>
-        routeToAssetIndex
+        routeToAssetIndex(answers, draftId)
       case Some(AddAssets.YesLater) =>
         assetsCompletedRoute(draftId, config)
       case Some(AddAssets.NoComplete) =>
         assetsCompletedRoute(draftId, config)
-      case _ => controllers.routes.SessionExpiredController.onPageLoad()
+      case _ => SessionExpiredController.onPageLoad()
+    }
+  }
+
+  private def routeToAssetIndex(answers: UserAnswers, draftId: String): Call = {
+    val index = answers.get(sections.Assets).getOrElse(List.empty).size
+
+    if (answers.isTaxable) {
+      WhatKindOfAssetController.onPageLoad(index, draftId)
+    } else {
+      controllers.asset.noneeabusiness.routes.NameController.onPageLoad(index, draftId)
     }
   }
 

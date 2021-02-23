@@ -35,62 +35,145 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
     Call("GET", frontendAppConfig.registrationProgressUrl(fakeDraftId))
   }
 
-  "Navigator" must {
+  "Navigator" when {
 
-    "go to WhatKindOfAssetPage from from AddAnAssetYesNoPage when selected Yes" in {
-      val index = 0
+    "add an asset yes no page" when {
 
-      forAll(arbitrary[UserAnswers]) {
-        userAnswers =>
+      "taxable" when {
 
-          val answers = userAnswers.set(AddAnAssetYesNoPage, true).success.value
+        val baseAnswers = emptyUserAnswers.copy(isTaxable = true)
 
-          navigator.nextPage(AddAnAssetYesNoPage, fakeDraftId)(answers)
-            .mustBe(controllers.asset.routes.WhatKindOfAssetController.onPageLoad(index, fakeDraftId))
+        "yes selected" must {
+          "redirect to WhatKindOfAssetPage" in {
+
+            val index = 0
+            val answers = baseAnswers.set(AddAnAssetYesNoPage, true).success.value
+
+            navigator.nextPage(AddAnAssetYesNoPage, fakeDraftId)(answers)
+              .mustBe(controllers.asset.routes.WhatKindOfAssetController.onPageLoad(index, fakeDraftId))
+          }
+        }
+
+        "no selected" must {
+          "redirect to RegistrationProgress" in {
+
+            val answers = baseAnswers.set(AddAnAssetYesNoPage, false).success.value
+
+            navigator.nextPage(AddAnAssetYesNoPage, fakeDraftId)(answers)
+              .mustBe(assetsCompletedRoute)
+          }
+        }
+      }
+
+      "non-taxable" when {
+
+        val baseAnswers = emptyUserAnswers.copy(isTaxable = false)
+
+        "yes selected" must {
+          "redirect to non-EEA business asset name page" in {
+
+            val index = 0
+            val answers = baseAnswers.set(AddAnAssetYesNoPage, true).success.value
+
+            navigator.nextPage(AddAnAssetYesNoPage, fakeDraftId)(answers)
+              .mustBe(controllers.asset.noneeabusiness.routes.NameController.onPageLoad(index, fakeDraftId))
+          }
+        }
+
+        "no selected" must {
+          "redirect to RegistrationProgress" in {
+
+            val answers = baseAnswers.set(AddAnAssetYesNoPage, false).success.value
+
+            navigator.nextPage(AddAnAssetYesNoPage, fakeDraftId)(answers)
+              .mustBe(assetsCompletedRoute)
+          }
+        }
       }
     }
 
-    "go to RegistrationProgress from from AddAnAssetYesNoPage when selected No" in {
-      forAll(arbitrary[UserAnswers]) {
-        userAnswers =>
+    "add assets page" when {
 
-          val answers = userAnswers.set(AddAnAssetYesNoPage, false).success.value
+      "taxable" when {
 
-          navigator.nextPage(AddAnAssetYesNoPage, fakeDraftId)(answers)
-            .mustBe(assetsCompletedRoute)
+        val baseAnswers = emptyUserAnswers.copy(isTaxable = true)
+
+        "add them now selected" must {
+          "go to the WhatKindOfAssetPage" in {
+
+            val answers = baseAnswers
+              .set(WhatKindOfAssetPage(0), Money).success.value
+              .set(AddAssetsPage, AddAssets.YesNow).success.value
+
+            navigator.nextPage(AddAssetsPage, fakeDraftId)(answers)
+              .mustBe(controllers.asset.routes.WhatKindOfAssetController.onPageLoad(1, fakeDraftId))
+          }
+        }
+
+        "add them later selected" must {
+          "go to RegistrationProgress" in {
+
+            val answers = baseAnswers
+              .set(WhatKindOfAssetPage(0), Money).success.value
+              .set(AddAssetsPage, AddAssets.YesLater).success.value
+
+            navigator.nextPage(AddAssetsPage, fakeDraftId)(answers)
+              .mustBe(assetsCompletedRoute)
+          }
+        }
+
+        "no complete selected" must {
+          "go to RegistrationProgress" in {
+
+            val answers = baseAnswers
+              .set(WhatKindOfAssetPage(0), Money).success.value
+              .set(AddAssetsPage, AddAssets.NoComplete).success.value
+
+            navigator.nextPage(AddAssetsPage, fakeDraftId)(answers)
+              .mustBe(assetsCompletedRoute)
+          }
+        }
       }
-    }
 
-    "add another asset" must {
+      "non-taxable" when {
 
-      "go to the WhatKindOfAssetPage from AddAssetsPage when selected add them now" in {
+        val baseAnswers = emptyUserAnswers.copy(isTaxable = false)
 
-        val answers = emptyUserAnswers
-          .set(WhatKindOfAssetPage(0), Money).success.value
-          .set(AddAssetsPage, AddAssets.YesNow).success.value
+        "add them now selected" must {
+          "go to the non-EEA business asset name page" in {
 
-        navigator.nextPage(AddAssetsPage, fakeDraftId)(answers)
-          .mustBe(controllers.asset.routes.WhatKindOfAssetController.onPageLoad(1, fakeDraftId))
-      }
+            val answers = baseAnswers
+              .set(WhatKindOfAssetPage(0), NonEeaBusiness).success.value
+              .set(AddAssetsPage, AddAssets.YesNow).success.value
 
-      "go to RegistrationProgress from AddAssetsPage when selecting add them later" in {
+            navigator.nextPage(AddAssetsPage, fakeDraftId)(answers)
+              .mustBe(controllers.asset.noneeabusiness.routes.NameController.onPageLoad(1, fakeDraftId))
+          }
+        }
 
-        val answers = emptyUserAnswers
-          .set(WhatKindOfAssetPage(0), Money).success.value
-          .set(AddAssetsPage, AddAssets.YesLater).success.value
+        "add them later selected" must {
+          "go to RegistrationProgress" in {
 
-        navigator.nextPage(AddAssetsPage, fakeDraftId)(answers)
-          .mustBe(assetsCompletedRoute)
-      }
+            val answers = baseAnswers
+              .set(WhatKindOfAssetPage(0), Money).success.value
+              .set(AddAssetsPage, AddAssets.YesLater).success.value
 
-      "go to RegistrationProgress from AddAssetsPage when selecting no complete" in {
+            navigator.nextPage(AddAssetsPage, fakeDraftId)(answers)
+              .mustBe(assetsCompletedRoute)
+          }
+        }
 
-        val answers = emptyUserAnswers
-          .set(WhatKindOfAssetPage(0), Money).success.value
-          .set(AddAssetsPage, AddAssets.NoComplete).success.value
+        "no complete selected" must {
+          "go to RegistrationProgress" in {
 
-        navigator.nextPage(AddAssetsPage, fakeDraftId)(answers)
-          .mustBe(assetsCompletedRoute)
+            val answers = baseAnswers
+              .set(WhatKindOfAssetPage(0), Money).success.value
+              .set(AddAssetsPage, AddAssets.NoComplete).success.value
+
+            navigator.nextPage(AddAssetsPage, fakeDraftId)(answers)
+              .mustBe(assetsCompletedRoute)
+          }
+        }
       }
     }
 
