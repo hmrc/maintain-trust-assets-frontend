@@ -166,15 +166,7 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
           """.stripMargin)
 
         json.validate[Asset] mustEqual JsSuccess(
-          ShareNonPortfolioAsset(
-          listedOnTheStockExchange = true,
-          name = "adam",
-          sharesInAPortfolio = false,
-          quantityInTheTrust = 100L,
-          value = 200L,
-          whatKindOfAsset = WhatKindOfAsset.Shares,
-          `class` = ShareClass.Ordinary
-        ))
+          ShareNonPortfolioAsset(whatKindOfAsset = WhatKindOfAsset.Shares, sharesInAPortfolio = false, name = "adam", listedOnTheStockExchange = true, `class` = ShareClass.Ordinary, quantityInTheTrust = 100L, value = 200L))
 
       }
 
@@ -193,14 +185,7 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
           """.stripMargin)
 
         json.validate[Asset] mustEqual JsSuccess(
-          SharePortfolioAsset(
-            listedOnTheStockExchange = true,
-            name = "Adam",
-            sharesInAPortfolio = true,
-            quantityInTheTrust = 200L,
-            value = 290000L,
-            whatKindOfAsset = WhatKindOfAsset.Shares
-          ))
+          SharePortfolioAsset(whatKindOfAsset = WhatKindOfAsset.Shares, sharesInAPortfolio = true, name = "Adam", listedOnTheStockExchange = true, quantityInTheTrust = 200L, value = 290000L))
       }
 
       "a business asset" in {

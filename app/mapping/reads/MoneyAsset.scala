@@ -20,6 +20,7 @@ import models.WhatKindOfAsset
 import models.WhatKindOfAsset.Money
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.money._
+import play.api.libs.functional.syntax._
 import play.api.libs.json.{Reads, _}
 
 final case class MoneyAsset(override val whatKindOfAsset: WhatKindOfAsset,
@@ -27,24 +28,9 @@ final case class MoneyAsset(override val whatKindOfAsset: WhatKindOfAsset,
 
 object MoneyAsset {
 
-  import play.api.libs.functional.syntax._
-
-  implicit lazy val reads: Reads[MoneyAsset] = {
-
-    val moneyReads: Reads[MoneyAsset] = (
-      (__ \ AssetMoneyValuePage.key).read[Long] and
-        (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset]
-      )((value, kind) => MoneyAsset(kind, value))
-
-    (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].flatMap[WhatKindOfAsset] {
-      whatKindOfAsset: WhatKindOfAsset =>
-        if (whatKindOfAsset == Money) {
-          Reads(_ => JsSuccess(whatKindOfAsset))
-        } else {
-          Reads(_ => JsError("money asset must be of type `Money`"))
-        }
-    }.andKeep(moneyReads)
-
-  }
+  implicit lazy val reads: Reads[MoneyAsset] = (
+    (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].filter(_ == Money) and
+      (__ \ AssetMoneyValuePage.key).read[Long]
+    )(MoneyAsset.apply _)
 
 }

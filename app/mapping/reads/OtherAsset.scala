@@ -21,7 +21,7 @@ import models.WhatKindOfAsset.Other
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.other._
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsError, JsSuccess, Reads, __}
+import play.api.libs.json.{Reads, __}
 
 final case class OtherAsset(override val whatKindOfAsset: WhatKindOfAsset,
                             description: String,
@@ -32,23 +32,10 @@ final case class OtherAsset(override val whatKindOfAsset: WhatKindOfAsset,
 
 object OtherAsset {
 
-  implicit lazy val reads: Reads[OtherAsset] = {
-
-    val otherReads: Reads[OtherAsset] = (
+  implicit lazy val reads: Reads[OtherAsset] = (
+    (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].filter(_ == Other) and
       (__ \ OtherAssetDescriptionPage.key).read[String] and
-        (__ \ OtherAssetValuePage.key).read[Long] and
-        (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset]
-      )((description, value, kind) => OtherAsset(kind, description, value))
-
-    (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].flatMap[WhatKindOfAsset] {
-      whatKindOfAsset: WhatKindOfAsset =>
-        if (whatKindOfAsset == Other) {
-          Reads(_ => JsSuccess(whatKindOfAsset))
-        } else {
-          Reads(_ => JsError("other asset must be of type `Other`"))
-        }
-    }.andKeep(otherReads)
-
-  }
+      (__ \ OtherAssetValuePage.key).read[Long]
+    )(OtherAsset.apply _)
 
 }

@@ -20,6 +20,7 @@ import models.WhatKindOfAsset.PropertyOrLand
 import models.{Address, WhatKindOfAsset}
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.property_or_land._
+import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsError, JsSuccess, Reads, __}
 
 final case class PropertyOrLandAsset(override val whatKindOfAsset: WhatKindOfAsset,
@@ -29,8 +30,6 @@ final case class PropertyOrLandAsset(override val whatKindOfAsset: WhatKindOfAss
                                      propertyOrLandTotalValue: Long) extends Asset
 
 object PropertyOrLandAsset {
-
-  import play.api.libs.functional.syntax._
 
   implicit lazy val reads: Reads[PropertyOrLandAsset] = {
 
