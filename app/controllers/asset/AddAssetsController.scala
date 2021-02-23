@@ -72,7 +72,7 @@ class AddAssetsController @Inject()(
 
       val assets = new AddAssetViewHelper(checkAnswersFormatters)(userAnswers, draftId).rows
 
-      val maxLimit: Int = if (userAnswers.is5mldEnabled) MAX_5MLD_ASSETS else MAX_4MLD_ASSETS
+      val maxLimit: Int = if (userAnswers.is5mldEnabled) MAX_5MLD_TAXABLE_ASSETS else MAX_4MLD_ASSETS
 
       assets.count match {
         case 0 =>
