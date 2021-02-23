@@ -31,50 +31,14 @@ class NonEeaBusinessNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
 
   "Non-EEA Business Navigator" must {
 
-    "navigate from NamePage to AddressUkYesNoPage" in {
+    "navigate from NamePage to InternationalAddressPage" in {
 
       val page = NamePage(index)
 
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
           navigator.nextPage(page, fakeDraftId)(userAnswers)
-            .mustBe(AddressUkYesNoController.onPageLoad(index, fakeDraftId))
-      }
-    }
-
-    "navigate from AddressUkYesNoPage" when {
-
-      val page = AddressUkYesNoPage(index)
-
-      "yes selected to UkAddressPage" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          userAnswers =>
-            val answers = userAnswers.set(page, true).success.value
-            navigator.nextPage(page, fakeDraftId)(answers)
-              .mustBe(UkAddressController.onPageLoad(index, fakeDraftId))
-        }
-      }
-
-      "no selected to InternationalAddressPage" in {
-
-        forAll(arbitrary[UserAnswers]) {
-          userAnswers =>
-            val answers = userAnswers.set(page, false).success.value
-            navigator.nextPage(page, fakeDraftId)(answers)
-              .mustBe(InternationalAddressController.onPageLoad(index, fakeDraftId))
-        }
-      }
-    }
-
-    "navigate from UkAddressPage to GoverningCountryPage" in {
-
-      val page = UkAddressPage(index)
-
-      forAll(arbitrary[UserAnswers]) {
-        userAnswers =>
-          navigator.nextPage(page, fakeDraftId)(userAnswers)
-            .mustBe(GoverningCountryController.onPageLoad(index, fakeDraftId))
+            .mustBe(InternationalAddressController.onPageLoad(index, fakeDraftId))
       }
     }
 

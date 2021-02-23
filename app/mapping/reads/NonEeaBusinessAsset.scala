@@ -39,13 +39,9 @@ object NonEeaBusinessAsset {
 
   implicit lazy val reads: Reads[NonEeaBusinessAsset] = {
 
-    val addressReads: Reads[Address] =
-      (__ \ UkAddressPage.key).read[Address] orElse
-        (__ \ InternationalAddressPage.key).read[Address]
-
     val nonEeaBusinessReads: Reads[NonEeaBusinessAsset] = (
       (__ \ NamePage.key).read[String] and
-        addressReads and
+        (__ \ InternationalAddressPage.key).read[Address] and
         (__ \ GoverningCountryPage.key).read[String] and
         (__ \ StartDatePage.key).read[LocalDate] and
         (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset]

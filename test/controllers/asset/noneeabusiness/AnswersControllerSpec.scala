@@ -18,7 +18,7 @@ package controllers.asset.noneeabusiness
 
 import base.SpecBase
 import controllers.routes._
-import models.{UKAddress, UserAnswers}
+import models.{InternationalAddress, UserAnswers}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import pages.asset.noneeabusiness._
@@ -36,8 +36,7 @@ class AnswersControllerSpec extends SpecBase {
 
   private val answers: UserAnswers = emptyUserAnswers
     .set(NamePage(index), "Name").success.value
-    .set(AddressUkYesNoPage(index), true).success.value
-    .set(UkAddressPage(index), UKAddress("Line 1", "Line 2", None, None, "AB1 1AB")).success.value
+    .set(InternationalAddressPage(index), InternationalAddress("Line 1", "Line 2", Some("Line 3"), "FR")).success.value
     .set(GoverningCountryPage(index), "FR").success.value
     .set(StartDatePage(index), LocalDate.parse("1996-02-03")).success.value
 

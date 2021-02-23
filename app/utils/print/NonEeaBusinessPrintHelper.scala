@@ -42,8 +42,6 @@ class NonEeaBusinessPrintHelper @Inject()(checkAnswersFormatters: CheckAnswersFo
     Seq(
       converter.assetTypeQuestion(index, draftId),
       converter.stringQuestion(NamePage(index), "nonEeaBusiness.name", NameController.onPageLoad(index, draftId).url),
-      converter.yesNoQuestion(AddressUkYesNoPage(index), "nonEeaBusiness.addressUkYesNo", AddressUkYesNoController.onPageLoad(index, draftId).url),
-      converter.addressQuestion(UkAddressPage(index), "nonEeaBusiness.ukAddress", UkAddressController.onPageLoad(index, draftId).url),
       converter.addressQuestion(InternationalAddressPage(index), "nonEeaBusiness.internationalAddress", InternationalAddressController.onPageLoad(index, draftId).url),
       converter.countryQuestion(GoverningCountryPage(index), "nonEeaBusiness.governingCountry", GoverningCountryController.onPageLoad(index, draftId).url),
       converter.dateQuestion(StartDatePage(index), "nonEeaBusiness.startDate", StartDateController.onPageLoad(index, draftId).url)

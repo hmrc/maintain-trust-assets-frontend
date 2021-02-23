@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.asset.noneeabusiness.routes._
 import controllers.asset.routes.WhatKindOfAssetController
 import models.WhatKindOfAsset.NonEeaBusiness
-import models.{InternationalAddress, UKAddress, UserAnswers}
+import models.{InternationalAddress, UserAnswers}
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.noneeabusiness._
 import play.twirl.api.Html
@@ -37,38 +37,20 @@ class NonEeaBusinessPrintHelperSpec extends SpecBase {
   private val heading: String = s"Non-EEA Company ${index + 1}"
 
   private val name: String = "Name"
-  private val ukAddress: UKAddress = UKAddress("Line 1", "Line 2", None, None, "AB1 1AB")
   private val country: String = "FR"
   private val nonUkAddress: InternationalAddress = InternationalAddress("Line 1", "Line 2", None, country)
   private val date: LocalDate = LocalDate.parse("1996-02-03")
 
-  private val baseAnswers: UserAnswers = emptyUserAnswers
+  private val userAnswers: UserAnswers = emptyUserAnswers
     .set(WhatKindOfAssetPage(index), NonEeaBusiness).success.value
     .set(NamePage(index), name).success.value
+    .set(InternationalAddressPage(index), nonUkAddress).success.value
     .set(GoverningCountryPage(index), country).success.value
     .set(StartDatePage(index), date).success.value
 
-  private val ukAddressAnswers: UserAnswers = baseAnswers
-    .set(AddressUkYesNoPage(index), true).success.value
-    .set(UkAddressPage(index), ukAddress).success.value
-
-  private val nonUkAddressAnswers: UserAnswers = baseAnswers
-    .set(AddressUkYesNoPage(index), false).success.value
-    .set(InternationalAddressPage(index), nonUkAddress).success.value
-
-  private val ukAddressRows: Seq[AnswerRow] = Seq(
+  private val rows: Seq[AnswerRow] = Seq(
     AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Non-EEA Company"), Some(WhatKindOfAssetController.onPageLoad(index, fakeDraftId).url)),
     AnswerRow("nonEeaBusiness.name.checkYourAnswersLabel", Html(name), Some(NameController.onPageLoad(index, draftId).url)),
-    AnswerRow("nonEeaBusiness.addressUkYesNo.checkYourAnswersLabel", Html("Yes"), Some(AddressUkYesNoController.onPageLoad(index, draftId).url)),
-    AnswerRow("nonEeaBusiness.ukAddress.checkYourAnswersLabel", Html("Line 1<br />Line 2<br />AB1 1AB"), Some(UkAddressController.onPageLoad(index, draftId).url)),
-    AnswerRow("nonEeaBusiness.governingCountry.checkYourAnswersLabel", Html("France"), Some(GoverningCountryController.onPageLoad(index, draftId).url)),
-    AnswerRow("nonEeaBusiness.startDate.checkYourAnswersLabel", Html("3 February 1996"), Some(StartDateController.onPageLoad(index, draftId).url))
-  )
-
-  private val nonUkAddressRows: Seq[AnswerRow] = Seq(
-    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Non-EEA Company"), Some(WhatKindOfAssetController.onPageLoad(index, fakeDraftId).url)),
-    AnswerRow("nonEeaBusiness.name.checkYourAnswersLabel", Html(name), Some(NameController.onPageLoad(index, draftId).url)),
-    AnswerRow("nonEeaBusiness.addressUkYesNo.checkYourAnswersLabel", Html("No"), Some(AddressUkYesNoController.onPageLoad(index, draftId).url)),
     AnswerRow("nonEeaBusiness.internationalAddress.checkYourAnswersLabel", Html("Line 1<br />Line 2<br />France"), Some(InternationalAddressController.onPageLoad(index, draftId).url)),
     AnswerRow("nonEeaBusiness.governingCountry.checkYourAnswersLabel", Html("France"), Some(GoverningCountryController.onPageLoad(index, draftId).url)),
     AnswerRow("nonEeaBusiness.startDate.checkYourAnswersLabel", Html("3 February 1996"), Some(StartDateController.onPageLoad(index, draftId).url))
@@ -77,70 +59,35 @@ class NonEeaBusinessPrintHelperSpec extends SpecBase {
   "NonEeaBusinessPrintHelper" when {
 
     "printSection" must {
-      "render answer section with heading" when {
+      "render answer section with heading" in {
 
-        "non-EEA business has UK address" in {
+        val result: AnswerSection = helper.printSection(
+          userAnswers = userAnswers,
+          index = index,
+          specificIndex = index,
+          draftId = fakeDraftId
+        )
 
-          val result: AnswerSection = helper.printSection(
-            userAnswers = ukAddressAnswers,
-            index = index,
-            specificIndex = index,
-            draftId = fakeDraftId
-          )
-
-          result mustBe AnswerSection(
-            headingKey = Some(heading),
-            rows = ukAddressRows
-          )
-        }
-
-        "non-EEA business has non-UK address" in {
-
-          val result: AnswerSection = helper.printSection(
-            userAnswers = nonUkAddressAnswers,
-            index = index,
-            specificIndex = index,
-            draftId = fakeDraftId
-          )
-
-          result mustBe AnswerSection(
-            headingKey = Some(heading),
-            rows = nonUkAddressRows
-          )
-        }
+        result mustBe AnswerSection(
+          headingKey = Some(heading),
+          rows = rows
+        )
       }
     }
 
     "checkDetailsSection" must {
-      "render answer section without heading" when {
+      "render answer section without heading" in {
 
-        "business has UK address" in {
+        val result: Seq[AnswerSection] = helper.checkDetailsSection(
+          userAnswers = userAnswers,
+          index = index,
+          draftId = fakeDraftId
+        )
 
-          val result: Seq[AnswerSection] = helper.checkDetailsSection(
-            userAnswers = ukAddressAnswers,
-            index = index,
-            draftId = fakeDraftId
-          )
-
-          result mustBe Seq(AnswerSection(
-            headingKey = None,
-            rows = ukAddressRows
-          ))
-        }
-
-        "business has non-UK address" in {
-
-          val result: Seq[AnswerSection] = helper.checkDetailsSection(
-            userAnswers = nonUkAddressAnswers,
-            index = index,
-            draftId = fakeDraftId
-          )
-
-          result mustBe Seq(AnswerSection(
-            headingKey = None,
-            rows = nonUkAddressRows
-          ))
-        }
+        result mustBe Seq(AnswerSection(
+          headingKey = None,
+          rows = rows
+        ))
       }
     }
   }

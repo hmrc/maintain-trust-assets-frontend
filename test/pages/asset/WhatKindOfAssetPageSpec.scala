@@ -213,8 +213,6 @@ class WhatKindOfAssetPageSpec extends PageBehaviours {
       (initial, kind) =>
         val answers: UserAnswers = initial
           .set(noneeabusiness.NamePage(0), str).success.value
-          .set(noneeabusiness.AddressUkYesNoPage(0), true).success.value
-          .set(noneeabusiness.UkAddressPage(0), ukAddress).success.value
           .set(noneeabusiness.InternationalAddressPage(0), internationalAddress).success.value
           .set(noneeabusiness.GoverningCountryPage(0), str).success.value
           .set(noneeabusiness.StartDatePage(0), date).success.value
@@ -225,8 +223,6 @@ class WhatKindOfAssetPageSpec extends PageBehaviours {
         result.get(WhatKindOfAssetPage(0)).value mustEqual kind
 
         result.get(noneeabusiness.NamePage(0)) mustNot be(defined)
-        result.get(noneeabusiness.AddressUkYesNoPage(0)) mustNot be(defined)
-        result.get(noneeabusiness.UkAddressPage(0)) mustNot be(defined)
         result.get(noneeabusiness.InternationalAddressPage(0)) mustNot be(defined)
         result.get(noneeabusiness.GoverningCountryPage(0)) mustNot be(defined)
         result.get(noneeabusiness.StartDatePage(0)) mustNot be(defined)

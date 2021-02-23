@@ -18,8 +18,8 @@ package mapping
 
 import base.SpecBase
 import models.Status.Completed
-import models.{AddressType, InternationalAddress, NonEeaBusinessType, UKAddress}
 import models.WhatKindOfAsset.NonEeaBusiness
+import models.{AddressType, InternationalAddress, NonEeaBusinessType}
 import pages.AssetStatus
 import pages.asset._
 import pages.asset.noneeabusiness._
@@ -33,11 +33,9 @@ class NonEeaBusinessAssetMapperSpec extends SpecBase {
   private val baseAnswers = emptyUserAnswers.copy(is5mldEnabled = true)
 
   private val name: String = "Name"
-  private val ukAddress: UKAddress = UKAddress("Line 1", "Line 2", Some("Line 3"), Some("Line 4"), "AB1 1AB")
-  private val ukAddressType: AddressType = AddressType("Line 1", "Line 2", Some("Line 3"), Some("Line 4"), Some("AB1 1AB"), "GB")
-  private val nonUkAddress: InternationalAddress = InternationalAddress("Line 1", "Line 2", Some("Line 3"), "FR")
-  private val nonUkAddressType: AddressType = AddressType("Line 1", "Line 2", Some("Line 3"), None, None, "FR")
-  private val country: String = "GB"
+  private val country: String = "FR"
+  private val nonUkAddress: InternationalAddress = InternationalAddress("Line 1", "Line 2", Some("Line 3"), country)
+  private val nonUkAddressType: AddressType = AddressType("Line 1", "Line 2", Some("Line 3"), None, None, country)
   private val date: LocalDate = LocalDate.parse("1996-02-03")
 
   "NonEeaBusinessAssetMapper" must {
@@ -54,35 +52,11 @@ class NonEeaBusinessAssetMapperSpec extends SpecBase {
 
     "be able to create a non-EEA business asset" when {
 
-      "UK address" in {
+      "one asset" in {
 
         val answers = baseAnswers
           .set(WhatKindOfAssetPage(0), NonEeaBusiness).success.value
           .set(NamePage(0), name).success.value
-          .set(AddressUkYesNoPage(0), true).success.value
-          .set(UkAddressPage(0), ukAddress).success.value
-          .set(GoverningCountryPage(0), country).success.value
-          .set(StartDatePage(0), date).success.value
-          .set(AssetStatus(0), Completed).success.value
-
-        val result = mapper.build(answers).get
-
-        result mustBe List(
-          NonEeaBusinessType(
-            orgName = name,
-            address = ukAddressType,
-            govLawCountry = country,
-            startDate = date
-          )
-        )
-      }
-
-      "non-UK address" in {
-
-        val answers = baseAnswers
-          .set(WhatKindOfAssetPage(0), NonEeaBusiness).success.value
-          .set(NamePage(0), name).success.value
-          .set(AddressUkYesNoPage(0), false).success.value
           .set(InternationalAddressPage(0), nonUkAddress).success.value
           .set(GoverningCountryPage(0), country).success.value
           .set(StartDatePage(0), date).success.value
@@ -105,15 +79,13 @@ class NonEeaBusinessAssetMapperSpec extends SpecBase {
         val answers = baseAnswers
           .set(WhatKindOfAssetPage(0), NonEeaBusiness).success.value
           .set(NamePage(0), name).success.value
-          .set(AddressUkYesNoPage(0), true).success.value
-          .set(UkAddressPage(0), ukAddress).success.value
+          .set(InternationalAddressPage(0), nonUkAddress).success.value
           .set(GoverningCountryPage(0), country).success.value
           .set(StartDatePage(0), date).success.value
           .set(AssetStatus(0), Completed).success.value
 
           .set(WhatKindOfAssetPage(1), NonEeaBusiness).success.value
           .set(NamePage(1), name).success.value
-          .set(AddressUkYesNoPage(1), false).success.value
           .set(InternationalAddressPage(1), nonUkAddress).success.value
           .set(GoverningCountryPage(1), country).success.value
           .set(StartDatePage(1), date).success.value
@@ -124,7 +96,7 @@ class NonEeaBusinessAssetMapperSpec extends SpecBase {
         result mustBe List(
           NonEeaBusinessType(
             orgName = name,
-            address = ukAddressType,
+            address = nonUkAddressType,
             govLawCountry = country,
             startDate = date
           ),

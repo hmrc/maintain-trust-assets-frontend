@@ -17,7 +17,7 @@
 package mapping.reads
 
 import models.WhatKindOfAsset.Money
-import models.{ShareClass, UKAddress, WhatKindOfAsset}
+import models.{InternationalAddress, ShareClass, UKAddress, WhatKindOfAsset}
 import org.scalatest.{FreeSpec, MustMatchers}
 import play.api.libs.json.{JsError, JsSuccess, Json}
 
@@ -342,10 +342,10 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
             |{
             |  "whatKindOfAsset": "NonEeaBusiness",
             |  "nonEeaBusinessName": "Name",
-            |  "nonEeaBusinessUkAddress": {
+            |  "nonEeaBusinessInternationalAddress": {
             |     "line1": "21 Test Lane",
             |     "line2": "Test Town",
-            |     "postcode": "AB1 1AB"
+            |     "country": "FR"
             |  },
             |  "nonEeaBusinessGoverningCountry": "GB",
             |  "nonEeaBusinessStartDate": "1996-02-03"
@@ -356,7 +356,7 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
           NonEeaBusinessAsset(
             whatKindOfAsset = WhatKindOfAsset.NonEeaBusiness,
             name = "Name",
-            address = UKAddress("21 Test Lane", "Test Town", None, None, "AB1 1AB"),
+            address = InternationalAddress("21 Test Lane", "Test Town", None, "FR"),
             governingCountry = "GB",
             startDate = LocalDate.parse("1996-02-03")
           )
