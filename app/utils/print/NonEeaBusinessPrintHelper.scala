@@ -27,9 +27,7 @@ import javax.inject.Inject
 
 class NonEeaBusinessPrintHelper @Inject()(checkAnswersFormatters: CheckAnswersFormatters) extends PrintHelper {
 
-  override def headingKey(index: Int)(implicit messages: Messages): String = {
-    messages("answerPage.section.nonEeaBusinessAsset.subheading", index + 1)
-  }
+  override val assetType: String = "nonEeaBusinessAsset"
 
   override def answerRows(userAnswers: UserAnswers,
                           arg: String,

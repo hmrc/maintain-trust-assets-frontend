@@ -28,10 +28,16 @@ trait PrintHelper {
                           draftId: String)
                          (implicit messages: Messages): Seq[AnswerSection] = {
 
-    Seq(section(userAnswers, arg, index, draftId, None))
+    Seq(section(
+      userAnswers = userAnswers,
+      arg = arg,
+      index = index,
+      draftId = draftId,
+      headingKey = None
+    ))
   }
 
-  def headingKey(index: Int)(implicit messages: Messages): String
+  val assetType: String
 
   def printSection(userAnswers: UserAnswers,
                    arg: String = "",
@@ -40,15 +46,21 @@ trait PrintHelper {
                    draftId: String)
                   (implicit messages: Messages): AnswerSection = {
 
-    section(userAnswers, arg, index, draftId, Some(headingKey(specificIndex)))
+    section(
+      userAnswers = userAnswers,
+      arg = arg,
+      index = index,
+      draftId = draftId,
+      headingKey = Some(messages(s"answerPage.section.$assetType.subheading", specificIndex + 1))
+    )
   }
 
   private def section(userAnswers: UserAnswers,
-              arg: String,
-              index: Int,
-              draftId: String,
-              headingKey: Option[String])
-             (implicit messages: Messages): AnswerSection = {
+                      arg: String,
+                      index: Int,
+                      draftId: String,
+                      headingKey: Option[String])
+                     (implicit messages: Messages): AnswerSection = {
 
     AnswerSection(
       headingKey = headingKey match {

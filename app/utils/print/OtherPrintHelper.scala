@@ -27,9 +27,7 @@ import javax.inject.Inject
 
 class OtherPrintHelper @Inject()(checkAnswersFormatters: CheckAnswersFormatters) extends PrintHelper {
 
-  override def headingKey(index: Int)(implicit messages: Messages): String = {
-    messages("answerPage.section.otherAsset.subheading", index + 1)
-  }
+  override val assetType: String = "otherAsset"
 
   override def answerRows(userAnswers: UserAnswers,
                           arg: String,
