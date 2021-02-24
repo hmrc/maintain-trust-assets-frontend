@@ -28,32 +28,28 @@ import uk.gov.hmrc.auth.core.AffinityGroup
 
 import javax.inject.{Inject, Singleton}
 
-object AssetsRoutes {
+object AssetsRoutes extends Navigation {
 
   def route(draftId: String, config: FrontendAppConfig): PartialFunction[Page, AffinityGroup => UserAnswers => Call] = {
-    case TrustOwnsNonEeaBusinessYesNoPage => _ => trustOwnsNonEeaBusinessYesNoRoute(draftId, config)
+    case TrustOwnsNonEeaBusinessYesNoPage => _ => ua => yesNoNav(
+      ua = ua,
+      fromPage = TrustOwnsNonEeaBusinessYesNoPage,
+      yesCall = AssetInterruptPageController.onPageLoad(draftId),
+      noCall = assetsCompletedRoute(draftId, config)
+    )
     case AssetInterruptPage => _ => ua => routeToAssetIndex(ua, draftId)
     case WhatKindOfAssetPage(index) => _ => ua => whatKindOfAssetRoute(ua, index, draftId)
     case AddAssetsPage => _ => addAssetsRoute(draftId, config)
-    case AddAnAssetYesNoPage => _ => addAnAssetYesNoRoute(draftId, config)
+    case AddAnAssetYesNoPage => _ => ua => yesNoNav(
+      ua = ua,
+      fromPage = AddAnAssetYesNoPage,
+      yesCall = routeToAssetIndex(ua, draftId),
+      noCall = assetsCompletedRoute(draftId, config)
+    )
   }
 
   def assetsCompletedRoute(draftId: String, config: FrontendAppConfig) : Call = {
     Call("GET", config.registrationProgressUrl(draftId))
-  }
-
-  private def trustOwnsNonEeaBusinessYesNoRoute(draftId: String, config: FrontendAppConfig)(userAnswers: UserAnswers): Call = {
-    userAnswers.get(TrustOwnsNonEeaBusinessYesNoPage) match {
-      case Some(false) => assetsCompletedRoute(draftId, config)
-      case Some(true) => AssetInterruptPageController.onPageLoad(draftId)
-      case _ => SessionExpiredController.onPageLoad()
-    }
-  }
-
-  private def addAnAssetYesNoRoute(draftId: String, config: FrontendAppConfig)(userAnswers: UserAnswers): Call = userAnswers.get(AddAnAssetYesNoPage) match {
-    case Some(false) => assetsCompletedRoute(draftId, config)
-    case Some(true) => routeToAssetIndex(userAnswers, draftId)
-    case _ => SessionExpiredController.onPageLoad()
   }
 
   private def addAssetsRoute(draftId: String, config: FrontendAppConfig)(answers: UserAnswers): Call = {
@@ -106,14 +102,14 @@ object AssetsRoutes {
 }
 
 @Singleton
-class Navigator @Inject()(config: FrontendAppConfig) {
+class Navigator @Inject()(config: FrontendAppConfig) extends Navigation {
 
   private def defaultRoute(draftId: String): PartialFunction[Page, AffinityGroup => UserAnswers => Call] = {
     case _ => _ => _ => controllers.routes.IndexController.onPageLoad(draftId)
   }
 
   protected def route(draftId: String): PartialFunction[Page, AffinityGroup => UserAnswers => Call] =
-      AssetsRoutes.route(draftId, config) orElse
+    AssetsRoutes.route(draftId, config) orElse
       defaultRoute(draftId)
 
   def nextPage(page: Page, draftId: String, af :AffinityGroup = AffinityGroup.Organisation): UserAnswers => Call = {

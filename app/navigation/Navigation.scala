@@ -16,22 +16,16 @@
 
 package navigation
 
-import config.FrontendAppConfig
-import controllers.asset.other.routes._
 import models.UserAnswers
-import pages.Page
-import pages.asset.other._
+import pages.QuestionPage
 import play.api.mvc.Call
-import uk.gov.hmrc.auth.core.AffinityGroup
 
-import javax.inject.{Inject, Singleton}
+trait Navigation {
 
-@Singleton
-class OtherNavigator @Inject()(config: FrontendAppConfig) extends Navigator(config) {
-
-  override protected def route(draftId: String): PartialFunction[Page, AffinityGroup => UserAnswers => Call] = {
-    case OtherAssetDescriptionPage(index) => _ => _ => OtherAssetValueController.onPageLoad(index, draftId)
-    case OtherAssetValuePage(index) => _ => _ => OtherAssetAnswersController.onPageLoad(index, draftId)
+  def yesNoNav(ua: UserAnswers, fromPage: QuestionPage[Boolean], yesCall: => Call, noCall: => Call): Call = {
+    ua.get(fromPage)
+      .map(if (_) yesCall else noCall)
+      .getOrElse(controllers.routes.SessionExpiredController.onPageLoad())
   }
 
 }

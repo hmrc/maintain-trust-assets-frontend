@@ -17,6 +17,7 @@
 package navigation
 
 import config.FrontendAppConfig
+import controllers.asset.business.routes._
 import models.UserAnswers
 import pages.Page
 import pages.asset.business._
@@ -29,23 +30,17 @@ import javax.inject.{Inject, Singleton}
 class BusinessNavigator @Inject()(config: FrontendAppConfig) extends Navigator(config) {
 
   override protected def route(draftId: String): PartialFunction[Page, AffinityGroup => UserAnswers => Call] = {
-    case BusinessNamePage(index) => _ => _ => controllers.asset.business.routes.BusinessDescriptionController.onPageLoad(index, draftId)
-    case BusinessDescriptionPage(index) => _ => _ => controllers.asset.business.routes.BusinessAddressUkYesNoController.onPageLoad(index, draftId)
-    case BusinessAddressUkYesNoPage(index) => _ => ua => addressUkYesNoRoute(ua, index, draftId)
-    case BusinessUkAddressPage(index) => _ => _ => controllers.asset.business.routes.BusinessValueController.onPageLoad(index, draftId)
-    case BusinessInternationalAddressPage(index) => _ => _ => controllers.asset.business.routes.BusinessValueController.onPageLoad(index, draftId)
-    case BusinessValuePage(index) => _ => _ => controllers.asset.business.routes.BusinessAnswersController.onPageLoad(index, draftId)
-  }
-
-  private def addressUkYesNoRoute(userAnswers: UserAnswers, index : Int, draftId: String) : Call = {
-    userAnswers.get(BusinessAddressUkYesNoPage(index)) match {
-      case Some(true) =>
-        controllers.asset.business.routes.BusinessUkAddressController.onPageLoad(index, draftId)
-      case Some(false) =>
-        controllers.asset.business.routes.BusinessInternationalAddressController.onPageLoad(index, draftId)
-      case _=>
-        controllers.routes.SessionExpiredController.onPageLoad()
-    }
+    case BusinessNamePage(index) => _ => _ => BusinessDescriptionController.onPageLoad(index, draftId)
+    case BusinessDescriptionPage(index) => _ => _ => BusinessAddressUkYesNoController.onPageLoad(index, draftId)
+    case page @ BusinessAddressUkYesNoPage(index) => _ => ua => yesNoNav(
+      ua = ua,
+      fromPage = page,
+      yesCall = BusinessUkAddressController.onPageLoad(index, draftId),
+      noCall = BusinessInternationalAddressController.onPageLoad(index, draftId)
+    )
+    case BusinessUkAddressPage(index) => _ => _ => BusinessValueController.onPageLoad(index, draftId)
+    case BusinessInternationalAddressPage(index) => _ => _ => BusinessValueController.onPageLoad(index, draftId)
+    case BusinessValuePage(index) => _ => _ => BusinessAnswersController.onPageLoad(index, draftId)
   }
 
 }
