@@ -17,7 +17,8 @@
 package navigation
 
 import config.FrontendAppConfig
-import controllers.asset.partnership.routes
+import controllers.asset.partnership.routes._
+import controllers.asset.routes._
 import models.UserAnswers
 import pages.Page
 import pages.asset.partnership._
@@ -30,9 +31,9 @@ import javax.inject.{Inject, Singleton}
 class PartnershipNavigator @Inject()(config: FrontendAppConfig) extends Navigator(config) {
 
   override protected def route(draftId: String): PartialFunction[Page, AffinityGroup => UserAnswers => Call] = {
-    case PartnershipDescriptionPage(index) => _ => _ => routes.PartnershipStartDateController.onPageLoad(index, draftId)
-    case PartnershipStartDatePage(index) => _ => _ => routes.PartnershipAnswerController.onPageLoad(index, draftId)
-    case PartnershipAnswerPage => _ => _ => controllers.asset.routes.AddAssetsController.onPageLoad(draftId)
+    case PartnershipDescriptionPage(index) => _ => _ => PartnershipStartDateController.onPageLoad(index, draftId)
+    case PartnershipStartDatePage(index) => _ => _ => PartnershipAnswerController.onPageLoad(index, draftId)
+    case PartnershipAnswerPage => _ => _ => AddAssetsController.onPageLoad(draftId)
   }
 
 }

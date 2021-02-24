@@ -22,15 +22,16 @@ import models.{Status, WhatKindOfAsset}
 import pages.AssetStatus
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.shares._
+import play.api.libs.functional.syntax._
+import play.api.libs.json._
 
 final case class ShareAssetViewModel(`type`: WhatKindOfAsset,
                                      name: Option[String],
-                                     override val status: Status) extends AssetViewModel
+                                     status: Status) extends AssetViewModel
 
 object ShareAssetViewModel extends AssetViewModelReads {
 
-  import play.api.libs.functional.syntax._
-  import play.api.libs.json._
+
 
   implicit lazy val reads: Reads[ShareAssetViewModel] = {
 
@@ -38,23 +39,10 @@ object ShareAssetViewModel extends AssetViewModelReads {
       (__ \ SharePortfolioNamePage.key).read[String].map(_.toOption) orElse
         (__ \ ShareCompanyNamePage.key).readNullable[String]
 
-    val shareReads: Reads[ShareAssetViewModel] =
-      (
-        nameReads and
-          (__ \ AssetStatus.key).readWithDefault[Status](InProgress)
-        )((name, status) =>
-        ShareAssetViewModel(Shares, name, status)
-      )
-
-    (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].flatMap[WhatKindOfAsset] {
-      whatKindOfAsset: WhatKindOfAsset =>
-        if (whatKindOfAsset == Shares) {
-          Reads(_ => JsSuccess(whatKindOfAsset))
-        } else {
-          Reads(_ => JsError("share asset must be of type `Share`"))
-        }
-    }.andKeep(shareReads)
+    ((__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].filter(_ == Shares) and
+      nameReads and
+      (__ \ AssetStatus.key).readWithDefault[Status](InProgress)
+      )(ShareAssetViewModel.apply _)
 
   }
-
 }

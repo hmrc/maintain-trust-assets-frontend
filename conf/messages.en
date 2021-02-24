@@ -144,6 +144,10 @@ assets.removeYesNo.title = Are you sure you want to remove the asset?
 assets.removeYesNo.heading = Are you sure you want to remove {0}?
 assets.removeYesNo.error.required = Select yes if you want to remove the asset
 
+trustOwnsNonEeaBusinessYesNo.title = Does the trust own or have a controlling interest in a non-EEA company?
+trustOwnsNonEeaBusinessYesNo.heading = Does the trust own or have a controlling interest in a non-EEA company?
+trustOwnsNonEeaBusinessYesNo.error.required = Select yes if the trust owns or has a controlling interest in a non-EEA company
+
 assetInterruptPage.title = Information you’ll need to provide
 assetInterruptPage.heading = Information you’ll need to provide
 assetInterruptPage.caption = Assets
@@ -191,6 +195,16 @@ assetInterruptPage.bullet11 = company name
 assetInterruptPage.bullet12 = company address
 assetInterruptPage.bullet13 = which country’s laws govern the country
 assetInterruptPage.bullet14 = the start date of the trust’s ownership or controlling interest in the company
+
+assetInterruptPage.nonTaxable.title = Non-European Economic Area (EEA) company
+assetInterruptPage.nonTaxable.heading = Non-European Economic Area (EEA) company
+assetInterruptPage.nonTaxable.caption = Company ownership or controlling interest
+assetInterruptPage.nonTaxable.caption.hidden = This section is
+assetInterruptPage.nonTaxable.paragraph1 = The details you need to tell us about the non-EEA company are:
+assetInterruptPage.nonTaxable.bullet1 = company name
+assetInterruptPage.nonTaxable.bullet2 = company address
+assetInterruptPage.nonTaxable.bullet3 = which country’s laws govern the company
+assetInterruptPage.nonTaxable.bullet4 = the start date of the trust’s ownership or controlling interest in the company
 
 whatKindOfAsset.first.title = What kind of asset do you need to add first?
 whatKindOfAsset.next.title = What kind of asset do you need to add next?
@@ -456,15 +470,6 @@ nonEeaBusiness.name.checkYourAnswersLabel = What is the company’s name?
 nonEeaBusiness.name.error.required = Enter the company’s name
 nonEeaBusiness.name.error.length = Company’s name cannot be more than 105 characters
 nonEeaBusiness.name.error.invalid = Company’s name must only include letters a to z, numbers, ampersands (&), apostrophes, forward slashes, full stops, hyphens, round brackets and spaces
-
-nonEeaBusiness.addressUkYesNo.title = Is the company’s address in the UK?
-nonEeaBusiness.addressUkYesNo.heading = Is {0}’s address in the UK?
-nonEeaBusiness.addressUkYesNo.checkYourAnswersLabel = Is {0}’s address in the UK?
-nonEeaBusiness.addressUkYesNo.error.required = Select yes if the company’s address is in the UK
-
-nonEeaBusiness.ukAddress.title = What is the company’s address?
-nonEeaBusiness.ukAddress.heading = What is {0}’s address?
-nonEeaBusiness.ukAddress.checkYourAnswersLabel = What is {0}’s address?
 
 nonEeaBusiness.internationalAddress.title = What is the company’s address?
 nonEeaBusiness.internationalAddress.heading = What is {0}’s address?

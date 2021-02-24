@@ -14,32 +14,37 @@
  * limitations under the License.
  *@
 
-@import controllers.asset.noneeabusiness.routes._
+@import controllers.asset.routes._
 
 @this(
     main_template: MainTemplate,
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], draftId: String, index: Int, name: String)(implicit request: Request[_], messages: Messages)
+@(draftId: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("nonEeaBusiness.addressUkYesNo.title")}"
+    title = messages("assetInterruptPage.nonTaxable.title")
 ) {
 
-    @formHelper(action = AddressUkYesNoController.onSubmit(index, draftId), 'autoComplete -> "off") {
+    @formHelper(action = AssetInterruptPageController.onSubmit(draftId), 'autoComplete -> "off") {
 
         @components.back_link()
 
-        @components.error_summary(form.errors)
+        @components.heading_with_caption("assetInterruptPage.nonTaxable")
 
-        @components.input_yes_no(
-            field = form("value"),
-            label = messages("nonEeaBusiness.addressUkYesNo.heading", name),
-            legendClass = Some("heading-large"),
-            legendAsHeading = true
+        <p>@messages("assetInterruptPage.nonTaxable.paragraph1")</p>
+
+        @components.bullet_list(
+            "assetInterruptPage.nonTaxable",
+            List(
+                "bullet1",
+                "bullet2",
+                "bullet3",
+                "bullet4"
+            )
         )
 
-        @components.submit_button()
+        @components.submit_button(Some("site.onlyContinue"))
     }
 }

@@ -27,9 +27,7 @@ import javax.inject.Inject
 
 class MoneyPrintHelper @Inject()(checkAnswersFormatters: CheckAnswersFormatters) extends PrintHelper {
 
-  override def headingKey(index: Int)(implicit messages: Messages): String = {
-    messages("answerPage.section.moneyAsset.subheading")
-  }
+  override val assetType: String = "moneyAsset"
 
   override def answerRows(userAnswers: UserAnswers,
                           arg: String,

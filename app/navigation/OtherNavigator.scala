@@ -17,6 +17,7 @@
 package navigation
 
 import config.FrontendAppConfig
+import controllers.asset.other.routes._
 import models.UserAnswers
 import pages.Page
 import pages.asset.other._
@@ -29,8 +30,8 @@ import javax.inject.{Inject, Singleton}
 class OtherNavigator @Inject()(config: FrontendAppConfig) extends Navigator(config) {
 
   override protected def route(draftId: String): PartialFunction[Page, AffinityGroup => UserAnswers => Call] = {
-    case OtherAssetDescriptionPage(index) => _ => _ => controllers.asset.other.routes.OtherAssetValueController.onPageLoad(index, draftId)
-    case OtherAssetValuePage(index) => _ => _ => controllers.asset.other.routes.OtherAssetAnswersController.onPageLoad(index, draftId)
+    case OtherAssetDescriptionPage(index) => _ => _ => OtherAssetValueController.onPageLoad(index, draftId)
+    case OtherAssetValuePage(index) => _ => _ => OtherAssetAnswersController.onPageLoad(index, draftId)
   }
 
 }

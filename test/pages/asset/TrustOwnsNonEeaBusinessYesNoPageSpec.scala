@@ -14,21 +14,18 @@
  * limitations under the License.
  */
 
-package pages.asset.noneeabusiness
+package pages.asset
 
-import models.UKAddress
 import pages.behaviours.PageBehaviours
 
-class UkAddressPageSpec extends PageBehaviours {
+class TrustOwnsNonEeaBusinessYesNoPageSpec extends PageBehaviours {
 
-  private val page: UkAddressPage = UkAddressPage(0)
+  "TrustOwnsNonEeaBusinessYesNoPage" must {
 
-  "UkAddressPage" must {
+    beRetrievable[Boolean](TrustOwnsNonEeaBusinessYesNoPage)
 
-    beRetrievable[UKAddress](page)
+    beSettable[Boolean](TrustOwnsNonEeaBusinessYesNoPage)
 
-    beSettable[UKAddress](page)
-
-    beRemovable[UKAddress](page)
+    beRemovable[Boolean](TrustOwnsNonEeaBusinessYesNoPage)
   }
 }

@@ -24,33 +24,21 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
 final case class SharePortfolioAsset(override val whatKindOfAsset: WhatKindOfAsset,
-                                     override val listedOnTheStockExchange: Boolean,
-                                     override val name: String,
                                      sharesInAPortfolio: Boolean,
+                                     override val name: String,
+                                     override val listedOnTheStockExchange: Boolean,
                                      override val quantityInTheTrust: Long,
                                      value: Long) extends ShareAsset
 
 object SharePortfolioAsset {
 
-  implicit lazy val reads: Reads[SharePortfolioAsset] = {
-
-    val shareReads: Reads[SharePortfolioAsset] = (
+  implicit lazy val reads: Reads[SharePortfolioAsset] = (
+    (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].filter(_ == Shares) and
+      Reads(_ => JsSuccess(true)) and
       (__ \ SharePortfolioNamePage.key).read[String] and
-        (__ \ SharePortfolioOnStockExchangePage.key).read[Boolean] and
-        (__ \ SharePortfolioQuantityInTrustPage.key).read[Long] and
-        (__ \ SharePortfolioValueInTrustPage.key).read[Long] and
-        (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset]
-      )((name, listedOnStockExchange, quantity, value, kind) => SharePortfolioAsset(kind, listedOnStockExchange, name, sharesInAPortfolio = true, quantity, value))
-
-    (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].flatMap[WhatKindOfAsset] {
-      whatKindOfAsset: WhatKindOfAsset =>
-        if (whatKindOfAsset == Shares) {
-          Reads(_ => JsSuccess(whatKindOfAsset))
-        } else {
-          Reads(_ => JsError("share portfolio asset must be of type `Shares`"))
-        }
-    }.andKeep(shareReads)
-
-  }
+      (__ \ SharePortfolioOnStockExchangePage.key).read[Boolean] and
+      (__ \ SharePortfolioQuantityInTrustPage.key).read[Long] and
+      (__ \ SharePortfolioValueInTrustPage.key).read[Long]
+    )(SharePortfolioAsset.apply _)
 
 }

@@ -25,16 +25,24 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, HttpClient}
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class SubmissionDraftConnector @Inject()(http: HttpClient, config : FrontendAppConfig) {
+class SubmissionDraftConnector @Inject()(http: HttpClient, config: FrontendAppConfig) {
 
   private val submissionsBaseUrl = s"${config.trustsUrl}/trusts/register/submission-drafts"
 
   def setDraftSectionSet(draftId: String, section: String, data: RegistrationSubmission.DataSet)
-                        (implicit hc: HeaderCarrier, ec : ExecutionContext): Future[HttpResponse] = {
+                        (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     http.POST[JsValue, HttpResponse](s"$submissionsBaseUrl/$draftId/set/$section", Json.toJson(data))
   }
 
-  def getDraftSection(draftId: String, section: String)(implicit hc: HeaderCarrier, ec : ExecutionContext): Future[SubmissionDraftResponse] = {
+  def getDraftSection(draftId: String, section: String)
+                     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[SubmissionDraftResponse] = {
     http.GET[SubmissionDraftResponse](s"$submissionsBaseUrl/$draftId/$section")
+  }
+
+  def getIsTrustTaxable(draftId: String)
+                       (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
+    http.GET[Boolean](s"$submissionsBaseUrl/$draftId/is-trust-taxable").recover {
+      case _ => true
+    }
   }
 }

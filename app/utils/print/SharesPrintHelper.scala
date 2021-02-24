@@ -27,9 +27,7 @@ import javax.inject.Inject
 
 class SharesPrintHelper @Inject()(checkAnswersFormatters: CheckAnswersFormatters) extends PrintHelper {
 
-  override def headingKey(index: Int)(implicit messages: Messages): String = {
-    messages("answerPage.section.shareAsset.subheading", index + 1)
-  }
+  override val assetType: String = "shareAsset"
 
   override def answerRows(userAnswers: UserAnswers,
                           arg: String,

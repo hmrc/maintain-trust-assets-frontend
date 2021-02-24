@@ -20,7 +20,7 @@ import base.SpecBase
 import forms.YesNoFormProvider
 import models.ShareClass.Ordinary
 import models.WhatKindOfAsset._
-import models.{UKAddress, UserAnswers}
+import models.{InternationalAddress, UKAddress, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
 import org.mockito.Mockito._
@@ -47,6 +47,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
   private val index: Int = 0
   private val assetValue: Long = 4000L
   private val ukAddress: UKAddress = UKAddress("Line 1", "Line 2", None, None, "POSTCODE")
+  private val nonUkAddress: InternationalAddress = InternationalAddress("Line 1", "Line 2", Some("Line 3"), "FR")
   private val date: LocalDate = LocalDate.parse("2000-02-03")
 
   lazy val removeAssetYesNoRoute: String = routes.RemoveAssetYesNoController.onPageLoad(index, fakeDraftId).url
@@ -338,8 +339,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
         val userAnswers = emptyUserAnswers
           .set(WhatKindOfAssetPage(index), NonEeaBusiness).success.value
           .set(NamePage(index), "Non-EEA business name").success.value
-          .set(AddressUkYesNoPage(index), true).success.value
-          .set(UkAddressPage(index), ukAddress).success.value
+          .set(InternationalAddressPage(index), nonUkAddress).success.value
           .set(GoverningCountryPage(index), "GB").success.value
           .set(StartDatePage(index), date).success.value
 

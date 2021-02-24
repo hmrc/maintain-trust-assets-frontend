@@ -17,9 +17,17 @@
 package controllers.asset
 
 import base.SpecBase
+import models.UserAnswers
+import models.WhatKindOfAsset.NonEeaBusiness
+import org.mockito.ArgumentCaptor
+import org.mockito.Matchers.any
+import org.mockito.Mockito.{reset, verify, when}
+import pages.asset.WhatKindOfAssetPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.asset.AssetInterruptPageView
+import views.html.asset.{NonTaxableInfoView, TaxableInfoView}
+
+import scala.concurrent.Future
 
 class AssetInterruptPageControllerSpec extends SpecBase {
 
@@ -37,7 +45,7 @@ class AssetInterruptPageControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[AssetInterruptPageView]
+        val view = application.injector.instanceOf[TaxableInfoView]
 
         status(result) mustEqual OK
 
@@ -47,40 +55,107 @@ class AssetInterruptPageControllerSpec extends SpecBase {
         application.stop()
       }
 
-      "5mld" in {
+      "5mld" when {
 
-        val is5mldEnabled: Boolean = true
+        "taxable" in {
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(is5mldEnabled = is5mldEnabled))).build()
+          val is5mldEnabled: Boolean = true
+          val isTaxable: Boolean = true
 
-        val request = FakeRequest(GET, routes.AssetInterruptPageController.onPageLoad(fakeDraftId).url)
+          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(is5mldEnabled = is5mldEnabled, isTaxable = isTaxable))).build()
 
-        val result = route(application, request).value
+          val request = FakeRequest(GET, routes.AssetInterruptPageController.onPageLoad(fakeDraftId).url)
 
-        val view = application.injector.instanceOf[AssetInterruptPageView]
+          val result = route(application, request).value
 
-        status(result) mustEqual OK
+          val view = application.injector.instanceOf[TaxableInfoView]
 
-        contentAsString(result) mustEqual
-          view(fakeDraftId, is5mldEnabled)(fakeRequest, messages).toString
+          status(result) mustEqual OK
 
-        application.stop()
+          contentAsString(result) mustEqual
+            view(fakeDraftId, is5mldEnabled)(fakeRequest, messages).toString
+
+          application.stop()
+        }
+
+        "non-taxable" in {
+
+          val is5mldEnabled: Boolean = true
+          val isTaxable: Boolean = false
+
+          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(is5mldEnabled = is5mldEnabled, isTaxable = isTaxable))).build()
+
+          val request = FakeRequest(GET, routes.AssetInterruptPageController.onPageLoad(fakeDraftId).url)
+
+          val result = route(application, request).value
+
+          val view = application.injector.instanceOf[NonTaxableInfoView]
+
+          status(result) mustEqual OK
+
+          contentAsString(result) mustEqual
+            view(fakeDraftId)(fakeRequest, messages).toString
+
+          application.stop()
+        }
       }
     }
 
-    "redirect to the correct page for a POST" in {
+    "redirect to the correct page for a POST" when {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      "taxable" must {
 
-      val request = FakeRequest(POST, routes.AssetInterruptPageController.onSubmit(fakeDraftId).url)
+        val isTaxable: Boolean = true
 
-      val result = route(application, request).value
+        "not set value in WhatKindOfAssetPage" in {
 
-      status(result) mustEqual SEE_OTHER
+          reset(registrationsRepository)
+          when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
+          val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
 
-      redirectLocation(result).value mustBe controllers.asset.routes.WhatKindOfAssetController.onPageLoad(0, fakeDraftId).url
+          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(isTaxable = isTaxable))).build()
 
-      application.stop()
+          val request = FakeRequest(POST, routes.AssetInterruptPageController.onSubmit(fakeDraftId).url)
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+
+          redirectLocation(result).value mustBe fakeNavigator.desiredRoute.url
+
+          verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
+          uaCaptor.getValue.get(WhatKindOfAssetPage(0)) mustNot be(defined)
+
+          application.stop()
+        }
+      }
+
+      "non-taxable" must {
+
+        val isTaxable: Boolean = false
+
+        "set value in WhatKindOfAssetPage" in {
+
+          reset(registrationsRepository)
+          when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
+          val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+
+          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(isTaxable = isTaxable))).build()
+
+          val request = FakeRequest(POST, routes.AssetInterruptPageController.onSubmit(fakeDraftId).url)
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+
+          redirectLocation(result).value mustBe fakeNavigator.desiredRoute.url
+
+          verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
+          uaCaptor.getValue.get(WhatKindOfAssetPage(0)).get mustBe NonEeaBusiness
+
+          application.stop()
+        }
+      }
     }
   }
 }

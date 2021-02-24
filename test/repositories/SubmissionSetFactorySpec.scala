@@ -23,6 +23,8 @@ import models.Status.Completed
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import pages.RegistrationProgress
+import pages.asset.TrustOwnsNonEeaBusinessYesNoPage
+import play.api.libs.json.Json
 import utils.answers._
 import viewmodels.AnswerSection
 
@@ -31,6 +33,26 @@ import scala.collection.immutable.Nil
 class SubmissionSetFactorySpec extends SpecBase {
   
   "SubmissionSetFactory" when {
+
+    ".createFrom" must {
+
+      "return data set" when {
+        "TrustOwnsNonEeaBusinessYesNoPage is false" in {
+
+          val factory = injector.instanceOf[SubmissionSetFactory]
+          val answers = emptyUserAnswers.copy(isTaxable = false)
+            .set(TrustOwnsNonEeaBusinessYesNoPage, false).success.value
+          val result = factory.createFrom(answers)
+
+          result mustBe RegistrationSubmission.DataSet(
+            data = Json.toJson(answers),
+            status = Some(Completed),
+            registrationPieces = Nil,
+            answerSections = Nil
+          )
+        }
+      }
+    }
     
     ".answerSectionsIfCompleted" must {
       

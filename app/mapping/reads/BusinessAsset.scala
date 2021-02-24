@@ -20,7 +20,8 @@ import models.WhatKindOfAsset.Business
 import models.{Address, WhatKindOfAsset}
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.business._
-import play.api.libs.json.{JsError, JsSuccess, Reads, __}
+import play.api.libs.functional.syntax._
+import play.api.libs.json.{Reads, __}
 
 final case class BusinessAsset(override val whatKindOfAsset: WhatKindOfAsset,
                                assetName: String,
@@ -33,8 +34,6 @@ final case class BusinessAsset(override val whatKindOfAsset: WhatKindOfAsset,
 
 object BusinessAsset {
 
-  import play.api.libs.functional.syntax._
-
   implicit lazy val reads: Reads[BusinessAsset] = {
 
     val addressReads: Reads[Address] = {
@@ -42,22 +41,12 @@ object BusinessAsset {
         (__ \ BusinessInternationalAddressPage.key).read[Address]
     }
 
-    val businessAssetReads: Reads[BusinessAsset] = (
-      (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset] and
-        (__ \ BusinessNamePage.key).read[String] and
-        (__ \ BusinessDescriptionPage.key).read[String] and
-        addressReads and
-        (__ \ BusinessValuePage.key).read[Long]
-      )((kind, name, description, address, value) => BusinessAsset(kind, name, description, address, value))
-
-    (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].flatMap[WhatKindOfAsset] {
-      whatKindOfAsset: WhatKindOfAsset =>
-        if (whatKindOfAsset == Business) {
-          Reads(_ => JsSuccess(whatKindOfAsset))
-        } else {
-          Reads(_ => JsError("Business asset must be of type `Business`"))
-        }
-    }.andKeep(businessAssetReads)
+    ((__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].filter(_ == Business) and
+      (__ \ BusinessNamePage.key).read[String] and
+      (__ \ BusinessDescriptionPage.key).read[String] and
+      addressReads and
+      (__ \ BusinessValuePage.key).read[Long]
+      )(BusinessAsset.apply _)
 
   }
 }

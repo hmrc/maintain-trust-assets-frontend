@@ -23,81 +23,214 @@ import models.WhatKindOfAsset._
 import models.{AddAssets, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.asset.{AddAnAssetYesNoPage, AddAssetsPage, WhatKindOfAssetPage}
+import pages.asset.{AddAnAssetYesNoPage, AddAssetsPage, AssetInterruptPage, TrustOwnsNonEeaBusinessYesNoPage, WhatKindOfAssetPage}
 import play.api.mvc.Call
 
 class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   private val navigator: Navigator = injector.instanceOf[Navigator]
-  val index = 0
+  private val index = 0
 
   private val assetsCompletedRoute: Call = {
     Call("GET", frontendAppConfig.registrationProgressUrl(fakeDraftId))
   }
 
-  "Navigator" must {
+  "Navigator" when {
 
-    "go to WhatKindOfAssetPage from from AddAnAssetYesNoPage when selected Yes" in {
-      val index = 0
+    "trust owns non-EEA business yes no page" when {
 
-      forAll(arbitrary[UserAnswers]) {
-        userAnswers =>
+      "yes selected" must {
+        "redirect to interrupt page" in {
 
-          val answers = userAnswers.set(AddAnAssetYesNoPage, true).success.value
+          val answers = emptyUserAnswers.set(TrustOwnsNonEeaBusinessYesNoPage, true).success.value
 
-          navigator.nextPage(AddAnAssetYesNoPage, fakeDraftId)(answers)
-            .mustBe(controllers.asset.routes.WhatKindOfAssetController.onPageLoad(index, fakeDraftId))
+          navigator.nextPage(TrustOwnsNonEeaBusinessYesNoPage, fakeDraftId)(answers)
+            .mustBe(controllers.asset.routes.AssetInterruptPageController.onPageLoad(fakeDraftId))
+        }
       }
-    }
 
-    "go to RegistrationProgress from from AddAnAssetYesNoPage when selected No" in {
-      forAll(arbitrary[UserAnswers]) {
-        userAnswers =>
+      "no selected" must {
+        "redirect to RegistrationProgress" in {
 
-          val answers = userAnswers.set(AddAnAssetYesNoPage, false).success.value
+          val answers = emptyUserAnswers.set(TrustOwnsNonEeaBusinessYesNoPage, false).success.value
 
-          navigator.nextPage(AddAnAssetYesNoPage, fakeDraftId)(answers)
+          navigator.nextPage(TrustOwnsNonEeaBusinessYesNoPage, fakeDraftId)(answers)
             .mustBe(assetsCompletedRoute)
+        }
       }
     }
 
-    "add another asset" must {
+    "asset interrupt page" when {
 
-      "go to the WhatKindOfAssetPage from AddAssetsPage when selected add them now" in {
+      "taxable" must {
 
-        val answers = emptyUserAnswers
-          .set(WhatKindOfAssetPage(0), Money).success.value
-          .set(AddAssetsPage, AddAssets.YesNow).success.value
+        val baseAnswers = emptyUserAnswers.copy(isTaxable = true)
 
-        navigator.nextPage(AddAssetsPage, fakeDraftId)(answers)
-          .mustBe(controllers.asset.routes.WhatKindOfAssetController.onPageLoad(1, fakeDraftId))
+        "redirect to WhatKindOfAssetPage" in {
+
+          navigator.nextPage(AssetInterruptPage, fakeDraftId)(baseAnswers)
+            .mustBe(controllers.asset.routes.WhatKindOfAssetController.onPageLoad(index, fakeDraftId))
+        }
       }
 
-      "go to RegistrationProgress from AddAssetsPage when selecting add them later" in {
+      "non-taxable" must {
 
-        val answers = emptyUserAnswers
-          .set(WhatKindOfAssetPage(0), Money).success.value
-          .set(AddAssetsPage, AddAssets.YesLater).success.value
+        val baseAnswers = emptyUserAnswers.copy(isTaxable = false)
 
-        navigator.nextPage(AddAssetsPage, fakeDraftId)(answers)
-          .mustBe(assetsCompletedRoute)
+        "redirect to non-EEA business asset name page" in {
+
+          val answers = baseAnswers.set(WhatKindOfAssetPage(0), NonEeaBusiness).success.value
+
+          navigator.nextPage(AssetInterruptPage, fakeDraftId)(answers)
+            .mustBe(controllers.asset.noneeabusiness.routes.NameController.onPageLoad(0, fakeDraftId))
+        }
+      }
+    }
+
+    "add an asset yes no page" when {
+
+      "taxable" when {
+
+        val baseAnswers = emptyUserAnswers.copy(isTaxable = true)
+
+        "yes selected" must {
+          "redirect to WhatKindOfAssetPage" in {
+
+            val answers = baseAnswers.set(AddAnAssetYesNoPage, true).success.value
+
+            navigator.nextPage(AddAnAssetYesNoPage, fakeDraftId)(answers)
+              .mustBe(controllers.asset.routes.WhatKindOfAssetController.onPageLoad(index, fakeDraftId))
+          }
+        }
+
+        "no selected" must {
+          "redirect to RegistrationProgress" in {
+
+            val answers = baseAnswers.set(AddAnAssetYesNoPage, false).success.value
+
+            navigator.nextPage(AddAnAssetYesNoPage, fakeDraftId)(answers)
+              .mustBe(assetsCompletedRoute)
+          }
+        }
       }
 
-      "go to RegistrationProgress from AddAssetsPage when selecting no complete" in {
+      "non-taxable" when {
 
-        val answers = emptyUserAnswers
-          .set(WhatKindOfAssetPage(0), Money).success.value
-          .set(AddAssetsPage, AddAssets.NoComplete).success.value
+        val baseAnswers = emptyUserAnswers.copy(isTaxable = false)
 
-        navigator.nextPage(AddAssetsPage, fakeDraftId)(answers)
-          .mustBe(assetsCompletedRoute)
+        "yes selected" must {
+          "redirect to non-EEA business asset name page" in {
+
+            val answers = baseAnswers
+              .set(AddAnAssetYesNoPage, true).success.value
+              .set(WhatKindOfAssetPage(0), NonEeaBusiness).success.value
+
+            navigator.nextPage(AddAnAssetYesNoPage, fakeDraftId)(answers)
+              .mustBe(controllers.asset.noneeabusiness.routes.NameController.onPageLoad(0, fakeDraftId))
+          }
+        }
+
+        "no selected" must {
+          "redirect to RegistrationProgress" in {
+
+            val answers = baseAnswers.set(AddAnAssetYesNoPage, false).success.value
+
+            navigator.nextPage(AddAnAssetYesNoPage, fakeDraftId)(answers)
+              .mustBe(assetsCompletedRoute)
+          }
+        }
+      }
+    }
+
+    "add assets page" when {
+
+      "taxable" when {
+
+        val baseAnswers = emptyUserAnswers.copy(isTaxable = true)
+
+        "add them now selected" must {
+          "go to the WhatKindOfAssetPage" in {
+
+            val answers = baseAnswers
+              .set(WhatKindOfAssetPage(0), Money).success.value
+              .set(AddAssetsPage, AddAssets.YesNow).success.value
+
+            navigator.nextPage(AddAssetsPage, fakeDraftId)(answers)
+              .mustBe(controllers.asset.routes.WhatKindOfAssetController.onPageLoad(1, fakeDraftId))
+          }
+        }
+
+        "add them later selected" must {
+          "go to RegistrationProgress" in {
+
+            val answers = baseAnswers
+              .set(WhatKindOfAssetPage(0), Money).success.value
+              .set(AddAssetsPage, AddAssets.YesLater).success.value
+
+            navigator.nextPage(AddAssetsPage, fakeDraftId)(answers)
+              .mustBe(assetsCompletedRoute)
+          }
+        }
+
+        "no complete selected" must {
+          "go to RegistrationProgress" in {
+
+            val answers = baseAnswers
+              .set(WhatKindOfAssetPage(0), Money).success.value
+              .set(AddAssetsPage, AddAssets.NoComplete).success.value
+
+            navigator.nextPage(AddAssetsPage, fakeDraftId)(answers)
+              .mustBe(assetsCompletedRoute)
+          }
+        }
+      }
+
+      "non-taxable" when {
+
+        val baseAnswers = emptyUserAnswers.copy(isTaxable = false)
+
+        "add them now selected" must {
+          "go to the non-EEA business asset name page" in {
+
+            val answers = baseAnswers
+              .set(WhatKindOfAssetPage(0), Money).success.value
+              .set(WhatKindOfAssetPage(1), NonEeaBusiness).success.value
+              .set(AddAssetsPage, AddAssets.YesNow).success.value
+
+            navigator.nextPage(AddAssetsPage, fakeDraftId)(answers)
+              .mustBe(controllers.asset.noneeabusiness.routes.NameController.onPageLoad(1, fakeDraftId))
+          }
+        }
+
+        "add them later selected" must {
+          "go to RegistrationProgress" in {
+
+            val answers = baseAnswers
+              .set(WhatKindOfAssetPage(0), Money).success.value
+              .set(AddAssetsPage, AddAssets.YesLater).success.value
+
+            navigator.nextPage(AddAssetsPage, fakeDraftId)(answers)
+              .mustBe(assetsCompletedRoute)
+          }
+        }
+
+        "no complete selected" must {
+          "go to RegistrationProgress" in {
+
+            val answers = baseAnswers
+              .set(WhatKindOfAssetPage(0), Money).success.value
+              .set(AddAssetsPage, AddAssets.NoComplete).success.value
+
+            navigator.nextPage(AddAssetsPage, fakeDraftId)(answers)
+              .mustBe(assetsCompletedRoute)
+          }
+        }
       }
     }
 
     "what kind of asset page" when {
 
       "go to AssetMoneyValuePage when money is selected" in {
-        val index = 0
 
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>
@@ -110,7 +243,6 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
       }
 
       "go to PropertyOrLandAddressYesNoController when PropertyOrLand is selected" in {
-        val index = 0
 
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>
@@ -123,7 +255,6 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
       }
 
       "go to SharesInAPortfolio from WhatKindOfAsset when Shares is selected" in {
-        val index = 0
 
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>
@@ -136,7 +267,6 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
       }
 
       "go to business asset name from WhatKindOfAsset when Business is selected" in {
-        val index = 0
 
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>
@@ -149,7 +279,6 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
       }
 
       "go to partnership asset description from WhatKindOfAsset when Partnership is selected" in {
-        val index = 0
 
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>

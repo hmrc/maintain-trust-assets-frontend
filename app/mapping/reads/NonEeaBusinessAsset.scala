@@ -20,6 +20,7 @@ import models.WhatKindOfAsset.NonEeaBusiness
 import models.{Address, WhatKindOfAsset}
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.noneeabusiness._
+import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
 import java.time.LocalDate
@@ -35,27 +36,12 @@ final case class NonEeaBusinessAsset(override val whatKindOfAsset: WhatKindOfAss
 
 object NonEeaBusinessAsset {
 
-  import play.api.libs.functional.syntax._
-
-  implicit lazy val reads: Reads[NonEeaBusinessAsset] = {
-
-    val addressReads: Reads[Address] =
-      (__ \ UkAddressPage.key).read[Address] orElse
-        (__ \ InternationalAddressPage.key).read[Address]
-
-    val nonEeaBusinessReads: Reads[NonEeaBusinessAsset] = (
+  implicit lazy val reads: Reads[NonEeaBusinessAsset] = (
+    (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].filter(_ == NonEeaBusiness) and
       (__ \ NamePage.key).read[String] and
-        addressReads and
-        (__ \ GoverningCountryPage.key).read[String] and
-        (__ \ StartDatePage.key).read[LocalDate] and
-        (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset]
-      )((name, address, governingCountry, startDate, kind) => NonEeaBusinessAsset(kind, name, address, governingCountry, startDate))
+      (__ \ InternationalAddressPage.key).read[Address] and
+      (__ \ GoverningCountryPage.key).read[String] and
+      (__ \ StartDatePage.key).read[LocalDate]
+    )(NonEeaBusinessAsset.apply _)
 
-    (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].flatMap[WhatKindOfAsset] {
-      case NonEeaBusiness =>
-        Reads(_ => JsSuccess(NonEeaBusiness))
-      case _ =>
-        Reads(_ => JsError("non-EEA business asset must be of type `NonEeaBusiness`"))
-    }.andKeep(nonEeaBusinessReads)
-  }
 }

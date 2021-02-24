@@ -26,7 +26,8 @@ final case class UserAnswers(
                               draftId: String,
                               data: JsObject = Json.obj(),
                               internalAuthId: String,
-                              is5mldEnabled: Boolean = false
+                              is5mldEnabled: Boolean = false,
+                              isTaxable: Boolean = true
                             ) extends Logging {
 
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] = {
@@ -90,7 +91,8 @@ object UserAnswers {
       (__ \ "_id").read[String] and
         (__ \ "data").read[JsObject] and
         (__ \ "internalId").read[String] and
-        (__ \ "is5mldEnabled").readWithDefault[Boolean](false)
+        (__ \ "is5mldEnabled").readWithDefault[Boolean](false) and
+        (__ \ "isTaxable").readWithDefault[Boolean](true)
       ) (UserAnswers.apply _)
   }
 
@@ -102,7 +104,8 @@ object UserAnswers {
       (__ \ "_id").write[String] and
         (__ \ "data").write[JsObject] and
         (__ \ "internalId").write[String] and
-        (__ \ "is5mldEnabled").write[Boolean]
+        (__ \ "is5mldEnabled").write[Boolean] and
+        (__ \ "isTaxable").write[Boolean]
       ) (unlift(UserAnswers.unapply))
   }
 }

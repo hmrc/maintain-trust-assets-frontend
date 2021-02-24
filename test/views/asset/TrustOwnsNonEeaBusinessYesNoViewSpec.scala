@@ -14,33 +14,32 @@
  * limitations under the License.
  */
 
-package views.asset.noneeabusiness
+package views.asset
 
 import forms.YesNoFormProvider
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.asset.noneeabusiness.AddressUkYesNoView
+import views.html.asset.TrustOwnsNonEeaBusinessYesNoView
 
-class AddressUkYesNoViewSpec extends YesNoViewBehaviours {
+class TrustOwnsNonEeaBusinessYesNoViewSpec extends YesNoViewBehaviours {
 
-  private val messageKeyPrefix: String = "nonEeaBusiness.addressUkYesNo"
+  private val messageKeyPrefix: String = "trustOwnsNonEeaBusinessYesNo"
+
   override val form: Form[Boolean] = new YesNoFormProvider().withPrefix(messageKeyPrefix)
-  private val index: Int = 0
-  private val name: String = "Test"
 
-  private val view: AddressUkYesNoView = viewFor[AddressUkYesNoView](Some(emptyUserAnswers))
+  "TrustOwnsNonEeaBusinessYesNoView view" must {
 
-  "AddressUkYesNoView" must {
+    val view = viewFor[TrustOwnsNonEeaBusinessYesNoView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, fakeDraftId, index, name)(fakeRequest, messages)
+      view.apply(form, fakeDraftId)(fakeRequest, messages)
 
-    behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name)
+    behave like normalPage(applyView(form), messageKeyPrefix)
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, Seq(name))
+    behave like yesNoPage(form, applyView, messageKeyPrefix)
 
     behave like pageWithASubmitButton(applyView(form))
   }

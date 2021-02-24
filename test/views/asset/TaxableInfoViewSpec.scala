@@ -17,15 +17,15 @@
 package views.asset
 
 import views.behaviours.ViewBehaviours
-import views.html.asset.AssetInterruptPageView
+import views.html.asset.TaxableInfoView
 
-class AssetInterruptPageViewSpec extends ViewBehaviours {
+class TaxableInfoViewSpec extends ViewBehaviours {
 
-  "AssetInterruptPage view" when {
+  "TaxableInfoView" when {
 
     "4mld" must {
 
-      val view = viewFor[AssetInterruptPageView](Some(emptyUserAnswers))
+      val view = viewFor[TaxableInfoView](Some(emptyUserAnswers))
 
       val applyView = view.apply(fakeDraftId, is5mldEnabled = false)(fakeRequest, messages)
 
@@ -67,7 +67,7 @@ class AssetInterruptPageViewSpec extends ViewBehaviours {
 
     "5mld" must {
 
-      val view = viewFor[AssetInterruptPageView](Some(emptyUserAnswers))
+      val view = viewFor[TaxableInfoView](Some(emptyUserAnswers))
 
       val applyView = view.apply(fakeDraftId, is5mldEnabled = true)(fakeRequest, messages)
 

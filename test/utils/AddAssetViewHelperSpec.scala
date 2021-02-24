@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.asset._
 import models.Status._
 import models.WhatKindOfAsset._
-import models.{ShareClass, UKAddress}
+import models.{InternationalAddress, ShareClass, UKAddress}
 import pages.AssetStatus
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.business._
@@ -37,7 +37,8 @@ import java.time.LocalDate
 class AddAssetViewHelperSpec extends SpecBase {
 
   private val assetValue: Long = 4000L
-  private val address: UKAddress = UKAddress("line 1", "line 2", None, None, "NE1 1NE")
+  private val ukAddress: UKAddress = UKAddress("line 1", "line 2", None, None, "NE1 1NE")
+  private val nonUkAddress: InternationalAddress = InternationalAddress("Line 1", "Line 2", None, "FR")
   private val date: LocalDate = LocalDate.parse("1996-02-03")
 
   def changeMoneyAssetRoute(index: Int): String =
@@ -150,7 +151,7 @@ class AddAssetViewHelperSpec extends SpecBase {
           .set(WhatKindOfAssetPage(2), PropertyOrLand).success.value
           .set(PropertyOrLandAddressYesNoPage(2), true).success.value
           .set(PropertyOrLandAddressUkYesNoPage(2), true).success.value
-          .set(PropertyOrLandUKAddressPage(2), address).success.value
+          .set(PropertyOrLandUKAddressPage(2), ukAddress).success.value
           .set(PropertyOrLandTotalValuePage(2), assetValue).success.value
           .set(TrustOwnAllThePropertyOrLandPage(2), true).success.value
           .set(AssetStatus(2), Completed).success.value
@@ -176,14 +177,13 @@ class AddAssetViewHelperSpec extends SpecBase {
           .set(BusinessNamePage(6), "Test").success.value
           .set(BusinessDescriptionPage(6), "Test Test Test").success.value
           .set(BusinessAddressUkYesNoPage(6), true).success.value
-          .set(BusinessUkAddressPage(6), address).success.value
+          .set(BusinessUkAddressPage(6), ukAddress).success.value
           .set(BusinessValuePage(6), assetValue).success.value
           .set(AssetStatus(6), Completed).success.value
 
           .set(WhatKindOfAssetPage(7), NonEeaBusiness).success.value
           .set(NamePage(7), "Non-EEA Business Name").success.value
-          .set(AddressUkYesNoPage(7), true).success.value
-          .set(UkAddressPage(7), address).success.value
+          .set(InternationalAddressPage(7), nonUkAddress).success.value
           .set(GoverningCountryPage(7), "FR").success.value
           .set(StartDatePage(7), date).success.value
           .set(AssetStatus(7), Completed).success.value

@@ -24,7 +24,7 @@ import org.scalatest.{MustMatchers, OptionValues}
 import play.api.Application
 import play.api.http.Status
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.Json
+import play.api.libs.json.{JsBoolean, Json}
 import play.api.test.Helpers.CONTENT_TYPE
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.WireMockHelper
@@ -118,6 +118,50 @@ class SubmissionDraftConnectorSpec extends SpecBase with MustMatchers with Optio
         val result: SubmissionDraftResponse = Await.result(connector.getDraftSection(testDraftId, testSection), Duration.Inf)
         result.createdAt mustBe LocalDateTime.of(2012, 2, 3, 9, 30)
         result.data mustBe draftData
+      }
+    }
+
+    "getIsTrustTaxable" must {
+
+      "return true if the trust is taxable" in {
+        server.stubFor(
+          get(urlEqualTo(s"$submissionsUrl/$testDraftId/is-trust-taxable"))
+            .willReturn(
+              aResponse()
+                .withStatus(Status.OK)
+                .withBody(JsBoolean(true).toString)
+            )
+        )
+
+        val result: Boolean = Await.result(connector.getIsTrustTaxable(testDraftId), Duration.Inf)
+        result.booleanValue() mustBe true
+      }
+
+      "return false if the trust is non taxable" in {
+        server.stubFor(
+          get(urlEqualTo(s"$submissionsUrl/$testDraftId/is-trust-taxable"))
+            .willReturn(
+              aResponse()
+                .withStatus(Status.OK)
+                .withBody(JsBoolean(false).toString)
+            )
+        )
+
+        val result: Boolean = Await.result(connector.getIsTrustTaxable(testDraftId), Duration.Inf)
+        result.booleanValue() mustBe false
+      }
+
+      "recover to true as default" in {
+        server.stubFor(
+          get(urlEqualTo(s"$submissionsUrl/$testDraftId/is-trust-taxable"))
+            .willReturn(
+              aResponse()
+                .withStatus(Status.NOT_FOUND)
+            )
+        )
+
+        val result: Boolean = Await.result(connector.getIsTrustTaxable(testDraftId), Duration.Inf)
+        result.booleanValue() mustBe true
       }
     }
   }

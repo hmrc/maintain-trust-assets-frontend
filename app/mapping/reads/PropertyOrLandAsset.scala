@@ -20,7 +20,8 @@ import models.WhatKindOfAsset.PropertyOrLand
 import models.{Address, WhatKindOfAsset}
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.property_or_land._
-import play.api.libs.json.{JsError, JsSuccess, Reads, __}
+import play.api.libs.functional.syntax._
+import play.api.libs.json.{JsSuccess, Reads, __}
 
 final case class PropertyOrLandAsset(override val whatKindOfAsset: WhatKindOfAsset,
                                      propertyOrLandDescription: Option[String],
@@ -30,8 +31,6 @@ final case class PropertyOrLandAsset(override val whatKindOfAsset: WhatKindOfAss
 
 object PropertyOrLandAsset {
 
-  import play.api.libs.functional.syntax._
-
   implicit lazy val reads: Reads[PropertyOrLandAsset] = {
 
     val optionalAddressReads: Reads[Option[Address]] = {
@@ -40,22 +39,12 @@ object PropertyOrLandAsset {
         Reads(_ => JsSuccess(None: Option[Address]))
     }
 
-    val landOrPropertyReads: Reads[PropertyOrLandAsset] = (
+    ((__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].filter(_ == PropertyOrLand) and
       (__ \ PropertyOrLandDescriptionPage.key).readNullable[String] and
-        optionalAddressReads and
-        (__ \ PropertyLandValueTrustPage.key).readNullable[Long] and
-        (__ \ PropertyOrLandTotalValuePage.key).read[Long] and
-        (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset]
-      )((description, address, value, totalValue, kind) => PropertyOrLandAsset(kind, description, address, value, totalValue))
-
-    (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].flatMap[WhatKindOfAsset] {
-      whatKindOfAsset: WhatKindOfAsset =>
-        if (whatKindOfAsset == PropertyOrLand) {
-          Reads(_ => JsSuccess(whatKindOfAsset))
-        } else {
-          Reads(_ => JsError("PropertyOrLand asset must be of type `PropertyOrLand`"))
-        }
-    }.andKeep(landOrPropertyReads)
+      optionalAddressReads and
+      (__ \ PropertyLandValueTrustPage.key).readNullable[Long] and
+      (__ \ PropertyOrLandTotalValuePage.key).read[Long]
+      )(PropertyOrLandAsset.apply _)
 
   }
 }

@@ -30,23 +30,10 @@ import javax.inject.{Inject, Singleton}
 class NonEeaBusinessNavigator @Inject()(config: FrontendAppConfig) extends Navigator(config) {
 
   override protected def route(draftId: String): PartialFunction[Page, AffinityGroup => UserAnswers => Call] = {
-    case NamePage(index) => _ => _ => AddressUkYesNoController.onPageLoad(index, draftId)
-    case AddressUkYesNoPage(index) => _ => ua => addressUkYesNoRoute(ua, index, draftId)
-    case UkAddressPage(index) => _ => _ => GoverningCountryController.onPageLoad(index, draftId)
+    case NamePage(index) => _ => _ => InternationalAddressController.onPageLoad(index, draftId)
     case InternationalAddressPage(index) => _ => _ => GoverningCountryController.onPageLoad(index, draftId)
     case GoverningCountryPage(index) => _ => _ => StartDateController.onPageLoad(index, draftId)
     case StartDatePage(index) => _ => _ => AnswersController.onPageLoad(index, draftId)
-  }
-
-  private def addressUkYesNoRoute(userAnswers: UserAnswers, index: Int, draftId: String): Call = {
-    userAnswers.get(AddressUkYesNoPage(index)) match {
-      case Some(true) =>
-        UkAddressController.onPageLoad(index, draftId)
-      case Some(false) =>
-        InternationalAddressController.onPageLoad(index, draftId)
-      case _ =>
-        controllers.routes.SessionExpiredController.onPageLoad()
-    }
   }
 
 }

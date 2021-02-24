@@ -185,7 +185,7 @@ class InternationalAddressControllerSpec extends SpecBase with IndexValidation {
     "for a GET" must {
 
       def getForIndex(index: Int) : FakeRequest[AnyContentAsEmpty.type] = {
-        val route = routes.UkAddressController.onPageLoad(index, fakeDraftId).url
+        val route = routes.InternationalAddressController.onPageLoad(index, fakeDraftId).url
 
         FakeRequest(GET, route)
       }
@@ -202,7 +202,7 @@ class InternationalAddressControllerSpec extends SpecBase with IndexValidation {
       def postForIndex(index: Int): FakeRequest[AnyContentAsFormUrlEncoded] = {
 
         val route =
-          routes.UkAddressController.onPageLoad(index, fakeDraftId).url
+          routes.InternationalAddressController.onPageLoad(index, fakeDraftId).url
 
         FakeRequest(POST, route)
           .withFormUrlEncodedBody(

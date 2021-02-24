@@ -27,9 +27,7 @@ import javax.inject.Inject
 
 class NonEeaBusinessPrintHelper @Inject()(checkAnswersFormatters: CheckAnswersFormatters) extends PrintHelper {
 
-  override def headingKey(index: Int)(implicit messages: Messages): String = {
-    messages("answerPage.section.nonEeaBusinessAsset.subheading", index + 1)
-  }
+  override val assetType: String = "nonEeaBusinessAsset"
 
   override def answerRows(userAnswers: UserAnswers,
                           arg: String,
@@ -42,8 +40,6 @@ class NonEeaBusinessPrintHelper @Inject()(checkAnswersFormatters: CheckAnswersFo
     Seq(
       converter.assetTypeQuestion(index, draftId),
       converter.stringQuestion(NamePage(index), "nonEeaBusiness.name", NameController.onPageLoad(index, draftId).url),
-      converter.yesNoQuestion(AddressUkYesNoPage(index), "nonEeaBusiness.addressUkYesNo", AddressUkYesNoController.onPageLoad(index, draftId).url),
-      converter.addressQuestion(UkAddressPage(index), "nonEeaBusiness.ukAddress", UkAddressController.onPageLoad(index, draftId).url),
       converter.addressQuestion(InternationalAddressPage(index), "nonEeaBusiness.internationalAddress", InternationalAddressController.onPageLoad(index, draftId).url),
       converter.countryQuestion(GoverningCountryPage(index), "nonEeaBusiness.governingCountry", GoverningCountryController.onPageLoad(index, draftId).url),
       converter.dateQuestion(StartDatePage(index), "nonEeaBusiness.startDate", StartDateController.onPageLoad(index, draftId).url)

@@ -22,17 +22,16 @@ import models.{InternationalAddress, Status, UKAddress, WhatKindOfAsset}
 import pages.AssetStatus
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.property_or_land._
+import play.api.libs.functional.syntax._
+import play.api.libs.json._
 
 final case class PropertyOrLandAssetViewModel(`type`: WhatKindOfAsset,
                                               hasAddress: Option[Boolean],
                                               address: Option[String],
                                               description: Option[String],
-                                              override val status: Status) extends AssetViewModel
+                                              status: Status) extends AssetViewModel
 
 object PropertyOrLandAssetViewModel extends AssetViewModelReads {
-
-  import play.api.libs.functional.syntax._
-  import play.api.libs.json._
 
   implicit lazy val reads: Reads[PropertyOrLandAssetViewModel] = {
 
@@ -41,24 +40,12 @@ object PropertyOrLandAssetViewModel extends AssetViewModelReads {
         (__ \ PropertyOrLandInternationalAddressPage.key).read[InternationalAddress].map(_.toLine1Option) orElse
         Reads(_ => JsSuccess(None))
 
-    val propertyOrLandReads: Reads[PropertyOrLandAssetViewModel] =
-      (
-        (__ \ PropertyOrLandAddressYesNoPage.key).readNullable[Boolean] and
-          addressLine1Reads and
-          (__ \ PropertyOrLandDescriptionPage.key).readNullable[String] and
-          (__ \ AssetStatus.key).readWithDefault[Status](InProgress)
-        )((hasAddress, address, description, status) =>
-        PropertyOrLandAssetViewModel(PropertyOrLand, hasAddress, address, description, status)
-      )
+    ((__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].filter(_ == PropertyOrLand) and
+      (__ \ PropertyOrLandAddressYesNoPage.key).readNullable[Boolean] and
+      addressLine1Reads and
+      (__ \ PropertyOrLandDescriptionPage.key).readNullable[String] and
+      (__ \ AssetStatus.key).readWithDefault[Status](InProgress)
+      )(PropertyOrLandAssetViewModel.apply _)
 
-    (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].flatMap[WhatKindOfAsset] {
-      whatKindOfAsset: WhatKindOfAsset =>
-        if (whatKindOfAsset == PropertyOrLand) {
-          Reads(_ => JsSuccess(whatKindOfAsset))
-        } else {
-          Reads(_ => JsError("property or land asset must be of type `PropertyOrLand`"))
-        }
-    }.andKeep(propertyOrLandReads)
   }
-
 }

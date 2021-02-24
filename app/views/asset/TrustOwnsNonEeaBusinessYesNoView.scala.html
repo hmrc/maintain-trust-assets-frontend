@@ -14,35 +14,32 @@
  * limitations under the License.
  *@
 
-@import controllers.asset.noneeabusiness.routes._
+@import controllers.asset.routes._
 
 @this(
     main_template: MainTemplate,
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], draftId: String, index: Int, name: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], draftId: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("nonEeaBusiness.ukAddress.title")}"
+    title = s"${errorPrefix(form)} ${messages("trustOwnsNonEeaBusinessYesNo.title")}"
 ) {
 
-    @formHelper(action = UkAddressController.onSubmit(index, draftId), 'autoComplete -> "off") {
+@formHelper(action = TrustOwnsNonEeaBusinessYesNoController.onSubmit(draftId), 'autoComplete -> "off") {
 
-        @components.back_link()
+    @components.back_link()
 
-        @components.error_summary(form.errors)
+    @components.error_summary(form.errors)
 
-        <fieldset>
+    @components.input_yes_no(
+        field = form("value"),
+        label = messages("trustOwnsNonEeaBusinessYesNo.heading"),
+        legendClass = Some("heading-large"),
+        legendAsHeading = true
+    )
 
-            <legend>
-                @components.heading("nonEeaBusiness.ukAddress.heading", optionalParam = Some(name))
-            </legend>
-
-            @components.uk_address(form)
-
-        </fieldset>
-
-        @components.submit_button()
-    }
+    @components.submit_button()
+  }
 }

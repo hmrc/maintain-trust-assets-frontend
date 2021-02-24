@@ -14,23 +14,14 @@
  * limitations under the License.
  */
 
-package mapping.reads
+package pages.asset
 
-import models.WhatKindOfAsset
-import models.WhatKindOfAsset.Money
-import pages.asset.WhatKindOfAssetPage
-import pages.asset.money._
-import play.api.libs.functional.syntax._
-import play.api.libs.json.{Reads, _}
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-final case class MoneyAsset(override val whatKindOfAsset: WhatKindOfAsset,
-                            value: Long) extends Asset
+case object TrustOwnsNonEeaBusinessYesNoPage extends QuestionPage[Boolean] {
 
-object MoneyAsset {
+  override def path: JsPath = JsPath \ toString
 
-  implicit lazy val reads: Reads[MoneyAsset] = (
-    (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].filter(_ == Money) and
-      (__ \ AssetMoneyValuePage.key).read[Long]
-    )(MoneyAsset.apply _)
-
+  override def toString: String = "trustOwnsNonEeaBusiness"
 }

@@ -16,6 +16,7 @@
 
 package controllers
 
+import connectors.SubmissionDraftConnector
 import controllers.actions.RegistrationIdentifierAction
 import controllers.asset.routes._
 import models.UserAnswers
@@ -33,7 +34,8 @@ class IndexController @Inject()(
                                  val controllerComponents: MessagesControllerComponents,
                                  repository: RegistrationsRepository,
                                  identify: RegistrationIdentifierAction,
-                                 featureFlagService: FeatureFlagService
+                                 featureFlagService: FeatureFlagService,
+                                 submissionDraftConnector: SubmissionDraftConnector
                                )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(draftId: String): Action[AnyContent] = identify.async { implicit request =>
@@ -44,19 +46,26 @@ class IndexController @Inject()(
           case Some(_ :: _) =>
             Redirect(AddAssetsController.onPageLoad(draftId))
           case _ =>
-            Redirect(AssetInterruptPageController.onPageLoad(draftId))
+            if (userAnswers.isTaxable) {
+              Redirect(AssetInterruptPageController.onPageLoad(draftId))
+            } else {
+              Redirect(TrustOwnsNonEeaBusinessYesNoController.onPageLoad(draftId))
+            }
         }
       }
     }
 
     featureFlagService.is5mldEnabled() flatMap {
       is5mldEnabled =>
-        repository.get(draftId) flatMap {
-          case Some(userAnswers) =>
-            redirect(userAnswers.copy(is5mldEnabled = is5mldEnabled))
-          case _ =>
-            val userAnswers = UserAnswers(draftId, Json.obj(), request.identifier, is5mldEnabled)
-            redirect(userAnswers)
+        submissionDraftConnector.getIsTrustTaxable(draftId) flatMap {
+          isTaxable =>
+            repository.get(draftId) flatMap {
+              case Some(userAnswers) =>
+                redirect(userAnswers.copy(is5mldEnabled = is5mldEnabled, isTaxable = isTaxable))
+              case _ =>
+                val userAnswers = UserAnswers(draftId, Json.obj(), request.identifier, is5mldEnabled, isTaxable)
+                redirect(userAnswers)
+            }
         }
     }
   }

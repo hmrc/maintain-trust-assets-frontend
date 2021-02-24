@@ -18,7 +18,7 @@ package utils.answers
 
 import base.SpecBase
 import models.WhatKindOfAsset._
-import models.{UKAddress, UserAnswers}
+import models.{InternationalAddress, UserAnswers}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import pages.asset.WhatKindOfAssetPage
@@ -36,8 +36,8 @@ class NonEeaBusinessAnswersHelperSpec extends SpecBase {
   private val answersHelper: NonEeaBusinessAnswersHelper = new NonEeaBusinessAnswersHelper(mockPrintHelper)
 
   private val name: String = "Name"
-  private val address: UKAddress = UKAddress("Line 1", "Line 2", None, None, "AB1 1AB")
-  private val country: String = "GB"
+  private val country: String = "FR"
+  private val address: InternationalAddress = InternationalAddress("Line 1", "Line 2", None, country)
   private val date: LocalDate = LocalDate.parse("1996-02-03")
   private val amount: Long = 100L
 
@@ -64,8 +64,7 @@ class NonEeaBusinessAnswersHelperSpec extends SpecBase {
         val userAnswers: UserAnswers = emptyUserAnswers
           .set(WhatKindOfAssetPage(index), NonEeaBusiness).success.value
           .set(NamePage(index), name).success.value
-          .set(AddressUkYesNoPage(index), true).success.value
-          .set(UkAddressPage(index), address).success.value
+          .set(InternationalAddressPage(index), address).success.value
           .set(GoverningCountryPage(index), country).success.value
           .set(StartDatePage(index), date).success.value
 
@@ -86,15 +85,13 @@ class NonEeaBusinessAnswersHelperSpec extends SpecBase {
 
           .set(WhatKindOfAssetPage(1), NonEeaBusiness).success.value
           .set(NamePage(1), name).success.value
-          .set(AddressUkYesNoPage(1), true).success.value
-          .set(UkAddressPage(1), address).success.value
+          .set(InternationalAddressPage(1), address).success.value
           .set(GoverningCountryPage(1), country).success.value
           .set(StartDatePage(1), date).success.value
 
           .set(WhatKindOfAssetPage(2), NonEeaBusiness).success.value
           .set(NamePage(2), name).success.value
-          .set(AddressUkYesNoPage(2), true).success.value
-          .set(UkAddressPage(2), address).success.value
+          .set(InternationalAddressPage(2), address).success.value
           .set(GoverningCountryPage(2), country).success.value
           .set(StartDatePage(2), date).success.value
 

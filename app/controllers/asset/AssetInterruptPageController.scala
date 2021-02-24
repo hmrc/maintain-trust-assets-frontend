@@ -17,29 +17,47 @@
 package controllers.asset
 
 import controllers.actions.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
-import play.api.i18n.{I18nSupport, MessagesApi}
+import navigation.Navigator
+import pages.asset.AssetInterruptPage
+import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.asset.AssetInterruptPageView
+import repositories.RegistrationsRepository
+import views.html.asset.{NonTaxableInfoView, TaxableInfoView}
 
 import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class AssetInterruptPageController @Inject()(
                                               override val messagesApi: MessagesApi,
+                                              repository: RegistrationsRepository,
                                               identify: RegistrationIdentifierAction,
                                               getData: DraftIdRetrievalActionProvider,
                                               requireData: RegistrationDataRequiredAction,
+                                              navigator: Navigator,
                                               val controllerComponents: MessagesControllerComponents,
-                                              view: AssetInterruptPageView
-                                            ) extends FrontendBaseController with I18nSupport {
+                                              taxableView: TaxableInfoView,
+                                              nonTaxableView: NonTaxableInfoView
+                                            )(implicit ec: ExecutionContext) extends AddAssetController {
 
   def onPageLoad(draftId: String): Action[AnyContent] = (identify andThen getData(draftId) andThen requireData) {
     implicit request =>
-      Ok(view(draftId, request.userAnswers.is5mldEnabled))
+      Ok(
+        if (request.userAnswers.isTaxable) {
+          taxableView(draftId, request.userAnswers.is5mldEnabled)
+        } else {
+          nonTaxableView(draftId)
+        }
+      )
   }
 
-  def onSubmit(draftId: String): Action[AnyContent] = (identify andThen getData(draftId) andThen requireData) {
-      Redirect(routes.WhatKindOfAssetController.onPageLoad(0, draftId))
+  def onSubmit(draftId: String): Action[AnyContent] = (identify andThen getData(draftId) andThen requireData).async {
+    implicit request =>
+      for {
+        updatedAnswers <- Future.fromTry(setAssetTypeIfNonTaxable(request.userAnswers, 0))
+        _ <- repository.set(updatedAnswers)
+      } yield {
+        Redirect(navigator.nextPage(AssetInterruptPage, draftId)(updatedAnswers))
+      }
   }
 
 }

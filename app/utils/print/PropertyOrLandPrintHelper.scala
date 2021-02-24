@@ -27,9 +27,7 @@ import javax.inject.Inject
 
 class PropertyOrLandPrintHelper @Inject()(checkAnswersFormatters: CheckAnswersFormatters) extends PrintHelper {
 
-  override def headingKey(index: Int)(implicit messages: Messages): String = {
-    messages("answerPage.section.propertyOrLandAsset.subheading", index + 1)
-  }
+  override val assetType: String = "propertyOrLandAsset"
 
   override def answerRows(userAnswers: UserAnswers,
                           arg: String,

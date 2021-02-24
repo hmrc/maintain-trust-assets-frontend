@@ -14,23 +14,8 @@
  * limitations under the License.
  */
 
-package mapping.reads
+package pages.asset
 
-import models.WhatKindOfAsset
-import models.WhatKindOfAsset.Money
-import pages.asset.WhatKindOfAssetPage
-import pages.asset.money._
-import play.api.libs.functional.syntax._
-import play.api.libs.json.{Reads, _}
+import pages.Page
 
-final case class MoneyAsset(override val whatKindOfAsset: WhatKindOfAsset,
-                            value: Long) extends Asset
-
-object MoneyAsset {
-
-  implicit lazy val reads: Reads[MoneyAsset] = (
-    (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].filter(_ == Money) and
-      (__ \ AssetMoneyValuePage.key).read[Long]
-    )(MoneyAsset.apply _)
-
-}
+case object AssetInterruptPage extends Page

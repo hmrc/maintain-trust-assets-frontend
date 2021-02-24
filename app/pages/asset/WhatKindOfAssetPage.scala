@@ -131,8 +131,6 @@ final case class WhatKindOfAssetPage(index: Int) extends QuestionPage[WhatKindOf
 
   private def removeNonEeaBusiness(userAnswers: UserAnswers): Try[UserAnswers] = {
     userAnswers.remove(noneeabusiness.NamePage(index))
-      .flatMap(_.remove(noneeabusiness.AddressUkYesNoPage(index)))
-      .flatMap(_.remove(noneeabusiness.UkAddressPage(index)))
       .flatMap(_.remove(noneeabusiness.InternationalAddressPage(index)))
       .flatMap(_.remove(noneeabusiness.GoverningCountryPage(index)))
       .flatMap(_.remove(noneeabusiness.StartDatePage(index)))

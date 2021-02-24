@@ -16,10 +16,12 @@
 
 package pages
 
-import javax.inject.Inject
+import models.AddAssets.NoComplete
 import models.Status._
-import models.{AddAssets, Status, UserAnswers}
-import pages.asset.AddAssetsPage
+import models.{Status, UserAnswers}
+import pages.asset.{AddAssetsPage, TrustOwnsNonEeaBusinessYesNoPage}
+
+import javax.inject.Inject
 
 class RegistrationProgress @Inject()() {
 
@@ -31,21 +33,18 @@ class RegistrationProgress @Inject()() {
     }
   }
 
-   def assetsStatus(userAnswers: UserAnswers): Option[Status] = {
-    val noMoreToAdd = userAnswers.get(AddAssetsPage).contains(AddAssets.NoComplete)
+  def assetsStatus(userAnswers: UserAnswers): Option[Status] = {
     val assets = userAnswers.get(sections.Assets).getOrElse(List.empty)
+    val noAssetsInProgress = !assets.exists(_.status == InProgress)
+    val noMoreToAdd = (userAnswers.get(AddAssetsPage), userAnswers.get(TrustOwnsNonEeaBusinessYesNoPage)) match {
+      case (Some(NoComplete), _) | (_, Some(false)) => true
+      case _ => false
+    }
 
     assets match {
-      case Nil => None
-      case list =>
-
-        val status = !list.exists(_.status == InProgress) && noMoreToAdd
-        determineStatus(status)
+      case Nil if userAnswers.isTaxable => None
+      case _ => determineStatus(noAssetsInProgress && noMoreToAdd)
     }
-  }
-
-  def isAssetsComplete(userAnswers: UserAnswers): Boolean = {
-      assetsStatus(userAnswers).contains(Completed)
   }
 
 }

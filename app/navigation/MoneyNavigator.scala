@@ -17,7 +17,7 @@
 package navigation
 
 import config.FrontendAppConfig
-import controllers.asset.routes
+import controllers.asset.routes._
 import models.UserAnswers
 import pages.Page
 import pages.asset.money._
@@ -30,15 +30,7 @@ import javax.inject.{Inject, Singleton}
 class MoneyNavigator @Inject()(config: FrontendAppConfig) extends Navigator(config) {
 
   override protected def route(draftId: String): PartialFunction[Page, AffinityGroup => UserAnswers => Call] = {
-    case AssetMoneyValuePage(index) => _ => ua => assetMoneyValueRoute(ua, index, draftId)
-  }
-
-  private def assetMoneyValueRoute(answers: UserAnswers, index: Int, draftId: String): Call = {
-    val assets = answers.get(sections.Assets).getOrElse(List.empty)
-    assets match  {
-      case Nil => routes.WhatKindOfAssetController.onPageLoad(index, draftId)
-      case _ => routes.AddAssetsController.onPageLoad(draftId)
-    }
+    case AssetMoneyValuePage(_) => _ => _ => AddAssetsController.onPageLoad(draftId)
   }
 
 }

@@ -14,21 +14,18 @@
  * limitations under the License.
  */
 
-package pages.asset.noneeabusiness
+package navigation
 
-import models.UKAddress
+import models.UserAnswers
 import pages.QuestionPage
-import pages.asset.noneeabusiness.UkAddressPage.key
-import play.api.libs.json.JsPath
-import sections.Assets
+import play.api.mvc.Call
 
-final case class UkAddressPage(index: Int) extends QuestionPage[UKAddress] {
+trait Navigation {
 
-  override def path: JsPath = JsPath \ Assets \ index \ toString
+  def yesNoNav(ua: UserAnswers, fromPage: QuestionPage[Boolean], yesCall: => Call, noCall: => Call): Call = {
+    ua.get(fromPage)
+      .map(if (_) yesCall else noCall)
+      .getOrElse(controllers.routes.SessionExpiredController.onPageLoad())
+  }
 
-  override def toString: String = key
-}
-
-object UkAddressPage {
-  val key: String = "nonEeaBusinessUkAddress"
 }

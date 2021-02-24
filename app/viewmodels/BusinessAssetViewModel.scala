@@ -31,23 +31,10 @@ final case class BusinessAssetViewModel(`type`: WhatKindOfAsset,
 
 object BusinessAssetViewModel {
 
-  implicit lazy val reads: Reads[BusinessAssetViewModel] = {
-
-    val businessReads: Reads[BusinessAssetViewModel] =
-      ((__ \ BusinessNamePage.key).readNullable[String] and
-        (__ \ AssetStatus.key).readWithDefault[Status](InProgress)
-        )((name, status) =>
-        BusinessAssetViewModel(Business, name, status))
-
-    (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].flatMap[WhatKindOfAsset] {
-      whatKindOfAsset: WhatKindOfAsset =>
-        if (whatKindOfAsset == Business) {
-          Reads(_ => JsSuccess(whatKindOfAsset))
-        } else {
-          Reads(_ => JsError("business asset must be of type `Business`"))
-        }
-    }.andKeep(businessReads)
-
-  }
+  implicit lazy val reads: Reads[BusinessAssetViewModel] = (
+    (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].filter(_ == Business) and
+      (__ \ BusinessNamePage.key).readNullable[String] and
+      (__ \ AssetStatus.key).readWithDefault[Status](InProgress)
+    )(BusinessAssetViewModel.apply _)
 
 }
