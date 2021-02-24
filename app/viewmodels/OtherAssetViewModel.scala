@@ -31,22 +31,10 @@ final case class OtherAssetViewModel(`type`: WhatKindOfAsset,
 
 object OtherAssetViewModel {
 
-  implicit lazy val reads: Reads[OtherAssetViewModel] = {
-
-    val otherReads: Reads[OtherAssetViewModel] =
-      ((__ \ OtherAssetDescriptionPage.key).readNullable[String] and
-        (__ \ AssetStatus.key).readWithDefault[Status](InProgress)
-        )((description, status) => OtherAssetViewModel(Other, description, status))
-
-    (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].flatMap[WhatKindOfAsset] {
-      whatKindOfAsset: WhatKindOfAsset =>
-        if (whatKindOfAsset == Other) {
-          Reads(_ => JsSuccess(whatKindOfAsset))
-        } else {
-          Reads(_ => JsError("other asset must be of type `Other`"))
-        }
-    }.andKeep(otherReads)
-
-  }
+  implicit lazy val reads: Reads[OtherAssetViewModel] = (
+    (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].filter(_ == Other) and
+      (__ \ OtherAssetDescriptionPage.key).readNullable[String] and
+      (__ \ AssetStatus.key).readWithDefault[Status](InProgress)
+    )(OtherAssetViewModel.apply _)
 
 }

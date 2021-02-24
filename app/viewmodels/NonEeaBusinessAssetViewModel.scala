@@ -23,7 +23,7 @@ import pages.AssetStatus
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.noneeabusiness._
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsError, JsSuccess, Reads, __}
+import play.api.libs.json.{Reads, __}
 
 final case class NonEeaBusinessAssetViewModel(`type`: WhatKindOfAsset,
                                               name: Option[String],
@@ -31,18 +31,10 @@ final case class NonEeaBusinessAssetViewModel(`type`: WhatKindOfAsset,
 
 object NonEeaBusinessAssetViewModel {
 
-  implicit lazy val reads: Reads[NonEeaBusinessAssetViewModel] = {
-
-    val nonEeaBusinessReads: Reads[NonEeaBusinessAssetViewModel] = (
+  implicit lazy val reads: Reads[NonEeaBusinessAssetViewModel] = (
+    (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].filter(_ == NonEeaBusiness) and
       (__ \ NamePage.key).readNullable[String] and
-        (__ \ AssetStatus.key).readWithDefault[Status](InProgress)
-      )((name, status) => NonEeaBusinessAssetViewModel(NonEeaBusiness, name, status))
+      (__ \ AssetStatus.key).readWithDefault[Status](InProgress)
+    )(NonEeaBusinessAssetViewModel.apply _)
 
-    (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].flatMap[WhatKindOfAsset] {
-      case NonEeaBusiness =>
-        Reads(_ => JsSuccess(NonEeaBusiness))
-      case _ =>
-        Reads(_ => JsError("non-EEA business asset must be of type `NonEeaBusiness`"))
-    }.andKeep(nonEeaBusinessReads)
-  }
 }

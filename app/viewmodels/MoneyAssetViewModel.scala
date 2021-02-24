@@ -22,6 +22,8 @@ import models.{Status, WhatKindOfAsset}
 import pages.AssetStatus
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.money.AssetMoneyValuePage
+import play.api.libs.functional.syntax._
+import play.api.libs.json._
 
 final case class MoneyAssetViewModel(`type`: WhatKindOfAsset,
                                      value: Option[String],
@@ -29,25 +31,10 @@ final case class MoneyAssetViewModel(`type`: WhatKindOfAsset,
 
 object MoneyAssetViewModel {
 
-  import play.api.libs.functional.syntax._
-  import play.api.libs.json._
-
-  implicit lazy val reads: Reads[MoneyAssetViewModel] = {
-
-    val moneyReads: Reads[MoneyAssetViewModel] =
-      ((__ \ AssetMoneyValuePage.key).readNullable[Long] and
-        (__ \ AssetStatus.key).readWithDefault[Status](InProgress)
-        )((value, status) => MoneyAssetViewModel(Money, value.map(_.toString), status))
-
-    (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].flatMap[WhatKindOfAsset] {
-      whatKindOfAsset: WhatKindOfAsset =>
-        if (whatKindOfAsset == Money) {
-          Reads(_ => JsSuccess(whatKindOfAsset))
-        } else {
-          Reads(_ => JsError("money asset must be of type `Money`"))
-        }
-    }.andKeep(moneyReads)
-
-  }
+  implicit lazy val reads: Reads[MoneyAssetViewModel] = (
+    (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].filter(_ == Money) and
+      (__ \ AssetMoneyValuePage.key).readNullable[Long].map(_.map(_.toString)) and
+      (__ \ AssetStatus.key).readWithDefault[Status](InProgress)
+    )(MoneyAssetViewModel.apply _)
 
 }

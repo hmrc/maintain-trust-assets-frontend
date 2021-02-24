@@ -22,6 +22,8 @@ import models.{Status, WhatKindOfAsset}
 import pages.AssetStatus
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.partnership.PartnershipDescriptionPage
+import play.api.libs.functional.syntax._
+import play.api.libs.json._
 
 final case class PartnershipAssetViewModel(`type`: WhatKindOfAsset,
                                            description: Option[String],
@@ -29,25 +31,10 @@ final case class PartnershipAssetViewModel(`type`: WhatKindOfAsset,
 
 object PartnershipAssetViewModel {
 
-  import play.api.libs.functional.syntax._
-  import play.api.libs.json._
-
-  implicit lazy val reads: Reads[PartnershipAssetViewModel] = {
-
-    val partnershipReads: Reads[PartnershipAssetViewModel] =
-      ((__ \ PartnershipDescriptionPage.key).readNullable[String] and
-        (__ \ AssetStatus.key).readWithDefault[Status](InProgress)
-        )((description, status) => PartnershipAssetViewModel(Partnership, description, status))
-
-    (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].flatMap[WhatKindOfAsset] {
-      whatKindOfAsset: WhatKindOfAsset =>
-        if (whatKindOfAsset == Partnership) {
-          Reads(_ => JsSuccess(whatKindOfAsset))
-        } else {
-          Reads(_ => JsError("partnership asset must be of type `Partnership`"))
-        }
-    }.andKeep(partnershipReads)
-
-  }
+  implicit lazy val reads: Reads[PartnershipAssetViewModel] = (
+    (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].filter(_ == Partnership) and
+      (__ \ PartnershipDescriptionPage.key).readNullable[String] and
+      (__ \ AssetStatus.key).readWithDefault[Status](InProgress)
+    )(PartnershipAssetViewModel.apply _)
 
 }
