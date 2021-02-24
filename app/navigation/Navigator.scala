@@ -19,20 +19,19 @@ package navigation
 import config.FrontendAppConfig
 import controllers.asset.routes._
 import controllers.routes._
-import models.Status.InProgress
 import models.WhatKindOfAsset._
 import models.{UserAnswers, _}
 import pages.Page
 import pages.asset._
-import play.api.Logging
 import play.api.mvc.Call
 import uk.gov.hmrc.auth.core.AffinityGroup
 
 import javax.inject.{Inject, Singleton}
 
-object AssetsRoutes extends Logging {
+object AssetsRoutes {
 
   def route(draftId: String, config: FrontendAppConfig): PartialFunction[Page, AffinityGroup => UserAnswers => Call] = {
+    case TrustOwnsNonEeaBusinessYesNoPage => _ => trustOwnsNonEeaBusinessYesNoRoute(draftId, config)
     case AssetInterruptPage => _ => ua => routeToAssetIndex(ua, draftId)
     case WhatKindOfAssetPage(index) => _ => ua => whatKindOfAssetRoute(ua, index, draftId)
     case AddAssetsPage => _ => addAssetsRoute(draftId, config)
@@ -41,6 +40,14 @@ object AssetsRoutes extends Logging {
 
   def assetsCompletedRoute(draftId: String, config: FrontendAppConfig) : Call = {
     Call("GET", config.registrationProgressUrl(draftId))
+  }
+
+  private def trustOwnsNonEeaBusinessYesNoRoute(draftId: String, config: FrontendAppConfig)(userAnswers: UserAnswers): Call = {
+    userAnswers.get(TrustOwnsNonEeaBusinessYesNoPage) match {
+      case Some(false) => assetsCompletedRoute(draftId, config)
+      case Some(true) => AssetInterruptPageController.onPageLoad(draftId)
+      case _ => SessionExpiredController.onPageLoad()
+    }
   }
 
   private def addAnAssetYesNoRoute(draftId: String, config: FrontendAppConfig)(userAnswers: UserAnswers): Call = userAnswers.get(AddAnAssetYesNoPage) match {

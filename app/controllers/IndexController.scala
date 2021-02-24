@@ -46,7 +46,11 @@ class IndexController @Inject()(
           case Some(_ :: _) =>
             Redirect(AddAssetsController.onPageLoad(draftId))
           case _ =>
-            Redirect(AssetInterruptPageController.onPageLoad(draftId))
+            if (userAnswers.isTaxable) {
+              Redirect(AssetInterruptPageController.onPageLoad(draftId))
+            } else {
+              Redirect(TrustOwnsNonEeaBusinessYesNoController.onPageLoad(draftId))
+            }
         }
       }
     }

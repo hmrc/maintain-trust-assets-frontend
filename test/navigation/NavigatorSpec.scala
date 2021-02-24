@@ -23,7 +23,7 @@ import models.WhatKindOfAsset._
 import models.{AddAssets, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.asset.{AddAnAssetYesNoPage, AddAssetsPage, AssetInterruptPage, WhatKindOfAssetPage}
+import pages.asset.{AddAnAssetYesNoPage, AddAssetsPage, AssetInterruptPage, TrustOwnsNonEeaBusinessYesNoPage, WhatKindOfAssetPage}
 import play.api.mvc.Call
 
 class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
@@ -36,6 +36,29 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
   }
 
   "Navigator" when {
+
+    "trust owns non-EEA business yes no page" when {
+
+      "yes selected" must {
+        "redirect to interrupt page" in {
+
+          val answers = emptyUserAnswers.set(TrustOwnsNonEeaBusinessYesNoPage, true).success.value
+
+          navigator.nextPage(TrustOwnsNonEeaBusinessYesNoPage, fakeDraftId)(answers)
+            .mustBe(controllers.asset.routes.AssetInterruptPageController.onPageLoad(fakeDraftId))
+        }
+      }
+
+      "no selected" must {
+        "redirect to RegistrationProgress" in {
+
+          val answers = emptyUserAnswers.set(TrustOwnsNonEeaBusinessYesNoPage, false).success.value
+
+          navigator.nextPage(TrustOwnsNonEeaBusinessYesNoPage, fakeDraftId)(answers)
+            .mustBe(assetsCompletedRoute)
+        }
+      }
+    }
 
     "asset interrupt page" when {
 

@@ -78,29 +78,60 @@ class IndexControllerSpec extends SpecBase {
       }
 
       "redirect to AssetInterruptPageController" when {
-        "no existing assets" in {
+        "no existing assets" when {
+          "taxable" in {
 
-          reset(registrationsRepository)
+            reset(registrationsRepository)
 
-          val application = applicationBuilder()
-            .overrides(
-              bind[FeatureFlagService].toInstance(featureFlagService),
-              bind[SubmissionDraftConnector].toInstance(submissionDraftConnector)
-            ).build()
+            val application = applicationBuilder()
+              .overrides(
+                bind[FeatureFlagService].toInstance(featureFlagService),
+                bind[SubmissionDraftConnector].toInstance(submissionDraftConnector)
+              ).build()
 
-          when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(Some(emptyUserAnswers)))
-          when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
-          when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
-          when(submissionDraftConnector.getIsTrustTaxable(any())(any(), any())).thenReturn(Future.successful(false))
+            when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(Some(emptyUserAnswers)))
+            when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
+            when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
+            when(submissionDraftConnector.getIsTrustTaxable(any())(any(), any())).thenReturn(Future.successful(true))
 
-          val request = FakeRequest(GET, onPageLoadRoute)
+            val request = FakeRequest(GET, onPageLoadRoute)
 
-          val result = route(application, request).value
+            val result = route(application, request).value
 
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustBe AssetInterruptPageController.onPageLoad(fakeDraftId).url
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result).value mustBe AssetInterruptPageController.onPageLoad(fakeDraftId).url
 
-          application.stop()
+            application.stop()
+          }
+        }
+      }
+
+      "redirect to TrustOwnsNonEeaBusinessYesNoController" when {
+        "no existing assets" when {
+          "non-taxable" in {
+
+            reset(registrationsRepository)
+
+            val application = applicationBuilder()
+              .overrides(
+                bind[FeatureFlagService].toInstance(featureFlagService),
+                bind[SubmissionDraftConnector].toInstance(submissionDraftConnector)
+              ).build()
+
+            when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(Some(emptyUserAnswers)))
+            when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
+            when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
+            when(submissionDraftConnector.getIsTrustTaxable(any())(any(), any())).thenReturn(Future.successful(false))
+
+            val request = FakeRequest(GET, onPageLoadRoute)
+
+            val result = route(application, request).value
+
+            status(result) mustEqual SEE_OTHER
+            redirectLocation(result).value mustBe TrustOwnsNonEeaBusinessYesNoController.onPageLoad(fakeDraftId).url
+
+            application.stop()
+          }
         }
       }
 
@@ -137,29 +168,58 @@ class IndexControllerSpec extends SpecBase {
 
     "no pre-existing user answers" must {
 
-      "redirect to AssetInterruptPageController" in {
+      "redirect to AssetInterruptPageController" when {
+        "taxable" in {
 
-        reset(registrationsRepository)
+          reset(registrationsRepository)
 
-        val application = applicationBuilder()
-          .overrides(
-            bind[FeatureFlagService].toInstance(featureFlagService),
-            bind[SubmissionDraftConnector].toInstance(submissionDraftConnector)
-          ).build()
+          val application = applicationBuilder()
+            .overrides(
+              bind[FeatureFlagService].toInstance(featureFlagService),
+              bind[SubmissionDraftConnector].toInstance(submissionDraftConnector)
+            ).build()
 
-        when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(None))
-        when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
-        when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
-        when(submissionDraftConnector.getIsTrustTaxable(any())(any(), any())).thenReturn(Future.successful(false))
+          when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(None))
+          when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
+          when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
+          when(submissionDraftConnector.getIsTrustTaxable(any())(any(), any())).thenReturn(Future.successful(true))
 
-        val request = FakeRequest(GET, onPageLoadRoute)
+          val request = FakeRequest(GET, onPageLoadRoute)
 
-        val result = route(application, request).value
+          val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustBe AssetInterruptPageController.onPageLoad(fakeDraftId).url
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustBe AssetInterruptPageController.onPageLoad(fakeDraftId).url
 
-        application.stop()
+          application.stop()
+        }
+      }
+
+      "redirect to TrustOwnsNonEeaBusinessYesNoController" when {
+        "non-taxable" in {
+
+          reset(registrationsRepository)
+
+          val application = applicationBuilder()
+            .overrides(
+              bind[FeatureFlagService].toInstance(featureFlagService),
+              bind[SubmissionDraftConnector].toInstance(submissionDraftConnector)
+            ).build()
+
+          when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(None))
+          when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
+          when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
+          when(submissionDraftConnector.getIsTrustTaxable(any())(any(), any())).thenReturn(Future.successful(false))
+
+          val request = FakeRequest(GET, onPageLoadRoute)
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+          redirectLocation(result).value mustBe TrustOwnsNonEeaBusinessYesNoController.onPageLoad(fakeDraftId).url
+
+          application.stop()
+        }
       }
 
       "instantiate new set of user answers" when {
