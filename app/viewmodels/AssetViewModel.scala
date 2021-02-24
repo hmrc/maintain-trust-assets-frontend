@@ -16,11 +16,12 @@
 
 package viewmodels
 
-import models.Status
+import models.{Status, WhatKindOfAsset}
 
 import scala.language.implicitConversions
 
 trait AssetViewModel {
+  val `type`: WhatKindOfAsset
   val status: Status
 }
 

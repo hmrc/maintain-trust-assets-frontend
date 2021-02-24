@@ -29,7 +29,7 @@ final case class PropertyOrLandAssetViewModel(`type`: WhatKindOfAsset,
                                               hasAddress: Option[Boolean],
                                               address: Option[String],
                                               description: Option[String],
-                                              override val status: Status) extends AssetViewModel
+                                              status: Status) extends AssetViewModel
 
 object PropertyOrLandAssetViewModel extends AssetViewModelReads {
 

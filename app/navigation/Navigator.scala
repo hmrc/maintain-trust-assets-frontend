@@ -19,16 +19,18 @@ package navigation
 import config.FrontendAppConfig
 import controllers.asset.routes._
 import controllers.routes._
+import models.Status.InProgress
 import models.WhatKindOfAsset._
 import models.{UserAnswers, _}
 import pages.Page
 import pages.asset._
+import play.api.Logging
 import play.api.mvc.Call
 import uk.gov.hmrc.auth.core.AffinityGroup
 
 import javax.inject.{Inject, Singleton}
 
-object AssetsRoutes {
+object AssetsRoutes extends Logging {
 
   def route(draftId: String, config: FrontendAppConfig): PartialFunction[Page, AffinityGroup => UserAnswers => Call] = {
     case AssetInterruptPage => _ => ua => routeToAssetIndex(ua, draftId)
@@ -62,11 +64,15 @@ object AssetsRoutes {
   }
 
   private def routeToAssetIndex(answers: UserAnswers, draftId: String): Call = {
-    val index = answers.get(sections.Assets).getOrElse(List.empty).size
+    val assets = answers.get(sections.Assets).getOrElse(List.empty)
 
     if (answers.isTaxable) {
+      val index = assets.size
       WhatKindOfAssetController.onPageLoad(index, draftId)
     } else {
+      // assets includes an in progress non-EEA business asset as we have just set the value in WhatKindOfAssetPage
+      // therefore we need the index to correspond to that asset (i.e. assets.size - 1)
+      val index = assets.size - 1
       controllers.asset.noneeabusiness.routes.NameController.onPageLoad(index, draftId)
     }
   }
@@ -88,7 +94,7 @@ object AssetsRoutes {
       case Some(NonEeaBusiness) =>
         controllers.asset.noneeabusiness.routes.NameController.onPageLoad(index, draftId)
       case _ =>
-        controllers.routes.SessionExpiredController.onPageLoad()
+        SessionExpiredController.onPageLoad()
     }
 }
 

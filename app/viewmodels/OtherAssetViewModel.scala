@@ -27,7 +27,7 @@ import play.api.libs.json._
 
 final case class OtherAssetViewModel(`type`: WhatKindOfAsset,
                                      description: Option[String],
-                                     override val status: Status) extends AssetViewModel
+                                     status: Status) extends AssetViewModel
 
 object OtherAssetViewModel {
 

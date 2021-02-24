@@ -56,8 +56,10 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
 
         "redirect to non-EEA business asset name page" in {
 
-          navigator.nextPage(AssetInterruptPage, fakeDraftId)(baseAnswers)
-            .mustBe(controllers.asset.noneeabusiness.routes.NameController.onPageLoad(index, fakeDraftId))
+          val answers = baseAnswers.set(WhatKindOfAssetPage(0), NonEeaBusiness).success.value
+
+          navigator.nextPage(AssetInterruptPage, fakeDraftId)(answers)
+            .mustBe(controllers.asset.noneeabusiness.routes.NameController.onPageLoad(0, fakeDraftId))
         }
       }
     }
@@ -96,10 +98,12 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
         "yes selected" must {
           "redirect to non-EEA business asset name page" in {
 
-            val answers = baseAnswers.set(AddAnAssetYesNoPage, true).success.value
+            val answers = baseAnswers
+              .set(AddAnAssetYesNoPage, true).success.value
+              .set(WhatKindOfAssetPage(0), NonEeaBusiness).success.value
 
             navigator.nextPage(AddAnAssetYesNoPage, fakeDraftId)(answers)
-              .mustBe(controllers.asset.noneeabusiness.routes.NameController.onPageLoad(index, fakeDraftId))
+              .mustBe(controllers.asset.noneeabusiness.routes.NameController.onPageLoad(0, fakeDraftId))
           }
         }
 
@@ -166,7 +170,8 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           "go to the non-EEA business asset name page" in {
 
             val answers = baseAnswers
-              .set(WhatKindOfAssetPage(0), NonEeaBusiness).success.value
+              .set(WhatKindOfAssetPage(0), Money).success.value
+              .set(WhatKindOfAssetPage(1), NonEeaBusiness).success.value
               .set(AddAssetsPage, AddAssets.YesNow).success.value
 
             navigator.nextPage(AddAssetsPage, fakeDraftId)(answers)
