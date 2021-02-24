@@ -62,7 +62,7 @@ class SubmissionSetFactory @Inject()(registrationProgress: RegistrationProgress,
   def answerSectionsIfCompleted(userAnswers: UserAnswers, status: Option[Status])
                                (implicit messages: Messages): List[RegistrationSubmission.AnswerSection] = {
 
-    if (status.contains(Status.Completed)) {
+    if (status.contains(Completed)) {
 
       val entitySections: List[AnswerSection] = List(
         moneyAnswersHelper(userAnswers),
@@ -74,16 +74,20 @@ class SubmissionSetFactory @Inject()(registrationProgress: RegistrationProgress,
         nonEeaBusinessAnswersHelper(userAnswers)
       ).flatten
 
-      val updatedFirstSection: AnswerSection = AnswerSection(
-        entitySections.head.headingKey,
-        entitySections.head.rows,
-        Some(Messages("answerPage.section.assets.heading"))
-      )
+      entitySections match {
+        case Nil =>
+          List.empty
+        case _ =>
+          val updatedFirstSection: AnswerSection = AnswerSection(
+            entitySections.head.headingKey,
+            entitySections.head.rows,
+            Some(Messages("answerPage.section.assets.heading"))
+          )
 
-      val updatedSections: List[AnswerSection] = updatedFirstSection :: entitySections.tail
+          val updatedSections: List[AnswerSection] = updatedFirstSection :: entitySections.tail
 
-      updatedSections.map(convertForSubmission)
-
+          updatedSections.map(convertForSubmission)
+      }
     } else {
       List.empty
     }
