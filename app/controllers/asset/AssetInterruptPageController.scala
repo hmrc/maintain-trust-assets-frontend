@@ -19,15 +19,17 @@ package controllers.asset
 import controllers.actions.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
 import navigation.Navigator
 import pages.asset.AssetInterruptPage
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import repositories.RegistrationsRepository
 import views.html.asset.{NonTaxableInfoView, TaxableInfoView}
 
 import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class AssetInterruptPageController @Inject()(
                                               override val messagesApi: MessagesApi,
+                                              repository: RegistrationsRepository,
                                               identify: RegistrationIdentifierAction,
                                               getData: DraftIdRetrievalActionProvider,
                                               requireData: RegistrationDataRequiredAction,
@@ -35,7 +37,7 @@ class AssetInterruptPageController @Inject()(
                                               val controllerComponents: MessagesControllerComponents,
                                               taxableView: TaxableInfoView,
                                               nonTaxableView: NonTaxableInfoView
-                                            ) extends FrontendBaseController with I18nSupport {
+                                            )(implicit ec: ExecutionContext) extends AddAssetController {
 
   def onPageLoad(draftId: String): Action[AnyContent] = (identify andThen getData(draftId) andThen requireData) {
     implicit request =>
@@ -48,9 +50,14 @@ class AssetInterruptPageController @Inject()(
       )
   }
 
-  def onSubmit(draftId: String): Action[AnyContent] = (identify andThen getData(draftId) andThen requireData) {
+  def onSubmit(draftId: String): Action[AnyContent] = (identify andThen getData(draftId) andThen requireData).async {
     implicit request =>
-      Redirect(navigator.nextPage(AssetInterruptPage, draftId)(request.userAnswers))
+      for {
+        updatedAnswers <- Future.fromTry(setAssetTypeIfNonTaxable(request.userAnswers, 0))
+        _ <- repository.set(updatedAnswers)
+      } yield {
+        Redirect(navigator.nextPage(AssetInterruptPage, draftId)(updatedAnswers))
+      }
   }
 
 }

@@ -36,7 +36,8 @@ class NonTaxableInfoViewSpec extends ViewBehaviours {
       expectedGuidanceKeys = "paragraph1",
       "bullet1",
       "bullet2",
-      "bullet3"
+      "bullet3",
+      "bullet4"
     )
 
     behave like pageWithBackLink(applyView)

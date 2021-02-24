@@ -18,9 +18,9 @@ package controllers.asset
 
 import base.SpecBase
 import forms.{AddAssetsFormProvider, YesNoFormProvider}
-import models.AddAssets.NoComplete
+import models.AddAssets.{NoComplete, YesNow}
 import models.Status.Completed
-import models.WhatKindOfAsset.{Money, Other, Shares}
+import models.WhatKindOfAsset.{Money, NonEeaBusiness, Other, Shares}
 import models.{AddAssets, ShareClass, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
@@ -29,7 +29,7 @@ import pages.AssetStatus
 import pages.asset.money._
 import pages.asset.other.OtherAssetDescriptionPage
 import pages.asset.shares._
-import pages.asset.{AddAssetsPage, WhatKindOfAssetPage}
+import pages.asset.{AddAnAssetYesNoPage, AddAssetsPage, WhatKindOfAssetPage}
 import play.api.data.Form
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -133,22 +133,63 @@ class AddAssetsControllerSpec extends SpecBase {
         application.stop()
       }
 
-      "redirect to the next page when valid data is submitted" in {
+      "redirect to the next page when valid data is submitted" when {
 
-        val application =
-          applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+        val indexOfNewAsset = 0
 
-        val request =
-          FakeRequest(POST, addOnePostRoute)
-            .withFormUrlEncodedBody(("value", "true"))
+        "taxable" must {
+          "set value in AddAnAssetYesNoPage" in {
 
-        val result = route(application, request).value
+            reset(registrationsRepository)
+            when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
+            val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
 
-        status(result) mustEqual SEE_OTHER
+            val application =
+              applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(isTaxable = true))).build()
 
-        redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
+            val request = FakeRequest(POST, addOnePostRoute)
+              .withFormUrlEncodedBody(("value", "true"))
 
-        application.stop()
+            val result = route(application, request).value
+
+            status(result) mustEqual SEE_OTHER
+
+            redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
+
+            verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
+            uaCaptor.getValue.get(AddAnAssetYesNoPage).get mustBe true
+            uaCaptor.getValue.get(WhatKindOfAssetPage(indexOfNewAsset)) mustNot be(defined)
+
+            application.stop()
+          }
+        }
+
+        "non-taxable" must {
+          "set values in AddAnAssetYesNoPage and WhatKindOfAssetPage" in {
+
+            reset(registrationsRepository)
+            when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
+            val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+
+            val application =
+              applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(isTaxable = false))).build()
+
+            val request = FakeRequest(POST, addOnePostRoute)
+              .withFormUrlEncodedBody(("value", "true"))
+
+            val result = route(application, request).value
+
+            status(result) mustEqual SEE_OTHER
+
+            redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
+
+            verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
+            uaCaptor.getValue.get(AddAnAssetYesNoPage).get mustBe true
+            uaCaptor.getValue.get(WhatKindOfAssetPage(indexOfNewAsset)).get mustBe NonEeaBusiness
+
+            application.stop()
+          }
+        }
       }
 
       "return a Bad Request and errors when invalid data is submitted" in {
@@ -194,22 +235,63 @@ class AddAssetsControllerSpec extends SpecBase {
         application.stop()
       }
 
-      "redirect to the next page when valid data is submitted" in {
+      "redirect to the next page when valid data is submitted" when {
 
-        val application =
-          applicationBuilder(userAnswers = Some(userAnswersWithAssetsComplete)).build()
+        val indexOfNewAsset = 2
 
-        val request =
-          FakeRequest(POST, addAnotherPostRoute)
-            .withFormUrlEncodedBody(("value", AddAssets.options.head.value))
+        "taxable" must {
+          "set value in AddAssetsPage" in {
 
-        val result = route(application, request).value
+            reset(registrationsRepository)
+            when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
+            val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
 
-        status(result) mustEqual SEE_OTHER
+            val application =
+              applicationBuilder(userAnswers = Some(userAnswersWithAssetsComplete.copy(isTaxable = true))).build()
 
-        redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
+            val request = FakeRequest(POST, addAnotherPostRoute)
+              .withFormUrlEncodedBody(("value", YesNow.toString))
 
-        application.stop()
+            val result = route(application, request).value
+
+            status(result) mustEqual SEE_OTHER
+
+            redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
+
+            verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
+            uaCaptor.getValue.get(AddAssetsPage).get mustBe YesNow
+            uaCaptor.getValue.get(WhatKindOfAssetPage(indexOfNewAsset)) mustNot be(defined)
+
+            application.stop()
+          }
+        }
+
+        "non-taxable" must {
+          "set values in AddAssetsPage and WhatKindOfAssetPage" in {
+
+            reset(registrationsRepository)
+            when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
+            val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+
+            val application =
+              applicationBuilder(userAnswers = Some(userAnswersWithAssetsComplete.copy(isTaxable = false))).build()
+
+            val request = FakeRequest(POST, addAnotherPostRoute)
+              .withFormUrlEncodedBody(("value", YesNow.toString))
+
+            val result = route(application, request).value
+
+            status(result) mustEqual SEE_OTHER
+
+            redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
+
+            verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
+            uaCaptor.getValue.get(AddAssetsPage).get mustBe YesNow
+            uaCaptor.getValue.get(WhatKindOfAssetPage(indexOfNewAsset)).get mustBe NonEeaBusiness
+
+            application.stop()
+          }
+        }
       }
 
       "return a Bad Request and errors when invalid data is submitted" in {

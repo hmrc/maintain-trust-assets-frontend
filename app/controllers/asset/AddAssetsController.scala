@@ -21,14 +21,13 @@ import forms.{AddAssetsFormProvider, YesNoFormProvider}
 import models.AddAssets.NoComplete
 import models.Constants._
 import models.requests.RegistrationDataRequest
-import models.{AddAssets, Enumerable, UserAnswers}
+import models.{AddAssets, UserAnswers}
 import navigation.Navigator
 import pages.asset.{AddAnAssetYesNoPage, AddAssetsPage}
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, Messages, MessagesApi, MessagesProvider}
+import play.api.i18n.{Messages, MessagesApi, MessagesProvider}
 import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
 import repositories.RegistrationsRepository
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.{AddAssetViewHelper, CheckAnswersFormatters}
 import views.html.asset.{AddAnAssetYesNoView, AddAssetsView, MaxedOutView}
 
@@ -49,7 +48,7 @@ class AddAssetsController @Inject()(
                                      yesNoView: AddAnAssetYesNoView,
                                      maxedOutView: MaxedOutView,
                                      checkAnswersFormatters: CheckAnswersFormatters
-                                   )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
+                                   )(implicit ec: ExecutionContext) extends AddAssetController {
 
   private val addAnotherForm: Form[AddAssets] = addAnotherFormProvider()
   private val yesNoForm: Form[Boolean] = yesNoFormProvider.withPrefix("addAnAssetYesNo")
@@ -97,8 +96,9 @@ class AddAssetsController @Inject()(
         },
         value => {
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAnAssetYesNoPage, value))
-            _              <- repository.set(updatedAnswers)
+            answersWithAssetTypeIfNonTaxable <- Future.fromTry(setAssetTypeIfNonTaxable(request.userAnswers, 0))
+            updatedAnswers <- Future.fromTry(answersWithAssetTypeIfNonTaxable.set(AddAnAssetYesNoPage, value))
+            _ <- repository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(AddAnAssetYesNoPage, draftId)(updatedAnswers))
         }
       )
@@ -107,16 +107,17 @@ class AddAssetsController @Inject()(
   def submitAnother(draftId: String): Action[AnyContent] = actions(draftId).async {
     implicit request =>
 
+      val assets = new AddAssetViewHelper(checkAnswersFormatters)(request.userAnswers, draftId).rows
+
       addAnotherForm.bindFromRequest().fold(
         (formWithErrors: Form[_]) => {
-          val assets = new AddAssetViewHelper(checkAnswersFormatters)(request.userAnswers, draftId).rows
-
           Future.successful(BadRequest(addAssetsView(formWithErrors, draftId, assets.inProgress, assets.complete, heading(assets.count))))
         },
         value => {
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAssetsPage, value))
-            _              <- repository.set(updatedAnswers)
+            answersWithAssetTypeIfNonTaxable <- Future.fromTry(setAssetTypeIfNonTaxable(request.userAnswers, assets.count))
+            updatedAnswers <- Future.fromTry(answersWithAssetTypeIfNonTaxable.set(AddAssetsPage, value))
+            _ <- repository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(AddAssetsPage, draftId)(updatedAnswers))
         }
       )
