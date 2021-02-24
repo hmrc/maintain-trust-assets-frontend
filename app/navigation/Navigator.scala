@@ -31,6 +31,7 @@ import javax.inject.{Inject, Singleton}
 object AssetsRoutes {
 
   def route(draftId: String, config: FrontendAppConfig): PartialFunction[Page, AffinityGroup => UserAnswers => Call] = {
+    case AssetInterruptPage => _ => ua => routeToAssetIndex(ua, draftId)
     case WhatKindOfAssetPage(index) => _ => ua => whatKindOfAssetRoute(ua, index, draftId)
     case AddAssetsPage => _ => addAssetsRoute(draftId, config)
     case AddAnAssetYesNoPage => _ => addAnAssetYesNoRoute(draftId, config)

@@ -103,7 +103,7 @@ class AssetInterruptPageControllerSpec extends SpecBase {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe controllers.asset.routes.WhatKindOfAssetController.onPageLoad(0, fakeDraftId).url
+      redirectLocation(result).value mustBe fakeNavigator.desiredRoute.url
 
       application.stop()
     }

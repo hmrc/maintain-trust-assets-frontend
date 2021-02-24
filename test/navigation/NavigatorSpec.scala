@@ -23,19 +23,44 @@ import models.WhatKindOfAsset._
 import models.{AddAssets, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.asset.{AddAnAssetYesNoPage, AddAssetsPage, WhatKindOfAssetPage}
+import pages.asset.{AddAnAssetYesNoPage, AddAssetsPage, AssetInterruptPage, WhatKindOfAssetPage}
 import play.api.mvc.Call
 
 class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   private val navigator: Navigator = injector.instanceOf[Navigator]
-  val index = 0
+  private val index = 0
 
   private val assetsCompletedRoute: Call = {
     Call("GET", frontendAppConfig.registrationProgressUrl(fakeDraftId))
   }
 
   "Navigator" when {
+
+    "asset interrupt page" when {
+
+      "taxable" must {
+
+        val baseAnswers = emptyUserAnswers.copy(isTaxable = true)
+
+        "redirect to WhatKindOfAssetPage" in {
+
+          navigator.nextPage(AssetInterruptPage, fakeDraftId)(baseAnswers)
+            .mustBe(controllers.asset.routes.WhatKindOfAssetController.onPageLoad(index, fakeDraftId))
+        }
+      }
+
+      "non-taxable" must {
+
+        val baseAnswers = emptyUserAnswers.copy(isTaxable = false)
+
+        "redirect to non-EEA business asset name page" in {
+
+          navigator.nextPage(AssetInterruptPage, fakeDraftId)(baseAnswers)
+            .mustBe(controllers.asset.noneeabusiness.routes.NameController.onPageLoad(index, fakeDraftId))
+        }
+      }
+    }
 
     "add an asset yes no page" when {
 
@@ -46,7 +71,6 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
         "yes selected" must {
           "redirect to WhatKindOfAssetPage" in {
 
-            val index = 0
             val answers = baseAnswers.set(AddAnAssetYesNoPage, true).success.value
 
             navigator.nextPage(AddAnAssetYesNoPage, fakeDraftId)(answers)
@@ -72,7 +96,6 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
         "yes selected" must {
           "redirect to non-EEA business asset name page" in {
 
-            val index = 0
             val answers = baseAnswers.set(AddAnAssetYesNoPage, true).success.value
 
             navigator.nextPage(AddAnAssetYesNoPage, fakeDraftId)(answers)
@@ -180,7 +203,6 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
     "what kind of asset page" when {
 
       "go to AssetMoneyValuePage when money is selected" in {
-        val index = 0
 
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>
@@ -193,7 +215,6 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
       }
 
       "go to PropertyOrLandAddressYesNoController when PropertyOrLand is selected" in {
-        val index = 0
 
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>
@@ -206,7 +227,6 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
       }
 
       "go to SharesInAPortfolio from WhatKindOfAsset when Shares is selected" in {
-        val index = 0
 
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>
@@ -219,7 +239,6 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
       }
 
       "go to business asset name from WhatKindOfAsset when Business is selected" in {
-        val index = 0
 
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>
@@ -232,7 +251,6 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
       }
 
       "go to partnership asset description from WhatKindOfAsset when Partnership is selected" in {
-        val index = 0
 
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>

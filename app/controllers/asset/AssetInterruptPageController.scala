@@ -17,6 +17,8 @@
 package controllers.asset
 
 import controllers.actions.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
+import navigation.Navigator
+import pages.asset.AssetInterruptPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -29,6 +31,7 @@ class AssetInterruptPageController @Inject()(
                                               identify: RegistrationIdentifierAction,
                                               getData: DraftIdRetrievalActionProvider,
                                               requireData: RegistrationDataRequiredAction,
+                                              navigator: Navigator,
                                               val controllerComponents: MessagesControllerComponents,
                                               taxableView: TaxableInfoView,
                                               nonTaxableView: NonTaxableInfoView
@@ -46,7 +49,8 @@ class AssetInterruptPageController @Inject()(
   }
 
   def onSubmit(draftId: String): Action[AnyContent] = (identify andThen getData(draftId) andThen requireData) {
-    Redirect(routes.WhatKindOfAssetController.onPageLoad(0, draftId))
+    implicit request =>
+      Redirect(navigator.nextPage(AssetInterruptPage, draftId)(request.userAnswers))
   }
 
 }
