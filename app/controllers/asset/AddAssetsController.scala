@@ -115,7 +115,7 @@ class AddAssetsController @Inject()(
         },
         value => {
           for {
-            answersWithAssetTypeIfNonTaxable <- Future.fromTry(setAssetTypeIfNonTaxable(request.userAnswers, assets.count))
+            answersWithAssetTypeIfNonTaxable <- Future.fromTry(setAssetTypeIfNonTaxable(request.userAnswers, assets.count, value))
             updatedAnswers <- Future.fromTry(answersWithAssetTypeIfNonTaxable.set(AddAssetsPage, value))
             _ <- repository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(AddAssetsPage, draftId)(updatedAnswers))
