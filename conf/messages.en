@@ -146,7 +146,7 @@ assets.removeYesNo.error.required = Select yes if you want to remove the asset
 
 trustOwnsNonEeaBusinessYesNo.title = Does the trust own or have a controlling interest in a non-EEA company?
 trustOwnsNonEeaBusinessYesNo.heading = Does the trust own or have a controlling interest in a non-EEA company?
-trustOwnsNonEeaBusinessYesNo.error.required = Select yes if the trust owns or has a controlling interest in a non-EEA company?
+trustOwnsNonEeaBusinessYesNo.error.required = Select yes if the trust owns or has a controlling interest in a non-EEA company
 
 assetInterruptPage.title = Information you’ll need to provide
 assetInterruptPage.heading = Information you’ll need to provide
