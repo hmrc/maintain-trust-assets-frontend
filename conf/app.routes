@@ -23,6 +23,9 @@ GET        /logout                                      controllers.LogoutContro
 GET        /:draftId/:index/assets-type           controllers.asset.WhatKindOfAssetController.onPageLoad(index: Int, draftId: String)
 POST       /:draftId/:index/assets-type           controllers.asset.WhatKindOfAssetController.onSubmit(index: Int, draftId: String)
 
+GET        /:draftId/trust-owns-non-eea-company   controllers.asset.TrustOwnsNonEeaBusinessYesNoController.onPageLoad(draftId: String)
+POST       /:draftId/trust-owns-non-eea-company   controllers.asset.TrustOwnsNonEeaBusinessYesNoController.onSubmit(draftId: String)
+
 GET        /:draftId/information-you-need         controllers.asset.AssetInterruptPageController.onPageLoad(draftId: String)
 POST       /:draftId/information-you-need         controllers.asset.AssetInterruptPageController.onSubmit(draftId: String)
 
