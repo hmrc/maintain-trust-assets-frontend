@@ -19,7 +19,7 @@ package controllers.asset
 import base.SpecBase
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.asset.AssetInterruptPageView
+import views.html.asset.{NonTaxableInfoView, TaxableInfoView}
 
 class AssetInterruptPageControllerSpec extends SpecBase {
 
@@ -37,7 +37,7 @@ class AssetInterruptPageControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[AssetInterruptPageView]
+        val view = application.injector.instanceOf[TaxableInfoView]
 
         status(result) mustEqual OK
 
@@ -47,24 +47,49 @@ class AssetInterruptPageControllerSpec extends SpecBase {
         application.stop()
       }
 
-      "5mld" in {
+      "5mld" when {
 
-        val is5mldEnabled: Boolean = true
+        "taxable" in {
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(is5mldEnabled = is5mldEnabled))).build()
+          val is5mldEnabled: Boolean = true
+          val isTaxable: Boolean = true
 
-        val request = FakeRequest(GET, routes.AssetInterruptPageController.onPageLoad(fakeDraftId).url)
+          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(is5mldEnabled = is5mldEnabled, isTaxable = isTaxable))).build()
 
-        val result = route(application, request).value
+          val request = FakeRequest(GET, routes.AssetInterruptPageController.onPageLoad(fakeDraftId).url)
 
-        val view = application.injector.instanceOf[AssetInterruptPageView]
+          val result = route(application, request).value
 
-        status(result) mustEqual OK
+          val view = application.injector.instanceOf[TaxableInfoView]
 
-        contentAsString(result) mustEqual
-          view(fakeDraftId, is5mldEnabled)(fakeRequest, messages).toString
+          status(result) mustEqual OK
 
-        application.stop()
+          contentAsString(result) mustEqual
+            view(fakeDraftId, is5mldEnabled)(fakeRequest, messages).toString
+
+          application.stop()
+        }
+
+        "non-taxable" in {
+
+          val is5mldEnabled: Boolean = true
+          val isTaxable: Boolean = false
+
+          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(is5mldEnabled = is5mldEnabled, isTaxable = isTaxable))).build()
+
+          val request = FakeRequest(GET, routes.AssetInterruptPageController.onPageLoad(fakeDraftId).url)
+
+          val result = route(application, request).value
+
+          val view = application.injector.instanceOf[NonTaxableInfoView]
+
+          status(result) mustEqual OK
+
+          contentAsString(result) mustEqual
+            view(fakeDraftId)(fakeRequest, messages).toString
+
+          application.stop()
+        }
       }
     }
 

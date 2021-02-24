@@ -20,7 +20,7 @@ import controllers.actions.{DraftIdRetrievalActionProvider, RegistrationDataRequ
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.asset.AssetInterruptPageView
+import views.html.asset.{NonTaxableInfoView, TaxableInfoView}
 
 import javax.inject.Inject
 
@@ -30,16 +30,23 @@ class AssetInterruptPageController @Inject()(
                                               getData: DraftIdRetrievalActionProvider,
                                               requireData: RegistrationDataRequiredAction,
                                               val controllerComponents: MessagesControllerComponents,
-                                              view: AssetInterruptPageView
+                                              taxableView: TaxableInfoView,
+                                              nonTaxableView: NonTaxableInfoView
                                             ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(draftId: String): Action[AnyContent] = (identify andThen getData(draftId) andThen requireData) {
     implicit request =>
-      Ok(view(draftId, request.userAnswers.is5mldEnabled))
+      Ok(
+        if (request.userAnswers.isTaxable) {
+          taxableView(draftId, request.userAnswers.is5mldEnabled)
+        } else {
+          nonTaxableView(draftId)
+        }
+      )
   }
 
   def onSubmit(draftId: String): Action[AnyContent] = (identify andThen getData(draftId) andThen requireData) {
-      Redirect(routes.WhatKindOfAssetController.onPageLoad(0, draftId))
+    Redirect(routes.WhatKindOfAssetController.onPageLoad(0, draftId))
   }
 
 }
