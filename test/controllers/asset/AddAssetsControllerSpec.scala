@@ -19,7 +19,7 @@ package controllers.asset
 import base.SpecBase
 import forms.{AddAssetsFormProvider, YesNoFormProvider}
 import generators.Generators
-import models.AddAssets.{NoComplete, YesLater, YesNow}
+import models.AddAssets.{NoComplete, YesNow}
 import models.Status.Completed
 import models.WhatKindOfAsset.{Money, NonEeaBusiness, Other, Shares}
 import models.{AddAssets, ShareClass, UserAnswers}
@@ -116,24 +116,47 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
       }
     }
 
-    "there are no assets" must {
+    "there are no assets" when {
 
-      "return OK and the correct view for a GET" in {
+      "taxable" must {
+        "return OK and the correct view for a GET" in {
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+          val answers = emptyUserAnswers.copy(isTaxable = true)
 
-        val request = FakeRequest(GET, addAssetsRoute)
+          val application = applicationBuilder(userAnswers = Some(answers)).build()
 
-        val result = route(application, request).value
+          val request = FakeRequest(GET, addAssetsRoute)
 
-        val view = application.injector.instanceOf[AddAnAssetYesNoView]
+          val result = route(application, request).value
 
-        status(result) mustEqual OK
+          val view = application.injector.instanceOf[AddAnAssetYesNoView]
 
-        contentAsString(result) mustEqual
-          view(addAssetsForm, fakeDraftId)(fakeRequest, messages).toString
+          status(result) mustEqual OK
 
-        application.stop()
+          contentAsString(result) mustEqual
+            view(addAssetsForm, fakeDraftId)(fakeRequest, messages).toString
+
+          application.stop()
+        }
+      }
+
+      "non-taxable" must {
+        "redirect to TrustOwnsNonEeaBusinessYesNoController" in {
+
+          val answers = emptyUserAnswers.copy(isTaxable = false)
+
+          val application = applicationBuilder(userAnswers = Some(answers)).build()
+
+          val request = FakeRequest(GET, addAssetsRoute)
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+
+          redirectLocation(result).value mustEqual routes.TrustOwnsNonEeaBusinessYesNoController.onPageLoad(fakeDraftId).url
+
+          application.stop()
+        }
       }
 
       "redirect to the next page when valid data is submitted" when {

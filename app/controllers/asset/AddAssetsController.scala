@@ -78,8 +78,10 @@ class AddAssetsController @Inject()(
       }
 
       assets.count match {
-        case 0 =>
+        case 0 if userAnswers.isTaxable =>
           Ok(yesNoView(addAnotherForm, draftId))
+        case 0 =>
+          Redirect(routes.TrustOwnsNonEeaBusinessYesNoController.onPageLoad(draftId))
         case c if c >= maxLimit =>
           Ok(maxedOutView(draftId, assets.inProgress, assets.complete, heading(c), maxLimit))
         case c =>
