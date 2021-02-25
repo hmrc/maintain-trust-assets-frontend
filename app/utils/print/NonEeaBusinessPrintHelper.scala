@@ -38,7 +38,7 @@ class NonEeaBusinessPrintHelper @Inject()(checkAnswersFormatters: CheckAnswersFo
     val converter: AnswerRowConverter = new AnswerRowConverter(checkAnswersFormatters)(userAnswers, arg)
 
     Seq(
-      converter.assetTypeQuestion(index, draftId),
+      if (userAnswers.isTaxable) converter.assetTypeQuestion(index, draftId) else None,
       converter.stringQuestion(NamePage(index), "nonEeaBusiness.name", NameController.onPageLoad(index, draftId).url),
       converter.addressQuestion(InternationalAddressPage(index), "nonEeaBusiness.internationalAddress", InternationalAddressController.onPageLoad(index, draftId).url),
       converter.countryQuestion(GoverningCountryPage(index), "nonEeaBusiness.governingCountry", GoverningCountryController.onPageLoad(index, draftId).url),
