@@ -63,15 +63,16 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
   val addAssetsForm: Form[AddAssets] = new AddAssetsFormProvider()()
   val yesNoForm: Form[Boolean] = new YesNoFormProvider().withPrefix("addAnAssetYesNo")
 
-  lazy val assets = List(
-    AddRow("£4800", typeLabel = "Money", changeMoneyAssetRoute(0), removeAssetYesNoRoute(0)),
-    AddRow("Share Company Name", typeLabel = "Shares", changeSharesAssetRoute(1), removeAssetYesNoRoute(1))
-  )
+  lazy val oneAsset: List[AddRow] = List(AddRow("£4800", typeLabel = "Money", changeMoneyAssetRoute(0), removeAssetYesNoRoute(0)))
 
-  val userAnswersWithAssetsComplete: UserAnswers = emptyUserAnswers
+  lazy val multipleAssets: List[AddRow] = oneAsset :+ AddRow("Share Company Name", typeLabel = "Shares", changeSharesAssetRoute(1), removeAssetYesNoRoute(1))
+
+  val userAnswersWithOneAsset: UserAnswers = emptyUserAnswers
     .set(WhatKindOfAssetPage(0), Money).success.value
     .set(AssetMoneyValuePage(0), 4800L).success.value
     .set(AssetStatus(0), Completed).success.value
+
+  val userAnswersWithMultipleAssets: UserAnswers = userAnswersWithOneAsset
     .set(WhatKindOfAssetPage(1), Shares).success.value
     .set(SharesInAPortfolioPage(1), false).success.value
     .set(ShareCompanyNamePage(1), "Share Company Name").success.value
@@ -241,11 +242,53 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
       }
     }
 
+    "there is one asset" must {
+
+      "return OK and the correct view for a GET" when {
+
+        "taxable" in {
+
+          val application = applicationBuilder(userAnswers = Some(userAnswersWithOneAsset.copy(isTaxable = true))).build()
+
+          val request = FakeRequest(GET, addAssetsRoute)
+
+          val result = route(application, request).value
+
+          val view = application.injector.instanceOf[AddAssetsView]
+
+          status(result) mustEqual OK
+
+          contentAsString(result) mustEqual
+            view(addAssetsForm, fakeDraftId, Nil, oneAsset, "Add assets")(fakeRequest, messages).toString
+
+          application.stop()
+        }
+
+        "non-taxable" in {
+
+          val application = applicationBuilder(userAnswers = Some(userAnswersWithOneAsset.copy(isTaxable = false))).build()
+
+          val request = FakeRequest(GET, addAssetsRoute)
+
+          val result = route(application, request).value
+
+          val view = application.injector.instanceOf[AddAssetsView]
+
+          status(result) mustEqual OK
+
+          contentAsString(result) mustEqual
+            view(addAssetsForm, fakeDraftId, Nil, oneAsset, "Add a non-EEA company")(fakeRequest, messages).toString
+
+          application.stop()
+        }
+      }
+    }
+
     "there are existing assets" must {
 
       "return OK and the correct view for a GET" in {
 
-        val application = applicationBuilder(userAnswers = Some(userAnswersWithAssetsComplete)).build()
+        val application = applicationBuilder(userAnswers = Some(userAnswersWithMultipleAssets)).build()
 
         val request = FakeRequest(GET, addAssetsRoute)
 
@@ -256,7 +299,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(addAssetsForm, fakeDraftId, Nil, assets, "You have added 2 assets")(fakeRequest, messages).toString
+          view(addAssetsForm, fakeDraftId, Nil, multipleAssets, "You have added 2 assets")(fakeRequest, messages).toString
 
         application.stop()
       }
@@ -273,7 +316,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
             val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
 
             val application =
-              applicationBuilder(userAnswers = Some(userAnswersWithAssetsComplete.copy(isTaxable = true))).build()
+              applicationBuilder(userAnswers = Some(userAnswersWithMultipleAssets.copy(isTaxable = true))).build()
 
             val request = FakeRequest(POST, addAnotherPostRoute)
               .withFormUrlEncodedBody(("value", YesNow.toString))
@@ -300,7 +343,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
             val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
 
             val application =
-              applicationBuilder(userAnswers = Some(userAnswersWithAssetsComplete.copy(isTaxable = false))).build()
+              applicationBuilder(userAnswers = Some(userAnswersWithMultipleAssets.copy(isTaxable = false))).build()
 
             val request = FakeRequest(POST, addAnotherPostRoute)
               .withFormUrlEncodedBody(("value", YesNow.toString))
@@ -335,7 +378,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
                 val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
 
                 val application =
-                  applicationBuilder(userAnswers = Some(userAnswersWithAssetsComplete.copy(isTaxable = true))).build()
+                  applicationBuilder(userAnswers = Some(userAnswersWithMultipleAssets.copy(isTaxable = true))).build()
 
                 val request = FakeRequest(POST, addAnotherPostRoute)
                   .withFormUrlEncodedBody(("value", addAssets.toString))
@@ -366,7 +409,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
                 val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
 
                 val application =
-                  applicationBuilder(userAnswers = Some(userAnswersWithAssetsComplete.copy(isTaxable = false))).build()
+                  applicationBuilder(userAnswers = Some(userAnswersWithMultipleAssets.copy(isTaxable = false))).build()
 
                 val request = FakeRequest(POST, addAnotherPostRoute)
                   .withFormUrlEncodedBody(("value", addAssets.toString))
@@ -389,7 +432,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
 
       "return a Bad Request and errors when invalid data is submitted" in {
 
-        val application = applicationBuilder(userAnswers = Some(userAnswersWithAssetsComplete)).build()
+        val application = applicationBuilder(userAnswers = Some(userAnswersWithMultipleAssets)).build()
 
         val request =
           FakeRequest(POST, addAnotherPostRoute)
@@ -404,7 +447,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm, fakeDraftId, Nil, assets, "You have added 2 assets")(fakeRequest, messages).toString
+          view(boundForm, fakeDraftId, Nil, multipleAssets, "You have added 2 assets")(fakeRequest, messages).toString
 
         application.stop()
       }

@@ -56,11 +56,11 @@ class AddAssetsController @Inject()(
   private def actions(draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] =
     identify andThen getData(draftId) andThen requireData
 
-  private def heading(count: Int)(implicit mp: MessagesProvider): String = {
+  private def heading(count: Int, isTaxable: Boolean)(implicit mp: MessagesProvider): String = {
     count match {
-      case 0 => Messages("addAssets.heading")
-      case 1 => Messages("addAssets.singular.heading")
-      case size => Messages("addAssets.count.heading", size)
+      case c if c > 1 => Messages("addAssets.count.heading", c)
+      case _ if isTaxable => Messages("addAssets.heading")
+      case _ => Messages("addAssets.nonTaxable.heading")
     }
   }
 
@@ -83,9 +83,9 @@ class AddAssetsController @Inject()(
         case 0 =>
           Redirect(routes.TrustOwnsNonEeaBusinessYesNoController.onPageLoad(draftId))
         case c if c >= maxLimit =>
-          Ok(maxedOutView(draftId, assets.inProgress, assets.complete, heading(c), maxLimit))
+          Ok(maxedOutView(draftId, assets.inProgress, assets.complete, heading(c, userAnswers.isTaxable), maxLimit))
         case c =>
-          Ok(addAssetsView(addAnotherForm, draftId, assets.inProgress, assets.complete, heading(c)))
+          Ok(addAssetsView(addAnotherForm, draftId, assets.inProgress, assets.complete, heading(c, userAnswers.isTaxable)))
       }
   }
 
@@ -113,7 +113,9 @@ class AddAssetsController @Inject()(
 
       addAnotherForm.bindFromRequest().fold(
         (formWithErrors: Form[_]) => {
-          Future.successful(BadRequest(addAssetsView(formWithErrors, draftId, assets.inProgress, assets.complete, heading(assets.count))))
+          Future.successful(
+            BadRequest(addAssetsView(formWithErrors, draftId, assets.inProgress, assets.complete, heading(assets.count, request.userAnswers.isTaxable)))
+          )
         },
         value => {
           for {
