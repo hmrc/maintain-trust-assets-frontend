@@ -37,7 +37,7 @@ class AddAssetsViewSpec extends OptionsViewBehaviours with TabularDataViewBehavi
 
   private val messageKeyPrefix: String = "addAssets"
 
-  private val form: Form[AddAssets] = new AddAssetsFormProvider()()
+  private val form: Form[AddAssets] = new AddAssetsFormProvider().withPrefix(messageKeyPrefix)
 
   private val view: AddAssetsView = viewFor[AddAssetsView](Some(emptyUserAnswers))
 

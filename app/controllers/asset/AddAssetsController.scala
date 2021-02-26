@@ -50,17 +50,19 @@ class AddAssetsController @Inject()(
                                      checkAnswersFormatters: CheckAnswersFormatters
                                    )(implicit ec: ExecutionContext) extends AddAssetController {
 
-  private val addAnotherForm: Form[AddAssets] = addAnotherFormProvider()
+  private def addAnotherForm(isTaxable: Boolean): Form[AddAssets] = addAnotherFormProvider.withPrefix(prefix(isTaxable))
   private val yesNoForm: Form[Boolean] = yesNoFormProvider.withPrefix("addAnAssetYesNo")
 
   private def actions(draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] =
     identify andThen getData(draftId) andThen requireData
 
+  private def prefix(isTaxable: Boolean) = "addAssets" + (if (isTaxable) "" else ".nonTaxable")
+
   private def heading(count: Int, isTaxable: Boolean)(implicit mp: MessagesProvider): String = {
+    val p = prefix(isTaxable)
     count match {
-      case c if c > 1 => Messages("addAssets.count.heading", c)
-      case _ if isTaxable => Messages("addAssets.heading")
-      case _ => Messages("addAssets.nonTaxable.heading")
+      case c if c > 1 => Messages(s"$p.count.heading", c)
+      case _ => Messages(s"$p.heading")
     }
   }
 
@@ -68,24 +70,25 @@ class AddAssetsController @Inject()(
     implicit request =>
 
       val userAnswers: UserAnswers = request.userAnswers
+      val isTaxable = userAnswers.isTaxable
 
       val assets = new AddAssetViewHelper(checkAnswersFormatters)(userAnswers, draftId).rows
 
-      val maxLimit: Int = (userAnswers.is5mldEnabled, userAnswers.isTaxable) match {
+      val maxLimit: Int = (userAnswers.is5mldEnabled, isTaxable) match {
         case (true, true) => MAX_5MLD_TAXABLE_ASSETS
         case (true, false) => MAX_5MLD_NON_TAXABLE_ASSETS
         case _ => MAX_4MLD_ASSETS
       }
 
       assets.count match {
-        case 0 if userAnswers.isTaxable =>
-          Ok(yesNoView(addAnotherForm, draftId))
+        case 0 if isTaxable =>
+          Ok(yesNoView(yesNoForm, draftId))
         case 0 =>
           Redirect(routes.TrustOwnsNonEeaBusinessYesNoController.onPageLoad(draftId))
         case c if c >= maxLimit =>
-          Ok(maxedOutView(draftId, assets.inProgress, assets.complete, heading(c, userAnswers.isTaxable), maxLimit))
+          Ok(maxedOutView(draftId, assets.inProgress, assets.complete, heading(c, isTaxable), maxLimit, prefix(isTaxable)))
         case c =>
-          Ok(addAssetsView(addAnotherForm, draftId, assets.inProgress, assets.complete, heading(c, userAnswers.isTaxable)))
+          Ok(addAssetsView(addAnotherForm(isTaxable), draftId, assets.inProgress, assets.complete, heading(c, isTaxable)))
       }
   }
 
@@ -109,17 +112,20 @@ class AddAssetsController @Inject()(
   def submitAnother(draftId: String): Action[AnyContent] = actions(draftId).async {
     implicit request =>
 
-      val assets = new AddAssetViewHelper(checkAnswersFormatters)(request.userAnswers, draftId).rows
+      val userAnswers = request.userAnswers
+      val isTaxable = userAnswers.isTaxable
 
-      addAnotherForm.bindFromRequest().fold(
+      val assets = new AddAssetViewHelper(checkAnswersFormatters)(userAnswers, draftId).rows
+
+      addAnotherForm(isTaxable).bindFromRequest().fold(
         (formWithErrors: Form[_]) => {
           Future.successful(
-            BadRequest(addAssetsView(formWithErrors, draftId, assets.inProgress, assets.complete, heading(assets.count, request.userAnswers.isTaxable)))
+            BadRequest(addAssetsView(formWithErrors, draftId, assets.inProgress, assets.complete, heading(assets.count, isTaxable)))
           )
         },
         value => {
           for {
-            answersWithAssetTypeIfNonTaxable <- Future.fromTry(setAssetTypeIfNonTaxable(request.userAnswers, assets.count, value))
+            answersWithAssetTypeIfNonTaxable <- Future.fromTry(setAssetTypeIfNonTaxable(userAnswers, assets.count, value))
             updatedAnswers <- Future.fromTry(answersWithAssetTypeIfNonTaxable.set(AddAssetsPage, value))
             _ <- repository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(AddAssetsPage, draftId)(updatedAnswers))

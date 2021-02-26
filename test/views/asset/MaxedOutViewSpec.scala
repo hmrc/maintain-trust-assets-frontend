@@ -23,34 +23,92 @@ import views.html.asset.MaxedOutView
 
 class MaxedOutViewSpec extends OptionsViewBehaviours with TabularDataViewBehaviours {
 
-  private val messageKeyPrefix: String = "addAssets"
-
-  private val view: MaxedOutView = viewFor[MaxedOutView](Some(emptyUserAnswers))
-
   private val fakeAddRow: AddRow = AddRow("name", "label", "change", "remove")
 
-  private val completeRows: List[AddRow] = List.fill(51)(fakeAddRow)
+  private def completeRows(number: Int): List[AddRow] = List.fill(number)(fakeAddRow)
 
-  private def applyView(): HtmlFormat.Appendable =
-    view.apply(fakeDraftId, Nil, completeRows, "Add assets", 51)(fakeRequest, messages)
+  "MaxedOutView" when {
 
-  "MaxedOutView" must {
+    "taxable" when {
 
-    val view = applyView()
+      val messageKeyPrefix: String = "addAssets"
 
-    behave like normalPage(view, messageKeyPrefix)
+      "4mld" must {
 
-    behave like pageWithBackLink(view)
+        val max: Int = 51
 
-    behave like pageWithCompleteTabularData(view, completeRows)
+        val view: MaxedOutView = viewFor[MaxedOutView](Some(emptyUserAnswers.copy(is5mldEnabled = false, isTaxable = true)))
 
-    behave like pageWithASubmitButton(view)
+        def applyView(): HtmlFormat.Appendable =
+          view.apply(fakeDraftId, Nil, completeRows(max), "Add assets", max, messageKeyPrefix)(fakeRequest, messages)
 
-    "show maxed out assets content" in {
-      val doc = asDocument(view)
+        behave like normalPage(applyView(), messageKeyPrefix)
 
-      assertContainsText(doc, "You cannot add another asset as you have entered a maximum of 51.")
-      assertContainsText(doc, "You can add another asset by removing an existing one, or write to HMRC with details of any additional assets.")
+        behave like pageWithBackLink(applyView())
+
+        behave like pageWithCompleteTabularData(applyView(), completeRows(max))
+
+        behave like pageWithASubmitButton(applyView())
+
+        "show maxed out assets content" in {
+          val doc = asDocument(applyView())
+
+          assertContainsText(doc, s"You cannot add another asset as you have entered a maximum of $max.")
+          assertContainsText(doc, "You can add another asset by removing an existing one, or write to HMRC with details of any additional assets.")
+        }
+      }
+
+      "5mld" must {
+
+        val max: Int = 76
+
+        val view: MaxedOutView = viewFor[MaxedOutView](Some(emptyUserAnswers.copy(is5mldEnabled = true, isTaxable = true)))
+
+        def applyView(): HtmlFormat.Appendable =
+          view.apply(fakeDraftId, Nil, completeRows(max), "Add assets", max, messageKeyPrefix)(fakeRequest, messages)
+
+        behave like normalPage(applyView(), messageKeyPrefix)
+
+        behave like pageWithBackLink(applyView())
+
+        behave like pageWithCompleteTabularData(applyView(), completeRows(max))
+
+        behave like pageWithASubmitButton(applyView())
+
+        "show maxed out assets content" in {
+          val doc = asDocument(applyView())
+
+          assertContainsText(doc, s"You cannot add another asset as you have entered a maximum of $max.")
+          assertContainsText(doc, "You can add another asset by removing an existing one, or write to HMRC with details of any additional assets.")
+        }
+      }
+    }
+
+    "non-taxable" must {
+
+      val messageKeyPrefix: String = "addAssets.nonTaxable"
+
+      val max: Int = 25
+
+      val view: MaxedOutView = viewFor[MaxedOutView](Some(emptyUserAnswers.copy(is5mldEnabled = true, isTaxable = false)))
+
+      def applyView(): HtmlFormat.Appendable =
+        view.apply(fakeDraftId, Nil, completeRows(max), "Add a non-EEA company", max, messageKeyPrefix)(fakeRequest, messages)
+
+      behave like normalPage(applyView(), messageKeyPrefix)
+
+      behave like pageWithBackLink(applyView())
+
+      behave like pageWithCompleteTabularData(applyView(), completeRows(max))
+
+      behave like pageWithASubmitButton(applyView())
+
+      "show maxed out assets content" in {
+        val doc = asDocument(applyView())
+
+        assertContainsText(doc, s"You cannot add another non-EEA company as you have entered a maximum of $max.")
+        assertContainsText(doc, "You can add another non-EEA company by removing an existing one, or write to HMRC with details of any additional non-EEA companies.")
+      }
     }
   }
 }

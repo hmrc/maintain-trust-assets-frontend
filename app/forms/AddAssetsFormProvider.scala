@@ -23,8 +23,8 @@ import play.api.data.Form
 
 class AddAssetsFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[AddAssets] =
+  def withPrefix(prefix: String): Form[AddAssets] =
     Form(
-      "value" -> enumerable[AddAssets]("addAssets.error.required")
+      "value" -> enumerable[AddAssets](s"$prefix.error.required")
     )
 }
