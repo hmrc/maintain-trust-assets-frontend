@@ -124,6 +124,8 @@ addAnAssetYesNo.error.required = Select yes if you want to add an asset
 
 addAssets.title = Add assets
 addAssets.heading = Add assets
+addAssets.nonTaxable.title = Add a non-EEA company
+addAssets.nonTaxable.heading = Add a non-EEA company
 addAssets.additional-content = Do you want to add another asset?
 addAssets.add-them-now = Yes, I want to add them now
 addAssets.add-them-later = Yes, I want to add them later
@@ -132,8 +134,6 @@ addAssets.checkYourAnswersLabel = Do you want to add another asset?
 addAssets.error.required = Select yes if you want to add another asset
 addAssets.count.heading = You have added {0} assets
 addAssets.count.title = You have added {0} assets
-addAssets.singular.heading = Add assets
-addAssets.singular.title = Add assets
 
 addAssets.maxedOut.p1 = You cannot add another asset as you have entered a maximum of {0}.
 addAssets.maxedOut.p2 = You can add another asset by removing an existing one, or write to HMRC with details of any additional assets.
