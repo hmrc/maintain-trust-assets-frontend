@@ -56,7 +56,7 @@ class AddAssetsController @Inject()(
   private def actions(draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] =
     identify andThen getData(draftId) andThen requireData
 
-  private def prefix(isTaxable: Boolean) = "addAssets" + (if (isTaxable) "" else ".nonTaxable")
+  private def prefix(isTaxable: Boolean) = "addAssets" + (if (!isTaxable) ".nonTaxable")
 
   private def heading(count: Int, isTaxable: Boolean)(implicit mp: MessagesProvider): String = {
     val p = prefix(isTaxable)
