@@ -502,5 +502,5 @@ nonEeaBusiness.startDate.error.invalid = Enter a real date for the date that the
 nonEeaBusiness.startDate.error.future = The date that the trust started their ownership or controlling interest in the company must be today or in the past
 nonEeaBusiness.startDate.error.past = The date that the trust started their ownership or controlling interest in the company must be after 31 December 1499
 
-nonEeaBusiness.answers.title = Check asset details
-nonEeaBusiness.answers.heading = Check asset details
+nonEeaBusiness.answers.title = Check non-EEA company details
+nonEeaBusiness.answers.heading = Check non-EEA company details
