@@ -19,10 +19,11 @@ package controllers.asset
 import controllers.actions.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
 import controllers.filters.IndexActionFilterProvider
 import forms.YesNoFormProvider
+import models.UserAnswers
 import models.requests.RegistrationDataRequest
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.libs.json.{JsPath, JsValue}
+import play.api.libs.json.JsPath
 import play.api.mvc._
 import repositories.RegistrationsRepository
 import sections.Assets
@@ -57,7 +58,7 @@ class RemoveAssetYesNoController @Inject()(
   def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
     implicit request =>
 
-      Ok(view(form, draftId, index, assetLabel(request.userAnswers.data, index)))
+      Ok(view(form, draftId, index, assetLabel(request.userAnswers, index)))
   }
 
   def onSubmit(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async {
@@ -65,7 +66,7 @@ class RemoveAssetYesNoController @Inject()(
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, draftId, index, assetLabel(request.userAnswers.data, index)))),
+          Future.successful(BadRequest(view(formWithErrors, draftId, index, assetLabel(request.userAnswers, index)))),
 
         remove => {
           if (remove) {
@@ -84,36 +85,38 @@ class RemoveAssetYesNoController @Inject()(
       )
   }
 
-  private def assetLabel(json: JsValue, index: Int)
+  private def assetLabel(userAnswers: UserAnswers, index: Int)
                         (implicit request: RegistrationDataRequest[AnyContent]): String = {
 
-    val default: String = request.messages(messagesApi)("assets.defaultText")
+    def default(prefix: String = "assets"): String = request.messages(messagesApi)(s"$prefix.defaultText")
 
     def propertyOrLandLabel(propertyOrLand: PropertyOrLandAssetViewModel): String = {
       (propertyOrLand.address, propertyOrLand.description) match {
         case (Some(address), _) => address
         case (_, Some(description)) => description
-        case _ => default
+        case _ => default()
       }
     }
 
     val path: JsPath = JsPath \ Assets \ index
 
     (for {
-      pick <- json.transform(path.json.pick)
+      pick <- userAnswers.data.transform(path.json.pick)
       asset <- pick.validate[AssetViewModel]
     } yield {
       asset match {
-        case money: MoneyAssetViewModel => money.value.fold(default)(checkAnswersFormatters.currencyFormat)
+        case money: MoneyAssetViewModel => money.value.fold(default())(checkAnswersFormatters.currencyFormat)
         case propertyOrLand: PropertyOrLandAssetViewModel => propertyOrLandLabel(propertyOrLand)
-        case shares: ShareAssetViewModel => shares.name.getOrElse(default)
-        case business: BusinessAssetViewModel => business.name.getOrElse(default)
-        case partnership: PartnershipAssetViewModel => partnership.description.getOrElse(default)
-        case other: OtherAssetViewModel => other.description.getOrElse(default)
-        case nonEeaBusiness: NonEeaBusinessAssetViewModel => nonEeaBusiness.name.getOrElse(default)
-        case _ => default
+        case shares: ShareAssetViewModel => shares.name.getOrElse(default())
+        case business: BusinessAssetViewModel => business.name.getOrElse(default())
+        case partnership: PartnershipAssetViewModel => partnership.description.getOrElse(default())
+        case other: OtherAssetViewModel => other.description.getOrElse(default())
+        case nonEeaBusiness: NonEeaBusinessAssetViewModel =>
+          lazy val defaultLabel = if (!userAnswers.isTaxable) default("assets.nonTaxable") else default()
+          nonEeaBusiness.name.getOrElse(defaultLabel)
+        case _ => default()
       }
-    }).getOrElse(default)
+    }).getOrElse(default())
   }
 
 }

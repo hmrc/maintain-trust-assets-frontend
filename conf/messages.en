@@ -125,26 +125,30 @@ addAnAssetYesNo.error.required = Select yes if you want to add an asset
 
 addAssets.title = Add assets
 addAssets.heading = Add assets
-addAssets.nonTaxable.title = Add a non-EEA company
-addAssets.nonTaxable.heading = Add a non-EEA company
 addAssets.additional-content = Do you want to add another asset?
 addAssets.add-them-now = Yes, I want to add them now
 addAssets.add-them-later = Yes, I want to add them later
 addAssets.no-complete = No, I have added all assets
-addAssets.checkYourAnswersLabel = Do you want to add another asset?
 addAssets.error.required = Select yes if you want to add another asset
-addAssets.nonTaxable.error.required = Select yes if you want to add another non-EEA company
 addAssets.count.title = You have added {0} assets
 addAssets.count.heading = You have added {0} assets
-addAssets.nonTaxable.count.title = You have added {0} non-EEA companies
-addAssets.nonTaxable.count.heading = You have added {0} non-EEA companies
-
 addAssets.maxedOut.p1 = You cannot add another asset as you have entered a maximum of {0}.
 addAssets.maxedOut.p2 = You can add another asset by removing an existing one, or write to HMRC with details of any additional assets.
+
+addAssets.nonTaxable.title = Add a non-EEA company
+addAssets.nonTaxable.heading = Add a non-EEA company
+addAssets.nonTaxable.additional-content = Do you want to add another non-EEA company?
+addAssets.nonTaxable.add-them-now = Yes, I want to add them now
+addAssets.nonTaxable.add-them-later = Yes, I want to add them later
+addAssets.nonTaxable.no-complete = No, I have added all non-EEA companies
+addAssets.nonTaxable.error.required = Select yes if you want to add another non-EEA company
+addAssets.nonTaxable.count.title = You have added {0} non-EEA companies
+addAssets.nonTaxable.count.heading = You have added {0} non-EEA companies
 addAssets.nonTaxable.maxedOut.p1 = You cannot add another non-EEA company as you have entered a maximum of {0}.
 addAssets.nonTaxable.maxedOut.p2 = You can add another non-EEA company by removing an existing one, or write to HMRC with details of any additional non-EEA companies.
 
 assets.defaultText = the asset
+assets.nonTaxable.defaultText = this non-EEA company
 
 assets.removeYesNo.title = Are you sure you want to remove the asset?
 assets.removeYesNo.heading = Are you sure you want to remove {0}?
@@ -499,5 +503,5 @@ nonEeaBusiness.startDate.error.invalid = Enter a real date for the date that the
 nonEeaBusiness.startDate.error.future = The date that the trust started their ownership or controlling interest in the company must be today or in the past
 nonEeaBusiness.startDate.error.past = The date that the trust started their ownership or controlling interest in the company must be after 31 December 1499
 
-nonEeaBusiness.answers.title = Check asset details
-nonEeaBusiness.answers.heading = Check asset details
+nonEeaBusiness.answers.title = Check non-EEA company details
+nonEeaBusiness.answers.heading = Check non-EEA company details

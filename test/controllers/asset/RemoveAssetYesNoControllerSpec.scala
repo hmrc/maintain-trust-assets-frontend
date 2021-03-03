@@ -334,29 +334,77 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
         application.stop()
       }
 
-      "Non-EEA business asset" in {
+      "Non-EEA business asset" when {
 
-        val userAnswers = emptyUserAnswers
-          .set(WhatKindOfAssetPage(index), NonEeaBusiness).success.value
-          .set(NamePage(index), "Non-EEA business name").success.value
-          .set(InternationalAddressPage(index), nonUkAddress).success.value
-          .set(GoverningCountryPage(index), "GB").success.value
-          .set(StartDatePage(index), date).success.value
+        "complete" in {
 
-        val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+          val userAnswers = emptyUserAnswers
+            .set(WhatKindOfAssetPage(index), NonEeaBusiness).success.value
+            .set(NamePage(index), "Non-EEA business name").success.value
+            .set(InternationalAddressPage(index), nonUkAddress).success.value
+            .set(GoverningCountryPage(index), "GB").success.value
+            .set(StartDatePage(index), date).success.value
 
-        val request = FakeRequest(GET, removeAssetYesNoRoute)
+          val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
-        val result = route(application, request).value
+          val request = FakeRequest(GET, removeAssetYesNoRoute)
 
-        val view = application.injector.instanceOf[RemoveAssetYesNoView]
+          val result = route(application, request).value
 
-        status(result) mustEqual OK
+          val view = application.injector.instanceOf[RemoveAssetYesNoView]
 
-        contentAsString(result) mustEqual
-          view(form, fakeDraftId, index, "Non-EEA business name")(fakeRequest, messages).toString
+          status(result) mustEqual OK
 
-        application.stop()
+          contentAsString(result) mustEqual
+            view(form, fakeDraftId, index, "Non-EEA business name")(fakeRequest, messages).toString
+
+          application.stop()
+        }
+
+        "in progress" when {
+
+          "taxable" in {
+
+            val userAnswers = emptyUserAnswers.copy(isTaxable = true)
+              .set(WhatKindOfAssetPage(index), NonEeaBusiness).success.value
+
+            val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+
+            val request = FakeRequest(GET, removeAssetYesNoRoute)
+
+            val result = route(application, request).value
+
+            val view = application.injector.instanceOf[RemoveAssetYesNoView]
+
+            status(result) mustEqual OK
+
+            contentAsString(result) mustEqual
+              view(form, fakeDraftId, index, "the asset")(fakeRequest, messages).toString
+
+            application.stop()
+          }
+
+          "non-taxable" in {
+
+            val userAnswers = emptyUserAnswers.copy(isTaxable = false)
+              .set(WhatKindOfAssetPage(index), NonEeaBusiness).success.value
+
+            val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+
+            val request = FakeRequest(GET, removeAssetYesNoRoute)
+
+            val result = route(application, request).value
+
+            val view = application.injector.instanceOf[RemoveAssetYesNoView]
+
+            status(result) mustEqual OK
+
+            contentAsString(result) mustEqual
+              view(form, fakeDraftId, index, "this non-EEA company")(fakeRequest, messages).toString
+
+            application.stop()
+          }
+        }
       }
     }
 
