@@ -27,7 +27,10 @@ import play.api.libs.json._
 
 final case class PartnershipAssetViewModel(`type`: WhatKindOfAsset,
                                            description: Option[String],
-                                           status: Status) extends AssetViewModel
+                                           status: Status) extends AssetViewModel {
+
+  override val label: Option[String] = description
+}
 
 object PartnershipAssetViewModel {
 

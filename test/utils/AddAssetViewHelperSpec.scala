@@ -47,14 +47,12 @@ class AddAssetViewHelperSpec extends SpecBase {
   def removeAssetYesNoRoute(index: Int): String =
     routes.RemoveAssetYesNoController.onPageLoad(index, fakeDraftId).url
 
-  private val checkAnswersFormatters: CheckAnswersFormatters = injector.instanceOf[CheckAnswersFormatters]
-
   "AddAssetViewHelper" when {
 
     ".row" must {
 
       "generate Nil for no user answers" in {
-        val rows = new AddAssetViewHelper(checkAnswersFormatters)(emptyUserAnswers, fakeDraftId).rows
+        val rows = new AddAssetViewHelper(emptyUserAnswers, fakeDraftId).rows
         rows.inProgress mustBe Nil
         rows.complete mustBe Nil
       }
@@ -100,7 +98,7 @@ class AddAssetViewHelperSpec extends SpecBase {
           .set(WhatKindOfAssetPage(7), NonEeaBusiness).success.value
           .set(NamePage(7), "Name").success.value
 
-        val rows = new AddAssetViewHelper(checkAnswersFormatters)(userAnswers, fakeDraftId).rows
+        val rows = new AddAssetViewHelper(userAnswers, fakeDraftId).rows
         rows.inProgress mustBe List(
           AddRow("No name added", typeLabel = "Shares", changeSharesAssetRoute(0), removeAssetYesNoRoute(0)),
           AddRow("No value added", typeLabel = "Money", changeMoneyAssetRoute(1), removeAssetYesNoRoute(1)),
@@ -188,7 +186,7 @@ class AddAssetViewHelperSpec extends SpecBase {
           .set(StartDatePage(7), date).success.value
           .set(AssetStatus(7), Completed).success.value
 
-        val rows = new AddAssetViewHelper(checkAnswersFormatters)(userAnswers, fakeDraftId).rows
+        val rows = new AddAssetViewHelper(userAnswers, fakeDraftId).rows
         rows.complete mustBe List(
           AddRow("Share Company Name", typeLabel = "Shares", changeSharesAssetRoute(0), removeAssetYesNoRoute(0)),
           AddRow("£4000", typeLabel = "Money", changeMoneyAssetRoute(1), removeAssetYesNoRoute(1)),

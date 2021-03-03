@@ -27,7 +27,10 @@ import play.api.libs.json.{Reads, __}
 
 final case class NonEeaBusinessAssetViewModel(`type`: WhatKindOfAsset,
                                               name: Option[String],
-                                              status: Status) extends AssetViewModel
+                                              status: Status) extends AssetViewModel {
+
+  override val label: Option[String] = name
+}
 
 object NonEeaBusinessAssetViewModel {
 

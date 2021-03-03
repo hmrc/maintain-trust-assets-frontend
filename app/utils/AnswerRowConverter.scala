@@ -24,6 +24,7 @@ import play.api.i18n.Messages
 import play.api.libs.json.Reads
 import play.twirl.api.{Html, HtmlFormat}
 import queries.Gettable
+import utils.CheckAnswersFormatters._
 import viewmodels.AnswerRow
 
 import java.time.LocalDate
@@ -50,7 +51,7 @@ class AnswerRowConverter @Inject()(checkAnswersFormatters: CheckAnswersFormatter
   def yesNoQuestion(query: Gettable[Boolean],
                     labelKey: String,
                     changeUrl: String): Option[AnswerRow] = {
-    val format = (x: Boolean) => checkAnswersFormatters.yesOrNo(x)
+    val format = (x: Boolean) => yesOrNo(x)
     question(query, labelKey, format, changeUrl)
   }
 
@@ -65,7 +66,7 @@ class AnswerRowConverter @Inject()(checkAnswersFormatters: CheckAnswersFormatter
   def currencyQuestion(query: Gettable[Long],
                        labelKey: String,
                        changeUrl: String): Option[AnswerRow] = {
-    val format = (x: Long) => checkAnswersFormatters.currency(x.toString)
+    val format = (x: Long) => currency(x.toString)
     question(query, labelKey, format, changeUrl)
   }
 
@@ -79,7 +80,7 @@ class AnswerRowConverter @Inject()(checkAnswersFormatters: CheckAnswersFormatter
   def assetTypeQuestion(index: Int,
                         draftId: String): Option[AnswerRow] = {
     val label: String = if (index == 0) "first" else "next"
-    val format = (x: WhatKindOfAsset) => checkAnswersFormatters.formatEnum("whatKindOfAsset", x)
+    val format = (x: WhatKindOfAsset) => formatEnum("whatKindOfAsset", x)
     question(
       WhatKindOfAssetPage(index),
       s"whatKindOfAsset.$label",
@@ -91,7 +92,7 @@ class AnswerRowConverter @Inject()(checkAnswersFormatters: CheckAnswersFormatter
   def shareClassQuestion(query: Gettable[ShareClass],
                          labelKey: String,
                          changeUrl: String): Option[AnswerRow] = {
-    val format = (x: ShareClass) => checkAnswersFormatters.formatEnum("shares.class", x)
+    val format = (x: ShareClass) => formatEnum("shares.class", x)
     question(query, labelKey, format, changeUrl)
   }
 

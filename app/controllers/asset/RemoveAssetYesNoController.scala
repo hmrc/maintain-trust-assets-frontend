@@ -28,7 +28,6 @@ import play.api.mvc._
 import repositories.RegistrationsRepository
 import sections.Assets
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.CheckAnswersFormatters
 import viewmodels._
 import views.html.asset.RemoveAssetYesNoView
 
@@ -44,8 +43,7 @@ class RemoveAssetYesNoController @Inject()(
                                             yesNoFormProvider: YesNoFormProvider,
                                             validateIndex: IndexActionFilterProvider,
                                             val controllerComponents: MessagesControllerComponents,
-                                            view: RemoveAssetYesNoView,
-                                            checkAnswersFormatters: CheckAnswersFormatters
+                                            view: RemoveAssetYesNoView
                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form: Form[Boolean] = yesNoFormProvider.withPrefix("assets.removeYesNo")
@@ -90,14 +88,6 @@ class RemoveAssetYesNoController @Inject()(
 
     def default(prefix: String = "assets"): String = request.messages(messagesApi)(s"$prefix.defaultText")
 
-    def propertyOrLandLabel(propertyOrLand: PropertyOrLandAssetViewModel): String = {
-      (propertyOrLand.address, propertyOrLand.description) match {
-        case (Some(address), _) => address
-        case (_, Some(description)) => description
-        case _ => default()
-      }
-    }
-
     val path: JsPath = JsPath \ Assets \ index
 
     (for {
@@ -105,16 +95,12 @@ class RemoveAssetYesNoController @Inject()(
       asset <- pick.validate[AssetViewModel]
     } yield {
       asset match {
-        case money: MoneyAssetViewModel => money.value.fold(default())(checkAnswersFormatters.currencyFormat)
-        case propertyOrLand: PropertyOrLandAssetViewModel => propertyOrLandLabel(propertyOrLand)
-        case shares: ShareAssetViewModel => shares.name.getOrElse(default())
-        case business: BusinessAssetViewModel => business.name.getOrElse(default())
-        case partnership: PartnershipAssetViewModel => partnership.description.getOrElse(default())
-        case other: OtherAssetViewModel => other.description.getOrElse(default())
-        case nonEeaBusiness: NonEeaBusinessAssetViewModel =>
-          lazy val defaultLabel = if (!userAnswers.isTaxable) default("assets.nonTaxable") else default()
-          nonEeaBusiness.name.getOrElse(defaultLabel)
-        case _ => default()
+        case _: NonEeaBusinessAssetViewModel =>
+          asset.label.getOrElse {
+            if (!userAnswers.isTaxable) default("assets.nonTaxable") else default()
+          }
+        case _ =>
+          asset.label.getOrElse(default())
       }
     }).getOrElse(default())
   }

@@ -24,10 +24,14 @@ import pages.asset.WhatKindOfAssetPage
 import pages.asset.money.AssetMoneyValuePage
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
+import utils.CheckAnswersFormatters.currencyFormat
 
 final case class MoneyAssetViewModel(`type`: WhatKindOfAsset,
                                      value: Option[String],
-                                     status: Status) extends AssetViewModel
+                                     status: Status) extends AssetViewModel {
+
+  override val label: Option[String] = value.map(currencyFormat)
+}
 
 object MoneyAssetViewModel {
 

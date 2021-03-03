@@ -36,31 +36,11 @@ class CheckAnswersFormatters @Inject()(languageUtils: LanguageUtils,
     escape(formattedDate)
   }
 
-  def yesOrNo(answer: Boolean)(implicit messages: Messages): Html = {
-    if (answer) {
-      escape(messages("site.yes"))
-    } else {
-      escape(messages("site.no"))
-    }
-  }
-
-  def currency(value: String): Html = escape(currencyFormat(value))
-
-  def currencyFormat(value: String): String = s"£$value"
-
   def addressFormatter(address: Address)(implicit messages: Messages): Html = {
     address match {
       case a: UKAddress => ukAddress(a)
       case a: InternationalAddress => internationalAddress(a)
     }
-  }
-
-  private def breakLines(lines: Seq[Html]): Html = {
-    Html(lines.mkString("<br />"))
-  }
-
-  def formatEnum[T](key: String, answer: T)(implicit messages: Messages): Html = {
-    escape(messages(s"$key.$answer"))
   }
 
   private def ukAddress(address: UKAddress): Html = {
@@ -76,10 +56,6 @@ class CheckAnswersFormatters @Inject()(languageUtils: LanguageUtils,
     breakLines(lines)
   }
 
-  def country(code: String)(implicit messages: Messages): String = {
-    countryOptions.options.find(_.value.equals(code)).map(_.label).getOrElse("")
-  }
-
   private def internationalAddress(address: InternationalAddress)(implicit messages: Messages): Html = {
 
     val lines: Seq[Html] = Seq(
@@ -90,5 +66,32 @@ class CheckAnswersFormatters @Inject()(languageUtils: LanguageUtils,
     ).flatten
 
     breakLines(lines)
+  }
+
+  def country(code: String)(implicit messages: Messages): String = {
+    countryOptions.options.find(_.value.equals(code)).map(_.label).getOrElse("")
+  }
+
+  private def breakLines(lines: Seq[Html]): Html = {
+    Html(lines.mkString("<br />"))
+  }
+}
+
+object CheckAnswersFormatters {
+
+  def yesOrNo(answer: Boolean)(implicit messages: Messages): Html = {
+    if (answer) {
+      escape(messages("site.yes"))
+    } else {
+      escape(messages("site.no"))
+    }
+  }
+
+  def currency(value: String): Html = escape(currencyFormat(value))
+
+  def currencyFormat(value: String): String = s"£$value"
+
+  def formatEnum[T](key: String, answer: T)(implicit messages: Messages): Html = {
+    escape(messages(s"$key.$answer"))
   }
 }

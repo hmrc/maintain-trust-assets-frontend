@@ -23,6 +23,7 @@ import scala.language.implicitConversions
 trait AssetViewModel {
   val `type`: WhatKindOfAsset
   val status: Status
+  val label: Option[String]
 }
 
 object AssetViewModel {

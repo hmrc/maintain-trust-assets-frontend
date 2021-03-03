@@ -26,8 +26,7 @@ import viewmodels.{AddRow, AddToRows, _}
 
 import javax.inject.Inject
 
-class AddAssetViewHelper @Inject()(checkAnswersFormatters: CheckAnswersFormatters)
-                                  (userAnswers: UserAnswers, draftId: String)
+class AddAssetViewHelper @Inject()(userAnswers: UserAnswers, draftId: String)
                                   (implicit messages: Messages) {
 
   def rows: AddToRows = {
@@ -64,10 +63,7 @@ class AddAssetViewHelper @Inject()(checkAnswersFormatters: CheckAnswersFormatter
 
   private def parseMoney(mvm: MoneyAssetViewModel, index: Int): AddRow = {
     AddRow(
-      name = mvm.value match {
-        case Some(value) => checkAnswersFormatters.currencyFormat(value)
-        case None => defaultValue
-      },
+      name = mvm.label.getOrElse(defaultValue),
       typeLabel = mvm.`type`.label,
       changeUrl = money.routes.AssetMoneyValueController.onPageLoad(index, draftId).url,
       removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index, draftId).url
@@ -93,7 +89,7 @@ class AddAssetViewHelper @Inject()(checkAnswersFormatters: CheckAnswersFormatter
 
   private def parseShare(svm: ShareAssetViewModel, index: Int): AddRow = {
     AddRow(
-      name = svm.name.getOrElse(defaultName),
+      name = svm.label.getOrElse(defaultName),
       typeLabel = svm.`type`.label,
       changeUrl = if (svm.status == Completed) {
         shares.routes.ShareAnswerController.onPageLoad(index, draftId).url
@@ -106,7 +102,7 @@ class AddAssetViewHelper @Inject()(checkAnswersFormatters: CheckAnswersFormatter
 
   private def parseBusiness(bvm: BusinessAssetViewModel, index: Int): AddRow = {
     AddRow(
-      name = bvm.name.getOrElse(defaultName),
+      name = bvm.label.getOrElse(defaultName),
       typeLabel = bvm.`type`.label,
       changeUrl = if (bvm.status == Completed) {
         business.routes.BusinessAnswersController.onPageLoad(index, draftId).url
@@ -119,7 +115,7 @@ class AddAssetViewHelper @Inject()(checkAnswersFormatters: CheckAnswersFormatter
 
   private def parsePartnership(pvm: PartnershipAssetViewModel, index: Int): AddRow = {
     AddRow(
-      name = pvm.description.getOrElse(defaultDescription),
+      name = pvm.label.getOrElse(defaultDescription),
       typeLabel = pvm.`type`.label,
       changeUrl = if (pvm.status == Completed) {
         partnership.routes.PartnershipAnswerController.onPageLoad(index, draftId).url
@@ -132,7 +128,7 @@ class AddAssetViewHelper @Inject()(checkAnswersFormatters: CheckAnswersFormatter
 
   private def parseOther(ovm: OtherAssetViewModel, index: Int): AddRow = {
     AddRow(
-      name = ovm.description.getOrElse(defaultDescription),
+      name = ovm.label.getOrElse(defaultDescription),
       typeLabel = ovm.`type`.label,
       changeUrl = if (ovm.status == Completed) {
         other.routes.OtherAssetAnswersController.onPageLoad(index, draftId).url
@@ -145,7 +141,7 @@ class AddAssetViewHelper @Inject()(checkAnswersFormatters: CheckAnswersFormatter
   
   private def parseNonEeaBusiness(nebvm: NonEeaBusinessAssetViewModel, index: Int): AddRow = {
     AddRow(
-      name = nebvm.name.getOrElse(defaultName),
+      name = nebvm.label.getOrElse(defaultName),
       typeLabel = nebvm.`type`.label,
       changeUrl = if (nebvm.status == Completed) {
         noneeabusiness.routes.AnswersController.onPageLoad(index, draftId).url

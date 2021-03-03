@@ -27,7 +27,10 @@ import play.api.libs.json._
 
 final case class ShareAssetViewModel(`type`: WhatKindOfAsset,
                                      name: Option[String],
-                                     status: Status) extends AssetViewModel
+                                     status: Status) extends AssetViewModel {
+
+  override val label: Option[String] = name
+}
 
 object ShareAssetViewModel extends AssetViewModelReads {
 

@@ -28,7 +28,7 @@ import play.api.data.Form
 import play.api.i18n.{Messages, MessagesApi, MessagesProvider}
 import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
 import repositories.RegistrationsRepository
-import utils.{AddAssetViewHelper, CheckAnswersFormatters}
+import utils.AddAssetViewHelper
 import views.html.asset.{AddAnAssetYesNoView, AddAssetsView, MaxedOutView}
 
 import javax.inject.Inject
@@ -46,8 +46,7 @@ class AddAssetsController @Inject()(
                                      val controllerComponents: MessagesControllerComponents,
                                      addAssetsView: AddAssetsView,
                                      yesNoView: AddAnAssetYesNoView,
-                                     maxedOutView: MaxedOutView,
-                                     checkAnswersFormatters: CheckAnswersFormatters
+                                     maxedOutView: MaxedOutView
                                    )(implicit ec: ExecutionContext) extends AddAssetController {
 
   private def addAnotherForm(isTaxable: Boolean): Form[AddAssets] = addAnotherFormProvider.withPrefix(determinePrefix(isTaxable))
@@ -71,7 +70,7 @@ class AddAssetsController @Inject()(
       val userAnswers: UserAnswers = request.userAnswers
       val isTaxable = userAnswers.isTaxable
 
-      val assets = new AddAssetViewHelper(checkAnswersFormatters)(userAnswers, draftId).rows
+      val assets = new AddAssetViewHelper(userAnswers, draftId).rows
 
       val maxLimit: Int = (userAnswers.is5mldEnabled, isTaxable) match {
         case (true, true) => MAX_5MLD_TAXABLE_ASSETS
@@ -116,7 +115,7 @@ class AddAssetsController @Inject()(
       val userAnswers = request.userAnswers
       val isTaxable = userAnswers.isTaxable
 
-      val assets = new AddAssetViewHelper(checkAnswersFormatters)(userAnswers, draftId).rows
+      val assets = new AddAssetViewHelper(userAnswers, draftId).rows
 
       val prefix = determinePrefix(isTaxable)
 

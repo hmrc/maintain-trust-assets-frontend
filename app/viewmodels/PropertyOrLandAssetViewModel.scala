@@ -29,7 +29,10 @@ final case class PropertyOrLandAssetViewModel(`type`: WhatKindOfAsset,
                                               hasAddress: Option[Boolean],
                                               address: Option[String],
                                               description: Option[String],
-                                              status: Status) extends AssetViewModel
+                                              status: Status) extends AssetViewModel {
+
+  override val label: Option[String] = if (address.isDefined) address else description
+}
 
 object PropertyOrLandAssetViewModel extends AssetViewModelReads {
 

@@ -20,6 +20,7 @@ import base.SpecBase
 import models.{InternationalAddress, UKAddress}
 import play.api.i18n.{Lang, MessagesImpl}
 import play.twirl.api.Html
+import utils.CheckAnswersFormatters._
 
 import java.time.LocalDate
 
@@ -72,14 +73,14 @@ class CheckAnswersFormattersSpec extends SpecBase {
 
       "true" must {
         "return Yes" in {
-          val result: Html = checkAnswersFormatters.yesOrNo(answer = true)
+          val result: Html = yesOrNo(answer = true)
           result mustBe Html("Yes")
         }
       }
 
       "false" must {
         "return No" in {
-          val result: Html = checkAnswersFormatters.yesOrNo(answer = false)
+          val result: Html = yesOrNo(answer = false)
           result mustBe Html("No")
         }
       }
@@ -87,7 +88,7 @@ class CheckAnswersFormattersSpec extends SpecBase {
 
     ".currency" must {
       "prepend £ symbol to value" in {
-        val result: Html = checkAnswersFormatters.currency("100")
+        val result: Html = currency("100")
         result mustBe Html("£100")
       }
     }
