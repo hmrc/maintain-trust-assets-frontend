@@ -31,7 +31,9 @@ POST       /:draftId/information-you-need         controllers.asset.AssetInterru
 
 GET        /:draftId/add                          controllers.asset.AddAssetsController.onPageLoad(draftId: String)
 POST       /:draftId/add                          controllers.asset.AddAssetsController.submitOne(draftId: String)
+GET        /:draftId/add-another                  controllers.asset.AddAssetsController.onPageLoad(draftId: String)
 POST       /:draftId/add-another                  controllers.asset.AddAssetsController.submitAnother(draftId: String)
+GET        /:draftId/complete                     controllers.asset.AddAssetsController.onPageLoad(draftId: String)
 POST       /:draftId/complete                     controllers.asset.AddAssetsController.submitComplete(draftId: String)
 
 GET        /:draftId/:index/remove                controllers.asset.RemoveAssetYesNoController.onPageLoad(index: Int, draftId: String)
