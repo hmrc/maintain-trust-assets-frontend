@@ -78,10 +78,11 @@ class SubmissionSetFactory @Inject()(registrationProgress: RegistrationProgress,
         case Nil =>
           List.empty
         case _ =>
+          val section = if (userAnswers.isTaxable) "assets" else "companyOwnershipOrControllingInterest"
           val updatedFirstSection: AnswerSection = AnswerSection(
             entitySections.head.headingKey,
             entitySections.head.rows,
-            Some(Messages("answerPage.section.assets.heading"))
+            Some(Messages(s"answerPage.section.$section.heading"))
           )
 
           val updatedSections: List[AnswerSection] = updatedFirstSection :: entitySections.tail
