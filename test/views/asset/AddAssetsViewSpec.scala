@@ -42,11 +42,11 @@ class AddAssetsViewSpec extends OptionsViewBehaviours with TabularDataViewBehavi
   private val view: AddAssetsView = viewFor[AddAssetsView](Some(emptyUserAnswers))
 
   private def applyView(form: Form[_]): HtmlFormat.Appendable =
-    view.apply(form, fakeDraftId, Nil, Nil, "Add assets")(fakeRequest, messages)
+    view.apply(form, fakeDraftId, Nil, Nil, "Add assets", messageKeyPrefix)(fakeRequest, messages)
 
-  private def applyView(form: Form[_], inProgressAssets: Seq[AddRow], completeAssets: Seq[AddRow], count : Int): HtmlFormat.Appendable = {
+  private def applyView(form: Form[_], inProgressAssets: Seq[AddRow], completeAssets: Seq[AddRow], count: Int): HtmlFormat.Appendable = {
     val title = if (count > 1) s"You have added $count assets" else "Add assets"
-    view.apply(form, fakeDraftId, inProgressAssets, completeAssets, title)(fakeRequest, messages)
+    view.apply(form, fakeDraftId, inProgressAssets, completeAssets, title, messageKeyPrefix)(fakeRequest, messages)
   }
 
   "AddAssetsView" when {
@@ -58,7 +58,7 @@ class AddAssetsViewSpec extends OptionsViewBehaviours with TabularDataViewBehavi
 
       behave like pageWithBackLink(applyView(form))
 
-      behave like pageWithOptions(form, applyView, AddAssets.options.toSet)
+      behave like pageWithOptions(form, applyView, AddAssets.options(messageKeyPrefix).toSet)
     }
 
     "there is data in progress" must {
@@ -71,7 +71,7 @@ class AddAssetsViewSpec extends OptionsViewBehaviours with TabularDataViewBehavi
 
       behave like pageWithInProgressTabularData(viewWithData, inProgressAssets)
 
-      behave like pageWithOptions(form, applyView, AddAssets.options.toSet)
+      behave like pageWithOptions(form, applyView, AddAssets.options(messageKeyPrefix).toSet)
 
     }
 
@@ -85,7 +85,7 @@ class AddAssetsViewSpec extends OptionsViewBehaviours with TabularDataViewBehavi
 
       behave like pageWithCompleteTabularData(viewWithData, completeAssets)
 
-      behave like pageWithOptions(form, applyView, AddAssets.options.toSet)
+      behave like pageWithOptions(form, applyView, AddAssets.options(messageKeyPrefix).toSet)
     }
 
   }

@@ -50,19 +50,18 @@ class AddAssetsController @Inject()(
                                      checkAnswersFormatters: CheckAnswersFormatters
                                    )(implicit ec: ExecutionContext) extends AddAssetController {
 
-  private def addAnotherForm(isTaxable: Boolean): Form[AddAssets] = addAnotherFormProvider.withPrefix(prefix(isTaxable))
+  private def addAnotherForm(isTaxable: Boolean): Form[AddAssets] = addAnotherFormProvider.withPrefix(determinePrefix(isTaxable))
   private val yesNoForm: Form[Boolean] = yesNoFormProvider.withPrefix("addAnAssetYesNo")
 
   private def actions(draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] =
     identify andThen getData(draftId) andThen requireData
 
-  private def prefix(isTaxable: Boolean) = "addAssets" + (if (!isTaxable) ".nonTaxable" else "")
+  private def determinePrefix(isTaxable: Boolean) = "addAssets" + (if (!isTaxable) ".nonTaxable" else "")
 
-  private def heading(count: Int, isTaxable: Boolean)(implicit mp: MessagesProvider): String = {
-    val p = prefix(isTaxable)
+  private def heading(count: Int, prefix: String)(implicit mp: MessagesProvider): String = {
     count match {
-      case c if c > 1 => Messages(s"$p.count.heading", c)
-      case _ => Messages(s"$p.heading")
+      case c if c > 1 => Messages(s"$prefix.count.heading", c)
+      case _ => Messages(s"$prefix.heading")
     }
   }
 
@@ -80,15 +79,17 @@ class AddAssetsController @Inject()(
         case _ => MAX_4MLD_ASSETS
       }
 
+      val prefix = determinePrefix(isTaxable)
+
       assets.count match {
         case 0 if isTaxable =>
           Ok(yesNoView(yesNoForm, draftId))
         case 0 =>
           Redirect(routes.TrustOwnsNonEeaBusinessYesNoController.onPageLoad(draftId))
         case c if c >= maxLimit =>
-          Ok(maxedOutView(draftId, assets.inProgress, assets.complete, heading(c, isTaxable), maxLimit, prefix(isTaxable)))
+          Ok(maxedOutView(draftId, assets.inProgress, assets.complete, heading(c, prefix), maxLimit, prefix))
         case c =>
-          Ok(addAssetsView(addAnotherForm(isTaxable), draftId, assets.inProgress, assets.complete, heading(c, isTaxable)))
+          Ok(addAssetsView(addAnotherForm(isTaxable), draftId, assets.inProgress, assets.complete, heading(c, prefix), prefix))
       }
   }
 
@@ -117,10 +118,12 @@ class AddAssetsController @Inject()(
 
       val assets = new AddAssetViewHelper(checkAnswersFormatters)(userAnswers, draftId).rows
 
+      val prefix = determinePrefix(isTaxable)
+
       addAnotherForm(isTaxable).bindFromRequest().fold(
         (formWithErrors: Form[_]) => {
           Future.successful(
-            BadRequest(addAssetsView(formWithErrors, draftId, assets.inProgress, assets.complete, heading(assets.count, isTaxable)))
+            BadRequest(addAssetsView(formWithErrors, draftId, assets.inProgress, assets.complete, heading(assets.count, prefix), prefix))
           )
         },
         value => {

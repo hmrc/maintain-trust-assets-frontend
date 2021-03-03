@@ -260,7 +260,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(addTaxableAssetsForm, fakeDraftId, Nil, oneAsset, "Add assets")(fakeRequest, messages).toString
+            view(addTaxableAssetsForm, fakeDraftId, Nil, oneAsset, "Add assets", "addAssets")(fakeRequest, messages).toString
 
           application.stop()
         }
@@ -278,7 +278,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(addNonTaxableAssetsForm, fakeDraftId, Nil, oneAsset, "Add a non-EEA company")(fakeRequest, messages).toString
+            view(addNonTaxableAssetsForm, fakeDraftId, Nil, oneAsset, "Add a non-EEA company", "addAssets.nonTaxable")(fakeRequest, messages).toString
 
           application.stop()
         }
@@ -302,7 +302,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(addTaxableAssetsForm, fakeDraftId, Nil, multipleAssets, "You have added 2 assets")(fakeRequest, messages).toString
+            view(addTaxableAssetsForm, fakeDraftId, Nil, multipleAssets, "You have added 2 assets", "addAssets")(fakeRequest, messages).toString
 
           application.stop()
         }
@@ -320,7 +320,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(addNonTaxableAssetsForm, fakeDraftId, Nil, multipleAssets, "You have added 2 non-EEA companies")(fakeRequest, messages).toString
+            view(addNonTaxableAssetsForm, fakeDraftId, Nil, multipleAssets, "You have added 2 non-EEA companies", "addAssets.nonTaxable")(fakeRequest, messages).toString
 
           application.stop()
         }
@@ -469,7 +469,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm, fakeDraftId, Nil, multipleAssets, "You have added 2 assets")(fakeRequest, messages).toString
+          view(boundForm, fakeDraftId, Nil, multipleAssets, "You have added 2 assets", "addAssets")(fakeRequest, messages).toString
 
         application.stop()
       }

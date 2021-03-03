@@ -30,9 +30,9 @@ object AddAssets extends Enumerable.Implicits {
     YesNow, YesLater, NoComplete
   )
 
-  val options: List[RadioOption] = values.map {
+  def options(prefix: String): List[RadioOption] = values.map {
     value =>
-      RadioOption("addAssets", value.toString)
+      RadioOption(prefix, value.toString)
   }
 
   implicit val enumerable: Enumerable[AddAssets] =
