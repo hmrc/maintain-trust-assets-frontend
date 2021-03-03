@@ -83,7 +83,6 @@ class SubmissionSetFactorySpec extends SpecBase {
         when(propertyOrLandAnswersHelper(any())(any())).thenReturn(Nil)
         when(sharesAnswersHelper(any())(any())).thenReturn(Nil)
         when(businessAnswersHelper(any())(any())).thenReturn(Nil)
-        when(nonEeaBusinessAnswersHelper(any())(any())).thenReturn(Nil)
 
         val factory = new SubmissionSetFactory(
           registrationProgress = registrationProgress,
@@ -104,42 +103,93 @@ class SubmissionSetFactorySpec extends SpecBase {
             sectionKey = None
           )
         }
-        
-        "only one asset" in {
 
-          when(partnershipAnswersHelper(any())(any())).thenReturn(Nil)
-          when(otherAnswersHelper(any())(any())).thenReturn(Seq(assetSection("Other 1")))
+        "taxable" when {
 
-          val result = factory.answerSectionsIfCompleted(emptyUserAnswers, Some(Completed))
+          val baseAnswers = emptyUserAnswers.copy(isTaxable = true)
 
-          result mustBe List(
-            RegistrationSubmission.AnswerSection(
-              headingKey = Some("Other 1"),
-              rows = Nil,
-              sectionKey = Some("Assets")
+          "only one asset" in {
+
+            when(partnershipAnswersHelper(any())(any())).thenReturn(Nil)
+            when(otherAnswersHelper(any())(any())).thenReturn(Seq(assetSection("Other 1")))
+            when(nonEeaBusinessAnswersHelper(any())(any())).thenReturn(Nil)
+
+            val result = factory.answerSectionsIfCompleted(baseAnswers, Some(Completed))
+
+            result mustBe List(
+              RegistrationSubmission.AnswerSection(
+                headingKey = Some("Other 1"),
+                rows = Nil,
+                sectionKey = Some("Assets")
+              )
             )
-          )
+          }
+
+          "when more than one asset" in {
+
+            when(partnershipAnswersHelper(any())(any())).thenReturn(Seq(assetSection("Partnership 1")))
+            when(otherAnswersHelper(any())(any())).thenReturn(Seq(assetSection("Other 1")))
+            when(nonEeaBusinessAnswersHelper(any())(any())).thenReturn(Nil)
+
+            val result = factory.answerSectionsIfCompleted(baseAnswers, Some(Completed))
+
+            result mustBe List(
+              RegistrationSubmission.AnswerSection(
+                headingKey = Some("Partnership 1"),
+                rows = Nil,
+                sectionKey = Some("Assets")
+              ),
+              RegistrationSubmission.AnswerSection(
+                headingKey = Some("Other 1"),
+                rows = Nil,
+                sectionKey = None
+              )
+            )
+          }
         }
 
-        "when more than one asset" in {
+        "non-taxable" when {
 
-          when(partnershipAnswersHelper(any())(any())).thenReturn(Seq(assetSection("Partnership 1")))
-          when(otherAnswersHelper(any())(any())).thenReturn(Seq(assetSection("Other 1")))
+          val baseAnswers = emptyUserAnswers.copy(isTaxable = false)
 
-          val result = factory.answerSectionsIfCompleted(emptyUserAnswers, Some(Completed))
+          "only one asset" in {
 
-          result mustBe List(
-            RegistrationSubmission.AnswerSection(
-              headingKey = Some("Partnership 1"),
-              rows = Nil,
-              sectionKey = Some("Assets")
-            ),
-            RegistrationSubmission.AnswerSection(
-              headingKey = Some("Other 1"),
-              rows = Nil,
-              sectionKey = None
+            when(partnershipAnswersHelper(any())(any())).thenReturn(Nil)
+            when(otherAnswersHelper(any())(any())).thenReturn(Nil)
+            when(nonEeaBusinessAnswersHelper(any())(any())).thenReturn(Seq(assetSection("Non-EEA Company 1")))
+
+            val result = factory.answerSectionsIfCompleted(baseAnswers, Some(Completed))
+
+            result mustBe List(
+              RegistrationSubmission.AnswerSection(
+                headingKey = Some("Non-EEA Company 1"),
+                rows = Nil,
+                sectionKey = Some("Company ownership or controlling interest")
+              )
             )
-          )
+          }
+
+          "when more than one asset" in {
+
+            when(partnershipAnswersHelper(any())(any())).thenReturn(Nil)
+            when(otherAnswersHelper(any())(any())).thenReturn(Nil)
+            when(nonEeaBusinessAnswersHelper(any())(any())).thenReturn(Seq(assetSection("Non-EEA Company 1"), assetSection("Non-EEA Company 2")))
+
+            val result = factory.answerSectionsIfCompleted(baseAnswers, Some(Completed))
+
+            result mustBe List(
+              RegistrationSubmission.AnswerSection(
+                headingKey = Some("Non-EEA Company 1"),
+                rows = Nil,
+                sectionKey = Some("Company ownership or controlling interest")
+              ),
+              RegistrationSubmission.AnswerSection(
+                headingKey = Some("Non-EEA Company 2"),
+                rows = Nil,
+                sectionKey = None
+              )
+            )
+          }
         }
       }
     }
