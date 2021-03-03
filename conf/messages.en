@@ -148,6 +148,7 @@ addAssets.nonTaxable.maxedOut.p1 = You cannot add another non-EEA company as you
 addAssets.nonTaxable.maxedOut.p2 = You can add another non-EEA company by removing an existing one, or write to HMRC with details of any additional non-EEA companies.
 
 assets.defaultText = the asset
+assets.nonTaxable.defaultText = this non-EEA company
 
 assets.removeYesNo.title = Are you sure you want to remove the asset?
 assets.removeYesNo.heading = Are you sure you want to remove {0}?
