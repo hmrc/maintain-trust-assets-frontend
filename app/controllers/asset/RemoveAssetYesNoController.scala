@@ -46,7 +46,7 @@ class RemoveAssetYesNoController @Inject()(
                                             view: RemoveAssetYesNoView
                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val form: Form[Boolean] = yesNoFormProvider.withPrefix("assets.removeYesNo")
+  private def form(prefix: String): Form[Boolean] = yesNoFormProvider.withPrefix(s"$prefix.removeYesNo")
 
   private def redirect(draftId: String): Result = Redirect(controllers.asset.routes.AddAssetsController.onPageLoad(draftId))
 
@@ -56,15 +56,19 @@ class RemoveAssetYesNoController @Inject()(
   def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
     implicit request =>
 
-      Ok(view(form, draftId, index, assetLabel(request.userAnswers, index)))
+      val prefix = determinePrefix(request.userAnswers.isTaxable)
+
+      Ok(view(form(prefix), draftId, index, prefix, assetLabel(request.userAnswers, index)))
   }
 
   def onSubmit(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async {
     implicit request =>
 
-      form.bindFromRequest().fold(
+      val prefix = determinePrefix(request.userAnswers.isTaxable)
+
+      form(prefix).bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, draftId, index, assetLabel(request.userAnswers, index)))),
+          Future.successful(BadRequest(view(formWithErrors, draftId, index, prefix, assetLabel(request.userAnswers, index)))),
 
         remove => {
           if (remove) {
@@ -86,7 +90,7 @@ class RemoveAssetYesNoController @Inject()(
   private def assetLabel(userAnswers: UserAnswers, index: Int)
                         (implicit request: RegistrationDataRequest[AnyContent]): String = {
 
-    def default(prefix: String = "assets"): String = request.messages(messagesApi)(s"$prefix.defaultText")
+    def default(prefix: String = defaultPrefix): String = request.messages(messagesApi)(s"$prefix.defaultText")
 
     val path: JsPath = JsPath \ Assets \ index
 
@@ -96,13 +100,17 @@ class RemoveAssetYesNoController @Inject()(
     } yield {
       asset match {
         case _: NonEeaBusinessAssetViewModel =>
-          asset.label.getOrElse {
-            if (!userAnswers.isTaxable) default("assets.nonTaxable") else default()
-          }
+          asset.label.getOrElse(default(determinePrefix(userAnswers.isTaxable)))
         case _ =>
           asset.label.getOrElse(default())
       }
     }).getOrElse(default())
   }
+
+  private def determinePrefix(isTaxable: Boolean): String = {
+    defaultPrefix + (if (!isTaxable) ".nonTaxable" else "")
+  }
+
+  private val defaultPrefix: String = "assets"
 
 }
