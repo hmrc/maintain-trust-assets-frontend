@@ -21,10 +21,10 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], draftId: String, index: Int, asset: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], draftId: String, index: Int, prefix: String, asset: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("assets.removeYesNo.title")}"
+    title = s"${errorPrefix(form)} ${messages(s"$prefix.removeYesNo.title")}"
 ) {
 
     @formHelper(action = RemoveAssetYesNoController.onSubmit(index, draftId), 'autoComplete -> "off") {
@@ -35,7 +35,7 @@
 
         @components.input_yes_no(
             field = form("value"),
-            label = messages("assets.removeYesNo.heading", asset),
+            label = messages(s"$prefix.removeYesNo.heading", asset),
             legendClass = Some("heading-large"),
             legendAsHeading = true
         )

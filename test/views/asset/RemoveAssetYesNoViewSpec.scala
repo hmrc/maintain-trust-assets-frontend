@@ -24,26 +24,50 @@ import views.html.asset.RemoveAssetYesNoView
 
 class RemoveAssetYesNoViewSpec extends YesNoViewBehaviours {
 
-  private val messageKeyPrefix: String = "assets.removeYesNo"
+  val assetLabel: String = "Label"
+  val index: Int = 0
 
-  override val form: Form[Boolean] = new YesNoFormProvider().withPrefix(messageKeyPrefix)
+  override val form: Form[Boolean] = new YesNoFormProvider().withPrefix("")
 
-  "RemoveAssetYesNoView" must {
+  "RemoveAssetYesNoView" when {
 
-    val assetLabel: String = "Label"
-    val index: Int = 0
+    "taxable" must {
 
-    val view = viewFor[RemoveAssetYesNoView](Some(emptyUserAnswers))
+      val prefix: String = "assets"
+      val messageKeyPrefix: String = s"$prefix.removeYesNo"
+      val form: Form[Boolean] = new YesNoFormProvider().withPrefix(messageKeyPrefix)
 
-    def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, fakeDraftId, index, assetLabel)(fakeRequest, messages)
+      val view = viewFor[RemoveAssetYesNoView](Some(emptyUserAnswers.copy(isTaxable = true)))
 
-    behave like dynamicTitlePage(applyView(form), messageKeyPrefix, assetLabel)
+      def applyView(form: Form[_]): HtmlFormat.Appendable =
+        view.apply(form, fakeDraftId, index, prefix, assetLabel)(fakeRequest, messages)
 
-    behave like pageWithBackLink(applyView(form))
+      behave like dynamicTitlePage(applyView(form), messageKeyPrefix, assetLabel)
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix, Seq(assetLabel))
+      behave like pageWithBackLink(applyView(form))
 
-    behave like pageWithASubmitButton(applyView(form))
+      behave like yesNoPage(form, applyView, messageKeyPrefix, Seq(assetLabel))
+
+      behave like pageWithASubmitButton(applyView(form))
+    }
+
+    "non-taxable" must {
+
+      val prefix: String = "assets.nonTaxable"
+      val messageKeyPrefix: String = s"$prefix.removeYesNo"
+
+      val view = viewFor[RemoveAssetYesNoView](Some(emptyUserAnswers.copy(isTaxable = false)))
+
+      def applyView(form: Form[_]): HtmlFormat.Appendable =
+        view.apply(form, fakeDraftId, index, prefix, assetLabel)(fakeRequest, messages)
+
+      behave like dynamicTitlePage(applyView(form), messageKeyPrefix, assetLabel)
+
+      behave like pageWithBackLink(applyView(form))
+
+      behave like yesNoPage(form, applyView, messageKeyPrefix, Seq(assetLabel))
+
+      behave like pageWithASubmitButton(applyView(form))
+    }
   }
 }
