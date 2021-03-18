@@ -1,0 +1,10 @@
+@import uk.gov.hmrc.maintaintrustassetsfrontend.config.AppConfig
+
+@this(layout: Layout)
+
+@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@layout(pageTitle = Some("maintain-trust-assets-frontend")) {
+    <h1 class="govuk-heading-xl">maintain-trust-assets-frontend</h1>
+    <p class="govuk-body">@{messages("service.text")}</p>
+}
