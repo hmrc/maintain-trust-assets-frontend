@@ -1,7 +1,46 @@
 # microservice specific routes
 
-->         /govuk-frontend          govuk.Routes
-->         /hmrc-frontend           hmrcfrontend.Routes
-GET        /hello-world             uk.gov.hmrc.maintaintrustassetsfrontend.controllers.HelloWorldController.helloWorld
-GET        /language/:lang          uk.gov.hmrc.maintaintrustassetsfrontend.controllers.LanguageSwitchController.switchToLanguage(lang: String)
-GET        /assets/*file            controllers.Assets.versioned(path = "/public", file: Asset)
+->         /money                                       money.Routes
+->         /property-or-land                            propertyOrLand.Routes
+->         /shares                                      shares.Routes
+->         /business                                    business.Routes
+->         /partnership                                 partnership.Routes
+->         /other                                       other.Routes
+->         /non-eea-business                            nonEeaBusiness.Routes
+
+GET        /:draftId/start                              controllers.IndexController.onPageLoad(draftId: String)
+
+GET        /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)
+
+GET        /language/:lang                              controllers.LanguageSwitchController.switchToLanguage(lang: String)
+
+GET        /this-service-has-been-reset                 controllers.SessionExpiredController.onPageLoad
+
+GET        /unauthorised                                controllers.UnauthorisedController.onPageLoad
+
+GET        /logout                                      controllers.LogoutController.logout()
+
+GET        /:draftId/:index/assets-type           controllers.asset.WhatKindOfAssetController.onPageLoad(index: Int, draftId: String)
+POST       /:draftId/:index/assets-type           controllers.asset.WhatKindOfAssetController.onSubmit(index: Int, draftId: String)
+
+GET        /:draftId/trust-owns-non-eea-company   controllers.asset.TrustOwnsNonEeaBusinessYesNoController.onPageLoad(draftId: String)
+POST       /:draftId/trust-owns-non-eea-company   controllers.asset.TrustOwnsNonEeaBusinessYesNoController.onSubmit(draftId: String)
+
+GET        /:draftId/information-you-need         controllers.asset.AssetInterruptPageController.onPageLoad(draftId: String)
+POST       /:draftId/information-you-need         controllers.asset.AssetInterruptPageController.onSubmit(draftId: String)
+
+GET        /:draftId/add                          controllers.asset.AddAssetsController.onPageLoad(draftId: String)
+POST       /:draftId/add                          controllers.asset.AddAssetsController.submitOne(draftId: String)
+GET        /:draftId/add-another                  controllers.asset.AddAssetsController.onPageLoad(draftId: String)
+POST       /:draftId/add-another                  controllers.asset.AddAssetsController.submitAnother(draftId: String)
+GET        /:draftId/complete                     controllers.asset.AddAssetsController.onPageLoad(draftId: String)
+POST       /:draftId/complete                     controllers.asset.AddAssetsController.submitComplete(draftId: String)
+
+GET        /:draftId/:index/remove                controllers.asset.RemoveAssetYesNoController.onPageLoad(index: Int, draftId: String)
+POST       /:draftId/:index/remove                controllers.asset.RemoveAssetYesNoController.onSubmit(index: Int, draftId: String)
+
+GET        /feature-not-available                       controllers.FeatureNotAvailableController.onPageLoad()
+
+GET        /keep-alive                                  controllers.SessionTimeoutController.keepAlive
+
+GET        /timeout                                     controllers.SessionTimeoutController.timeout
