@@ -1,0 +1,32 @@
+GET        /:draftId/:index/share-company-name                                                controllers.asset.shares.ShareCompanyNameController.onPageLoad(index: Int, draftId: String)
+POST       /:draftId/:index/share-company-name                                                controllers.asset.shares.ShareCompanyNameController.onSubmit(index: Int, draftId: String)
+
+GET        /:draftId/:index/share-class                                                       controllers.asset.shares.ShareClassController.onPageLoad(index: Int, draftId: String)
+POST       /:draftId/:index/share-class                                                       controllers.asset.shares.ShareClassController.onSubmit(index: Int, draftId: String)
+
+GET        /:draftId/:index/share-portfolio-name                                              controllers.asset.shares.SharePortfolioNameController.onPageLoad(index: Int, draftId: String)
+POST       /:draftId/:index/share-portfolio-name                                              controllers.asset.shares.SharePortfolioNameController.onSubmit(index: Int, draftId: String)
+
+GET        /:draftId/:index/portfolio-on-stock-exchange                                       controllers.asset.shares.SharePortfolioOnStockExchangeController.onPageLoad(index: Int, draftId: String)
+POST       /:draftId/:index/portfolio-on-stock-exchange                                       controllers.asset.shares.SharePortfolioOnStockExchangeController.onSubmit(index: Int, draftId: String)
+
+GET        /:draftId/:index/portfolio-quantity-in-the-trust                                   controllers.asset.shares.SharePortfolioQuantityInTrustController.onPageLoad(index: Int, draftId: String)
+POST       /:draftId/:index/portfolio-quantity-in-the-trust                                   controllers.asset.shares.SharePortfolioQuantityInTrustController.onSubmit(index: Int, draftId: String)
+
+GET        /:draftId/:index/portfolio-value-in-the-trust                                      controllers.asset.shares.SharePortfolioValueInTrustController.onPageLoad(index: Int, draftId: String)
+POST       /:draftId/:index/portfolio-value-in-the-trust                                      controllers.asset.shares.SharePortfolioValueInTrustController.onSubmit(index: Int, draftId: String)
+
+GET        /:draftId/:index/share-quantity-in-the-trust                                       controllers.asset.shares.ShareQuantityInTrustController.onPageLoad(index: Int, draftId: String)
+POST       /:draftId/:index/share-quantity-in-the-trust                                       controllers.asset.shares.ShareQuantityInTrustController.onSubmit(index: Int, draftId: String)
+
+GET        /:draftId/:index/share-value-in-the-trust                                          controllers.asset.shares.ShareValueInTrustController.onPageLoad(index: Int, draftId: String)
+POST       /:draftId/:index/share-value-in-the-trust                                          controllers.asset.shares.ShareValueInTrustController.onSubmit(index: Int, draftId: String)
+
+GET        /:draftId/:index/shares-in-a-portfolio                                             controllers.asset.shares.SharesInAPortfolioController.onPageLoad(index: Int, draftId: String)
+POST       /:draftId/:index/shares-in-a-portfolio                                             controllers.asset.shares.SharesInAPortfolioController.onSubmit(index: Int, draftId: String)
+
+GET        /:draftId/:index/shares-on-stock-exchange                                          controllers.asset.shares.SharesOnStockExchangeController.onPageLoad(index: Int, draftId: String)
+POST       /:draftId/:index/shares-on-stock-exchange                                          controllers.asset.shares.SharesOnStockExchangeController.onSubmit(index: Int, draftId: String)
+
+GET        /:draftId/:index/check-share-answers                                               controllers.asset.shares.ShareAnswerController.onPageLoad(index : Int, draftId : String)
+POST       /:draftId/:index/check-share-answers                                               controllers.asset.shares.ShareAnswerController.onSubmit(index : Int, draftId : String)
