@@ -33,7 +33,7 @@ class BusinessDescriptionViewSpec extends StringViewBehaviours {
   "AssetDescription view" must {
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, fakeDraftId, 0, businessName)(fakeRequest, messages)
+      view.apply(form, 0, businessName)(fakeRequest, messages)
 
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, businessName)
 

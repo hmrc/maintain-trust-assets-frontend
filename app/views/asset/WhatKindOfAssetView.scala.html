@@ -23,7 +23,7 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], draftId: String, index: Int, options: List[RadioOption])(implicit request: Request[_], messages: Messages)
+@(form: Form[_], index: Int, options: List[RadioOption])(implicit request: Request[_], messages: Messages)
 
 @title = {
     @if(index == 0) {@messages("whatKindOfAsset.first.title")} else {@messages("whatKindOfAsset.next.title")}
@@ -37,7 +37,7 @@
     title = s"${errorPrefix(form)} $title"
     ) {
 
-    @formHelper(action = WhatKindOfAssetController.onSubmit(index, draftId), 'autoComplete -> "off") {
+    @formHelper(action = WhatKindOfAssetController.onSubmit(index), 'autoComplete -> "off") {
 
         @components.back_link()
 

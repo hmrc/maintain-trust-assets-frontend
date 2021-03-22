@@ -69,13 +69,13 @@ class SharesAnswersHelperSpec extends SpecBase {
 
         reset(mockPrintHelper)
 
-        when(mockPrintHelper.printSection(any(), any(), any(), any(), any())(any())).thenReturn(AnswerSection())
+        when(mockPrintHelper.printSection(any(), any(), any(), any())(any())).thenReturn(AnswerSection())
 
         val result: Seq[AnswerSection] = answersHelper(userAnswers)
 
         result mustBe Seq(AnswerSection(), AnswerSection())
 
-        verify(mockPrintHelper, times(2)).printSection(any(), any(), any(), any(), any())(any())
+        verify(mockPrintHelper, times(2)).printSection(any(), any(), any(), any())(any())
       }
 
       "index headings correctly" in {

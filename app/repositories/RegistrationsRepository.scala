@@ -36,7 +36,6 @@ class DefaultRegistrationsRepository @Inject()(submissionDraftConnector: Submiss
 
   override def set(userAnswers: UserAnswers)(implicit hc: HeaderCarrier, messages: Messages): Future[Boolean] = {
     submissionDraftConnector.setDraftSectionSet(
-      userAnswers.draftId,
       userAnswersSection,
       submissionSetFactory.createFrom(userAnswers)
     ).map {
@@ -44,8 +43,8 @@ class DefaultRegistrationsRepository @Inject()(submissionDraftConnector: Submiss
     }
   }
 
-  override def get(draftId: String)(implicit hc: HeaderCarrier): Future[Option[UserAnswers]] = {
-    submissionDraftConnector.getDraftSection(draftId, userAnswersSection).map {
+  override def get()(implicit hc: HeaderCarrier): Future[Option[UserAnswers]] = {
+    submissionDraftConnector.getDraftSection(userAnswersSection).map {
       response =>
         response.data.validate[UserAnswers] match {
           case JsSuccess(userAnswers, _) => Some(userAnswers)
@@ -59,5 +58,5 @@ trait RegistrationsRepository {
 
   def set(userAnswers: UserAnswers)(implicit hc: HeaderCarrier, messages: Messages): Future[Boolean]
 
-  def get(draftId: String)(implicit hc: HeaderCarrier): Future[Option[UserAnswers]]
+  def get()(implicit hc: HeaderCarrier): Future[Option[UserAnswers]]
 }

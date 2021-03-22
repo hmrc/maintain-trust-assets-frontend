@@ -39,7 +39,7 @@ class GoverningCountryViewSpec extends SelectCountryViewBehaviours {
     val view = viewFor[GoverningCountryView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, countryOptions, fakeDraftId, index, name)(fakeRequest, messages)
+      view.apply(form, countryOptions, index, name)(fakeRequest, messages)
 
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name)
 

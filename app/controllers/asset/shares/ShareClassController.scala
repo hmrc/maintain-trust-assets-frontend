@@ -50,16 +50,16 @@ class ShareClassController @Inject()(
 
   private val form = formProvider()
 
-  private def actions(index : Int, draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] =
-    identify andThen getData(draftId) andThen
+  private def actions(index : Int): ActionBuilder[RegistrationDataRequest, AnyContent] =
+    identify andThen getData() andThen
       requireData andThen
       validateIndex(index, sections.Assets) andThen
       requiredAnswer(RequiredAnswer(
         ShareCompanyNamePage(index),
-        routes.ShareCompanyNameController.onPageLoad(index, draftId)
+        routes.ShareCompanyNameController.onPageLoad(index)
       ))
 
-  def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
+  def onPageLoad(index: Int): Action[AnyContent] = actions(index) {
     implicit request =>
 
       val companyName = request.userAnswers.get(ShareCompanyNamePage(index)).get
@@ -69,23 +69,23 @@ class ShareClassController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, draftId, index, companyName))
+      Ok(view(preparedForm, index, companyName))
   }
 
-  def onSubmit(index: Int,  draftId: String): Action[AnyContent] = actions(index, draftId).async {
+  def onSubmit(index: Int): Action[AnyContent] = actions(index).async {
     implicit request =>
 
       val companyName = request.userAnswers.get(ShareCompanyNamePage(index)).get
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, draftId, index, companyName))),
+          Future.successful(BadRequest(view(formWithErrors, index, companyName))),
 
         value => {
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(ShareClassPage(index), value))
             _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(ShareClassPage(index), draftId)(updatedAnswers))
+          } yield Redirect(navigator.nextPage(ShareClassPage(index))(updatedAnswers))
         }
       )
   }

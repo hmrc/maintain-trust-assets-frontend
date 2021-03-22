@@ -35,7 +35,7 @@ class ShareValueInTrustViewSpec extends LongViewBehaviours {
     val view = viewFor[ShareValueInTrustView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, fakeDraftId, index, companyName)(fakeRequest, messages)
+      view.apply(form, index, companyName)(fakeRequest, messages)
 
     behave like pageWithBackLink(applyView(form))
 

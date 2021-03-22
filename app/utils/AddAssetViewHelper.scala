@@ -26,7 +26,7 @@ import viewmodels.{AddRow, AddToRows, _}
 
 import javax.inject.Inject
 
-class AddAssetViewHelper @Inject()(userAnswers: UserAnswers, draftId: String)
+class AddAssetViewHelper @Inject()(userAnswers: UserAnswers)
                                   (implicit messages: Messages) {
 
   def rows: AddToRows = {
@@ -65,8 +65,8 @@ class AddAssetViewHelper @Inject()(userAnswers: UserAnswers, draftId: String)
     AddRow(
       name = mvm.label.getOrElse(defaultValue),
       typeLabel = mvm.`type`.label,
-      changeUrl = money.routes.AssetMoneyValueController.onPageLoad(index, draftId).url,
-      removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index, draftId).url
+      changeUrl = money.routes.AssetMoneyValueController.onPageLoad(index).url,
+      removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index).url
     )
   }
 
@@ -79,11 +79,11 @@ class AddAssetViewHelper @Inject()(userAnswers: UserAnswers, draftId: String)
       },
       typeLabel = plvm.`type`.label,
       changeUrl = if (plvm.status == Completed) {
-        property_or_land.routes.PropertyOrLandAnswerController.onPageLoad(index, draftId).url
+        property_or_land.routes.PropertyOrLandAnswerController.onPageLoad(index).url
       } else {
-        property_or_land.routes.PropertyOrLandAddressYesNoController.onPageLoad(index, draftId).url
+        property_or_land.routes.PropertyOrLandAddressYesNoController.onPageLoad(index).url
       },
-      removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index, draftId).url
+      removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index).url
     )
   }
 
@@ -92,11 +92,11 @@ class AddAssetViewHelper @Inject()(userAnswers: UserAnswers, draftId: String)
       name = svm.label.getOrElse(defaultName),
       typeLabel = svm.`type`.label,
       changeUrl = if (svm.status == Completed) {
-        shares.routes.ShareAnswerController.onPageLoad(index, draftId).url
+        shares.routes.ShareAnswerController.onPageLoad(index).url
       } else {
-        shares.routes.SharesInAPortfolioController.onPageLoad(index, draftId).url
+        shares.routes.SharesInAPortfolioController.onPageLoad(index).url
       },
-      removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index, draftId).url
+      removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index).url
     )
   }
 
@@ -105,11 +105,11 @@ class AddAssetViewHelper @Inject()(userAnswers: UserAnswers, draftId: String)
       name = bvm.label.getOrElse(defaultName),
       typeLabel = bvm.`type`.label,
       changeUrl = if (bvm.status == Completed) {
-        business.routes.BusinessAnswersController.onPageLoad(index, draftId).url
+        business.routes.BusinessAnswersController.onPageLoad(index).url
       } else {
-        business.routes.BusinessNameController.onPageLoad(index, draftId).url
+        business.routes.BusinessNameController.onPageLoad(index).url
       },
-      removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index, draftId).url
+      removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index).url
     )
   }
 
@@ -118,11 +118,11 @@ class AddAssetViewHelper @Inject()(userAnswers: UserAnswers, draftId: String)
       name = pvm.label.getOrElse(defaultDescription),
       typeLabel = pvm.`type`.label,
       changeUrl = if (pvm.status == Completed) {
-        partnership.routes.PartnershipAnswerController.onPageLoad(index, draftId).url
+        partnership.routes.PartnershipAnswerController.onPageLoad(index).url
       } else {
-        partnership.routes.PartnershipDescriptionController.onPageLoad(index, draftId).url
+        partnership.routes.PartnershipDescriptionController.onPageLoad(index).url
       },
-      removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index, draftId).url
+      removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index).url
     )
   }
 
@@ -131,11 +131,11 @@ class AddAssetViewHelper @Inject()(userAnswers: UserAnswers, draftId: String)
       name = ovm.label.getOrElse(defaultDescription),
       typeLabel = ovm.`type`.label,
       changeUrl = if (ovm.status == Completed) {
-        other.routes.OtherAssetAnswersController.onPageLoad(index, draftId).url
+        other.routes.OtherAssetAnswersController.onPageLoad(index).url
       } else {
-        other.routes.OtherAssetDescriptionController.onPageLoad(index, draftId).url
+        other.routes.OtherAssetDescriptionController.onPageLoad(index).url
       },
-      removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index, draftId).url
+      removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index).url
     )
   }
   
@@ -144,11 +144,11 @@ class AddAssetViewHelper @Inject()(userAnswers: UserAnswers, draftId: String)
       name = nebvm.label.getOrElse(defaultName),
       typeLabel = nebvm.`type`.label,
       changeUrl = if (nebvm.status == Completed) {
-        noneeabusiness.routes.AnswersController.onPageLoad(index, draftId).url
+        noneeabusiness.routes.AnswersController.onPageLoad(index).url
       } else {
-        noneeabusiness.routes.NameController.onPageLoad(index, draftId).url
+        noneeabusiness.routes.NameController.onPageLoad(index).url
       },
-      removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index, draftId).url
+      removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index).url
     )
   }
 

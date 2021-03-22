@@ -48,7 +48,7 @@ class RegistrationRepositorySpec extends SpecBase with MustMatchers with Mockito
 
         implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
-        val userAnswers = UserAnswers(draftId = fakeDraftId, internalAuthId = "internalId")
+        val userAnswers = UserAnswers(internalAuthId = "internalId")
 
         val mockConnector = mock[SubmissionDraftConnector]
 
@@ -56,12 +56,12 @@ class RegistrationRepositorySpec extends SpecBase with MustMatchers with Mockito
 
         val response = SubmissionDraftResponse(LocalDateTime.now, Json.toJson(userAnswers), None)
 
-        when(mockConnector.getDraftSection(any(), any())(any(), any())).thenReturn(Future.successful(response))
+        when(mockConnector.getDraftSection(any())(any(), any())).thenReturn(Future.successful(response))
 
-        val result = Await.result(repository.get(fakeDraftId), Duration.Inf)
+        val result = Await.result(repository.get(), Duration.Inf)
 
         result mustBe Some(userAnswers)
-        verify(mockConnector).getDraftSection(fakeDraftId, frontendAppConfig.repositoryKey)
+        verify(mockConnector).getDraftSection(frontendAppConfig.repositoryKey)
       }
     }
 
@@ -85,14 +85,14 @@ class RegistrationRepositorySpec extends SpecBase with MustMatchers with Mockito
 
         val repository = createRepository(mockConnector, mockSubmissionSetFactory)
 
-        when(mockConnector.setDraftSectionSet(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+        when(mockConnector.setDraftSectionSet(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
 
-        val userAnswers = UserAnswers(draftId = fakeDraftId, internalAuthId = "internalId")
+        val userAnswers = UserAnswers(internalAuthId = "internalId")
 
         val result = Await.result(repository.set(userAnswers), Duration.Inf)
 
         result mustBe true
-        verify(mockConnector).setDraftSectionSet(fakeDraftId, frontendAppConfig.repositoryKey, submissionSet)
+        verify(mockConnector).setDraftSectionSet(frontendAppConfig.repositoryKey, submissionSet)
       }
     }
    }

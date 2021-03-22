@@ -31,18 +31,17 @@ class NonEeaBusinessPrintHelper @Inject()(checkAnswersFormatters: CheckAnswersFo
 
   override def answerRows(userAnswers: UserAnswers,
                           arg: String,
-                          index: Int,
-                          draftId: String)
+                          index: Int)
                          (implicit messages: Messages): Seq[AnswerRow] = {
 
     val converter: AnswerRowConverter = new AnswerRowConverter(checkAnswersFormatters)(userAnswers, arg)
 
     Seq(
-      if (userAnswers.isTaxable) converter.assetTypeQuestion(index, draftId) else None,
-      converter.stringQuestion(NamePage(index), "nonEeaBusiness.name", NameController.onPageLoad(index, draftId).url),
-      converter.addressQuestion(InternationalAddressPage(index), "nonEeaBusiness.internationalAddress", InternationalAddressController.onPageLoad(index, draftId).url),
-      converter.countryQuestion(GoverningCountryPage(index), "nonEeaBusiness.governingCountry", GoverningCountryController.onPageLoad(index, draftId).url),
-      converter.dateQuestion(StartDatePage(index), "nonEeaBusiness.startDate", StartDateController.onPageLoad(index, draftId).url)
+      if (userAnswers.isTaxable) converter.assetTypeQuestion(index) else None,
+      converter.stringQuestion(NamePage(index), "nonEeaBusiness.name", NameController.onPageLoad(index).url),
+      converter.addressQuestion(InternationalAddressPage(index), "nonEeaBusiness.internationalAddress", InternationalAddressController.onPageLoad(index).url),
+      converter.countryQuestion(GoverningCountryPage(index), "nonEeaBusiness.governingCountry", GoverningCountryController.onPageLoad(index).url),
+      converter.dateQuestion(StartDatePage(index), "nonEeaBusiness.startDate", StartDateController.onPageLoad(index).url)
     ).flatten
   }
 }

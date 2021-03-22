@@ -22,7 +22,7 @@
     formHelper: FormWithCSRF
 )
 
-@(index: Int, draftId: String, answerSections: Seq[Section])(implicit request: Request[_], messages: Messages)
+@(index: Int, answerSections: Seq[Section])(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("nonEeaBusiness.answers.title")
@@ -41,7 +41,7 @@
         }
     }
 
-    @formHelper(action = AnswersController.onSubmit(index, draftId), 'autoComplete -> "off") {
+    @formHelper(action = AnswersController.onSubmit(index), 'autoComplete -> "off") {
         @components.submit_button()
     }
 }

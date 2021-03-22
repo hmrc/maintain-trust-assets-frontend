@@ -29,19 +29,19 @@ class SubmissionDraftConnector @Inject()(http: HttpClient, config: FrontendAppCo
 
   private val submissionsBaseUrl = s"${config.trustsUrl}/trusts/register/submission-drafts"
 
-  def setDraftSectionSet(draftId: String, section: String, data: RegistrationSubmission.DataSet)
+  def setDraftSectionSet(section: String, data: RegistrationSubmission.DataSet)
                         (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    http.POST[JsValue, HttpResponse](s"$submissionsBaseUrl/$draftId/set/$section", Json.toJson(data))
+    http.POST[JsValue, HttpResponse](s"$submissionsBaseUrl/set/$section", Json.toJson(data))
   }
 
-  def getDraftSection(draftId: String, section: String)
+  def getDraftSection(section: String)
                      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[SubmissionDraftResponse] = {
-    http.GET[SubmissionDraftResponse](s"$submissionsBaseUrl/$draftId/$section")
+    http.GET[SubmissionDraftResponse](s"$submissionsBaseUrl/$section")
   }
 
-  def getIsTrustTaxable(draftId: String)
+  def getIsTrustTaxable()
                        (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
-    http.GET[Boolean](s"$submissionsBaseUrl/$draftId/is-trust-taxable").recover {
+    http.GET[Boolean](s"$submissionsBaseUrl/is-trust-taxable").recover {
       case _ => true
     }
   }

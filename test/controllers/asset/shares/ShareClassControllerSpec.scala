@@ -35,7 +35,7 @@ class ShareClassControllerSpec extends SpecBase with ModelGenerators with IndexV
   val index: Int = 0
   val companyName = "Company"
 
-  lazy val shareClassRoute = routes.ShareClassController.onPageLoad(index, fakeDraftId).url
+  lazy val shareClassRoute = routes.ShareClassController.onPageLoad(index).url
 
   "ShareClass Controller" must {
 
@@ -54,7 +54,7 @@ class ShareClassControllerSpec extends SpecBase with ModelGenerators with IndexV
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, fakeDraftId, index, companyName)(fakeRequest, messages).toString
+        view(form, index, companyName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -75,7 +75,7 @@ class ShareClassControllerSpec extends SpecBase with ModelGenerators with IndexV
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(ShareClass.allValues.head), fakeDraftId, index, companyName)(fakeRequest, messages).toString
+        view(form.fill(ShareClass.allValues.head), index, companyName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -119,7 +119,7 @@ class ShareClassControllerSpec extends SpecBase with ModelGenerators with IndexV
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, fakeDraftId, index, companyName)(fakeRequest, messages).toString
+        view(boundForm, index, companyName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -165,7 +165,7 @@ class ShareClassControllerSpec extends SpecBase with ModelGenerators with IndexV
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.ShareCompanyNameController.onPageLoad(index, fakeDraftId).url
+      redirectLocation(result).value mustEqual routes.ShareCompanyNameController.onPageLoad(index).url
 
       application.stop()
     }
@@ -174,7 +174,7 @@ class ShareClassControllerSpec extends SpecBase with ModelGenerators with IndexV
   "for a GET" must {
 
     def getForIndex(index: Int) : FakeRequest[AnyContentAsEmpty.type] = {
-      val route = routes.ShareClassController.onPageLoad(index, fakeDraftId).url
+      val route = routes.ShareClassController.onPageLoad(index).url
 
       FakeRequest(GET, route)
     }
@@ -191,7 +191,7 @@ class ShareClassControllerSpec extends SpecBase with ModelGenerators with IndexV
     def postForIndex(index: Int): FakeRequest[AnyContentAsFormUrlEncoded] = {
 
       val route =
-        routes.ShareClassController.onPageLoad(index, fakeDraftId).url
+        routes.ShareClassController.onPageLoad(index).url
 
       FakeRequest(POST, route)
         .withFormUrlEncodedBody(("shareClass", "other"))

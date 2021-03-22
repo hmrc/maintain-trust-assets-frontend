@@ -29,8 +29,8 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class MoneyNavigator @Inject()(config: FrontendAppConfig) extends Navigator(config) {
 
-  override protected def route(draftId: String): PartialFunction[Page, AffinityGroup => UserAnswers => Call] = {
-    case AssetMoneyValuePage(_) => _ => _ => AddAssetsController.onPageLoad(draftId)
+  override protected def route(): PartialFunction[Page, AffinityGroup => UserAnswers => Call] = {
+    case AssetMoneyValuePage(_) => _ => _ => AddAssetsController.onPageLoad()
   }
 
 }

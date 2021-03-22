@@ -48,12 +48,12 @@ class SharePortfolioValueInTrustController @Inject()(
 
   private val form = formProvider.withConfig(prefix = "shares.portfolioValueInTrust")
 
-  private def actions(index : Int, draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] =
-    identify andThen getData(draftId) andThen
+  private def actions(index : Int): ActionBuilder[RegistrationDataRequest, AnyContent] =
+    identify andThen getData() andThen
       requireData andThen
       validateIndex(index, sections.Assets)
 
-  def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
+  def onPageLoad(index: Int): Action[AnyContent] = actions(index) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(SharePortfolioValueInTrustPage(index)) match {
@@ -61,21 +61,21 @@ class SharePortfolioValueInTrustController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, draftId, index))
+      Ok(view(preparedForm, index))
   }
 
-  def onSubmit(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async {
+  def onSubmit(index: Int): Action[AnyContent] = actions(index).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, draftId, index))),
+          Future.successful(BadRequest(view(formWithErrors, index))),
 
         value => {
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(SharePortfolioValueInTrustPage(index), value))
             _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(SharePortfolioValueInTrustPage(index), draftId)(updatedAnswers))
+          } yield Redirect(navigator.nextPage(SharePortfolioValueInTrustPage(index))(updatedAnswers))
         }
       )
   }

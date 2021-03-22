@@ -21,13 +21,13 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], draftId: String, index: Int)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], index: Int)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = s"${errorPrefix(form)} ${messages("business.name.title")}"
 ) {
 
-    @formHelper(action = BusinessNameController.onSubmit(index, draftId), 'autoComplete -> "off") {
+    @formHelper(action = BusinessNameController.onSubmit(index), 'autoComplete -> "off") {
 
         @components.back_link()
 

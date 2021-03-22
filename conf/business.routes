@@ -1,20 +1,20 @@
-GET        /:draftId/:index/name                                                      controllers.asset.business.BusinessNameController.onPageLoad(index: Int, draftId: String)
-POST       /:draftId/:index/name                                                      controllers.asset.business.BusinessNameController.onSubmit(index: Int, draftId: String)
+GET        /:index/name                                                      controllers.asset.business.BusinessNameController.onPageLoad(index: Int)
+POST       /:index/name                                                      controllers.asset.business.BusinessNameController.onSubmit(index: Int)
 
-GET        /:draftId/:index/description                                               controllers.asset.business.BusinessDescriptionController.onPageLoad(index: Int, draftId: String)
-POST       /:draftId/:index/description                                               controllers.asset.business.BusinessDescriptionController.onSubmit(index: Int, draftId: String)
+GET        /:index/description                                               controllers.asset.business.BusinessDescriptionController.onPageLoad(index: Int)
+POST       /:index/description                                               controllers.asset.business.BusinessDescriptionController.onSubmit(index: Int)
 
-GET        /:draftId/:index/is-address-in-uk                                          controllers.asset.business.BusinessAddressUkYesNoController.onPageLoad(index: Int, draftId: String)
-POST       /:draftId/:index/is-address-in-uk                                          controllers.asset.business.BusinessAddressUkYesNoController.onSubmit(index: Int, draftId: String)
+GET        /:index/is-address-in-uk                                          controllers.asset.business.BusinessAddressUkYesNoController.onPageLoad(index: Int)
+POST       /:index/is-address-in-uk                                          controllers.asset.business.BusinessAddressUkYesNoController.onSubmit(index: Int)
 
-GET        /:draftId/:index/uk-address                                                controllers.asset.business.BusinessUkAddressController.onPageLoad(index: Int, draftId: String)
-POST       /:draftId/:index/uk-address                                                controllers.asset.business.BusinessUkAddressController.onSubmit(index: Int, draftId: String)
+GET        /:index/uk-address                                                controllers.asset.business.BusinessUkAddressController.onPageLoad(index: Int)
+POST       /:index/uk-address                                                controllers.asset.business.BusinessUkAddressController.onSubmit(index: Int)
 
-GET        /:draftId/:index/international-address                                     controllers.asset.business.BusinessInternationalAddressController.onPageLoad(index: Int, draftId: String)
-POST       /:draftId/:index/international-address                                     controllers.asset.business.BusinessInternationalAddressController.onSubmit(index: Int, draftId: String)
+GET        /:index/international-address                                     controllers.asset.business.BusinessInternationalAddressController.onPageLoad(index: Int)
+POST       /:index/international-address                                     controllers.asset.business.BusinessInternationalAddressController.onSubmit(index: Int)
 
-GET        /:draftId/:index/current-value                                             controllers.asset.business.BusinessValueController.onPageLoad(index: Int, draftId: String)
-POST       /:draftId/:index/current-value                                             controllers.asset.business.BusinessValueController.onSubmit(index: Int, draftId: String)
+GET        /:index/current-value                                             controllers.asset.business.BusinessValueController.onPageLoad(index: Int)
+POST       /:index/current-value                                             controllers.asset.business.BusinessValueController.onSubmit(index: Int)
 
-GET        /:draftId/:index/check-answers                                             controllers.asset.business.BusinessAnswersController.onPageLoad(index: Int, draftId: String)
-POST       /:draftId/:index/check-answers                                             controllers.asset.business.BusinessAnswersController.onSubmit(index: Int, draftId: String)
+GET        /:index/check-answers                                             controllers.asset.business.BusinessAnswersController.onPageLoad(index: Int)
+POST       /:index/check-answers                                             controllers.asset.business.BusinessAnswersController.onSubmit(index: Int)

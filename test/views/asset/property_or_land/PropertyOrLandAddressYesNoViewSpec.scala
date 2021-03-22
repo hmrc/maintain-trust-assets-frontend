@@ -34,7 +34,7 @@ class PropertyOrLandAddressYesNoViewSpec extends YesNoViewBehaviours {
     val view = viewFor[PropertyOrLandAddressYesNoView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, index, fakeDraftId)(fakeRequest, messages)
+      view.apply(form, index)(fakeRequest, messages)
 
     behave like normalPage(applyView(form), messageKeyPrefix)
 

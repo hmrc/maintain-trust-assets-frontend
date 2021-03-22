@@ -49,13 +49,13 @@ class PropertyOrLandInternationalAddressController @Inject()(
 
   private val form = formProvider()
 
-  private def actions(index: Int, draftId: String) =
+  private def actions(index: Int) =
       identify andThen
-      getData(draftId) andThen
+      getData() andThen
       requireData andThen
       validateIndex(index, sections.Assets)
 
-  def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
+  def onPageLoad(index: Int): Action[AnyContent] = actions(index) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(PropertyOrLandInternationalAddressPage(index)) match {
@@ -63,21 +63,21 @@ class PropertyOrLandInternationalAddressController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, countryOptions.options, draftId, index))
+      Ok(view(preparedForm, countryOptions.options, index))
   }
 
-  def onSubmit(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async {
+  def onSubmit(index: Int): Action[AnyContent] = actions(index).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, countryOptions.options, draftId, index))),
+          Future.successful(BadRequest(view(formWithErrors, countryOptions.options, index))),
 
         value => {
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(PropertyOrLandInternationalAddressPage(index), value))
             _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(PropertyOrLandInternationalAddressPage(index), draftId)(updatedAnswers))
+          } yield Redirect(navigator.nextPage(PropertyOrLandInternationalAddressPage(index))(updatedAnswers))
         }
       )
   }

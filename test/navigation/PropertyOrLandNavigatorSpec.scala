@@ -39,8 +39,8 @@ class PropertyOrLandNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>
             val answers = userAnswers.set(page, value = true).success.value
-            navigator.nextPage(page, fakeDraftId)(answers)
-              .mustBe(PropertyOrLandAddressUkYesNoController.onPageLoad(index, fakeDraftId))
+            navigator.nextPage(page)(answers)
+              .mustBe(PropertyOrLandAddressUkYesNoController.onPageLoad(index))
         }
       }
 
@@ -48,8 +48,8 @@ class PropertyOrLandNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>
             val answers = userAnswers.set(page, value = false).success.value
-            navigator.nextPage(page, fakeDraftId)(answers)
-              .mustBe(PropertyOrLandDescriptionController.onPageLoad(index, fakeDraftId))
+            navigator.nextPage(page)(answers)
+              .mustBe(PropertyOrLandDescriptionController.onPageLoad(index))
         }
       }
 
@@ -63,8 +63,8 @@ class PropertyOrLandNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>
             val answers = userAnswers.set(page, value = true).success.value
-            navigator.nextPage(page, fakeDraftId)(answers)
-              .mustBe(PropertyOrLandUKAddressController.onPageLoad(index, fakeDraftId))
+            navigator.nextPage(page)(answers)
+              .mustBe(PropertyOrLandUKAddressController.onPageLoad(index))
         }
       }
 
@@ -72,8 +72,8 @@ class PropertyOrLandNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>
             val answers = userAnswers.set(page, value = false).success.value
-            navigator.nextPage(page, fakeDraftId)(answers)
-              .mustBe(PropertyOrLandInternationalAddressController.onPageLoad(index, fakeDraftId))
+            navigator.nextPage(page)(answers)
+              .mustBe(PropertyOrLandInternationalAddressController.onPageLoad(index))
         }
       }
     }
@@ -86,8 +86,8 @@ class PropertyOrLandNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>
             val answers = userAnswers.set(page, "Test").success.value
-            navigator.nextPage(page, fakeDraftId)(answers)
-              .mustBe(PropertyOrLandTotalValueController.onPageLoad(index, fakeDraftId))
+            navigator.nextPage(page)(answers)
+              .mustBe(PropertyOrLandTotalValueController.onPageLoad(index))
         }
       }
       "navigating from PropertyOrLandInternationalAddressPage" in {
@@ -97,8 +97,8 @@ class PropertyOrLandNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>
             val answers = userAnswers.set(page, InternationalAddress("line1", "line2", None, "France")).success.value
-            navigator.nextPage(page, fakeDraftId)(answers)
-              .mustBe(PropertyOrLandTotalValueController.onPageLoad(index, fakeDraftId))
+            navigator.nextPage(page)(answers)
+              .mustBe(PropertyOrLandTotalValueController.onPageLoad(index))
         }
       }
       "navigating from PropertyOrLandUKAddressPage" in {
@@ -108,8 +108,8 @@ class PropertyOrLandNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>
             val answers = userAnswers.set(page, UKAddress("line1", "line2",  None, None, "NE11NE")).success.value
-            navigator.nextPage(page, fakeDraftId)(answers)
-              .mustBe(PropertyOrLandTotalValueController.onPageLoad(index, fakeDraftId))
+            navigator.nextPage(page)(answers)
+              .mustBe(PropertyOrLandTotalValueController.onPageLoad(index))
         }
       }
     }
@@ -121,8 +121,8 @@ class PropertyOrLandNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
           val answers = userAnswers.set(page, 100L).success.value
-          navigator.nextPage(page, fakeDraftId)(answers)
-            .mustBe(TrustOwnAllThePropertyOrLandController.onPageLoad(index, fakeDraftId))
+          navigator.nextPage(page)(answers)
+            .mustBe(TrustOwnAllThePropertyOrLandController.onPageLoad(index))
       }
     }
 
@@ -134,8 +134,8 @@ class PropertyOrLandNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>
             val answers = userAnswers.set(page, value = false).success.value
-            navigator.nextPage(page, fakeDraftId)(answers)
-              .mustBe(PropertyLandValueTrustController.onPageLoad(index, fakeDraftId))
+            navigator.nextPage(page)(answers)
+              .mustBe(PropertyLandValueTrustController.onPageLoad(index))
         }
       }
 
@@ -149,8 +149,8 @@ class PropertyOrLandNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>
             val answers = userAnswers.set(page, 100L).success.value
-            navigator.nextPage(page, fakeDraftId)(answers)
-              .mustBe(PropertyOrLandAnswerController.onPageLoad(index, fakeDraftId))
+            navigator.nextPage(page)(answers)
+              .mustBe(PropertyOrLandAnswerController.onPageLoad(index))
         }
       }
 
@@ -161,8 +161,8 @@ class PropertyOrLandNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>
             val answers = userAnswers.set(page, true).success.value
-            navigator.nextPage(page, fakeDraftId)(answers)
-              .mustBe(PropertyOrLandAnswerController.onPageLoad(index, fakeDraftId))
+            navigator.nextPage(page)(answers)
+              .mustBe(PropertyOrLandAnswerController.onPageLoad(index))
         }
       }
     }
@@ -173,8 +173,8 @@ class PropertyOrLandNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
 
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
-          navigator.nextPage(page, fakeDraftId)(userAnswers)
-            .mustBe(controllers.asset.routes.AddAssetsController.onPageLoad(fakeDraftId))
+          navigator.nextPage(page)(userAnswers)
+            .mustBe(controllers.asset.routes.AddAssetsController.onPageLoad())
       }
     }
   }

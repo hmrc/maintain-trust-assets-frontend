@@ -30,32 +30,32 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class SharesNavigator @Inject()(config: FrontendAppConfig) extends Navigator(config) {
 
-  override protected def route(draftId: String): PartialFunction[Page, AffinityGroup => UserAnswers => Call] = {
-    portfolioRoutes(draftId) orElse
-    nonPortfolioRoutes(draftId) orElse {
+  override protected def route(): PartialFunction[Page, AffinityGroup => UserAnswers => Call] = {
+    portfolioRoutes() orElse
+    nonPortfolioRoutes() orElse {
       case page @ SharesInAPortfolioPage(index) => _ => ua => yesNoNav(
         ua = ua,
         fromPage = page,
-        yesCall = SharePortfolioNameController.onPageLoad(index, draftId),
-        noCall = ShareCompanyNameController.onPageLoad(index, draftId)
+        yesCall = SharePortfolioNameController.onPageLoad(index),
+        noCall = ShareCompanyNameController.onPageLoad(index)
       )
-      case ShareAnswerPage => _ => _ => AddAssetsController.onPageLoad(draftId)
+      case ShareAnswerPage => _ => _ => AddAssetsController.onPageLoad()
     }
   }
 
-  private def portfolioRoutes(draftId: String): PartialFunction[Page, AffinityGroup => UserAnswers => Call] = {
-    case SharePortfolioNamePage(index) => _ => _ => SharePortfolioOnStockExchangeController.onPageLoad(index, draftId)
-    case SharePortfolioOnStockExchangePage(index) => _ => _ => SharePortfolioQuantityInTrustController.onPageLoad(index, draftId)
-    case SharePortfolioQuantityInTrustPage(index) => _ => _ => SharePortfolioValueInTrustController.onPageLoad(index, draftId)
-    case SharePortfolioValueInTrustPage(index) => _ => _ => ShareAnswerController.onPageLoad(index, draftId)
+  private def portfolioRoutes(): PartialFunction[Page, AffinityGroup => UserAnswers => Call] = {
+    case SharePortfolioNamePage(index) => _ => _ => SharePortfolioOnStockExchangeController.onPageLoad(index)
+    case SharePortfolioOnStockExchangePage(index) => _ => _ => SharePortfolioQuantityInTrustController.onPageLoad(index)
+    case SharePortfolioQuantityInTrustPage(index) => _ => _ => SharePortfolioValueInTrustController.onPageLoad(index)
+    case SharePortfolioValueInTrustPage(index) => _ => _ => ShareAnswerController.onPageLoad(index)
   }
 
-  private def nonPortfolioRoutes(draftId: String): PartialFunction[Page, AffinityGroup => UserAnswers => Call] = {
-    case ShareCompanyNamePage(index) => _ => _ => SharesOnStockExchangeController.onPageLoad(index, draftId)
-    case SharesOnStockExchangePage(index) => _ => _ => ShareClassController.onPageLoad(index, draftId)
-    case ShareClassPage(index) => _ => _ => ShareQuantityInTrustController.onPageLoad(index, draftId)
-    case ShareQuantityInTrustPage(index) => _ => _ => ShareValueInTrustController.onPageLoad(index, draftId)
-    case ShareValueInTrustPage(index) => _ => _ => ShareAnswerController.onPageLoad(index, draftId)
+  private def nonPortfolioRoutes(): PartialFunction[Page, AffinityGroup => UserAnswers => Call] = {
+    case ShareCompanyNamePage(index) => _ => _ => SharesOnStockExchangeController.onPageLoad(index)
+    case SharesOnStockExchangePage(index) => _ => _ => ShareClassController.onPageLoad(index)
+    case ShareClassPage(index) => _ => _ => ShareQuantityInTrustController.onPageLoad(index)
+    case ShareQuantityInTrustPage(index) => _ => _ => ShareValueInTrustController.onPageLoad(index)
+    case ShareValueInTrustPage(index) => _ => _ => ShareAnswerController.onPageLoad(index)
   }
 
 }

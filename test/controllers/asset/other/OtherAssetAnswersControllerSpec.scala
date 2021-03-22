@@ -40,7 +40,7 @@ class OtherAssetAnswersControllerSpec extends SpecBase {
     val index: Int = 0
     val description: String = "Description"
 
-    lazy val answersRoute = routes.OtherAssetAnswersController.onPageLoad(index, fakeDraftId).url
+    lazy val answersRoute = routes.OtherAssetAnswersController.onPageLoad(index).url
 
     val baseAnswers: UserAnswers = emptyUserAnswers
       .set(WhatKindOfAssetPage(index), Other).success.value
@@ -51,7 +51,7 @@ class OtherAssetAnswersControllerSpec extends SpecBase {
 
       val expectedSections = Nil
       val mockPrintHelper: OtherPrintHelper = mock[OtherPrintHelper]
-      when(mockPrintHelper.checkDetailsSection(any(), any(), any(), any())(any())).thenReturn(Nil)
+      when(mockPrintHelper.checkDetailsSection(any(), any(), any())(any())).thenReturn(Nil)
 
       val application = applicationBuilder(userAnswers = Some(baseAnswers))
         .overrides(bind[OtherPrintHelper].toInstance(mockPrintHelper))
@@ -66,7 +66,7 @@ class OtherAssetAnswersControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(index, fakeDraftId, expectedSections)(fakeRequest, messages).toString
+        view(index, expectedSections)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -85,7 +85,7 @@ class OtherAssetAnswersControllerSpec extends SpecBase {
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual
-        controllers.asset.other.routes.OtherAssetDescriptionController.onPageLoad(index, fakeDraftId).url
+        controllers.asset.other.routes.OtherAssetDescriptionController.onPageLoad(index).url
 
       application.stop()
     }
@@ -105,7 +105,7 @@ class OtherAssetAnswersControllerSpec extends SpecBase {
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual
-        controllers.asset.other.routes.OtherAssetValueController.onPageLoad(index, fakeDraftId).url
+        controllers.asset.other.routes.OtherAssetValueController.onPageLoad(index).url
 
       application.stop()
     }
@@ -121,7 +121,7 @@ class OtherAssetAnswersControllerSpec extends SpecBase {
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual
-        controllers.asset.routes.AddAssetsController.onPageLoad(fakeDraftId).url
+        controllers.asset.routes.AddAssetsController.onPageLoad().url
 
       application.stop()
     }

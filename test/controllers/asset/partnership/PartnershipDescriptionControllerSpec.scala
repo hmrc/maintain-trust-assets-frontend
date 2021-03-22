@@ -32,7 +32,7 @@ class PartnershipDescriptionControllerSpec extends SpecBase with IndexValidation
   private val form = formProvider.withConfig(56, "partnership.description")
   private val index = 0
 
-  private lazy val partnershipDescriptionRoute = routes.PartnershipDescriptionController.onPageLoad(index, fakeDraftId).url
+  private lazy val partnershipDescriptionRoute = routes.PartnershipDescriptionController.onPageLoad(index).url
 
   "PartnershipDescription Controller" must {
 
@@ -49,7 +49,7 @@ class PartnershipDescriptionControllerSpec extends SpecBase with IndexValidation
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, index, fakeDraftId)(fakeRequest, messages).toString
+        view(form, index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -69,7 +69,7 @@ class PartnershipDescriptionControllerSpec extends SpecBase with IndexValidation
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill("answer"), index, fakeDraftId)(fakeRequest, messages).toString
+        view(form.fill("answer"), index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -108,7 +108,7 @@ class PartnershipDescriptionControllerSpec extends SpecBase with IndexValidation
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, index, fakeDraftId)(fakeRequest, messages).toString
+        view(boundForm, index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -149,7 +149,7 @@ class PartnershipDescriptionControllerSpec extends SpecBase with IndexValidation
   "for a GET" must {
 
     def getForIndex(index: Int) : FakeRequest[AnyContentAsEmpty.type] = {
-      val route = routes.PartnershipDescriptionController.onPageLoad(index, fakeDraftId).url
+      val route = routes.PartnershipDescriptionController.onPageLoad(index).url
 
       FakeRequest(GET, route)
     }
@@ -166,7 +166,7 @@ class PartnershipDescriptionControllerSpec extends SpecBase with IndexValidation
     def postForIndex(index: Int): FakeRequest[AnyContentAsFormUrlEncoded] = {
 
       val route =
-        routes.PartnershipDescriptionController.onPageLoad(index, fakeDraftId).url
+        routes.PartnershipDescriptionController.onPageLoad(index).url
 
       FakeRequest(POST, route)
         .withFormUrlEncodedBody(("value", "true"))

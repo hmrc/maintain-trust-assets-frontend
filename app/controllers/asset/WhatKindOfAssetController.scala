@@ -56,32 +56,32 @@ class WhatKindOfAssetController @Inject()(
     WhatKindOfAsset.nonMaxedOutOptions(assets, assetTypeAtIndex, userAnswers.is5mldEnabled)
   }
 
-  private def actions (index: Int, draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] =
-    identify andThen getData(draftId) andThen requireData andThen validateIndex(index, sections.Assets)
+  private def actions (index: Int): ActionBuilder[RegistrationDataRequest, AnyContent] =
+    identify andThen getData() andThen requireData andThen validateIndex(index, sections.Assets)
 
-  def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
+  def onPageLoad(index: Int): Action[AnyContent] = actions(index) {
     implicit request =>
       val preparedForm = request.userAnswers.get(WhatKindOfAssetPage(index)) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, draftId, index, options(request.userAnswers, index)))
+      Ok(view(preparedForm, index, options(request.userAnswers, index)))
   }
 
-  def onSubmit(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async {
+  def onSubmit(index: Int): Action[AnyContent] = actions(index).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, draftId, index, options(request.userAnswers, index)))),
+          Future.successful(BadRequest(view(formWithErrors, index, options(request.userAnswers, index)))),
 
         value => {
 
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(WhatKindOfAssetPage(index), value))
             _ <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(WhatKindOfAssetPage(index), draftId)(updatedAnswers))
+          } yield Redirect(navigator.nextPage(WhatKindOfAssetPage(index))(updatedAnswers))
         }
       )
   }

@@ -39,8 +39,8 @@ class MoneyNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
 
           val answers = userAnswers.set(WhatKindOfAssetPage(index), Money).success.value
 
-          navigator.nextPage(AssetMoneyValuePage(index), fakeDraftId)(answers)
-            .mustBe(controllers.asset.routes.AddAssetsController.onPageLoad(fakeDraftId))
+          navigator.nextPage(AssetMoneyValuePage(index))(answers)
+            .mustBe(controllers.asset.routes.AddAssetsController.onPageLoad())
 
       }
     }

@@ -35,7 +35,7 @@ class PropertyOrLandDescriptionViewSpec extends StringViewBehaviours {
     val index = 0
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, index, fakeDraftId)(fakeRequest, messages)
+      view.apply(form, index)(fakeRequest, messages)
 
     behave like normalPage(applyView(form), messageKeyPrefix)
 

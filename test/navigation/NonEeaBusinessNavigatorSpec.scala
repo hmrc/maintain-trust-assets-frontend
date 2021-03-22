@@ -37,8 +37,8 @@ class NonEeaBusinessNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
 
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
-          navigator.nextPage(page, fakeDraftId)(userAnswers)
-            .mustBe(InternationalAddressController.onPageLoad(index, fakeDraftId))
+          navigator.nextPage(page)(userAnswers)
+            .mustBe(InternationalAddressController.onPageLoad(index))
       }
     }
 
@@ -48,8 +48,8 @@ class NonEeaBusinessNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
 
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
-          navigator.nextPage(page, fakeDraftId)(userAnswers)
-            .mustBe(GoverningCountryController.onPageLoad(index, fakeDraftId))
+          navigator.nextPage(page)(userAnswers)
+            .mustBe(GoverningCountryController.onPageLoad(index))
       }
     }
 
@@ -59,8 +59,8 @@ class NonEeaBusinessNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
 
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
-          navigator.nextPage(page, fakeDraftId)(userAnswers)
-            .mustBe(StartDateController.onPageLoad(index, fakeDraftId))
+          navigator.nextPage(page)(userAnswers)
+            .mustBe(StartDateController.onPageLoad(index))
       }
     }
 
@@ -70,8 +70,8 @@ class NonEeaBusinessNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
 
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
-          navigator.nextPage(page, fakeDraftId)(userAnswers)
-            .mustBe(AnswersController.onPageLoad(index, fakeDraftId))
+          navigator.nextPage(page)(userAnswers)
+            .mustBe(AnswersController.onPageLoad(index))
       }
     }
   }

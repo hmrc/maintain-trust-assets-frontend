@@ -38,7 +38,7 @@ class NameControllerSpec extends SpecBase with IndexValidation {
   private val index = 0
   private val validAnswer: String = "Name"
 
-  private lazy val onPageLoadRoute: String = routes.NameController.onPageLoad(index, fakeDraftId).url
+  private lazy val onPageLoadRoute: String = routes.NameController.onPageLoad(index).url
 
   "NameController" must {
 
@@ -55,7 +55,7 @@ class NameControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, fakeDraftId, index)(fakeRequest, messages).toString
+        view(form, index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -76,7 +76,7 @@ class NameControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), fakeDraftId, index)(fakeRequest, messages).toString
+        view(form.fill(validAnswer), index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -115,7 +115,7 @@ class NameControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, fakeDraftId, index)(fakeRequest, messages).toString
+        view(boundForm, index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -155,7 +155,7 @@ class NameControllerSpec extends SpecBase with IndexValidation {
     "for a GET" must {
 
       def getForIndex(index: Int): FakeRequest[AnyContentAsEmpty.type] = {
-        val route = routes.NameController.onPageLoad(index, fakeDraftId).url
+        val route = routes.NameController.onPageLoad(index).url
 
         FakeRequest(GET, route)
       }
@@ -173,7 +173,7 @@ class NameControllerSpec extends SpecBase with IndexValidation {
       def postForIndex(index: Int): FakeRequest[AnyContentAsFormUrlEncoded] = {
 
         val route =
-          routes.NameController.onPageLoad(index, fakeDraftId).url
+          routes.NameController.onPageLoad(index).url
 
         FakeRequest(POST, route)
           .withFormUrlEncodedBody(("value", validAnswer))

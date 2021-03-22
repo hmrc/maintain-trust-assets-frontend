@@ -33,7 +33,7 @@ class AssetMoneyValueControllerSpec extends SpecBase {
   val index = 0
   val validAnswer: Long = 4000L
 
-  lazy val assetMoneyValueRoute: String = routes.AssetMoneyValueController.onPageLoad(index, fakeDraftId).url
+  lazy val assetMoneyValueRoute: String = routes.AssetMoneyValueController.onPageLoad(index).url
 
   "AssetMoneyValue Controller" must {
 
@@ -50,7 +50,7 @@ class AssetMoneyValueControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, fakeDraftId,index)(fakeRequest, messages).toString
+        view(form,index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -70,7 +70,7 @@ class AssetMoneyValueControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), fakeDraftId,index)(fakeRequest, messages).toString
+        view(form.fill(validAnswer),index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -109,7 +109,7 @@ class AssetMoneyValueControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, fakeDraftId,index)(fakeRequest, messages).toString
+        view(boundForm,index)(fakeRequest, messages).toString
 
       application.stop()
     }

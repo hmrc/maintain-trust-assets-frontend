@@ -38,8 +38,8 @@ class OtherNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
 
           val answers = userAnswers.set(OtherAssetDescriptionPage(index), "Description").success.value
 
-          navigator.nextPage(OtherAssetDescriptionPage(index), fakeDraftId)(answers)
-            .mustBe(OtherAssetValueController.onPageLoad(index, fakeDraftId))
+          navigator.nextPage(OtherAssetDescriptionPage(index))(answers)
+            .mustBe(OtherAssetValueController.onPageLoad(index))
       }
     }
 
@@ -50,8 +50,8 @@ class OtherNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
 
           val answers = userAnswers.set(OtherAssetValuePage(index), 4000L).success.value
 
-          navigator.nextPage(OtherAssetValuePage(index), fakeDraftId)(answers)
-            .mustBe(OtherAssetAnswersController.onPageLoad(index, fakeDraftId))
+          navigator.nextPage(OtherAssetValuePage(index))(answers)
+            .mustBe(OtherAssetAnswersController.onPageLoad(index))
       }
     }
   }

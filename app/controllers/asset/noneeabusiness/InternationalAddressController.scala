@@ -53,14 +53,14 @@ class InternationalAddressController @Inject()(
 
   private val form: Form[InternationalAddress] = formProvider()
 
-  private def actions(index: Int, draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] =
+  private def actions(index: Int): ActionBuilder[RegistrationDataRequest, AnyContent] =
     identify andThen
-      getData(draftId) andThen
+      getData() andThen
       requireData andThen
       validateIndex(index, Assets) andThen
-      requiredAnswer(RequiredAnswer(NamePage(index), routes.NameController.onPageLoad(index, draftId)))
+      requiredAnswer(RequiredAnswer(NamePage(index), routes.NameController.onPageLoad(index)))
 
-  def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
+  def onPageLoad(index: Int): Action[AnyContent] = actions(index) {
     implicit request =>
 
       val name = request.userAnswers.get(NamePage(index)).get
@@ -70,23 +70,23 @@ class InternationalAddressController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, countryOptions.options, index, draftId, name))
+      Ok(view(preparedForm, countryOptions.options, index, name))
   }
 
-  def onSubmit(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async {
+  def onSubmit(index: Int): Action[AnyContent] = actions(index).async {
     implicit request =>
 
       val name = request.userAnswers.get(NamePage(index)).get
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, countryOptions.options, index, draftId, name))),
+          Future.successful(BadRequest(view(formWithErrors, countryOptions.options, index, name))),
 
         value => {
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(InternationalAddressPage(index), value))
             _ <- registrationsRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(InternationalAddressPage(index), draftId)(updatedAnswers))
+          } yield Redirect(navigator.nextPage(InternationalAddressPage(index))(updatedAnswers))
         }
       )
   }

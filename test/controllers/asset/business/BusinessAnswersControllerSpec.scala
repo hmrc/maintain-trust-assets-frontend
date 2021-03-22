@@ -45,13 +45,13 @@ class BusinessAnswersControllerSpec extends SpecBase {
 
       val expectedSections = Nil
       val mockPrintHelper: BusinessPrintHelper = mock[BusinessPrintHelper]
-      when(mockPrintHelper.checkDetailsSection(any(), any(), any(), any())(any())).thenReturn(Nil)
+      when(mockPrintHelper.checkDetailsSection(any(), any(), any())(any())).thenReturn(Nil)
 
       val application = applicationBuilder(userAnswers = Some(answers))
         .overrides(bind[BusinessPrintHelper].toInstance(mockPrintHelper))
         .build()
 
-      val request = FakeRequest(GET, routes.BusinessAnswersController.onPageLoad(index, fakeDraftId).url)
+      val request = FakeRequest(GET, routes.BusinessAnswersController.onPageLoad(index).url)
 
       val result = route(application, request).value
 
@@ -60,7 +60,7 @@ class BusinessAnswersControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(index, fakeDraftId, expectedSections)(fakeRequest, messages).toString
+        view(index, expectedSections)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -69,13 +69,13 @@ class BusinessAnswersControllerSpec extends SpecBase {
 
       val application = applicationBuilder(userAnswers = Some(answers)).build()
 
-      val request = FakeRequest(POST, routes.BusinessAnswersController.onSubmit(index, fakeDraftId).url)
+      val request = FakeRequest(POST, routes.BusinessAnswersController.onSubmit(index).url)
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.asset.routes.AddAssetsController.onPageLoad(fakeDraftId).url
+      redirectLocation(result).value mustEqual controllers.asset.routes.AddAssetsController.onPageLoad().url
 
       application.stop()
     }
@@ -84,13 +84,13 @@ class BusinessAnswersControllerSpec extends SpecBase {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-      val request = FakeRequest(POST, routes.BusinessAnswersController.onSubmit(index, fakeDraftId).url)
+      val request = FakeRequest(POST, routes.BusinessAnswersController.onSubmit(index).url)
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.BusinessNameController.onPageLoad(index, fakeDraftId).url
+      redirectLocation(result).value mustEqual routes.BusinessNameController.onPageLoad(index).url
 
       application.stop()
     }
@@ -99,7 +99,7 @@ class BusinessAnswersControllerSpec extends SpecBase {
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, routes.BusinessAnswersController.onPageLoad(index, fakeDraftId).url)
+      val request = FakeRequest(GET, routes.BusinessAnswersController.onPageLoad(index).url)
 
       val result = route(application, request).value
 
@@ -113,7 +113,7 @@ class BusinessAnswersControllerSpec extends SpecBase {
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(POST, routes.BusinessAnswersController.onSubmit(index, fakeDraftId).url)
+      val request = FakeRequest(POST, routes.BusinessAnswersController.onSubmit(index).url)
 
       val result = route(application, request).value
 

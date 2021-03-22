@@ -44,14 +44,14 @@ class OtherAssetAnswersController @Inject()(
                                              printHelper: OtherPrintHelper
                                            )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private def actions(index: Int, draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] = {
-    identify andThen getData(draftId) andThen requireData andThen
-      requiredAnswer(RequiredAnswer(WhatKindOfAssetPage(index), controllers.asset.routes.WhatKindOfAssetController.onPageLoad(index, draftId))) andThen
-      requiredAnswer(RequiredAnswer(OtherAssetDescriptionPage(index), routes.OtherAssetDescriptionController.onPageLoad(index, draftId))) andThen
-      requiredAnswer(RequiredAnswer(OtherAssetValuePage(index), routes.OtherAssetValueController.onPageLoad(index, draftId)))
+  private def actions(index: Int): ActionBuilder[RegistrationDataRequest, AnyContent] = {
+    identify andThen getData() andThen requireData andThen
+      requiredAnswer(RequiredAnswer(WhatKindOfAssetPage(index), controllers.asset.routes.WhatKindOfAssetController.onPageLoad(index))) andThen
+      requiredAnswer(RequiredAnswer(OtherAssetDescriptionPage(index), routes.OtherAssetDescriptionController.onPageLoad(index))) andThen
+      requiredAnswer(RequiredAnswer(OtherAssetValuePage(index), routes.OtherAssetValueController.onPageLoad(index)))
   }
 
-  def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
+  def onPageLoad(index: Int): Action[AnyContent] = actions(index) {
     implicit request =>
 
       val description = request.userAnswers.get(OtherAssetDescriptionPage(index)).get
@@ -59,14 +59,13 @@ class OtherAssetAnswersController @Inject()(
       val section = printHelper.checkDetailsSection(
         userAnswers = request.userAnswers,
         arg = description,
-        index = index,
-        draftId = draftId
+        index = index
       )
 
-      Ok(view(index, draftId, section))
+      Ok(view(index, section))
   }
 
-  def onSubmit(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async {
+  def onSubmit(index: Int): Action[AnyContent] = actions(index).async {
     implicit request =>
 
       val answers = request.userAnswers.set(AssetStatus(index), Completed)
@@ -74,7 +73,7 @@ class OtherAssetAnswersController @Inject()(
       for {
         updatedAnswers <- Future.fromTry(answers)
         _ <- repository.set(updatedAnswers)
-      } yield Redirect(controllers.asset.routes.AddAssetsController.onPageLoad(draftId))
+      } yield Redirect(controllers.asset.routes.AddAssetsController.onPageLoad())
 
   }
 }

@@ -36,7 +36,7 @@ class StartDateViewSpec extends QuestionViewBehaviours[LocalDate] {
     val view = viewFor[StartDateView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, index, fakeDraftId, name)(fakeRequest, messages)
+      view.apply(form, index, name)(fakeRequest, messages)
 
     val applyViewF = (form : Form[_]) => applyView(form)
 

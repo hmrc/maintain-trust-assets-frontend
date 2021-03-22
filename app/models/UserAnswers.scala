@@ -23,7 +23,6 @@ import queries.{Gettable, Settable}
 import scala.util.{Failure, Success, Try}
 
 final case class UserAnswers(
-                              draftId: String,
                               data: JsObject = Json.obj(),
                               internalAuthId: String,
                               is5mldEnabled: Boolean = false,
@@ -88,7 +87,6 @@ object UserAnswers {
     import play.api.libs.functional.syntax._
 
     (
-      (__ \ "_id").read[String] and
         (__ \ "data").read[JsObject] and
         (__ \ "internalId").read[String] and
         (__ \ "is5mldEnabled").readWithDefault[Boolean](false) and
@@ -101,7 +99,6 @@ object UserAnswers {
     import play.api.libs.functional.syntax._
 
     (
-      (__ \ "_id").write[String] and
         (__ \ "data").write[JsObject] and
         (__ \ "internalId").write[String] and
         (__ \ "is5mldEnabled").write[Boolean] and

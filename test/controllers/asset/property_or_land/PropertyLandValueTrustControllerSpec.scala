@@ -37,7 +37,7 @@ class PropertyLandValueTrustControllerSpec extends SpecBase with IndexValidation
   val index: Int = 0
   val validAnswer: Long = 4000L
 
-  lazy val propertyLandValueTrustRoute: String = routes.PropertyLandValueTrustController.onPageLoad(index, fakeDraftId).url
+  lazy val propertyLandValueTrustRoute: String = routes.PropertyLandValueTrustController.onPageLoad(index).url
 
   val baseAnswers: UserAnswers = emptyUserAnswers.set(PropertyOrLandTotalValuePage(index), 5000L).success.value
 
@@ -56,7 +56,7 @@ class PropertyLandValueTrustControllerSpec extends SpecBase with IndexValidation
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, index, fakeDraftId)(request, messages).toString
+        view(form, index)(request, messages).toString
 
       application.stop()
     }
@@ -76,7 +76,7 @@ class PropertyLandValueTrustControllerSpec extends SpecBase with IndexValidation
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), index, fakeDraftId)(fakeRequest, messages).toString
+        view(form.fill(validAnswer), index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -113,7 +113,7 @@ class PropertyLandValueTrustControllerSpec extends SpecBase with IndexValidation
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, index, fakeDraftId)(fakeRequest, messages).toString
+        view(boundForm, index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -151,7 +151,7 @@ class PropertyLandValueTrustControllerSpec extends SpecBase with IndexValidation
     "for a GET" must {
 
       def getForIndex(index: Int) : FakeRequest[AnyContentAsEmpty.type] = {
-        val route = routes.PropertyLandValueTrustController.onPageLoad(index, fakeDraftId).url
+        val route = routes.PropertyLandValueTrustController.onPageLoad(index).url
 
         FakeRequest(GET, route)
       }
@@ -169,7 +169,7 @@ class PropertyLandValueTrustControllerSpec extends SpecBase with IndexValidation
       def postForIndex(index: Int): FakeRequest[AnyContentAsFormUrlEncoded] = {
 
         val route =
-          routes.PropertyLandValueTrustController.onPageLoad(index, fakeDraftId).url
+          routes.PropertyLandValueTrustController.onPageLoad(index).url
 
         FakeRequest(POST, route)
           .withFormUrlEncodedBody(("value", validAnswer.toString))

@@ -56,22 +56,22 @@ class SharesPrintHelperSpec extends SpecBase {
     .set(SharePortfolioValueInTrustPage(index), amount).success.value
 
   private val nonPortfolioRows: Seq[AnswerRow] = Seq(
-    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Shares"), Some(WhatKindOfAssetController.onPageLoad(index, fakeDraftId).url)),
-    AnswerRow("shares.inAPortfolioYesNo.checkYourAnswersLabel", Html("No"), Some(SharesInAPortfolioController.onPageLoad(index, draftId).url)),
-    AnswerRow("shares.companyName.checkYourAnswersLabel", Html(name), Some(ShareCompanyNameController.onPageLoad(index, draftId).url)),
-    AnswerRow("shares.onStockExchangeYesNo.checkYourAnswersLabel", Html("Yes"), Some(SharesOnStockExchangeController.onPageLoad(index, draftId).url)),
-    AnswerRow("shares.class.checkYourAnswersLabel", Html("Ordinary"), Some(ShareClassController.onPageLoad(index, draftId).url)),
-    AnswerRow("shares.quantityInTrust.checkYourAnswersLabel", Html("200"), Some(ShareQuantityInTrustController.onPageLoad(index, draftId).url)),
-    AnswerRow("shares.valueInTrust.checkYourAnswersLabel", Html("£100"), Some(ShareValueInTrustController.onPageLoad(index, draftId).url))
+    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Shares"), Some(WhatKindOfAssetController.onPageLoad(index).url)),
+    AnswerRow("shares.inAPortfolioYesNo.checkYourAnswersLabel", Html("No"), Some(SharesInAPortfolioController.onPageLoad(index).url)),
+    AnswerRow("shares.companyName.checkYourAnswersLabel", Html(name), Some(ShareCompanyNameController.onPageLoad(index).url)),
+    AnswerRow("shares.onStockExchangeYesNo.checkYourAnswersLabel", Html("Yes"), Some(SharesOnStockExchangeController.onPageLoad(index).url)),
+    AnswerRow("shares.class.checkYourAnswersLabel", Html("Ordinary"), Some(ShareClassController.onPageLoad(index).url)),
+    AnswerRow("shares.quantityInTrust.checkYourAnswersLabel", Html("200"), Some(ShareQuantityInTrustController.onPageLoad(index).url)),
+    AnswerRow("shares.valueInTrust.checkYourAnswersLabel", Html("£100"), Some(ShareValueInTrustController.onPageLoad(index).url))
   )
 
   private val portfolioRows: Seq[AnswerRow] = Seq(
-    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Shares"), Some(WhatKindOfAssetController.onPageLoad(index, fakeDraftId).url)),
-    AnswerRow("shares.inAPortfolioYesNo.checkYourAnswersLabel", Html("Yes"), Some(SharesInAPortfolioController.onPageLoad(index, draftId).url)),
-    AnswerRow("shares.portfolioName.checkYourAnswersLabel", Html(name), Some(SharePortfolioNameController.onPageLoad(index, draftId).url)),
-    AnswerRow("shares.portfolioOnStockExchangeYesNo.checkYourAnswersLabel", Html("Yes"), Some(SharePortfolioOnStockExchangeController.onPageLoad(index, draftId).url)),
-    AnswerRow("shares.portfolioQuantityInTrust.checkYourAnswersLabel", Html("200"), Some(SharePortfolioQuantityInTrustController.onPageLoad(index, draftId).url)),
-    AnswerRow("shares.portfolioValueInTrust.checkYourAnswersLabel", Html("£100"), Some(SharePortfolioValueInTrustController.onPageLoad(index, draftId).url))
+    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Shares"), Some(WhatKindOfAssetController.onPageLoad(index).url)),
+    AnswerRow("shares.inAPortfolioYesNo.checkYourAnswersLabel", Html("Yes"), Some(SharesInAPortfolioController.onPageLoad(index).url)),
+    AnswerRow("shares.portfolioName.checkYourAnswersLabel", Html(name), Some(SharePortfolioNameController.onPageLoad(index).url)),
+    AnswerRow("shares.portfolioOnStockExchangeYesNo.checkYourAnswersLabel", Html("Yes"), Some(SharePortfolioOnStockExchangeController.onPageLoad(index).url)),
+    AnswerRow("shares.portfolioQuantityInTrust.checkYourAnswersLabel", Html("200"), Some(SharePortfolioQuantityInTrustController.onPageLoad(index).url)),
+    AnswerRow("shares.portfolioValueInTrust.checkYourAnswersLabel", Html("£100"), Some(SharePortfolioValueInTrustController.onPageLoad(index).url))
   )
 
   "SharesPrintHelper" when {
@@ -84,8 +84,7 @@ class SharesPrintHelperSpec extends SpecBase {
           val result: AnswerSection = helper.printSection(
             userAnswers = nonPortfolioAnswers,
             index = index,
-            specificIndex = index,
-            draftId = fakeDraftId
+            specificIndex = index
           )
 
           result mustBe AnswerSection(
@@ -99,8 +98,7 @@ class SharesPrintHelperSpec extends SpecBase {
           val result: AnswerSection = helper.printSection(
             userAnswers = portfolioAnswers,
             index = index,
-            specificIndex = index,
-            draftId = fakeDraftId
+            specificIndex = index
           )
 
           result mustBe AnswerSection(
@@ -118,8 +116,7 @@ class SharesPrintHelperSpec extends SpecBase {
 
           val result: Seq[AnswerSection] = helper.checkDetailsSection(
             userAnswers = nonPortfolioAnswers,
-            index = index,
-            draftId = fakeDraftId
+            index = index
           )
 
           result mustBe Seq(AnswerSection(
@@ -132,8 +129,7 @@ class SharesPrintHelperSpec extends SpecBase {
 
           val result: Seq[AnswerSection] = helper.checkDetailsSection(
             userAnswers = portfolioAnswers,
-            index = index,
-            draftId = fakeDraftId
+            index = index
           )
 
           result mustBe Seq(AnswerSection(

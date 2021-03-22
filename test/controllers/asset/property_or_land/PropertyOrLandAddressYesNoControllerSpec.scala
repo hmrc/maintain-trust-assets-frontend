@@ -33,7 +33,7 @@ class PropertyOrLandAddressYesNoControllerSpec extends SpecBase with IndexValida
 
   val index = 0
 
-  lazy val propertyOrLandAddressYesNoRoute = routes.PropertyOrLandAddressYesNoController.onPageLoad(index, fakeDraftId).url
+  lazy val propertyOrLandAddressYesNoRoute = routes.PropertyOrLandAddressYesNoController.onPageLoad(index).url
 
   "PropertyOrLandAddressYesNo Controller" must {
 
@@ -50,7 +50,7 @@ class PropertyOrLandAddressYesNoControllerSpec extends SpecBase with IndexValida
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, index, fakeDraftId)(fakeRequest, messages).toString
+        view(form, index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -70,7 +70,7 @@ class PropertyOrLandAddressYesNoControllerSpec extends SpecBase with IndexValida
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), index, fakeDraftId)(fakeRequest, messages).toString
+        view(form.fill(true), index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -110,7 +110,7 @@ class PropertyOrLandAddressYesNoControllerSpec extends SpecBase with IndexValida
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, index, fakeDraftId)(fakeRequest, messages).toString
+        view(boundForm, index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -151,7 +151,7 @@ class PropertyOrLandAddressYesNoControllerSpec extends SpecBase with IndexValida
   "for a GET" must {
 
     def getForIndex(index: Int) : FakeRequest[AnyContentAsEmpty.type] = {
-      val route = routes.PropertyOrLandAddressYesNoController.onPageLoad(index, fakeDraftId).url
+      val route = routes.PropertyOrLandAddressYesNoController.onPageLoad(index).url
 
       FakeRequest(GET, route)
     }
@@ -168,7 +168,7 @@ class PropertyOrLandAddressYesNoControllerSpec extends SpecBase with IndexValida
     def postForIndex(index: Int): FakeRequest[AnyContentAsFormUrlEncoded] = {
 
       val route =
-        routes.PropertyOrLandAddressYesNoController.onPageLoad(index, fakeDraftId).url
+        routes.PropertyOrLandAddressYesNoController.onPageLoad(index).url
 
       FakeRequest(POST, route)
         .withFormUrlEncodedBody(("value", "true"))

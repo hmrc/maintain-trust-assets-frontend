@@ -34,7 +34,7 @@ class ShareClassViewSpec extends ViewBehaviours {
   private val view: ShareClassView = viewFor[ShareClassView](Some(emptyUserAnswers))
 
   private def applyView(form: Form[_]): HtmlFormat.Appendable =
-    view.apply(form, fakeDraftId, index, companyName)(fakeRequest, messages)
+    view.apply(form, index, companyName)(fakeRequest, messages)
 
   "ShareClass view" must {
 

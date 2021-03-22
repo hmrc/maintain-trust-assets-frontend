@@ -43,13 +43,13 @@ class AnswersController @Inject()(
                                    printHelper: NonEeaBusinessPrintHelper
                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private def actions(index: Int, draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] =
+  private def actions(index: Int): ActionBuilder[RegistrationDataRequest, AnyContent] =
     identify andThen
-      getData(draftId) andThen
+      getData() andThen
       requireData andThen
-      requiredAnswer(RequiredAnswer(NamePage(index), routes.NameController.onPageLoad(index, draftId)))
+      requiredAnswer(RequiredAnswer(NamePage(index), routes.NameController.onPageLoad(index)))
 
-  def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
+  def onPageLoad(index: Int): Action[AnyContent] = actions(index) {
     implicit request =>
 
       val name = request.userAnswers.get(NamePage(index)).get
@@ -57,14 +57,13 @@ class AnswersController @Inject()(
       val section = printHelper.checkDetailsSection(
         userAnswers = request.userAnswers,
         arg = name,
-        index = index,
-        draftId = draftId
+        index = index
       )
 
-      Ok(view(index, draftId, section))
+      Ok(view(index, section))
   }
 
-  def onSubmit(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async {
+  def onSubmit(index: Int): Action[AnyContent] = actions(index).async {
     implicit request =>
 
       val answers = request.userAnswers.set(AssetStatus(index), Completed)
@@ -72,7 +71,7 @@ class AnswersController @Inject()(
       for {
         updatedAnswers <- Future.fromTry(answers)
         _ <- registrationsRepository.set(updatedAnswers)
-      } yield Redirect(controllers.asset.routes.AddAssetsController.onPageLoad(draftId))
+      } yield Redirect(controllers.asset.routes.AddAssetsController.onPageLoad())
 
   }
 }

@@ -49,14 +49,14 @@ class StartDateController @Inject()(
 
   private val form = formProvider.withPrefix("nonEeaBusiness.startDate")
 
-  private def actions(index: Int, draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] =
+  private def actions(index: Int): ActionBuilder[RegistrationDataRequest, AnyContent] =
     identify andThen
-      getData(draftId) andThen
+      getData() andThen
       requireData andThen
       validateIndex(index, sections.Assets) andThen
-      requiredAnswer(RequiredAnswer(NamePage(index), routes.NameController.onPageLoad(index, draftId)))
+      requiredAnswer(RequiredAnswer(NamePage(index), routes.NameController.onPageLoad(index)))
 
-  def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
+  def onPageLoad(index: Int): Action[AnyContent] = actions(index) {
     implicit request =>
 
       val name = request.userAnswers.get(NamePage(index)).get
@@ -66,23 +66,23 @@ class StartDateController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, index, draftId, name))
+      Ok(view(preparedForm, index, name))
   }
 
-  def onSubmit(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async {
+  def onSubmit(index: Int): Action[AnyContent] = actions(index).async {
     implicit request =>
 
       val name = request.userAnswers.get(NamePage(index)).get
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, index, draftId, name))),
+          Future.successful(BadRequest(view(formWithErrors, index, name))),
 
         value => {
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(StartDatePage(index), value))
             _ <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(StartDatePage(index), draftId)(updatedAnswers))
+          } yield Redirect(navigator.nextPage(StartDatePage(index))(updatedAnswers))
         }
       )
   }

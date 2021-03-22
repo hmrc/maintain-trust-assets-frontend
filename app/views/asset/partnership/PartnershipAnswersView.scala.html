@@ -22,7 +22,7 @@ main_template: MainTemplate,
 formHelper: FormWithCSRF
 )
 
-@(index : Int, draftId: String, answerSections: Seq[Section])(implicit request: Request[_], messages: Messages)
+@(index : Int, answerSections: Seq[Section])(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("partnership.answers.title")
@@ -40,7 +40,7 @@ formHelper: FormWithCSRF
         }
     }
 
-    @formHelper(action = PartnershipAnswerController.onSubmit(index, draftId), 'autoComplete -> "off") {
+    @formHelper(action = PartnershipAnswerController.onSubmit(index), 'autoComplete -> "off") {
         @components.submit_button()
     }
 }

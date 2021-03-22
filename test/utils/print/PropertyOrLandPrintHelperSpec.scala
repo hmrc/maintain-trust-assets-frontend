@@ -63,30 +63,30 @@ class PropertyOrLandPrintHelperSpec extends SpecBase {
     .set(PropertyLandValueTrustPage(index), secondaryAmount).success.value
 
   private val ukAddressTrustOwnsAllRows: Seq[AnswerRow] = Seq(
-    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Property or land"), Some(WhatKindOfAssetController.onPageLoad(index, fakeDraftId).url)),
-    AnswerRow("propertyOrLand.addressYesNo.checkYourAnswersLabel", Html("Yes"), Some(PropertyOrLandAddressYesNoController.onPageLoad(index, draftId).url)),
-    AnswerRow("propertyOrLand.addressUkYesNo.checkYourAnswersLabel", Html("Yes"), Some(PropertyOrLandAddressUkYesNoController.onPageLoad(index, draftId).url)),
-    AnswerRow("propertyOrLand.ukAddress.checkYourAnswersLabel", Html("Line 1<br />Line 2<br />AB1 1AB"), Some(PropertyOrLandUKAddressController.onPageLoad(index, draftId).url)),
-    AnswerRow("propertyOrLand.totalValue.checkYourAnswersLabel", Html("£100"), Some(PropertyOrLandTotalValueController.onPageLoad(index, draftId).url)),
-    AnswerRow("propertyOrLand.trustOwnAllYesNo.checkYourAnswersLabel", Html("Yes"), Some(TrustOwnAllThePropertyOrLandController.onPageLoad(index, draftId).url))
+    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Property or land"), Some(WhatKindOfAssetController.onPageLoad(index).url)),
+    AnswerRow("propertyOrLand.addressYesNo.checkYourAnswersLabel", Html("Yes"), Some(PropertyOrLandAddressYesNoController.onPageLoad(index).url)),
+    AnswerRow("propertyOrLand.addressUkYesNo.checkYourAnswersLabel", Html("Yes"), Some(PropertyOrLandAddressUkYesNoController.onPageLoad(index).url)),
+    AnswerRow("propertyOrLand.ukAddress.checkYourAnswersLabel", Html("Line 1<br />Line 2<br />AB1 1AB"), Some(PropertyOrLandUKAddressController.onPageLoad(index).url)),
+    AnswerRow("propertyOrLand.totalValue.checkYourAnswersLabel", Html("£100"), Some(PropertyOrLandTotalValueController.onPageLoad(index).url)),
+    AnswerRow("propertyOrLand.trustOwnAllYesNo.checkYourAnswersLabel", Html("Yes"), Some(TrustOwnAllThePropertyOrLandController.onPageLoad(index).url))
   )
 
   private val nonUkAddressTrustOwnsAllRows: Seq[AnswerRow] = Seq(
-    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Property or land"), Some(WhatKindOfAssetController.onPageLoad(index, fakeDraftId).url)),
-    AnswerRow("propertyOrLand.addressYesNo.checkYourAnswersLabel", Html("Yes"), Some(PropertyOrLandAddressYesNoController.onPageLoad(index, draftId).url)),
-    AnswerRow("propertyOrLand.addressUkYesNo.checkYourAnswersLabel", Html("Yes"), Some(PropertyOrLandAddressUkYesNoController.onPageLoad(index, draftId).url)),
-    AnswerRow("propertyOrLand.internationalAddress.checkYourAnswersLabel", Html("Line 1<br />Line 2<br />France"), Some(PropertyOrLandInternationalAddressController.onPageLoad(index, draftId).url)),
-    AnswerRow("propertyOrLand.totalValue.checkYourAnswersLabel", Html("£100"), Some(PropertyOrLandTotalValueController.onPageLoad(index, draftId).url)),
-    AnswerRow("propertyOrLand.trustOwnAllYesNo.checkYourAnswersLabel", Html("Yes"), Some(TrustOwnAllThePropertyOrLandController.onPageLoad(index, draftId).url))
+    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Property or land"), Some(WhatKindOfAssetController.onPageLoad(index).url)),
+    AnswerRow("propertyOrLand.addressYesNo.checkYourAnswersLabel", Html("Yes"), Some(PropertyOrLandAddressYesNoController.onPageLoad(index).url)),
+    AnswerRow("propertyOrLand.addressUkYesNo.checkYourAnswersLabel", Html("Yes"), Some(PropertyOrLandAddressUkYesNoController.onPageLoad(index).url)),
+    AnswerRow("propertyOrLand.internationalAddress.checkYourAnswersLabel", Html("Line 1<br />Line 2<br />France"), Some(PropertyOrLandInternationalAddressController.onPageLoad(index).url)),
+    AnswerRow("propertyOrLand.totalValue.checkYourAnswersLabel", Html("£100"), Some(PropertyOrLandTotalValueController.onPageLoad(index).url)),
+    AnswerRow("propertyOrLand.trustOwnAllYesNo.checkYourAnswersLabel", Html("Yes"), Some(TrustOwnAllThePropertyOrLandController.onPageLoad(index).url))
   )
 
   private val descriptionTrustDoesNotOwnAllRows: Seq[AnswerRow] = Seq(
-    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Property or land"), Some(WhatKindOfAssetController.onPageLoad(index, fakeDraftId).url)),
-    AnswerRow("propertyOrLand.addressYesNo.checkYourAnswersLabel", Html("No"), Some(PropertyOrLandAddressYesNoController.onPageLoad(index, draftId).url)),
-    AnswerRow("propertyOrLand.description.checkYourAnswersLabel", Html(description), Some(PropertyOrLandDescriptionController.onPageLoad(index, draftId).url)),
-    AnswerRow("propertyOrLand.totalValue.checkYourAnswersLabel", Html("£100"), Some(PropertyOrLandTotalValueController.onPageLoad(index, draftId).url)),
-    AnswerRow("propertyOrLand.trustOwnAllYesNo.checkYourAnswersLabel", Html("No"), Some(TrustOwnAllThePropertyOrLandController.onPageLoad(index, draftId).url)),
-    AnswerRow("propertyOrLand.valueInTrust.checkYourAnswersLabel", Html("£50"), Some(PropertyLandValueTrustController.onPageLoad(index, draftId).url))
+    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Property or land"), Some(WhatKindOfAssetController.onPageLoad(index).url)),
+    AnswerRow("propertyOrLand.addressYesNo.checkYourAnswersLabel", Html("No"), Some(PropertyOrLandAddressYesNoController.onPageLoad(index).url)),
+    AnswerRow("propertyOrLand.description.checkYourAnswersLabel", Html(description), Some(PropertyOrLandDescriptionController.onPageLoad(index).url)),
+    AnswerRow("propertyOrLand.totalValue.checkYourAnswersLabel", Html("£100"), Some(PropertyOrLandTotalValueController.onPageLoad(index).url)),
+    AnswerRow("propertyOrLand.trustOwnAllYesNo.checkYourAnswersLabel", Html("No"), Some(TrustOwnAllThePropertyOrLandController.onPageLoad(index).url)),
+    AnswerRow("propertyOrLand.valueInTrust.checkYourAnswersLabel", Html("£50"), Some(PropertyLandValueTrustController.onPageLoad(index).url))
   )
 
   "PropertyOrLandPrintHelper" when {
@@ -99,8 +99,7 @@ class PropertyOrLandPrintHelperSpec extends SpecBase {
           val result: AnswerSection = helper.printSection(
             userAnswers = ukAddressTrustOwnsAllAnswers,
             index = index,
-            specificIndex = index,
-            draftId = fakeDraftId
+            specificIndex = index
           )
 
           result mustBe AnswerSection(
@@ -114,8 +113,7 @@ class PropertyOrLandPrintHelperSpec extends SpecBase {
           val result: AnswerSection = helper.printSection(
             userAnswers = nonUkAddressTrustOwnsAllAnswers,
             index = index,
-            specificIndex = index,
-            draftId = fakeDraftId
+            specificIndex = index
           )
 
           result mustBe AnswerSection(
@@ -129,8 +127,7 @@ class PropertyOrLandPrintHelperSpec extends SpecBase {
           val result: AnswerSection = helper.printSection(
             userAnswers = descriptionTrustDoesNotOwnAllAnswers,
             index = index,
-            specificIndex = index,
-            draftId = fakeDraftId
+            specificIndex = index
           )
 
           result mustBe AnswerSection(
@@ -148,8 +145,7 @@ class PropertyOrLandPrintHelperSpec extends SpecBase {
 
           val result: Seq[AnswerSection] = helper.checkDetailsSection(
             userAnswers = ukAddressTrustOwnsAllAnswers,
-            index = index,
-            draftId = fakeDraftId
+            index = index
           )
 
           result mustBe Seq(AnswerSection(
@@ -162,8 +158,7 @@ class PropertyOrLandPrintHelperSpec extends SpecBase {
 
           val result: Seq[AnswerSection] = helper.checkDetailsSection(
             userAnswers = nonUkAddressTrustOwnsAllAnswers,
-            index = index,
-            draftId = fakeDraftId
+            index = index
           )
 
           result mustBe Seq(AnswerSection(
@@ -176,8 +171,7 @@ class PropertyOrLandPrintHelperSpec extends SpecBase {
 
           val result: Seq[AnswerSection] = helper.checkDetailsSection(
             userAnswers = descriptionTrustDoesNotOwnAllAnswers,
-            index = index,
-            draftId = fakeDraftId
+            index = index
           )
 
           result mustBe Seq(AnswerSection(

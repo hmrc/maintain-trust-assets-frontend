@@ -42,19 +42,18 @@ class PropertyOrLandAnswerController @Inject()(
                                                 printHelper: PropertyOrLandPrintHelper
                                               )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions.authWithData(draftId) {
+  def onPageLoad(index: Int): Action[AnyContent] = actions.authWithData() {
     implicit request =>
 
       val sections = printHelper.checkDetailsSection(
         userAnswers = request.userAnswers,
-        index = index,
-        draftId = draftId
+        index = index
       )
 
-      Ok(view(index, draftId, sections))
+      Ok(view(index, sections))
   }
 
-  def onSubmit(index: Int, draftId: String): Action[AnyContent] = actions.authWithData(draftId).async {
+  def onSubmit(index: Int): Action[AnyContent] = actions.authWithData().async {
     implicit request =>
 
       val answers = request.userAnswers.set(AssetStatus(index), Completed)
@@ -62,7 +61,7 @@ class PropertyOrLandAnswerController @Inject()(
       for {
         updatedAnswers <- Future.fromTry(answers)
         _ <- repository.set(updatedAnswers)
-      } yield Redirect(navigator.nextPage(PropertyOrLandAnswerPage, draftId)(request.userAnswers))
+      } yield Redirect(navigator.nextPage(PropertyOrLandAnswerPage)(request.userAnswers))
 
   }
 }

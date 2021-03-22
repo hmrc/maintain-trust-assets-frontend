@@ -39,24 +39,24 @@ class AssetInterruptPageController @Inject()(
                                               nonTaxableView: NonTaxableInfoView
                                             )(implicit ec: ExecutionContext) extends AddAssetController {
 
-  def onPageLoad(draftId: String): Action[AnyContent] = (identify andThen getData(draftId) andThen requireData) {
+  def onPageLoad(): Action[AnyContent] = (identify andThen getData() andThen requireData) {
     implicit request =>
       Ok(
         if (request.userAnswers.isTaxable) {
-          taxableView(draftId, request.userAnswers.is5mldEnabled)
+          taxableView(request.userAnswers.is5mldEnabled)
         } else {
-          nonTaxableView(draftId)
+          nonTaxableView()
         }
       )
   }
 
-  def onSubmit(draftId: String): Action[AnyContent] = (identify andThen getData(draftId) andThen requireData).async {
+  def onSubmit(): Action[AnyContent] = (identify andThen getData() andThen requireData).async {
     implicit request =>
       for {
         updatedAnswers <- Future.fromTry(setAssetTypeIfNonTaxable(request.userAnswers, 0))
         _ <- repository.set(updatedAnswers)
       } yield {
-        Redirect(navigator.nextPage(AssetInterruptPage, draftId)(updatedAnswers))
+        Redirect(navigator.nextPage(AssetInterruptPage)(updatedAnswers))
       }
   }
 

@@ -49,11 +49,11 @@ class NonEeaBusinessPrintHelperSpec extends SpecBase {
     .set(StartDatePage(index), date).success.value
 
   private val taxableRows: Seq[AnswerRow] = Seq(
-    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Non-EEA Company"), Some(WhatKindOfAssetController.onPageLoad(index, fakeDraftId).url)),
-    AnswerRow("nonEeaBusiness.name.checkYourAnswersLabel", Html(name), Some(NameController.onPageLoad(index, draftId).url)),
-    AnswerRow("nonEeaBusiness.internationalAddress.checkYourAnswersLabel", Html("Line 1<br />Line 2<br />France"), Some(InternationalAddressController.onPageLoad(index, draftId).url)),
-    AnswerRow("nonEeaBusiness.governingCountry.checkYourAnswersLabel", Html("France"), Some(GoverningCountryController.onPageLoad(index, draftId).url)),
-    AnswerRow("nonEeaBusiness.startDate.checkYourAnswersLabel", Html("3 February 1996"), Some(StartDateController.onPageLoad(index, draftId).url))
+    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Non-EEA Company"), Some(WhatKindOfAssetController.onPageLoad(index).url)),
+    AnswerRow("nonEeaBusiness.name.checkYourAnswersLabel", Html(name), Some(NameController.onPageLoad(index).url)),
+    AnswerRow("nonEeaBusiness.internationalAddress.checkYourAnswersLabel", Html("Line 1<br />Line 2<br />France"), Some(InternationalAddressController.onPageLoad(index).url)),
+    AnswerRow("nonEeaBusiness.governingCountry.checkYourAnswersLabel", Html("France"), Some(GoverningCountryController.onPageLoad(index).url)),
+    AnswerRow("nonEeaBusiness.startDate.checkYourAnswersLabel", Html("3 February 1996"), Some(StartDateController.onPageLoad(index).url))
   )
 
   private val nonTaxableRows: Seq[AnswerRow] = taxableRows.tail
@@ -69,8 +69,7 @@ class NonEeaBusinessPrintHelperSpec extends SpecBase {
           val result: AnswerSection = helper.printSection(
             userAnswers = userAnswers.copy(isTaxable = true),
             index = index,
-            specificIndex = index,
-            draftId = fakeDraftId
+            specificIndex = index
           )
 
           result mustBe AnswerSection(
@@ -84,8 +83,7 @@ class NonEeaBusinessPrintHelperSpec extends SpecBase {
 
             val result: Seq[AnswerSection] = helper.checkDetailsSection(
               userAnswers = userAnswers.copy(isTaxable = true),
-              index = index,
-              draftId = fakeDraftId
+              index = index
             )
 
             result mustBe Seq(AnswerSection(
@@ -103,8 +101,7 @@ class NonEeaBusinessPrintHelperSpec extends SpecBase {
           val result: AnswerSection = helper.printSection(
             userAnswers = userAnswers.copy(isTaxable = false),
             index = index,
-            specificIndex = index,
-            draftId = fakeDraftId
+            specificIndex = index
           )
 
           result mustBe AnswerSection(
@@ -118,8 +115,7 @@ class NonEeaBusinessPrintHelperSpec extends SpecBase {
 
             val result: Seq[AnswerSection] = helper.checkDetailsSection(
               userAnswers = userAnswers.copy(isTaxable = false),
-              index = index,
-              draftId = fakeDraftId
+              index = index
             )
 
             result mustBe Seq(AnswerSection(

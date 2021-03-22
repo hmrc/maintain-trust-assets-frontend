@@ -41,8 +41,8 @@ class PartnershipNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks wi
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
           val answers = userAnswers.set(page, "Partnership Description").success.value
-          navigator.nextPage(page, fakeDraftId)(answers)
-            .mustBe(PartnershipStartDateController.onPageLoad(index, fakeDraftId))
+          navigator.nextPage(page)(answers)
+            .mustBe(PartnershipStartDateController.onPageLoad(index))
       }
     }
 
@@ -54,8 +54,8 @@ class PartnershipNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks wi
         userAnswers =>
           val answers = userAnswers
             .set(PartnershipStartDatePage(index), validDate).success.value
-          navigator.nextPage(page, fakeDraftId)(answers)
-            .mustBe(PartnershipAnswerController.onPageLoad(index, fakeDraftId))
+          navigator.nextPage(page)(answers)
+            .mustBe(PartnershipAnswerController.onPageLoad(index))
       }
     }
 
@@ -65,8 +65,8 @@ class PartnershipNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks wi
 
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
-          navigator.nextPage(page, fakeDraftId)(userAnswers)
-            .mustBe(controllers.asset.routes.AddAssetsController.onPageLoad(fakeDraftId))
+          navigator.nextPage(page)(userAnswers)
+            .mustBe(controllers.asset.routes.AddAssetsController.onPageLoad())
       }
     }
   }

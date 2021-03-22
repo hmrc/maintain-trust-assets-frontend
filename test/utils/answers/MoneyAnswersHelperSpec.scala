@@ -52,7 +52,7 @@ class MoneyAnswersHelperSpec extends SpecBase {
 
       "interact with MoneyPrintHelper" in {
 
-        when(mockPrintHelper.printSection(any(), any(), any(), any(), any())(any())).thenReturn(AnswerSection())
+        when(mockPrintHelper.printSection(any(), any(), any(), any())(any())).thenReturn(AnswerSection())
 
         val userAnswers: UserAnswers = emptyUserAnswers
           .set(WhatKindOfAssetPage(index), Money).success.value
@@ -62,7 +62,7 @@ class MoneyAnswersHelperSpec extends SpecBase {
 
         result mustBe Seq(AnswerSection())
 
-        verify(mockPrintHelper).printSection(any(), any(), any(), any(), any())(any())
+        verify(mockPrintHelper).printSection(any(), any(), any(), any())(any())
       }
 
       "index headings correctly" in {

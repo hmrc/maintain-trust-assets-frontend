@@ -48,27 +48,27 @@ class RemoveAssetYesNoController @Inject()(
 
   private def form(prefix: String): Form[Boolean] = yesNoFormProvider.withPrefix(s"$prefix.removeYesNo")
 
-  private def redirect(draftId: String): Result = Redirect(controllers.asset.routes.AddAssetsController.onPageLoad(draftId))
+  private def redirect(): Result = Redirect(controllers.asset.routes.AddAssetsController.onPageLoad())
 
-  private def actions(index: Int, draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] =
-    identify andThen getData(draftId) andThen requireData andThen validateIndex(index, sections.Assets)
+  private def actions(index: Int): ActionBuilder[RegistrationDataRequest, AnyContent] =
+    identify andThen getData() andThen requireData andThen validateIndex(index, sections.Assets)
 
-  def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
+  def onPageLoad(index: Int): Action[AnyContent] = actions(index) {
     implicit request =>
 
       val prefix = determinePrefix(request.userAnswers.isTaxable)
 
-      Ok(view(form(prefix), draftId, index, prefix, assetLabel(request.userAnswers, index)))
+      Ok(view(form(prefix), index, prefix, assetLabel(request.userAnswers, index)))
   }
 
-  def onSubmit(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async {
+  def onSubmit(index: Int): Action[AnyContent] = actions(index).async {
     implicit request =>
 
       val prefix = determinePrefix(request.userAnswers.isTaxable)
 
       form(prefix).bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, draftId, index, prefix, assetLabel(request.userAnswers, index)))),
+          Future.successful(BadRequest(view(formWithErrors, index, prefix, assetLabel(request.userAnswers, index)))),
 
         remove => {
           if (remove) {
@@ -78,10 +78,10 @@ class RemoveAssetYesNoController @Inject()(
               )
               _ <- repository.set(updatedAnswers)
             } yield {
-              redirect(draftId)
+              redirect()
             }
           } else {
-            Future.successful(redirect(draftId))
+            Future.successful(redirect())
           }
         }
       )

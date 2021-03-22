@@ -42,17 +42,17 @@ class AddAssetViewHelperSpec extends SpecBase {
   private val date: LocalDate = LocalDate.parse("1996-02-03")
 
   def changeMoneyAssetRoute(index: Int): String =
-    money.routes.AssetMoneyValueController.onPageLoad(index, fakeDraftId).url
+    money.routes.AssetMoneyValueController.onPageLoad(index).url
 
   def removeAssetYesNoRoute(index: Int): String =
-    routes.RemoveAssetYesNoController.onPageLoad(index, fakeDraftId).url
+    routes.RemoveAssetYesNoController.onPageLoad(index).url
 
   "AddAssetViewHelper" when {
 
     ".row" must {
 
       "generate Nil for no user answers" in {
-        val rows = new AddAssetViewHelper(emptyUserAnswers, fakeDraftId).rows
+        val rows = new AddAssetViewHelper(emptyUserAnswers).rows
         rows.inProgress mustBe Nil
         rows.complete mustBe Nil
       }
@@ -60,19 +60,19 @@ class AddAssetViewHelperSpec extends SpecBase {
       "generate rows from user answers for assets in progress" in {
 
         def changePropertyOrLandAssetRoute(index: Int): String =
-          property_or_land.routes.PropertyOrLandAddressYesNoController.onPageLoad(index, fakeDraftId).url
+          property_or_land.routes.PropertyOrLandAddressYesNoController.onPageLoad(index).url
 
         def changeSharesAssetRoute(index: Int): String =
-          shares.routes.SharesInAPortfolioController.onPageLoad(index, fakeDraftId).url
+          shares.routes.SharesInAPortfolioController.onPageLoad(index).url
 
         def changePartnershipAssetRoute(index: Int): String =
-          partnership.routes.PartnershipDescriptionController.onPageLoad(index, fakeDraftId).url
+          partnership.routes.PartnershipDescriptionController.onPageLoad(index).url
 
         def changeOtherAssetRoute(index: Int): String =
-          other.routes.OtherAssetDescriptionController.onPageLoad(index, fakeDraftId).url
+          other.routes.OtherAssetDescriptionController.onPageLoad(index).url
 
         def changeNonEeaBusinessAssetRoute(index: Int): String =
-          noneeabusiness.routes.NameController.onPageLoad(index, fakeDraftId).url
+          noneeabusiness.routes.NameController.onPageLoad(index).url
 
         val userAnswers = emptyUserAnswers
           .set(WhatKindOfAssetPage(0), Shares).success.value
@@ -98,7 +98,7 @@ class AddAssetViewHelperSpec extends SpecBase {
           .set(WhatKindOfAssetPage(7), NonEeaBusiness).success.value
           .set(NamePage(7), "Name").success.value
 
-        val rows = new AddAssetViewHelper(userAnswers, fakeDraftId).rows
+        val rows = new AddAssetViewHelper(userAnswers).rows
         rows.inProgress mustBe List(
           AddRow("No name added", typeLabel = "Shares", changeSharesAssetRoute(0), removeAssetYesNoRoute(0)),
           AddRow("No value added", typeLabel = "Money", changeMoneyAssetRoute(1), removeAssetYesNoRoute(1)),
@@ -115,22 +115,22 @@ class AddAssetViewHelperSpec extends SpecBase {
       "generate rows from user answers for complete assets" in {
 
         def changePropertyOrLandAssetRoute(index: Int): String =
-          property_or_land.routes.PropertyOrLandAnswerController.onPageLoad(index, fakeDraftId).url
+          property_or_land.routes.PropertyOrLandAnswerController.onPageLoad(index).url
 
         def changeSharesAssetRoute(index: Int): String =
-          shares.routes.ShareAnswerController.onPageLoad(index, fakeDraftId).url
+          shares.routes.ShareAnswerController.onPageLoad(index).url
 
         def changeBusinessAssetRoute(index: Int): String =
-          business.routes.BusinessAnswersController.onPageLoad(index, fakeDraftId).url
+          business.routes.BusinessAnswersController.onPageLoad(index).url
 
         def changePartnershipAssetRoute(index: Int): String =
-          partnership.routes.PartnershipAnswerController.onPageLoad(index, fakeDraftId).url
+          partnership.routes.PartnershipAnswerController.onPageLoad(index).url
 
         def changeOtherAssetRoute(index: Int): String =
-          other.routes.OtherAssetAnswersController.onPageLoad(index, fakeDraftId).url
+          other.routes.OtherAssetAnswersController.onPageLoad(index).url
 
         def changeNonEeaBusinessAssetRoute(index: Int): String =
-          noneeabusiness.routes.AnswersController.onPageLoad(index, fakeDraftId).url
+          noneeabusiness.routes.AnswersController.onPageLoad(index).url
 
         val userAnswers = emptyUserAnswers
           .set(WhatKindOfAssetPage(0), Shares).success.value
@@ -186,7 +186,7 @@ class AddAssetViewHelperSpec extends SpecBase {
           .set(StartDatePage(7), date).success.value
           .set(AssetStatus(7), Completed).success.value
 
-        val rows = new AddAssetViewHelper(userAnswers, fakeDraftId).rows
+        val rows = new AddAssetViewHelper(userAnswers).rows
         rows.complete mustBe List(
           AddRow("Share Company Name", typeLabel = "Shares", changeSharesAssetRoute(0), removeAssetYesNoRoute(0)),
           AddRow("£4000", typeLabel = "Money", changeMoneyAssetRoute(1), removeAssetYesNoRoute(1)),
