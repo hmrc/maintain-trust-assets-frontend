@@ -31,20 +31,19 @@ class BusinessPrintHelper @Inject()(checkAnswersFormatters: CheckAnswersFormatte
 
   override def answerRows(userAnswers: UserAnswers,
                           arg: String,
-                          index: Int,
-                          draftId: String)
+                          index: Int)
                          (implicit messages: Messages): Seq[AnswerRow] = {
 
     val converter: AnswerRowConverter = new AnswerRowConverter(checkAnswersFormatters)(userAnswers, arg)
 
     Seq(
-      converter.assetTypeQuestion(index, draftId),
-      converter.stringQuestion(BusinessNamePage(index), "business.name", BusinessNameController.onPageLoad(index, draftId).url),
-      converter.stringQuestion(BusinessDescriptionPage(index), "business.description", BusinessDescriptionController.onPageLoad(index, draftId).url),
-      converter.yesNoQuestion(BusinessAddressUkYesNoPage(index), "business.addressUkYesNo", BusinessAddressUkYesNoController.onPageLoad(index, draftId).url),
-      converter.addressQuestion(BusinessUkAddressPage(index), "business.ukAddress", BusinessUkAddressController.onPageLoad(index, draftId).url),
-      converter.addressQuestion(BusinessInternationalAddressPage(index), "business.internationalAddress", BusinessInternationalAddressController.onPageLoad(index, draftId).url),
-      converter.currencyQuestion(BusinessValuePage(index), "business.currentValue", BusinessValueController.onPageLoad(index, draftId).url)
+      converter.assetTypeQuestion(index),
+      converter.stringQuestion(BusinessNamePage(index), "business.name", BusinessNameController.onPageLoad(index).url),
+      converter.stringQuestion(BusinessDescriptionPage(index), "business.description", BusinessDescriptionController.onPageLoad(index).url),
+      converter.yesNoQuestion(BusinessAddressUkYesNoPage(index), "business.addressUkYesNo", BusinessAddressUkYesNoController.onPageLoad(index).url),
+      converter.addressQuestion(BusinessUkAddressPage(index), "business.ukAddress", BusinessUkAddressController.onPageLoad(index).url),
+      converter.addressQuestion(BusinessInternationalAddressPage(index), "business.internationalAddress", BusinessInternationalAddressController.onPageLoad(index).url),
+      converter.currencyQuestion(BusinessValuePage(index), "business.currentValue", BusinessValueController.onPageLoad(index).url)
     ).flatten
   }
 }

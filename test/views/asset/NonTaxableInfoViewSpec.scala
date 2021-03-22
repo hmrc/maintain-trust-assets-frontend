@@ -25,7 +25,7 @@ class NonTaxableInfoViewSpec extends ViewBehaviours {
 
     val view = viewFor[NonTaxableInfoView](Some(emptyUserAnswers))
 
-    val applyView = view.apply(fakeDraftId)(fakeRequest, messages)
+    val applyView = view.apply()(fakeRequest, messages)
 
     behave like normalPage(applyView, "assetInterruptPage.nonTaxable", ignoreTitle = true)
 

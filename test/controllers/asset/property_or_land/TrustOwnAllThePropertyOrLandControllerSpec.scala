@@ -33,7 +33,7 @@ class TrustOwnAllThePropertyOrLandControllerSpec extends SpecBase with IndexVali
 
   val index: Int = 0
 
-  lazy val trustOwnAllThePropertyOrLandRoute = routes.TrustOwnAllThePropertyOrLandController.onPageLoad(index, fakeDraftId).url
+  lazy val trustOwnAllThePropertyOrLandRoute = routes.TrustOwnAllThePropertyOrLandController.onPageLoad(index).url
 
   "TrustOwnAllThePropertyOrLand Controller" must {
 
@@ -50,7 +50,7 @@ class TrustOwnAllThePropertyOrLandControllerSpec extends SpecBase with IndexVali
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, index, fakeDraftId)(fakeRequest, messages).toString
+        view(form, index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -70,7 +70,7 @@ class TrustOwnAllThePropertyOrLandControllerSpec extends SpecBase with IndexVali
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), index, fakeDraftId)(fakeRequest, messages).toString
+        view(form.fill(true), index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -110,7 +110,7 @@ class TrustOwnAllThePropertyOrLandControllerSpec extends SpecBase with IndexVali
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, index, fakeDraftId)(fakeRequest, messages).toString
+        view(boundForm, index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -150,7 +150,7 @@ class TrustOwnAllThePropertyOrLandControllerSpec extends SpecBase with IndexVali
     "for a GET" must {
 
       def getForIndex(index: Int) : FakeRequest[AnyContentAsEmpty.type] = {
-        val route = routes.TrustOwnAllThePropertyOrLandController.onPageLoad(index, fakeDraftId).url
+        val route = routes.TrustOwnAllThePropertyOrLandController.onPageLoad(index).url
 
         FakeRequest(GET, route)
       }
@@ -168,7 +168,7 @@ class TrustOwnAllThePropertyOrLandControllerSpec extends SpecBase with IndexVali
       def postForIndex(index: Int): FakeRequest[AnyContentAsFormUrlEncoded] = {
 
         val route =
-          routes.TrustOwnAllThePropertyOrLandController.onPageLoad(index, fakeDraftId).url
+          routes.TrustOwnAllThePropertyOrLandController.onPageLoad(index).url
 
         FakeRequest(POST, route)
           .withFormUrlEncodedBody(("value", "1234"))

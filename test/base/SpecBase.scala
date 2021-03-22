@@ -43,17 +43,14 @@ trait SpecBase extends PlaySpec
   final val ENGLISH = "en"
   final val WELSH = "cy"
 
-  lazy val draftId: String = "draftId"
   lazy val userInternalId: String = "internalId"
-  lazy val fakeDraftId: String = draftId
 
-  def emptyUserAnswers: UserAnswers = UserAnswers(draftId, Json.obj(), internalAuthId = userInternalId)
+  def emptyUserAnswers: UserAnswers = UserAnswers(Json.obj(), internalAuthId = userInternalId)
 
   lazy val fakeNavigator: FakeNavigator = new FakeNavigator(frontendAppConfig)
 
   private def fakeDraftIdAction(userAnswers: Option[UserAnswers]): FakeDraftIdRetrievalActionProvider =
     new FakeDraftIdRetrievalActionProvider(
-      draftId,
       Status.InProgress,
       userAnswers,
       registrationsRepository

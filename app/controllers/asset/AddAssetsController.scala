@@ -52,8 +52,8 @@ class AddAssetsController @Inject()(
   private def addAnotherForm(isTaxable: Boolean): Form[AddAssets] = addAnotherFormProvider.withPrefix(determinePrefix(isTaxable))
   private val yesNoForm: Form[Boolean] = yesNoFormProvider.withPrefix("addAnAssetYesNo")
 
-  private def actions(draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] =
-    identify andThen getData(draftId) andThen requireData
+  private def actions(): ActionBuilder[RegistrationDataRequest, AnyContent] =
+    identify andThen getData() andThen requireData
 
   private def determinePrefix(isTaxable: Boolean) = "addAssets" + (if (!isTaxable) ".nonTaxable" else "")
 
@@ -64,13 +64,13 @@ class AddAssetsController @Inject()(
     }
   }
 
-  def onPageLoad(draftId: String): Action[AnyContent] = actions(draftId) {
+  def onPageLoad(): Action[AnyContent] = actions() {
     implicit request =>
 
       val userAnswers: UserAnswers = request.userAnswers
       val isTaxable = userAnswers.isTaxable
 
-      val assets = new AddAssetViewHelper(userAnswers, draftId).rows
+      val assets = new AddAssetViewHelper(userAnswers).rows
 
       val maxLimit: Int = (userAnswers.is5mldEnabled, isTaxable) match {
         case (true, true) => MAX_5MLD_TAXABLE_ASSETS
@@ -82,47 +82,47 @@ class AddAssetsController @Inject()(
 
       assets.count match {
         case 0 if isTaxable =>
-          Ok(yesNoView(yesNoForm, draftId))
+          Ok(yesNoView(yesNoForm))
         case 0 =>
-          Redirect(routes.TrustOwnsNonEeaBusinessYesNoController.onPageLoad(draftId))
+          Redirect(routes.TrustOwnsNonEeaBusinessYesNoController.onPageLoad())
         case c if c >= maxLimit =>
-          Ok(maxedOutView(draftId, assets.inProgress, assets.complete, heading(c, prefix), maxLimit, prefix))
+          Ok(maxedOutView(assets.inProgress, assets.complete, heading(c, prefix), maxLimit, prefix))
         case c =>
-          Ok(addAssetsView(addAnotherForm(isTaxable), draftId, assets.inProgress, assets.complete, heading(c, prefix), prefix))
+          Ok(addAssetsView(addAnotherForm(isTaxable), assets.inProgress, assets.complete, heading(c, prefix), prefix))
       }
   }
 
-  def submitOne(draftId: String): Action[AnyContent] = actions(draftId).async {
+  def submitOne(): Action[AnyContent] = actions().async {
     implicit request =>
 
       yesNoForm.bindFromRequest().fold(
         (formWithErrors: Form[_]) => {
-          Future.successful(BadRequest(yesNoView(formWithErrors, draftId)))
+          Future.successful(BadRequest(yesNoView(formWithErrors)))
         },
         value => {
           for {
             answersWithAssetTypeIfNonTaxable <- Future.fromTry(setAssetTypeIfNonTaxable(request.userAnswers, 0))
             updatedAnswers <- Future.fromTry(answersWithAssetTypeIfNonTaxable.set(AddAnAssetYesNoPage, value))
             _ <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(AddAnAssetYesNoPage, draftId)(updatedAnswers))
+          } yield Redirect(navigator.nextPage(AddAnAssetYesNoPage)(updatedAnswers))
         }
       )
   }
 
-  def submitAnother(draftId: String): Action[AnyContent] = actions(draftId).async {
+  def submitAnother(): Action[AnyContent] = actions().async {
     implicit request =>
 
       val userAnswers = request.userAnswers
       val isTaxable = userAnswers.isTaxable
 
-      val assets = new AddAssetViewHelper(userAnswers, draftId).rows
+      val assets = new AddAssetViewHelper(userAnswers).rows
 
       val prefix = determinePrefix(isTaxable)
 
       addAnotherForm(isTaxable).bindFromRequest().fold(
         (formWithErrors: Form[_]) => {
           Future.successful(
-            BadRequest(addAssetsView(formWithErrors, draftId, assets.inProgress, assets.complete, heading(assets.count, prefix), prefix))
+            BadRequest(addAssetsView(formWithErrors, assets.inProgress, assets.complete, heading(assets.count, prefix), prefix))
           )
         },
         value => {
@@ -130,17 +130,17 @@ class AddAssetsController @Inject()(
             answersWithAssetTypeIfNonTaxable <- Future.fromTry(setAssetTypeIfNonTaxable(userAnswers, assets.count, value))
             updatedAnswers <- Future.fromTry(answersWithAssetTypeIfNonTaxable.set(AddAssetsPage, value))
             _ <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(AddAssetsPage, draftId)(updatedAnswers))
+          } yield Redirect(navigator.nextPage(AddAssetsPage)(updatedAnswers))
         }
       )
   }
 
-  def submitComplete(draftId: String): Action[AnyContent] = actions(draftId).async {
+  def submitComplete(): Action[AnyContent] = actions().async {
     implicit request =>
 
       for {
         updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAssetsPage, NoComplete))
         _              <- repository.set(updatedAnswers)
-      } yield Redirect(navigator.nextPage(AddAssetsPage, draftId)(updatedAnswers))
+      } yield Redirect(navigator.nextPage(AddAssetsPage)(updatedAnswers))
   }
 }

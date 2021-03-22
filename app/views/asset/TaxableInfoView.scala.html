@@ -21,13 +21,13 @@
     formHelper: FormWithCSRF
 )
 
-@(draftId: String, is5mldEnabled: Boolean)(implicit request: Request[_], messages: Messages)
+@(is5mldEnabled: Boolean)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = if(is5mldEnabled) {messages("assetInterruptPage.5mld.title")} else {messages("assetInterruptPage.title")}
 ) {
 
-    @formHelper(action = AssetInterruptPageController.onSubmit(draftId), 'autoComplete -> "off") {
+    @formHelper(action = AssetInterruptPageController.onSubmit(), 'autoComplete -> "off") {
 
         @components.back_link()
 

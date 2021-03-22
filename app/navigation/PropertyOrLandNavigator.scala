@@ -30,31 +30,31 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class PropertyOrLandNavigator @Inject()(config: FrontendAppConfig) extends Navigator(config) {
 
-  override protected def route(draftId: String): PartialFunction[Page, AffinityGroup => UserAnswers => Call] = {
+  override protected def route(): PartialFunction[Page, AffinityGroup => UserAnswers => Call] = {
     case page @ PropertyOrLandAddressYesNoPage(index) => _ => ua => yesNoNav(
       ua = ua,
       fromPage = page,
-      yesCall = PropertyOrLandAddressUkYesNoController.onPageLoad(index, draftId),
-      noCall = PropertyOrLandDescriptionController.onPageLoad(index, draftId)
+      yesCall = PropertyOrLandAddressUkYesNoController.onPageLoad(index),
+      noCall = PropertyOrLandDescriptionController.onPageLoad(index)
     )
     case page @ PropertyOrLandAddressUkYesNoPage(index) => _ => ua => yesNoNav(
       ua = ua,
       fromPage = page,
-      yesCall = PropertyOrLandUKAddressController.onPageLoad(index, draftId),
-      noCall = PropertyOrLandInternationalAddressController.onPageLoad(index, draftId)
+      yesCall = PropertyOrLandUKAddressController.onPageLoad(index),
+      noCall = PropertyOrLandInternationalAddressController.onPageLoad(index)
     )
-    case PropertyOrLandDescriptionPage(index) => _ => _ => PropertyOrLandTotalValueController.onPageLoad(index, draftId)
-    case PropertyOrLandUKAddressPage(index) => _ => _ => PropertyOrLandTotalValueController.onPageLoad(index, draftId)
-    case PropertyOrLandInternationalAddressPage(index) => _ => _ => PropertyOrLandTotalValueController.onPageLoad(index, draftId)
-    case PropertyOrLandTotalValuePage(index) => _ => _ => TrustOwnAllThePropertyOrLandController.onPageLoad(index, draftId)
+    case PropertyOrLandDescriptionPage(index) => _ => _ => PropertyOrLandTotalValueController.onPageLoad(index)
+    case PropertyOrLandUKAddressPage(index) => _ => _ => PropertyOrLandTotalValueController.onPageLoad(index)
+    case PropertyOrLandInternationalAddressPage(index) => _ => _ => PropertyOrLandTotalValueController.onPageLoad(index)
+    case PropertyOrLandTotalValuePage(index) => _ => _ => TrustOwnAllThePropertyOrLandController.onPageLoad(index)
     case page @ TrustOwnAllThePropertyOrLandPage(index) => _ => ua => yesNoNav(
       ua = ua,
       fromPage = page,
-      yesCall = PropertyOrLandAnswerController.onPageLoad(index, draftId),
-      noCall = PropertyLandValueTrustController.onPageLoad(index, draftId)
+      yesCall = PropertyOrLandAnswerController.onPageLoad(index),
+      noCall = PropertyLandValueTrustController.onPageLoad(index)
     )
-    case PropertyLandValueTrustPage(index) => _ => _ => PropertyOrLandAnswerController.onPageLoad(index, draftId)
-    case PropertyOrLandAnswerPage => _ => _ => AddAssetsController.onPageLoad(draftId)
+    case PropertyLandValueTrustPage(index) => _ => _ => PropertyOrLandAnswerController.onPageLoad(index)
+    case PropertyOrLandAnswerPage => _ => _ => AddAssetsController.onPageLoad()
   }
 
 }

@@ -41,8 +41,8 @@ class MoneyPrintHelperSpec extends SpecBase {
     .set(AssetMoneyValuePage(index), amount).success.value
 
   private val rows: Seq[AnswerRow] = Seq(
-    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Money"), Some(WhatKindOfAssetController.onPageLoad(index, draftId).url)),
-    AnswerRow("money.value.checkYourAnswersLabel", Html(s"£100"), Some(AssetMoneyValueController.onPageLoad(index, fakeDraftId).url))
+    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Money"), Some(WhatKindOfAssetController.onPageLoad(index).url)),
+    AnswerRow("money.value.checkYourAnswersLabel", Html(s"£100"), Some(AssetMoneyValueController.onPageLoad(index).url))
   )
 
   "MoneyPrintHelper" when {
@@ -53,8 +53,7 @@ class MoneyPrintHelperSpec extends SpecBase {
         val result: AnswerSection = helper.printSection(
           userAnswers = answers,
           index = index,
-          specificIndex = index,
-          draftId = fakeDraftId
+          specificIndex = index
         )
 
         result mustBe AnswerSection(
@@ -69,8 +68,7 @@ class MoneyPrintHelperSpec extends SpecBase {
 
         val result: Seq[AnswerSection] = helper.checkDetailsSection(
           userAnswers = answers,
-          index = index,
-          draftId = fakeDraftId
+          index = index
         )
 
         result mustBe Seq(AnswerSection(

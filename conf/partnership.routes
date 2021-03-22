@@ -1,8 +1,8 @@
-GET        /:draftId/:index/description                                           controllers.asset.partnership.PartnershipDescriptionController.onPageLoad(index : Int, draftId: String)
-POST       /:draftId/:index/description                                           controllers.asset.partnership.PartnershipDescriptionController.onSubmit(index : Int, draftId: String)
+GET        /:index/description                                           controllers.asset.partnership.PartnershipDescriptionController.onPageLoad(index : Int)
+POST       /:index/description                                           controllers.asset.partnership.PartnershipDescriptionController.onSubmit(index : Int)
 
-GET        /:draftId/:index/start-date                                            controllers.asset.partnership.PartnershipStartDateController.onPageLoad(index : Int, draftId: String)
-POST       /:draftId/:index/start-date                                            controllers.asset.partnership.PartnershipStartDateController.onSubmit(index : Int, draftId: String)
+GET        /:index/start-date                                            controllers.asset.partnership.PartnershipStartDateController.onPageLoad(index : Int)
+POST       /:index/start-date                                            controllers.asset.partnership.PartnershipStartDateController.onSubmit(index : Int)
 
-GET        /:draftId/:index/check-partnership-answers                             controllers.asset.partnership.PartnershipAnswerController.onPageLoad(index : Int, draftId : String)
-POST       /:draftId/:index/check-partnership-answers                             controllers.asset.partnership.PartnershipAnswerController.onSubmit(index : Int, draftId : String)
+GET        /:index/check-partnership-answers                             controllers.asset.partnership.PartnershipAnswerController.onPageLoad(index : Int)
+POST       /:index/check-partnership-answers                             controllers.asset.partnership.PartnershipAnswerController.onSubmit(index : Int)

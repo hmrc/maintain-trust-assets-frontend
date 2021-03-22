@@ -39,7 +39,7 @@ class IndexControllerSpec extends SpecBase {
   private val featureFlagService: FeatureFlagService = mock[FeatureFlagService]
   private val submissionDraftConnector: SubmissionDraftConnector = mock[SubmissionDraftConnector]
 
-  private lazy val onPageLoadRoute: String = routes.IndexController.onPageLoad(fakeDraftId).url
+  private lazy val onPageLoadRoute: String = routes.IndexController.onPageLoad().url
 
   "Index Controller" when {
 
@@ -61,17 +61,17 @@ class IndexControllerSpec extends SpecBase {
               bind[SubmissionDraftConnector].toInstance(submissionDraftConnector)
             ).build()
 
-          when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(Some(userAnswers)))
+          when(registrationsRepository.get()(any())).thenReturn(Future.successful(Some(userAnswers)))
           when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
           when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
-          when(submissionDraftConnector.getIsTrustTaxable(any())(any(), any())).thenReturn(Future.successful(false))
+          when(submissionDraftConnector.getIsTrustTaxable()(any(), any())).thenReturn(Future.successful(false))
 
           val request = FakeRequest(GET, onPageLoadRoute)
 
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustBe AddAssetsController.onPageLoad(fakeDraftId).url
+          redirectLocation(result).value mustBe AddAssetsController.onPageLoad().url
 
           application.stop()
         }
@@ -89,17 +89,17 @@ class IndexControllerSpec extends SpecBase {
                 bind[SubmissionDraftConnector].toInstance(submissionDraftConnector)
               ).build()
 
-            when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(Some(emptyUserAnswers)))
+            when(registrationsRepository.get()(any())).thenReturn(Future.successful(Some(emptyUserAnswers)))
             when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
             when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
-            when(submissionDraftConnector.getIsTrustTaxable(any())(any(), any())).thenReturn(Future.successful(true))
+            when(submissionDraftConnector.getIsTrustTaxable()(any(), any())).thenReturn(Future.successful(true))
 
             val request = FakeRequest(GET, onPageLoadRoute)
 
             val result = route(application, request).value
 
             status(result) mustEqual SEE_OTHER
-            redirectLocation(result).value mustBe AssetInterruptPageController.onPageLoad(fakeDraftId).url
+            redirectLocation(result).value mustBe AssetInterruptPageController.onPageLoad().url
 
             application.stop()
           }
@@ -118,17 +118,17 @@ class IndexControllerSpec extends SpecBase {
                 bind[SubmissionDraftConnector].toInstance(submissionDraftConnector)
               ).build()
 
-            when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(Some(emptyUserAnswers)))
+            when(registrationsRepository.get()(any())).thenReturn(Future.successful(Some(emptyUserAnswers)))
             when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
             when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
-            when(submissionDraftConnector.getIsTrustTaxable(any())(any(), any())).thenReturn(Future.successful(false))
+            when(submissionDraftConnector.getIsTrustTaxable()(any(), any())).thenReturn(Future.successful(false))
 
             val request = FakeRequest(GET, onPageLoadRoute)
 
             val result = route(application, request).value
 
             status(result) mustEqual SEE_OTHER
-            redirectLocation(result).value mustBe TrustOwnsNonEeaBusinessYesNoController.onPageLoad(fakeDraftId).url
+            redirectLocation(result).value mustBe TrustOwnsNonEeaBusinessYesNoController.onPageLoad().url
 
             application.stop()
           }
@@ -147,10 +147,10 @@ class IndexControllerSpec extends SpecBase {
             bind[SubmissionDraftConnector].toInstance(submissionDraftConnector)
           ).build()
 
-        when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(Some(userAnswers)))
+        when(registrationsRepository.get()(any())).thenReturn(Future.successful(Some(userAnswers)))
         when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
         when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(true))
-        when(submissionDraftConnector.getIsTrustTaxable(any())(any(), any())).thenReturn(Future.successful(true))
+        when(submissionDraftConnector.getIsTrustTaxable()(any(), any())).thenReturn(Future.successful(true))
 
         val request = FakeRequest(GET, onPageLoadRoute)
 
@@ -179,17 +179,17 @@ class IndexControllerSpec extends SpecBase {
               bind[SubmissionDraftConnector].toInstance(submissionDraftConnector)
             ).build()
 
-          when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(None))
+          when(registrationsRepository.get()(any())).thenReturn(Future.successful(None))
           when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
           when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
-          when(submissionDraftConnector.getIsTrustTaxable(any())(any(), any())).thenReturn(Future.successful(true))
+          when(submissionDraftConnector.getIsTrustTaxable()(any(), any())).thenReturn(Future.successful(true))
 
           val request = FakeRequest(GET, onPageLoadRoute)
 
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustBe AssetInterruptPageController.onPageLoad(fakeDraftId).url
+          redirectLocation(result).value mustBe AssetInterruptPageController.onPageLoad().url
 
           application.stop()
         }
@@ -206,17 +206,17 @@ class IndexControllerSpec extends SpecBase {
               bind[SubmissionDraftConnector].toInstance(submissionDraftConnector)
             ).build()
 
-          when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(None))
+          when(registrationsRepository.get()(any())).thenReturn(Future.successful(None))
           when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
           when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
-          when(submissionDraftConnector.getIsTrustTaxable(any())(any(), any())).thenReturn(Future.successful(false))
+          when(submissionDraftConnector.getIsTrustTaxable()(any(), any())).thenReturn(Future.successful(false))
 
           val request = FakeRequest(GET, onPageLoadRoute)
 
           val result = route(application, request).value
 
           status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustBe TrustOwnsNonEeaBusinessYesNoController.onPageLoad(fakeDraftId).url
+          redirectLocation(result).value mustBe TrustOwnsNonEeaBusinessYesNoController.onPageLoad().url
 
           application.stop()
         }
@@ -237,10 +237,10 @@ class IndexControllerSpec extends SpecBase {
                   bind[SubmissionDraftConnector].toInstance(submissionDraftConnector)
                 ).build()
 
-              when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(None))
+              when(registrationsRepository.get()(any())).thenReturn(Future.successful(None))
               when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
               when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(true))
-              when(submissionDraftConnector.getIsTrustTaxable(any())(any(), any())).thenReturn(Future.successful(true))
+              when(submissionDraftConnector.getIsTrustTaxable()(any(), any())).thenReturn(Future.successful(true))
 
               val request = FakeRequest(GET, onPageLoadRoute)
 
@@ -250,7 +250,6 @@ class IndexControllerSpec extends SpecBase {
 
                 uaCaptor.getValue.is5mldEnabled mustBe true
                 uaCaptor.getValue.isTaxable mustBe true
-                uaCaptor.getValue.draftId mustBe fakeDraftId
                 uaCaptor.getValue.internalAuthId mustBe "internalId"
 
                 application.stop()
@@ -269,10 +268,10 @@ class IndexControllerSpec extends SpecBase {
                   bind[SubmissionDraftConnector].toInstance(submissionDraftConnector)
                 ).build()
 
-              when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(None))
+              when(registrationsRepository.get()(any())).thenReturn(Future.successful(None))
               when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
               when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(true))
-              when(submissionDraftConnector.getIsTrustTaxable(any())(any(), any())).thenReturn(Future.successful(false))
+              when(submissionDraftConnector.getIsTrustTaxable()(any(), any())).thenReturn(Future.successful(false))
 
               val request = FakeRequest(GET, onPageLoadRoute)
 
@@ -282,7 +281,6 @@ class IndexControllerSpec extends SpecBase {
 
                 uaCaptor.getValue.is5mldEnabled mustBe true
                 uaCaptor.getValue.isTaxable mustBe false
-                uaCaptor.getValue.draftId mustBe fakeDraftId
                 uaCaptor.getValue.internalAuthId mustBe "internalId"
 
                 application.stop()
@@ -302,10 +300,10 @@ class IndexControllerSpec extends SpecBase {
                 bind[SubmissionDraftConnector].toInstance(submissionDraftConnector)
               ).build()
 
-            when(registrationsRepository.get(any())(any())).thenReturn(Future.successful(None))
+            when(registrationsRepository.get()(any())).thenReturn(Future.successful(None))
             when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
             when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
-            when(submissionDraftConnector.getIsTrustTaxable(any())(any(), any())).thenReturn(Future.successful(false))
+            when(submissionDraftConnector.getIsTrustTaxable()(any(), any())).thenReturn(Future.successful(false))
 
             val request = FakeRequest(GET, onPageLoadRoute)
 
@@ -315,7 +313,6 @@ class IndexControllerSpec extends SpecBase {
 
               uaCaptor.getValue.is5mldEnabled mustBe false
               uaCaptor.getValue.isTaxable mustBe false
-              uaCaptor.getValue.draftId mustBe fakeDraftId
               uaCaptor.getValue.internalAuthId mustBe "internalId"
 
               application.stop()

@@ -45,14 +45,14 @@ class OtherAssetValueController @Inject()(
                                            view: OtherAssetValueView
                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private def actions(index: Int, draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] = {
-    identify andThen getData(draftId) andThen requireData andThen
-      requiredAnswer(RequiredAnswer(OtherAssetDescriptionPage(index), routes.OtherAssetDescriptionController.onPageLoad(index, draftId)))
+  private def actions(index: Int): ActionBuilder[RegistrationDataRequest, AnyContent] = {
+    identify andThen getData() andThen requireData andThen
+      requiredAnswer(RequiredAnswer(OtherAssetDescriptionPage(index), routes.OtherAssetDescriptionController.onPageLoad(index)))
   }
 
   private val form: Form[Long] = formProvider.withConfig(prefix = "other.value")
 
-  def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
+  def onPageLoad(index: Int): Action[AnyContent] = actions(index) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(OtherAssetValuePage(index)) match {
@@ -60,15 +60,15 @@ class OtherAssetValueController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, draftId, index, description(index)))
+      Ok(view(preparedForm, index, description(index)))
   }
 
-  def onSubmit(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async {
+  def onSubmit(index: Int): Action[AnyContent] = actions(index).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, draftId, index, description(index)))),
+          Future.successful(BadRequest(view(formWithErrors, index, description(index)))),
 
         value => {
 
@@ -77,7 +77,7 @@ class OtherAssetValueController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(answers)
             _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(OtherAssetValuePage(index), draftId)(updatedAnswers))
+          } yield Redirect(navigator.nextPage(OtherAssetValuePage(index))(updatedAnswers))
         }
       )
   }

@@ -24,7 +24,7 @@ import repositories.RegistrationsRepository
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class FakeDraftIdRetrievalActionProvider(draftId: String,
+class FakeDraftIdRetrievalActionProvider(
                                          status :  Status = Status.InProgress,
                                          dataToReturn : Option[UserAnswers],
                                          registrationsRepository : RegistrationsRepository)
@@ -35,9 +35,9 @@ class FakeDraftIdRetrievalActionProvider(draftId: String,
 
   val mockedRepository: RegistrationsRepository = mock[RegistrationsRepository]
 
-  when(mockedRepository.get(any())(any())).thenReturn(Future.successful(dataToReturn))
+  when(mockedRepository.get()(any())).thenReturn(Future.successful(dataToReturn))
 
-  override def apply(draftId : String) = new DraftIdDataRetrievalAction(draftId, mockedRepository, executionContext)
+  override def apply() = new DraftIdDataRetrievalAction(mockedRepository, executionContext)
 
 }
 

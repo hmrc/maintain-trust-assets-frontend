@@ -38,18 +38,18 @@ class IndexController @Inject()(
                                  submissionDraftConnector: SubmissionDraftConnector
                                )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(draftId: String): Action[AnyContent] = identify.async { implicit request =>
+  def onPageLoad(): Action[AnyContent] = identify.async { implicit request =>
 
     def redirect(userAnswers: UserAnswers): Future[Result] = {
       repository.set(userAnswers).map { _ =>
         userAnswers.get(sections.Assets) match {
           case Some(_ :: _) =>
-            Redirect(AddAssetsController.onPageLoad(draftId))
+            Redirect(AddAssetsController.onPageLoad())
           case _ =>
             if (userAnswers.isTaxable) {
-              Redirect(AssetInterruptPageController.onPageLoad(draftId))
+              Redirect(AssetInterruptPageController.onPageLoad())
             } else {
-              Redirect(TrustOwnsNonEeaBusinessYesNoController.onPageLoad(draftId))
+              Redirect(TrustOwnsNonEeaBusinessYesNoController.onPageLoad())
             }
         }
       }
@@ -57,13 +57,13 @@ class IndexController @Inject()(
 
     featureFlagService.is5mldEnabled() flatMap {
       is5mldEnabled =>
-        submissionDraftConnector.getIsTrustTaxable(draftId) flatMap {
+        submissionDraftConnector.getIsTrustTaxable() flatMap {
           isTaxable =>
-            repository.get(draftId) flatMap {
+            repository.get() flatMap {
               case Some(userAnswers) =>
                 redirect(userAnswers.copy(is5mldEnabled = is5mldEnabled, isTaxable = isTaxable))
               case _ =>
-                val userAnswers = UserAnswers(draftId, Json.obj(), request.identifier, is5mldEnabled, isTaxable)
+                val userAnswers = UserAnswers(Json.obj(), request.identifier, is5mldEnabled, isTaxable)
                 redirect(userAnswers)
             }
         }

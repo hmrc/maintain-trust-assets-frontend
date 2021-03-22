@@ -36,7 +36,7 @@ class ShareValueInTrustControllerSpec extends SpecBase with ModelGenerators with
   val validAnswer: Long = 4000L
   val companyName = "Company"
 
-  lazy val shareValueInTrustRoute: String = routes.ShareValueInTrustController.onPageLoad(index, fakeDraftId).url
+  lazy val shareValueInTrustRoute: String = routes.ShareValueInTrustController.onPageLoad(index).url
 
   "ShareValueInTrust Controller" must {
 
@@ -55,7 +55,7 @@ class ShareValueInTrustControllerSpec extends SpecBase with ModelGenerators with
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, fakeDraftId, index, companyName)(fakeRequest, messages).toString
+        view(form, index, companyName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -76,7 +76,7 @@ class ShareValueInTrustControllerSpec extends SpecBase with ModelGenerators with
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), fakeDraftId, index, companyName)(fakeRequest, messages).toString
+        view(form.fill(validAnswer), index, companyName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -119,7 +119,7 @@ class ShareValueInTrustControllerSpec extends SpecBase with ModelGenerators with
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, fakeDraftId, index, companyName)(fakeRequest, messages).toString
+        view(boundForm, index, companyName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -166,7 +166,7 @@ class ShareValueInTrustControllerSpec extends SpecBase with ModelGenerators with
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.ShareCompanyNameController.onPageLoad(index, fakeDraftId).url
+      redirectLocation(result).value mustEqual routes.ShareCompanyNameController.onPageLoad(index).url
 
       application.stop()
     }
@@ -175,7 +175,7 @@ class ShareValueInTrustControllerSpec extends SpecBase with ModelGenerators with
   "for a GET" must {
 
     def getForIndex(index: Int) : FakeRequest[AnyContentAsEmpty.type] = {
-      val route = routes.ShareValueInTrustController.onPageLoad(index, fakeDraftId).url
+      val route = routes.ShareValueInTrustController.onPageLoad(index).url
 
       FakeRequest(GET, route)
     }
@@ -192,7 +192,7 @@ class ShareValueInTrustControllerSpec extends SpecBase with ModelGenerators with
     def postForIndex(index: Int): FakeRequest[AnyContentAsFormUrlEncoded] = {
 
       val route =
-        routes.ShareValueInTrustController.onPageLoad(index, fakeDraftId).url
+        routes.ShareValueInTrustController.onPageLoad(index).url
 
       FakeRequest(POST, route)
         .withFormUrlEncodedBody(("value", validAnswer.toString))

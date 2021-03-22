@@ -42,7 +42,7 @@ class OtherAssetValueControllerSpec extends SpecBase {
   val requiredAnswers: UserAnswers = emptyUserAnswers
     .set(OtherAssetDescriptionPage(index), description).success.value
 
-  lazy val valueRoute: String = routes.OtherAssetValueController.onPageLoad(index, fakeDraftId).url
+  lazy val valueRoute: String = routes.OtherAssetValueController.onPageLoad(index).url
 
   "OtherAssetValueController" must {
 
@@ -59,7 +59,7 @@ class OtherAssetValueControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, fakeDraftId, index, description)(fakeRequest, messages).toString
+        view(form, index, description)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -80,7 +80,7 @@ class OtherAssetValueControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), fakeDraftId, index, description)(fakeRequest, messages).toString
+        view(form.fill(validAnswer), index, description)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -99,7 +99,7 @@ class OtherAssetValueControllerSpec extends SpecBase {
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual
-        controllers.asset.other.routes.OtherAssetDescriptionController.onPageLoad(index, fakeDraftId).url
+        controllers.asset.other.routes.OtherAssetDescriptionController.onPageLoad(index).url
 
       application.stop()
     }
@@ -138,7 +138,7 @@ class OtherAssetValueControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, fakeDraftId, index, description)(fakeRequest, messages).toString
+        view(boundForm, index, description)(fakeRequest, messages).toString
 
       application.stop()
     }

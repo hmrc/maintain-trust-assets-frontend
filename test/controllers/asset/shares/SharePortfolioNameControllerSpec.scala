@@ -33,7 +33,7 @@ class SharePortfolioNameControllerSpec extends SpecBase with ModelGenerators wit
   val form = formProvider.withConfig(53, "shares.portfolioName")
   val index: Int = 0
 
-  lazy val sharePortfolioNameRoute = routes.SharePortfolioNameController.onPageLoad(index, fakeDraftId).url
+  lazy val sharePortfolioNameRoute = routes.SharePortfolioNameController.onPageLoad(index).url
 
   "SharePortfolioName Controller" must {
 
@@ -50,7 +50,7 @@ class SharePortfolioNameControllerSpec extends SpecBase with ModelGenerators wit
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, fakeDraftId, index)(fakeRequest, messages).toString
+        view(form, index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -70,7 +70,7 @@ class SharePortfolioNameControllerSpec extends SpecBase with ModelGenerators wit
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill("answer"), fakeDraftId, index)(fakeRequest, messages).toString
+        view(form.fill("answer"), index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -109,7 +109,7 @@ class SharePortfolioNameControllerSpec extends SpecBase with ModelGenerators wit
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, fakeDraftId, index)(fakeRequest, messages).toString
+        view(boundForm, index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -150,7 +150,7 @@ class SharePortfolioNameControllerSpec extends SpecBase with ModelGenerators wit
   "for a GET" must {
 
     def getForIndex(index: Int) : FakeRequest[AnyContentAsEmpty.type] = {
-      val route = routes.SharePortfolioNameController.onPageLoad(index, fakeDraftId).url
+      val route = routes.SharePortfolioNameController.onPageLoad(index).url
 
       FakeRequest(GET, route)
     }
@@ -167,7 +167,7 @@ class SharePortfolioNameControllerSpec extends SpecBase with ModelGenerators wit
     def postForIndex(index: Int): FakeRequest[AnyContentAsFormUrlEncoded] = {
 
       val route =
-        routes.SharePortfolioNameController.onPageLoad(index, fakeDraftId).url
+        routes.SharePortfolioNameController.onPageLoad(index).url
 
       FakeRequest(POST, route)
         .withFormUrlEncodedBody(("name", "wesdrgfh"))

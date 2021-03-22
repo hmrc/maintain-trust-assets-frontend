@@ -33,7 +33,7 @@ class AddAnAssetYesNoViewSpec extends YesNoViewBehaviours {
     val view = viewFor[AddAnAssetYesNoView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, fakeDraftId)(fakeRequest, messages)
+      view.apply(form)(fakeRequest, messages)
 
     behave like normalPage(applyView(form), messageKeyPrefix)
 

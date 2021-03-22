@@ -49,12 +49,12 @@ class NameController @Inject()(
 
   private val form: Form[String] = formProvider.withConfig(105, "nonEeaBusiness.name")
 
-  private def actions(index: Int, draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] =
-    identify andThen getData(draftId) andThen
+  private def actions(index: Int): ActionBuilder[RegistrationDataRequest, AnyContent] =
+    identify andThen getData() andThen
       requireData andThen
       validateIndex(index, Assets)
 
-  def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
+  def onPageLoad(index: Int): Action[AnyContent] = actions(index) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(NamePage(index)) match {
@@ -62,22 +62,22 @@ class NameController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, draftId, index))
+      Ok(view(preparedForm, index))
 
   }
 
-  def onSubmit(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async {
+  def onSubmit(index: Int): Action[AnyContent] = actions(index).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, draftId, index))),
+          Future.successful(BadRequest(view(formWithErrors, index))),
 
         value => {
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(NamePage(index), value))
             _ <- registrationsRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(NamePage(index), draftId)(updatedAnswers))
+          } yield Redirect(navigator.nextPage(NamePage(index))(updatedAnswers))
         }
       )
   }

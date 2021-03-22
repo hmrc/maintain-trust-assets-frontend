@@ -40,8 +40,7 @@ class AnswersHelper[A <: Asset : ClassTag](printHelper: PrintHelper) {
           userAnswers = userAnswers,
           arg = asset.arg,
           index = index,
-          specificIndex = specificIndex,
-          draftId = userAnswers.draftId
+          specificIndex = specificIndex
         )
     }
   }

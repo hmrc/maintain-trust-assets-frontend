@@ -26,9 +26,9 @@ class Actions @Inject()(
                          requireData: RegistrationDataRequiredAction
                        ) {
 
-  def authWithSession(draftId: String): ActionBuilder[OptionalRegistrationDataRequest, AnyContent] =
-    identify andThen getData(draftId)
+  def authWithSession(): ActionBuilder[OptionalRegistrationDataRequest, AnyContent] =
+    identify andThen getData()
 
-  def authWithData(draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] =
-    authWithSession(draftId) andThen requireData
+  def authWithData(): ActionBuilder[RegistrationDataRequest, AnyContent] =
+    authWithSession() andThen requireData
 }

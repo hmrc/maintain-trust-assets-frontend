@@ -41,7 +41,7 @@ class AssetInterruptPageControllerSpec extends SpecBase {
 
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(is5mldEnabled = is5mldEnabled))).build()
 
-        val request = FakeRequest(GET, routes.AssetInterruptPageController.onPageLoad(fakeDraftId).url)
+        val request = FakeRequest(GET, routes.AssetInterruptPageController.onPageLoad().url)
 
         val result = route(application, request).value
 
@@ -50,7 +50,7 @@ class AssetInterruptPageControllerSpec extends SpecBase {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(fakeDraftId, is5mldEnabled)(fakeRequest, messages).toString
+          view(is5mldEnabled)(fakeRequest, messages).toString
 
         application.stop()
       }
@@ -64,7 +64,7 @@ class AssetInterruptPageControllerSpec extends SpecBase {
 
           val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(is5mldEnabled = is5mldEnabled, isTaxable = isTaxable))).build()
 
-          val request = FakeRequest(GET, routes.AssetInterruptPageController.onPageLoad(fakeDraftId).url)
+          val request = FakeRequest(GET, routes.AssetInterruptPageController.onPageLoad().url)
 
           val result = route(application, request).value
 
@@ -73,7 +73,7 @@ class AssetInterruptPageControllerSpec extends SpecBase {
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(fakeDraftId, is5mldEnabled)(fakeRequest, messages).toString
+            view(is5mldEnabled)(fakeRequest, messages).toString
 
           application.stop()
         }
@@ -85,7 +85,7 @@ class AssetInterruptPageControllerSpec extends SpecBase {
 
           val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(is5mldEnabled = is5mldEnabled, isTaxable = isTaxable))).build()
 
-          val request = FakeRequest(GET, routes.AssetInterruptPageController.onPageLoad(fakeDraftId).url)
+          val request = FakeRequest(GET, routes.AssetInterruptPageController.onPageLoad().url)
 
           val result = route(application, request).value
 
@@ -94,7 +94,7 @@ class AssetInterruptPageControllerSpec extends SpecBase {
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(fakeDraftId)(fakeRequest, messages).toString
+            view()(fakeRequest, messages).toString
 
           application.stop()
         }
@@ -115,7 +115,7 @@ class AssetInterruptPageControllerSpec extends SpecBase {
 
           val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(isTaxable = isTaxable))).build()
 
-          val request = FakeRequest(POST, routes.AssetInterruptPageController.onSubmit(fakeDraftId).url)
+          val request = FakeRequest(POST, routes.AssetInterruptPageController.onSubmit().url)
 
           val result = route(application, request).value
 
@@ -142,7 +142,7 @@ class AssetInterruptPageControllerSpec extends SpecBase {
 
           val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(isTaxable = isTaxable))).build()
 
-          val request = FakeRequest(POST, routes.AssetInterruptPageController.onSubmit(fakeDraftId).url)
+          val request = FakeRequest(POST, routes.AssetInterruptPageController.onSubmit().url)
 
           val result = route(application, request).value
 

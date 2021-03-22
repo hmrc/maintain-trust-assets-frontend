@@ -31,15 +31,14 @@ class MoneyPrintHelper @Inject()(checkAnswersFormatters: CheckAnswersFormatters)
 
   override def answerRows(userAnswers: UserAnswers,
                           arg: String,
-                          index: Int,
-                          draftId: String)
+                          index: Int)
                          (implicit messages: Messages): Seq[AnswerRow] = {
 
     val converter: AnswerRowConverter = new AnswerRowConverter(checkAnswersFormatters)(userAnswers, arg)
 
     Seq(
-      converter.assetTypeQuestion(index, draftId),
-      converter.currencyQuestion(AssetMoneyValuePage(index), "money.value", AssetMoneyValueController.onPageLoad(index, draftId).url)
+      converter.assetTypeQuestion(index),
+      converter.currencyQuestion(AssetMoneyValuePage(index), "money.value", AssetMoneyValueController.onPageLoad(index).url)
     ).flatten
   }
 }

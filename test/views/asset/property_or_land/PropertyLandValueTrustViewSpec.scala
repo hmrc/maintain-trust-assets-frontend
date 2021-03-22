@@ -36,7 +36,7 @@ class PropertyLandValueTrustViewSpec extends LongViewBehaviours {
     val view = viewFor[PropertyLandValueTrustView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, index, fakeDraftId)(fakeRequest, messages)
+      view.apply(form, index)(fakeRequest, messages)
 
 
     behave like normalPage(applyView(form), messageKeyPrefix)

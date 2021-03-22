@@ -37,7 +37,7 @@ class PropertyOrLandAnswerControllerSpec extends SpecBase {
 
   private val totalValue: Long = 10000L
 
-  lazy val propertyOrLandAnswerRoute: String = routes.PropertyOrLandAnswerController.onPageLoad(index, fakeDraftId).url
+  lazy val propertyOrLandAnswerRoute: String = routes.PropertyOrLandAnswerController.onPageLoad(index).url
 
   "PropertyOrLandAnswer Controller" must {
 
@@ -56,7 +56,7 @@ class PropertyOrLandAnswerControllerSpec extends SpecBase {
 
         val expectedSections = Nil
         val mockPrintHelper: PropertyOrLandPrintHelper = mock[PropertyOrLandPrintHelper]
-        when(mockPrintHelper.checkDetailsSection(any(), any(), any(), any())(any())).thenReturn(Nil)
+        when(mockPrintHelper.checkDetailsSection(any(), any(), any())(any())).thenReturn(Nil)
 
         val application = applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(bind[PropertyOrLandPrintHelper].toInstance(mockPrintHelper))
@@ -71,7 +71,7 @@ class PropertyOrLandAnswerControllerSpec extends SpecBase {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(index, fakeDraftId, expectedSections)(fakeRequest, messages).toString
+          view(index, expectedSections)(fakeRequest, messages).toString
 
         application.stop()
       }

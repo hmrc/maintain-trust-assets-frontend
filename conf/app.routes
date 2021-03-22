@@ -8,7 +8,7 @@
 ->         /other                                       other.Routes
 ->         /non-eea-business                            nonEeaBusiness.Routes
 
-GET        /:draftId/start                              controllers.IndexController.onPageLoad(draftId: String)
+GET        /start                                       controllers.IndexController.onPageLoad()
 
 GET        /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)
 
@@ -20,24 +20,24 @@ GET        /unauthorised                                controllers.Unauthorised
 
 GET        /logout                                      controllers.LogoutController.logout()
 
-GET        /:draftId/:index/assets-type           controllers.asset.WhatKindOfAssetController.onPageLoad(index: Int, draftId: String)
-POST       /:draftId/:index/assets-type           controllers.asset.WhatKindOfAssetController.onSubmit(index: Int, draftId: String)
+GET        /:index/assets-type           controllers.asset.WhatKindOfAssetController.onPageLoad(index: Int)
+POST       /:index/assets-type           controllers.asset.WhatKindOfAssetController.onSubmit(index: Int)
 
-GET        /:draftId/trust-owns-non-eea-company   controllers.asset.TrustOwnsNonEeaBusinessYesNoController.onPageLoad(draftId: String)
-POST       /:draftId/trust-owns-non-eea-company   controllers.asset.TrustOwnsNonEeaBusinessYesNoController.onSubmit(draftId: String)
+GET        /trust-owns-non-eea-company   controllers.asset.TrustOwnsNonEeaBusinessYesNoController.onPageLoad()
+POST       /trust-owns-non-eea-company   controllers.asset.TrustOwnsNonEeaBusinessYesNoController.onSubmit()
 
-GET        /:draftId/information-you-need         controllers.asset.AssetInterruptPageController.onPageLoad(draftId: String)
-POST       /:draftId/information-you-need         controllers.asset.AssetInterruptPageController.onSubmit(draftId: String)
+GET        /information-you-need         controllers.asset.AssetInterruptPageController.onPageLoad()
+POST       /information-you-need         controllers.asset.AssetInterruptPageController.onSubmit()
 
-GET        /:draftId/add                          controllers.asset.AddAssetsController.onPageLoad(draftId: String)
-POST       /:draftId/add                          controllers.asset.AddAssetsController.submitOne(draftId: String)
-GET        /:draftId/add-another                  controllers.asset.AddAssetsController.onPageLoad(draftId: String)
-POST       /:draftId/add-another                  controllers.asset.AddAssetsController.submitAnother(draftId: String)
-GET        /:draftId/complete                     controllers.asset.AddAssetsController.onPageLoad(draftId: String)
-POST       /:draftId/complete                     controllers.asset.AddAssetsController.submitComplete(draftId: String)
+GET        /add                          controllers.asset.AddAssetsController.onPageLoad()
+POST       /add                          controllers.asset.AddAssetsController.submitOne()
+GET        /add-another                  controllers.asset.AddAssetsController.onPageLoad()
+POST       /add-another                  controllers.asset.AddAssetsController.submitAnother()
+GET        /complete                     controllers.asset.AddAssetsController.onPageLoad()
+POST       /complete                     controllers.asset.AddAssetsController.submitComplete()
 
-GET        /:draftId/:index/remove                controllers.asset.RemoveAssetYesNoController.onPageLoad(index: Int, draftId: String)
-POST       /:draftId/:index/remove                controllers.asset.RemoveAssetYesNoController.onSubmit(index: Int, draftId: String)
+GET        /:index/remove                controllers.asset.RemoveAssetYesNoController.onPageLoad(index: Int)
+POST       /:index/remove                controllers.asset.RemoveAssetYesNoController.onSubmit(index: Int)
 
 GET        /feature-not-available                       controllers.FeatureNotAvailableController.onPageLoad()
 

@@ -40,7 +40,7 @@ class MaxedOutViewSpec extends OptionsViewBehaviours with TabularDataViewBehavio
         val view: MaxedOutView = viewFor[MaxedOutView](Some(emptyUserAnswers.copy(is5mldEnabled = false, isTaxable = true)))
 
         def applyView(): HtmlFormat.Appendable =
-          view.apply(fakeDraftId, Nil, completeRows(max), "Add assets", max, messageKeyPrefix)(fakeRequest, messages)
+          view.apply(Nil, completeRows(max), "Add assets", max, messageKeyPrefix)(fakeRequest, messages)
 
         behave like normalPage(applyView(), messageKeyPrefix)
 
@@ -65,7 +65,7 @@ class MaxedOutViewSpec extends OptionsViewBehaviours with TabularDataViewBehavio
         val view: MaxedOutView = viewFor[MaxedOutView](Some(emptyUserAnswers.copy(is5mldEnabled = true, isTaxable = true)))
 
         def applyView(): HtmlFormat.Appendable =
-          view.apply(fakeDraftId, Nil, completeRows(max), "Add assets", max, messageKeyPrefix)(fakeRequest, messages)
+          view.apply(Nil, completeRows(max), "Add assets", max, messageKeyPrefix)(fakeRequest, messages)
 
         behave like normalPage(applyView(), messageKeyPrefix)
 
@@ -93,7 +93,7 @@ class MaxedOutViewSpec extends OptionsViewBehaviours with TabularDataViewBehavio
       val view: MaxedOutView = viewFor[MaxedOutView](Some(emptyUserAnswers.copy(is5mldEnabled = true, isTaxable = false)))
 
       def applyView(): HtmlFormat.Appendable =
-        view.apply(fakeDraftId, Nil, completeRows(max), "Add a non-EEA company", max, messageKeyPrefix)(fakeRequest, messages)
+        view.apply(Nil, completeRows(max), "Add a non-EEA company", max, messageKeyPrefix)(fakeRequest, messages)
 
       behave like normalPage(applyView(), messageKeyPrefix)
 

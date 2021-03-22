@@ -47,13 +47,13 @@ class ShareAnswerController @Inject()(
                                        printHelper: SharesPrintHelper
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private def actions(index: Int, draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] =
+  private def actions(index: Int): ActionBuilder[RegistrationDataRequest, AnyContent] =
     identify andThen
-      getData(draftId) andThen
+      getData() andThen
       requireData andThen
-      requiredAnswer(RequiredAnswer(SharesInAPortfolioPage(index), routes.SharesInAPortfolioController.onPageLoad(index, draftId)))
+      requiredAnswer(RequiredAnswer(SharesInAPortfolioPage(index), routes.SharesInAPortfolioController.onPageLoad(index)))
 
-  def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
+  def onPageLoad(index: Int): Action[AnyContent] = actions(index) {
     implicit request =>
 
       def getPage(page: Gettable[String]): Option[String] = {
@@ -69,14 +69,13 @@ class ShareAnswerController @Inject()(
       val sections = printHelper.checkDetailsSection(
         userAnswers = request.userAnswers,
         arg = name,
-        index = index,
-        draftId = draftId
+        index = index
       )
 
-      Ok(view(index, draftId, sections))
+      Ok(view(index, sections))
   }
 
-  def onSubmit(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async {
+  def onSubmit(index: Int): Action[AnyContent] = actions(index).async {
     implicit request =>
 
       val answers = request.userAnswers.set(AssetStatus(index), Completed)
@@ -84,7 +83,7 @@ class ShareAnswerController @Inject()(
       for {
         updatedAnswers <- Future.fromTry(answers)
         _ <- repository.set(updatedAnswers)
-      } yield Redirect(navigator.nextPage(ShareAnswerPage, draftId)(request.userAnswers))
+      } yield Redirect(navigator.nextPage(ShareAnswerPage)(request.userAnswers))
 
   }
 }

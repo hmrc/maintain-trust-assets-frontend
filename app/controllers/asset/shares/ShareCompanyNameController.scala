@@ -45,14 +45,14 @@ class ShareCompanyNameController @Inject()(
                                             validateIndex: IndexActionFilterProvider
                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private def actions(index : Int, draftId: String) =
-    identify andThen getData(draftId) andThen
+  private def actions(index : Int) =
+    identify andThen getData() andThen
       requireData andThen
       validateIndex(index, sections.Assets)
 
   private val form = formProvider.withConfig(53, "shares.companyName")
 
-  def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) {
+  def onPageLoad(index: Int): Action[AnyContent] = actions(index) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(ShareCompanyNamePage(index)) match {
@@ -60,21 +60,21 @@ class ShareCompanyNameController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, draftId, index))
+      Ok(view(preparedForm, index))
   }
 
-  def onSubmit(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async {
+  def onSubmit(index: Int): Action[AnyContent] = actions(index).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, draftId, index))),
+          Future.successful(BadRequest(view(formWithErrors, index))),
 
         value => {
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(ShareCompanyNamePage(index), value))
             _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(ShareCompanyNamePage(index), draftId)(updatedAnswers))
+          } yield Redirect(navigator.nextPage(ShareCompanyNamePage(index))(updatedAnswers))
         }
       )
   }

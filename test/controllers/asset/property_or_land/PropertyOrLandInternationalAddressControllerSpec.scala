@@ -40,7 +40,7 @@ class PropertyOrLandInternationalAddressControllerSpec extends SpecBase with Ind
   val form: Form[InternationalAddress] = formProvider()
   val index: Int = 0
 
-  lazy val propertyOrLandInternationalAddressRoute: String = routes.PropertyOrLandInternationalAddressController.onPageLoad(index, fakeDraftId).url
+  lazy val propertyOrLandInternationalAddressRoute: String = routes.PropertyOrLandInternationalAddressController.onPageLoad(index).url
 
   "PropertyOrLandInternationalAddress Controller" must {
 
@@ -59,7 +59,7 @@ class PropertyOrLandInternationalAddressControllerSpec extends SpecBase with Ind
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, countryOptions, fakeDraftId, index)(request, messages).toString
+        view(form, countryOptions, index)(request, messages).toString
 
       application.stop()
     }
@@ -82,7 +82,7 @@ class PropertyOrLandInternationalAddressControllerSpec extends SpecBase with Ind
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(InternationalAddress("line 1", "line 2", Some("line 3"), "country")), countryOptions, fakeDraftId, index)(fakeRequest, messages).toString
+        view(form.fill(InternationalAddress("line 1", "line 2", Some("line 3"), "country")), countryOptions, index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -124,7 +124,7 @@ class PropertyOrLandInternationalAddressControllerSpec extends SpecBase with Ind
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, countryOptions, fakeDraftId, index)(fakeRequest, messages).toString
+        view(boundForm, countryOptions, index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -164,7 +164,7 @@ class PropertyOrLandInternationalAddressControllerSpec extends SpecBase with Ind
   "for a GET" must {
 
     def getForIndex(index: Int): FakeRequest[AnyContentAsEmpty.type] = {
-      val route = routes.PropertyOrLandInternationalAddressController.onPageLoad(index, fakeDraftId).url
+      val route = routes.PropertyOrLandInternationalAddressController.onPageLoad(index).url
 
       FakeRequest(GET, route)
     }
@@ -181,7 +181,7 @@ class PropertyOrLandInternationalAddressControllerSpec extends SpecBase with Ind
     def postForIndex(index: Int): FakeRequest[AnyContentAsFormUrlEncoded] = {
 
       val route =
-        routes.PropertyOrLandInternationalAddressController.onPageLoad(index, fakeDraftId).url
+        routes.PropertyOrLandInternationalAddressController.onPageLoad(index).url
 
       FakeRequest(POST, route)
         .withFormUrlEncodedBody(("value", "true"))

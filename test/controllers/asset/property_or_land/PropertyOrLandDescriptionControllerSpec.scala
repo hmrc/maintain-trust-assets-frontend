@@ -33,7 +33,7 @@ class PropertyOrLandDescriptionControllerSpec extends SpecBase with IndexValidat
   val form = formProvider.withConfig(56, "propertyOrLand.description")
   val index = 0
 
-  lazy val propertyOrLandDescriptionRoute = routes.PropertyOrLandDescriptionController.onPageLoad(index, fakeDraftId).url
+  lazy val propertyOrLandDescriptionRoute = routes.PropertyOrLandDescriptionController.onPageLoad(index).url
 
   "PropertyOrLandDescription Controller" must {
 
@@ -50,7 +50,7 @@ class PropertyOrLandDescriptionControllerSpec extends SpecBase with IndexValidat
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, index, fakeDraftId)(fakeRequest, messages).toString
+        view(form, index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -70,7 +70,7 @@ class PropertyOrLandDescriptionControllerSpec extends SpecBase with IndexValidat
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill("answer"), index, fakeDraftId)(fakeRequest, messages).toString
+        view(form.fill("answer"), index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -109,7 +109,7 @@ class PropertyOrLandDescriptionControllerSpec extends SpecBase with IndexValidat
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, index, fakeDraftId)(fakeRequest, messages).toString
+        view(boundForm, index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -150,7 +150,7 @@ class PropertyOrLandDescriptionControllerSpec extends SpecBase with IndexValidat
   "for a GET" must {
 
     def getForIndex(index: Int) : FakeRequest[AnyContentAsEmpty.type] = {
-      val route = routes.PropertyOrLandDescriptionController.onPageLoad(index, fakeDraftId).url
+      val route = routes.PropertyOrLandDescriptionController.onPageLoad(index).url
 
       FakeRequest(GET, route)
     }
@@ -167,7 +167,7 @@ class PropertyOrLandDescriptionControllerSpec extends SpecBase with IndexValidat
     def postForIndex(index: Int): FakeRequest[AnyContentAsFormUrlEncoded] = {
 
       val route =
-        routes.PropertyOrLandDescriptionController.onPageLoad(index, fakeDraftId).url
+        routes.PropertyOrLandDescriptionController.onPageLoad(index).url
 
       FakeRequest(POST, route)
         .withFormUrlEncodedBody(("value", "true"))

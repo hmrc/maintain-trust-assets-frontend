@@ -45,12 +45,12 @@ class TrustOwnsNonEeaBusinessYesNoController @Inject()(
 
   val form: Form[Boolean] = yesNoFormProvider.withPrefix("trustOwnsNonEeaBusinessYesNo")
 
-  private def actions(draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] =
+  private def actions(): ActionBuilder[RegistrationDataRequest, AnyContent] =
     identify andThen
-      getData(draftId) andThen
+      getData() andThen
       requireData
 
-  def onPageLoad(draftId: String): Action[AnyContent] = actions(draftId) {
+  def onPageLoad(): Action[AnyContent] = actions() {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(TrustOwnsNonEeaBusinessYesNoPage) match {
@@ -58,21 +58,21 @@ class TrustOwnsNonEeaBusinessYesNoController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, draftId))
+      Ok(view(preparedForm))
   }
 
-  def onSubmit(draftId: String): Action[AnyContent] = actions(draftId).async {
+  def onSubmit(): Action[AnyContent] = actions().async {
     implicit request =>
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, draftId))),
+          Future.successful(BadRequest(view(formWithErrors))),
 
         value => {
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(TrustOwnsNonEeaBusinessYesNoPage, value))
             _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(TrustOwnsNonEeaBusinessYesNoPage, draftId)(updatedAnswers))
+          } yield Redirect(navigator.nextPage(TrustOwnsNonEeaBusinessYesNoPage)(updatedAnswers))
         }
       )
   }

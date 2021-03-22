@@ -46,11 +46,11 @@ class AssetMoneyValueController @Inject()(
                                            view: AssetMoneyValueView
                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private def actions(draftId: String): ActionBuilder[RegistrationDataRequest, AnyContent] = identify andThen getData(draftId) andThen requireData
+  private def actions(): ActionBuilder[RegistrationDataRequest, AnyContent] = identify andThen getData() andThen requireData
 
   private val form: Form[Long] = formProvider.withConfig(prefix = "money.value")
 
-  def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(draftId) {
+  def onPageLoad(index: Int): Action[AnyContent] = actions() {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(AssetMoneyValuePage(index)) match {
@@ -58,15 +58,15 @@ class AssetMoneyValueController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, draftId, index))
+      Ok(view(preparedForm, index))
   }
 
-  def onSubmit(index: Int, draftId: String): Action[AnyContent] = actions(draftId).async {
+  def onSubmit(index: Int): Action[AnyContent] = actions().async {
     implicit request =>
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, draftId, index))),
+          Future.successful(BadRequest(view(formWithErrors, index))),
 
         value => {
 
@@ -76,7 +76,7 @@ class AssetMoneyValueController @Inject()(
           for {
                 updatedAnswers <- Future.fromTry(answers)
                 _              <- repository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(AssetMoneyValuePage(index), draftId)(updatedAnswers))
+              } yield Redirect(navigator.nextPage(AssetMoneyValuePage(index))(updatedAnswers))
           }
       )
   }

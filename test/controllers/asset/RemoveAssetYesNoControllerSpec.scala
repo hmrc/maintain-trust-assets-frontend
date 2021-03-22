@@ -50,7 +50,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
   private val nonUkAddress: InternationalAddress = InternationalAddress("Line 1", "Line 2", Some("Line 3"), "FR")
   private val date: LocalDate = LocalDate.parse("2000-02-03")
 
-  lazy val removeAssetYesNoRoute: String = routes.RemoveAssetYesNoController.onPageLoad(index, fakeDraftId).url
+  lazy val removeAssetYesNoRoute: String = routes.RemoveAssetYesNoController.onPageLoad(index).url
 
   "RemoveAssetYesNoController" must {
 
@@ -78,7 +78,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(form, fakeDraftId, index, taxablePrefix, "£4000")(fakeRequest, messages).toString
+            view(form, index, taxablePrefix, "£4000")(fakeRequest, messages).toString
 
           application.stop()
         }
@@ -99,7 +99,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(form, fakeDraftId, index, taxablePrefix, "the asset")(fakeRequest, messages).toString
+            view(form, index, taxablePrefix, "the asset")(fakeRequest, messages).toString
 
           application.stop()
         }
@@ -130,7 +130,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
             status(result) mustEqual OK
 
             contentAsString(result) mustEqual
-              view(form, fakeDraftId, index, taxablePrefix, "Line 1")(fakeRequest, messages).toString
+              view(form, index, taxablePrefix, "Line 1")(fakeRequest, messages).toString
 
             application.stop()
           }
@@ -155,7 +155,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
             status(result) mustEqual OK
 
             contentAsString(result) mustEqual
-              view(form, fakeDraftId, index, taxablePrefix, "Property or land description")(fakeRequest, messages).toString
+              view(form, index, taxablePrefix, "Property or land description")(fakeRequest, messages).toString
 
             application.stop()
           }
@@ -178,7 +178,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(form, fakeDraftId, index, taxablePrefix, "the asset")(fakeRequest, messages).toString
+            view(form, index, taxablePrefix, "the asset")(fakeRequest, messages).toString
 
           application.stop()
         }
@@ -209,7 +209,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
             status(result) mustEqual OK
 
             contentAsString(result) mustEqual
-              view(form, fakeDraftId, index, taxablePrefix, "Portfolio Name")(fakeRequest, messages).toString
+              view(form, index, taxablePrefix, "Portfolio Name")(fakeRequest, messages).toString
 
             application.stop()
           }
@@ -236,7 +236,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
             status(result) mustEqual OK
 
             contentAsString(result) mustEqual
-              view(form, fakeDraftId, index, taxablePrefix, "Company Name")(fakeRequest, messages).toString
+              view(form, index, taxablePrefix, "Company Name")(fakeRequest, messages).toString
 
             application.stop()
           }
@@ -259,7 +259,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(form, fakeDraftId, index, taxablePrefix, "the asset")(fakeRequest, messages).toString
+            view(form, index, taxablePrefix, "the asset")(fakeRequest, messages).toString
 
           application.stop()
         }
@@ -286,7 +286,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form, fakeDraftId, index, taxablePrefix, "Business name")(fakeRequest, messages).toString
+          view(form, index, taxablePrefix, "Business name")(fakeRequest, messages).toString
 
         application.stop()
       }
@@ -309,7 +309,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form, fakeDraftId, index, taxablePrefix, "Partnership description")(fakeRequest, messages).toString
+          view(form, index, taxablePrefix, "Partnership description")(fakeRequest, messages).toString
 
         application.stop()
       }
@@ -332,7 +332,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form, fakeDraftId, index, taxablePrefix, "Other description")(fakeRequest, messages).toString
+          view(form, index, taxablePrefix, "Other description")(fakeRequest, messages).toString
 
         application.stop()
       }
@@ -359,7 +359,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(form, fakeDraftId, index, taxablePrefix, "Non-EEA business name")(fakeRequest, messages).toString
+            view(form, index, taxablePrefix, "Non-EEA business name")(fakeRequest, messages).toString
 
           application.stop()
         }
@@ -382,7 +382,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
             status(result) mustEqual OK
 
             contentAsString(result) mustEqual
-              view(form, fakeDraftId, index, taxablePrefix, "the asset")(fakeRequest, messages).toString
+              view(form, index, taxablePrefix, "the asset")(fakeRequest, messages).toString
 
             application.stop()
           }
@@ -403,7 +403,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
             status(result) mustEqual OK
 
             contentAsString(result) mustEqual
-              view(form, fakeDraftId, index, nonTaxablePrefix, "this non-EEA company")(fakeRequest, messages).toString
+              view(form, index, nonTaxablePrefix, "this non-EEA company")(fakeRequest, messages).toString
 
             application.stop()
           }
@@ -423,7 +423,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.asset.routes.AddAssetsController.onPageLoad(fakeDraftId).url
+      redirectLocation(result).value mustEqual controllers.asset.routes.AddAssetsController.onPageLoad().url
 
       application.stop()
     }
@@ -444,7 +444,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.asset.routes.AddAssetsController.onPageLoad(fakeDraftId).url
+      redirectLocation(result).value mustEqual controllers.asset.routes.AddAssetsController.onPageLoad().url
 
       val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
@@ -471,7 +471,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, fakeDraftId, index, "assets", "the asset")(fakeRequest, messages).toString
+        view(boundForm, index, "assets", "the asset")(fakeRequest, messages).toString
 
       application.stop()
     }

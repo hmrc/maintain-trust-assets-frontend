@@ -35,7 +35,7 @@ class BusinessValueControllerSpec extends SpecBase {
   val index = 0
   val validAnswer: Long = 4000L
 
-  lazy val currentValueRoute: String = routes.BusinessValueController.onPageLoad(index, fakeDraftId).url
+  lazy val currentValueRoute: String = routes.BusinessValueController.onPageLoad(index).url
 
   val baseAnswers: UserAnswers = emptyUserAnswers
     .set(BusinessNamePage(index), businessName).success.value
@@ -55,7 +55,7 @@ class BusinessValueControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, fakeDraftId, index, businessName)(fakeRequest, messages).toString
+        view(form, index, businessName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -76,7 +76,7 @@ class BusinessValueControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), fakeDraftId, index, businessName)(fakeRequest, messages).toString
+        view(form.fill(validAnswer), index, businessName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -108,7 +108,7 @@ class BusinessValueControllerSpec extends SpecBase {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.BusinessNameController.onPageLoad(index, fakeDraftId).url
+      redirectLocation(result).value mustEqual routes.BusinessNameController.onPageLoad(index).url
 
       application.stop()
     }
@@ -133,7 +133,7 @@ class BusinessValueControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, fakeDraftId, index, businessName)(fakeRequest, messages).toString
+        view(boundForm, index, businessName)(fakeRequest, messages).toString
 
       application.stop()
     }

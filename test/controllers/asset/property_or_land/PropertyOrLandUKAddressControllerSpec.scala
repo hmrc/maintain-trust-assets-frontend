@@ -36,7 +36,7 @@ class PropertyOrLandUKAddressControllerSpec extends SpecBase with ModelGenerator
   val form: Form[UKAddress] = formProvider()
   val index = 0
 
-  lazy val PropertyOrLandUKAddressRoute: String = routes.PropertyOrLandUKAddressController.onPageLoad(index, fakeDraftId).url
+  lazy val PropertyOrLandUKAddressRoute: String = routes.PropertyOrLandUKAddressController.onPageLoad(index).url
 
   "WhatIsThePropertyOrLandAddress Controller" must {
 
@@ -53,7 +53,7 @@ class PropertyOrLandUKAddressControllerSpec extends SpecBase with ModelGenerator
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, fakeDraftId, index)(fakeRequest, messages).toString
+        view(form, index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -74,7 +74,7 @@ class PropertyOrLandUKAddressControllerSpec extends SpecBase with ModelGenerator
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(UKAddress("line 1", "line 2", Some("line 3"), Some("line 4"),"line 5")), fakeDraftId, index)(fakeRequest, messages).toString
+        view(form.fill(UKAddress("line 1", "line 2", Some("line 3"), Some("line 4"),"line 5")), index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -113,7 +113,7 @@ class PropertyOrLandUKAddressControllerSpec extends SpecBase with ModelGenerator
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, fakeDraftId, index)(fakeRequest, messages).toString
+        view(boundForm, index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -154,7 +154,7 @@ class PropertyOrLandUKAddressControllerSpec extends SpecBase with ModelGenerator
   "for a GET" must {
 
     def getForIndex(index: Int) : FakeRequest[AnyContentAsEmpty.type] = {
-      val route = routes.PropertyOrLandUKAddressController.onPageLoad(index, fakeDraftId).url
+      val route = routes.PropertyOrLandUKAddressController.onPageLoad(index).url
 
       FakeRequest(GET, route)
     }
@@ -171,7 +171,7 @@ class PropertyOrLandUKAddressControllerSpec extends SpecBase with ModelGenerator
     def postForIndex(index: Int): FakeRequest[AnyContentAsFormUrlEncoded] = {
 
       val route =
-       routes.PropertyOrLandUKAddressController.onPageLoad(index, fakeDraftId).url
+       routes.PropertyOrLandUKAddressController.onPageLoad(index).url
 
       FakeRequest(POST, route)
         .withFormUrlEncodedBody(("value", "true"))

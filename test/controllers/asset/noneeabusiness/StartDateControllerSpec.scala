@@ -39,7 +39,7 @@ class StartDateControllerSpec extends SpecBase with IndexValidation {
 
   private val validAnswer: LocalDate = LocalDate.parse("1996-02-03")
 
-  private lazy val onPageLoadRoute = routes.StartDateController.onPageLoad(index, fakeDraftId).url
+  private lazy val onPageLoadRoute = routes.StartDateController.onPageLoad(index).url
 
   private val baseAnswers: UserAnswers = emptyUserAnswers
     .set(NamePage(index), name).success.value
@@ -59,7 +59,7 @@ class StartDateControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, index, fakeDraftId, name)(fakeRequest, messages).toString
+        view(form, index, name)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -80,7 +80,7 @@ class StartDateControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), index, fakeDraftId, name)(fakeRequest, messages).toString
+        view(form.fill(validAnswer), index, name)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -95,7 +95,7 @@ class StartDateControllerSpec extends SpecBase with IndexValidation {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.NameController.onPageLoad(index, fakeDraftId).url
+      redirectLocation(result).value mustEqual routes.NameController.onPageLoad(index).url
 
       application.stop()
     }
@@ -138,7 +138,7 @@ class StartDateControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, index, fakeDraftId, name)(fakeRequest, messages).toString
+        view(boundForm, index, name)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -182,7 +182,7 @@ class StartDateControllerSpec extends SpecBase with IndexValidation {
   "for a GET" must {
 
     def getForIndex(index: Int): FakeRequest[AnyContentAsEmpty.type] = {
-      val route = routes.StartDateController.onPageLoad(index, fakeDraftId).url
+      val route = routes.StartDateController.onPageLoad(index).url
 
       FakeRequest(GET, route)
     }
@@ -199,7 +199,7 @@ class StartDateControllerSpec extends SpecBase with IndexValidation {
     def postForIndex(index: Int): FakeRequest[AnyContentAsFormUrlEncoded] = {
 
       val route =
-        routes.StartDateController.onPageLoad(index, fakeDraftId).url
+        routes.StartDateController.onPageLoad(index).url
 
       FakeRequest(POST, route)
         .withFormUrlEncodedBody(

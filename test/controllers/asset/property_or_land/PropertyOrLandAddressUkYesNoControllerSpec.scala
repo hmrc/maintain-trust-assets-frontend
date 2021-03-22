@@ -31,7 +31,7 @@ class PropertyOrLandAddressUkYesNoControllerSpec extends SpecBase {
 
   val index: Int = 0
 
-  lazy val propertyOrLandAddressRoute: String = PropertyOrLandAddressUkYesNoController.onPageLoad(index, fakeDraftId).url
+  lazy val propertyOrLandAddressRoute: String = PropertyOrLandAddressUkYesNoController.onPageLoad(index).url
 
   "PropertyOrLandAddress Controller" must {
 
@@ -48,7 +48,7 @@ class PropertyOrLandAddressUkYesNoControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, fakeDraftId, index)(fakeRequest, messages).toString
+        view(form, index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -68,7 +68,7 @@ class PropertyOrLandAddressUkYesNoControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), fakeDraftId, index)(fakeRequest, messages).toString
+        view(form.fill(true), index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -108,7 +108,7 @@ class PropertyOrLandAddressUkYesNoControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, fakeDraftId, index)(fakeRequest, messages).toString
+        view(boundForm, index)(fakeRequest, messages).toString
 
       application.stop()
     }

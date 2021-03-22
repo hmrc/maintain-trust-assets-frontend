@@ -22,7 +22,7 @@
     formHelper: FormWithCSRF
 )
 
-@(index: Int, draftId: String, answerSections: Seq[Section])(implicit request: Request[_], messages: Messages)
+@(index: Int, answerSections: Seq[Section])(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("other.answers.title")
@@ -40,7 +40,7 @@
         }
     }
 
-    @formHelper(action = OtherAssetAnswersController.onSubmit(index, draftId), 'autoComplete -> "off") {
+    @formHelper(action = OtherAssetAnswersController.onSubmit(index), 'autoComplete -> "off") {
 
         @components.submit_button()
 

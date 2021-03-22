@@ -39,7 +39,7 @@ class InternationalAddressControllerSpec extends SpecBase with IndexValidation {
   private val name = "Test"
   private val validAnswer: InternationalAddress = InternationalAddress("value 1", "value 2", Some("value 3"), "FR")
 
-  private lazy val onPageLoadRoute: String = routes.InternationalAddressController.onPageLoad(index, fakeDraftId).url
+  private lazy val onPageLoadRoute: String = routes.InternationalAddressController.onPageLoad(index).url
 
   private val baseAnswers: UserAnswers = emptyUserAnswers
     .set(NamePage(index), name).success.value
@@ -61,7 +61,7 @@ class InternationalAddressControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, countryOptions, index, fakeDraftId, name)(request, messages).toString
+        view(form, countryOptions, index, name)(request, messages).toString
 
       application.stop()
     }
@@ -82,7 +82,7 @@ class InternationalAddressControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), countryOptions, index, fakeDraftId, name)(fakeRequest, messages).toString
+        view(form.fill(validAnswer), countryOptions, index, name)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -97,7 +97,7 @@ class InternationalAddressControllerSpec extends SpecBase with IndexValidation {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.NameController.onPageLoad(index, fakeDraftId).url
+      redirectLocation(result).value mustEqual routes.NameController.onPageLoad(index).url
 
       application.stop()
     }
@@ -141,7 +141,7 @@ class InternationalAddressControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, countryOptions, index, fakeDraftId, name)(fakeRequest, messages).toString
+        view(boundForm, countryOptions, index, name)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -185,7 +185,7 @@ class InternationalAddressControllerSpec extends SpecBase with IndexValidation {
     "for a GET" must {
 
       def getForIndex(index: Int) : FakeRequest[AnyContentAsEmpty.type] = {
-        val route = routes.InternationalAddressController.onPageLoad(index, fakeDraftId).url
+        val route = routes.InternationalAddressController.onPageLoad(index).url
 
         FakeRequest(GET, route)
       }
@@ -202,7 +202,7 @@ class InternationalAddressControllerSpec extends SpecBase with IndexValidation {
       def postForIndex(index: Int): FakeRequest[AnyContentAsFormUrlEncoded] = {
 
         val route =
-          routes.InternationalAddressController.onPageLoad(index, fakeDraftId).url
+          routes.InternationalAddressController.onPageLoad(index).url
 
         FakeRequest(POST, route)
           .withFormUrlEncodedBody(

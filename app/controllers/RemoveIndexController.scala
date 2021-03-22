@@ -44,42 +44,42 @@ trait RemoveIndexController extends FrontendBaseController with I18nSupport {
 
   def repository : RegistrationsRepository
 
-  def actions(draftId: String, index: Int) : ActionBuilder[RegistrationDataRequest, AnyContent]
+  def actions(index: Int) : ActionBuilder[RegistrationDataRequest, AnyContent]
 
-  def redirect(draftId : String) : Call
+  def redirect() : Call
 
-  def formRoute(draftId : String, index: Int) : Call
+  def formRoute(index: Int) : Call
 
   def removeQuery(index : Int) : Settable[_]
 
   def content(index: Int)(implicit request: RegistrationDataRequest[AnyContent]) : String
 
-  def view(form: Form[_], index: Int, draftId: String)
+  def view(form: Form[_], index: Int)
                    (implicit request: RegistrationDataRequest[AnyContent]): HtmlFormat.Appendable = {
-    removeView(messagesPrefix, form, index, draftId, content(index), formRoute(draftId, index))
+    removeView(messagesPrefix, form, index, content(index), formRoute(index))
   }
 
-  def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(draftId, index) {
+  def onPageLoad(index: Int): Action[AnyContent] = actions(index) {
     implicit request =>
-      Ok(view(form, index, draftId))
+      Ok(view(form, index))
   }
 
-  def onSubmit(index: Int, draftId : String): Action[AnyContent] = actions(draftId, index).async {
+  def onSubmit(index: Int): Action[AnyContent] = actions(index).async {
     implicit request =>
 
       import scala.concurrent.ExecutionContext.Implicits._
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, index, draftId))),
+          Future.successful(BadRequest(view(formWithErrors, index))),
         value => {
           if (value) {
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.remove(removeQuery(index)))
               _              <- repository.set(updatedAnswers)
-            } yield Redirect(redirect(draftId).url)
+            } yield Redirect(redirect().url)
           } else {
-            Future.successful(Redirect(redirect(draftId).url))
+            Future.successful(Redirect(redirect().url))
           }
         }
       )

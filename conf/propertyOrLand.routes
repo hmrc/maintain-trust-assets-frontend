@@ -1,26 +1,26 @@
-GET        /:draftId/:index/description                                      controllers.asset.property_or_land.PropertyOrLandDescriptionController.onPageLoad(index: Int, draftId: String)
-POST       /:draftId/:index/description                                      controllers.asset.property_or_land.PropertyOrLandDescriptionController.onSubmit(index: Int, draftId: String)
+GET        /:index/description                                      controllers.asset.property_or_land.PropertyOrLandDescriptionController.onPageLoad(index: Int)
+POST       /:index/description                                      controllers.asset.property_or_land.PropertyOrLandDescriptionController.onSubmit(index: Int)
 
-GET        /:draftId/:index/value-trust                                      controllers.asset.property_or_land.PropertyLandValueTrustController.onPageLoad(index: Int, draftId: String)
-POST       /:draftId/:index/value-trust                                      controllers.asset.property_or_land.PropertyLandValueTrustController.onSubmit(index: Int, draftId: String)
+GET        /:index/value-trust                                      controllers.asset.property_or_land.PropertyLandValueTrustController.onPageLoad(index: Int)
+POST       /:index/value-trust                                      controllers.asset.property_or_land.PropertyLandValueTrustController.onSubmit(index: Int)
 
-GET        /:draftId/:index/is-address-in-uk                                 controllers.asset.property_or_land.PropertyOrLandAddressUkYesNoController.onPageLoad(index: Int, draftId: String)
-POST       /:draftId/:index/is-address-in-uk                                 controllers.asset.property_or_land.PropertyOrLandAddressUkYesNoController.onSubmit(index: Int, draftId: String)
+GET        /:index/is-address-in-uk                                 controllers.asset.property_or_land.PropertyOrLandAddressUkYesNoController.onPageLoad(index: Int)
+POST       /:index/is-address-in-uk                                 controllers.asset.property_or_land.PropertyOrLandAddressUkYesNoController.onSubmit(index: Int)
 
-GET        /:draftId/:index/owned                                            controllers.asset.property_or_land.TrustOwnAllThePropertyOrLandController.onPageLoad(index: Int, draftId: String)
-POST       /:draftId/:index/owned                                            controllers.asset.property_or_land.TrustOwnAllThePropertyOrLandController.onSubmit(index: Int, draftId: String)
+GET        /:index/owned                                            controllers.asset.property_or_land.TrustOwnAllThePropertyOrLandController.onPageLoad(index: Int)
+POST       /:index/owned                                            controllers.asset.property_or_land.TrustOwnAllThePropertyOrLandController.onSubmit(index: Int)
 
-GET        /:draftId/:index/total-value                                      controllers.asset.property_or_land.PropertyOrLandTotalValueController.onPageLoad(index: Int, draftId: String)
-POST       /:draftId/:index/total-value                                      controllers.asset.property_or_land.PropertyOrLandTotalValueController.onSubmit(index: Int, draftId: String)
+GET        /:index/total-value                                      controllers.asset.property_or_land.PropertyOrLandTotalValueController.onPageLoad(index: Int)
+POST       /:index/total-value                                      controllers.asset.property_or_land.PropertyOrLandTotalValueController.onSubmit(index: Int)
 
-GET        /:draftId/:index/uk-address                                       controllers.asset.property_or_land.PropertyOrLandUKAddressController.onPageLoad(index: Int, draftId: String)
-POST       /:draftId/:index/uk-address                                       controllers.asset.property_or_land.PropertyOrLandUKAddressController.onSubmit(index: Int, draftId: String)
+GET        /:index/uk-address                                       controllers.asset.property_or_land.PropertyOrLandUKAddressController.onPageLoad(index: Int)
+POST       /:index/uk-address                                       controllers.asset.property_or_land.PropertyOrLandUKAddressController.onSubmit(index: Int)
 
-GET        /:draftId/:index/international-address                            controllers.asset.property_or_land.PropertyOrLandInternationalAddressController.onPageLoad(index: Int, draftId: String)
-POST       /:draftId/:index/international-address                            controllers.asset.property_or_land.PropertyOrLandInternationalAddressController.onSubmit(index: Int, draftId: String)
+GET        /:index/international-address                            controllers.asset.property_or_land.PropertyOrLandInternationalAddressController.onPageLoad(index: Int)
+POST       /:index/international-address                            controllers.asset.property_or_land.PropertyOrLandInternationalAddressController.onSubmit(index: Int)
 
-GET        /:draftId/:index/has-address                                      controllers.asset.property_or_land.PropertyOrLandAddressYesNoController.onPageLoad(index: Int, draftId: String)
-POST       /:draftId/:index/has-address                                      controllers.asset.property_or_land.PropertyOrLandAddressYesNoController.onSubmit(index: Int, draftId: String)
+GET        /:index/has-address                                      controllers.asset.property_or_land.PropertyOrLandAddressYesNoController.onPageLoad(index: Int)
+POST       /:index/has-address                                      controllers.asset.property_or_land.PropertyOrLandAddressYesNoController.onSubmit(index: Int)
 
-GET        /:draftId/:index/check-property-or-land-answers                   controllers.asset.property_or_land.PropertyOrLandAnswerController.onPageLoad(index : Int, draftId : String)
-POST       /:draftId/:index/check-property-or-land-answers                   controllers.asset.property_or_land.PropertyOrLandAnswerController.onSubmit(index : Int, draftId : String)
+GET        /:index/check-property-or-land-answers                   controllers.asset.property_or_land.PropertyOrLandAnswerController.onPageLoad(index : Int)
+POST       /:index/check-property-or-land-answers                   controllers.asset.property_or_land.PropertyOrLandAnswerController.onSubmit(index : Int)

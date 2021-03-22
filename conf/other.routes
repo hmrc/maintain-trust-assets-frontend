@@ -1,8 +1,8 @@
-GET        /:draftId/:index/description                                                 controllers.asset.other.OtherAssetDescriptionController.onPageLoad(index: Int, draftId: String)
-POST       /:draftId/:index/description                                                 controllers.asset.other.OtherAssetDescriptionController.onSubmit(index: Int, draftId: String)
+GET        /:index/description                                                 controllers.asset.other.OtherAssetDescriptionController.onPageLoad(index: Int)
+POST       /:index/description                                                 controllers.asset.other.OtherAssetDescriptionController.onSubmit(index: Int)
 
-GET        /:draftId/:index/value                                                       controllers.asset.other.OtherAssetValueController.onPageLoad(index: Int, draftId: String)
-POST       /:draftId/:index/value                                                       controllers.asset.other.OtherAssetValueController.onSubmit(index: Int, draftId: String)
+GET        /:index/value                                                       controllers.asset.other.OtherAssetValueController.onPageLoad(index: Int)
+POST       /:index/value                                                       controllers.asset.other.OtherAssetValueController.onSubmit(index: Int)
 
-GET        /:draftId/:index/check-answers                                               controllers.asset.other.OtherAssetAnswersController.onPageLoad(index : Int, draftId : String)
-POST       /:draftId/:index/check-answers                                               controllers.asset.other.OtherAssetAnswersController.onSubmit(index : Int, draftId : String)
+GET        /:index/check-answers                                               controllers.asset.other.OtherAssetAnswersController.onPageLoad(index : Int)
+POST       /:index/check-answers                                               controllers.asset.other.OtherAssetAnswersController.onSubmit(index : Int)

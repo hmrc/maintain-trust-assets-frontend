@@ -29,11 +29,11 @@ import javax.inject.{Inject, Singleton}
 @Singleton
 class NonEeaBusinessNavigator @Inject()(config: FrontendAppConfig) extends Navigator(config) {
 
-  override protected def route(draftId: String): PartialFunction[Page, AffinityGroup => UserAnswers => Call] = {
-    case NamePage(index) => _ => _ => InternationalAddressController.onPageLoad(index, draftId)
-    case InternationalAddressPage(index) => _ => _ => GoverningCountryController.onPageLoad(index, draftId)
-    case GoverningCountryPage(index) => _ => _ => StartDateController.onPageLoad(index, draftId)
-    case StartDatePage(index) => _ => _ => AnswersController.onPageLoad(index, draftId)
+  override protected def route(): PartialFunction[Page, AffinityGroup => UserAnswers => Call] = {
+    case NamePage(index) => _ => _ => InternationalAddressController.onPageLoad(index)
+    case InternationalAddressPage(index) => _ => _ => GoverningCountryController.onPageLoad(index)
+    case GoverningCountryPage(index) => _ => _ => StartDateController.onPageLoad(index)
+    case StartDatePage(index) => _ => _ => AnswersController.onPageLoad(index)
   }
 
 }

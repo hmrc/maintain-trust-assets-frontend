@@ -21,13 +21,13 @@
     formHelper: FormWithCSRF
 )
 
-@(draftId: String)(implicit request: Request[_], messages: Messages)
+@()(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("assetInterruptPage.nonTaxable.title")
 ) {
 
-    @formHelper(action = AssetInterruptPageController.onSubmit(draftId), 'autoComplete -> "off") {
+    @formHelper(action = AssetInterruptPageController.onSubmit(), 'autoComplete -> "off") {
 
         @components.back_link()
 

@@ -39,7 +39,7 @@ class InternationalAddressViewSpec extends InternationalAddressViewBehaviours {
   "InternationalAddressView" must {
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, countryOptions, index, fakeDraftId, name)(fakeRequest, messages)
+      view.apply(form, countryOptions, index, name)(fakeRequest, messages)
 
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name)
 

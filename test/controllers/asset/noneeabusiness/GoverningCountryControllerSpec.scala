@@ -40,7 +40,7 @@ class GoverningCountryControllerSpec extends SpecBase with IndexValidation {
   private val name = "Test"
   private val validAnswer: String = "GB"
 
-  private lazy val onPageLoadRoute: String = routes.GoverningCountryController.onPageLoad(index, fakeDraftId).url
+  private lazy val onPageLoadRoute: String = routes.GoverningCountryController.onPageLoad(index).url
 
   private val baseAnswers: UserAnswers = emptyUserAnswers
     .set(NamePage(index), name).success.value
@@ -62,7 +62,7 @@ class GoverningCountryControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, countryOptions, fakeDraftId, index, name)(request, messages).toString
+        view(form, countryOptions, index, name)(request, messages).toString
 
       application.stop()
     }
@@ -83,7 +83,7 @@ class GoverningCountryControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), countryOptions, fakeDraftId, index, name)(fakeRequest, messages).toString
+        view(form.fill(validAnswer), countryOptions, index, name)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -98,7 +98,7 @@ class GoverningCountryControllerSpec extends SpecBase with IndexValidation {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.NameController.onPageLoad(index, fakeDraftId).url
+      redirectLocation(result).value mustEqual routes.NameController.onPageLoad(index).url
 
       application.stop()
     }
@@ -137,7 +137,7 @@ class GoverningCountryControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, countryOptions, fakeDraftId, index, name)(fakeRequest, messages).toString
+        view(boundForm, countryOptions, index, name)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -176,7 +176,7 @@ class GoverningCountryControllerSpec extends SpecBase with IndexValidation {
     "for a GET" must {
 
       def getForIndex(index: Int) : FakeRequest[AnyContentAsEmpty.type] = {
-        val route = routes.GoverningCountryController.onPageLoad(index, fakeDraftId).url
+        val route = routes.GoverningCountryController.onPageLoad(index).url
 
         FakeRequest(GET, route)
       }
@@ -193,7 +193,7 @@ class GoverningCountryControllerSpec extends SpecBase with IndexValidation {
       def postForIndex(index: Int): FakeRequest[AnyContentAsFormUrlEncoded] = {
 
         val route =
-          routes.GoverningCountryController.onPageLoad(index, fakeDraftId).url
+          routes.GoverningCountryController.onPageLoad(index).url
 
         FakeRequest(POST, route)
           .withFormUrlEncodedBody(("value", validAnswer))

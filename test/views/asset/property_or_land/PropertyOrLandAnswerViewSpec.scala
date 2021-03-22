@@ -28,7 +28,7 @@ class PropertyOrLandAnswerViewSpec extends ViewBehaviours {
 
     val view = viewFor[PropertyOrLandAnswersView](Some(emptyUserAnswers))
 
-    val applyView = view.apply(index, fakeDraftId, Nil)(fakeRequest, messages)
+    val applyView = view.apply(index, Nil)(fakeRequest, messages)
 
     behave like normalPage(applyView, messageKeyPrefix)
 

@@ -55,21 +55,21 @@ class BusinessPrintHelperSpec extends SpecBase {
     .set(BusinessInternationalAddressPage(index), nonUkAddress).success.value
 
   private val ukAddressRows: Seq[AnswerRow] = Seq(
-    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Business"), Some(WhatKindOfAssetController.onPageLoad(index, fakeDraftId).url)),
-    AnswerRow("business.name.checkYourAnswersLabel", Html(name), Some(BusinessNameController.onPageLoad(index, draftId).url)),
-    AnswerRow("business.description.checkYourAnswersLabel", Html(description), Some(BusinessDescriptionController.onPageLoad(index, draftId).url)),
-    AnswerRow("business.addressUkYesNo.checkYourAnswersLabel", Html("Yes"), Some(BusinessAddressUkYesNoController.onPageLoad(index, draftId).url)),
-    AnswerRow("business.ukAddress.checkYourAnswersLabel", Html("Line 1<br />Line 2<br />AB1 1AB"), Some(BusinessUkAddressController.onPageLoad(index, draftId).url)),
-    AnswerRow("business.currentValue.checkYourAnswersLabel", Html("£100"), Some(BusinessValueController.onPageLoad(index, draftId).url))
+    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Business"), Some(WhatKindOfAssetController.onPageLoad(index).url)),
+    AnswerRow("business.name.checkYourAnswersLabel", Html(name), Some(BusinessNameController.onPageLoad(index).url)),
+    AnswerRow("business.description.checkYourAnswersLabel", Html(description), Some(BusinessDescriptionController.onPageLoad(index).url)),
+    AnswerRow("business.addressUkYesNo.checkYourAnswersLabel", Html("Yes"), Some(BusinessAddressUkYesNoController.onPageLoad(index).url)),
+    AnswerRow("business.ukAddress.checkYourAnswersLabel", Html("Line 1<br />Line 2<br />AB1 1AB"), Some(BusinessUkAddressController.onPageLoad(index).url)),
+    AnswerRow("business.currentValue.checkYourAnswersLabel", Html("£100"), Some(BusinessValueController.onPageLoad(index).url))
   )
 
   private val nonUkAddressRows: Seq[AnswerRow] = Seq(
-    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Business"), Some(WhatKindOfAssetController.onPageLoad(index, fakeDraftId).url)),
-    AnswerRow("business.name.checkYourAnswersLabel", Html(name), Some(BusinessNameController.onPageLoad(index, draftId).url)),
-    AnswerRow("business.description.checkYourAnswersLabel", Html(description), Some(BusinessDescriptionController.onPageLoad(index, draftId).url)),
-    AnswerRow("business.addressUkYesNo.checkYourAnswersLabel", Html("No"), Some(BusinessAddressUkYesNoController.onPageLoad(index, draftId).url)),
-    AnswerRow("business.internationalAddress.checkYourAnswersLabel", Html("Line 1<br />Line 2<br />France"), Some(BusinessInternationalAddressController.onPageLoad(index, draftId).url)),
-    AnswerRow("business.currentValue.checkYourAnswersLabel", Html("£100"), Some(BusinessValueController.onPageLoad(index, draftId).url))
+    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Business"), Some(WhatKindOfAssetController.onPageLoad(index).url)),
+    AnswerRow("business.name.checkYourAnswersLabel", Html(name), Some(BusinessNameController.onPageLoad(index).url)),
+    AnswerRow("business.description.checkYourAnswersLabel", Html(description), Some(BusinessDescriptionController.onPageLoad(index).url)),
+    AnswerRow("business.addressUkYesNo.checkYourAnswersLabel", Html("No"), Some(BusinessAddressUkYesNoController.onPageLoad(index).url)),
+    AnswerRow("business.internationalAddress.checkYourAnswersLabel", Html("Line 1<br />Line 2<br />France"), Some(BusinessInternationalAddressController.onPageLoad(index).url)),
+    AnswerRow("business.currentValue.checkYourAnswersLabel", Html("£100"), Some(BusinessValueController.onPageLoad(index).url))
   )
 
   "BusinessPrintHelper" when {
@@ -82,8 +82,7 @@ class BusinessPrintHelperSpec extends SpecBase {
           val result: AnswerSection = helper.printSection(
             userAnswers = ukAddressAnswers,
             index = index,
-            specificIndex = index,
-            draftId = fakeDraftId
+            specificIndex = index
           )
 
           result mustBe AnswerSection(
@@ -97,8 +96,7 @@ class BusinessPrintHelperSpec extends SpecBase {
           val result: AnswerSection = helper.printSection(
             userAnswers = nonUkAddressAnswers,
             index = index,
-            specificIndex = index,
-            draftId = fakeDraftId
+            specificIndex = index
           )
 
           result mustBe AnswerSection(
@@ -116,8 +114,7 @@ class BusinessPrintHelperSpec extends SpecBase {
 
           val result: Seq[AnswerSection] = helper.checkDetailsSection(
             userAnswers = ukAddressAnswers,
-            index = index,
-            draftId = fakeDraftId
+            index = index
           )
 
           result mustBe Seq(AnswerSection(
@@ -130,8 +127,7 @@ class BusinessPrintHelperSpec extends SpecBase {
 
           val result: Seq[AnswerSection] = helper.checkDetailsSection(
             userAnswers = nonUkAddressAnswers,
-            index = index,
-            draftId = fakeDraftId
+            index = index
           )
 
           result mustBe Seq(AnswerSection(

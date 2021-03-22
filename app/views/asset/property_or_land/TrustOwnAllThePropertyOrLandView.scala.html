@@ -21,13 +21,13 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], index: Int, draftId: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], index: Int)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = s"${errorPrefix(form)} ${messages("propertyOrLand.trustOwnAllYesNo.title")}"
 ) {
 
-    @formHelper(action = TrustOwnAllThePropertyOrLandController.onSubmit(index, draftId), 'autoComplete -> "off") {
+    @formHelper(action = TrustOwnAllThePropertyOrLandController.onSubmit(index), 'autoComplete -> "off") {
 
         @components.back_link()
 

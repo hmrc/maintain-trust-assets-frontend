@@ -32,7 +32,7 @@ class SharePortfolioOnStockExchangeControllerSpec extends SpecBase with ModelGen
   val form = new YesNoFormProvider().withPrefix("shares.portfolioOnStockExchangeYesNo")
   val index: Int = 0
 
-  lazy val sharePortfolioOnStockExchangeRoute = routes.SharePortfolioOnStockExchangeController.onPageLoad(index, fakeDraftId).url
+  lazy val sharePortfolioOnStockExchangeRoute = routes.SharePortfolioOnStockExchangeController.onPageLoad(index).url
 
   "SharePortfolioOnStockExchange Controller" must {
 
@@ -49,7 +49,7 @@ class SharePortfolioOnStockExchangeControllerSpec extends SpecBase with ModelGen
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, fakeDraftId, index)(fakeRequest, messages).toString
+        view(form, index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -69,7 +69,7 @@ class SharePortfolioOnStockExchangeControllerSpec extends SpecBase with ModelGen
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), fakeDraftId, index)(fakeRequest, messages).toString
+        view(form.fill(true), index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -109,7 +109,7 @@ class SharePortfolioOnStockExchangeControllerSpec extends SpecBase with ModelGen
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, fakeDraftId, index)(fakeRequest, messages).toString
+        view(boundForm, index)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -151,7 +151,7 @@ class SharePortfolioOnStockExchangeControllerSpec extends SpecBase with ModelGen
   "for a GET" must {
 
     def getForIndex(index: Int) : FakeRequest[AnyContentAsEmpty.type] = {
-      val route = routes.SharePortfolioOnStockExchangeController.onPageLoad(index, fakeDraftId).url
+      val route = routes.SharePortfolioOnStockExchangeController.onPageLoad(index).url
 
       FakeRequest(GET, route)
     }
@@ -168,7 +168,7 @@ class SharePortfolioOnStockExchangeControllerSpec extends SpecBase with ModelGen
     def postForIndex(index: Int): FakeRequest[AnyContentAsFormUrlEncoded] = {
 
       val route =
-        routes.SharePortfolioOnStockExchangeController.onPageLoad(index, fakeDraftId).url
+        routes.SharePortfolioOnStockExchangeController.onPageLoad(index).url
 
       FakeRequest(POST, route)
         .withFormUrlEncodedBody(("value", "true"))

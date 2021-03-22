@@ -45,9 +45,9 @@ class PartnershipPrintHelperSpec extends SpecBase {
     .set(PartnershipStartDatePage(index), date).success.value
 
   private val rows: Seq[AnswerRow] = Seq(
-    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Partnership"), Some(WhatKindOfAssetController.onPageLoad(index, fakeDraftId).url)),
-    AnswerRow("partnership.description.checkYourAnswersLabel", Html(description), Some(PartnershipDescriptionController.onPageLoad(index, fakeDraftId).url)),
-    AnswerRow("partnership.startDate.checkYourAnswersLabel", Html("3 February 1996"), Some(PartnershipStartDateController.onPageLoad(index, fakeDraftId).url))
+    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Partnership"), Some(WhatKindOfAssetController.onPageLoad(index).url)),
+    AnswerRow("partnership.description.checkYourAnswersLabel", Html(description), Some(PartnershipDescriptionController.onPageLoad(index).url)),
+    AnswerRow("partnership.startDate.checkYourAnswersLabel", Html("3 February 1996"), Some(PartnershipStartDateController.onPageLoad(index).url))
   )
 
   "PartnershipPrintHelper" when {
@@ -58,8 +58,7 @@ class PartnershipPrintHelperSpec extends SpecBase {
         val result: AnswerSection = helper.printSection(
           userAnswers = answers,
           index = index,
-          specificIndex = index,
-          draftId = fakeDraftId
+          specificIndex = index
         )
 
         result mustBe AnswerSection(
@@ -74,8 +73,7 @@ class PartnershipPrintHelperSpec extends SpecBase {
 
         val result: Seq[AnswerSection] = helper.checkDetailsSection(
           userAnswers = answers,
-          index = index,
-          draftId = fakeDraftId
+          index = index
         )
 
         result mustBe Seq(AnswerSection(

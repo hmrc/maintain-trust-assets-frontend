@@ -37,7 +37,7 @@ class PartnershipAnswerControllerSpec extends SpecBase {
   val index: Int = 0
   val validDate: LocalDate = LocalDate.now(ZoneOffset.UTC)
 
-  lazy val partnershipAnswerRoute: String = routes.PartnershipAnswerController.onPageLoad(index, fakeDraftId).url
+  lazy val partnershipAnswerRoute: String = routes.PartnershipAnswerController.onPageLoad(index).url
 
   "PartnershipAnswer Controller" must {
 
@@ -52,7 +52,7 @@ class PartnershipAnswerControllerSpec extends SpecBase {
 
         val expectedSections = Nil
         val mockPrintHelper: PartnershipPrintHelper = mock[PartnershipPrintHelper]
-        when(mockPrintHelper.checkDetailsSection(any(), any(), any(), any())(any())).thenReturn(Nil)
+        when(mockPrintHelper.checkDetailsSection(any(), any(), any())(any())).thenReturn(Nil)
 
         val application = applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(bind[PartnershipPrintHelper].toInstance(mockPrintHelper))
@@ -67,7 +67,7 @@ class PartnershipAnswerControllerSpec extends SpecBase {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(index, fakeDraftId, expectedSections)(fakeRequest, messages).toString
+          view(index, expectedSections)(fakeRequest, messages).toString
 
         application.stop()
       }
@@ -88,7 +88,7 @@ class PartnershipAnswerControllerSpec extends SpecBase {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual routes.PartnershipDescriptionController.onPageLoad(index, fakeDraftId).url
+        redirectLocation(result).value mustEqual routes.PartnershipDescriptionController.onPageLoad(index).url
 
         application.stop()
 
@@ -109,7 +109,7 @@ class PartnershipAnswerControllerSpec extends SpecBase {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.PartnershipStartDateController.onPageLoad(index, fakeDraftId).url
+      redirectLocation(result).value mustEqual routes.PartnershipStartDateController.onPageLoad(index).url
 
       application.stop()
 

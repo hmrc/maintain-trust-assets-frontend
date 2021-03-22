@@ -43,22 +43,22 @@ import scala.concurrent.Future
 
 class AddAssetsControllerSpec extends SpecBase with Generators {
 
-  lazy val addAssetsRoute: String = routes.AddAssetsController.onPageLoad(fakeDraftId).url
-  lazy val addOnePostRoute: String = routes.AddAssetsController.submitOne(fakeDraftId).url
-  lazy val addAnotherPostRoute: String = routes.AddAssetsController.submitAnother(fakeDraftId).url
-  lazy val completePostRoute: String = routes.AddAssetsController.submitComplete(fakeDraftId).url
+  lazy val addAssetsRoute: String = routes.AddAssetsController.onPageLoad().url
+  lazy val addOnePostRoute: String = routes.AddAssetsController.submitOne().url
+  lazy val addAnotherPostRoute: String = routes.AddAssetsController.submitAnother().url
+  lazy val completePostRoute: String = routes.AddAssetsController.submitComplete().url
 
   def changeMoneyAssetRoute(index: Int): String =
-    money.routes.AssetMoneyValueController.onPageLoad(index, fakeDraftId).url
+    money.routes.AssetMoneyValueController.onPageLoad(index).url
 
   def changeSharesAssetRoute(index: Int): String =
-    shares.routes.ShareAnswerController.onPageLoad(index, fakeDraftId).url
+    shares.routes.ShareAnswerController.onPageLoad(index).url
 
   def changeOtherAssetRoute(index: Int): String =
-    other.routes.OtherAssetAnswersController.onPageLoad(index, fakeDraftId).url
+    other.routes.OtherAssetAnswersController.onPageLoad(index).url
 
   def removeAssetYesNoRoute(index: Int): String =
-    routes.RemoveAssetYesNoController.onPageLoad(index, fakeDraftId).url
+    routes.RemoveAssetYesNoController.onPageLoad(index).url
 
   val addTaxableAssetsForm: Form[AddAssets] = new AddAssetsFormProvider().withPrefix("addAssets")
   val addNonTaxableAssetsForm: Form[AddAssets] = new AddAssetsFormProvider().withPrefix("addAssets.nonTaxable")
@@ -136,7 +136,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(addTaxableAssetsForm, fakeDraftId)(fakeRequest, messages).toString
+            view(addTaxableAssetsForm)(fakeRequest, messages).toString
 
           application.stop()
         }
@@ -155,7 +155,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
 
           status(result) mustEqual SEE_OTHER
 
-          redirectLocation(result).value mustEqual routes.TrustOwnsNonEeaBusinessYesNoController.onPageLoad(fakeDraftId).url
+          redirectLocation(result).value mustEqual routes.TrustOwnsNonEeaBusinessYesNoController.onPageLoad().url
 
           application.stop()
         }
@@ -237,7 +237,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm, fakeDraftId)(fakeRequest, messages).toString
+          view(boundForm)(fakeRequest, messages).toString
 
         application.stop()
       }
@@ -260,7 +260,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(addTaxableAssetsForm, fakeDraftId, Nil, oneAsset, "Add assets", "addAssets")(fakeRequest, messages).toString
+            view(addTaxableAssetsForm, Nil, oneAsset, "Add assets", "addAssets")(fakeRequest, messages).toString
 
           application.stop()
         }
@@ -278,7 +278,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(addNonTaxableAssetsForm, fakeDraftId, Nil, oneAsset, "Add a non-EEA company", "addAssets.nonTaxable")(fakeRequest, messages).toString
+            view(addNonTaxableAssetsForm, Nil, oneAsset, "Add a non-EEA company", "addAssets.nonTaxable")(fakeRequest, messages).toString
 
           application.stop()
         }
@@ -302,7 +302,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(addTaxableAssetsForm, fakeDraftId, Nil, multipleAssets, "You have added 2 assets", "addAssets")(fakeRequest, messages).toString
+            view(addTaxableAssetsForm, Nil, multipleAssets, "You have added 2 assets", "addAssets")(fakeRequest, messages).toString
 
           application.stop()
         }
@@ -320,7 +320,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(addNonTaxableAssetsForm, fakeDraftId, Nil, multipleAssets, "You have added 2 non-EEA companies", "addAssets.nonTaxable")(fakeRequest, messages).toString
+            view(addNonTaxableAssetsForm, Nil, multipleAssets, "You have added 2 non-EEA companies", "addAssets.nonTaxable")(fakeRequest, messages).toString
 
           application.stop()
         }
@@ -469,7 +469,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm, fakeDraftId, Nil, multipleAssets, "You have added 2 assets", "addAssets")(fakeRequest, messages).toString
+          view(boundForm, Nil, multipleAssets, "You have added 2 assets", "addAssets")(fakeRequest, messages).toString
 
         application.stop()
       }
@@ -514,7 +514,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
           val content = contentAsString(result)
 
           content mustEqual
-            view(fakeDraftId, Nil, assets(max), "You have added 51 assets", max, "addAssets")(request, messages).toString
+            view(Nil, assets(max), "You have added 51 assets", max, "addAssets")(request, messages).toString
 
           content must include("You cannot add another asset as you have entered a maximum of 51.")
           content must include("You can add another asset by removing an existing one, or write to HMRC with details of any additional assets.")
@@ -569,7 +569,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
             val content = contentAsString(result)
 
             content mustEqual
-              view(fakeDraftId, Nil, assets(max), "You have added 76 assets", max, "addAssets")(request, messages).toString
+              view(Nil, assets(max), "You have added 76 assets", max, "addAssets")(request, messages).toString
 
             content must include("You cannot add another asset as you have entered a maximum of 76.")
             content must include("You can add another asset by removing an existing one, or write to HMRC with details of any additional assets.")
@@ -622,7 +622,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
             val content = contentAsString(result)
 
             content mustEqual
-              view(fakeDraftId, Nil, assets(max), "You have added 25 non-EEA companies", max, "addAssets.nonTaxable")(request, messages).toString
+              view(Nil, assets(max), "You have added 25 non-EEA companies", max, "addAssets.nonTaxable")(request, messages).toString
 
             content must include("You cannot add another non-EEA company as you have entered a maximum of 25.")
             content must include("You can add another non-EEA company by removing an existing one, or write to HMRC with details of any additional non-EEA companies.")

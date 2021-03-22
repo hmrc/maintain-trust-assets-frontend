@@ -40,7 +40,7 @@ class AnswersControllerSpec extends SpecBase {
     .set(GoverningCountryPage(index), "FR").success.value
     .set(StartDatePage(index), LocalDate.parse("1996-02-03")).success.value
 
-  private lazy val onPageLoadRoute: String = routes.AnswersController.onSubmit(index, fakeDraftId).url
+  private lazy val onPageLoadRoute: String = routes.AnswersController.onSubmit(index).url
 
   "AnswersController" must {
 
@@ -48,7 +48,7 @@ class AnswersControllerSpec extends SpecBase {
 
       val expectedSections = Nil
       val mockPrintHelper: NonEeaBusinessPrintHelper = mock[NonEeaBusinessPrintHelper]
-      when(mockPrintHelper.checkDetailsSection(any(), any(), any(), any())(any())).thenReturn(Nil)
+      when(mockPrintHelper.checkDetailsSection(any(), any(), any())(any())).thenReturn(Nil)
 
       val application = applicationBuilder(userAnswers = Some(answers))
         .overrides(bind[NonEeaBusinessPrintHelper].toInstance(mockPrintHelper))
@@ -63,7 +63,7 @@ class AnswersControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(index, fakeDraftId, expectedSections)(fakeRequest, messages).toString
+        view(index, expectedSections)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -72,13 +72,13 @@ class AnswersControllerSpec extends SpecBase {
 
       val application = applicationBuilder(userAnswers = Some(answers)).build()
 
-      val request = FakeRequest(POST, routes.AnswersController.onSubmit(index, fakeDraftId).url)
+      val request = FakeRequest(POST, routes.AnswersController.onSubmit(index).url)
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.asset.routes.AddAssetsController.onPageLoad(fakeDraftId).url
+      redirectLocation(result).value mustEqual controllers.asset.routes.AddAssetsController.onPageLoad().url
 
       application.stop()
     }
@@ -93,7 +93,7 @@ class AnswersControllerSpec extends SpecBase {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.NameController.onPageLoad(index, fakeDraftId).url
+      redirectLocation(result).value mustEqual routes.NameController.onPageLoad(index).url
 
       application.stop()
     }
@@ -116,7 +116,7 @@ class AnswersControllerSpec extends SpecBase {
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(POST, routes.AnswersController.onSubmit(index, fakeDraftId).url)
+      val request = FakeRequest(POST, routes.AnswersController.onSubmit(index).url)
 
       val result = route(application, request).value
 

@@ -24,15 +24,13 @@ trait PrintHelper {
 
   def checkDetailsSection(userAnswers: UserAnswers,
                           arg: String = "",
-                          index: Int,
-                          draftId: String)
+                          index: Int)
                          (implicit messages: Messages): Seq[AnswerSection] = {
 
     Seq(section(
       userAnswers = userAnswers,
       arg = arg,
       index = index,
-      draftId = draftId,
       headingKey = None
     ))
   }
@@ -42,15 +40,13 @@ trait PrintHelper {
   def printSection(userAnswers: UserAnswers,
                    arg: String = "",
                    index: Int,
-                   specificIndex: Int,
-                   draftId: String)
+                   specificIndex: Int)
                   (implicit messages: Messages): AnswerSection = {
 
     section(
       userAnswers = userAnswers,
       arg = arg,
       index = index,
-      draftId = draftId,
       headingKey = Some(messages(s"answerPage.section.$assetType.subheading", specificIndex + 1))
     )
   }
@@ -58,7 +54,6 @@ trait PrintHelper {
   private def section(userAnswers: UserAnswers,
                       arg: String,
                       index: Int,
-                      draftId: String,
                       headingKey: Option[String])
                      (implicit messages: Messages): AnswerSection = {
 
@@ -67,14 +62,13 @@ trait PrintHelper {
         case Some(key) => Some(messages(key))
         case _ => None
       },
-      rows = answerRows(userAnswers, arg, index, draftId)
+      rows = answerRows(userAnswers, arg, index)
     )
   }
 
   def answerRows(userAnswers: UserAnswers,
                  arg: String,
-                 index: Int,
-                 draftId: String)
+                 index: Int)
                 (implicit messages: Messages): Seq[AnswerRow]
 
 }

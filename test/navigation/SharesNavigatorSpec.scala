@@ -39,8 +39,8 @@ class SharesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
           val answers = userAnswers.set(SharesInAPortfolioPage(index), true).success.value
 
-          navigator.nextPage(SharesInAPortfolioPage(index), fakeDraftId)(answers)
-            .mustBe(SharePortfolioNameController.onPageLoad(index, fakeDraftId))
+          navigator.nextPage(SharesInAPortfolioPage(index))(answers)
+            .mustBe(SharePortfolioNameController.onPageLoad(index))
       }
     }
 
@@ -48,8 +48,8 @@ class SharesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
-          navigator.nextPage(SharePortfolioNamePage(index), fakeDraftId)(userAnswers)
-            .mustBe(SharePortfolioOnStockExchangeController.onPageLoad(index, fakeDraftId))
+          navigator.nextPage(SharePortfolioNamePage(index))(userAnswers)
+            .mustBe(SharePortfolioOnStockExchangeController.onPageLoad(index))
       }
     }
 
@@ -57,8 +57,8 @@ class SharesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
-          navigator.nextPage(SharePortfolioOnStockExchangePage(index), fakeDraftId)(userAnswers)
-            .mustBe(SharePortfolioQuantityInTrustController.onPageLoad(index, fakeDraftId))
+          navigator.nextPage(SharePortfolioOnStockExchangePage(index))(userAnswers)
+            .mustBe(SharePortfolioQuantityInTrustController.onPageLoad(index))
       }
     }
 
@@ -66,8 +66,8 @@ class SharesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
-          navigator.nextPage(SharePortfolioQuantityInTrustPage(index), fakeDraftId)(userAnswers)
-            .mustBe(SharePortfolioValueInTrustController.onPageLoad(index, fakeDraftId))
+          navigator.nextPage(SharePortfolioQuantityInTrustPage(index))(userAnswers)
+            .mustBe(SharePortfolioValueInTrustController.onPageLoad(index))
       }
     }
 
@@ -75,8 +75,8 @@ class SharesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
-          navigator.nextPage(SharePortfolioValueInTrustPage(index), fakeDraftId)(userAnswers)
-            .mustBe(ShareAnswerController.onPageLoad(index, fakeDraftId))
+          navigator.nextPage(SharePortfolioValueInTrustPage(index))(userAnswers)
+            .mustBe(ShareAnswerController.onPageLoad(index))
       }
     }
 
@@ -87,8 +87,8 @@ class SharesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
           val answers = userAnswers.set(SharesInAPortfolioPage(index), false).success.value
 
-          navigator.nextPage(SharesInAPortfolioPage(index), fakeDraftId)(answers)
-            .mustBe(ShareCompanyNameController.onPageLoad(index, fakeDraftId))
+          navigator.nextPage(SharesInAPortfolioPage(index))(answers)
+            .mustBe(ShareCompanyNameController.onPageLoad(index))
       }
     }
 
@@ -97,8 +97,8 @@ class SharesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
 
-          navigator.nextPage(ShareCompanyNamePage(index), fakeDraftId)(userAnswers)
-            .mustBe(SharesOnStockExchangeController.onPageLoad(index, fakeDraftId))
+          navigator.nextPage(ShareCompanyNamePage(index))(userAnswers)
+            .mustBe(SharesOnStockExchangeController.onPageLoad(index))
       }
     }
 
@@ -107,8 +107,8 @@ class SharesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
 
-          navigator.nextPage(SharesOnStockExchangePage(index), fakeDraftId)(userAnswers)
-            .mustBe(ShareClassController.onPageLoad(index, fakeDraftId))
+          navigator.nextPage(SharesOnStockExchangePage(index))(userAnswers)
+            .mustBe(ShareClassController.onPageLoad(index))
       }
     }
 
@@ -117,8 +117,8 @@ class SharesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
 
-          navigator.nextPage(ShareClassPage(index), fakeDraftId)(userAnswers)
-            .mustBe(ShareQuantityInTrustController.onPageLoad(index, fakeDraftId))
+          navigator.nextPage(ShareClassPage(index))(userAnswers)
+            .mustBe(ShareQuantityInTrustController.onPageLoad(index))
       }
     }
 
@@ -127,8 +127,8 @@ class SharesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
 
-          navigator.nextPage(ShareQuantityInTrustPage(index), fakeDraftId)(userAnswers)
-            .mustBe(ShareValueInTrustController.onPageLoad(index, fakeDraftId))
+          navigator.nextPage(ShareQuantityInTrustPage(index))(userAnswers)
+            .mustBe(ShareValueInTrustController.onPageLoad(index))
       }
     }
 
@@ -137,8 +137,8 @@ class SharesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
 
-          navigator.nextPage(ShareValueInTrustPage(index), fakeDraftId)(userAnswers)
-            .mustBe(ShareAnswerController.onPageLoad(index, fakeDraftId))
+          navigator.nextPage(ShareValueInTrustPage(index))(userAnswers)
+            .mustBe(ShareAnswerController.onPageLoad(index))
       }
     }
 
@@ -146,8 +146,8 @@ class SharesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
 
-          navigator.nextPage(ShareAnswerPage, fakeDraftId)(userAnswers)
-            .mustBe(routes.AddAssetsController.onPageLoad(fakeDraftId))
+          navigator.nextPage(ShareAnswerPage)(userAnswers)
+            .mustBe(routes.AddAssetsController.onPageLoad())
       }
     }
   }

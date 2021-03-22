@@ -44,11 +44,10 @@ class SubmissionDraftConnectorSpec extends SpecBase with MustMatchers with Optio
 
   private lazy val connector = injector.instanceOf[SubmissionDraftConnector]
 
-  private val testDraftId = "draftId"
   private val testSection = "section"
   private val submissionsUrl = s"/trusts/register/submission-drafts"
-  private val submissionUrl = s"$submissionsUrl/$testDraftId/$testSection"
-  private val setSubmissionUrl = s"$submissionsUrl/$testDraftId/set/$testSection"
+  private val submissionUrl = s"$submissionsUrl/$testSection"
+  private val setSubmissionUrl = s"$submissionsUrl/set/$testSection"
 
   "SubmissionDraftConnector" when {
 
@@ -81,7 +80,7 @@ class SubmissionDraftConnectorSpec extends SpecBase with MustMatchers with Optio
             )
         )
 
-        val result = Await.result(connector.setDraftSectionSet(testDraftId, testSection, submissionDraftSetData), Duration.Inf)
+        val result = Await.result(connector.setDraftSectionSet(testSection, submissionDraftSetData), Duration.Inf)
         result.status mustBe Status.OK
       }
 
@@ -115,7 +114,7 @@ class SubmissionDraftConnectorSpec extends SpecBase with MustMatchers with Optio
             )
         )
 
-        val result: SubmissionDraftResponse = Await.result(connector.getDraftSection(testDraftId, testSection), Duration.Inf)
+        val result: SubmissionDraftResponse = Await.result(connector.getDraftSection(testSection), Duration.Inf)
         result.createdAt mustBe LocalDateTime.of(2012, 2, 3, 9, 30)
         result.data mustBe draftData
       }
@@ -125,7 +124,7 @@ class SubmissionDraftConnectorSpec extends SpecBase with MustMatchers with Optio
 
       "return true if the trust is taxable" in {
         server.stubFor(
-          get(urlEqualTo(s"$submissionsUrl/$testDraftId/is-trust-taxable"))
+          get(urlEqualTo(s"$submissionsUrl/is-trust-taxable"))
             .willReturn(
               aResponse()
                 .withStatus(Status.OK)
@@ -133,13 +132,13 @@ class SubmissionDraftConnectorSpec extends SpecBase with MustMatchers with Optio
             )
         )
 
-        val result: Boolean = Await.result(connector.getIsTrustTaxable(testDraftId), Duration.Inf)
+        val result: Boolean = Await.result(connector.getIsTrustTaxable(), Duration.Inf)
         result.booleanValue() mustBe true
       }
 
       "return false if the trust is non taxable" in {
         server.stubFor(
-          get(urlEqualTo(s"$submissionsUrl/$testDraftId/is-trust-taxable"))
+          get(urlEqualTo(s"$submissionsUrl/is-trust-taxable"))
             .willReturn(
               aResponse()
                 .withStatus(Status.OK)
@@ -147,20 +146,20 @@ class SubmissionDraftConnectorSpec extends SpecBase with MustMatchers with Optio
             )
         )
 
-        val result: Boolean = Await.result(connector.getIsTrustTaxable(testDraftId), Duration.Inf)
+        val result: Boolean = Await.result(connector.getIsTrustTaxable(), Duration.Inf)
         result.booleanValue() mustBe false
       }
 
       "recover to true as default" in {
         server.stubFor(
-          get(urlEqualTo(s"$submissionsUrl/$testDraftId/is-trust-taxable"))
+          get(urlEqualTo(s"$submissionsUrl/is-trust-taxable"))
             .willReturn(
               aResponse()
                 .withStatus(Status.NOT_FOUND)
             )
         )
 
-        val result: Boolean = Await.result(connector.getIsTrustTaxable(testDraftId), Duration.Inf)
+        val result: Boolean = Await.result(connector.getIsTrustTaxable(), Duration.Inf)
         result.booleanValue() mustBe true
       }
     }

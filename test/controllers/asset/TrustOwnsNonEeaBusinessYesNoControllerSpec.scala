@@ -32,7 +32,7 @@ class TrustOwnsNonEeaBusinessYesNoControllerSpec extends SpecBase {
 
   private val validAnswer: Boolean = true
 
-  lazy val onPageLoadRoute: String = TrustOwnsNonEeaBusinessYesNoController.onPageLoad(fakeDraftId).url
+  lazy val onPageLoadRoute: String = TrustOwnsNonEeaBusinessYesNoController.onPageLoad().url
 
   "PropertyOrLandAddress Controller" must {
 
@@ -49,7 +49,7 @@ class TrustOwnsNonEeaBusinessYesNoControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, fakeDraftId)(fakeRequest, messages).toString
+        view(form)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -69,7 +69,7 @@ class TrustOwnsNonEeaBusinessYesNoControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), fakeDraftId)(fakeRequest, messages).toString
+        view(form.fill(validAnswer))(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -106,7 +106,7 @@ class TrustOwnsNonEeaBusinessYesNoControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, fakeDraftId)(fakeRequest, messages).toString
+        view(boundForm)(fakeRequest, messages).toString
 
       application.stop()
     }

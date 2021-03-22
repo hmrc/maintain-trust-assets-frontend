@@ -29,19 +29,18 @@ import scala.concurrent.{ExecutionContext, Future}
 class DraftIdDataRetrievalActionProviderImpl @Inject()(repository: RegistrationsRepository, executionContext: ExecutionContext)
   extends DraftIdRetrievalActionProvider {
 
-  def apply(draftId: String): DraftIdDataRetrievalAction =
-    new DraftIdDataRetrievalAction(draftId, repository, executionContext)
+  def apply(): DraftIdDataRetrievalAction =
+    new DraftIdDataRetrievalAction(repository, executionContext)
 
 }
 
 trait DraftIdRetrievalActionProvider {
 
-  def apply(draftId : String) : DraftIdDataRetrievalAction
+  def apply() : DraftIdDataRetrievalAction
 
 }
 
 class DraftIdDataRetrievalAction(
-                                  draftId : String,
                                   repository: RegistrationsRepository,
                                   implicit protected val executionContext: ExecutionContext
                                 )
@@ -50,7 +49,7 @@ class DraftIdDataRetrievalAction(
   override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalRegistrationDataRequest[A]] = {
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
-    repository.get(draftId).map {
+    repository.get().map {
       userAnswers =>
         OptionalRegistrationDataRequest(request.request, request.identifier, Session.id(hc), userAnswers, request.affinityGroup, request.enrolments, request.agentARN)
     }

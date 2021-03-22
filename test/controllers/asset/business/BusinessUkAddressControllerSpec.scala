@@ -37,7 +37,7 @@ class BusinessUkAddressControllerSpec extends SpecBase with IndexValidation {
   val businessName = "Test"
   val validAnswer: UKAddress = UKAddress("value 1", "value 2", Some("value 3"), Some("value 4"), "AB1 1AB")
 
-  lazy val assetUkAddressRoute: String = routes.BusinessUkAddressController.onPageLoad(index, fakeDraftId).url
+  lazy val assetUkAddressRoute: String = routes.BusinessUkAddressController.onPageLoad(index).url
 
   val baseAnswers: UserAnswers = emptyUserAnswers
     .set(BusinessNamePage(index), businessName).success.value
@@ -57,7 +57,7 @@ class BusinessUkAddressControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, fakeDraftId, index, businessName)(request, messages).toString
+        view(form, index, businessName)(request, messages).toString
 
       application.stop()
     }
@@ -78,7 +78,7 @@ class BusinessUkAddressControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), fakeDraftId, index, businessName)(fakeRequest, messages).toString
+        view(form.fill(validAnswer), index, businessName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -93,7 +93,7 @@ class BusinessUkAddressControllerSpec extends SpecBase with IndexValidation {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual routes.BusinessNameController.onPageLoad(index, fakeDraftId).url
+      redirectLocation(result).value mustEqual routes.BusinessNameController.onPageLoad(index).url
 
       application.stop()
     }
@@ -138,7 +138,7 @@ class BusinessUkAddressControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, fakeDraftId, index, businessName)(fakeRequest, messages).toString
+        view(boundForm, index, businessName)(fakeRequest, messages).toString
 
       application.stop()
     }
@@ -177,7 +177,7 @@ class BusinessUkAddressControllerSpec extends SpecBase with IndexValidation {
     "for a GET" must {
 
       def getForIndex(index: Int) : FakeRequest[AnyContentAsEmpty.type] = {
-        val route = routes.BusinessUkAddressController.onPageLoad(index, fakeDraftId).url
+        val route = routes.BusinessUkAddressController.onPageLoad(index).url
 
         FakeRequest(GET, route)
       }
@@ -194,7 +194,7 @@ class BusinessUkAddressControllerSpec extends SpecBase with IndexValidation {
       def postForIndex(index: Int): FakeRequest[AnyContentAsFormUrlEncoded] = {
 
         val route =
-          routes.BusinessUkAddressController.onPageLoad(index, fakeDraftId).url
+          routes.BusinessUkAddressController.onPageLoad(index).url
 
         FakeRequest(POST, route)
           .withFormUrlEncodedBody(

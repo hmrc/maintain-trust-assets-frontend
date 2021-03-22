@@ -28,7 +28,7 @@ class ShareAnswersViewSpec extends ViewBehaviours {
 
   "ShareAnswers view" must {
 
-    val applyView = view.apply(index, fakeDraftId, Nil)(fakeRequest, messages)
+    val applyView = view.apply(index, Nil)(fakeRequest, messages)
 
     behave like normalPage(applyView, prefix)
 
