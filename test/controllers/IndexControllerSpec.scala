@@ -16,17 +16,14 @@
 
 package controllers
 
+import java.time.LocalDate
+
 import base.SpecBase
-import connectors.SubmissionDraftConnector
-import controllers.asset.routes._
-import models.Status.Completed
-import models.{UserAnswers, WhatKindOfAsset}
+import connectors.TrustsConnector
+import models.{TrustDetails, TypeOfTrust, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{reset, verify, when}
-import pages.AssetStatus
-import pages.asset.WhatKindOfAssetPage
-import pages.asset.money.AssetMoneyValuePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -36,290 +33,100 @@ import scala.concurrent.Future
 
 class IndexControllerSpec extends SpecBase {
 
-  private val featureFlagService: FeatureFlagService = mock[FeatureFlagService]
-  private val submissionDraftConnector: SubmissionDraftConnector = mock[SubmissionDraftConnector]
+  "Index Controller" must {
 
-  private lazy val onPageLoadRoute: String = routes.IndexController.onPageLoad().url
+    val identifier = "1234567890"
+    val startDate = LocalDate.parse("2019-06-01")
+    val trustType = TypeOfTrust.WillTrustOrIntestacyTrust
+    val is5mldEnabled = false
+    val isTaxable = false
+    val isUnderlyingData5mld = false
 
-  "Index Controller" when {
+    "populate user answers and redirect" in {
 
-    "pre-existing user answers" must {
+      reset(playbackRepository)
 
-      "redirect to AddAssetsController" when {
-        "existing assets" in {
+      val mockTrustsConnector = mock[TrustsConnector]
+      val mockFeatureFlagService = mock[FeatureFlagService]
 
-          reset(registrationsRepository)
+      when(playbackRepository.set(any()))
+        .thenReturn(Future.successful(true))
 
-          val userAnswers: UserAnswers = emptyUserAnswers
-            .set(WhatKindOfAssetPage(0), WhatKindOfAsset.Money).success.value
-            .set(AssetMoneyValuePage(0), 100L).success.value
-            .set(AssetStatus(0), Completed).success.value
+      when(mockTrustsConnector.getTrustDetails(any())(any(), any()))
+        .thenReturn(Future.successful(TrustDetails(startDate = startDate, typeOfTrust = Some(trustType), trustTaxable = Some(isTaxable))))
 
-          val application = applicationBuilder()
-            .overrides(
-              bind[FeatureFlagService].toInstance(featureFlagService),
-              bind[SubmissionDraftConnector].toInstance(submissionDraftConnector)
-            ).build()
+      when(mockFeatureFlagService.is5mldEnabled()(any(), any()))
+        .thenReturn(Future.successful(is5mldEnabled))
 
-          when(registrationsRepository.get()(any())).thenReturn(Future.successful(Some(userAnswers)))
-          when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
-          when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
-          when(submissionDraftConnector.getIsTrustTaxable()(any(), any())).thenReturn(Future.successful(false))
+      when(mockTrustsConnector.isTrust5mld(any())(any(), any()))
+        .thenReturn(Future.successful(isUnderlyingData5mld))
 
-          val request = FakeRequest(GET, onPageLoadRoute)
+      val application = applicationBuilder(userAnswers = None)
+        .overrides(
+          bind[TrustsConnector].toInstance(mockTrustsConnector),
+          bind[FeatureFlagService].toInstance(mockFeatureFlagService)
+        ).build()
 
-          val result = route(application, request).value
+      val request = FakeRequest(GET, routes.IndexController.onPageLoad(identifier).url)
 
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustBe AddAssetsController.onPageLoad().url
+      val result = route(application, request).value
 
-          application.stop()
-        }
-      }
+      status(result) mustEqual SEE_OTHER
 
-      "redirect to AssetInterruptPageController" when {
-        "no existing assets" when {
-          "taxable" in {
+      redirectLocation(result) mustBe Some(controllers.asset.routes.AddAssetsController.onPageLoad.url)
 
-            reset(registrationsRepository)
+      val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+      verify(playbackRepository).set(uaCaptor.capture)
 
-            val application = applicationBuilder()
-              .overrides(
-                bind[FeatureFlagService].toInstance(featureFlagService),
-                bind[SubmissionDraftConnector].toInstance(submissionDraftConnector)
-              ).build()
+      uaCaptor.getValue.internalId mustBe "id"
+      uaCaptor.getValue.identifier mustBe identifier
+      uaCaptor.getValue.whenTrustSetup mustBe startDate
+      uaCaptor.getValue.is5mldEnabled mustBe is5mldEnabled
+      uaCaptor.getValue.isTaxable mustBe isTaxable
+      uaCaptor.getValue.isUnderlyingData5mld mustBe isUnderlyingData5mld
 
-            when(registrationsRepository.get()(any())).thenReturn(Future.successful(Some(emptyUserAnswers)))
-            when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
-            when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
-            when(submissionDraftConnector.getIsTrustTaxable()(any(), any())).thenReturn(Future.successful(true))
-
-            val request = FakeRequest(GET, onPageLoadRoute)
-
-            val result = route(application, request).value
-
-            status(result) mustEqual SEE_OTHER
-            redirectLocation(result).value mustBe AssetInterruptPageController.onPageLoad().url
-
-            application.stop()
-          }
-        }
-      }
-
-      "redirect to TrustOwnsNonEeaBusinessYesNoController" when {
-        "no existing assets" when {
-          "non-taxable" in {
-
-            reset(registrationsRepository)
-
-            val application = applicationBuilder()
-              .overrides(
-                bind[FeatureFlagService].toInstance(featureFlagService),
-                bind[SubmissionDraftConnector].toInstance(submissionDraftConnector)
-              ).build()
-
-            when(registrationsRepository.get()(any())).thenReturn(Future.successful(Some(emptyUserAnswers)))
-            when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
-            when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
-            when(submissionDraftConnector.getIsTrustTaxable()(any(), any())).thenReturn(Future.successful(false))
-
-            val request = FakeRequest(GET, onPageLoadRoute)
-
-            val result = route(application, request).value
-
-            status(result) mustEqual SEE_OTHER
-            redirectLocation(result).value mustBe TrustOwnsNonEeaBusinessYesNoController.onPageLoad().url
-
-            application.stop()
-          }
-        }
-      }
-
-      "update value of is5mldEnabled and isTaxable in user answers" in {
-
-        reset(registrationsRepository)
-
-        val userAnswers = emptyUserAnswers.copy(is5mldEnabled = false)
-
-        val application = applicationBuilder(userAnswers = Some(userAnswers))
-          .overrides(
-            bind[FeatureFlagService].toInstance(featureFlagService),
-            bind[SubmissionDraftConnector].toInstance(submissionDraftConnector)
-          ).build()
-
-        when(registrationsRepository.get()(any())).thenReturn(Future.successful(Some(userAnswers)))
-        when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
-        when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(true))
-        when(submissionDraftConnector.getIsTrustTaxable()(any(), any())).thenReturn(Future.successful(true))
-
-        val request = FakeRequest(GET, onPageLoadRoute)
-
-        route(application, request).value.map { _ =>
-          val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
-          verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
-
-          uaCaptor.getValue.is5mldEnabled mustBe true
-          uaCaptor.getValue.isTaxable mustBe true
-
-          application.stop()
-        }
-      }
+      application.stop()
     }
 
-    "no pre-existing user answers" must {
+    "default isTaxable to true if trustTaxable is None i.e. 4mld" in {
 
-      "redirect to AssetInterruptPageController" when {
-        "taxable" in {
+      reset(playbackRepository)
 
-          reset(registrationsRepository)
+      val mockTrustConnector = mock[TrustsConnector]
+      val mockFeatureFlagService = mock[FeatureFlagService]
 
-          val application = applicationBuilder()
-            .overrides(
-              bind[FeatureFlagService].toInstance(featureFlagService),
-              bind[SubmissionDraftConnector].toInstance(submissionDraftConnector)
-            ).build()
+      when(playbackRepository.set(any()))
+        .thenReturn(Future.successful(true))
 
-          when(registrationsRepository.get()(any())).thenReturn(Future.successful(None))
-          when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
-          when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
-          when(submissionDraftConnector.getIsTrustTaxable()(any(), any())).thenReturn(Future.successful(true))
+      when(mockTrustConnector.getTrustDetails(any())(any(), any()))
+        .thenReturn(Future.successful(TrustDetails(startDate = startDate, typeOfTrust = Some(trustType), trustTaxable = None)))
 
-          val request = FakeRequest(GET, onPageLoadRoute)
+      when(mockFeatureFlagService.is5mldEnabled()(any(), any()))
+        .thenReturn(Future.successful(is5mldEnabled))
 
-          val result = route(application, request).value
+      when(mockTrustConnector.isTrust5mld(any())(any(), any()))
+        .thenReturn(Future.successful(isUnderlyingData5mld))
 
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustBe AssetInterruptPageController.onPageLoad().url
+      val application = applicationBuilder(userAnswers = None)
+        .overrides(
+          bind[TrustsConnector].toInstance(mockTrustConnector),
+          bind[FeatureFlagService].toInstance(mockFeatureFlagService)
+        ).build()
 
-          application.stop()
-        }
-      }
+      val request = FakeRequest(GET, routes.IndexController.onPageLoad(identifier).url)
 
-      "redirect to TrustOwnsNonEeaBusinessYesNoController" when {
-        "non-taxable" in {
+      val result = route(application, request).value
 
-          reset(registrationsRepository)
+      status(result) mustEqual SEE_OTHER
 
-          val application = applicationBuilder()
-            .overrides(
-              bind[FeatureFlagService].toInstance(featureFlagService),
-              bind[SubmissionDraftConnector].toInstance(submissionDraftConnector)
-            ).build()
+      redirectLocation(result) mustBe Some(controllers.asset.routes.AddAssetsController.onPageLoad.url)
 
-          when(registrationsRepository.get()(any())).thenReturn(Future.successful(None))
-          when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
-          when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
-          when(submissionDraftConnector.getIsTrustTaxable()(any(), any())).thenReturn(Future.successful(false))
+      val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+      verify(playbackRepository).set(uaCaptor.capture)
 
-          val request = FakeRequest(GET, onPageLoadRoute)
+      uaCaptor.getValue.isTaxable mustBe true
 
-          val result = route(application, request).value
-
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustBe TrustOwnsNonEeaBusinessYesNoController.onPageLoad().url
-
-          application.stop()
-        }
-      }
-
-      "instantiate new set of user answers" when {
-
-        "5mld enabled" when {
-
-          "taxable" must {
-            "add is5mldEnabled = true and isTaxable = true to user answers" in {
-
-              reset(registrationsRepository)
-
-              val application = applicationBuilder(userAnswers = None)
-                .overrides(
-                  bind[FeatureFlagService].toInstance(featureFlagService),
-                  bind[SubmissionDraftConnector].toInstance(submissionDraftConnector)
-                ).build()
-
-              when(registrationsRepository.get()(any())).thenReturn(Future.successful(None))
-              when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
-              when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(true))
-              when(submissionDraftConnector.getIsTrustTaxable()(any(), any())).thenReturn(Future.successful(true))
-
-              val request = FakeRequest(GET, onPageLoadRoute)
-
-              route(application, request).value.map { _ =>
-                val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
-                verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
-
-                uaCaptor.getValue.is5mldEnabled mustBe true
-                uaCaptor.getValue.isTaxable mustBe true
-                uaCaptor.getValue.internalAuthId mustBe "internalId"
-
-                application.stop()
-              }
-            }
-          }
-
-          "non-taxable" must {
-            "add is5mldEnabled = true and isTaxable = false to user answers" in {
-
-              reset(registrationsRepository)
-
-              val application = applicationBuilder(userAnswers = None)
-                .overrides(
-                  bind[FeatureFlagService].toInstance(featureFlagService),
-                  bind[SubmissionDraftConnector].toInstance(submissionDraftConnector)
-                ).build()
-
-              when(registrationsRepository.get()(any())).thenReturn(Future.successful(None))
-              when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
-              when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(true))
-              when(submissionDraftConnector.getIsTrustTaxable()(any(), any())).thenReturn(Future.successful(false))
-
-              val request = FakeRequest(GET, onPageLoadRoute)
-
-              route(application, request).value.map { _ =>
-                val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
-                verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
-
-                uaCaptor.getValue.is5mldEnabled mustBe true
-                uaCaptor.getValue.isTaxable mustBe false
-                uaCaptor.getValue.internalAuthId mustBe "internalId"
-
-                application.stop()
-              }
-            }
-          }
-        }
-
-        "5mld not enabled" must {
-          "add is5mldEnabled = false to user answers" in {
-
-            reset(registrationsRepository)
-
-            val application = applicationBuilder(userAnswers = None)
-              .overrides(
-                bind[FeatureFlagService].toInstance(featureFlagService),
-                bind[SubmissionDraftConnector].toInstance(submissionDraftConnector)
-              ).build()
-
-            when(registrationsRepository.get()(any())).thenReturn(Future.successful(None))
-            when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
-            when(featureFlagService.is5mldEnabled()(any(), any())).thenReturn(Future.successful(false))
-            when(submissionDraftConnector.getIsTrustTaxable()(any(), any())).thenReturn(Future.successful(false))
-
-            val request = FakeRequest(GET, onPageLoadRoute)
-
-            route(application, request).value.map { _ =>
-              val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
-              verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
-
-              uaCaptor.getValue.is5mldEnabled mustBe false
-              uaCaptor.getValue.isTaxable mustBe false
-              uaCaptor.getValue.internalAuthId mustBe "internalId"
-
-              application.stop()
-            }
-          }
-        }
-      }
+      application.stop()
     }
   }
 }

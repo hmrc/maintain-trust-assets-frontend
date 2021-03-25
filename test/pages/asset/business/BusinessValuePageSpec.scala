@@ -22,10 +22,10 @@ class BusinessValuePageSpec extends PageBehaviours {
 
   "BusinessValuePage" must {
 
-    beRetrievable[Long](BusinessValuePage(0))
+    beRetrievable[Long](BusinessValuePage)
 
-    beSettable[Long](BusinessValuePage(0))
+    beSettable[Long](BusinessValuePage)
 
-    beRemovable[Long](BusinessValuePage(0))
+    beRemovable[Long](BusinessValuePage)
   }
 }

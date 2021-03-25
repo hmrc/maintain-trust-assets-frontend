@@ -16,45 +16,55 @@
 
 package navigation
 
-import config.FrontendAppConfig
 import controllers.asset.property_or_land.routes._
 import controllers.asset.routes._
-import models.UserAnswers
+import models.{Mode, NormalMode, UserAnswers}
 import pages.Page
 import pages.asset.property_or_land._
 import play.api.mvc.Call
-import uk.gov.hmrc.auth.core.AffinityGroup
-
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class PropertyOrLandNavigator @Inject()(config: FrontendAppConfig) extends Navigator(config) {
+class PropertyOrLandNavigator @Inject()() extends Navigator {
 
-  override protected def route(): PartialFunction[Page, AffinityGroup => UserAnswers => Call] = {
-    case page @ PropertyOrLandAddressYesNoPage(index) => _ => ua => yesNoNav(
-      ua = ua,
-      fromPage = page,
-      yesCall = PropertyOrLandAddressUkYesNoController.onPageLoad(index),
-      noCall = PropertyOrLandDescriptionController.onPageLoad(index)
-    )
-    case page @ PropertyOrLandAddressUkYesNoPage(index) => _ => ua => yesNoNav(
-      ua = ua,
-      fromPage = page,
-      yesCall = PropertyOrLandUKAddressController.onPageLoad(index),
-      noCall = PropertyOrLandInternationalAddressController.onPageLoad(index)
-    )
-    case PropertyOrLandDescriptionPage(index) => _ => _ => PropertyOrLandTotalValueController.onPageLoad(index)
-    case PropertyOrLandUKAddressPage(index) => _ => _ => PropertyOrLandTotalValueController.onPageLoad(index)
-    case PropertyOrLandInternationalAddressPage(index) => _ => _ => PropertyOrLandTotalValueController.onPageLoad(index)
-    case PropertyOrLandTotalValuePage(index) => _ => _ => TrustOwnAllThePropertyOrLandController.onPageLoad(index)
-    case page @ TrustOwnAllThePropertyOrLandPage(index) => _ => ua => yesNoNav(
-      ua = ua,
-      fromPage = page,
-      yesCall = PropertyOrLandAnswerController.onPageLoad(index),
-      noCall = PropertyLandValueTrustController.onPageLoad(index)
-    )
-    case PropertyLandValueTrustPage(index) => _ => _ => PropertyOrLandAnswerController.onPageLoad(index)
-    case PropertyOrLandAnswerPage => _ => _ => AddAssetsController.onPageLoad()
+  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
+    routes(mode)(page)(userAnswers)
+
+  override def nextPage(page: Page, userAnswers: UserAnswers): Call =
+    nextPage(page, NormalMode, userAnswers)
+
+  def simpleNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
+    case PropertyOrLandDescriptionPage => _ => PropertyOrLandTotalValueController.onPageLoad(mode)
+    case PropertyOrLandUKAddressPage  => _ => PropertyOrLandTotalValueController.onPageLoad(mode)
+    case PropertyOrLandInternationalAddressPage  => _ => PropertyOrLandTotalValueController.onPageLoad(mode)
+    case PropertyOrLandTotalValuePage => _ => TrustOwnAllThePropertyOrLandController.onPageLoad(mode)
+    case PropertyLandValueTrustPage => _ => PropertyOrLandAnswerController.onPageLoad()
+    case PropertyOrLandAnswerPage => _ => AddAssetsController.onPageLoad()
   }
+
+  private def yesNoNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
+    case page @ PropertyOrLandAddressYesNoPage => ua => yesNoNav(
+      ua = ua,
+      fromPage = page,
+      yesCall = PropertyOrLandAddressUkYesNoController.onPageLoad(mode),
+      noCall = PropertyOrLandDescriptionController.onPageLoad(mode)
+    )
+    case page @ PropertyOrLandAddressUkYesNoPage => ua => yesNoNav(
+      ua = ua,
+      fromPage = page,
+      yesCall = PropertyOrLandUKAddressController.onPageLoad(mode),
+      noCall = PropertyOrLandInternationalAddressController.onPageLoad(mode)
+    )
+    case page @ TrustOwnAllThePropertyOrLandPage => ua => yesNoNav(
+      ua = ua,
+      fromPage = page,
+      yesCall = PropertyOrLandAnswerController.onPageLoad(),
+      noCall = PropertyLandValueTrustController.onPageLoad(mode)
+    )
+  }
+
+  def routes(mode: Mode): PartialFunction[Page, UserAnswers => Call] =
+    simpleNavigation(mode) orElse
+      yesNoNavigation(mode)
 
 }

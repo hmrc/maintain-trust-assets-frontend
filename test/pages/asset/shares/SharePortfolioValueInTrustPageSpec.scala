@@ -21,12 +21,14 @@ import pages.behaviours.PageBehaviours
 
 class SharePortfolioValueInTrustPageSpec extends PageBehaviours {
 
+  val page = SharePortfolioValueInTrustPage
+
   "SharePortfolioValueInTrustPage" must {
 
-    beRetrievable[Long](SharePortfolioValueInTrustPage(0))
+    beRetrievable[Long](page)
 
-    beSettable[Long](SharePortfolioValueInTrustPage(0))
+    beSettable[Long](page)
 
-    beRemovable[Long](SharePortfolioValueInTrustPage(0))
+    beRemovable[Long](page)
   }
 }

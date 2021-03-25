@@ -16,68 +16,46 @@
 
 package base
 
-import config.FrontendAppConfig
-import config.annotations._
+import java.time.LocalDate
+
 import controllers.actions._
-import models.{Status, UserAnswers}
-import navigation.{FakeNavigator, Navigator}
-import org.scalatest.TryValues
-import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
+import navigation.FakeNavigator
+import org.scalatest.{BeforeAndAfter, TestSuite, TryValues}
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice._
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.Json
-import repositories.RegistrationsRepository
-import uk.gov.hmrc.auth.core.AffinityGroup.Organisation
+import play.api.mvc.BodyParsers
+import repositories.{ActiveSessionRepository, PlaybackRepository}
 import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolment, Enrolments}
 
-trait SpecBase extends PlaySpec
-  with GuiceOneAppPerSuite
-  with TryValues
-  with ScalaFutures
-  with IntegrationPatience
-  with Mocked
-  with FakeTrustsApp {
+trait SpecBaseHelpers extends GuiceOneAppPerSuite with TryValues with Mocked with BeforeAndAfter with FakeTrustsApp {
+  this: TestSuite =>
 
   final val ENGLISH = "en"
   final val WELSH = "cy"
 
-  lazy val userInternalId: String = "internalId"
+  lazy val userInternalId = "internalId"
 
-  def emptyUserAnswers: UserAnswers = UserAnswers(Json.obj(), internalAuthId = userInternalId)
+  def emptyUserAnswers = models.UserAnswers(userInternalId, "UTRUTRUTR", LocalDate.now())
 
-  lazy val fakeNavigator: FakeNavigator = new FakeNavigator(frontendAppConfig)
+  val bodyParsers = injector.instanceOf[BodyParsers.Default]
 
-  private def fakeDraftIdAction(userAnswers: Option[UserAnswers]): FakeDraftIdRetrievalActionProvider =
-    new FakeDraftIdRetrievalActionProvider(
-      Status.InProgress,
-      userAnswers,
-      registrationsRepository
-    )
+  val fakeNavigator = new FakeNavigator()
 
-  protected def applicationBuilder(userAnswers: Option[UserAnswers] = None,
+  protected def applicationBuilder(userAnswers: Option[models.UserAnswers] = None,
                                    affinityGroup: AffinityGroup = AffinityGroup.Organisation,
-                                   enrolments: Enrolments = Enrolments(Set.empty[Enrolment]),
-                                   navigator: Navigator = fakeNavigator
+                                   enrolments: Enrolments = Enrolments(Set.empty[Enrolment])
                                   ): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
       .overrides(
-        bind[Navigator].toInstance(navigator),
-        bind[Navigator].qualifiedWith(classOf[Money]).toInstance(navigator),
-        bind[Navigator].qualifiedWith(classOf[PropertyOrLand]).toInstance(navigator),
-        bind[Navigator].qualifiedWith(classOf[Shares]).toInstance(navigator),
-        bind[Navigator].qualifiedWith(classOf[Business]).toInstance(navigator),
-        bind[Navigator].qualifiedWith(classOf[Partnership]).toInstance(navigator),
-        bind[Navigator].qualifiedWith(classOf[Other]).toInstance(navigator),
-        bind[Navigator].qualifiedWith(classOf[NonEeaBusiness]).toInstance(navigator),
-        bind[RegistrationDataRequiredAction].to[RegistrationDataRequiredActionImpl],
-        bind[RegistrationIdentifierAction].toInstance(
-          new FakeIdentifyForRegistration(affinityGroup, frontendAppConfig)(injectedParsers, trustsAuth, enrolments)
-        ),
-        bind[DraftIdRetrievalActionProvider].toInstance(fakeDraftIdAction(userAnswers)),
-        bind[RegistrationsRepository].toInstance(registrationsRepository),
-        bind[AffinityGroup].toInstance(Organisation),
-        bind[FrontendAppConfig].to(frontendAppConfig)
+        bind[IdentifierAction].toInstance(new FakeIdentifierAction(bodyParsers, affinityGroup)),
+        bind[PlaybackIdentifierAction].toInstance(new FakePlaybackIdentifierAction()),
+        bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers)),
+        bind[DataRequiredAction].to[DataRequiredActionImpl],
+        bind[PlaybackRepository].toInstance(playbackRepository),
+        bind[ActiveSessionRepository].toInstance(mockSessionRepository)
       )
 }
+
+trait SpecBase extends PlaySpec with SpecBaseHelpers

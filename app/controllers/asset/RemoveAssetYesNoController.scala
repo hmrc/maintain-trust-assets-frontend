@@ -16,30 +16,28 @@
 
 package controllers.asset
 
-import controllers.actions.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
+import controllers.actions.StandardActionSets
 import controllers.filters.IndexActionFilterProvider
 import forms.YesNoFormProvider
 import models.UserAnswers
-import models.requests.RegistrationDataRequest
+import models.requests.DataRequest
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.JsPath
 import play.api.mvc._
-import repositories.RegistrationsRepository
+import repositories.PlaybackRepository
 import sections.Assets
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels._
 import views.html.asset.RemoveAssetYesNoView
-
 import javax.inject.Inject
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class RemoveAssetYesNoController @Inject()(
                                             override val messagesApi: MessagesApi,
-                                            repository: RegistrationsRepository,
-                                            identify: RegistrationIdentifierAction,
-                                            getData: DraftIdRetrievalActionProvider,
-                                            requireData: RegistrationDataRequiredAction,
+                                            standardActionSets: StandardActionSets,
+                                            repository: PlaybackRepository,
                                             yesNoFormProvider: YesNoFormProvider,
                                             validateIndex: IndexActionFilterProvider,
                                             val controllerComponents: MessagesControllerComponents,
@@ -50,10 +48,7 @@ class RemoveAssetYesNoController @Inject()(
 
   private def redirect(): Result = Redirect(controllers.asset.routes.AddAssetsController.onPageLoad())
 
-  private def actions(index: Int): ActionBuilder[RegistrationDataRequest, AnyContent] =
-    identify andThen getData() andThen requireData andThen validateIndex(index, sections.Assets)
-
-  def onPageLoad(index: Int): Action[AnyContent] = actions(index) {
+  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
     implicit request =>
 
       val prefix = determinePrefix(request.userAnswers.isTaxable)
@@ -61,7 +56,7 @@ class RemoveAssetYesNoController @Inject()(
       Ok(view(form(prefix), index, prefix, assetLabel(request.userAnswers, index)))
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = actions(index).async {
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
 
       val prefix = determinePrefix(request.userAnswers.isTaxable)
@@ -88,7 +83,7 @@ class RemoveAssetYesNoController @Inject()(
   }
 
   private def assetLabel(userAnswers: UserAnswers, index: Int)
-                        (implicit request: RegistrationDataRequest[AnyContent]): String = {
+                        (implicit request: DataRequest[AnyContent]): String = {
 
     def default(prefix: String = defaultPrefix): String = request.messages(messagesApi)(s"$prefix.defaultText")
 

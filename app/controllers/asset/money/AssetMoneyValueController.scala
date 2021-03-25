@@ -17,66 +17,62 @@
 package controllers.asset.money
 
 import config.annotations.Money
-import controllers.actions.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
+import controllers.actions.StandardActionSets
 import forms.ValueFormProvider
 import models.Status.Completed
-import models.requests.RegistrationDataRequest
 import navigation.Navigator
 import pages.AssetStatus
 import pages.asset.money.AssetMoneyValuePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
-import repositories.RegistrationsRepository
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.asset.money.AssetMoneyValueView
-
 import javax.inject.Inject
+import models.Mode
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class AssetMoneyValueController @Inject()(
                                            override val messagesApi: MessagesApi,
-                                           repository: RegistrationsRepository,
+                                           standardActionSets: StandardActionSets,
+                                           repository: PlaybackRepository,
                                            @Money navigator: Navigator,
-                                           identify: RegistrationIdentifierAction,
-                                           getData: DraftIdRetrievalActionProvider,
-                                           requireData: RegistrationDataRequiredAction,
                                            formProvider: ValueFormProvider,
                                            val controllerComponents: MessagesControllerComponents,
                                            view: AssetMoneyValueView
                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private def actions(): ActionBuilder[RegistrationDataRequest, AnyContent] = identify andThen getData() andThen requireData
-
   private val form: Form[Long] = formProvider.withConfig(prefix = "money.value")
 
-  def onPageLoad(index: Int): Action[AnyContent] = actions() {
+  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(AssetMoneyValuePage(index)) match {
+      val preparedForm = request.userAnswers.get(AssetMoneyValuePage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, index))
+      Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = actions().async {
+  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, index))),
+          Future.successful(BadRequest(view(formWithErrors, mode))),
 
         value => {
 
-          val answers = request.userAnswers.set(AssetMoneyValuePage(index), value)
-            .flatMap(_.set(AssetStatus(index), Completed))
+          val answers = request.userAnswers.set(AssetMoneyValuePage, value)
+            .flatMap(_.set(AssetStatus, Completed))
 
           for {
                 updatedAnswers <- Future.fromTry(answers)
                 _              <- repository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(AssetMoneyValuePage(index))(updatedAnswers))
+              } yield Redirect(navigator.nextPage(AssetMoneyValuePage, mode, updatedAnswers))
           }
       )
   }

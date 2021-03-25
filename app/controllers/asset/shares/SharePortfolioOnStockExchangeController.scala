@@ -17,29 +17,26 @@
 package controllers.asset.shares
 
 import config.annotations.Shares
-import controllers.actions.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
-import controllers.filters.IndexActionFilterProvider
+import controllers.actions.StandardActionSets
 import forms.YesNoFormProvider
 import navigation.Navigator
 import pages.asset.shares.SharePortfolioOnStockExchangePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.RegistrationsRepository
+import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.asset.shares.SharePortfolioOnStockExchangeView
-
 import javax.inject.Inject
+import models.Mode
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class SharePortfolioOnStockExchangeController @Inject()(
                                                          override val messagesApi: MessagesApi,
-                                                         repository: RegistrationsRepository,
+                                                         standardActionSets: StandardActionSets,
+                                                         repository: PlaybackRepository,
                                                          @Shares navigator: Navigator,
-                                                         identify: RegistrationIdentifierAction,
-                                                         getData: DraftIdRetrievalActionProvider,
-                                                         requireData: RegistrationDataRequiredAction,
-                                                         validateIndex: IndexActionFilterProvider,
                                                          yesNoFormProvider: YesNoFormProvider,
                                                          val controllerComponents: MessagesControllerComponents,
                                                          view: SharePortfolioOnStockExchangeView
@@ -47,34 +44,29 @@ class SharePortfolioOnStockExchangeController @Inject()(
 
   val form: Form[Boolean] = yesNoFormProvider.withPrefix("shares.portfolioOnStockExchangeYesNo")
 
-  private def actions(index : Int) =
-    identify andThen getData() andThen
-      requireData andThen
-      validateIndex(index, sections.Assets)
-
-  def onPageLoad(index: Int): Action[AnyContent] = actions(index) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(SharePortfolioOnStockExchangePage(index)) match {
+      val preparedForm = request.userAnswers.get(SharePortfolioOnStockExchangePage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, index))
+      Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = actions(index).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, index))),
+          Future.successful(BadRequest(view(formWithErrors, mode))),
 
         value => {
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(SharePortfolioOnStockExchangePage(index), value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(SharePortfolioOnStockExchangePage, value))
             _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(SharePortfolioOnStockExchangePage(index))(updatedAnswers))
+          } yield Redirect(navigator.nextPage(SharePortfolioOnStockExchangePage, mode, updatedAnswers))
         }
       )
   }

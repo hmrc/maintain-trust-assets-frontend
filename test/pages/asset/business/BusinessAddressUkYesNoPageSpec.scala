@@ -22,15 +22,15 @@ import pages.behaviours.PageBehaviours
 
 class BusinessAddressUkYesNoPageSpec extends PageBehaviours {
 
-  private val page: BusinessAddressUkYesNoPage = BusinessAddressUkYesNoPage(0)
+  private val page = BusinessAddressUkYesNoPage
 
   "BusinessAddressUkYesNoPage" must {
 
-    beRetrievable[Boolean](BusinessAddressUkYesNoPage(0))
+    beRetrievable[Boolean](BusinessAddressUkYesNoPage)
 
-    beSettable[Boolean](BusinessAddressUkYesNoPage(0))
+    beSettable[Boolean](BusinessAddressUkYesNoPage)
 
-    beRemovable[Boolean](BusinessAddressUkYesNoPage(0))
+    beRemovable[Boolean](BusinessAddressUkYesNoPage)
 
     "remove relevant data" when {
 
@@ -38,11 +38,11 @@ class BusinessAddressUkYesNoPageSpec extends PageBehaviours {
         forAll(arbitrary[UserAnswers]) {
           initial =>
             val answers: UserAnswers = initial.set(page, false).success.value
-              .set(BusinessInternationalAddressPage(0), InternationalAddress("line 1", "line 2", None, "France")).success.value
+              .set(BusinessInternationalAddressPage, InternationalAddress("line 1", "line 2", None, "France")).success.value
 
             val result = answers.set(page, true).success.value
 
-            result.get(BusinessInternationalAddressPage(0)) must not be defined
+            result.get(BusinessInternationalAddressPage) must not be defined
         }
       }
 
@@ -50,11 +50,11 @@ class BusinessAddressUkYesNoPageSpec extends PageBehaviours {
         forAll(arbitrary[UserAnswers]) {
           initial =>
             val answers: UserAnswers = initial.set(page, true).success.value
-              .set(BusinessUkAddressPage(0), UKAddress("line 1", "line 2", None, None, "NE1 1NE")).success.value
+              .set(BusinessUkAddressPage, UKAddress("line 1", "line 2", None, None, "NE1 1NE")).success.value
 
             val result = answers.set(page, false).success.value
 
-            result.get(BusinessUkAddressPage(0)) must not be defined
+            result.get(BusinessUkAddressPage) must not be defined
         }
       }
     }
@@ -65,11 +65,11 @@ class BusinessAddressUkYesNoPageSpec extends PageBehaviours {
         forAll(arbitrary[UserAnswers]) {
           initial =>
             val answers: UserAnswers = initial
-              .set(BusinessUkAddressPage(0), UKAddress("line 1", "line 2", None, None, "NE1 1NE")).success.value
+              .set(BusinessUkAddressPage, UKAddress("line 1", "line 2", None, None, "NE1 1NE")).success.value
 
             val result = answers.set(page, true).success.value
 
-            result.get(BusinessUkAddressPage(0)) must be(defined)
+            result.get(BusinessUkAddressPage) must be(defined)
         }
       }
 
@@ -77,11 +77,11 @@ class BusinessAddressUkYesNoPageSpec extends PageBehaviours {
         forAll(arbitrary[UserAnswers]) {
           initial =>
             val answers: UserAnswers = initial
-              .set(BusinessInternationalAddressPage(0), InternationalAddress("line 1", "line 2", None, "France")).success.value
+              .set(BusinessInternationalAddressPage, InternationalAddress("line 1", "line 2", None, "France")).success.value
 
             val result = answers.set(page, false).success.value
 
-            result.get(BusinessInternationalAddressPage(0)) must be(defined)
+            result.get(BusinessInternationalAddressPage) must be(defined)
         }
       }
     }

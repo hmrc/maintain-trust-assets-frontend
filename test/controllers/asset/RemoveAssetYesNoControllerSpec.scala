@@ -20,7 +20,7 @@ import base.SpecBase
 import forms.YesNoFormProvider
 import models.ShareClass.Ordinary
 import models.WhatKindOfAsset._
-import models.{InternationalAddress, UKAddress, UserAnswers}
+import models.{InternationalAddress, NormalMode, UKAddress, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
 import org.mockito.Mockito._
@@ -36,7 +36,6 @@ import play.api.data.Form
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.asset.RemoveAssetYesNoView
-
 import java.time.LocalDate
 
 class RemoveAssetYesNoControllerSpec extends SpecBase {
@@ -64,8 +63,8 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
         "complete" in {
 
           val userAnswers = emptyUserAnswers
-            .set(WhatKindOfAssetPage(index), Money).success.value
-            .set(AssetMoneyValuePage(index), assetValue).success.value
+            .set(WhatKindOfAssetPage, Money).success.value
+            .set(AssetMoneyValuePage, assetValue).success.value
 
           val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -78,7 +77,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(form, index, taxablePrefix, "£4000")(fakeRequest, messages).toString
+            view(form, index, taxablePrefix, "£4000")(request, messages).toString
 
           application.stop()
         }
@@ -86,7 +85,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
         "in progress" in {
 
           val userAnswers = emptyUserAnswers
-            .set(WhatKindOfAssetPage(index), Money).success.value
+            .set(WhatKindOfAssetPage, Money).success.value
 
           val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -99,7 +98,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(form, index, taxablePrefix, "the asset")(fakeRequest, messages).toString
+            view(form, index, taxablePrefix, "the asset")(request, messages).toString
 
           application.stop()
         }
@@ -112,12 +111,12 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
           "address known" in {
 
             val userAnswers = emptyUserAnswers
-              .set(WhatKindOfAssetPage(index), PropertyOrLand).success.value
-              .set(PropertyOrLandAddressYesNoPage(index), true).success.value
-              .set(PropertyOrLandAddressUkYesNoPage(index), true).success.value
-              .set(PropertyOrLandUKAddressPage(index), ukAddress).success.value
-              .set(PropertyOrLandTotalValuePage(index), assetValue).success.value
-              .set(TrustOwnAllThePropertyOrLandPage(index), true).success.value
+              .set(WhatKindOfAssetPage, PropertyOrLand).success.value
+              .set(PropertyOrLandAddressYesNoPage, true).success.value
+              .set(PropertyOrLandAddressUkYesNoPage, true).success.value
+              .set(PropertyOrLandUKAddressPage, ukAddress).success.value
+              .set(PropertyOrLandTotalValuePage, assetValue).success.value
+              .set(TrustOwnAllThePropertyOrLandPage, true).success.value
 
             val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -130,7 +129,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
             status(result) mustEqual OK
 
             contentAsString(result) mustEqual
-              view(form, index, taxablePrefix, "Line 1")(fakeRequest, messages).toString
+              view(form, index, taxablePrefix, "Line 1")(request, messages).toString
 
             application.stop()
           }
@@ -138,11 +137,11 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
           "address not known and description known" in {
 
             val userAnswers = emptyUserAnswers
-              .set(WhatKindOfAssetPage(index), PropertyOrLand).success.value
-              .set(PropertyOrLandAddressYesNoPage(index), false).success.value
-              .set(PropertyOrLandDescriptionPage(index), "Property or land description").success.value
-              .set(PropertyOrLandTotalValuePage(index), assetValue).success.value
-              .set(TrustOwnAllThePropertyOrLandPage(index), true).success.value
+              .set(WhatKindOfAssetPage, PropertyOrLand).success.value
+              .set(PropertyOrLandAddressYesNoPage, false).success.value
+              .set(PropertyOrLandDescriptionPage, "Property or land description").success.value
+              .set(PropertyOrLandTotalValuePage, assetValue).success.value
+              .set(TrustOwnAllThePropertyOrLandPage, true).success.value
 
             val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -155,7 +154,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
             status(result) mustEqual OK
 
             contentAsString(result) mustEqual
-              view(form, index, taxablePrefix, "Property or land description")(fakeRequest, messages).toString
+              view(form, index, taxablePrefix, "Property or land description")(request, messages).toString
 
             application.stop()
           }
@@ -164,8 +163,8 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
         "in progress" in {
 
           val userAnswers = emptyUserAnswers
-            .set(WhatKindOfAssetPage(index), PropertyOrLand).success.value
-            .set(PropertyOrLandAddressYesNoPage(index), false).success.value
+            .set(WhatKindOfAssetPage, PropertyOrLand).success.value
+            .set(PropertyOrLandAddressYesNoPage, false).success.value
 
           val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -178,7 +177,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(form, index, taxablePrefix, "the asset")(fakeRequest, messages).toString
+            view(form, index, taxablePrefix, "the asset")(request, messages).toString
 
           application.stop()
         }
@@ -191,12 +190,12 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
           "portfolio name" in {
 
             val userAnswers = emptyUserAnswers
-              .set(WhatKindOfAssetPage(index), Shares).success.value
-              .set(SharesInAPortfolioPage(index), true).success.value
-              .set(SharePortfolioNamePage(index), "Portfolio Name").success.value
-              .set(SharePortfolioOnStockExchangePage(index), true).success.value
-              .set(SharePortfolioQuantityInTrustPage(index), 100L).success.value
-              .set(SharePortfolioValueInTrustPage(index), assetValue).success.value
+              .set(WhatKindOfAssetPage, Shares).success.value
+              .set(SharesInAPortfolioPage, true).success.value
+              .set(SharePortfolioNamePage, "Portfolio Name").success.value
+              .set(SharePortfolioOnStockExchangePage, true).success.value
+              .set(SharePortfolioQuantityInTrustPage, 100L).success.value
+              .set(SharePortfolioValueInTrustPage, assetValue).success.value
 
             val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -209,7 +208,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
             status(result) mustEqual OK
 
             contentAsString(result) mustEqual
-              view(form, index, taxablePrefix, "Portfolio Name")(fakeRequest, messages).toString
+              view(form, index, taxablePrefix, "Portfolio Name")(request, messages).toString
 
             application.stop()
           }
@@ -217,13 +216,13 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
           "company name" in {
 
             val userAnswers = emptyUserAnswers
-              .set(WhatKindOfAssetPage(index), Shares).success.value
-              .set(SharesInAPortfolioPage(index), false).success.value
-              .set(ShareCompanyNamePage(index), "Company Name").success.value
-              .set(SharesOnStockExchangePage(index), true).success.value
-              .set(ShareClassPage(index), Ordinary).success.value
-              .set(ShareQuantityInTrustPage(index), 100L).success.value
-              .set(ShareValueInTrustPage(index), assetValue).success.value
+              .set(WhatKindOfAssetPage, Shares).success.value
+              .set(SharesInAPortfolioPage, false).success.value
+              .set(ShareCompanyNamePage, "Company Name").success.value
+              .set(SharesOnStockExchangePage, true).success.value
+              .set(ShareClassPage, Ordinary).success.value
+              .set(ShareQuantityInTrustPage, 100L).success.value
+              .set(ShareValueInTrustPage, assetValue).success.value
 
             val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -236,7 +235,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
             status(result) mustEqual OK
 
             contentAsString(result) mustEqual
-              view(form, index, taxablePrefix, "Company Name")(fakeRequest, messages).toString
+              view(form, index, taxablePrefix, "Company Name")(request, messages).toString
 
             application.stop()
           }
@@ -245,8 +244,8 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
         "in progress" in {
 
           val userAnswers = emptyUserAnswers
-            .set(WhatKindOfAssetPage(index), Shares).success.value
-            .set(SharesInAPortfolioPage(index), false).success.value
+            .set(WhatKindOfAssetPage, Shares).success.value
+            .set(SharesInAPortfolioPage, false).success.value
 
           val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -259,7 +258,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(form, index, taxablePrefix, "the asset")(fakeRequest, messages).toString
+            view(form, index, taxablePrefix, "the asset")(request, messages).toString
 
           application.stop()
         }
@@ -268,12 +267,12 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
       "Business asset" in {
 
         val userAnswers = emptyUserAnswers
-          .set(WhatKindOfAssetPage(index), Business).success.value
-          .set(BusinessNamePage(index), "Business name").success.value
-          .set(BusinessDescriptionPage(index), "Business description").success.value
-          .set(BusinessAddressUkYesNoPage(index), true).success.value
-          .set(BusinessUkAddressPage(index), ukAddress).success.value
-          .set(BusinessValuePage(index), assetValue).success.value
+          .set(WhatKindOfAssetPage, Business).success.value
+          .set(BusinessNamePage, "Business name").success.value
+          .set(BusinessDescriptionPage, "Business description").success.value
+          .set(BusinessAddressUkYesNoPage, true).success.value
+          .set(BusinessUkAddressPage, ukAddress).success.value
+          .set(BusinessValuePage, assetValue).success.value
 
         val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -286,7 +285,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form, index, taxablePrefix, "Business name")(fakeRequest, messages).toString
+          view(form, index, taxablePrefix, "Business name")(request, messages).toString
 
         application.stop()
       }
@@ -294,9 +293,9 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
       "Partnership asset" in {
 
         val userAnswers = emptyUserAnswers
-          .set(WhatKindOfAssetPage(index), Partnership).success.value
-          .set(PartnershipDescriptionPage(index), "Partnership description").success.value
-          .set(PartnershipStartDatePage(index), date).success.value
+          .set(WhatKindOfAssetPage, Partnership).success.value
+          .set(PartnershipDescriptionPage, "Partnership description").success.value
+          .set(PartnershipStartDatePage, date).success.value
 
         val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -309,7 +308,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form, index, taxablePrefix, "Partnership description")(fakeRequest, messages).toString
+          view(form, index, taxablePrefix, "Partnership description")(request, messages).toString
 
         application.stop()
       }
@@ -317,9 +316,9 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
       "Other asset" in {
 
         val userAnswers = emptyUserAnswers
-          .set(WhatKindOfAssetPage(index), Other).success.value
-          .set(OtherAssetDescriptionPage(index), "Other description").success.value
-          .set(OtherAssetValuePage(index), assetValue).success.value
+          .set(WhatKindOfAssetPage, Other).success.value
+          .set(OtherAssetDescriptionPage, "Other description").success.value
+          .set(OtherAssetValuePage, assetValue).success.value
 
         val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -332,7 +331,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form, index, taxablePrefix, "Other description")(fakeRequest, messages).toString
+          view(form, index, taxablePrefix, "Other description")(request, messages).toString
 
         application.stop()
       }
@@ -342,11 +341,11 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
         "complete" in {
 
           val userAnswers = emptyUserAnswers
-            .set(WhatKindOfAssetPage(index), NonEeaBusiness).success.value
-            .set(NamePage(index), "Non-EEA business name").success.value
-            .set(InternationalAddressPage(index), nonUkAddress).success.value
-            .set(GoverningCountryPage(index), "GB").success.value
-            .set(StartDatePage(index), date).success.value
+            .set(WhatKindOfAssetPage, NonEeaBusiness).success.value
+            .set(NamePage, "Non-EEA business name").success.value
+            .set(InternationalAddressPage, nonUkAddress).success.value
+            .set(GoverningCountryPage, "GB").success.value
+            .set(StartDatePage, date).success.value
 
           val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -359,7 +358,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(form, index, taxablePrefix, "Non-EEA business name")(fakeRequest, messages).toString
+            view(form, index, taxablePrefix, "Non-EEA business name")(request, messages).toString
 
           application.stop()
         }
@@ -369,7 +368,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
           "taxable" in {
 
             val userAnswers = emptyUserAnswers.copy(isTaxable = true)
-              .set(WhatKindOfAssetPage(index), NonEeaBusiness).success.value
+              .set(WhatKindOfAssetPage, NonEeaBusiness).success.value
 
             val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -382,7 +381,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
             status(result) mustEqual OK
 
             contentAsString(result) mustEqual
-              view(form, index, taxablePrefix, "the asset")(fakeRequest, messages).toString
+              view(form, index, taxablePrefix, "the asset")(request, messages).toString
 
             application.stop()
           }
@@ -390,7 +389,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
           "non-taxable" in {
 
             val userAnswers = emptyUserAnswers.copy(isTaxable = false)
-              .set(WhatKindOfAssetPage(index), NonEeaBusiness).success.value
+              .set(WhatKindOfAssetPage, NonEeaBusiness).success.value
 
             val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -403,7 +402,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
             status(result) mustEqual OK
 
             contentAsString(result) mustEqual
-              view(form, index, nonTaxablePrefix, "this non-EEA company")(fakeRequest, messages).toString
+              view(form, index, nonTaxablePrefix, "this non-EEA company")(request, messages).toString
 
             application.stop()
           }
@@ -431,8 +430,8 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
     "remove asset and redirect to add assets page when YES is submitted" in {
 
       val userAnswers = emptyUserAnswers
-        .set(WhatKindOfAssetPage(index), Money).success.value
-        .set(AssetMoneyValuePage(index), assetValue).success.value
+        .set(WhatKindOfAssetPage, Money).success.value
+        .set(AssetMoneyValuePage, assetValue).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -447,9 +446,9 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
       redirectLocation(result).value mustEqual controllers.asset.routes.AddAssetsController.onPageLoad().url
 
       val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
-      verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
-      uaCaptor.getValue.get(WhatKindOfAssetPage(index)) mustNot be(defined)
-      uaCaptor.getValue.get(AssetMoneyValuePage(index)) mustNot be(defined)
+      verify(playbackRepository).set(uaCaptor.capture)
+      uaCaptor.getValue.get(WhatKindOfAssetPage) mustNot be(defined)
+      uaCaptor.getValue.get(AssetMoneyValuePage) mustNot be(defined)
 
       application.stop()
     }
@@ -471,7 +470,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, index, "assets", "the asset")(fakeRequest, messages).toString
+        view(boundForm, index, "assets", "the asset")(request, messages).toString
 
       application.stop()
     }

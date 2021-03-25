@@ -21,12 +21,14 @@ import pages.behaviours.PageBehaviours
 
 class PropertyOrLandDescriptionPageSpec extends PageBehaviours {
 
+  val page = PropertyOrLandDescriptionPage
+
   "PropertyOrLandDescriptionPage" must {
 
-    beRetrievable[String](PropertyOrLandDescriptionPage(0))
+    beRetrievable[String](page)
 
-    beSettable[String](PropertyOrLandDescriptionPage(0))
+    beSettable[String](page)
 
-    beRemovable[String](PropertyOrLandDescriptionPage(0))
+    beRemovable[String](page)
   }
 }

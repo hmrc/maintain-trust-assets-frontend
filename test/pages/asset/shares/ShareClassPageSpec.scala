@@ -21,12 +21,14 @@ import pages.behaviours.PageBehaviours
 
 class ShareClassPageSpec extends PageBehaviours {
 
+  val page = ShareClassPage
+
   "ShareClassPage" must {
 
-    beRetrievable[ShareClass](ShareClassPage(0))
+    beRetrievable[ShareClass](page)
 
-    beSettable[ShareClass](ShareClassPage(0))
+    beSettable[ShareClass](page)
 
-    beRemovable[ShareClass](ShareClassPage(0))
+    beRemovable[ShareClass](page)
   }
 }

@@ -16,21 +16,27 @@
 
 package navigation
 
-import config.FrontendAppConfig
 import controllers.asset.routes._
-import models.UserAnswers
+import models.{Mode, NormalMode, UserAnswers}
 import pages.Page
 import pages.asset.money._
 import play.api.mvc.Call
-import uk.gov.hmrc.auth.core.AffinityGroup
+import javax.inject.Inject
 
-import javax.inject.{Inject, Singleton}
+class MoneyNavigator @Inject()() extends Navigator {
 
-@Singleton
-class MoneyNavigator @Inject()(config: FrontendAppConfig) extends Navigator(config) {
+  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
+    routes(mode)(page)(userAnswers)
 
-  override protected def route(): PartialFunction[Page, AffinityGroup => UserAnswers => Call] = {
-    case AssetMoneyValuePage(_) => _ => _ => AddAssetsController.onPageLoad()
+  override def nextPage(page: Page, userAnswers: UserAnswers): Call =
+    nextPage(page, NormalMode, userAnswers)
+
+  def simpleNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
+    case AssetMoneyValuePage => _ => AddAssetsController.onPageLoad()
   }
+
+  def routes(mode: Mode): PartialFunction[Page, UserAnswers => Call] =
+    simpleNavigation(mode)
+
 
 }

@@ -22,13 +22,13 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], index : Int, companyName: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, companyName: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = s"${errorPrefix(form)} ${messages("shares.class.title")}"
 ) {
 
-    @formHelper(action = ShareClassController.onSubmit(index), 'autoComplete -> "off") {
+    @formHelper(action = ShareClassController.onSubmit(mode), 'autoComplete -> "off") {
 
         @components.back_link()
 

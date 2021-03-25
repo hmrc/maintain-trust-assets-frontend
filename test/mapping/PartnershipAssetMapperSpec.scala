@@ -38,7 +38,7 @@ class PartnershipAssetMapperSpec extends SpecBase with MustMatchers
 
       val userAnswers =
         emptyUserAnswers
-          .set(WhatKindOfAssetPage(0), WhatKindOfAsset.Partnership).success.value
+          .set(WhatKindOfAssetPage, WhatKindOfAsset.Partnership).success.value
 
       partnershipAssetMapper.build(userAnswers) mustNot be(defined)
     }
@@ -47,10 +47,10 @@ class PartnershipAssetMapperSpec extends SpecBase with MustMatchers
 
       val userAnswers =
         emptyUserAnswers
-          .set(WhatKindOfAssetPage(0), WhatKindOfAsset.Partnership).success.value
-          .set(PartnershipDescriptionPage(0), "Partnership Description").success.value
-          .set(PartnershipStartDatePage(0), LocalDate.now).success.value
-          .set(AssetStatus(0), Completed).success.value
+          .set(WhatKindOfAssetPage, WhatKindOfAsset.Partnership).success.value
+          .set(PartnershipDescriptionPage, "Partnership Description").success.value
+          .set(PartnershipStartDatePage, LocalDate.now).success.value
+          .set(AssetStatus, Completed).success.value
 
       partnershipAssetMapper.build(userAnswers).value mustBe List(PartnershipType("Partnership Description", LocalDate.now))
     }
@@ -59,14 +59,14 @@ class PartnershipAssetMapperSpec extends SpecBase with MustMatchers
 
       val userAnswers =
         emptyUserAnswers
-          .set(WhatKindOfAssetPage(0), WhatKindOfAsset.Partnership).success.value
-          .set(PartnershipDescriptionPage(0), "Partnership Description 1").success.value
-          .set(PartnershipStartDatePage(0), LocalDate.now).success.value
-          .set(AssetStatus(0), Completed).success.value
-          .set(WhatKindOfAssetPage(1), WhatKindOfAsset.Partnership).success.value
-          .set(PartnershipDescriptionPage(1), "Partnership Description 2").success.value
-          .set(PartnershipStartDatePage(1), LocalDate.now).success.value
-          .set(AssetStatus(1), Completed).success.value
+          .set(WhatKindOfAssetPage, WhatKindOfAsset.Partnership).success.value
+          .set(PartnershipDescriptionPage, "Partnership Description 1").success.value
+          .set(PartnershipStartDatePage, LocalDate.now).success.value
+          .set(AssetStatus, Completed).success.value
+          .set(WhatKindOfAssetPage, WhatKindOfAsset.Partnership).success.value
+          .set(PartnershipDescriptionPage, "Partnership Description 2").success.value
+          .set(PartnershipStartDatePage, LocalDate.now).success.value
+          .set(AssetStatus, Completed).success.value
 
       partnershipAssetMapper.build(userAnswers).value mustBe List(
         PartnershipType("Partnership Description 1", LocalDate.now),

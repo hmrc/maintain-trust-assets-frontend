@@ -19,17 +19,12 @@ package pages.asset.partnership
 import java.time.LocalDate
 
 import pages.QuestionPage
-import pages.asset.partnership.PartnershipStartDatePage.key
 import play.api.libs.json.JsPath
 import sections.Assets
 
-final case class PartnershipStartDatePage(index : Int) extends QuestionPage[LocalDate] {
+case object  PartnershipStartDatePage extends QuestionPage[LocalDate] {
 
-  override def path: JsPath = Assets.path \ index \ toString
+  override def path: JsPath = Assets.path \ toString
 
-  override def toString: String = key
-}
-
-object PartnershipStartDatePage {
-  val key: String = "partnershipStartDate"
+  override def toString: String = "partnershipStartDate"
 }

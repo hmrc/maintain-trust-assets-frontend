@@ -60,6 +60,8 @@ class FrontendAppConfig @Inject() (val configuration: Configuration) {
 
   lazy val trustsUrl: String = configuration.get[Service]("microservice.services.trusts").baseUrl
 
+  lazy val trustAuthUrl: String = configuration.get[Service]("microservice.services.trusts-auth").baseUrl
+
   lazy val trustsStoreUrl: String = configuration.get[Service]("microservice.services.trusts-store").baseUrl
 
   lazy val registrationStartUrl: String = configuration.get[String]("urls.registrationStart")
@@ -89,9 +91,10 @@ class FrontendAppConfig @Inject() (val configuration: Configuration) {
   def routeToSwitchLanguage: String => Call =
     (lang: String) => routes.LanguageSwitchController.switchToLanguage(lang)
 
+  private lazy val accessibilityBaseLinkUrl: String = configuration.get[String]("urls.accessibility")
+
   def accessibilityLinkUrl(implicit request: Request[_]): String = {
     val userAction = URLEncoder.encode(new URI(request.uri).getPath, "UTF-8")
-    lazy val accessibilityBaseLinkUrl: String = configuration.get[String]("urls.accessibility")
     s"$accessibilityBaseLinkUrl?userAction=$userAction"
   }
 

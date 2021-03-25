@@ -17,43 +17,38 @@
 package pages.asset.shares
 
 import models.UserAnswers
-import pages.asset.shares.SharesInAPortfolioPage.key
 import pages.{AssetStatus, QuestionPage}
 import play.api.libs.json.JsPath
 import sections.Assets
 
 import scala.util.Try
 
-final case class SharesInAPortfolioPage(index : Int) extends QuestionPage[Boolean] {
+case object SharesInAPortfolioPage extends QuestionPage[Boolean] {
 
-  override def path: JsPath = Assets.path \ index \ toString
+  override def path: JsPath = Assets.path \ toString
 
-  override def toString: String = key
+  override def toString: String = "sharesInPortfolioYesNo"
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
     value match {
       case Some(true) =>
 
-        userAnswers.remove(SharesOnStockExchangePage(index))
-          .flatMap(_.remove(ShareCompanyNamePage(index)))
-          .flatMap(_.remove(ShareClassPage(index)))
-          .flatMap(_.remove(ShareQuantityInTrustPage(index)))
-          .flatMap(_.remove(ShareValueInTrustPage(index)))
-          .flatMap(_.remove(AssetStatus(index)))
+        userAnswers.remove(SharesOnStockExchangePage)
+          .flatMap(_.remove(ShareCompanyNamePage))
+          .flatMap(_.remove(ShareClassPage))
+          .flatMap(_.remove(ShareQuantityInTrustPage))
+          .flatMap(_.remove(ShareValueInTrustPage))
+          .flatMap(_.remove(AssetStatus))
 
       case Some(false) =>
 
-        userAnswers.remove(SharePortfolioNamePage(index))
-          .flatMap(_.remove(SharePortfolioOnStockExchangePage(index)))
-          .flatMap(_.remove(SharePortfolioQuantityInTrustPage(index)))
-          .flatMap(_.remove(SharePortfolioValueInTrustPage(index)))
-          .flatMap(_.remove(AssetStatus(index)))
+        userAnswers.remove(SharePortfolioNamePage)
+          .flatMap(_.remove(SharePortfolioOnStockExchangePage))
+          .flatMap(_.remove(SharePortfolioQuantityInTrustPage))
+          .flatMap(_.remove(SharePortfolioValueInTrustPage))
+          .flatMap(_.remove(AssetStatus))
 
       case _ => super.cleanup(value, userAnswers)
     }
   }
-}
-
-object SharesInAPortfolioPage {
-  val key: String = "sharesInPortfolioYesNo"
 }

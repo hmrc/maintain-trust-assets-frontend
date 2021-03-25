@@ -17,10 +17,10 @@
 package controllers.asset.other
 
 import base.SpecBase
-import models.UserAnswers
+import config.annotations.{Other => other}
+import models.{NormalMode, UserAnswers}
 import models.WhatKindOfAsset.Other
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
+import navigation.Navigator
 import pages.asset._
 import pages.asset.other._
 import play.api.Application
@@ -40,79 +40,36 @@ class OtherAssetAnswersControllerSpec extends SpecBase {
     val index: Int = 0
     val description: String = "Description"
 
-    lazy val answersRoute = routes.OtherAssetAnswersController.onPageLoad(index).url
+    lazy val answersRoute = routes.OtherAssetAnswersController.onPageLoad().url
 
-    val baseAnswers: UserAnswers = emptyUserAnswers
-      .set(WhatKindOfAssetPage(index), Other).success.value
-      .set(OtherAssetDescriptionPage(index), description).success.value
-      .set(OtherAssetValuePage(index), 4000L).success.value
+    val answers: UserAnswers = emptyUserAnswers
+      .set(WhatKindOfAssetPage, Other).success.value
+      .set(OtherAssetDescriptionPage, description).success.value
+      .set(OtherAssetValuePage, 4000L).success.value
 
     "return OK and the correct view for a GET" in {
 
-      val expectedSections = Nil
-      val mockPrintHelper: OtherPrintHelper = mock[OtherPrintHelper]
-      when(mockPrintHelper.checkDetailsSection(any(), any(), any())(any())).thenReturn(Nil)
-
-      val application = applicationBuilder(userAnswers = Some(baseAnswers))
-        .overrides(bind[OtherPrintHelper].toInstance(mockPrintHelper))
-        .build()
+      val application = applicationBuilder(userAnswers = Some(answers)).build()
 
       val request = FakeRequest(GET, answersRoute)
 
       val result: Future[Result] = route(application, request).value
 
       val view: OtherAssetAnswersView = application.injector.instanceOf[OtherAssetAnswersView]
+      val printHelper = application.injector.instanceOf[OtherPrintHelper]
+      val answerSection = printHelper(answers, provisional = true, description)
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(index, expectedSections)(fakeRequest, messages).toString
-
-      application.stop()
-    }
-
-    "redirect to description page if no description found" in {
-
-      val userAnswers: UserAnswers = emptyUserAnswers
-        .set(WhatKindOfAssetPage(index), Other).success.value
-
-      val application: Application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
-      val request = FakeRequest(GET, answersRoute)
-
-      val result: Future[Result] = route(application, request).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual
-        controllers.asset.other.routes.OtherAssetDescriptionController.onPageLoad(index).url
-
-      application.stop()
-    }
-
-    "redirect to value page if description found but no value found" in {
-
-      val userAnswers: UserAnswers = emptyUserAnswers
-        .set(WhatKindOfAssetPage(index), Other).success.value
-        .set(OtherAssetDescriptionPage(index), description).success.value
-
-      val application: Application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
-      val request = FakeRequest(GET, answersRoute)
-
-      val result: Future[Result] = route(application, request).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual
-        controllers.asset.other.routes.OtherAssetValueController.onPageLoad(index).url
+        view(answerSection)(request, messages).toString
 
       application.stop()
     }
 
     "redirect to add assets on submission" in {
 
-      val application: Application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
+      val application: Application = applicationBuilder(userAnswers = Some(answers)).build()
 
       val request = FakeRequest(POST, answersRoute)
 

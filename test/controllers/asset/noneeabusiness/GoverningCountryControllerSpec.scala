@@ -17,14 +17,15 @@
 package controllers.asset.noneeabusiness
 
 import base.SpecBase
+import config.annotations.NonEeaBusiness
 import controllers.IndexValidation
 import controllers.routes._
 import forms.CountryFormProvider
-import models.UserAnswers
-import org.scalacheck.Arbitrary.arbitrary
+import models.{NormalMode, UserAnswers}
+import navigation.Navigator
 import pages.asset.noneeabusiness.{GoverningCountryPage, NamePage}
 import play.api.data.Form
-import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{route, _}
 import utils.InputOption
@@ -40,10 +41,10 @@ class GoverningCountryControllerSpec extends SpecBase with IndexValidation {
   private val name = "Test"
   private val validAnswer: String = "GB"
 
-  private lazy val onPageLoadRoute: String = routes.GoverningCountryController.onPageLoad(index).url
+  private lazy val onPageLoadRoute: String = routes.GoverningCountryController.onPageLoad(NormalMode).url
 
   private val baseAnswers: UserAnswers = emptyUserAnswers
-    .set(NamePage(index), name).success.value
+    .set(NamePage, name).success.value
 
   private val countryOptions: Seq[InputOption] = injector.instanceOf[CountryOptions].options
 
@@ -62,7 +63,7 @@ class GoverningCountryControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, countryOptions, index, name)(request, messages).toString
+        view(form, countryOptions, NormalMode, name)(request, messages).toString
 
       application.stop()
     }
@@ -70,7 +71,7 @@ class GoverningCountryControllerSpec extends SpecBase with IndexValidation {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = baseAnswers
-        .set(GoverningCountryPage(index), validAnswer).success.value
+        .set(GoverningCountryPage, validAnswer).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -83,29 +84,16 @@ class GoverningCountryControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), countryOptions, index, name)(fakeRequest, messages).toString
-
-      application.stop()
-    }
-
-    "redirect to name page when name is not answered" in {
-
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-
-      val request = FakeRequest(GET, onPageLoadRoute)
-
-      val result = route(application, request).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual routes.NameController.onPageLoad(index).url
+        view(form.fill(validAnswer), countryOptions, NormalMode, name)(request, messages).toString
 
       application.stop()
     }
 
     "redirect to the next page when valid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(baseAnswers))
+        .overrides(bind[Navigator].qualifiedWith(classOf[NonEeaBusiness]).toInstance(fakeNavigator))
+        .build()
 
       val request =
         FakeRequest(POST, onPageLoadRoute)
@@ -137,7 +125,7 @@ class GoverningCountryControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, countryOptions, index, name)(fakeRequest, messages).toString
+        view(boundForm, countryOptions, NormalMode, name)(request, messages).toString
 
       application.stop()
     }
@@ -171,39 +159,6 @@ class GoverningCountryControllerSpec extends SpecBase with IndexValidation {
       redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad().url
 
       application.stop()
-    }
-
-    "for a GET" must {
-
-      def getForIndex(index: Int) : FakeRequest[AnyContentAsEmpty.type] = {
-        val route = routes.GoverningCountryController.onPageLoad(index).url
-
-        FakeRequest(GET, route)
-      }
-
-      validateIndex(
-        arbitrary[String],
-        GoverningCountryPage.apply,
-        getForIndex
-      )
-
-    }
-
-    "for a POST" must {
-      def postForIndex(index: Int): FakeRequest[AnyContentAsFormUrlEncoded] = {
-
-        val route =
-          routes.GoverningCountryController.onPageLoad(index).url
-
-        FakeRequest(POST, route)
-          .withFormUrlEncodedBody(("value", validAnswer))
-      }
-
-      validateIndex(
-        arbitrary[String],
-        GoverningCountryPage.apply,
-        postForIndex
-      )
     }
 
   }

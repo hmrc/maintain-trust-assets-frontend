@@ -38,7 +38,7 @@ class MoneyAssetMapperSpec extends SpecBase with MustMatchers
 
       val userAnswers =
         emptyUserAnswers
-          .set(WhatKindOfAssetPage(0), WhatKindOfAsset.Money).success.value
+          .set(WhatKindOfAssetPage, WhatKindOfAsset.Money).success.value
 
       moneyAssetMapper.build(userAnswers) mustNot be(defined)
     }
@@ -47,9 +47,9 @@ class MoneyAssetMapperSpec extends SpecBase with MustMatchers
 
       val userAnswers =
         emptyUserAnswers
-          .set(WhatKindOfAssetPage(0), WhatKindOfAsset.Money).success.value
-          .set(AssetMoneyValuePage(0), assetValue).success.value
-          .set(AssetStatus(0), Completed).success.value
+          .set(WhatKindOfAssetPage, WhatKindOfAsset.Money).success.value
+          .set(AssetMoneyValuePage, assetValue).success.value
+          .set(AssetStatus, Completed).success.value
 
       moneyAssetMapper.build(userAnswers).value mustBe List(AssetMonetaryAmount(assetValue))
     }
@@ -58,12 +58,12 @@ class MoneyAssetMapperSpec extends SpecBase with MustMatchers
 
       val userAnswers =
         emptyUserAnswers
-          .set(WhatKindOfAssetPage(0), WhatKindOfAsset.Money).success.value
-          .set(AssetMoneyValuePage(0), assetValue).success.value
-          .set(AssetStatus(0), Completed).success.value
-          .set(WhatKindOfAssetPage(1), WhatKindOfAsset.Money).success.value
-          .set(AssetMoneyValuePage(1), assetValue).success.value
-          .set(AssetStatus(1), Completed).success.value
+          .set(WhatKindOfAssetPage, WhatKindOfAsset.Money).success.value
+          .set(AssetMoneyValuePage, assetValue).success.value
+          .set(AssetStatus, Completed).success.value
+          .set(WhatKindOfAssetPage, WhatKindOfAsset.Money).success.value
+          .set(AssetMoneyValuePage, assetValue).success.value
+          .set(AssetStatus, Completed).success.value
 
       moneyAssetMapper.build(userAnswers).value.length mustBe 2
     }

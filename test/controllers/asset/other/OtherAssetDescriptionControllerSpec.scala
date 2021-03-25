@@ -17,13 +17,16 @@
 package controllers.asset.other
 
 import base.SpecBase
+import config.annotations.{Other => other}
 import forms.DescriptionFormProvider
-import models.UserAnswers
+import models.{NormalMode, UserAnswers}
 import models.WhatKindOfAsset.Other
+import navigation.Navigator
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.other.OtherAssetDescriptionPage
 import play.api.Application
 import play.api.data.Form
+import play.api.inject.bind
 import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -38,10 +41,10 @@ class OtherAssetDescriptionControllerSpec extends SpecBase {
   val index = 0
   val validAnswer: String = "Description"
 
-  lazy val descriptionRoute: String = routes.OtherAssetDescriptionController.onPageLoad(index).url
+  lazy val descriptionRoute: String = routes.OtherAssetDescriptionController.onPageLoad(NormalMode).url
 
   val baseAnswers: UserAnswers = emptyUserAnswers
-    .set(WhatKindOfAssetPage(index), Other).success.value
+    .set(WhatKindOfAssetPage, Other).success.value
 
   "OtherAssetDescriptionController" must {
 
@@ -58,7 +61,7 @@ class OtherAssetDescriptionControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, index)(fakeRequest, messages).toString
+        view(form, NormalMode)(request, messages).toString
 
       application.stop()
     }
@@ -66,7 +69,7 @@ class OtherAssetDescriptionControllerSpec extends SpecBase {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = baseAnswers
-        .set(OtherAssetDescriptionPage(index), validAnswer).success.value
+        .set(OtherAssetDescriptionPage, validAnswer).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -79,23 +82,7 @@ class OtherAssetDescriptionControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), index)(fakeRequest, messages).toString
-
-      application.stop()
-    }
-
-    "redirect to what kind of asset page if no kind of asset found" in {
-
-      val application: Application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-
-      val request = FakeRequest(GET, descriptionRoute)
-
-      val result: Future[Result] = route(application, request).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual
-        controllers.asset.routes.WhatKindOfAssetController.onPageLoad(index).url
+        view(form.fill(validAnswer), NormalMode)(request, messages).toString
 
       application.stop()
     }
@@ -103,7 +90,9 @@ class OtherAssetDescriptionControllerSpec extends SpecBase {
     "redirect to the next page when valid data is submitted" in {
 
       val application =
-        applicationBuilder(userAnswers = Some(baseAnswers)).build()
+        applicationBuilder(userAnswers = Some(baseAnswers))
+          .overrides(bind[Navigator].qualifiedWith(classOf[other]).toInstance(fakeNavigator))
+          .build()
 
       val request =
         FakeRequest(POST, descriptionRoute)
@@ -134,7 +123,7 @@ class OtherAssetDescriptionControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, index)(fakeRequest, messages).toString
+        view(boundForm, NormalMode)(request, messages).toString
 
       application.stop()
     }

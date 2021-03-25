@@ -20,6 +20,7 @@ import base.SpecBase
 import controllers.asset.routes._
 import controllers.routes._
 import forms.YesNoFormProvider
+import models.NormalMode
 import pages.asset.TrustOwnsNonEeaBusinessYesNoPage
 import play.api.data.Form
 import play.api.test.FakeRequest
@@ -29,12 +30,11 @@ import views.html.asset.TrustOwnsNonEeaBusinessYesNoView
 class TrustOwnsNonEeaBusinessYesNoControllerSpec extends SpecBase {
 
   private val form: Form[Boolean] = new YesNoFormProvider().withPrefix("trustOwnsNonEeaBusinessYesNo")
-
   private val validAnswer: Boolean = true
 
-  lazy val onPageLoadRoute: String = TrustOwnsNonEeaBusinessYesNoController.onPageLoad().url
+  lazy val onPageLoadRoute: String = TrustOwnsNonEeaBusinessYesNoController.onPageLoad(NormalMode).url
 
-  "PropertyOrLandAddress Controller" must {
+  "TrustOwnsNonEeaBusinessYesNo Controller" must {
 
     "return OK and the correct view for a GET" in {
 
@@ -49,7 +49,7 @@ class TrustOwnsNonEeaBusinessYesNoControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form)(fakeRequest, messages).toString
+        view(form, NormalMode)(request, messages).toString
 
       application.stop()
     }
@@ -69,7 +69,7 @@ class TrustOwnsNonEeaBusinessYesNoControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer))(fakeRequest, messages).toString
+        view(form.fill(validAnswer), NormalMode)(request, messages).toString
 
       application.stop()
     }
@@ -106,7 +106,7 @@ class TrustOwnsNonEeaBusinessYesNoControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm)(fakeRequest, messages).toString
+        view(boundForm, NormalMode)(request, messages).toString
 
       application.stop()
     }

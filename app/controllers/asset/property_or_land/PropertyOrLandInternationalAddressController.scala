@@ -17,30 +17,29 @@
 package controllers.asset.property_or_land
 
 import config.annotations.PropertyOrLand
-import controllers.actions.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
-import controllers.filters.IndexActionFilterProvider
+import controllers.actions.property_or_land.NameRequiredAction
+import controllers.actions.StandardActionSets
 import forms.InternationalAddressFormProvider
 import navigation.Navigator
 import pages.asset.property_or_land.PropertyOrLandInternationalAddressPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.RegistrationsRepository
+import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.countryOptions.CountryOptionsNonUK
 import views.html.asset.property_or_land.PropertyOrLandInternationalAddressView
-
 import javax.inject.Inject
+import models.Mode
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class PropertyOrLandInternationalAddressController @Inject()(
                                                               override val messagesApi: MessagesApi,
-                                                              repository: RegistrationsRepository,
+                                                              standardActionSets: StandardActionSets,
+                                                              nameAction: NameRequiredAction,
+                                                              repository: PlaybackRepository,
                                                               @PropertyOrLand navigator: Navigator,
-                                                              identify: RegistrationIdentifierAction,
-                                                              getData: DraftIdRetrievalActionProvider,
-                                                              requireData: RegistrationDataRequiredAction,
-                                                              validateIndex: IndexActionFilterProvider,
                                                               formProvider: InternationalAddressFormProvider,
                                                               val controllerComponents: MessagesControllerComponents,
                                                               view: PropertyOrLandInternationalAddressView,
@@ -49,35 +48,29 @@ class PropertyOrLandInternationalAddressController @Inject()(
 
   private val form = formProvider()
 
-  private def actions(index: Int) =
-      identify andThen
-      getData() andThen
-      requireData andThen
-      validateIndex(index, sections.Assets)
-
-  def onPageLoad(index: Int): Action[AnyContent] = actions(index) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(PropertyOrLandInternationalAddressPage(index)) match {
+      val preparedForm = request.userAnswers.get(PropertyOrLandInternationalAddressPage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, countryOptions.options, index))
+      Ok(view(preparedForm, countryOptions.options, mode))
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = actions(index).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, countryOptions.options, index))),
+          Future.successful(BadRequest(view(formWithErrors, countryOptions.options, mode))),
 
         value => {
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(PropertyOrLandInternationalAddressPage(index), value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(PropertyOrLandInternationalAddressPage, value))
             _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(PropertyOrLandInternationalAddressPage(index))(updatedAnswers))
+          } yield Redirect(navigator.nextPage(PropertyOrLandInternationalAddressPage, mode, updatedAnswers))
         }
       )
   }

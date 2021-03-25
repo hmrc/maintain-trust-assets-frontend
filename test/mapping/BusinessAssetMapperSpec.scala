@@ -38,7 +38,7 @@ class BusinessAssetMapperSpec extends SpecBase with MustMatchers
 
       val userAnswers =
         emptyUserAnswers
-          .set(WhatKindOfAssetPage(0), WhatKindOfAsset.Business).success.value
+          .set(WhatKindOfAssetPage, WhatKindOfAsset.Business).success.value
 
       businessAssetMapper.build(userAnswers) mustNot be(defined)
     }
@@ -49,13 +49,13 @@ class BusinessAssetMapperSpec extends SpecBase with MustMatchers
 
         val userAnswers =
           emptyUserAnswers
-            .set(WhatKindOfAssetPage(0), WhatKindOfAsset.Business).success.value
-            .set(BusinessNamePage(0), "Test").success.value
-            .set(BusinessDescriptionPage(0), "Description").success.value
-            .set(BusinessAddressUkYesNoPage(0), true).success.value
-            .set(BusinessUkAddressPage(0), UKAddress("26", "Grangetown", Some("Tyne and Wear"), Some("Newcastle"), "Z99 2YY")).success.value
-            .set(BusinessValuePage(0), assetValue).success.value
-            .set(AssetStatus(0), Completed).success.value
+            .set(WhatKindOfAssetPage, WhatKindOfAsset.Business).success.value
+            .set(BusinessNamePage, "Test").success.value
+            .set(BusinessDescriptionPage, "Description").success.value
+            .set(BusinessAddressUkYesNoPage, true).success.value
+            .set(BusinessUkAddressPage, UKAddress("26", "Grangetown", Some("Tyne and Wear"), Some("Newcastle"), "Z99 2YY")).success.value
+            .set(BusinessValuePage, assetValue).success.value
+            .set(AssetStatus, Completed).success.value
 
         businessAssetMapper.build(userAnswers).value mustBe List(BusinessAssetType(
           "Test",
@@ -69,13 +69,13 @@ class BusinessAssetMapperSpec extends SpecBase with MustMatchers
 
         val userAnswers =
           emptyUserAnswers
-            .set(WhatKindOfAssetPage(0), WhatKindOfAsset.Business).success.value
-            .set(BusinessNamePage(0), "Test").success.value
-            .set(BusinessDescriptionPage(0), "Description").success.value
-            .set(BusinessAddressUkYesNoPage(0), false).success.value
-            .set(BusinessInternationalAddressPage(0), InternationalAddress("1", "Broadway", Some("New York"), "US")).success.value
-            .set(BusinessValuePage(0), assetValue).success.value
-            .set(AssetStatus(0), Completed).success.value
+            .set(WhatKindOfAssetPage, WhatKindOfAsset.Business).success.value
+            .set(BusinessNamePage, "Test").success.value
+            .set(BusinessDescriptionPage, "Description").success.value
+            .set(BusinessAddressUkYesNoPage, false).success.value
+            .set(BusinessInternationalAddressPage, InternationalAddress("1", "Broadway", Some("New York"), "US")).success.value
+            .set(BusinessValuePage, assetValue).success.value
+            .set(AssetStatus, Completed).success.value
 
         businessAssetMapper.build(userAnswers).value mustBe List(BusinessAssetType(
           "Test",
@@ -90,20 +90,20 @@ class BusinessAssetMapperSpec extends SpecBase with MustMatchers
 
       val userAnswers =
         emptyUserAnswers
-          .set(WhatKindOfAssetPage(0), WhatKindOfAsset.Business).success.value
-          .set(BusinessNamePage(0), "Test 1").success.value
-          .set(BusinessDescriptionPage(0), "Description 1").success.value
-          .set(BusinessAddressUkYesNoPage(0), true).success.value
-          .set(BusinessUkAddressPage(0), UKAddress("26", "Grangetown", Some("Tyne and Wear"), Some("Newcastle"), "Z99 2YY")).success.value
-          .set(BusinessValuePage(0), assetValue).success.value
-          .set(AssetStatus(0), Completed).success.value
-          .set(WhatKindOfAssetPage(1), WhatKindOfAsset.Business).success.value
-          .set(BusinessNamePage(1), "Test 2").success.value
-          .set(BusinessDescriptionPage(1), "Description 2").success.value
-          .set(BusinessAddressUkYesNoPage(1), true).success.value
-          .set(BusinessUkAddressPage(1), UKAddress("26", "Grangetown", Some("Tyne and Wear"), Some("Newcastle"), "Z99 2YY")).success.value
-          .set(BusinessValuePage(1), assetValue).success.value
-          .set(AssetStatus(1), Completed).success.value
+          .set(WhatKindOfAssetPage, WhatKindOfAsset.Business).success.value
+          .set(BusinessNamePage, "Test 1").success.value
+          .set(BusinessDescriptionPage, "Description 1").success.value
+          .set(BusinessAddressUkYesNoPage, true).success.value
+          .set(BusinessUkAddressPage, UKAddress("26", "Grangetown", Some("Tyne and Wear"), Some("Newcastle"), "Z99 2YY")).success.value
+          .set(BusinessValuePage, assetValue).success.value
+          .set(AssetStatus, Completed).success.value
+          .set(WhatKindOfAssetPage, WhatKindOfAsset.Business).success.value
+          .set(BusinessNamePage, "Test 2").success.value
+          .set(BusinessDescriptionPage, "Description 2").success.value
+          .set(BusinessAddressUkYesNoPage, true).success.value
+          .set(BusinessUkAddressPage, UKAddress("26", "Grangetown", Some("Tyne and Wear"), Some("Newcastle"), "Z99 2YY")).success.value
+          .set(BusinessValuePage, assetValue).success.value
+          .set(AssetStatus, Completed).success.value
 
       businessAssetMapper.build(userAnswers).value mustBe List(
         BusinessAssetType(

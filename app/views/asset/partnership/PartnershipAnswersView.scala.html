@@ -22,25 +22,19 @@ main_template: MainTemplate,
 formHelper: FormWithCSRF
 )
 
-@(index : Int, answerSections: Seq[Section])(implicit request: Request[_], messages: Messages)
+@(answerSections: AnswerSection)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("partnership.answers.title")
 ) {
 
-@components.back_link()
+    @components.back_link()
 
-@components.heading("partnership.answers.heading")
+    @components.heading("partnership.answers.heading")
 
-    @for(section <- answerSections){
-        @{section match {
-            case a: AnswerSection => components.answer_section(a)
-            case r: RepeaterAnswerSection => components.repeater_answer_section(r)
-            }
-        }
-    }
+    @components.answer_section(answerSections)
 
-    @formHelper(action = PartnershipAnswerController.onSubmit(index), 'autoComplete -> "off") {
+    @formHelper(action = PartnershipAnswerController.onSubmit(), 'autoComplete -> "off") {
         @components.submit_button()
     }
 }

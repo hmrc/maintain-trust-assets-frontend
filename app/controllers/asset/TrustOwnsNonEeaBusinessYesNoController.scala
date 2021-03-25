@@ -16,28 +16,26 @@
 
 package controllers.asset
 
-import controllers.actions.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
+import controllers.actions.StandardActionSets
 import forms.YesNoFormProvider
-import models.requests.RegistrationDataRequest
 import navigation.Navigator
 import pages.asset.TrustOwnsNonEeaBusinessYesNoPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
-import repositories.RegistrationsRepository
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.asset.TrustOwnsNonEeaBusinessYesNoView
-
 import javax.inject.Inject
+import models.Mode
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class TrustOwnsNonEeaBusinessYesNoController @Inject()(
                                                         override val messagesApi: MessagesApi,
-                                                        repository: RegistrationsRepository,
+                                                        standardActionSets: StandardActionSets,
+                                                        repository: PlaybackRepository,
                                                         navigator: Navigator,
-                                                        identify: RegistrationIdentifierAction,
-                                                        getData: DraftIdRetrievalActionProvider,
-                                                        requireData: RegistrationDataRequiredAction,
                                                         yesNoFormProvider: YesNoFormProvider,
                                                         val controllerComponents: MessagesControllerComponents,
                                                         view: TrustOwnsNonEeaBusinessYesNoView
@@ -45,12 +43,7 @@ class TrustOwnsNonEeaBusinessYesNoController @Inject()(
 
   val form: Form[Boolean] = yesNoFormProvider.withPrefix("trustOwnsNonEeaBusinessYesNo")
 
-  private def actions(): ActionBuilder[RegistrationDataRequest, AnyContent] =
-    identify andThen
-      getData() andThen
-      requireData
-
-  def onPageLoad(): Action[AnyContent] = actions() {
+  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(TrustOwnsNonEeaBusinessYesNoPage) match {
@@ -58,21 +51,21 @@ class TrustOwnsNonEeaBusinessYesNoController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm))
+      Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(): Action[AnyContent] = actions().async {
+  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors))),
+          Future.successful(BadRequest(view(formWithErrors, mode))),
 
         value => {
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(TrustOwnsNonEeaBusinessYesNoPage, value))
             _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(TrustOwnsNonEeaBusinessYesNoPage)(updatedAnswers))
+          } yield Redirect(navigator.nextPage(TrustOwnsNonEeaBusinessYesNoPage, mode, updatedAnswers))
         }
       )
   }

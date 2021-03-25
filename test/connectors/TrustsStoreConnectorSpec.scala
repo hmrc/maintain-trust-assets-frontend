@@ -17,12 +17,10 @@
 package connectors
 
 import base.SpecBase
-import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.client.WireMock.{okJson, urlEqualTo, _}
 import models.FeatureResponse
-import org.scalatest.{MustMatchers, OptionValues}
-import play.api.Application
+import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import play.api.http.Status
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.WireMockHelper
@@ -30,23 +28,98 @@ import utils.WireMockHelper
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
-class TrustsStoreConnectorSpec extends SpecBase with MustMatchers with OptionValues with WireMockHelper {
+class TrustsStoreConnectorSpec extends SpecBase
+  with ScalaFutures
+  with IntegrationPatience
+  with WireMockHelper {
 
-  private implicit val hc: HeaderCarrier = HeaderCarrier()
+  implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
-  override lazy val app: Application = new GuiceApplicationBuilder()
-    .configure(Seq(
-      "microservice.services.trusts-store.port" -> server.port(),
-      "auditing.enabled" -> false): _*
-    ).build()
+  private val identifier = "123456789"
 
-  private lazy val connector = injector.instanceOf[TrustsStoreConnector]
+  "trusts store connector" when {
 
-  private val url = s"/trusts-store/features/5mld"
+    ".setTasksComplete" must {
 
-  "TrustsStoreConnector" must {
+      val url = s"/trusts-store/maintain/tasks/assets/$identifier"
+
+      "return OK with the current task status" in {
+        val application = applicationBuilder()
+          .configure(
+            Seq(
+              "microservice.services.trusts-store.port" -> server.port(),
+              "auditing.enabled" -> false
+            ): _*
+          ).build()
+
+        val connector = application.injector.instanceOf[TrustsStoreConnector]
+
+        val json = Json.parse(
+          """
+            |{
+            |  "trustees": true,
+            |  "beneficiaries": false,
+            |  "settlors": false,
+            |  "protectors": false,
+            |  "other": false
+            |}
+            |""".stripMargin)
+
+        server.stubFor(
+          post(urlEqualTo(url))
+            .willReturn(okJson(json.toString))
+        )
+
+        val futureResult = connector.setTaskComplete(identifier)
+
+        whenReady(futureResult) {
+          r =>
+            r.status mustBe 200
+        }
+
+        application.stop()
+      }
+
+      "return default tasks when a failure occurs" in {
+        val application = applicationBuilder()
+          .configure(
+            Seq(
+              "microservice.services.trusts-store.port" -> server.port(),
+              "auditing.enabled" -> false
+            ): _*
+          ).build()
+
+        val connector = application.injector.instanceOf[TrustsStoreConnector]
+
+        server.stubFor(
+          post(urlEqualTo(url))
+            .willReturn(serverError())
+        )
+
+        connector.setTaskComplete(identifier) map { response =>
+          response.status mustBe 500
+        }
+
+        application.stop()
+      }
+    }
+
+    ".getFeature" must {
+
+      val feature = "5mld"
+      val url = s"/trusts-store/features/$feature"
 
       "return a feature flag of true if 5mld is enabled" in {
+
+        val application = applicationBuilder()
+          .configure(
+            Seq(
+              "microservice.services.trusts-store.port" -> server.port(),
+              "auditing.enabled" -> false
+            ): _*
+          ).build()
+
+        val connector = application.injector.instanceOf[TrustsStoreConnector]
 
         server.stubFor(
           get(urlEqualTo(url))
@@ -55,33 +128,46 @@ class TrustsStoreConnectorSpec extends SpecBase with MustMatchers with OptionVal
                 .withStatus(Status.OK)
                 .withBody(
                   Json.stringify(
-                  Json.toJson(FeatureResponse("5mld", isEnabled = true))
+                    Json.toJson(FeatureResponse(feature, isEnabled = true))
                   )
                 )
             )
         )
 
-        val result = Await.result(connector.getFeature("5mld"), Duration.Inf)
-        result mustBe FeatureResponse("5mld", isEnabled = true)
+        val result = Await.result(connector.getFeature(feature), Duration.Inf)
+        result mustBe FeatureResponse(feature, isEnabled = true)
       }
 
-    "return a feature flag of false if 5mld is not enabled" in {
+      "return a feature flag of false if 5mld is not enabled" in {
 
-      server.stubFor(
-        get(urlEqualTo(url))
-          .willReturn(
-            aResponse()
-              .withStatus(Status.OK)
-              .withBody(
-                Json.stringify(
-                  Json.toJson(FeatureResponse("5mld", isEnabled = false))
+        val application = applicationBuilder()
+          .configure(
+            Seq(
+              "microservice.services.trusts-store.port" -> server.port(),
+              "auditing.enabled" -> false
+            ): _*
+          ).build()
+
+        val connector = application.injector.instanceOf[TrustsStoreConnector]
+
+        server.stubFor(
+          get(urlEqualTo(url))
+            .willReturn(
+              aResponse()
+                .withStatus(Status.OK)
+                .withBody(
+                  Json.stringify(
+                    Json.toJson(FeatureResponse(feature, isEnabled = false))
+                  )
                 )
-              )
-          )
-      )
+            )
+        )
 
-      val result = Await.result(connector.getFeature("5mld"), Duration.Inf)
-      result mustBe FeatureResponse("5mld", isEnabled = false)
+        val result = Await.result(connector.getFeature(feature), Duration.Inf)
+        result mustBe FeatureResponse(feature, isEnabled = false)
+      }
     }
+
   }
+
 }

@@ -16,31 +16,40 @@
 
 package navigation
 
-import config.FrontendAppConfig
 import controllers.asset.business.routes._
-import models.UserAnswers
+import models.{Mode, NormalMode, UserAnswers}
 import pages.Page
 import pages.asset.business._
 import play.api.mvc.Call
-import uk.gov.hmrc.auth.core.AffinityGroup
+import javax.inject.Inject
 
-import javax.inject.{Inject, Singleton}
+class BusinessNavigator @Inject()() extends Navigator {
 
-@Singleton
-class BusinessNavigator @Inject()(config: FrontendAppConfig) extends Navigator(config) {
+  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
+    routes(mode)(page)(userAnswers)
 
-  override protected def route(): PartialFunction[Page, AffinityGroup => UserAnswers => Call] = {
-    case BusinessNamePage(index) => _ => _ => BusinessDescriptionController.onPageLoad(index)
-    case BusinessDescriptionPage(index) => _ => _ => BusinessAddressUkYesNoController.onPageLoad(index)
-    case page @ BusinessAddressUkYesNoPage(index) => _ => ua => yesNoNav(
+  override def nextPage(page: Page, userAnswers: UserAnswers): Call =
+    nextPage(page, NormalMode, userAnswers)
+
+  def simpleNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
+    case BusinessNamePage => _ => BusinessDescriptionController.onPageLoad(mode)
+    case BusinessDescriptionPage => _ => BusinessAddressUkYesNoController.onPageLoad(mode)
+    case BusinessUkAddressPage => _ => BusinessValueController.onPageLoad(mode)
+    case BusinessInternationalAddressPage => _ => BusinessValueController.onPageLoad(mode)
+    case BusinessValuePage => _ => BusinessAnswersController.onPageLoad()
+  }
+
+  private def yesNoNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
+    case page @ BusinessAddressUkYesNoPage => ua => yesNoNav(
       ua = ua,
       fromPage = page,
-      yesCall = BusinessUkAddressController.onPageLoad(index),
-      noCall = BusinessInternationalAddressController.onPageLoad(index)
+      yesCall = BusinessUkAddressController.onPageLoad(mode),
+      noCall = BusinessInternationalAddressController.onPageLoad(mode)
     )
-    case BusinessUkAddressPage(index) => _ => _ => BusinessValueController.onPageLoad(index)
-    case BusinessInternationalAddressPage(index) => _ => _ => BusinessValueController.onPageLoad(index)
-    case BusinessValuePage(index) => _ => _ => BusinessAnswersController.onPageLoad(index)
   }
+
+  def routes(mode: Mode): PartialFunction[Page, UserAnswers => Call] =
+  simpleNavigation(mode) orElse
+    yesNoNavigation(mode)
 
 }

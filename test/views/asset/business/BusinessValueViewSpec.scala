@@ -17,6 +17,7 @@
 package views.asset.business
 
 import forms.ValueFormProvider
+import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.LongViewBehaviours
@@ -24,7 +25,6 @@ import views.html.asset.buisness.BusinessValueView
 
 class BusinessValueViewSpec extends LongViewBehaviours {
 
-  private val index: Int = 0
   private val messageKeyPrefix: String = "business.currentValue"
   private val businessName: String = "Test"
 
@@ -35,7 +35,7 @@ class BusinessValueViewSpec extends LongViewBehaviours {
     val view = viewFor[BusinessValueView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form,  index, businessName)(fakeRequest, messages)
+      view.apply(form,  NormalMode, businessName)(fakeRequest, messages)
 
     behave like normalPage(applyView(form), messageKeyPrefix)
 

@@ -22,7 +22,7 @@
     formHelper: FormWithCSRF
 )
 
-@(index: Int, answerSections: Seq[Section])(implicit request: Request[_], messages: Messages)
+@(answerSections: AnswerSection)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("business.answers.title")
@@ -32,16 +32,9 @@
 
     @components.heading("business.answers.heading")
 
-    @for(section <- answerSections){
-        @{
-            section match {
-                case a: AnswerSection => components.answer_section(a)
-                case r: RepeaterAnswerSection => components.repeater_answer_section(r)
-            }
-        }
-    }
+    @components.answer_section(answerSections)
 
-    @formHelper(action = BusinessAnswersController.onSubmit(index), 'autoComplete -> "off") {
+    @formHelper(action = BusinessAnswersController.onSubmit(), 'autoComplete -> "off") {
         @components.submit_button()
     }
 }

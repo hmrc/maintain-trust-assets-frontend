@@ -16,19 +16,21 @@
 
 package views.asset.other
 
+import play.twirl.api.HtmlFormat
+import viewmodels.AnswerSection
 import views.behaviours.ViewBehaviours
 import views.html.asset.other.OtherAssetAnswersView
 
 class OtherAssetAnswersViewSpec extends ViewBehaviours {
 
   private val messageKeyPrefix: String = "other.answers"
-  private val index: Int = 0
 
   "OtherAssetAnswers view" must {
 
     val view = viewFor[OtherAssetAnswersView](Some(emptyUserAnswers))
 
-    val applyView = view.apply(index, Nil)(fakeRequest, messages)
+    def applyView(): HtmlFormat.Appendable =
+      view.apply(AnswerSection(None, Seq()))(fakeRequest, messages)
 
     behave like normalPage(applyView, messageKeyPrefix)
 

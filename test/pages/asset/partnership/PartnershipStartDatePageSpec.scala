@@ -29,10 +29,10 @@ class PartnershipStartDatePageSpec extends PageBehaviours {
       datesBetween(LocalDate.of(1900, 1, 1), LocalDate.of(2100, 1, 1))
     }
 
-    beRetrievable[LocalDate](PartnershipStartDatePage(0))
+    beRetrievable[LocalDate](PartnershipStartDatePage)
 
-    beSettable[LocalDate](PartnershipStartDatePage(0))
+    beSettable[LocalDate](PartnershipStartDatePage)
 
-    beRemovable[LocalDate](PartnershipStartDatePage(0))
+    beRemovable[LocalDate](PartnershipStartDatePage)
   }
 }

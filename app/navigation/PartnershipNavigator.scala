@@ -16,24 +16,30 @@
 
 package navigation
 
-import config.FrontendAppConfig
 import controllers.asset.partnership.routes._
 import controllers.asset.routes._
-import models.UserAnswers
+import models.{Mode, NormalMode, UserAnswers}
 import pages.Page
 import pages.asset.partnership._
 import play.api.mvc.Call
-import uk.gov.hmrc.auth.core.AffinityGroup
-
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class PartnershipNavigator @Inject()(config: FrontendAppConfig) extends Navigator(config) {
+class PartnershipNavigator @Inject()() extends Navigator {
 
-  override protected def route(): PartialFunction[Page, AffinityGroup => UserAnswers => Call] = {
-    case PartnershipDescriptionPage(index) => _ => _ => PartnershipStartDateController.onPageLoad(index)
-    case PartnershipStartDatePage(index) => _ => _ => PartnershipAnswerController.onPageLoad(index)
-    case PartnershipAnswerPage => _ => _ => AddAssetsController.onPageLoad()
+  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
+    routes(mode)(page)(userAnswers)
+
+  override def nextPage(page: Page, userAnswers: UserAnswers): Call =
+    nextPage(page, NormalMode, userAnswers)
+
+  def simpleNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
+    case PartnershipDescriptionPage  => _ => PartnershipStartDateController.onPageLoad(mode)
+    case PartnershipStartDatePage => _ => PartnershipAnswerController.onPageLoad()
+    case PartnershipAnswerPage => _ => AddAssetsController.onPageLoad()
   }
+
+  def routes(mode: Mode): PartialFunction[Page, UserAnswers => Call] =
+    simpleNavigation(mode)
 
 }

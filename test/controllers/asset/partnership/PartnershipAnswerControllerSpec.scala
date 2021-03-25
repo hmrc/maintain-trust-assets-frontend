@@ -19,66 +19,35 @@ package controllers.asset.partnership
 import base.SpecBase
 import models.Status.Completed
 import models.WhatKindOfAsset.Partnership
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
 import pages.AssetStatus
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.partnership._
-import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.print.PartnershipPrintHelper
 import views.html.asset.partnership.PartnershipAnswersView
-
 import java.time.{LocalDate, ZoneOffset}
+
+import models.NormalMode
 
 class PartnershipAnswerControllerSpec extends SpecBase {
 
   val index: Int = 0
   val validDate: LocalDate = LocalDate.now(ZoneOffset.UTC)
+  val name: String = "Description"
 
-  lazy val partnershipAnswerRoute: String = routes.PartnershipAnswerController.onPageLoad(index).url
+  lazy val partnershipAnswerRoute: String = routes.PartnershipAnswerController.onPageLoad().url
 
   "PartnershipAnswer Controller" must {
 
       "return OK and the correct view for a GET" in {
 
-        val userAnswers =
-          emptyUserAnswers
-            .set(WhatKindOfAssetPage(index), Partnership).success.value
-            .set(PartnershipDescriptionPage(index), "Partnership Description").success.value
-            .set(PartnershipStartDatePage(index), validDate).success.value
-            .set(AssetStatus(index), Completed).success.value
-
-        val expectedSections = Nil
-        val mockPrintHelper: PartnershipPrintHelper = mock[PartnershipPrintHelper]
-        when(mockPrintHelper.checkDetailsSection(any(), any(), any())(any())).thenReturn(Nil)
-
-        val application = applicationBuilder(userAnswers = Some(userAnswers))
-          .overrides(bind[PartnershipPrintHelper].toInstance(mockPrintHelper))
-          .build()
-
-        val request = FakeRequest(GET, partnershipAnswerRoute)
-
-        val result = route(application, request).value
-
-        val view = application.injector.instanceOf[PartnershipAnswersView]
-
-        status(result) mustEqual OK
-
-        contentAsString(result) mustEqual
-          view(index, expectedSections)(fakeRequest, messages).toString
-
-        application.stop()
-      }
-
-
-      "redirect to PartnershipDescription page on a GET if no answer for 'What is the description for the partnership?' at index" in {
-
         val answers =
           emptyUserAnswers
-            .set(WhatKindOfAssetPage(index), Partnership).success.value
-            .set(PartnershipStartDatePage(index), validDate).success.value
+            .set(WhatKindOfAssetPage, Partnership).success.value
+            .set(PartnershipDescriptionPage, "Partnership Description").success.value
+            .set(PartnershipStartDatePage, validDate).success.value
+            .set(AssetStatus, Completed).success.value
 
         val application = applicationBuilder(userAnswers = Some(answers)).build()
 
@@ -86,34 +55,18 @@ class PartnershipAnswerControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        val view = application.injector.instanceOf[PartnershipAnswersView]
+        val printHelper = application.injector.instanceOf[PartnershipPrintHelper]
+        val answerSection = printHelper(answers, provisional = true, name)
 
-        redirectLocation(result).value mustEqual routes.PartnershipDescriptionController.onPageLoad(index).url
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view(answerSection)(request, messages).toString
 
         application.stop()
-
       }
 
-    "redirect to PartnershipStartDate page on a GET if no answer for 'When did the partnership start?' at index" in {
-
-      val answers =
-        emptyUserAnswers
-          .set(WhatKindOfAssetPage(index), Partnership).success.value
-          .set(PartnershipDescriptionPage(index), "Partnership Description").success.value
-
-      val application = applicationBuilder(userAnswers = Some(answers)).build()
-
-      val request = FakeRequest(GET, partnershipAnswerRoute)
-
-      val result = route(application, request).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual routes.PartnershipStartDateController.onPageLoad(index).url
-
-      application.stop()
-
-    }
 
     "redirect to Session Expired for a GET if no existing data is found" in {
 

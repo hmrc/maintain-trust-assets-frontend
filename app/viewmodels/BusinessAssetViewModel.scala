@@ -35,9 +35,9 @@ final case class BusinessAssetViewModel(`type`: WhatKindOfAsset,
 object BusinessAssetViewModel {
 
   implicit lazy val reads: Reads[BusinessAssetViewModel] = (
-    (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].filter(_ == Business) and
-      (__ \ BusinessNamePage.key).readNullable[String] and
-      (__ \ AssetStatus.key).readWithDefault[Status](InProgress)
+    (__ \ WhatKindOfAssetPage).read[WhatKindOfAsset].filter(_ == Business) and
+      (__ \ BusinessNamePage).readNullable[String] and
+      (__ \ AssetStatus).readWithDefault[Status](InProgress)
     )(BusinessAssetViewModel.apply _)
 
 }

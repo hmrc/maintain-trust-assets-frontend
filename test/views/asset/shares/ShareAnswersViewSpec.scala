@@ -16,19 +16,21 @@
 
 package views.asset.shares
 
+import play.twirl.api.HtmlFormat
+import viewmodels.AnswerSection
 import views.behaviours.ViewBehaviours
 import views.html.asset.shares.ShareAnswersView
 
 class ShareAnswersViewSpec extends ViewBehaviours {
 
-  private val index: Int = 0
   private val prefix: String = "shares.answers"
 
   private val view: ShareAnswersView = viewFor[ShareAnswersView](Some(emptyUserAnswers))
 
   "ShareAnswers view" must {
 
-    val applyView = view.apply(index, Nil)(fakeRequest, messages)
+    def applyView(): HtmlFormat.Appendable =
+      view.apply(AnswerSection(None, Seq()))(fakeRequest, messages)
 
     behave like normalPage(applyView, prefix)
 

@@ -17,6 +17,7 @@
 package views.asset.shares
 
 import forms.QuantityFormProvider
+import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.LongViewBehaviours
@@ -28,14 +29,12 @@ class SharePortfolioQuantityInTrustViewSpec extends LongViewBehaviours {
 
   override val form: Form[Long] = new QuantityFormProvider(frontendAppConfig).withPrefix(messageKeyPrefix)
 
-  private val index: Int = 0
-
   "SharePortfolioQuantityInTrust view" must {
 
     val view = viewFor[SharePortfolioQuantityInTrustView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, index)(fakeRequest, messages)
+      view.apply(form, NormalMode)(fakeRequest, messages)
 
     behave like normalPage(applyView(form), messageKeyPrefix)
 

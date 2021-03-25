@@ -22,27 +22,27 @@ import pages.behaviours.PageBehaviours
 
 class TrustOwnAllThePropertyOrLandPageSpec extends PageBehaviours {
 
+  val page = TrustOwnAllThePropertyOrLandPage
+
   "TrustOwnAllThePropertyOrLandPage" must {
 
-    beRetrievable[Boolean](TrustOwnAllThePropertyOrLandPage(0))
+    beRetrievable[Boolean](page)
 
-    beSettable[Boolean](TrustOwnAllThePropertyOrLandPage(0))
+    beSettable[Boolean](page)
 
-    beRemovable[Boolean](TrustOwnAllThePropertyOrLandPage(0))
+    beRemovable[Boolean](page)
 
     "remove relevant data" when {
-
-      val page = TrustOwnAllThePropertyOrLandPage(0)
 
       "set to true" in {
         forAll(arbitrary[UserAnswers]) {
           initial =>
             val answers: UserAnswers = initial.set(page, false).success.value
-              .set(PropertyLandValueTrustPage(0), 100L).success.value
+              .set(PropertyLandValueTrustPage, 100L).success.value
 
             val result = answers.set(page, true).success.value
 
-            result.get(PropertyLandValueTrustPage(0)) must not be defined
+            result.get(PropertyLandValueTrustPage) must not be defined
         }
       }
 

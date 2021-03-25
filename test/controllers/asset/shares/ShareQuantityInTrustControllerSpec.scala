@@ -17,13 +17,15 @@
 package controllers.asset.shares
 
 import base.SpecBase
+import config.annotations.Shares
 import controllers.IndexValidation
 import forms.QuantityFormProvider
 import generators.ModelGenerators
-import org.scalacheck.Arbitrary.arbitrary
+import models.NormalMode
+import navigation.Navigator
 import pages.asset.shares.{ShareCompanyNamePage, ShareQuantityInTrustPage}
 import play.api.data.Form
-import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{route, _}
 import views.html.asset.shares.ShareQuantityInTrustView
@@ -36,13 +38,13 @@ class ShareQuantityInTrustControllerSpec extends SpecBase with ModelGenerators w
   private val companyName = "Company"
   private val validAnswer: Long = 4000L
 
-  private lazy val shareQuantityInTrustRoute: String = routes.ShareQuantityInTrustController.onPageLoad(index).url
+  private lazy val shareQuantityInTrustRoute: String = routes.ShareQuantityInTrustController.onPageLoad(NormalMode).url
 
   "ShareQuantityInTrustController" must {
 
     "return OK and the correct view for a GET" in {
 
-      val ua = emptyUserAnswers.set(ShareCompanyNamePage(0), "Company").success.value
+      val ua = emptyUserAnswers.set(ShareCompanyNamePage, "Company").success.value
 
       val application = applicationBuilder(userAnswers = Some(ua)).build()
 
@@ -55,15 +57,15 @@ class ShareQuantityInTrustControllerSpec extends SpecBase with ModelGenerators w
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, index, companyName)(fakeRequest, messages).toString
+        view(form, NormalMode, companyName)(request, messages).toString
 
       application.stop()
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val ua = emptyUserAnswers.set(ShareCompanyNamePage(0), "Company").success.value
-        .set(ShareQuantityInTrustPage(index), validAnswer).success.value
+      val ua = emptyUserAnswers.set(ShareCompanyNamePage, "Company").success.value
+        .set(ShareQuantityInTrustPage, validAnswer).success.value
 
       val application = applicationBuilder(userAnswers = Some(ua)).build()
 
@@ -76,17 +78,19 @@ class ShareQuantityInTrustControllerSpec extends SpecBase with ModelGenerators w
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), index, companyName)(fakeRequest, messages).toString
+        view(form.fill(validAnswer), NormalMode, companyName)(request, messages).toString
 
       application.stop()
     }
 
     "redirect to the next page when valid data is submitted" in {
 
-      val ua = emptyUserAnswers.set(ShareCompanyNamePage(0), "Company").success.value
+      val ua = emptyUserAnswers.set(ShareCompanyNamePage, "Company").success.value
 
       val application =
-        applicationBuilder(userAnswers = Some(ua)).build()
+        applicationBuilder(userAnswers = Some(ua))
+          .overrides(bind[Navigator].qualifiedWith(classOf[Shares]).toInstance(fakeNavigator))
+          .build()
 
       val request =
         FakeRequest(POST, shareQuantityInTrustRoute)
@@ -102,7 +106,7 @@ class ShareQuantityInTrustControllerSpec extends SpecBase with ModelGenerators w
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val ua = emptyUserAnswers.set(ShareCompanyNamePage(0), "Company").success.value
+      val ua = emptyUserAnswers.set(ShareCompanyNamePage, "Company").success.value
 
       val application = applicationBuilder(userAnswers = Some(ua)).build()
 
@@ -119,7 +123,7 @@ class ShareQuantityInTrustControllerSpec extends SpecBase with ModelGenerators w
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, index, companyName)(fakeRequest, messages).toString
+        view(boundForm, NormalMode, companyName)(request, messages).toString
 
       application.stop()
     }
@@ -156,52 +160,6 @@ class ShareQuantityInTrustControllerSpec extends SpecBase with ModelGenerators w
       application.stop()
     }
 
-    "redirect to AssetsShareCompanyNamePage when company name is not answered" in {
-
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-
-      val request = FakeRequest(GET, shareQuantityInTrustRoute)
-
-      val result = route(application, request).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual routes.ShareCompanyNameController.onPageLoad(index).url
-
-      application.stop()
-    }
   }
 
-  "for a GET" must {
-
-    def getForIndex(index: Int) : FakeRequest[AnyContentAsEmpty.type] = {
-      val route = routes.ShareQuantityInTrustController.onPageLoad(index).url
-
-      FakeRequest(GET, route)
-    }
-
-    validateIndex(
-      arbitrary[Long],
-      ShareQuantityInTrustPage.apply,
-      getForIndex
-    )
-
-  }
-
-  "for a POST" must {
-    def postForIndex(index: Int): FakeRequest[AnyContentAsFormUrlEncoded] = {
-
-      val route =
-        routes.ShareQuantityInTrustController.onPageLoad(index).url
-
-      FakeRequest(POST, route)
-        .withFormUrlEncodedBody(("currency", validAnswer.toString))
-    }
-
-    validateIndex(
-      arbitrary[Long],
-      ShareQuantityInTrustPage.apply,
-      postForIndex
-    )
-  }
 }

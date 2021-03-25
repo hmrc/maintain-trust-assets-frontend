@@ -17,6 +17,7 @@
 package views.asset.noneeabusiness
 
 import forms.InternationalAddressFormProvider
+import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import utils.InputOption
@@ -27,7 +28,6 @@ import views.html.asset.noneeabusiness.InternationalAddressView
 class InternationalAddressViewSpec extends InternationalAddressViewBehaviours {
 
   private val messageKeyPrefix: String = "nonEeaBusiness.internationalAddress"
-  private val index: Int = 0
   private val name: String = "Test"
 
   override val form = new InternationalAddressFormProvider()()
@@ -39,7 +39,7 @@ class InternationalAddressViewSpec extends InternationalAddressViewBehaviours {
   "InternationalAddressView" must {
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, countryOptions, index, name)(fakeRequest, messages)
+      view.apply(form, countryOptions, NormalMode, name)(fakeRequest, messages)
 
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name)
 

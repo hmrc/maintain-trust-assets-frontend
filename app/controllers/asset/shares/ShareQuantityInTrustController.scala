@@ -18,30 +18,27 @@ package controllers.asset.shares
 
 import config.annotations.Shares
 import controllers.actions._
-import controllers.filters.IndexActionFilterProvider
+import controllers.actions.shares.CompanyNameRequiredAction
 import forms.QuantityFormProvider
-import models.requests.RegistrationDataRequest
 import navigation.Navigator
-import pages.asset.shares.{ShareCompanyNamePage, ShareQuantityInTrustPage}
+import pages.asset.shares.ShareQuantityInTrustPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
-import repositories.RegistrationsRepository
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.asset.shares.ShareQuantityInTrustView
-
 import javax.inject.Inject
+import models.Mode
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class ShareQuantityInTrustController @Inject()(
                                                 override val messagesApi: MessagesApi,
-                                                repository: RegistrationsRepository,
+                                                standardActionSets: StandardActionSets,
+                                                nameAction: CompanyNameRequiredAction,
+                                                repository: PlaybackRepository,
                                                 @Shares navigator: Navigator,
-                                                identify: RegistrationIdentifierAction,
-                                                getData: DraftIdRetrievalActionProvider,
-                                                requireData: RegistrationDataRequiredAction,
-                                                validateIndex: IndexActionFilterProvider,
-                                                requiredAnswer: RequiredAnswerActionProvider,
                                                 formProvider: QuantityFormProvider,
                                                 val controllerComponents: MessagesControllerComponents,
                                                 view: ShareQuantityInTrustView
@@ -49,42 +46,29 @@ class ShareQuantityInTrustController @Inject()(
 
   private val form: Form[Long] = formProvider.withPrefix("shares.quantityInTrust")
 
-  private def actions(index : Int): ActionBuilder[RegistrationDataRequest, AnyContent] =
-    identify andThen getData() andThen
-      requireData andThen
-      validateIndex(index, sections.Assets) andThen
-      requiredAnswer(RequiredAnswer(
-        ShareCompanyNamePage(index),
-        routes.ShareCompanyNameController.onPageLoad(index))
-      )
-
-  def onPageLoad(index: Int): Action[AnyContent] = actions(index) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
 
-      val companyName = request.userAnswers.get(ShareCompanyNamePage(index)).get
-
-      val preparedForm = request.userAnswers.get(ShareQuantityInTrustPage(index)) match {
+      val preparedForm = request.userAnswers.get(ShareQuantityInTrustPage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, index, companyName))
+      Ok(view(preparedForm, mode, request.Name))
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = actions(index).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
     implicit request =>
-
-      val companyName = request.userAnswers.get(ShareCompanyNamePage(index)).get
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, index, companyName))),
+          Future.successful(BadRequest(view(formWithErrors, mode, request.Name))),
 
         value => {
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(ShareQuantityInTrustPage(index), value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(ShareQuantityInTrustPage, value))
             _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(ShareQuantityInTrustPage(index))(updatedAnswers))
+          } yield Redirect(navigator.nextPage(ShareQuantityInTrustPage, mode, updatedAnswers))
         }
       )
   }

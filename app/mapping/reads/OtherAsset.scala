@@ -33,9 +33,9 @@ final case class OtherAsset(override val whatKindOfAsset: WhatKindOfAsset,
 object OtherAsset {
 
   implicit lazy val reads: Reads[OtherAsset] = (
-    (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].filter(_ == Other) and
-      (__ \ OtherAssetDescriptionPage.key).read[String] and
-      (__ \ OtherAssetValuePage.key).read[Long]
+    (__ \ WhatKindOfAssetPage).read[WhatKindOfAsset].filter(_ == Other) and
+      (__ \ OtherAssetDescriptionPage).read[String] and
+      (__ \ OtherAssetValuePage).read[Long]
     )(OtherAsset.apply _)
 
 }

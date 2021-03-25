@@ -21,12 +21,14 @@ import pages.behaviours.PageBehaviours
 
 class ShareCompanyNamePageSpec extends PageBehaviours {
 
+  val page = ShareCompanyNamePage
+
   "ShareCompanyNamePage" must {
 
-    beRetrievable[String](ShareCompanyNamePage(0))
+    beRetrievable[String](page)
 
-    beSettable[String](ShareCompanyNamePage(0))
+    beSettable[String](page)
 
-    beRemovable[String](ShareCompanyNamePage(0))
+    beRemovable[String](page)
   }
 }

@@ -17,58 +17,51 @@
 package controllers.asset.other
 
 import controllers.actions._
+import controllers.actions.other.NameRequiredAction
 import models.Status.Completed
-import models.requests.RegistrationDataRequest
 import pages.AssetStatus
-import pages.asset.WhatKindOfAssetPage
-import pages.asset.other.{OtherAssetDescriptionPage, OtherAssetValuePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
-import repositories.RegistrationsRepository
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.OtherPrintHelper
 import views.html.asset.other.OtherAssetAnswersView
-
 import javax.inject.Inject
+import viewmodels.AnswerSection
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class OtherAssetAnswersController @Inject()(
                                              override val messagesApi: MessagesApi,
-                                             repository: RegistrationsRepository,
-                                             identify: RegistrationIdentifierAction,
-                                             getData: DraftIdRetrievalActionProvider,
-                                             requireData: RegistrationDataRequiredAction,
-                                             requiredAnswer: RequiredAnswerActionProvider,
+                                             standardActionSets: StandardActionSets,
+                                             nameAction: NameRequiredAction,
+                                             repository: PlaybackRepository,
                                              view: OtherAssetAnswersView,
                                              val controllerComponents: MessagesControllerComponents,
                                              printHelper: OtherPrintHelper
                                            )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private def actions(index: Int): ActionBuilder[RegistrationDataRequest, AnyContent] = {
-    identify andThen getData() andThen requireData andThen
-      requiredAnswer(RequiredAnswer(WhatKindOfAssetPage(index), controllers.asset.routes.WhatKindOfAssetController.onPageLoad(index))) andThen
-      requiredAnswer(RequiredAnswer(OtherAssetDescriptionPage(index), routes.OtherAssetDescriptionController.onPageLoad(index))) andThen
-      requiredAnswer(RequiredAnswer(OtherAssetValuePage(index), routes.OtherAssetValueController.onPageLoad(index)))
-  }
+//  private def actions(index: Int): ActionBuilder[RegistrationDataRequest, AnyContent] = {
+//    identify andThen getData() andThen requireData andThen
+//      requiredAnswer(RequiredAnswer(WhatKindOfAssetPage(index), controllers.asset.routes.WhatKindOfAssetController.onPageLoad(index))) andThen
+//      requiredAnswer(RequiredAnswer(OtherAssetDescriptionPage(index), routes.OtherAssetDescriptionController.onPageLoad(index))) andThen
+//      requiredAnswer(RequiredAnswer(OtherAssetValuePage(index), routes.OtherAssetValueController.onPageLoad(index)))
+//  }  // TODO
 
-  def onPageLoad(index: Int): Action[AnyContent] = actions(index) {
+  private val provisional: Boolean = true
+
+  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
 
-      val description = request.userAnswers.get(OtherAssetDescriptionPage(index)).get
+      val section: AnswerSection = printHelper(userAnswers = request.userAnswers, provisional, request.Name)
 
-      val section = printHelper.checkDetailsSection(
-        userAnswers = request.userAnswers,
-        arg = description,
-        index = index
-      )
-
-      Ok(view(index, section))
+      Ok(view(section))
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = actions(index).async {
+  def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
     implicit request =>
 
-      val answers = request.userAnswers.set(AssetStatus(index), Completed)
+      val answers = request.userAnswers.set(AssetStatus, Completed)
 
       for {
         updatedAnswers <- Future.fromTry(answers)

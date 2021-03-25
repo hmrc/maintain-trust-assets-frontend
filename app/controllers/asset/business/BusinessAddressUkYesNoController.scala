@@ -18,31 +18,27 @@ package controllers.asset.business
 
 import config.annotations.Business
 import controllers.actions._
-import controllers.filters.IndexActionFilterProvider
+import controllers.actions.business.NameRequiredAction
 import forms.YesNoFormProvider
-import models.requests.RegistrationDataRequest
 import navigation.Navigator
-import pages.asset.business.{BusinessAddressUkYesNoPage, BusinessNamePage}
+import pages.asset.business.BusinessAddressUkYesNoPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
-import repositories.RegistrationsRepository
-import sections.Assets
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.asset.buisness.BusinessAddressUkYesNoView
-
 import javax.inject.Inject
+import models.Mode
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class BusinessAddressUkYesNoController @Inject()(
                                                   override val messagesApi: MessagesApi,
-                                                  registrationsRepository: RegistrationsRepository,
+                                                  standardActionSets: StandardActionSets,
+                                                  nameAction: NameRequiredAction,
+                                                  repository: PlaybackRepository,
                                                   @Business navigator: Navigator,
-                                                  validateIndex: IndexActionFilterProvider,
-                                                  identify: RegistrationIdentifierAction,
-                                                  getData: DraftIdRetrievalActionProvider,
-                                                  requireData: RegistrationDataRequiredAction,
-                                                  requiredAnswer: RequiredAnswerActionProvider,
                                                   formProvider: YesNoFormProvider,
                                                   val controllerComponents: MessagesControllerComponents,
                                                   view: BusinessAddressUkYesNoView
@@ -50,40 +46,29 @@ class BusinessAddressUkYesNoController @Inject()(
 
   private val form: Form[Boolean] = formProvider.withPrefix("business.addressUkYesNo")
 
-  private def actions(index: Int): ActionBuilder[RegistrationDataRequest, AnyContent] =
-    identify andThen
-      getData() andThen
-      requireData andThen
-      validateIndex(index, Assets) andThen
-      requiredAnswer(RequiredAnswer(BusinessNamePage(index), routes.BusinessNameController.onPageLoad(index)))
-
-  def onPageLoad(index: Int): Action[AnyContent] = actions(index) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
 
-      val businessName = request.userAnswers.get(BusinessNamePage(index)).get
-
-      val preparedForm = request.userAnswers.get(BusinessAddressUkYesNoPage(index)) match {
+      val preparedForm = request.userAnswers.get(BusinessAddressUkYesNoPage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, index, businessName))
+      Ok(view(preparedForm, mode, request.Name))
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = actions(index).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier  andThen nameAction).async {
     implicit request =>
-
-      val businessName = request.userAnswers.get(BusinessNamePage(index)).get
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, index, businessName))),
+          Future.successful(BadRequest(view(formWithErrors, mode, request.Name))),
 
         value => {
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(BusinessAddressUkYesNoPage(index), value))
-            _              <- registrationsRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(BusinessAddressUkYesNoPage(index))(updatedAnswers))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(BusinessAddressUkYesNoPage, value))
+            _              <- repository.set(updatedAnswers)
+          } yield Redirect(navigator.nextPage(BusinessAddressUkYesNoPage, mode, updatedAnswers))
         }
       )
   }

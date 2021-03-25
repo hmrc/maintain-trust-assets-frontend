@@ -19,22 +19,31 @@ package config
 import com.google.inject.AbstractModule
 import controllers.actions._
 import navigation._
-import repositories.{DefaultRegistrationsRepository, RegistrationsRepository}
+import repositories.{MongoDriver, PlaybackRepository, PlaybackRepositoryImpl, TrustsMongoDriver}
 import config.annotations._
+import services.{AuthenticationService, AuthenticationServiceImpl}
 
 class Module extends AbstractModule {
 
   override def configure(): Unit = {
-    bind(classOf[RegistrationsRepository]).to(classOf[DefaultRegistrationsRepository]).asEagerSingleton()
-    bind(classOf[RegistrationDataRequiredAction]).to(classOf[RegistrationDataRequiredActionImpl]).asEagerSingleton()
-    bind(classOf[DraftIdRetrievalActionProvider]).to(classOf[DraftIdDataRetrievalActionProviderImpl]).asEagerSingleton()
 
-    bind(classOf[Navigator]).annotatedWith(classOf[Money]).to(classOf[MoneyNavigator])
-    bind(classOf[Navigator]).annotatedWith(classOf[PropertyOrLand]).to(classOf[PropertyOrLandNavigator])
-    bind(classOf[Navigator]).annotatedWith(classOf[Shares]).to(classOf[SharesNavigator])
-    bind(classOf[Navigator]).annotatedWith(classOf[Business]).to(classOf[BusinessNavigator])
-    bind(classOf[Navigator]).annotatedWith(classOf[Partnership]).to(classOf[PartnershipNavigator])
-    bind(classOf[Navigator]).annotatedWith(classOf[Other]).to(classOf[OtherNavigator])
-    bind(classOf[Navigator]).annotatedWith(classOf[NonEeaBusiness]).to(classOf[NonEeaBusinessNavigator])
+    bind(classOf[DataRetrievalAction]).to(classOf[DataRetrievalActionImpl]).asEagerSingleton()
+    bind(classOf[DataRequiredAction]).to(classOf[DataRequiredActionImpl]).asEagerSingleton()
+
+    bind(classOf[PlaybackRepository]).to(classOf[PlaybackRepositoryImpl]).asEagerSingleton()
+
+    // For session based storage instead of cred based, change to SessionIdentifierAction
+    bind(classOf[IdentifierAction]).to(classOf[AuthenticatedIdentifierAction]).asEagerSingleton()
+    bind(classOf[AuthenticationService]).to(classOf[AuthenticationServiceImpl]).asEagerSingleton()
+
+    bind(classOf[MongoDriver]).to(classOf[TrustsMongoDriver]).asEagerSingleton()
+
+    bind(classOf[Navigator]).annotatedWith(classOf[Money]).to(classOf[MoneyNavigator]).asEagerSingleton()
+    bind(classOf[Navigator]).annotatedWith(classOf[PropertyOrLand]).to(classOf[PropertyOrLandNavigator]).asEagerSingleton()
+    bind(classOf[Navigator]).annotatedWith(classOf[Shares]).to(classOf[SharesNavigator]).asEagerSingleton()
+    bind(classOf[Navigator]).annotatedWith(classOf[Business]).to(classOf[BusinessNavigator]).asEagerSingleton()
+    bind(classOf[Navigator]).annotatedWith(classOf[Partnership]).to(classOf[PartnershipNavigator]).asEagerSingleton()
+    bind(classOf[Navigator]).annotatedWith(classOf[Other]).to(classOf[OtherNavigator]).asEagerSingleton()
+    bind(classOf[Navigator]).annotatedWith(classOf[NonEeaBusiness]).to(classOf[NonEeaBusinessNavigator]).asEagerSingleton()
   }
 }

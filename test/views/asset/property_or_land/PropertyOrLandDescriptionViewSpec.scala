@@ -17,6 +17,7 @@
 package views.asset.property_or_land
 
 import forms.DescriptionFormProvider
+import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.StringViewBehaviours
@@ -32,10 +33,9 @@ class PropertyOrLandDescriptionViewSpec extends StringViewBehaviours {
   "PropertyOrLandDescription view" must {
 
     val view = viewFor[PropertyOrLandDescriptionView](Some(emptyUserAnswers))
-    val index = 0
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, index)(fakeRequest, messages)
+      view.apply(form, NormalMode)(fakeRequest, messages)
 
     behave like normalPage(applyView(form), messageKeyPrefix)
 

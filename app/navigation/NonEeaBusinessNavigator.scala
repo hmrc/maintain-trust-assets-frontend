@@ -16,24 +16,30 @@
 
 package navigation
 
-import config.FrontendAppConfig
 import controllers.asset.noneeabusiness.routes._
-import models.UserAnswers
+import models.{Mode, NormalMode, UserAnswers}
 import pages.Page
 import pages.asset.noneeabusiness._
 import play.api.mvc.Call
-import uk.gov.hmrc.auth.core.AffinityGroup
-
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class NonEeaBusinessNavigator @Inject()(config: FrontendAppConfig) extends Navigator(config) {
+class NonEeaBusinessNavigator @Inject()() extends Navigator {
 
-  override protected def route(): PartialFunction[Page, AffinityGroup => UserAnswers => Call] = {
-    case NamePage(index) => _ => _ => InternationalAddressController.onPageLoad(index)
-    case InternationalAddressPage(index) => _ => _ => GoverningCountryController.onPageLoad(index)
-    case GoverningCountryPage(index) => _ => _ => StartDateController.onPageLoad(index)
-    case StartDatePage(index) => _ => _ => AnswersController.onPageLoad(index)
+  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
+    routes(mode)(page)(userAnswers)
+
+  override def nextPage(page: Page, userAnswers: UserAnswers): Call =
+    nextPage(page, NormalMode, userAnswers)
+
+  def simpleNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
+    case NamePage => _ => InternationalAddressController.onPageLoad(mode)
+    case InternationalAddressPage => _ => GoverningCountryController.onPageLoad(mode)
+    case GoverningCountryPage => _ => StartDateController.onPageLoad(mode)
+    case StartDatePage => _ => AnswersController.onPageLoad()
   }
+
+  def routes(mode: Mode): PartialFunction[Page, UserAnswers => Call] =
+    simpleNavigation(mode)
 
 }

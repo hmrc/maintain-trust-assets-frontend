@@ -19,7 +19,7 @@ package utils.print
 import base.SpecBase
 import controllers.asset.money.routes._
 import controllers.asset.routes.WhatKindOfAssetController
-import models.UserAnswers
+import models.{NormalMode, UserAnswers}
 import models.WhatKindOfAsset.Money
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.money._
@@ -29,54 +29,34 @@ import viewmodels.{AnswerRow, AnswerSection}
 class MoneyPrintHelperSpec extends SpecBase {
 
   private val helper: MoneyPrintHelper = injector.instanceOf[MoneyPrintHelper]
-
-  private val index: Int = 0
-
-  private val heading: String = "Money"
-
+  private val name: String = "Name"
   private val amount: Long = 100L
 
   private val answers: UserAnswers = emptyUserAnswers
-    .set(WhatKindOfAssetPage(index), Money).success.value
-    .set(AssetMoneyValuePage(index), amount).success.value
+    .set(WhatKindOfAssetPage, Money).success.value
+    .set(AssetMoneyValuePage, amount).success.value
 
   private val rows: Seq[AnswerRow] = Seq(
-    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Money"), Some(WhatKindOfAssetController.onPageLoad(index).url)),
-    AnswerRow("money.value.checkYourAnswersLabel", Html(s"£100"), Some(AssetMoneyValueController.onPageLoad(index).url))
+    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Money"), Some(WhatKindOfAssetController.onPageLoad().url)),
+    AnswerRow("money.value.checkYourAnswersLabel", Html(s"£100"), Some(AssetMoneyValueController.onPageLoad(NormalMode).url))
   )
 
   "MoneyPrintHelper" when {
 
-    "printSection" must {
-      "render answer section with heading" in {
+    "generate Money Asset section" when {
 
-        val result: AnswerSection = helper.printSection(
-          userAnswers = answers,
-          index = index,
-          specificIndex = index
-        )
+      "added" in {
+
+        val result = helper(answers, provisional = true, name)
 
         result mustBe AnswerSection(
-          headingKey = Some(heading),
-          rows = rows
-        )
-      }
-    }
-
-    "checkDetailsSection" must {
-      "render answer section without heading" in {
-
-        val result: Seq[AnswerSection] = helper.checkDetailsSection(
-          userAnswers = answers,
-          index = index
-        )
-
-        result mustBe Seq(AnswerSection(
           headingKey = None,
           rows = rows
-        ))
+        )
       }
+
     }
+
   }
 
 }

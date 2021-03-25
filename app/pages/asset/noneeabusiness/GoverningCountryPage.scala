@@ -17,17 +17,12 @@
 package pages.asset.noneeabusiness
 
 import pages.QuestionPage
-import pages.asset.noneeabusiness.GoverningCountryPage.key
 import play.api.libs.json.JsPath
 import sections.Assets
 
-final case class GoverningCountryPage(index: Int) extends QuestionPage[String] {
+case object  GoverningCountryPage extends QuestionPage[String] {
 
-  override def path: JsPath = JsPath \ Assets \ index \ toString
+  override def path: JsPath = JsPath \ Assets \ toString
 
-  override def toString: String = key
-}
-
-object GoverningCountryPage {
-  val key: String = "nonEeaBusinessGoverningCountry"
+  override def toString: String = "nonEeaBusinessGoverningCountry"
 }

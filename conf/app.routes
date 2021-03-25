@@ -8,7 +8,7 @@
 ->         /other                                       other.Routes
 ->         /non-eea-business                            nonEeaBusiness.Routes
 
-GET        /start                                       controllers.IndexController.onPageLoad()
+GET        /:utr                                       controllers.IndexController.onPageLoad(utr: String)
 
 GET        /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)
 
@@ -20,11 +20,13 @@ GET        /unauthorised                                controllers.Unauthorised
 
 GET        /logout                                      controllers.LogoutController.logout()
 
-GET        /:index/assets-type           controllers.asset.WhatKindOfAssetController.onPageLoad(index: Int)
-POST       /:index/assets-type           controllers.asset.WhatKindOfAssetController.onSubmit(index: Int)
+GET        /assets-type                                 controllers.asset.WhatKindOfAssetController.onPageLoad()
+POST       /assets-type                                 controllers.asset.WhatKindOfAssetController.onSubmit()
 
-GET        /trust-owns-non-eea-company   controllers.asset.TrustOwnsNonEeaBusinessYesNoController.onPageLoad()
-POST       /trust-owns-non-eea-company   controllers.asset.TrustOwnsNonEeaBusinessYesNoController.onSubmit()
+GET        /trust-owns-non-eea-company          controllers.asset.TrustOwnsNonEeaBusinessYesNoController.onPageLoad(mode: Mode = NormalMode)
+POST       /trust-owns-non-eea-company          controllers.asset.TrustOwnsNonEeaBusinessYesNoController.onSubmit(mode: Mode = NormalMode)
+GET        /change-trust-owns-non-eea-company   controllers.asset.TrustOwnsNonEeaBusinessYesNoController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-trust-owns-non-eea-company   controllers.asset.TrustOwnsNonEeaBusinessYesNoController.onSubmit(mode: Mode = CheckMode)
 
 GET        /information-you-need         controllers.asset.AssetInterruptPageController.onPageLoad()
 POST       /information-you-need         controllers.asset.AssetInterruptPageController.onSubmit()

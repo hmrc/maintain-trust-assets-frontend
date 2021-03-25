@@ -21,12 +21,14 @@ import pages.behaviours.PageBehaviours
 
 class SharePortfolioNamePageSpec extends PageBehaviours {
 
+  val page = SharePortfolioNamePage
+
   "SharePortfolioNamePage" must {
 
-    beRetrievable[String](SharePortfolioNamePage(0))
+    beRetrievable[String](page)
 
-    beSettable[String](SharePortfolioNamePage(0))
+    beSettable[String](page)
 
-    beRemovable[String](SharePortfolioNamePage(0))
+    beRemovable[String](page)
   }
 }

@@ -19,15 +19,18 @@ package controllers.asset.noneeabusiness
 import base.SpecBase
 import controllers.IndexValidation
 import forms.StartDateFormProvider
-import models.UserAnswers
+import models.{NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.asset.noneeabusiness.{NamePage, StartDatePage}
 import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{route, _}
 import views.html.asset.noneeabusiness.StartDateView
-
 import java.time.LocalDate
+
+import config.annotations.NonEeaBusiness
+import navigation.Navigator
+import play.api.inject.bind
 
 class StartDateControllerSpec extends SpecBase with IndexValidation {
 
@@ -39,10 +42,10 @@ class StartDateControllerSpec extends SpecBase with IndexValidation {
 
   private val validAnswer: LocalDate = LocalDate.parse("1996-02-03")
 
-  private lazy val onPageLoadRoute = routes.StartDateController.onPageLoad(index).url
+  private lazy val onPageLoadRoute = routes.StartDateController.onPageLoad(NormalMode).url
 
   private val baseAnswers: UserAnswers = emptyUserAnswers
-    .set(NamePage(index), name).success.value
+    .set(NamePage, name).success.value
 
   "StartDateController" must {
 
@@ -59,7 +62,7 @@ class StartDateControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, index, name)(fakeRequest, messages).toString
+        view(form, NormalMode, name)(request, messages).toString
 
       application.stop()
     }
@@ -67,7 +70,7 @@ class StartDateControllerSpec extends SpecBase with IndexValidation {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = baseAnswers
-        .set(StartDatePage(index), validAnswer).success.value
+        .set(StartDatePage, validAnswer).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -80,29 +83,16 @@ class StartDateControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), index, name)(fakeRequest, messages).toString
-
-      application.stop()
-    }
-
-    "redirect to name page when name is not answered" in {
-
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-
-      val request = FakeRequest(GET, onPageLoadRoute)
-
-      val result = route(application, request).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual routes.NameController.onPageLoad(index).url
+        view(form.fill(validAnswer), NormalMode, name)(request, messages).toString
 
       application.stop()
     }
 
     "redirect to the next page when valid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(baseAnswers))
+        .overrides(bind[Navigator].qualifiedWith(classOf[NonEeaBusiness]).toInstance(fakeNavigator))
+        .build()
 
       val request =
         FakeRequest(POST, onPageLoadRoute)
@@ -138,7 +128,7 @@ class StartDateControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, index, name)(fakeRequest, messages).toString
+        view(boundForm, NormalMode, name)(request, messages).toString
 
       application.stop()
     }
@@ -177,43 +167,6 @@ class StartDateControllerSpec extends SpecBase with IndexValidation {
 
       application.stop()
     }
-  }
-
-  "for a GET" must {
-
-    def getForIndex(index: Int): FakeRequest[AnyContentAsEmpty.type] = {
-      val route = routes.StartDateController.onPageLoad(index).url
-
-      FakeRequest(GET, route)
-    }
-
-    validateIndex(
-      arbitrary[LocalDate],
-      StartDatePage.apply,
-      getForIndex
-    )
-
-  }
-
-  "for a POST" must {
-    def postForIndex(index: Int): FakeRequest[AnyContentAsFormUrlEncoded] = {
-
-      val route =
-        routes.StartDateController.onPageLoad(index).url
-
-      FakeRequest(POST, route)
-        .withFormUrlEncodedBody(
-          "value.day" -> validAnswer.getDayOfMonth.toString,
-          "value.month" -> validAnswer.getMonthValue.toString,
-          "value.year" -> validAnswer.getYear.toString
-        )
-    }
-
-    validateIndex(
-      arbitrary[LocalDate],
-      StartDatePage.apply,
-      postForIndex
-    )
   }
 
 }

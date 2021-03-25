@@ -19,40 +19,32 @@ package controllers.asset.noneeabusiness
 import base.SpecBase
 import controllers.routes._
 import models.{InternationalAddress, UserAnswers}
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
 import pages.asset.noneeabusiness._
-import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.print.NonEeaBusinessPrintHelper
 import views.html.asset.noneeabusiness.AnswersView
-
 import java.time.LocalDate
 
 class AnswersControllerSpec extends SpecBase {
 
   private val index = 0
 
-  private val answers: UserAnswers = emptyUserAnswers
-    .set(NamePage(index), "Name").success.value
-    .set(InternationalAddressPage(index), InternationalAddress("Line 1", "Line 2", Some("Line 3"), "FR")).success.value
-    .set(GoverningCountryPage(index), "FR").success.value
-    .set(StartDatePage(index), LocalDate.parse("1996-02-03")).success.value
+  private val name: String = "Noneeabusiness"
 
-  private lazy val onPageLoadRoute: String = routes.AnswersController.onSubmit(index).url
+  private val answers: UserAnswers = emptyUserAnswers
+    .set(NamePage, "Name").success.value
+    .set(InternationalAddressPage, InternationalAddress("Line 1", "Line 2", Some("Line 3"), "FR")).success.value
+    .set(GoverningCountryPage, "FR").success.value
+    .set(StartDatePage, LocalDate.parse("1996-02-03")).success.value
+
+  private lazy val onPageLoadRoute: String = routes.AnswersController.onSubmit().url
 
   "AnswersController" must {
 
     "return OK and the correct view for a GET" in {
 
-      val expectedSections = Nil
-      val mockPrintHelper: NonEeaBusinessPrintHelper = mock[NonEeaBusinessPrintHelper]
-      when(mockPrintHelper.checkDetailsSection(any(), any(), any())(any())).thenReturn(Nil)
-
-      val application = applicationBuilder(userAnswers = Some(answers))
-        .overrides(bind[NonEeaBusinessPrintHelper].toInstance(mockPrintHelper))
-        .build()
+      val application = applicationBuilder(userAnswers = Some(answers)).build()
 
       val request = FakeRequest(GET, onPageLoadRoute)
 
@@ -60,10 +52,13 @@ class AnswersControllerSpec extends SpecBase {
 
       val view = application.injector.instanceOf[AnswersView]
 
+      val printHelper = application.injector.instanceOf[NonEeaBusinessPrintHelper]
+      val answerSection = printHelper(answers, provisional = true, name)
+
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(index, expectedSections)(fakeRequest, messages).toString
+        view(answerSection)(request, messages).toString
 
       application.stop()
     }
@@ -72,28 +67,13 @@ class AnswersControllerSpec extends SpecBase {
 
       val application = applicationBuilder(userAnswers = Some(answers)).build()
 
-      val request = FakeRequest(POST, routes.AnswersController.onSubmit(index).url)
+      val request = FakeRequest(POST, routes.AnswersController.onSubmit().url)
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual controllers.asset.routes.AddAssetsController.onPageLoad().url
-
-      application.stop()
-    }
-
-    "redirect to name page when name is not answered" in {
-
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-
-      val request = FakeRequest(GET, onPageLoadRoute)
-
-      val result = route(application, request).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual routes.NameController.onPageLoad(index).url
 
       application.stop()
     }
@@ -116,7 +96,7 @@ class AnswersControllerSpec extends SpecBase {
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(POST, routes.AnswersController.onSubmit(index).url)
+      val request = FakeRequest(POST, routes.AnswersController.onSubmit().url)
 
       val result = route(application, request).value
 

@@ -17,6 +17,7 @@
 package views.asset.property_or_land
 
 import forms.YesNoFormProvider
+import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
@@ -25,7 +26,6 @@ import views.html.asset.property_or_land.PropertyOrLandAddressUkYesNoView
 class PropertyOrLandAddressUkYesNoViewSpec extends YesNoViewBehaviours {
 
   private val messageKeyPrefix: String = "propertyOrLand.addressUkYesNo"
-  private val index: Int = 1
 
   override val form: Form[Boolean] = new YesNoFormProvider().withPrefix(messageKeyPrefix)
 
@@ -34,7 +34,7 @@ class PropertyOrLandAddressUkYesNoViewSpec extends YesNoViewBehaviours {
     val view = viewFor[PropertyOrLandAddressUkYesNoView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, index)(fakeRequest, messages)
+      view.apply(form, NormalMode)(fakeRequest, messages)
 
     behave like normalPage(applyView(form), messageKeyPrefix)
 

@@ -17,6 +17,7 @@
 package views.asset.business
 
 import forms.UKAddressFormProvider
+import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.UkAddressViewBehaviours
@@ -25,7 +26,6 @@ import views.html.asset.buisness.BusinessUkAddressView
 class BusinessUkAddressViewSpec extends UkAddressViewBehaviours {
 
   private val messageKeyPrefix: String = "business.ukAddress"
-  private val index: Int = 0
   private val businessName: String = "Test"
 
   override val form = new UKAddressFormProvider()()
@@ -35,7 +35,7 @@ class BusinessUkAddressViewSpec extends UkAddressViewBehaviours {
     val view = viewFor[BusinessUkAddressView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, index, businessName)(fakeRequest, messages)
+      view.apply(form, NormalMode, businessName)(fakeRequest, messages)
 
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, businessName)
 

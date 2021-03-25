@@ -19,69 +19,47 @@ package utils.print
 import base.SpecBase
 import controllers.asset.partnership.routes._
 import controllers.asset.routes.WhatKindOfAssetController
-import models.UserAnswers
+import models.{NormalMode, UserAnswers}
 import models.WhatKindOfAsset.Partnership
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.partnership._
 import play.twirl.api.Html
 import viewmodels.{AnswerRow, AnswerSection}
-
 import java.time.LocalDate
 
 class PartnershipPrintHelperSpec extends SpecBase {
 
   private val helper: PartnershipPrintHelper = injector.instanceOf[PartnershipPrintHelper]
-
-  private val index: Int = 0
-
-  private val heading: String = s"Partnership ${index + 1}"
-
   private val description: String = "Description"
   private val date: LocalDate = LocalDate.parse("1996-02-03")
 
   private val answers: UserAnswers = emptyUserAnswers
-    .set(WhatKindOfAssetPage(index), Partnership).success.value
-    .set(PartnershipDescriptionPage(index), description).success.value
-    .set(PartnershipStartDatePage(index), date).success.value
+    .set(WhatKindOfAssetPage, Partnership).success.value
+    .set(PartnershipDescriptionPage, description).success.value
+    .set(PartnershipStartDatePage, date).success.value
 
   private val rows: Seq[AnswerRow] = Seq(
-    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Partnership"), Some(WhatKindOfAssetController.onPageLoad(index).url)),
-    AnswerRow("partnership.description.checkYourAnswersLabel", Html(description), Some(PartnershipDescriptionController.onPageLoad(index).url)),
-    AnswerRow("partnership.startDate.checkYourAnswersLabel", Html("3 February 1996"), Some(PartnershipStartDateController.onPageLoad(index).url))
+    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Partnership"), Some(WhatKindOfAssetController.onPageLoad().url)),
+    AnswerRow("partnership.description.checkYourAnswersLabel", Html(description), Some(PartnershipDescriptionController.onPageLoad(NormalMode).url)),
+    AnswerRow("partnership.startDate.checkYourAnswersLabel", Html("3 February 1996"), Some(PartnershipStartDateController.onPageLoad(NormalMode).url))
   )
 
   "PartnershipPrintHelper" when {
 
-    "printSection" must {
-      "render answer section with heading" in {
+    "generate Partnership Asset section" when {
 
-        val result: AnswerSection = helper.printSection(
-          userAnswers = answers,
-          index = index,
-          specificIndex = index
-        )
+      "added" in {
+
+        val result = helper(answers, provisional = true, description)
 
         result mustBe AnswerSection(
-          headingKey = Some(heading),
-          rows = rows
-        )
-      }
-    }
-
-    "checkDetailsSection" must {
-      "render answer section without heading" in {
-
-        val result: Seq[AnswerSection] = helper.checkDetailsSection(
-          userAnswers = answers,
-          index = index
-        )
-
-        result mustBe Seq(AnswerSection(
           headingKey = None,
           rows = rows
-        ))
+        )
       }
+
     }
+
   }
 
 }

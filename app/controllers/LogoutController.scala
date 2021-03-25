@@ -18,7 +18,7 @@ package controllers
 
 import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
-import controllers.actions.RegistrationIdentifierAction
+import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import play.api.Logger.logger
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -32,11 +32,13 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class LogoutController @Inject()(appConfig: FrontendAppConfig,
                                  val controllerComponents: MessagesControllerComponents,
-                                 identify: RegistrationIdentifierAction,
+                                 identify: IdentifierAction,
+                                 getData: DataRetrievalAction,
+                                 requireData: DataRequiredAction,
                                  auditConnector: AuditConnector
                                 )(implicit val ec: ExecutionContext) extends FrontendBaseController {
 
-  def logout: Action[AnyContent] = identify { request =>
+  def logout: Action[AnyContent] = (identify andThen getData andThen requireData)  { request =>
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
@@ -48,7 +50,8 @@ class LogoutController @Inject()(appConfig: FrontendAppConfig,
         "sessionId" -> Session.id(hc),
         "event" -> "signout",
         "service" -> "maintain-trust-assets-frontend",
-        "userGroup" -> request.affinityGroup.toString
+        "userGroup" -> request.user.affinityGroup.toString,
+        "utr" -> request.userAnswers.identifier
       )
 
       auditConnector.sendExplicitAudit(

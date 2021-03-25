@@ -22,15 +22,15 @@ import pages.behaviours.PageBehaviours
 
 class PropertyOrLandAddressUkYesNoPageSpec extends PageBehaviours {
 
-  val page: PropertyOrLandAddressUkYesNoPage = PropertyOrLandAddressUkYesNoPage(0)
+  val page = PropertyOrLandAddressUkYesNoPage
 
   "PropertyOrLandAddressUkYesNoPage" must {
 
-    beRetrievable[Boolean](PropertyOrLandAddressUkYesNoPage(0))
+    beRetrievable[Boolean](page)
 
-    beSettable[Boolean](PropertyOrLandAddressUkYesNoPage(0))
+    beSettable[Boolean](page)
 
-    beRemovable[Boolean](PropertyOrLandAddressUkYesNoPage(0))
+    beRemovable[Boolean](page)
 
     "remove relevant data" when {
 
@@ -38,11 +38,11 @@ class PropertyOrLandAddressUkYesNoPageSpec extends PageBehaviours {
         forAll(arbitrary[UserAnswers]) {
           initial =>
             val answers: UserAnswers = initial.set(page, false).success.value
-              .set(PropertyOrLandInternationalAddressPage(0), InternationalAddress("line 1", "line 2", None, "France")).success.value
+              .set(PropertyOrLandInternationalAddressPage, InternationalAddress("line 1", "line 2", None, "France")).success.value
 
             val result = answers.set(page, true).success.value
 
-            result.get(PropertyOrLandInternationalAddressPage(0)) must not be defined
+            result.get(PropertyOrLandInternationalAddressPage) must not be defined
         }
       }
 
@@ -50,11 +50,11 @@ class PropertyOrLandAddressUkYesNoPageSpec extends PageBehaviours {
         forAll(arbitrary[UserAnswers]) {
           initial =>
             val answers: UserAnswers = initial.set(page, true).success.value
-              .set(PropertyOrLandUKAddressPage(0), UKAddress("line 1", "line 2", None, None, "NE1 1NE")).success.value
+              .set(PropertyOrLandUKAddressPage, UKAddress("line 1", "line 2", None, None, "NE1 1NE")).success.value
 
             val result = answers.set(page, false).success.value
 
-            result.get(PropertyOrLandUKAddressPage(0)) must not be defined
+            result.get(PropertyOrLandUKAddressPage) must not be defined
         }
       }
     }
@@ -65,11 +65,11 @@ class PropertyOrLandAddressUkYesNoPageSpec extends PageBehaviours {
         forAll(arbitrary[UserAnswers]) {
           initial =>
             val answers: UserAnswers = initial
-              .set(PropertyOrLandUKAddressPage(0), UKAddress("line 1", "line 2", None, None, "NE1 1NE")).success.value
+              .set(PropertyOrLandUKAddressPage, UKAddress("line 1", "line 2", None, None, "NE1 1NE")).success.value
 
             val result = answers.set(page, true).success.value
 
-            result.get(PropertyOrLandUKAddressPage(0)) must be(defined)
+            result.get(PropertyOrLandUKAddressPage) must be(defined)
         }
       }
 
@@ -77,11 +77,11 @@ class PropertyOrLandAddressUkYesNoPageSpec extends PageBehaviours {
         forAll(arbitrary[UserAnswers]) {
           initial =>
             val answers: UserAnswers = initial
-              .set(PropertyOrLandInternationalAddressPage(0), InternationalAddress("line 1", "line 2", None, "France")).success.value
+              .set(PropertyOrLandInternationalAddressPage, InternationalAddress("line 1", "line 2", None, "France")).success.value
 
             val result = answers.set(page, false).success.value
 
-            result.get(PropertyOrLandInternationalAddressPage(0)) must be(defined)
+            result.get(PropertyOrLandInternationalAddressPage) must be(defined)
         }
       }
     }

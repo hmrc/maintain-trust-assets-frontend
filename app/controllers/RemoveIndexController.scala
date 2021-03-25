@@ -24,7 +24,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, ActionBuilder, AnyContent, Call}
 import play.twirl.api.HtmlFormat
 import queries.Settable
-import repositories.RegistrationsRepository
+import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.RemoveIndexView
 
@@ -42,7 +42,7 @@ trait RemoveIndexController extends FrontendBaseController with I18nSupport {
 
   def page(index: Int) : QuestionPage[_]
 
-  def repository : RegistrationsRepository
+  def repository : PlaybackRepository
 
   def actions(index: Int) : ActionBuilder[RegistrationDataRequest, AnyContent]
 

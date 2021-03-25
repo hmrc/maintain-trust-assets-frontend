@@ -33,12 +33,12 @@ final case class SharePortfolioAsset(override val whatKindOfAsset: WhatKindOfAss
 object SharePortfolioAsset {
 
   implicit lazy val reads: Reads[SharePortfolioAsset] = (
-    (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].filter(_ == Shares) and
+    (__ \ WhatKindOfAssetPage).read[WhatKindOfAsset].filter(_ == Shares) and
       Reads(_ => JsSuccess(true)) and
-      (__ \ SharePortfolioNamePage.key).read[String] and
-      (__ \ SharePortfolioOnStockExchangePage.key).read[Boolean] and
-      (__ \ SharePortfolioQuantityInTrustPage.key).read[Long] and
-      (__ \ SharePortfolioValueInTrustPage.key).read[Long]
+      (__ \ SharePortfolioNamePage).read[String] and
+      (__ \ SharePortfolioOnStockExchangePage).read[Boolean] and
+      (__ \ SharePortfolioQuantityInTrustPage).read[Long] and
+      (__ \ SharePortfolioValueInTrustPage).read[Long]
     )(SharePortfolioAsset.apply _)
 
 }

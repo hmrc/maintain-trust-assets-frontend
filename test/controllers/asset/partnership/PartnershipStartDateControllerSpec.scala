@@ -19,14 +19,16 @@ package controllers.asset.partnership
 import base.SpecBase
 import controllers.IndexValidation
 import forms.StartDateFormProvider
-import org.scalacheck.Gen
 import pages.asset.partnership.PartnershipStartDatePage
-import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{route, _}
 import views.html.asset.partnership.PartnershipStartDateView
-
 import java.time.{LocalDate, ZoneOffset}
+
+import config.annotations.Partnership
+import models.NormalMode
+import navigation.Navigator
+import play.api.inject.bind
 
 class PartnershipStartDateControllerSpec extends SpecBase with IndexValidation {
 
@@ -37,7 +39,7 @@ class PartnershipStartDateControllerSpec extends SpecBase with IndexValidation {
 
   private val validAnswer = LocalDate.now(ZoneOffset.UTC)
 
-  private lazy val partnershipStartDateRoute = routes.PartnershipStartDateController.onPageLoad(index).url
+  private lazy val partnershipStartDateRoute = routes.PartnershipStartDateController.onPageLoad(NormalMode).url
 
   "PartnershipStartDate Controller" must {
 
@@ -54,14 +56,14 @@ class PartnershipStartDateControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, index)(fakeRequest, messages).toString
+        view(form, NormalMode)(request, messages).toString
 
       application.stop()
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(PartnershipStartDatePage(index), validAnswer).success.value
+      val userAnswers = emptyUserAnswers.set(PartnershipStartDatePage, validAnswer).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -74,7 +76,7 @@ class PartnershipStartDateControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), index)(fakeRequest, messages).toString
+        view(form.fill(validAnswer), NormalMode)(request, messages).toString
 
       application.stop()
     }
@@ -82,7 +84,9 @@ class PartnershipStartDateControllerSpec extends SpecBase with IndexValidation {
     "redirect to the next page when valid data is submitted" in {
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind[Navigator].qualifiedWith(classOf[Partnership]).toInstance(fakeNavigator))
+          .build()
 
       val request =
         FakeRequest(POST, partnershipStartDateRoute)
@@ -118,7 +122,7 @@ class PartnershipStartDateControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, index)(fakeRequest, messages).toString
+        view(boundForm, NormalMode)(request, messages).toString
 
       application.stop()
     }
@@ -157,43 +161,6 @@ class PartnershipStartDateControllerSpec extends SpecBase with IndexValidation {
 
       application.stop()
     }
-  }
-
-  "for a GET" must {
-
-    def getForIndex(index: Int): FakeRequest[AnyContentAsEmpty.type] = {
-      val route = routes.PartnershipStartDateController.onPageLoad(index).url
-
-      FakeRequest(GET, route)
-    }
-
-    validateIndex(
-      Gen.const(LocalDate.of(2010,10,10)),
-      PartnershipStartDatePage.apply,
-      getForIndex
-    )
-
-  }
-
-  "for a POST" must {
-    def postForIndex(index: Int): FakeRequest[AnyContentAsFormUrlEncoded] = {
-
-      val route =
-        routes.PartnershipStartDateController.onPageLoad(index).url
-
-      FakeRequest(POST, route)
-        .withFormUrlEncodedBody(
-          "value.day"   -> validAnswer.getDayOfMonth.toString,
-          "value.month" -> validAnswer.getMonthValue.toString,
-          "value.year"  -> validAnswer.getYear.toString
-        )
-    }
-
-    validateIndex(
-      Gen.const(LocalDate.of(2010,10,10)),
-      PartnershipStartDatePage.apply,
-      postForIndex
-    )
   }
 
 }

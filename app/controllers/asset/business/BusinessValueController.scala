@@ -18,33 +18,29 @@ package controllers.asset.business
 
 import config.annotations.Business
 import controllers.actions._
-import controllers.filters.IndexActionFilterProvider
+import controllers.actions.business.NameRequiredAction
 import forms.ValueFormProvider
 import models.Status.Completed
-import models.requests.RegistrationDataRequest
 import navigation.Navigator
 import pages.AssetStatus
-import pages.asset.business.{BusinessNamePage, BusinessValuePage}
+import pages.asset.business.BusinessValuePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
-import repositories.RegistrationsRepository
-import sections.Assets
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.asset.buisness.BusinessValueView
-
 import javax.inject.Inject
+import models.Mode
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class BusinessValueController @Inject()(
                                          override val messagesApi: MessagesApi,
-                                         registrationsRepository: RegistrationsRepository,
+                                         standardActionSets: StandardActionSets,
+                                         nameAction: NameRequiredAction,
+                                         repository: PlaybackRepository,
                                          @Business navigator: Navigator,
-                                         identify: RegistrationIdentifierAction,
-                                         getData: DraftIdRetrievalActionProvider,
-                                         requireData: RegistrationDataRequiredAction,
-                                         requiredAnswer: RequiredAnswerActionProvider,
-                                         validateIndex: IndexActionFilterProvider,
                                          formProvider: ValueFormProvider,
                                          val controllerComponents: MessagesControllerComponents,
                                          view: BusinessValueView
@@ -52,44 +48,34 @@ class BusinessValueController @Inject()(
 
   private val form: Form[Long] = formProvider.withConfig(prefix = "business.currentValue")
 
-  private def actions(index: Int): ActionBuilder[RegistrationDataRequest, AnyContent] =
-    identify andThen
-      getData() andThen
-      requireData andThen
-      validateIndex(index, Assets) andThen
-    requiredAnswer(RequiredAnswer(BusinessNamePage(index), routes.BusinessNameController.onPageLoad(index)))
-
-  def onPageLoad(index: Int): Action[AnyContent] = actions(index) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
 
-      val businessName = request.userAnswers.get(BusinessNamePage(index)).get
 
-      val preparedForm = request.userAnswers.get(BusinessValuePage(index)) match {
+      val preparedForm = request.userAnswers.get(BusinessValuePage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, index, businessName))
+      Ok(view(preparedForm, mode, request.Name))
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = actions(index).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
     implicit request =>
-
-      val businessName = request.userAnswers.get(BusinessNamePage(index)).get
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, index, businessName))),
+          Future.successful(BadRequest(view(formWithErrors, mode, request.Name))),
 
         value => {
 
-          val answers = request.userAnswers.set(BusinessValuePage(index), value)
-            .flatMap(_.set(AssetStatus(index), Completed))
+          val answers = request.userAnswers.set(BusinessValuePage, value)
+            .flatMap(_.set(AssetStatus, Completed))
 
           for {
                 updatedAnswers <- Future.fromTry(answers)
-                _              <- registrationsRepository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(BusinessValuePage(index))(updatedAnswers))
+                _              <- repository.set(updatedAnswers)
+              } yield Redirect(navigator.nextPage(BusinessValuePage, mode, updatedAnswers))
           }
       )
   }

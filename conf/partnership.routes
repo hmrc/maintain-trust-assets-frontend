@@ -1,8 +1,12 @@
-GET        /:index/description                                           controllers.asset.partnership.PartnershipDescriptionController.onPageLoad(index : Int)
-POST       /:index/description                                           controllers.asset.partnership.PartnershipDescriptionController.onSubmit(index : Int)
+GET        /description                                           controllers.asset.partnership.PartnershipDescriptionController.onPageLoad(mode: Mode = NormalMode)
+POST       /description                                           controllers.asset.partnership.PartnershipDescriptionController.onSubmit(mode: Mode = NormalMode)
+GET        /change-description                                    controllers.asset.partnership.PartnershipDescriptionController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-description                                    controllers.asset.partnership.PartnershipDescriptionController.onSubmit(mode: Mode = CheckMode)
 
-GET        /:index/start-date                                            controllers.asset.partnership.PartnershipStartDateController.onPageLoad(index : Int)
-POST       /:index/start-date                                            controllers.asset.partnership.PartnershipStartDateController.onSubmit(index : Int)
+GET        /start-date                                            controllers.asset.partnership.PartnershipStartDateController.onPageLoad(mode: Mode = NormalMode)
+POST       /start-date                                            controllers.asset.partnership.PartnershipStartDateController.onSubmit(mode: Mode = NormalMode)
+GET        /change-start-date                                     controllers.asset.partnership.PartnershipStartDateController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-start-date                                     controllers.asset.partnership.PartnershipStartDateController.onSubmit(mode: Mode = CheckMode)
 
-GET        /:index/check-partnership-answers                             controllers.asset.partnership.PartnershipAnswerController.onPageLoad(index : Int)
-POST       /:index/check-partnership-answers                             controllers.asset.partnership.PartnershipAnswerController.onSubmit(index : Int)
+GET        /check-partnership-answers                             controllers.asset.partnership.PartnershipAnswerController.onPageLoad()
+POST       /check-partnership-answers                             controllers.asset.partnership.PartnershipAnswerController.onSubmit()

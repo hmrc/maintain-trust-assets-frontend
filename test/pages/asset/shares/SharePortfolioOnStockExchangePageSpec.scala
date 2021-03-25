@@ -20,12 +20,14 @@ import pages.behaviours.PageBehaviours
 
 class SharePortfolioOnStockExchangePageSpec extends PageBehaviours {
 
+  val page = SharePortfolioOnStockExchangePage
+
   "SharePortfolioOnStockExchangePage" must {
 
-    beRetrievable[Boolean](SharePortfolioOnStockExchangePage(0))
+    beRetrievable[Boolean](page)
 
-    beSettable[Boolean](SharePortfolioOnStockExchangePage(0))
+    beSettable[Boolean](page)
 
-    beRemovable[Boolean](SharePortfolioOnStockExchangePage(0))
+    beRemovable[Boolean](page)
   }
 }

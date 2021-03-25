@@ -1,8 +1,12 @@
-GET        /:index/description                                                 controllers.asset.other.OtherAssetDescriptionController.onPageLoad(index: Int)
-POST       /:index/description                                                 controllers.asset.other.OtherAssetDescriptionController.onSubmit(index: Int)
+GET        /description                                                 controllers.asset.other.OtherAssetDescriptionController.onPageLoad(mode: Mode = NormalMode)
+POST       /description                                                 controllers.asset.other.OtherAssetDescriptionController.onSubmit(mode: Mode = NormalMode)
+GET        /change-description                                          controllers.asset.other.OtherAssetDescriptionController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-description                                          controllers.asset.other.OtherAssetDescriptionController.onSubmit(mode: Mode = CheckMode)
 
-GET        /:index/value                                                       controllers.asset.other.OtherAssetValueController.onPageLoad(index: Int)
-POST       /:index/value                                                       controllers.asset.other.OtherAssetValueController.onSubmit(index: Int)
+GET        /value                                                       controllers.asset.other.OtherAssetValueController.onPageLoad(mode: Mode = NormalMode)
+POST       /value                                                       controllers.asset.other.OtherAssetValueController.onSubmit(mode: Mode = NormalMode)
+GET        /change-value                                                controllers.asset.other.OtherAssetValueController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-value                                                controllers.asset.other.OtherAssetValueController.onSubmit(mode: Mode = CheckMode)
 
-GET        /:index/check-answers                                               controllers.asset.other.OtherAssetAnswersController.onPageLoad(index : Int)
-POST       /:index/check-answers                                               controllers.asset.other.OtherAssetAnswersController.onSubmit(index : Int)
+GET        /check-answers                                               controllers.asset.other.OtherAssetAnswersController.onPageLoad()
+POST       /check-answers                                               controllers.asset.other.OtherAssetAnswersController.onSubmit()

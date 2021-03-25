@@ -17,11 +17,13 @@
 package controllers.asset.partnership
 
 import base.SpecBase
+import config.annotations.Partnership
 import controllers.IndexValidation
 import forms.DescriptionFormProvider
-import org.scalacheck.Arbitrary.arbitrary
+import models.NormalMode
+import navigation.Navigator
 import pages.asset.partnership.PartnershipDescriptionPage
-import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{route, _}
 import views.html.asset.partnership.PartnershipDescriptionView
@@ -32,7 +34,7 @@ class PartnershipDescriptionControllerSpec extends SpecBase with IndexValidation
   private val form = formProvider.withConfig(56, "partnership.description")
   private val index = 0
 
-  private lazy val partnershipDescriptionRoute = routes.PartnershipDescriptionController.onPageLoad(index).url
+  private lazy val partnershipDescriptionRoute = routes.PartnershipDescriptionController.onPageLoad(NormalMode).url
 
   "PartnershipDescription Controller" must {
 
@@ -49,14 +51,14 @@ class PartnershipDescriptionControllerSpec extends SpecBase with IndexValidation
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, index)(fakeRequest, messages).toString
+        view(form, NormalMode)(request, messages).toString
 
       application.stop()
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(PartnershipDescriptionPage(index), "answer").success.value
+      val userAnswers = emptyUserAnswers.set(PartnershipDescriptionPage, "answer").success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -69,7 +71,7 @@ class PartnershipDescriptionControllerSpec extends SpecBase with IndexValidation
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill("answer"), index)(fakeRequest, messages).toString
+        view(form.fill("answer"), NormalMode)(request, messages).toString
 
       application.stop()
     }
@@ -77,7 +79,9 @@ class PartnershipDescriptionControllerSpec extends SpecBase with IndexValidation
     "redirect to the next page when valid data is submitted" in {
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind[Navigator].qualifiedWith(classOf[Partnership]).toInstance(fakeNavigator))
+          .build()
 
       val request =
         FakeRequest(POST, partnershipDescriptionRoute)
@@ -108,7 +112,7 @@ class PartnershipDescriptionControllerSpec extends SpecBase with IndexValidation
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, index)(fakeRequest, messages).toString
+        view(boundForm, NormalMode)(request, messages).toString
 
       application.stop()
     }
@@ -144,39 +148,6 @@ class PartnershipDescriptionControllerSpec extends SpecBase with IndexValidation
 
       application.stop()
     }
-  }
-
-  "for a GET" must {
-
-    def getForIndex(index: Int) : FakeRequest[AnyContentAsEmpty.type] = {
-      val route = routes.PartnershipDescriptionController.onPageLoad(index).url
-
-      FakeRequest(GET, route)
-    }
-
-    validateIndex(
-      arbitrary[String],
-      PartnershipDescriptionPage.apply,
-      getForIndex
-    )
-
-  }
-
-  "for a POST" must {
-    def postForIndex(index: Int): FakeRequest[AnyContentAsFormUrlEncoded] = {
-
-      val route =
-        routes.PartnershipDescriptionController.onPageLoad(index).url
-
-      FakeRequest(POST, route)
-        .withFormUrlEncodedBody(("value", "true"))
-    }
-
-    validateIndex(
-      arbitrary[String],
-      PartnershipDescriptionPage.apply,
-      postForIndex
-    )
   }
 
 }

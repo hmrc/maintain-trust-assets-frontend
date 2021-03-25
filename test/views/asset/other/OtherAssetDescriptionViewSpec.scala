@@ -17,6 +17,7 @@
 package views.asset.other
 
 import forms.DescriptionFormProvider
+import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.StringViewBehaviours
@@ -26,7 +27,6 @@ class OtherAssetDescriptionViewSpec extends StringViewBehaviours {
 
   private val prefix: String = "other.description"
   private val hintKey: String = s"$prefix.hint"
-  private val index: Int = 0
 
   override val form: Form[String] = new DescriptionFormProvider().withConfig(56, prefix)
 
@@ -35,7 +35,7 @@ class OtherAssetDescriptionViewSpec extends StringViewBehaviours {
     val view = viewFor[OtherAssetDescriptionView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, index)(fakeRequest, messages)
+      view.apply(form, NormalMode)(fakeRequest, messages)
 
     behave like normalPage(applyView(form), prefix)
 

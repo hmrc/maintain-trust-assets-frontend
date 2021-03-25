@@ -17,6 +17,7 @@
 package views.asset.other
 
 import forms.ValueFormProvider
+import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.LongViewBehaviours
@@ -26,7 +27,6 @@ class OtherAssetValueViewSpec extends LongViewBehaviours {
 
   private val prefix: String = "other.value"
   private val hintKey: String = s"$prefix.hint"
-  private val index: Int = 0
   private val description: String = "Description"
 
   override val form: Form[Long] = new ValueFormProvider(frontendAppConfig).withConfig(prefix)
@@ -36,7 +36,7 @@ class OtherAssetValueViewSpec extends LongViewBehaviours {
     val view = viewFor[OtherAssetValueView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, index, description)(fakeRequest, messages)
+      view.apply(form, NormalMode, description)(fakeRequest, messages)
 
     behave like dynamicTitlePage(applyView(form), prefix, description)
 

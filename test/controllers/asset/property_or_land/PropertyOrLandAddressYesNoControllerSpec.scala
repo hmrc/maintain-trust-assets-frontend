@@ -17,12 +17,14 @@
 package controllers.asset.property_or_land
 
 import base.SpecBase
+import config.annotations.PropertyOrLand
 import controllers.IndexValidation
 import controllers.routes._
 import forms.YesNoFormProvider
-import org.scalacheck.Arbitrary.arbitrary
-import pages.asset.property_or_land.{PropertyOrLandAddressYesNoPage, PropertyOrLandDescriptionPage}
-import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
+import models.NormalMode
+import navigation.Navigator
+import pages.asset.property_or_land.PropertyOrLandAddressYesNoPage
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.asset.property_or_land.PropertyOrLandAddressYesNoView
@@ -33,7 +35,7 @@ class PropertyOrLandAddressYesNoControllerSpec extends SpecBase with IndexValida
 
   val index = 0
 
-  lazy val propertyOrLandAddressYesNoRoute = routes.PropertyOrLandAddressYesNoController.onPageLoad(index).url
+  lazy val propertyOrLandAddressYesNoRoute = routes.PropertyOrLandAddressYesNoController.onPageLoad(NormalMode).url
 
   "PropertyOrLandAddressYesNo Controller" must {
 
@@ -50,14 +52,14 @@ class PropertyOrLandAddressYesNoControllerSpec extends SpecBase with IndexValida
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, index)(fakeRequest, messages).toString
+        view(form, NormalMode)(request, messages).toString
 
       application.stop()
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(PropertyOrLandAddressYesNoPage(index), true).success.value
+      val userAnswers = emptyUserAnswers.set(PropertyOrLandAddressYesNoPage, true).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -70,7 +72,7 @@ class PropertyOrLandAddressYesNoControllerSpec extends SpecBase with IndexValida
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), index)(fakeRequest, messages).toString
+        view(form.fill(true), NormalMode)(request, messages).toString
 
       application.stop()
     }
@@ -78,7 +80,9 @@ class PropertyOrLandAddressYesNoControllerSpec extends SpecBase with IndexValida
     "redirect to the next page when valid data is submitted" in {
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind[Navigator].qualifiedWith(classOf[PropertyOrLand]).toInstance(fakeNavigator))
+          .build()
 
       val request =
         FakeRequest(POST, propertyOrLandAddressYesNoRoute)
@@ -110,7 +114,7 @@ class PropertyOrLandAddressYesNoControllerSpec extends SpecBase with IndexValida
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, index)(fakeRequest, messages).toString
+        view(boundForm, NormalMode)(request, messages).toString
 
       application.stop()
     }
@@ -148,36 +152,4 @@ class PropertyOrLandAddressYesNoControllerSpec extends SpecBase with IndexValida
     }
   }
 
-  "for a GET" must {
-
-    def getForIndex(index: Int) : FakeRequest[AnyContentAsEmpty.type] = {
-      val route = routes.PropertyOrLandAddressYesNoController.onPageLoad(index).url
-
-      FakeRequest(GET, route)
-    }
-
-    validateIndex(
-      arbitrary[String],
-      PropertyOrLandDescriptionPage.apply,
-      getForIndex
-    )
-
-  }
-
-  "for a POST" must {
-    def postForIndex(index: Int): FakeRequest[AnyContentAsFormUrlEncoded] = {
-
-      val route =
-        routes.PropertyOrLandAddressYesNoController.onPageLoad(index).url
-
-      FakeRequest(POST, route)
-        .withFormUrlEncodedBody(("value", "true"))
-    }
-
-    validateIndex(
-      arbitrary[String],
-      PropertyOrLandDescriptionPage.apply,
-      postForIndex
-    )
-  }
 }
