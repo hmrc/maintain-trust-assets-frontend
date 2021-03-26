@@ -69,6 +69,8 @@ class FrontendAppConfig @Inject() (val configuration: Configuration) {
   lazy val maintainATrustFrontendUrl : String = configuration.get[String]("urls.maintainATrust")
   lazy val createAgentServicesAccountUrl : String = configuration.get[String]("urls.createAgentServicesAccount")
 
+  lazy val maintainATrustOverview: String = configuration.get[String]("urls.maintainATrustOverview")
+
   lazy val locationCanonicalList: String = configuration.get[String]("location.canonical.list.all")
   lazy val locationCanonicalListCY: String = configuration.get[String]("location.canonical.list.allCY")
 

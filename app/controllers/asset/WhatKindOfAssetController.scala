@@ -16,6 +16,7 @@
 
 package controllers.asset
 
+import config.annotations.Assets
 import controllers.actions.StandardActionSets
 import forms.WhatKindOfAssetFormProvider
 import models.{Enumerable, NormalMode, UserAnswers, WhatKindOfAsset}
@@ -36,7 +37,7 @@ class WhatKindOfAssetController @Inject()(
                                            override val messagesApi: MessagesApi,
                                            standardActionSets: StandardActionSets,
                                            repository: PlaybackRepository,
-                                           navigator: Navigator,
+                                           @Assets navigator: Navigator,
                                            formProvider: WhatKindOfAssetFormProvider,
                                            val controllerComponents: MessagesControllerComponents,
                                            view: WhatKindOfAssetView

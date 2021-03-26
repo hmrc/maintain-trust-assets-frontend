@@ -16,9 +16,11 @@
 
 package controllers.asset
 
+import config.FrontendAppConfig
+import config.annotations.Assets
+import connectors.TrustsStoreConnector
 import controllers.actions.StandardActionSets
 import forms.{AddAssetsFormProvider, YesNoFormProvider}
-import models.AddAssets.NoComplete
 import models.Constants._
 import models.{AddAssets, NormalMode, UserAnswers}
 import navigation.Navigator
@@ -27,9 +29,12 @@ import play.api.data.Form
 import play.api.i18n.{Messages, MessagesApi, MessagesProvider}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
-import utils.AddAssetViewHelper
+import utils.{AddAssetViewHelper}
 import views.html.asset.{AddAnAssetYesNoView, AddAssetsView, MaxedOutView}
 import javax.inject.Inject
+import models.AddAssets.NoComplete
+import play.api.Logging
+import services.TrustService
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -37,14 +42,17 @@ class AddAssetsController @Inject()(
                                      override val messagesApi: MessagesApi,
                                      standardActionSets: StandardActionSets,
                                      repository: PlaybackRepository,
-                                     navigator: Navigator,
+                                     val appConfig: FrontendAppConfig,
+                                     trustStoreConnector: TrustsStoreConnector,
+                                     trustService: TrustService,
+                                     @Assets navigator: Navigator,
                                      addAnotherFormProvider: AddAssetsFormProvider,
                                      yesNoFormProvider: YesNoFormProvider,
                                      val controllerComponents: MessagesControllerComponents,
                                      addAssetsView: AddAssetsView,
                                      yesNoView: AddAnAssetYesNoView,
                                      maxedOutView: MaxedOutView
-                                   )(implicit ec: ExecutionContext) extends AddAssetController {
+                                   )(implicit ec: ExecutionContext) extends AddAssetController with Logging {
 
   private def addAnotherForm(isTaxable: Boolean): Form[AddAssets] = addAnotherFormProvider.withPrefix(determinePrefix(isTaxable))
   private val yesNoForm: Form[Boolean] = yesNoFormProvider.withPrefix("addAnAssetYesNo")

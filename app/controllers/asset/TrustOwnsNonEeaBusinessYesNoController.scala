@@ -16,6 +16,7 @@
 
 package controllers.asset
 
+import config.annotations.Assets
 import controllers.actions.StandardActionSets
 import forms.YesNoFormProvider
 import navigation.Navigator
@@ -35,7 +36,7 @@ class TrustOwnsNonEeaBusinessYesNoController @Inject()(
                                                         override val messagesApi: MessagesApi,
                                                         standardActionSets: StandardActionSets,
                                                         repository: PlaybackRepository,
-                                                        navigator: Navigator,
+                                                        @Assets navigator: Navigator,
                                                         yesNoFormProvider: YesNoFormProvider,
                                                         val controllerComponents: MessagesControllerComponents,
                                                         view: TrustOwnsNonEeaBusinessYesNoView

@@ -28,7 +28,7 @@ import play.api.mvc.Call
 
 class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
-  private val navigator: Navigator = injector.instanceOf[Navigator]
+  private val navigator: Navigator = injector.instanceOf[AssetsNavigator]
 
   private val assetsCompletedRoute: Call = {
     Call("GET", frontendAppConfig.registrationProgressUrl())

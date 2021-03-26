@@ -31,6 +31,9 @@ POST       /change-trust-owns-non-eea-company   controllers.asset.TrustOwnsNonEe
 GET        /information-you-need         controllers.asset.AssetInterruptPageController.onPageLoad()
 POST       /information-you-need         controllers.asset.AssetInterruptPageController.onSubmit()
 
+GET        /what-kind                                   controllers.asset.AddNowController.onPageLoad()
+POST       /what-kind                                   controllers.asset.AddNowController.onSubmit()
+
 GET        /add                          controllers.asset.AddAssetsController.onPageLoad()
 POST       /add                          controllers.asset.AddAssetsController.submitOne()
 GET        /add-another                  controllers.asset.AddAssetsController.onPageLoad()

@@ -18,8 +18,9 @@ package base
 
 import java.time.LocalDate
 
+import config.annotations.{Business, Money, NonEeaBusiness, Other, Partnership, PropertyOrLand, Shares}
 import controllers.actions._
-import navigation.FakeNavigator
+import navigation.{FakeNavigator, Navigator}
 import org.scalatest.{BeforeAndAfter, TestSuite, TryValues}
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice._
@@ -45,10 +46,18 @@ trait SpecBaseHelpers extends GuiceOneAppPerSuite with TryValues with Mocked wit
 
   protected def applicationBuilder(userAnswers: Option[models.UserAnswers] = None,
                                    affinityGroup: AffinityGroup = AffinityGroup.Organisation,
-                                   enrolments: Enrolments = Enrolments(Set.empty[Enrolment])
+                                   enrolments: Enrolments = Enrolments(Set.empty[Enrolment]),
+                                   navigator: Navigator = fakeNavigator
                                   ): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
       .overrides(
+        bind[Navigator].qualifiedWith(classOf[Money]).toInstance(navigator),
+        bind[Navigator].qualifiedWith(classOf[PropertyOrLand]).toInstance(navigator),
+        bind[Navigator].qualifiedWith(classOf[Shares]).toInstance(navigator),
+        bind[Navigator].qualifiedWith(classOf[Business]).toInstance(navigator),
+        bind[Navigator].qualifiedWith(classOf[Partnership]).toInstance(navigator),
+        bind[Navigator].qualifiedWith(classOf[Other]).toInstance(navigator),
+        bind[Navigator].qualifiedWith(classOf[NonEeaBusiness]).toInstance(navigator),
         bind[IdentifierAction].toInstance(new FakeIdentifierAction(bodyParsers, affinityGroup)),
         bind[PlaybackIdentifierAction].toInstance(new FakePlaybackIdentifierAction()),
         bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers)),

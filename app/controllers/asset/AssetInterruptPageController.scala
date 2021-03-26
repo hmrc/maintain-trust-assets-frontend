@@ -16,6 +16,7 @@
 
 package controllers.asset
 
+import config.annotations.Assets
 import controllers.actions.StandardActionSets
 import navigation.Navigator
 import pages.asset.AssetInterruptPage
@@ -32,7 +33,7 @@ class AssetInterruptPageController @Inject()(
                                               override val messagesApi: MessagesApi,
                                               standardActionSets: StandardActionSets,
                                               repository: PlaybackRepository,
-                                              navigator: Navigator,
+                                              @Assets navigator: Navigator,
                                               val controllerComponents: MessagesControllerComponents,
                                               taxableView: TaxableInfoView,
                                               nonTaxableView: NonTaxableInfoView
