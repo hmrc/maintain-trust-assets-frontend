@@ -8,8 +8,6 @@
 ->         /other                                       other.Routes
 ->         /non-eea-business                            nonEeaBusiness.Routes
 
-GET        /:utr                                       controllers.IndexController.onPageLoad(utr: String)
-
 GET        /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)
 
 GET        /language/:lang                              controllers.LanguageSwitchController.switchToLanguage(lang: String)
@@ -49,3 +47,5 @@ GET        /feature-not-available                       controllers.FeatureNotAv
 GET        /keep-alive                                  controllers.SessionTimeoutController.keepAlive
 
 GET        /timeout                                     controllers.SessionTimeoutController.timeout
+
+GET        /:utr                                       controllers.IndexController.onPageLoad(utr: String)
