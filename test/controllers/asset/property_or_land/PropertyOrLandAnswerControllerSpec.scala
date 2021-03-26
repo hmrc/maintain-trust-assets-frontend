@@ -30,8 +30,6 @@ import views.html.asset.property_or_land.PropertyOrLandAnswersView
 
 class PropertyOrLandAnswerControllerSpec extends SpecBase {
 
-  val index: Int = 0
-
   private val totalValue: Long = 10000L
   val name: String = "Description"
 

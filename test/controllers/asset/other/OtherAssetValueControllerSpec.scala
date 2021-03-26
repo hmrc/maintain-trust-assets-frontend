@@ -20,25 +20,18 @@ import base.SpecBase
 import config.annotations.{Other => other}
 import forms.ValueFormProvider
 import models.{NormalMode, UserAnswers}
-import models.WhatKindOfAsset.Other
 import navigation.Navigator
-import pages.asset.WhatKindOfAssetPage
 import pages.asset.other.{OtherAssetDescriptionPage, OtherAssetValuePage}
-import play.api.Application
 import play.api.data.Form
 import play.api.inject.bind
-import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.asset.other.OtherAssetValueView
-
-import scala.concurrent.Future
 
 class OtherAssetValueControllerSpec extends SpecBase {
 
   val formProvider = new ValueFormProvider(frontendAppConfig)
   val form: Form[Long] = formProvider.withConfig(prefix = "other.value")
-  val index = 0
   val description: String = "Description"
   val validAnswer: Long = 4000L
 

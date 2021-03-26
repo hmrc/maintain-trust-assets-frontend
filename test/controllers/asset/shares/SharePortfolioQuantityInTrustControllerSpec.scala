@@ -34,7 +34,6 @@ class SharePortfolioQuantityInTrustControllerSpec extends SpecBase with ModelGen
 
   private val formProvider = new QuantityFormProvider(frontendAppConfig)
   private val form: Form[Long] = formProvider.withPrefix("shares.portfolioQuantityInTrust")
-  private val index: Int = 0
   private val validAnswer: Long = 4000L
 
   private lazy val sharePortfolioQuantityInTrustRoute: String = routes.SharePortfolioQuantityInTrustController.onPageLoad(NormalMode).url

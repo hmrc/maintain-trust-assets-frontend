@@ -17,18 +17,13 @@
 package controllers.asset.shares
 
 import base.SpecBase
-import org.mockito.Matchers.{any, eq => eqTo}
-import org.mockito.Mockito.when
 import pages.asset.shares._
-import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.print.SharesPrintHelper
 import views.html.asset.shares.ShareAnswersView
 
 class ShareAnswerControllerSpec extends SpecBase {
-
-  private val index: Int = 0
 
   private lazy val shareAnswerRoute: String = routes.ShareAnswerController.onPageLoad().url
 

@@ -32,7 +32,6 @@ import views.html.asset.shares.SharePortfolioOnStockExchangeView
 class SharePortfolioOnStockExchangeControllerSpec extends SpecBase with ModelGenerators with IndexValidation {
 
   val form = new YesNoFormProvider().withPrefix("shares.portfolioOnStockExchangeYesNo")
-  val index: Int = 0
 
   lazy val sharePortfolioOnStockExchangeRoute = routes.SharePortfolioOnStockExchangeController.onPageLoad(NormalMode).url
 

@@ -28,11 +28,8 @@ import utils.print.PartnershipPrintHelper
 import views.html.asset.partnership.PartnershipAnswersView
 import java.time.{LocalDate, ZoneOffset}
 
-import models.NormalMode
-
 class PartnershipAnswerControllerSpec extends SpecBase {
 
-  val index: Int = 0
   val validDate: LocalDate = LocalDate.now(ZoneOffset.UTC)
   val name: String = "Description"
 

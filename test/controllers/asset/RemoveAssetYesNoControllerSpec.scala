@@ -20,9 +20,8 @@ import base.SpecBase
 import forms.YesNoFormProvider
 import models.ShareClass.Ordinary
 import models.WhatKindOfAsset._
-import models.{InternationalAddress, NormalMode, UKAddress, UserAnswers}
+import models.{InternationalAddress, UKAddress, UserAnswers}
 import org.mockito.ArgumentCaptor
-import org.mockito.Matchers.any
 import org.mockito.Mockito._
 import pages.asset._
 import pages.asset.business._

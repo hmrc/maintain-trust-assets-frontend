@@ -33,8 +33,6 @@ class PropertyOrLandAddressUkYesNoControllerSpec extends SpecBase {
 
   val form = new YesNoFormProvider().withPrefix("propertyOrLand.addressUkYesNo")
 
-  val index: Int = 0
-
   lazy val propertyOrLandAddressRoute: String = PropertyOrLandAddressUkYesNoController.onPageLoad(NormalMode).url
 
   "PropertyOrLandAddress Controller" must {

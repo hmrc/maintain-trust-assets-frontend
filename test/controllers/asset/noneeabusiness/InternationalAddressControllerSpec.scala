@@ -23,11 +23,9 @@ import controllers.routes._
 import forms.InternationalAddressFormProvider
 import models.{InternationalAddress, NormalMode, UserAnswers}
 import navigation.Navigator
-import org.scalacheck.Arbitrary.arbitrary
 import pages.asset.noneeabusiness.{InternationalAddressPage, NamePage}
 import play.api.data.Form
 import play.api.inject.bind
-import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{route, _}
 import utils.InputOption
@@ -38,7 +36,6 @@ class InternationalAddressControllerSpec extends SpecBase with IndexValidation {
 
   private val formProvider = new InternationalAddressFormProvider()
   private val form: Form[InternationalAddress] = formProvider()
-  private val index = 0
   private val name = "Test"
   private val validAnswer: InternationalAddress = InternationalAddress("value 1", "value 2", Some("value 3"), "FR")
 

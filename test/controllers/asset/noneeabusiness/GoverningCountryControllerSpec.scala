@@ -37,7 +37,6 @@ class GoverningCountryControllerSpec extends SpecBase with IndexValidation {
   private val formProvider = new CountryFormProvider()
   private val prefix: String = "nonEeaBusiness.governingCountry"
   private val form: Form[String] = formProvider.withPrefix(prefix)
-  private val index = 0
   private val name = "Test"
   private val validAnswer: String = "GB"
 

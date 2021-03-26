@@ -27,7 +27,6 @@ import pages.asset.other._
 class OtherNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   private val navigator: Navigator = injector.instanceOf[OtherNavigator]
-  private val index: Int = 0
 
   "Other Navigator" must {
 

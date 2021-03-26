@@ -27,7 +27,6 @@ import pages.asset.noneeabusiness._
 class NonEeaBusinessNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   private val navigator: Navigator = injector.instanceOf[NonEeaBusinessNavigator]
-  private val index: Int = 0
 
   "Non-EEA Business Navigator" must {
 

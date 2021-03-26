@@ -28,7 +28,6 @@ import pages.asset.money.AssetMoneyValuePage
 class MoneyNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   private val navigator: Navigator = injector.instanceOf[MoneyNavigator]
-  private val index: Int = 0
 
   "Money Navigator" must {
 

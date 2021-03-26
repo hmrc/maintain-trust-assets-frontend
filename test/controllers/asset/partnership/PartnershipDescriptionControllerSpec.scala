@@ -32,7 +32,6 @@ class PartnershipDescriptionControllerSpec extends SpecBase with IndexValidation
 
   private val formProvider = new DescriptionFormProvider()
   private val form = formProvider.withConfig(56, "partnership.description")
-  private val index = 0
 
   private lazy val partnershipDescriptionRoute = routes.PartnershipDescriptionController.onPageLoad(NormalMode).url
 

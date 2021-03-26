@@ -34,7 +34,6 @@ class SharePortfolioValueInTrustControllerSpec extends SpecBase with ModelGenera
 
   val formProvider = new ValueFormProvider(frontendAppConfig)
   val form: Form[Long] = formProvider.withConfig(prefix = "shares.portfolioValueInTrust")
-  val index: Int = 0
   val validAnswer: Long = 4000L
 
   lazy val sharePortfolioValueInTrustRoute: String = routes.SharePortfolioValueInTrustController.onPageLoad(NormalMode).url

@@ -17,14 +17,11 @@
 package controllers.asset.other
 
 import base.SpecBase
-import config.annotations.{Other => other}
-import models.{NormalMode, UserAnswers}
+import models.UserAnswers
 import models.WhatKindOfAsset.Other
-import navigation.Navigator
 import pages.asset._
 import pages.asset.other._
 import play.api.Application
-import play.api.inject.bind
 import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -37,7 +34,6 @@ class OtherAssetAnswersControllerSpec extends SpecBase {
 
   "OtherAssetAnswersController" must {
 
-    val index: Int = 0
     val description: String = "Description"
 
     lazy val answersRoute = routes.OtherAssetAnswersController.onPageLoad().url

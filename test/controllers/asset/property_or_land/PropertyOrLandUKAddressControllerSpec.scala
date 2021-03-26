@@ -35,7 +35,6 @@ class PropertyOrLandUKAddressControllerSpec extends SpecBase with ModelGenerator
 
   val formProvider = new UKAddressFormProvider()
   val form: Form[UKAddress] = formProvider()
-  val index = 0
 
   lazy val PropertyOrLandUKAddressRoute: String = routes.PropertyOrLandUKAddressController.onPageLoad(NormalMode).url
 

@@ -28,7 +28,6 @@ import pages.asset.shares._
 class SharesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   private val navigator: Navigator = injector.instanceOf[SharesNavigator]
-  private val index: Int = 0
 
   "Shares Navigator" must {
 

@@ -18,7 +18,6 @@ package base
 
 import java.time.LocalDate
 
-import config.annotations.{Assets, Business, Money, NonEeaBusiness, Other, Partnership, PropertyOrLand, Shares}
 import controllers.actions._
 import navigation.{FakeNavigator, Navigator}
 import org.scalatest.{BeforeAndAfter, TestSuite, TryValues}

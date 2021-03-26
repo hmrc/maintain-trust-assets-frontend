@@ -28,8 +28,6 @@ import java.time.LocalDate
 
 class AnswersControllerSpec extends SpecBase {
 
-  private val index = 0
-
   private val name: String = "Noneeabusiness"
 
   private val answers: UserAnswers = emptyUserAnswers

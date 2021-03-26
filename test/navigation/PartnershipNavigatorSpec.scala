@@ -28,7 +28,6 @@ import java.time.{LocalDate, ZoneOffset}
 class PartnershipNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   private val navigator: Navigator = injector.instanceOf[PartnershipNavigator]
-  private val index: Int = 0
   private val validDate: LocalDate = LocalDate.now(ZoneOffset.UTC)
 
   "Partnership Navigator" must {

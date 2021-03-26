@@ -40,7 +40,6 @@ class PropertyOrLandInternationalAddressControllerSpec extends SpecBase with Ind
 
   val formProvider = new InternationalAddressFormProvider()
   val form: Form[InternationalAddress] = formProvider()
-  val index: Int = 0
 
   lazy val propertyOrLandInternationalAddressRoute: String = routes.PropertyOrLandInternationalAddressController.onPageLoad(NormalMode).url
 

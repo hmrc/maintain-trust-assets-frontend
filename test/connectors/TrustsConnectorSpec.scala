@@ -56,7 +56,6 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures
   val date: LocalDate = LocalDate.parse("2019-02-03")
 
   private val trustsUrl: String = "/trusts"
-  private val protectorsUrl: String = s"$trustsUrl/protectors"
 
   private def getTrustDetailsUrl(identifier: String) = s"$trustsUrl/$identifier/trust-details"
   private def isTrust5mldUrl(identifier: String) = s"$trustsUrl/$identifier/is-trust-5mld"

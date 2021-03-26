@@ -33,7 +33,6 @@ class PropertyOrLandDescriptionControllerSpec extends SpecBase with IndexValidat
 
   val formProvider = new DescriptionFormProvider()
   val form = formProvider.withConfig(56, "propertyOrLand.description")
-  val index = 0
 
   lazy val propertyOrLandDescriptionRoute = routes.PropertyOrLandDescriptionController.onPageLoad(NormalMode).url
 

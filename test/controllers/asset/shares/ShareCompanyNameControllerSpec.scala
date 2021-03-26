@@ -33,7 +33,6 @@ class ShareCompanyNameControllerSpec extends SpecBase with ModelGenerators with 
 
   val formProvider = new NameFormProvider()
   val form = formProvider.withConfig(53, "shares.companyName")
-  val index: Int = 0
 
   lazy val shareCompanyNameRoute = routes.ShareCompanyNameController.onPageLoad(NormalMode).url
 

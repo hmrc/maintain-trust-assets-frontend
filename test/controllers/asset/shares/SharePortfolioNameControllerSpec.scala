@@ -33,7 +33,6 @@ class SharePortfolioNameControllerSpec extends SpecBase with ModelGenerators wit
 
   val formProvider = new NameFormProvider()
   val form = formProvider.withConfig(53, "shares.portfolioName")
-  val index: Int = 0
 
   lazy val sharePortfolioNameRoute = routes.SharePortfolioNameController.onPageLoad(NormalMode).url
 

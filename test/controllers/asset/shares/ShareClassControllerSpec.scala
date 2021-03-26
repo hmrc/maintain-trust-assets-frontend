@@ -33,7 +33,6 @@ class ShareClassControllerSpec extends SpecBase with ModelGenerators with IndexV
 
   val formProvider = new ShareClassFormProvider()
   val form = formProvider()
-  val index: Int = 0
   val companyName = "Company"
 
   lazy val shareClassRoute = routes.ShareClassController.onPageLoad(NormalMode).url

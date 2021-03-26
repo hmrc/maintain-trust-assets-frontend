@@ -163,8 +163,6 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
 
       "redirect to the next page when valid data is submitted" when {
 
-        val indexOfNewAsset = 0
-
         "taxable" must {
           "set value in AddAnAssetYesNoPage" in {
 
@@ -328,8 +326,6 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
 
       "redirect to the next page when YesNow is submitted" when {
 
-        val indexOfNewAsset = 2
-
         "taxable" must {
           "set value in AddAssetsPage and not set value in WhatKindOfAssetPage" in {
 
@@ -386,8 +382,6 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
       }
 
       "redirect to the next page when YesLater or NoComplete is submitted" when {
-
-        val indexOfNewAsset = 2
 
         "taxable" must {
           "set value in AddAssetsPage and not set value in WhatKindOfAssetPage" in {

@@ -24,10 +24,8 @@ import models.WhatKindOfAsset.Other
 import navigation.Navigator
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.other.OtherAssetDescriptionPage
-import play.api.Application
 import play.api.data.Form
 import play.api.inject.bind
-import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.asset.other.OtherAssetDescriptionView
@@ -38,7 +36,6 @@ class OtherAssetDescriptionControllerSpec extends SpecBase {
 
   val formProvider = new DescriptionFormProvider()
   val form: Form[String] = formProvider.withConfig(56, "other.description")
-  val index = 0
   val validAnswer: String = "Description"
 
   lazy val descriptionRoute: String = routes.OtherAssetDescriptionController.onPageLoad(NormalMode).url

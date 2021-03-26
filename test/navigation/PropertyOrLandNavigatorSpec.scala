@@ -27,7 +27,6 @@ import pages.asset.property_or_land._
 class PropertyOrLandNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   private val navigator: Navigator = injector.instanceOf[PropertyOrLandNavigator]
-  private val index: Int = 0
 
   "Property or Land Navigator" must {
 

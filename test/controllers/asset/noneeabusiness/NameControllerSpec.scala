@@ -23,11 +23,9 @@ import controllers.routes._
 import forms.NameFormProvider
 import models.{NormalMode, UserAnswers}
 import navigation.Navigator
-import org.scalacheck.Arbitrary.arbitrary
 import pages.asset.noneeabusiness.NamePage
 import play.api.data.Form
 import play.api.inject.bind
-import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{route, _}
 import views.html.asset.noneeabusiness.NameView
@@ -38,7 +36,6 @@ class NameControllerSpec extends SpecBase with IndexValidation {
   private val prefix: String = "nonEeaBusiness.name"
   private val maxLength: Int = 105
   private val form: Form[String] = formProvider.withConfig(maxLength, prefix)
-  private val index = 0
   private val validAnswer: String = "Name"
 
   private lazy val onPageLoadRoute: String = routes.NameController.onPageLoad(NormalMode).url

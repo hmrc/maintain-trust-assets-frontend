@@ -20,9 +20,7 @@ import base.SpecBase
 import controllers.IndexValidation
 import forms.StartDateFormProvider
 import models.{NormalMode, UserAnswers}
-import org.scalacheck.Arbitrary.arbitrary
 import pages.asset.noneeabusiness.{NamePage, StartDatePage}
-import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{route, _}
 import views.html.asset.noneeabusiness.StartDateView
@@ -37,7 +35,6 @@ class StartDateControllerSpec extends SpecBase with IndexValidation {
   private val formProvider = new StartDateFormProvider(frontendAppConfig)
   private val prefix: String = "nonEeaBusiness.startDate"
   private val form = formProvider.withPrefix(prefix)
-  private val index = 0
   private val name = "Test"
 
   private val validAnswer: LocalDate = LocalDate.parse("1996-02-03")

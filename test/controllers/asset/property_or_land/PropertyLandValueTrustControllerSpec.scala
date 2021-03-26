@@ -35,7 +35,6 @@ class PropertyLandValueTrustControllerSpec extends SpecBase with IndexValidation
   val formProvider = new ValueFormProvider(frontendAppConfig)
   val form: Form[Long] = formProvider.withConfig(prefix = "propertyOrLand.valueInTrust")
 
-  val index: Int = 0
   val validAnswer: Long = 4000L
 
   lazy val propertyLandValueTrustRoute: String = routes.PropertyLandValueTrustController.onPageLoad(NormalMode).url

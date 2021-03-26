@@ -34,7 +34,6 @@ class ShareQuantityInTrustControllerSpec extends SpecBase with ModelGenerators w
 
   private val formProvider = new QuantityFormProvider(frontendAppConfig)
   private val form: Form[Long] = formProvider.withPrefix("shares.quantityInTrust")
-  private val index: Int = 0
   private val companyName = "Company"
   private val validAnswer: Long = 4000L
 

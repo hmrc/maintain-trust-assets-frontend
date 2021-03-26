@@ -23,10 +23,8 @@ import forms.YesNoFormProvider
 import generators.ModelGenerators
 import models.NormalMode
 import navigation.Navigator
-import org.scalacheck.Arbitrary.arbitrary
 import pages.asset.shares.SharesInAPortfolioPage
 import play.api.inject.bind
-import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{route, _}
 import views.html.asset.shares.SharesInAPortfolioView
@@ -34,7 +32,6 @@ import views.html.asset.shares.SharesInAPortfolioView
 class SharesInAPortfolioControllerSpec extends SpecBase with ModelGenerators with IndexValidation {
 
   val form = new YesNoFormProvider().withPrefix("shares.inAPortfolioYesNo")
-  val index: Int = 0
 
   lazy val sharesInAPortfolioRoute = routes.SharesInAPortfolioController.onPageLoad(NormalMode).url
 
