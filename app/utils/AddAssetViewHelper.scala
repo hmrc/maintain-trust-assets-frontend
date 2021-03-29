@@ -65,7 +65,7 @@ class AddAssetViewHelper @Inject()(userAnswers: UserAnswers)
       name = mvm.label.getOrElse(defaultValue),
       typeLabel = mvm.`type`.label,
       changeUrl = money.routes.AssetMoneyValueController.onPageLoad(NormalMode).url,
-      removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index).url
+      removeUrl = ""
     )
   }
 
@@ -82,7 +82,7 @@ class AddAssetViewHelper @Inject()(userAnswers: UserAnswers)
       } else {
         property_or_land.routes.PropertyOrLandAddressYesNoController.onPageLoad(NormalMode).url
       },
-      removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index).url
+      removeUrl = ""
     )
   }
 
@@ -95,7 +95,7 @@ class AddAssetViewHelper @Inject()(userAnswers: UserAnswers)
       } else {
         shares.routes.SharesInAPortfolioController.onPageLoad(NormalMode).url
       },
-      removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index).url
+      removeUrl = ""
     )
   }
 
@@ -108,7 +108,7 @@ class AddAssetViewHelper @Inject()(userAnswers: UserAnswers)
       } else {
         business.routes.BusinessNameController.onPageLoad(NormalMode).url
       },
-      removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index).url
+      removeUrl = ""
     )
   }
 
@@ -121,7 +121,7 @@ class AddAssetViewHelper @Inject()(userAnswers: UserAnswers)
       } else {
         partnership.routes.PartnershipDescriptionController.onPageLoad(NormalMode).url
       },
-      removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index).url
+      removeUrl = ""
     )
   }
 
@@ -134,7 +134,7 @@ class AddAssetViewHelper @Inject()(userAnswers: UserAnswers)
       } else {
         other.routes.OtherAssetDescriptionController.onPageLoad(NormalMode).url
       },
-      removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index).url
+      removeUrl = ""
     )
   }
   
@@ -147,7 +147,7 @@ class AddAssetViewHelper @Inject()(userAnswers: UserAnswers)
       } else {
         noneeabusiness.routes.NameController.onPageLoad(NormalMode).url
       },
-      removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index).url
+      removeUrl = ""
     )
   }
 

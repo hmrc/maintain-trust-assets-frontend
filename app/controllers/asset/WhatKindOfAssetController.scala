@@ -47,27 +47,27 @@ class WhatKindOfAssetController @Inject()(
 
   private def options(userAnswers: UserAnswers): List[RadioOption] = {
     val assets = userAnswers.get(sections.Assets).getOrElse(Nil)
-    val assetTypeAtIndex = userAnswers.get(WhatKindOfAssetPage)
+    val assetTypeSelected = userAnswers.get(WhatKindOfAssetPage)
 
-    WhatKindOfAsset.nonMaxedOutOptions(assets, assetTypeAtIndex, userAnswers.is5mldEnabled)
+    WhatKindOfAsset.nonMaxedOutOptions(assets, assetTypeSelected, userAnswers.is5mldEnabled)
   }
 
-  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
+  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
     implicit request =>
       val preparedForm = request.userAnswers.get(WhatKindOfAssetPage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, 0, options(request.userAnswers))) // TODO Index
+      Ok(view(preparedForm, index, options(request.userAnswers))) // TODO Index
   }
 
-  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, 0, options(request.userAnswers)))), // TODO Index
+          Future.successful(BadRequest(view(formWithErrors, index, options(request.userAnswers)))), // TODO Index
 
         value => {
 

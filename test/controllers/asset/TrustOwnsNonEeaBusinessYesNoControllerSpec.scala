@@ -17,12 +17,15 @@
 package controllers.asset
 
 import base.SpecBase
+import config.annotations.Assets
 import controllers.asset.routes._
 import controllers.routes._
 import forms.YesNoFormProvider
 import models.NormalMode
+import navigation.Navigator
 import pages.asset.TrustOwnsNonEeaBusinessYesNoPage
 import play.api.data.Form
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.asset.TrustOwnsNonEeaBusinessYesNoView
@@ -76,7 +79,9 @@ class TrustOwnsNonEeaBusinessYesNoControllerSpec extends SpecBase {
 
     "redirect to the next page when valid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[Navigator].qualifiedWith(classOf[Assets]).toInstance(fakeNavigator))
+        .build()
 
       val request = FakeRequest(POST, onPageLoadRoute)
         .withFormUrlEncodedBody(("value", "true"))

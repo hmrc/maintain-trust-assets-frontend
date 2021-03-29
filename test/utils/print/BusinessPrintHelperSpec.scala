@@ -29,6 +29,7 @@ import viewmodels.{AnswerRow, AnswerSection}
 class BusinessPrintHelperSpec extends SpecBase {
 
   private val helper: BusinessPrintHelper = injector.instanceOf[BusinessPrintHelper]
+  private val index: Int = 0
   private val name: String = "Name"
   private val description: String = "Description"
   private val ukAddress: UKAddress = UKAddress("Line 1", "Line 2", None, None, "AB1 1AB")
@@ -50,7 +51,7 @@ class BusinessPrintHelperSpec extends SpecBase {
     .set(BusinessInternationalAddressPage, nonUkAddress).success.value
 
   private val ukAddressRows: Seq[AnswerRow] = Seq(
-    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Business"), Some(WhatKindOfAssetController.onPageLoad().url)),
+    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Business"), Some(WhatKindOfAssetController.onPageLoad(index).url)),
     AnswerRow("business.name.checkYourAnswersLabel", Html(name), Some(BusinessNameController.onPageLoad(NormalMode).url)),
     AnswerRow("business.description.checkYourAnswersLabel", Html(description), Some(BusinessDescriptionController.onPageLoad(NormalMode).url)),
     AnswerRow("business.addressUkYesNo.checkYourAnswersLabel", Html("Yes"), Some(BusinessAddressUkYesNoController.onPageLoad(NormalMode).url)),
@@ -59,7 +60,7 @@ class BusinessPrintHelperSpec extends SpecBase {
   )
 
   private val nonUkAddressRows: Seq[AnswerRow] = Seq(
-    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Business"), Some(WhatKindOfAssetController.onPageLoad().url)),
+    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Business"), Some(WhatKindOfAssetController.onPageLoad(index).url)),
     AnswerRow("business.name.checkYourAnswersLabel", Html(name), Some(BusinessNameController.onPageLoad(NormalMode).url)),
     AnswerRow("business.description.checkYourAnswersLabel", Html(description), Some(BusinessDescriptionController.onPageLoad(NormalMode).url)),
     AnswerRow("business.addressUkYesNo.checkYourAnswersLabel", Html("No"), Some(BusinessAddressUkYesNoController.onPageLoad(NormalMode).url)),

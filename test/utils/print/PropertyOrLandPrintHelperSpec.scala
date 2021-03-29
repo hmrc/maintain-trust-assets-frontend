@@ -29,7 +29,7 @@ import viewmodels.{AnswerRow, AnswerSection}
 class PropertyOrLandPrintHelperSpec extends SpecBase {
 
   private val helper: PropertyOrLandPrintHelper = injector.instanceOf[PropertyOrLandPrintHelper]
-
+  private val index: Int = 0
   private val description: String = "Description"
   private val ukAddress: UKAddress = UKAddress("Line 1", "Line 2", None, None, "AB1 1AB")
   private val nonUkAddress: InternationalAddress = InternationalAddress("Line 1", "Line 2", None, "FR")
@@ -59,7 +59,7 @@ class PropertyOrLandPrintHelperSpec extends SpecBase {
     .set(PropertyLandValueTrustPage, secondaryAmount).success.value
 
   private val ukAddressTrustOwnsAllRows: Seq[AnswerRow] = Seq(
-    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Property or land"), Some(WhatKindOfAssetController.onPageLoad().url)),
+    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Property or land"), Some(WhatKindOfAssetController.onPageLoad(index).url)),
     AnswerRow("propertyOrLand.addressYesNo.checkYourAnswersLabel", Html("Yes"), Some(PropertyOrLandAddressYesNoController.onPageLoad(NormalMode).url)),
     AnswerRow("propertyOrLand.addressUkYesNo.checkYourAnswersLabel", Html("Yes"), Some(PropertyOrLandAddressUkYesNoController.onPageLoad(NormalMode).url)),
     AnswerRow("propertyOrLand.ukAddress.checkYourAnswersLabel", Html("Line 1<br />Line 2<br />AB1 1AB"), Some(PropertyOrLandUKAddressController.onPageLoad(NormalMode).url)),
@@ -68,7 +68,7 @@ class PropertyOrLandPrintHelperSpec extends SpecBase {
   )
 
   private val nonUkAddressTrustOwnsAllRows: Seq[AnswerRow] = Seq(
-    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Property or land"), Some(WhatKindOfAssetController.onPageLoad().url)),
+    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Property or land"), Some(WhatKindOfAssetController.onPageLoad(index).url)),
     AnswerRow("propertyOrLand.addressYesNo.checkYourAnswersLabel", Html("Yes"), Some(PropertyOrLandAddressYesNoController.onPageLoad(NormalMode).url)),
     AnswerRow("propertyOrLand.addressUkYesNo.checkYourAnswersLabel", Html("Yes"), Some(PropertyOrLandAddressUkYesNoController.onPageLoad(NormalMode).url)),
     AnswerRow("propertyOrLand.internationalAddress.checkYourAnswersLabel", Html("Line 1<br />Line 2<br />France"), Some(PropertyOrLandInternationalAddressController.onPageLoad(NormalMode).url)),
@@ -77,7 +77,7 @@ class PropertyOrLandPrintHelperSpec extends SpecBase {
   )
 
   private val descriptionTrustDoesNotOwnAllRows: Seq[AnswerRow] = Seq(
-    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Property or land"), Some(WhatKindOfAssetController.onPageLoad().url)),
+    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Property or land"), Some(WhatKindOfAssetController.onPageLoad(index).url)),
     AnswerRow("propertyOrLand.addressYesNo.checkYourAnswersLabel", Html("No"), Some(PropertyOrLandAddressYesNoController.onPageLoad(NormalMode).url)),
     AnswerRow("propertyOrLand.description.checkYourAnswersLabel", Html(description), Some(PropertyOrLandDescriptionController.onPageLoad(NormalMode).url)),
     AnswerRow("propertyOrLand.totalValue.checkYourAnswersLabel", Html("£100"), Some(PropertyOrLandTotalValueController.onPageLoad(NormalMode).url)),

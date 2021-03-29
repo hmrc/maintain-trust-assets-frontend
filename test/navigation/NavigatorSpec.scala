@@ -29,6 +29,7 @@ import play.api.mvc.Call
 class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   private val navigator: Navigator = injector.instanceOf[AssetsNavigator]
+  private val index = 0
 
   private val assetsCompletedRoute: Call = {
     Call("GET", frontendAppConfig.registrationProgressUrl())
@@ -68,7 +69,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
         "redirect to WhatKindOfAssetPage" in {
 
           navigator.nextPage(AssetInterruptPage, NormalMode, baseAnswers)
-            .mustBe(controllers.asset.routes.WhatKindOfAssetController.onPageLoad())
+            .mustBe(controllers.asset.routes.WhatKindOfAssetController.onPageLoad(index))
         }
       }
 
@@ -98,7 +99,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
             val answers = baseAnswers.set(AddAnAssetYesNoPage, true).success.value
 
             navigator.nextPage(AddAnAssetYesNoPage, NormalMode, answers)
-              .mustBe(controllers.asset.routes.WhatKindOfAssetController.onPageLoad())
+              .mustBe(controllers.asset.routes.WhatKindOfAssetController.onPageLoad(index))
           }
         }
 
@@ -155,7 +156,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
               .set(AddAssetsPage, AddAssets.YesNow).success.value
 
             navigator.nextPage(AddAssetsPage, NormalMode, answers)
-              .mustBe(controllers.asset.routes.WhatKindOfAssetController.onPageLoad())
+              .mustBe(controllers.asset.routes.WhatKindOfAssetController.onPageLoad(index))
           }
         }
 

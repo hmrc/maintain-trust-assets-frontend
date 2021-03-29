@@ -29,6 +29,7 @@ import viewmodels.{AnswerRow, AnswerSection}
 class MoneyPrintHelperSpec extends SpecBase {
 
   private val helper: MoneyPrintHelper = injector.instanceOf[MoneyPrintHelper]
+  private val index: Int = 0
   private val name: String = "Name"
   private val amount: Long = 100L
 
@@ -37,7 +38,7 @@ class MoneyPrintHelperSpec extends SpecBase {
     .set(AssetMoneyValuePage, amount).success.value
 
   private val rows: Seq[AnswerRow] = Seq(
-    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Money"), Some(WhatKindOfAssetController.onPageLoad().url)),
+    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Money"), Some(WhatKindOfAssetController.onPageLoad(index).url)),
     AnswerRow("money.value.checkYourAnswersLabel", Html(s"£100"), Some(AssetMoneyValueController.onPageLoad(NormalMode).url))
   )
 

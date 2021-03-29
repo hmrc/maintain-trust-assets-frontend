@@ -29,6 +29,7 @@ import viewmodels.{AnswerRow, AnswerSection}
 class SharesPrintHelperSpec extends SpecBase {
 
   private val helper: SharesPrintHelper = injector.instanceOf[SharesPrintHelper]
+  private val index: Int = 0
   private val name: String = "Name"
   private val quantity: Long = 200L
   private val amount: Long = 100L
@@ -51,7 +52,7 @@ class SharesPrintHelperSpec extends SpecBase {
     .set(SharePortfolioValueInTrustPage, amount).success.value
 
   private val nonPortfolioRows: Seq[AnswerRow] = Seq(
-    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Shares"), Some(WhatKindOfAssetController.onPageLoad().url)),
+    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Shares"), Some(WhatKindOfAssetController.onPageLoad(index).url)),
     AnswerRow("shares.inAPortfolioYesNo.checkYourAnswersLabel", Html("No"), Some(SharesInAPortfolioController.onPageLoad(NormalMode).url)),
     AnswerRow("shares.companyName.checkYourAnswersLabel", Html(name), Some(ShareCompanyNameController.onPageLoad(NormalMode).url)),
     AnswerRow("shares.onStockExchangeYesNo.checkYourAnswersLabel", Html("Yes"), Some(SharesOnStockExchangeController.onPageLoad(NormalMode).url)),
@@ -61,7 +62,7 @@ class SharesPrintHelperSpec extends SpecBase {
   )
 
   private val portfolioRows: Seq[AnswerRow] = Seq(
-    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Shares"), Some(WhatKindOfAssetController.onPageLoad().url)),
+    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Shares"), Some(WhatKindOfAssetController.onPageLoad(index).url)),
     AnswerRow("shares.inAPortfolioYesNo.checkYourAnswersLabel", Html("Yes"), Some(SharesInAPortfolioController.onPageLoad(NormalMode).url)),
     AnswerRow("shares.portfolioName.checkYourAnswersLabel", Html(name), Some(SharePortfolioNameController.onPageLoad(NormalMode).url)),
     AnswerRow("shares.portfolioOnStockExchangeYesNo.checkYourAnswersLabel", Html("Yes"), Some(SharePortfolioOnStockExchangeController.onPageLoad(NormalMode).url)),

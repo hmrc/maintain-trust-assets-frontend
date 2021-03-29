@@ -17,13 +17,13 @@
 package navigation
 
 import config.FrontendAppConfig
-import controllers.asset.routes.WhatKindOfAssetController
+import controllers.asset.routes.{WhatKindOfAssetController, AssetInterruptPageController}
 import controllers.routes.SessionExpiredController
 import javax.inject.Inject
 import models.WhatKindOfAsset.{Business, Money, NonEeaBusiness, Other, Partnership, PropertyOrLand, Shares}
 import models.{AddAssets, Mode, NormalMode, UserAnswers}
 import pages.Page
-import pages.asset.{AddAnAssetYesNoPage, AddAssetsPage, AssetInterruptPage, WhatKindOfAssetPage}
+import pages.asset.{AddAnAssetYesNoPage, AddAssetsPage, AssetInterruptPage, TrustOwnsNonEeaBusinessYesNoPage, WhatKindOfAssetPage}
 import play.api.mvc.Call
 
 class AssetsNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
@@ -83,11 +83,11 @@ class AssetsNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
 
     if (answers.isTaxable) {
       val index = assets.size
-      WhatKindOfAssetController.onPageLoad()
+      WhatKindOfAssetController.onPageLoad(index)
     } else {
       // assets includes an in progress non-EEA business asset as we have just set the value in WhatKindOfAssetPage
       // therefore we need the index to correspond to that asset (i.e. assets.size - 1)
-      val index = assets.size - 1
+//      val index = assets.size - 1
       controllers.asset.noneeabusiness.routes.NameController.onPageLoad(NormalMode)
     }
   }
@@ -97,6 +97,12 @@ class AssetsNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
       ua = ua,
       fromPage = AddAnAssetYesNoPage,
       yesCall = routeToAssetIndex(ua),
+      noCall = assetsCompletedRoute()
+    )
+    case TrustOwnsNonEeaBusinessYesNoPage => ua => yesNoNav(
+      ua = ua,
+      fromPage = TrustOwnsNonEeaBusinessYesNoPage,
+      yesCall = AssetInterruptPageController.onPageLoad(),
       noCall = assetsCompletedRoute()
     )
   }

@@ -29,6 +29,7 @@ import viewmodels.{AnswerRow, AnswerSection}
 class OtherPrintHelperSpec extends SpecBase {
 
   private val helper: OtherPrintHelper = injector.instanceOf[OtherPrintHelper]
+  private val index: Int = 0
   private val description: String = "Description"
   private val amount: Long = 100L
 
@@ -38,7 +39,7 @@ class OtherPrintHelperSpec extends SpecBase {
     .set(OtherAssetValuePage, amount).success.value
 
   private val rows: Seq[AnswerRow] = Seq(
-    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Other"), Some(WhatKindOfAssetController.onPageLoad().url)),
+    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Other"), Some(WhatKindOfAssetController.onPageLoad(index).url)),
     AnswerRow("other.description.checkYourAnswersLabel", Html(description), Some(OtherAssetDescriptionController.onPageLoad(NormalMode).url)),
     AnswerRow("other.value.checkYourAnswersLabel", Html("£100"), Some(OtherAssetValueController.onPageLoad(NormalMode).url))
   )

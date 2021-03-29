@@ -18,8 +18,8 @@ GET        /unauthorised                                controllers.Unauthorised
 
 GET        /logout                                      controllers.LogoutController.logout()
 
-GET        /assets-type                                 controllers.asset.WhatKindOfAssetController.onPageLoad()
-POST       /assets-type                                 controllers.asset.WhatKindOfAssetController.onSubmit()
+GET        /assets-type                                 controllers.asset.WhatKindOfAssetController.onPageLoad(index: Int)
+POST       /assets-type                                 controllers.asset.WhatKindOfAssetController.onSubmit(index: Int)
 
 GET        /trust-owns-non-eea-company          controllers.asset.TrustOwnsNonEeaBusinessYesNoController.onPageLoad(mode: Mode = NormalMode)
 POST       /trust-owns-non-eea-company          controllers.asset.TrustOwnsNonEeaBusinessYesNoController.onSubmit(mode: Mode = NormalMode)
@@ -39,8 +39,8 @@ POST       /add-another                  controllers.asset.AddAssetsController.s
 GET        /complete                     controllers.asset.AddAssetsController.onPageLoad()
 POST       /complete                     controllers.asset.AddAssetsController.submitComplete()
 
-GET        /:index/remove                controllers.asset.RemoveAssetYesNoController.onPageLoad(index: Int)
-POST       /:index/remove                controllers.asset.RemoveAssetYesNoController.onSubmit(index: Int)
+#GET        /:index/remove                controllers.asset.RemoveAssetYesNoController.onPageLoad(index: Int)
+#POST       /:index/remove                controllers.asset.RemoveAssetYesNoController.onSubmit(index: Int)
 
 GET        /feature-not-available                       controllers.FeatureNotAvailableController.onPageLoad()
 

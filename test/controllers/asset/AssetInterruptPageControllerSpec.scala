@@ -17,12 +17,15 @@
 package controllers.asset
 
 import base.SpecBase
+import config.annotations.{Assets, Business}
 import models.UserAnswers
 import models.WhatKindOfAsset.NonEeaBusiness
+import navigation.Navigator
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import pages.asset.WhatKindOfAssetPage
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.asset.{NonTaxableInfoView, TaxableInfoView}
@@ -113,7 +116,9 @@ class AssetInterruptPageControllerSpec extends SpecBase {
           when(playbackRepository.set(any())).thenReturn(Future.successful(true))
           val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
 
-          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(isTaxable = isTaxable))).build()
+          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(isTaxable = isTaxable)))
+            .overrides(bind[Navigator].qualifiedWith(classOf[Assets]).toInstance(fakeNavigator))
+            .build()
 
           val request = FakeRequest(POST, routes.AssetInterruptPageController.onSubmit().url)
 
@@ -140,7 +145,9 @@ class AssetInterruptPageControllerSpec extends SpecBase {
           when(playbackRepository.set(any())).thenReturn(Future.successful(true))
           val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
 
-          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(isTaxable = isTaxable))).build()
+          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(isTaxable = isTaxable)))
+            .overrides(bind[Navigator].qualifiedWith(classOf[Assets]).toInstance(fakeNavigator))
+            .build()
 
           val request = FakeRequest(POST, routes.AssetInterruptPageController.onSubmit().url)
 
