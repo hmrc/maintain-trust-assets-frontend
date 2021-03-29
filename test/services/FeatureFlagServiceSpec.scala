@@ -21,6 +21,7 @@ import connectors.TrustsStoreConnector
 import models.FeatureResponse
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
+import org.scalatest.concurrent.ScalaFutures.whenReady
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.Future

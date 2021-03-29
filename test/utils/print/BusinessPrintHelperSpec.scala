@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.asset.business.routes._
 import controllers.asset.routes.WhatKindOfAssetController
 import models.WhatKindOfAsset.Business
-import models.{InternationalAddress, UKAddress, UserAnswers}
+import models.{InternationalAddress, NormalMode, UKAddress, UserAnswers}
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.business._
 import play.twirl.api.Html
@@ -29,11 +29,7 @@ import viewmodels.{AnswerRow, AnswerSection}
 class BusinessPrintHelperSpec extends SpecBase {
 
   private val helper: BusinessPrintHelper = injector.instanceOf[BusinessPrintHelper]
-
   private val index: Int = 0
-
-  private val heading: String = s"Business ${index + 1}"
-
   private val name: String = "Name"
   private val description: String = "Description"
   private val ukAddress: UKAddress = UKAddress("Line 1", "Line 2", None, None, "AB1 1AB")
@@ -41,101 +37,66 @@ class BusinessPrintHelperSpec extends SpecBase {
   private val amount: Long = 100L
 
   private val baseAnswers: UserAnswers = emptyUserAnswers
-    .set(WhatKindOfAssetPage(index), Business).success.value
-    .set(BusinessNamePage(index), name).success.value
-    .set(BusinessDescriptionPage(index), description).success.value
-    .set(BusinessValuePage(index), amount).success.value
+    .set(WhatKindOfAssetPage, Business).success.value
+    .set(BusinessNamePage, name).success.value
+    .set(BusinessDescriptionPage, description).success.value
+    .set(BusinessValuePage, amount).success.value
 
   private val ukAddressAnswers: UserAnswers = baseAnswers
-    .set(BusinessAddressUkYesNoPage(index), true).success.value
-    .set(BusinessUkAddressPage(index), ukAddress).success.value
+    .set(BusinessAddressUkYesNoPage, true).success.value
+    .set(BusinessUkAddressPage, ukAddress).success.value
 
   private val nonUkAddressAnswers: UserAnswers = baseAnswers
-    .set(BusinessAddressUkYesNoPage(index), false).success.value
-    .set(BusinessInternationalAddressPage(index), nonUkAddress).success.value
+    .set(BusinessAddressUkYesNoPage, false).success.value
+    .set(BusinessInternationalAddressPage, nonUkAddress).success.value
 
   private val ukAddressRows: Seq[AnswerRow] = Seq(
     AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Business"), Some(WhatKindOfAssetController.onPageLoad(index).url)),
-    AnswerRow("business.name.checkYourAnswersLabel", Html(name), Some(BusinessNameController.onPageLoad(index).url)),
-    AnswerRow("business.description.checkYourAnswersLabel", Html(description), Some(BusinessDescriptionController.onPageLoad(index).url)),
-    AnswerRow("business.addressUkYesNo.checkYourAnswersLabel", Html("Yes"), Some(BusinessAddressUkYesNoController.onPageLoad(index).url)),
-    AnswerRow("business.ukAddress.checkYourAnswersLabel", Html("Line 1<br />Line 2<br />AB1 1AB"), Some(BusinessUkAddressController.onPageLoad(index).url)),
-    AnswerRow("business.currentValue.checkYourAnswersLabel", Html("£100"), Some(BusinessValueController.onPageLoad(index).url))
+    AnswerRow("business.name.checkYourAnswersLabel", Html(name), Some(BusinessNameController.onPageLoad(NormalMode).url)),
+    AnswerRow("business.description.checkYourAnswersLabel", Html(description), Some(BusinessDescriptionController.onPageLoad(NormalMode).url)),
+    AnswerRow("business.addressUkYesNo.checkYourAnswersLabel", Html("Yes"), Some(BusinessAddressUkYesNoController.onPageLoad(NormalMode).url)),
+    AnswerRow("business.ukAddress.checkYourAnswersLabel", Html("Line 1<br />Line 2<br />AB1 1AB"), Some(BusinessUkAddressController.onPageLoad(NormalMode).url)),
+    AnswerRow("business.currentValue.checkYourAnswersLabel", Html("£100"), Some(BusinessValueController.onPageLoad(NormalMode).url))
   )
 
   private val nonUkAddressRows: Seq[AnswerRow] = Seq(
     AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Business"), Some(WhatKindOfAssetController.onPageLoad(index).url)),
-    AnswerRow("business.name.checkYourAnswersLabel", Html(name), Some(BusinessNameController.onPageLoad(index).url)),
-    AnswerRow("business.description.checkYourAnswersLabel", Html(description), Some(BusinessDescriptionController.onPageLoad(index).url)),
-    AnswerRow("business.addressUkYesNo.checkYourAnswersLabel", Html("No"), Some(BusinessAddressUkYesNoController.onPageLoad(index).url)),
-    AnswerRow("business.internationalAddress.checkYourAnswersLabel", Html("Line 1<br />Line 2<br />France"), Some(BusinessInternationalAddressController.onPageLoad(index).url)),
-    AnswerRow("business.currentValue.checkYourAnswersLabel", Html("£100"), Some(BusinessValueController.onPageLoad(index).url))
+    AnswerRow("business.name.checkYourAnswersLabel", Html(name), Some(BusinessNameController.onPageLoad(NormalMode).url)),
+    AnswerRow("business.description.checkYourAnswersLabel", Html(description), Some(BusinessDescriptionController.onPageLoad(NormalMode).url)),
+    AnswerRow("business.addressUkYesNo.checkYourAnswersLabel", Html("No"), Some(BusinessAddressUkYesNoController.onPageLoad(NormalMode).url)),
+    AnswerRow("business.internationalAddress.checkYourAnswersLabel", Html("Line 1<br />Line 2<br />France"), Some(BusinessInternationalAddressController.onPageLoad(NormalMode).url)),
+    AnswerRow("business.currentValue.checkYourAnswersLabel", Html("£100"), Some(BusinessValueController.onPageLoad(NormalMode).url))
   )
 
   "BusinessPrintHelper" when {
 
-    "printSection" must {
-      "render answer section with heading" when {
+    "generate Business Asset section" when {
+
+      "added" when {
 
         "business has UK address" in {
 
-          val result: AnswerSection = helper.printSection(
-            userAnswers = ukAddressAnswers,
-            index = index,
-            specificIndex = index
-          )
+          val result = helper(ukAddressAnswers, provisional = true, name)
 
           result mustBe AnswerSection(
-            headingKey = Some(heading),
+            headingKey = None,
             rows = ukAddressRows
           )
         }
 
         "business has non-UK address" in {
 
-          val result: AnswerSection = helper.printSection(
-            userAnswers = nonUkAddressAnswers,
-            index = index,
-            specificIndex = index
-          )
+          val result = helper(nonUkAddressAnswers, provisional = true, name)
 
           result mustBe AnswerSection(
-            headingKey = Some(heading),
-            rows = nonUkAddressRows
-          )
-        }
-      }
-    }
-
-    "checkDetailsSection" must {
-      "render answer section without heading" when {
-
-        "business has UK address" in {
-
-          val result: Seq[AnswerSection] = helper.checkDetailsSection(
-            userAnswers = ukAddressAnswers,
-            index = index
-          )
-
-          result mustBe Seq(AnswerSection(
-            headingKey = None,
-            rows = ukAddressRows
-          ))
-        }
-
-        "business has non-UK address" in {
-
-          val result: Seq[AnswerSection] = helper.checkDetailsSection(
-            userAnswers = nonUkAddressAnswers,
-            index = index
-          )
-
-          result mustBe Seq(AnswerSection(
             headingKey = None,
             rows = nonUkAddressRows
-          ))
+          )
         }
+
       }
+
     }
+
   }
 }

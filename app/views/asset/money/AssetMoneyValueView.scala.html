@@ -21,7 +21,7 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], index: Int)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @optionalHtmlContent = {<p>@messages("money.value.paragraph1")</p>}
 
@@ -29,7 +29,7 @@
     title = s"${errorPrefix(form)} ${messages("money.value.title")}"
 ) {
 
-    @formHelper(action = AssetMoneyValueController.onSubmit(index), 'autoComplete -> "off") {
+    @formHelper(action = AssetMoneyValueController.onSubmit(mode), 'autoComplete -> "off") {
 
         @components.back_link()
 

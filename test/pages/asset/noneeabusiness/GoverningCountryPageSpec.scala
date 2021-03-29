@@ -20,7 +20,7 @@ import pages.behaviours.PageBehaviours
 
 class GoverningCountryPageSpec extends PageBehaviours {
 
-  private val page: GoverningCountryPage = GoverningCountryPage(0)
+  private val page = GoverningCountryPage
 
   "GoverningCountryPage" must {
 

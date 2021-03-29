@@ -18,12 +18,11 @@ package utils
 
 import controllers.asset._
 import models.Status.Completed
-import models.UserAnswers
+import models.{NormalMode, UserAnswers}
 import models.WhatKindOfAsset.Money.AssetLabel
 import play.api.i18n.Messages
 import sections.Assets
 import viewmodels.{AddRow, AddToRows, _}
-
 import javax.inject.Inject
 
 class AddAssetViewHelper @Inject()(userAnswers: UserAnswers)
@@ -65,8 +64,8 @@ class AddAssetViewHelper @Inject()(userAnswers: UserAnswers)
     AddRow(
       name = mvm.label.getOrElse(defaultValue),
       typeLabel = mvm.`type`.label,
-      changeUrl = money.routes.AssetMoneyValueController.onPageLoad(index).url,
-      removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index).url
+      changeUrl = money.routes.AssetMoneyValueController.onPageLoad(NormalMode).url,
+      removeUrl = ""
     )
   }
 
@@ -79,11 +78,11 @@ class AddAssetViewHelper @Inject()(userAnswers: UserAnswers)
       },
       typeLabel = plvm.`type`.label,
       changeUrl = if (plvm.status == Completed) {
-        property_or_land.routes.PropertyOrLandAnswerController.onPageLoad(index).url
+        property_or_land.routes.PropertyOrLandAnswerController.onPageLoad().url
       } else {
-        property_or_land.routes.PropertyOrLandAddressYesNoController.onPageLoad(index).url
+        property_or_land.routes.PropertyOrLandAddressYesNoController.onPageLoad(NormalMode).url
       },
-      removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index).url
+      removeUrl = ""
     )
   }
 
@@ -92,11 +91,11 @@ class AddAssetViewHelper @Inject()(userAnswers: UserAnswers)
       name = svm.label.getOrElse(defaultName),
       typeLabel = svm.`type`.label,
       changeUrl = if (svm.status == Completed) {
-        shares.routes.ShareAnswerController.onPageLoad(index).url
+        shares.routes.ShareAnswerController.onPageLoad().url
       } else {
-        shares.routes.SharesInAPortfolioController.onPageLoad(index).url
+        shares.routes.SharesInAPortfolioController.onPageLoad(NormalMode).url
       },
-      removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index).url
+      removeUrl = ""
     )
   }
 
@@ -105,11 +104,11 @@ class AddAssetViewHelper @Inject()(userAnswers: UserAnswers)
       name = bvm.label.getOrElse(defaultName),
       typeLabel = bvm.`type`.label,
       changeUrl = if (bvm.status == Completed) {
-        business.routes.BusinessAnswersController.onPageLoad(index).url
+        business.routes.BusinessAnswersController.onPageLoad().url
       } else {
-        business.routes.BusinessNameController.onPageLoad(index).url
+        business.routes.BusinessNameController.onPageLoad(NormalMode).url
       },
-      removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index).url
+      removeUrl = ""
     )
   }
 
@@ -118,11 +117,11 @@ class AddAssetViewHelper @Inject()(userAnswers: UserAnswers)
       name = pvm.label.getOrElse(defaultDescription),
       typeLabel = pvm.`type`.label,
       changeUrl = if (pvm.status == Completed) {
-        partnership.routes.PartnershipAnswerController.onPageLoad(index).url
+        partnership.routes.PartnershipAnswerController.onPageLoad().url
       } else {
-        partnership.routes.PartnershipDescriptionController.onPageLoad(index).url
+        partnership.routes.PartnershipDescriptionController.onPageLoad(NormalMode).url
       },
-      removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index).url
+      removeUrl = ""
     )
   }
 
@@ -131,11 +130,11 @@ class AddAssetViewHelper @Inject()(userAnswers: UserAnswers)
       name = ovm.label.getOrElse(defaultDescription),
       typeLabel = ovm.`type`.label,
       changeUrl = if (ovm.status == Completed) {
-        other.routes.OtherAssetAnswersController.onPageLoad(index).url
+        other.routes.OtherAssetAnswersController.onPageLoad().url
       } else {
-        other.routes.OtherAssetDescriptionController.onPageLoad(index).url
+        other.routes.OtherAssetDescriptionController.onPageLoad(NormalMode).url
       },
-      removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index).url
+      removeUrl = ""
     )
   }
   
@@ -144,11 +143,11 @@ class AddAssetViewHelper @Inject()(userAnswers: UserAnswers)
       name = nebvm.label.getOrElse(defaultName),
       typeLabel = nebvm.`type`.label,
       changeUrl = if (nebvm.status == Completed) {
-        noneeabusiness.routes.AnswersController.onPageLoad(index).url
+        noneeabusiness.routes.AnswersController.onPageLoad().url
       } else {
-        noneeabusiness.routes.NameController.onPageLoad(index).url
+        noneeabusiness.routes.NameController.onPageLoad(NormalMode).url
       },
-      removeUrl = routes.RemoveAssetYesNoController.onPageLoad(index).url
+      removeUrl = ""
     )
   }
 

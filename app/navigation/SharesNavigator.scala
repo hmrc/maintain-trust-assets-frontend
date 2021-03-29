@@ -16,46 +16,54 @@
 
 package navigation
 
-import config.FrontendAppConfig
 import controllers.asset.routes._
 import controllers.asset.shares.routes._
-import models.UserAnswers
+import models.{Mode, NormalMode, UserAnswers}
 import pages.Page
 import pages.asset.shares._
 import play.api.mvc.Call
-import uk.gov.hmrc.auth.core.AffinityGroup
+import javax.inject.Inject
 
-import javax.inject.{Inject, Singleton}
+class SharesNavigator @Inject()() extends Navigator() {
 
-@Singleton
-class SharesNavigator @Inject()(config: FrontendAppConfig) extends Navigator(config) {
+  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
+    routes(mode)(page)(userAnswers)
 
-  override protected def route(): PartialFunction[Page, AffinityGroup => UserAnswers => Call] = {
-    portfolioRoutes() orElse
-    nonPortfolioRoutes() orElse {
-      case page @ SharesInAPortfolioPage(index) => _ => ua => yesNoNav(
-        ua = ua,
-        fromPage = page,
-        yesCall = SharePortfolioNameController.onPageLoad(index),
-        noCall = ShareCompanyNameController.onPageLoad(index)
-      )
-      case ShareAnswerPage => _ => _ => AddAssetsController.onPageLoad()
-    }
+  override def nextPage(page: Page, userAnswers: UserAnswers): Call =
+    nextPage(page, NormalMode, userAnswers)
+
+  def simpleNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
+    case ShareAnswerPage => _ => AddAssetsController.onPageLoad()
   }
 
-  private def portfolioRoutes(): PartialFunction[Page, AffinityGroup => UserAnswers => Call] = {
-    case SharePortfolioNamePage(index) => _ => _ => SharePortfolioOnStockExchangeController.onPageLoad(index)
-    case SharePortfolioOnStockExchangePage(index) => _ => _ => SharePortfolioQuantityInTrustController.onPageLoad(index)
-    case SharePortfolioQuantityInTrustPage(index) => _ => _ => SharePortfolioValueInTrustController.onPageLoad(index)
-    case SharePortfolioValueInTrustPage(index) => _ => _ => ShareAnswerController.onPageLoad(index)
+  private def portfolioRoutes(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
+    case SharePortfolioNamePage  => _ => SharePortfolioOnStockExchangeController.onPageLoad(mode)
+    case SharePortfolioOnStockExchangePage => _ => SharePortfolioQuantityInTrustController.onPageLoad(mode)
+    case SharePortfolioQuantityInTrustPage => _ => SharePortfolioValueInTrustController.onPageLoad(mode)
+    case SharePortfolioValueInTrustPage => _ => ShareAnswerController.onPageLoad()
   }
 
-  private def nonPortfolioRoutes(): PartialFunction[Page, AffinityGroup => UserAnswers => Call] = {
-    case ShareCompanyNamePage(index) => _ => _ => SharesOnStockExchangeController.onPageLoad(index)
-    case SharesOnStockExchangePage(index) => _ => _ => ShareClassController.onPageLoad(index)
-    case ShareClassPage(index) => _ => _ => ShareQuantityInTrustController.onPageLoad(index)
-    case ShareQuantityInTrustPage(index) => _ => _ => ShareValueInTrustController.onPageLoad(index)
-    case ShareValueInTrustPage(index) => _ => _ => ShareAnswerController.onPageLoad(index)
+  private def nonPortfolioRoutes(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
+    case ShareCompanyNamePage => _ => SharesOnStockExchangeController.onPageLoad(mode)
+    case SharesOnStockExchangePage => _ => ShareClassController.onPageLoad(mode)
+    case ShareClassPage => _ => ShareQuantityInTrustController.onPageLoad(mode)
+    case ShareQuantityInTrustPage  => _ => ShareValueInTrustController.onPageLoad(mode)
+    case ShareValueInTrustPage => _ => ShareAnswerController.onPageLoad()
   }
+
+  private def yesNoNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
+    case page @ SharesInAPortfolioPage => ua => yesNoNav(
+      ua = ua,
+      fromPage = page,
+      yesCall = SharePortfolioNameController.onPageLoad(mode),
+      noCall = ShareCompanyNameController.onPageLoad(mode)
+    )
+  }
+
+  def routes(mode: Mode): PartialFunction[Page, UserAnswers => Call] =
+    simpleNavigation(mode) orElse
+    portfolioRoutes(mode) orElse
+    nonPortfolioRoutes(mode) orElse
+      yesNoNavigation(mode)
 
 }

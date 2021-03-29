@@ -19,7 +19,7 @@ package navigation
 import base.SpecBase
 import controllers.asset.other.routes._
 import generators.Generators
-import models.UserAnswers
+import models.{NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.asset.other._
@@ -27,7 +27,6 @@ import pages.asset.other._
 class OtherNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   private val navigator: Navigator = injector.instanceOf[OtherNavigator]
-  private val index: Int = 0
 
   "Other Navigator" must {
 
@@ -36,10 +35,10 @@ class OtherNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
 
-          val answers = userAnswers.set(OtherAssetDescriptionPage(index), "Description").success.value
+          val answers = userAnswers.set(OtherAssetDescriptionPage, "Description").success.value
 
-          navigator.nextPage(OtherAssetDescriptionPage(index))(answers)
-            .mustBe(OtherAssetValueController.onPageLoad(index))
+          navigator.nextPage(OtherAssetDescriptionPage, NormalMode, answers)
+            .mustBe(OtherAssetValueController.onPageLoad(NormalMode))
       }
     }
 
@@ -48,10 +47,10 @@ class OtherNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
 
-          val answers = userAnswers.set(OtherAssetValuePage(index), 4000L).success.value
+          val answers = userAnswers.set(OtherAssetValuePage, 4000L).success.value
 
-          navigator.nextPage(OtherAssetValuePage(index))(answers)
-            .mustBe(OtherAssetAnswersController.onPageLoad(index))
+          navigator.nextPage(OtherAssetValuePage, NormalMode, answers)
+            .mustBe(OtherAssetAnswersController.onPageLoad())
       }
     }
   }

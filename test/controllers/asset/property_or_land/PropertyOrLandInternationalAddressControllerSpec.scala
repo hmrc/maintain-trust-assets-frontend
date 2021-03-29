@@ -17,15 +17,17 @@
 package controllers.asset.property_or_land
 
 import base.SpecBase
+import config.annotations.PropertyOrLand
 import controllers.IndexValidation
 import controllers.routes._
 import forms.InternationalAddressFormProvider
-import models.InternationalAddress
-import org.scalacheck.Arbitrary.arbitrary
+import models.{InternationalAddress, NormalMode}
+import navigation.Navigator
 import pages.asset.property_or_land.PropertyOrLandInternationalAddressPage
 import play.api.Application
 import play.api.data.Form
-import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded, Result}
+import play.api.inject.bind
+import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils._
@@ -38,9 +40,8 @@ class PropertyOrLandInternationalAddressControllerSpec extends SpecBase with Ind
 
   val formProvider = new InternationalAddressFormProvider()
   val form: Form[InternationalAddress] = formProvider()
-  val index: Int = 0
 
-  lazy val propertyOrLandInternationalAddressRoute: String = routes.PropertyOrLandInternationalAddressController.onPageLoad(index).url
+  lazy val propertyOrLandInternationalAddressRoute: String = routes.PropertyOrLandInternationalAddressController.onPageLoad(NormalMode).url
 
   "PropertyOrLandInternationalAddress Controller" must {
 
@@ -59,7 +60,7 @@ class PropertyOrLandInternationalAddressControllerSpec extends SpecBase with Ind
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, countryOptions, index)(request, messages).toString
+        view(form, countryOptions, NormalMode)(request, messages).toString
 
       application.stop()
     }
@@ -67,7 +68,7 @@ class PropertyOrLandInternationalAddressControllerSpec extends SpecBase with Ind
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers
-        .set(PropertyOrLandInternationalAddressPage(index), InternationalAddress("line 1", "line 2", Some("line 3"), "country")).success.value
+        .set(PropertyOrLandInternationalAddressPage, InternationalAddress("line 1", "line 2", Some("line 3"), "country")).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -82,7 +83,7 @@ class PropertyOrLandInternationalAddressControllerSpec extends SpecBase with Ind
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(InternationalAddress("line 1", "line 2", Some("line 3"), "country")), countryOptions, index)(fakeRequest, messages).toString
+        view(form.fill(InternationalAddress("line 1", "line 2", Some("line 3"), "country")), countryOptions, NormalMode)(request, messages).toString
 
       application.stop()
     }
@@ -90,7 +91,9 @@ class PropertyOrLandInternationalAddressControllerSpec extends SpecBase with Ind
     "redirect to the next page when valid data is submitted" in {
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind[Navigator].qualifiedWith(classOf[PropertyOrLand]).toInstance(fakeNavigator))
+          .build()
 
       val request =
         FakeRequest(POST, propertyOrLandInternationalAddressRoute)
@@ -124,7 +127,7 @@ class PropertyOrLandInternationalAddressControllerSpec extends SpecBase with Ind
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, countryOptions, index)(fakeRequest, messages).toString
+        view(boundForm, countryOptions, NormalMode)(request, messages).toString
 
       application.stop()
     }
@@ -159,39 +162,6 @@ class PropertyOrLandInternationalAddressControllerSpec extends SpecBase with Ind
 
       application.stop()
     }
-  }
-
-  "for a GET" must {
-
-    def getForIndex(index: Int): FakeRequest[AnyContentAsEmpty.type] = {
-      val route = routes.PropertyOrLandInternationalAddressController.onPageLoad(index).url
-
-      FakeRequest(GET, route)
-    }
-
-    validateIndex(
-      arbitrary[InternationalAddress],
-      PropertyOrLandInternationalAddressPage.apply,
-      getForIndex
-    )
-
-  }
-
-  "for a POST" must {
-    def postForIndex(index: Int): FakeRequest[AnyContentAsFormUrlEncoded] = {
-
-      val route =
-        routes.PropertyOrLandInternationalAddressController.onPageLoad(index).url
-
-      FakeRequest(POST, route)
-        .withFormUrlEncodedBody(("value", "true"))
-    }
-
-    validateIndex(
-      arbitrary[InternationalAddress],
-      PropertyOrLandInternationalAddressPage.apply,
-      postForIndex
-    )
   }
 
 }

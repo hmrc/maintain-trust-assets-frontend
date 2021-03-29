@@ -17,12 +17,15 @@
 package controllers.asset
 
 import base.SpecBase
+import config.annotations.{Assets, Business}
 import models.UserAnswers
 import models.WhatKindOfAsset.NonEeaBusiness
+import navigation.Navigator
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{reset, verify, when}
 import pages.asset.WhatKindOfAssetPage
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.asset.{NonTaxableInfoView, TaxableInfoView}
@@ -50,7 +53,7 @@ class AssetInterruptPageControllerSpec extends SpecBase {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(is5mldEnabled)(fakeRequest, messages).toString
+          view(is5mldEnabled)(request, messages).toString
 
         application.stop()
       }
@@ -73,7 +76,7 @@ class AssetInterruptPageControllerSpec extends SpecBase {
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(is5mldEnabled)(fakeRequest, messages).toString
+            view(is5mldEnabled)(request, messages).toString
 
           application.stop()
         }
@@ -94,7 +97,7 @@ class AssetInterruptPageControllerSpec extends SpecBase {
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view()(fakeRequest, messages).toString
+            view()(request, messages).toString
 
           application.stop()
         }
@@ -109,11 +112,13 @@ class AssetInterruptPageControllerSpec extends SpecBase {
 
         "not set value in WhatKindOfAssetPage" in {
 
-          reset(registrationsRepository)
-          when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
+          reset(playbackRepository)
+          when(playbackRepository.set(any())).thenReturn(Future.successful(true))
           val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
 
-          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(isTaxable = isTaxable))).build()
+          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(isTaxable = isTaxable)))
+            .overrides(bind[Navigator].qualifiedWith(classOf[Assets]).toInstance(fakeNavigator))
+            .build()
 
           val request = FakeRequest(POST, routes.AssetInterruptPageController.onSubmit().url)
 
@@ -123,8 +128,8 @@ class AssetInterruptPageControllerSpec extends SpecBase {
 
           redirectLocation(result).value mustBe fakeNavigator.desiredRoute.url
 
-          verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
-          uaCaptor.getValue.get(WhatKindOfAssetPage(0)) mustNot be(defined)
+          verify(playbackRepository).set(uaCaptor.capture)
+          uaCaptor.getValue.get(WhatKindOfAssetPage) mustNot be(defined)
 
           application.stop()
         }
@@ -136,11 +141,13 @@ class AssetInterruptPageControllerSpec extends SpecBase {
 
         "set value in WhatKindOfAssetPage" in {
 
-          reset(registrationsRepository)
-          when(registrationsRepository.set(any())(any(), any())).thenReturn(Future.successful(true))
+          reset(playbackRepository)
+          when(playbackRepository.set(any())).thenReturn(Future.successful(true))
           val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
 
-          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(isTaxable = isTaxable))).build()
+          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(isTaxable = isTaxable)))
+            .overrides(bind[Navigator].qualifiedWith(classOf[Assets]).toInstance(fakeNavigator))
+            .build()
 
           val request = FakeRequest(POST, routes.AssetInterruptPageController.onSubmit().url)
 
@@ -150,8 +157,8 @@ class AssetInterruptPageControllerSpec extends SpecBase {
 
           redirectLocation(result).value mustBe fakeNavigator.desiredRoute.url
 
-          verify(registrationsRepository).set(uaCaptor.capture)(any(), any())
-          uaCaptor.getValue.get(WhatKindOfAssetPage(0)).get mustBe NonEeaBusiness
+          verify(playbackRepository).set(uaCaptor.capture)
+          uaCaptor.getValue.get(WhatKindOfAssetPage).get mustBe NonEeaBusiness
 
           application.stop()
         }

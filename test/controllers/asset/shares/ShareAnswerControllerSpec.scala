@@ -17,10 +17,7 @@
 package controllers.asset.shares
 
 import base.SpecBase
-import org.mockito.Matchers.{any, eq => eqTo}
-import org.mockito.Mockito.when
 import pages.asset.shares._
-import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.print.SharesPrintHelper
@@ -28,9 +25,7 @@ import views.html.asset.shares.ShareAnswersView
 
 class ShareAnswerControllerSpec extends SpecBase {
 
-  private val index: Int = 0
-
-  private lazy val shareAnswerRoute: String = routes.ShareAnswerController.onPageLoad(index).url
+  private lazy val shareAnswerRoute: String = routes.ShareAnswerController.onPageLoad().url
 
   "ShareAnswer Controller" must {
 
@@ -40,28 +35,24 @@ class ShareAnswerControllerSpec extends SpecBase {
 
         val name: String = "Company Name"
 
-        val userAnswers = emptyUserAnswers
-          .set(SharesInAPortfolioPage(index), false).success.value
-          .set(ShareCompanyNamePage(index), name).success.value
+        val answers = emptyUserAnswers
+          .set(SharesInAPortfolioPage, false).success.value
+          .set(ShareCompanyNamePage, name).success.value
 
-        val expectedSections = Nil
-        val mockPrintHelper: SharesPrintHelper = mock[SharesPrintHelper]
-        when(mockPrintHelper.checkDetailsSection(any(), eqTo(name), any())(any())).thenReturn(Nil)
-
-        val application = applicationBuilder(userAnswers = Some(userAnswers))
-          .overrides(bind[SharesPrintHelper].toInstance(mockPrintHelper))
-          .build()
+        val application = applicationBuilder(userAnswers = Some(answers)).build()
 
         val request = FakeRequest(GET, shareAnswerRoute)
 
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[ShareAnswersView]
+        val printHelper = application.injector.instanceOf[SharesPrintHelper]
+        val answerSection = printHelper(answers, provisional = true, name)
 
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(index, expectedSections)(fakeRequest, messages).toString
+          view(answerSection)(request, messages).toString
 
         application.stop()
       }
@@ -70,55 +61,47 @@ class ShareAnswerControllerSpec extends SpecBase {
 
         val name: String = "Portfolio Name"
 
-        val userAnswers = emptyUserAnswers
-          .set(SharesInAPortfolioPage(index), true).success.value
-          .set(SharePortfolioNamePage(index), name).success.value
+        val answers = emptyUserAnswers
+          .set(SharesInAPortfolioPage, true).success.value
+          .set(SharePortfolioNamePage, name).success.value
 
-        val expectedSections = Nil
-        val mockPrintHelper: SharesPrintHelper = mock[SharesPrintHelper]
-        when(mockPrintHelper.checkDetailsSection(any(), eqTo(name), any())(any())).thenReturn(Nil)
-
-        val application = applicationBuilder(userAnswers = Some(userAnswers))
-          .overrides(bind[SharesPrintHelper].toInstance(mockPrintHelper))
-          .build()
+        val application = applicationBuilder(userAnswers = Some(answers)).build()
 
         val request = FakeRequest(GET, shareAnswerRoute)
 
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[ShareAnswersView]
+        val printHelper = application.injector.instanceOf[SharesPrintHelper]
+        val answerSection = printHelper(answers, provisional = true, name)
 
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(index, expectedSections)(fakeRequest, messages).toString
+          view(answerSection)(request, messages).toString
 
         application.stop()
       }
 
       "no name" in {
 
-        val userAnswers = emptyUserAnswers
-          .set(SharesInAPortfolioPage(index), true).success.value
+        val answers = emptyUserAnswers
+          .set(SharesInAPortfolioPage, true).success.value
 
-        val expectedSections = Nil
-        val mockPrintHelper: SharesPrintHelper = mock[SharesPrintHelper]
-        when(mockPrintHelper.checkDetailsSection(any(), eqTo("the asset"), any())(any())).thenReturn(Nil)
-
-        val application = applicationBuilder(userAnswers = Some(userAnswers))
-          .overrides(bind[SharesPrintHelper].toInstance(mockPrintHelper))
-          .build()
+        val application = applicationBuilder(userAnswers = Some(answers)).build()
 
         val request = FakeRequest(GET, shareAnswerRoute)
 
         val result = route(application, request).value
 
         val view = application.injector.instanceOf[ShareAnswersView]
+        val printHelper = application.injector.instanceOf[SharesPrintHelper]
+        val answerSection = printHelper(answers, provisional = true, "name") //TODO
 
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(index, expectedSections)(fakeRequest, messages).toString
+          view(answerSection)(request, messages).toString
 
         application.stop()
       }

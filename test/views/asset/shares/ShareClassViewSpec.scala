@@ -17,7 +17,7 @@
 package views.asset.shares
 
 import forms.shares.ShareClassFormProvider
-import models.ShareClass
+import models.{NormalMode, ShareClass}
 import models.ShareClass._
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
@@ -27,14 +27,13 @@ import views.html.asset.shares.ShareClassView
 class ShareClassViewSpec extends ViewBehaviours {
 
   private val messageKeyPrefix: String = "shares.class"
-  private val index: Int = 0
   private val companyName: String = "Company"
   private val form: Form[ShareClass] = new ShareClassFormProvider()()
 
   private val view: ShareClassView = viewFor[ShareClassView](Some(emptyUserAnswers))
 
   private def applyView(form: Form[_]): HtmlFormat.Appendable =
-    view.apply(form, index, companyName)(fakeRequest, messages)
+    view.apply(form, NormalMode, companyName)(fakeRequest, messages)
 
   "ShareClass view" must {
 

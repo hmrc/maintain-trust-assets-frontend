@@ -23,19 +23,19 @@ import sections.Assets
 
 import scala.util.Try
 
-final case class BusinessAddressUkYesNoPage(index : Int) extends QuestionPage[Boolean] {
+case object BusinessAddressUkYesNoPage extends QuestionPage[Boolean] {
 
-  override def path: JsPath = JsPath \ Assets \ index \ toString
+  override def path: JsPath = JsPath \ Assets \ toString
 
   override def toString: String = "businessAddressUkYesNo"
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
     value match {
       case Some(true) =>
-        userAnswers.remove(BusinessInternationalAddressPage(index))
+        userAnswers.remove(BusinessInternationalAddressPage)
 
       case Some(false) =>
-        userAnswers.remove(BusinessUkAddressPage(index))
+        userAnswers.remove(BusinessUkAddressPage)
 
       case _ => super.cleanup(value, userAnswers)
     }

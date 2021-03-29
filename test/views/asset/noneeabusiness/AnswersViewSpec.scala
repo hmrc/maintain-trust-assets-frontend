@@ -16,19 +16,21 @@
 
 package views.asset.noneeabusiness
 
+import play.twirl.api.HtmlFormat
+import viewmodels.AnswerSection
 import views.behaviours.ViewBehaviours
 import views.html.asset.noneeabusiness.AnswersView
 
 class AnswersViewSpec extends ViewBehaviours {
 
-  private val index: Int = 0
   private val prefix: String = "nonEeaBusiness.answers"
 
   private val view: AnswersView = viewFor[AnswersView](Some(emptyUserAnswers))
 
   "AnswersView" must {
 
-    val applyView = view.apply(index, Nil)(fakeRequest, messages)
+    def applyView(): HtmlFormat.Appendable =
+      view.apply(AnswerSection(None, Seq()))(fakeRequest, messages)
 
     behave like normalPage(applyView, prefix)
 

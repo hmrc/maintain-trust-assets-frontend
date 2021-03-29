@@ -18,61 +18,61 @@ package controllers.asset.partnership
 
 import config.annotations.Partnership
 import controllers.actions._
+import controllers.actions.partnership.NameRequiredAction
 import models.Status.Completed
-import models.requests.RegistrationDataRequest
 import navigation.Navigator
 import pages.AssetStatus
 import pages.asset.partnership._
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
-import repositories.RegistrationsRepository
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.PartnershipPrintHelper
 import views.html.asset.partnership.PartnershipAnswersView
-
 import javax.inject.Inject
+import models.NormalMode
+import viewmodels.AnswerSection
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class PartnershipAnswerController @Inject()(
                                              override val messagesApi: MessagesApi,
-                                             repository: RegistrationsRepository,
+                                             standardActionSets: StandardActionSets,
+                                             nameAction: NameRequiredAction,
+                                             repository: PlaybackRepository,
                                              @Partnership navigator: Navigator,
-                                             identify: RegistrationIdentifierAction,
-                                             getData: DraftIdRetrievalActionProvider,
-                                             requireData: RegistrationDataRequiredAction,
-                                             requiredAnswer: RequiredAnswerActionProvider,
                                              view: PartnershipAnswersView,
                                              val controllerComponents: MessagesControllerComponents,
                                              printHelper: PartnershipPrintHelper
                                            )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private def actions(index: Int): ActionBuilder[RegistrationDataRequest, AnyContent] =
-    identify andThen
-      getData() andThen
-      requireData andThen
-      requiredAnswer(RequiredAnswer(PartnershipDescriptionPage(index), routes.PartnershipDescriptionController.onPageLoad(index))) andThen
-      requiredAnswer(RequiredAnswer(PartnershipStartDatePage(index), routes.PartnershipStartDateController.onPageLoad(index)))
+//  private def actions(index: Int): ActionBuilder[RegistrationDataRequest, AnyContent] =
+//    identify andThen
+//      getData() andThen
+//      requireData andThen
+//      requiredAnswer(RequiredAnswer(PartnershipDescriptionPage(index), routes.PartnershipDescriptionController.onPageLoad(index))) andThen
+//      requiredAnswer(RequiredAnswer(PartnershipStartDatePage(index), routes.PartnershipStartDateController.onPageLoad(index)))
+// TODO
 
-  def onPageLoad(index: Int): Action[AnyContent] = actions(index) {
+  private val provisional: Boolean = true
+
+  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
 
-      val sections = printHelper.checkDetailsSection(
-        userAnswers = request.userAnswers,
-        index = index
-      )
+      val section: AnswerSection = printHelper(userAnswers = request.userAnswers, provisional, request.Name)
 
-      Ok(view(index, sections))
+      Ok(view(section))
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = actions(index).async {
+  def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
     implicit request =>
 
-      val answers = request.userAnswers.set(AssetStatus(index), Completed)
+      val answers = request.userAnswers.set(AssetStatus, Completed)
 
       for {
         updatedAnswers <- Future.fromTry(answers)
         _ <- repository.set(updatedAnswers)
-      } yield Redirect(navigator.nextPage(PartnershipAnswerPage)(request.userAnswers))
+      } yield Redirect(navigator.nextPage(PartnershipAnswerPage, NormalMode, request.userAnswers))
 
   }
 }

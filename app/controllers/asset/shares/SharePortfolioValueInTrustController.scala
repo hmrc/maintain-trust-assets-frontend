@@ -17,65 +17,56 @@
 package controllers.asset.shares
 
 import config.annotations.Shares
-import controllers.actions.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
-import controllers.filters.IndexActionFilterProvider
+import controllers.actions.StandardActionSets
 import forms.ValueFormProvider
-import models.requests.RegistrationDataRequest
 import navigation.Navigator
 import pages.asset.shares.SharePortfolioValueInTrustPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
-import repositories.RegistrationsRepository
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.asset.shares.SharePortfolioValueInTrustView
-
 import javax.inject.Inject
+import models.Mode
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class SharePortfolioValueInTrustController @Inject()(
                                                       override val messagesApi: MessagesApi,
-                                                      repository: RegistrationsRepository,
+                                                      standardActionSets: StandardActionSets,
+                                                      repository: PlaybackRepository,
                                                       @Shares navigator: Navigator,
-                                                      identify: RegistrationIdentifierAction,
-                                                      getData: DraftIdRetrievalActionProvider,
-                                                      requireData: RegistrationDataRequiredAction,
                                                       formProvider: ValueFormProvider,
                                                       val controllerComponents: MessagesControllerComponents,
-                                                      view: SharePortfolioValueInTrustView,
-                                                      validateIndex: IndexActionFilterProvider
+                                                      view: SharePortfolioValueInTrustView
                                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider.withConfig(prefix = "shares.portfolioValueInTrust")
 
-  private def actions(index : Int): ActionBuilder[RegistrationDataRequest, AnyContent] =
-    identify andThen getData() andThen
-      requireData andThen
-      validateIndex(index, sections.Assets)
-
-  def onPageLoad(index: Int): Action[AnyContent] = actions(index) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(SharePortfolioValueInTrustPage(index)) match {
+      val preparedForm = request.userAnswers.get(SharePortfolioValueInTrustPage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, index))
+      Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = actions(index).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, index))),
+          Future.successful(BadRequest(view(formWithErrors, mode))),
 
         value => {
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(SharePortfolioValueInTrustPage(index), value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(SharePortfolioValueInTrustPage, value))
             _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(SharePortfolioValueInTrustPage(index))(updatedAnswers))
+          } yield Redirect(navigator.nextPage(SharePortfolioValueInTrustPage, mode, updatedAnswers))
         }
       )
   }

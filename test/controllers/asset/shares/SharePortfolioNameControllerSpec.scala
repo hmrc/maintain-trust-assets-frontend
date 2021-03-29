@@ -17,12 +17,14 @@
 package controllers.asset.shares
 
 import base.SpecBase
+import config.annotations.Shares
 import controllers.IndexValidation
 import forms.NameFormProvider
 import generators.ModelGenerators
-import org.scalacheck.Arbitrary.arbitrary
+import models.NormalMode
+import navigation.Navigator
 import pages.asset.shares.SharePortfolioNamePage
-import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{route, _}
 import views.html.asset.shares.SharePortfolioNameView
@@ -31,9 +33,8 @@ class SharePortfolioNameControllerSpec extends SpecBase with ModelGenerators wit
 
   val formProvider = new NameFormProvider()
   val form = formProvider.withConfig(53, "shares.portfolioName")
-  val index: Int = 0
 
-  lazy val sharePortfolioNameRoute = routes.SharePortfolioNameController.onPageLoad(index).url
+  lazy val sharePortfolioNameRoute = routes.SharePortfolioNameController.onPageLoad(NormalMode).url
 
   "SharePortfolioName Controller" must {
 
@@ -50,14 +51,14 @@ class SharePortfolioNameControllerSpec extends SpecBase with ModelGenerators wit
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, index)(fakeRequest, messages).toString
+        view(form, NormalMode)(request, messages).toString
 
       application.stop()
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(SharePortfolioNamePage(index), "answer").success.value
+      val userAnswers = emptyUserAnswers.set(SharePortfolioNamePage, "answer").success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -70,7 +71,7 @@ class SharePortfolioNameControllerSpec extends SpecBase with ModelGenerators wit
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill("answer"), index)(fakeRequest, messages).toString
+        view(form.fill("answer"), NormalMode)(request, messages).toString
 
       application.stop()
     }
@@ -78,7 +79,9 @@ class SharePortfolioNameControllerSpec extends SpecBase with ModelGenerators wit
     "redirect to the next page when valid data is submitted" in {
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind[Navigator].qualifiedWith(classOf[Shares]).toInstance(fakeNavigator))
+          .build()
 
       val request =
         FakeRequest(POST, sharePortfolioNameRoute)
@@ -109,7 +112,7 @@ class SharePortfolioNameControllerSpec extends SpecBase with ModelGenerators wit
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, index)(fakeRequest, messages).toString
+        view(boundForm, NormalMode)(request, messages).toString
 
       application.stop()
     }
@@ -147,36 +150,5 @@ class SharePortfolioNameControllerSpec extends SpecBase with ModelGenerators wit
     }
 
   }
-  "for a GET" must {
 
-    def getForIndex(index: Int) : FakeRequest[AnyContentAsEmpty.type] = {
-      val route = routes.SharePortfolioNameController.onPageLoad(index).url
-
-      FakeRequest(GET, route)
-    }
-
-    validateIndex(
-      arbitrary[String],
-      SharePortfolioNamePage.apply,
-      getForIndex
-    )
-
-  }
-
-  "for a POST" must {
-    def postForIndex(index: Int): FakeRequest[AnyContentAsFormUrlEncoded] = {
-
-      val route =
-        routes.SharePortfolioNameController.onPageLoad(index).url
-
-      FakeRequest(POST, route)
-        .withFormUrlEncodedBody(("name", "wesdrgfh"))
-    }
-
-    validateIndex(
-      arbitrary[String],
-      SharePortfolioNamePage.apply,
-      postForIndex
-    )
-  }
 }

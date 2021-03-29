@@ -17,6 +17,7 @@
 package views.asset.property_or_land
 
 import forms.UKAddressFormProvider
+import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.UkAddressViewBehaviours
@@ -26,7 +27,6 @@ class PropertyOrLandUKAddressViewSpec extends UkAddressViewBehaviours {
 
   private val messageKeyPrefix = "propertyOrLand.ukAddress"
   private val name = "Test"
-  private val index = 0
 
   override val form = new UKAddressFormProvider()()
 
@@ -35,7 +35,7 @@ class PropertyOrLandUKAddressViewSpec extends UkAddressViewBehaviours {
     val view = viewFor[PropertyOrLandUKAddressView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, index)(fakeRequest, messages)
+      view.apply(form, NormalMode)(fakeRequest, messages)
 
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name)
 

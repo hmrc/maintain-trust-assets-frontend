@@ -17,33 +17,34 @@
 package utils.print
 
 import controllers.asset.business.routes._
-import models.UserAnswers
+import models.{CheckMode, Mode, NormalMode, UserAnswers}
 import pages.asset.business._
 import play.api.i18n.Messages
-import utils.{AnswerRowConverter, CheckAnswersFormatters}
-import viewmodels.AnswerRow
-
+import utils.AnswerRowConverter
+import viewmodels.{AnswerRow, AnswerSection}
 import javax.inject.Inject
 
-class BusinessPrintHelper @Inject()(checkAnswersFormatters: CheckAnswersFormatters) extends PrintHelper {
+class BusinessPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) {
 
-  override val assetType: String = "businessAsset"
+  def apply(userAnswers: UserAnswers, provisional: Boolean, name: String)(implicit messages: Messages): AnswerSection = {
 
-  override def answerRows(userAnswers: UserAnswers,
-                          arg: String,
-                          index: Int)
-                         (implicit messages: Messages): Seq[AnswerRow] = {
+    val bound: answerRowConverter.Bound = answerRowConverter.bind(userAnswers, name)
 
-    val converter: AnswerRowConverter = new AnswerRowConverter(checkAnswersFormatters)(userAnswers, arg)
+    def answerRows: Seq[AnswerRow] = {
+      val mode: Mode = if (provisional) NormalMode else CheckMode
+      Seq(
+        bound.assetTypeQuestion(0),
+        bound.stringQuestion(BusinessNamePage, "business.name", BusinessNameController.onPageLoad(mode).url),
+        bound.stringQuestion(BusinessDescriptionPage, "business.description", BusinessDescriptionController.onPageLoad(mode).url),
+        bound.yesNoQuestion(BusinessAddressUkYesNoPage, "business.addressUkYesNo", BusinessAddressUkYesNoController.onPageLoad(mode).url),
+        bound.addressQuestion(BusinessUkAddressPage, "business.ukAddress", BusinessUkAddressController.onPageLoad(mode).url),
+        bound.addressQuestion(BusinessInternationalAddressPage, "business.internationalAddress", BusinessInternationalAddressController.onPageLoad(mode).url),
+        bound.currencyQuestion(BusinessValuePage, "business.currentValue", BusinessValueController.onPageLoad(mode).url)
+      ).flatten
+    }
 
-    Seq(
-      converter.assetTypeQuestion(index),
-      converter.stringQuestion(BusinessNamePage(index), "business.name", BusinessNameController.onPageLoad(index).url),
-      converter.stringQuestion(BusinessDescriptionPage(index), "business.description", BusinessDescriptionController.onPageLoad(index).url),
-      converter.yesNoQuestion(BusinessAddressUkYesNoPage(index), "business.addressUkYesNo", BusinessAddressUkYesNoController.onPageLoad(index).url),
-      converter.addressQuestion(BusinessUkAddressPage(index), "business.ukAddress", BusinessUkAddressController.onPageLoad(index).url),
-      converter.addressQuestion(BusinessInternationalAddressPage(index), "business.internationalAddress", BusinessInternationalAddressController.onPageLoad(index).url),
-      converter.currencyQuestion(BusinessValuePage(index), "business.currentValue", BusinessValueController.onPageLoad(index).url)
-    ).flatten
+    AnswerSection(headingKey = None, rows = answerRows)
+
   }
+
 }

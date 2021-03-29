@@ -17,6 +17,7 @@
 package views.asset.property_or_land
 
 import forms.YesNoFormProvider
+import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
@@ -25,7 +26,6 @@ import views.html.asset.property_or_land.TrustOwnAllThePropertyOrLandView
 class TrustOwnAllThePropertyOrLandViewSpec extends YesNoViewBehaviours {
 
   private val messageKeyPrefix: String = "propertyOrLand.trustOwnAllYesNo"
-  private val index: Int = 0
 
   override val form: Form[Boolean] = new YesNoFormProvider().withPrefix(messageKeyPrefix)
 
@@ -34,7 +34,7 @@ class TrustOwnAllThePropertyOrLandViewSpec extends YesNoViewBehaviours {
     val view = viewFor[TrustOwnAllThePropertyOrLandView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, index)(fakeRequest, messages)
+      view.apply(form, NormalMode)(fakeRequest, messages)
 
     behave like normalPage(applyView(form), messageKeyPrefix)
 

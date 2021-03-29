@@ -20,12 +20,11 @@ import base.SpecBase
 import controllers.asset.noneeabusiness.routes._
 import controllers.asset.routes.WhatKindOfAssetController
 import models.WhatKindOfAsset.NonEeaBusiness
-import models.{InternationalAddress, UserAnswers}
+import models.{InternationalAddress, NormalMode, UserAnswers}
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.noneeabusiness._
 import play.twirl.api.Html
 import viewmodels.{AnswerRow, AnswerSection}
-
 import java.time.LocalDate
 
 class NonEeaBusinessPrintHelperSpec extends SpecBase {
@@ -42,89 +41,57 @@ class NonEeaBusinessPrintHelperSpec extends SpecBase {
   private val date: LocalDate = LocalDate.parse("1996-02-03")
 
   private val userAnswers: UserAnswers = emptyUserAnswers
-    .set(WhatKindOfAssetPage(index), NonEeaBusiness).success.value
-    .set(NamePage(index), name).success.value
-    .set(InternationalAddressPage(index), nonUkAddress).success.value
-    .set(GoverningCountryPage(index), country).success.value
-    .set(StartDatePage(index), date).success.value
+    .set(WhatKindOfAssetPage, NonEeaBusiness).success.value
+    .set(NamePage, name).success.value
+    .set(InternationalAddressPage, nonUkAddress).success.value
+    .set(GoverningCountryPage, country).success.value
+    .set(StartDatePage, date).success.value
 
   private val taxableRows: Seq[AnswerRow] = Seq(
     AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Non-EEA Company"), Some(WhatKindOfAssetController.onPageLoad(index).url)),
-    AnswerRow("nonEeaBusiness.name.checkYourAnswersLabel", Html(name), Some(NameController.onPageLoad(index).url)),
-    AnswerRow("nonEeaBusiness.internationalAddress.checkYourAnswersLabel", Html("Line 1<br />Line 2<br />France"), Some(InternationalAddressController.onPageLoad(index).url)),
-    AnswerRow("nonEeaBusiness.governingCountry.checkYourAnswersLabel", Html("France"), Some(GoverningCountryController.onPageLoad(index).url)),
-    AnswerRow("nonEeaBusiness.startDate.checkYourAnswersLabel", Html("3 February 1996"), Some(StartDateController.onPageLoad(index).url))
+    AnswerRow("nonEeaBusiness.name.checkYourAnswersLabel", Html(name), Some(NameController.onPageLoad(NormalMode).url)),
+    AnswerRow("nonEeaBusiness.internationalAddress.checkYourAnswersLabel", Html("Line 1<br />Line 2<br />France"), Some(InternationalAddressController.onPageLoad(NormalMode).url)),
+    AnswerRow("nonEeaBusiness.governingCountry.checkYourAnswersLabel", Html("France"), Some(GoverningCountryController.onPageLoad(NormalMode).url)),
+    AnswerRow("nonEeaBusiness.startDate.checkYourAnswersLabel", Html("3 February 1996"), Some(StartDateController.onPageLoad(NormalMode).url))
   )
 
   private val nonTaxableRows: Seq[AnswerRow] = taxableRows.tail
 
   "NonEeaBusinessPrintHelper" when {
 
-    "printSection" when {
+    "generate Noneebusiness Asset section" when {
 
       "taxable" must {
 
-        "render answer section with heading" in {
+          "added" in {
 
-          val result: AnswerSection = helper.printSection(
-            userAnswers = userAnswers.copy(isTaxable = true),
-            index = index,
-            specificIndex = index
-          )
+            val result = helper(userAnswers.copy(isTaxable = true), provisional = true, name)
 
-          result mustBe AnswerSection(
-            headingKey = Some(heading),
-            rows = taxableRows
-          )
-        }
-
-        "checkDetailsSection" must {
-          "render answer section without heading" in {
-
-            val result: Seq[AnswerSection] = helper.checkDetailsSection(
-              userAnswers = userAnswers.copy(isTaxable = true),
-              index = index
-            )
-
-            result mustBe Seq(AnswerSection(
+            result mustBe AnswerSection(
               headingKey = None,
               rows = taxableRows
-            ))
+            )
+
           }
-        }
+
       }
 
       "non-taxable" must {
 
-        "render answer section with heading" in {
+          "added" in {
 
-          val result: AnswerSection = helper.printSection(
-            userAnswers = userAnswers.copy(isTaxable = false),
-            index = index,
-            specificIndex = index
-          )
+            val result = helper(userAnswers.copy(isTaxable = false), provisional = true, name)
 
-          result mustBe AnswerSection(
-            headingKey = Some(heading),
-            rows = nonTaxableRows
-          )
-        }
-
-        "checkDetailsSection" must {
-          "render answer section without heading" in {
-
-            val result: Seq[AnswerSection] = helper.checkDetailsSection(
-              userAnswers = userAnswers.copy(isTaxable = false),
-              index = index
-            )
-
-            result mustBe Seq(AnswerSection(
+            result mustBe AnswerSection(
               headingKey = None,
               rows = nonTaxableRows
-            ))
+            )
+
           }
-        }
+
       }
+
     }
+
   }
 }

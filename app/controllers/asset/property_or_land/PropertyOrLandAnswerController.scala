@@ -24,44 +24,45 @@ import pages.AssetStatus
 import pages.asset.property_or_land.PropertyOrLandAnswerPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.RegistrationsRepository
+import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.PropertyOrLandPrintHelper
 import views.html.asset.property_or_land.PropertyOrLandAnswersView
-
 import javax.inject.Inject
+import models.NormalMode
+import viewmodels.AnswerSection
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class PropertyOrLandAnswerController @Inject()(
                                                 override val messagesApi: MessagesApi,
-                                                repository: RegistrationsRepository,
+                                                repository: PlaybackRepository,
                                                 @PropertyOrLand navigator: Navigator,
-                                                actions: Actions,
+                                                standardActionSets: StandardActionSets,
                                                 view: PropertyOrLandAnswersView,
                                                 val controllerComponents: MessagesControllerComponents,
                                                 printHelper: PropertyOrLandPrintHelper
                                               )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(index: Int): Action[AnyContent] = actions.authWithData() {
+  private val provisional: Boolean = true
+
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
     implicit request =>
 
-      val sections = printHelper.checkDetailsSection(
-        userAnswers = request.userAnswers,
-        index = index
-      )
+      val section: AnswerSection = printHelper(userAnswers = request.userAnswers, provisional, "request.Name") // TODO name
 
-      Ok(view(index, sections))
+      Ok(view(section))
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = actions.authWithData().async {
+  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
 
-      val answers = request.userAnswers.set(AssetStatus(index), Completed)
+      val answers = request.userAnswers.set(AssetStatus, Completed)
 
       for {
         updatedAnswers <- Future.fromTry(answers)
         _ <- repository.set(updatedAnswers)
-      } yield Redirect(navigator.nextPage(PropertyOrLandAnswerPage)(request.userAnswers))
+      } yield Redirect(navigator.nextPage(PropertyOrLandAnswerPage, NormalMode, request.userAnswers))
 
   }
 }

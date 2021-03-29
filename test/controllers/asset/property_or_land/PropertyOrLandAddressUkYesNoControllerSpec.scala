@@ -17,10 +17,14 @@
 package controllers.asset.property_or_land
 
 import base.SpecBase
+import config.annotations.PropertyOrLand
 import controllers.asset.property_or_land.routes._
 import controllers.routes._
 import forms.YesNoFormProvider
+import models.NormalMode
+import navigation.Navigator
 import pages.asset.property_or_land.PropertyOrLandAddressUkYesNoPage
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.asset.property_or_land.PropertyOrLandAddressUkYesNoView
@@ -29,9 +33,7 @@ class PropertyOrLandAddressUkYesNoControllerSpec extends SpecBase {
 
   val form = new YesNoFormProvider().withPrefix("propertyOrLand.addressUkYesNo")
 
-  val index: Int = 0
-
-  lazy val propertyOrLandAddressRoute: String = PropertyOrLandAddressUkYesNoController.onPageLoad(index).url
+  lazy val propertyOrLandAddressRoute: String = PropertyOrLandAddressUkYesNoController.onPageLoad(NormalMode).url
 
   "PropertyOrLandAddress Controller" must {
 
@@ -48,14 +50,14 @@ class PropertyOrLandAddressUkYesNoControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, index)(fakeRequest, messages).toString
+        view(form, NormalMode)(request, messages).toString
 
       application.stop()
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(PropertyOrLandAddressUkYesNoPage(index), true).success.value
+      val userAnswers = emptyUserAnswers.set(PropertyOrLandAddressUkYesNoPage, true).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -68,7 +70,7 @@ class PropertyOrLandAddressUkYesNoControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), index)(fakeRequest, messages).toString
+        view(form.fill(true), NormalMode)(request, messages).toString
 
       application.stop()
     }
@@ -76,7 +78,9 @@ class PropertyOrLandAddressUkYesNoControllerSpec extends SpecBase {
     "redirect to the next page when valid data is submitted" in {
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind[Navigator].qualifiedWith(classOf[PropertyOrLand]).toInstance(fakeNavigator))
+          .build()
 
       val request =
         FakeRequest(POST, propertyOrLandAddressRoute)
@@ -108,7 +112,7 @@ class PropertyOrLandAddressUkYesNoControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, index)(fakeRequest, messages).toString
+        view(boundForm, NormalMode)(request, messages).toString
 
       application.stop()
     }

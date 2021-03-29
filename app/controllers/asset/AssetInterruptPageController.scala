@@ -16,30 +16,30 @@
 
 package controllers.asset
 
-import controllers.actions.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
+import config.annotations.Assets
+import controllers.actions.StandardActionSets
 import navigation.Navigator
 import pages.asset.AssetInterruptPage
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.RegistrationsRepository
+import repositories.PlaybackRepository
 import views.html.asset.{NonTaxableInfoView, TaxableInfoView}
-
 import javax.inject.Inject
+import models.NormalMode
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class AssetInterruptPageController @Inject()(
                                               override val messagesApi: MessagesApi,
-                                              repository: RegistrationsRepository,
-                                              identify: RegistrationIdentifierAction,
-                                              getData: DraftIdRetrievalActionProvider,
-                                              requireData: RegistrationDataRequiredAction,
-                                              navigator: Navigator,
+                                              standardActionSets: StandardActionSets,
+                                              repository: PlaybackRepository,
+                                              @Assets navigator: Navigator,
                                               val controllerComponents: MessagesControllerComponents,
                                               taxableView: TaxableInfoView,
                                               nonTaxableView: NonTaxableInfoView
                                             )(implicit ec: ExecutionContext) extends AddAssetController {
 
-  def onPageLoad(): Action[AnyContent] = (identify andThen getData() andThen requireData) {
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
     implicit request =>
       Ok(
         if (request.userAnswers.isTaxable) {
@@ -50,13 +50,13 @@ class AssetInterruptPageController @Inject()(
       )
   }
 
-  def onSubmit(): Action[AnyContent] = (identify andThen getData() andThen requireData).async {
+  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
       for {
         updatedAnswers <- Future.fromTry(setAssetTypeIfNonTaxable(request.userAnswers, 0))
         _ <- repository.set(updatedAnswers)
       } yield {
-        Redirect(navigator.nextPage(AssetInterruptPage)(updatedAnswers))
+        Redirect(navigator.nextPage(AssetInterruptPage, NormalMode, updatedAnswers))
       }
   }
 

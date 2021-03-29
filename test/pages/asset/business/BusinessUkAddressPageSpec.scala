@@ -23,10 +23,10 @@ class BusinessUkAddressPageSpec extends PageBehaviours {
 
   "BusinessUkAddressPage" must {
 
-    beRetrievable[UKAddress](BusinessUkAddressPage(0))
+    beRetrievable[UKAddress](BusinessUkAddressPage)
 
-    beSettable[UKAddress](BusinessUkAddressPage(0))
+    beSettable[UKAddress](BusinessUkAddressPage)
 
-    beRemovable[UKAddress](BusinessUkAddressPage(0))
+    beRemovable[UKAddress](BusinessUkAddressPage)
   }
 }

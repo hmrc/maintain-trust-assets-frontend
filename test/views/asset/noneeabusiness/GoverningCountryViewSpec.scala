@@ -17,6 +17,7 @@
 package views.asset.noneeabusiness
 
 import forms.CountryFormProvider
+import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import utils.InputOption
@@ -27,7 +28,6 @@ import views.html.asset.noneeabusiness.GoverningCountryView
 class GoverningCountryViewSpec extends SelectCountryViewBehaviours {
 
   private val messageKeyPrefix: String = "nonEeaBusiness.governingCountry"
-  private val index: Int = 0
   private val name: String = "Test"
 
   override val form: Form[String] = new CountryFormProvider().withPrefix(messageKeyPrefix)
@@ -39,7 +39,7 @@ class GoverningCountryViewSpec extends SelectCountryViewBehaviours {
     val view = viewFor[GoverningCountryView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, countryOptions, index, name)(fakeRequest, messages)
+      view.apply(form, countryOptions, NormalMode, name)(fakeRequest, messages)
 
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name)
 

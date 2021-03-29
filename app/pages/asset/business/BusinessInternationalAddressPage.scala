@@ -18,17 +18,12 @@ package pages.asset.business
 
 import models.InternationalAddress
 import pages.QuestionPage
-import pages.asset.business.BusinessInternationalAddressPage.key
 import play.api.libs.json.JsPath
 import sections.Assets
 
-final case class BusinessInternationalAddressPage(index: Int) extends QuestionPage[InternationalAddress] {
+case object BusinessInternationalAddressPage extends QuestionPage[InternationalAddress] {
 
-  override def path: JsPath = JsPath \ Assets \ index \ toString
+  override def path: JsPath = JsPath \ Assets \  toString
 
-  override def toString: String = key
-}
-
-object BusinessInternationalAddressPage {
-  val key: String = "businessInternationalAddress"
+  override def toString: String = "businessInternationalAddress"
 }

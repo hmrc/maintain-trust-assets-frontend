@@ -17,31 +17,31 @@
 package utils.print
 
 import controllers.asset.noneeabusiness.routes._
-import models.UserAnswers
+import models.{CheckMode, Mode, NormalMode, UserAnswers}
 import pages.asset.noneeabusiness._
 import play.api.i18n.Messages
-import utils.{AnswerRowConverter, CheckAnswersFormatters}
-import viewmodels.AnswerRow
-
+import utils.AnswerRowConverter
+import viewmodels.{AnswerRow, AnswerSection}
 import javax.inject.Inject
 
-class NonEeaBusinessPrintHelper @Inject()(checkAnswersFormatters: CheckAnswersFormatters) extends PrintHelper {
+class NonEeaBusinessPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) {
 
-  override val assetType: String = "nonEeaBusinessAsset"
+  def apply(userAnswers: UserAnswers, provisional: Boolean, name: String)(implicit messages: Messages): AnswerSection = {
 
-  override def answerRows(userAnswers: UserAnswers,
-                          arg: String,
-                          index: Int)
-                         (implicit messages: Messages): Seq[AnswerRow] = {
+    val bound: answerRowConverter.Bound = answerRowConverter.bind(userAnswers, name)
 
-    val converter: AnswerRowConverter = new AnswerRowConverter(checkAnswersFormatters)(userAnswers, arg)
+    def answerRows: Seq[AnswerRow] = {
+      val mode: Mode = if (provisional) NormalMode else CheckMode
+      Seq(
+        if (userAnswers.isTaxable) bound.assetTypeQuestion(0) else None,
+        bound.stringQuestion(NamePage, "nonEeaBusiness.name", NameController.onPageLoad(mode).url),
+        bound.addressQuestion(InternationalAddressPage, "nonEeaBusiness.internationalAddress", InternationalAddressController.onPageLoad(mode).url),
+        bound.countryQuestion(GoverningCountryPage, "nonEeaBusiness.governingCountry", GoverningCountryController.onPageLoad(mode).url),
+        bound.dateQuestion(StartDatePage, "nonEeaBusiness.startDate", StartDateController.onPageLoad(mode).url)
+      ).flatten
+    }
 
-    Seq(
-      if (userAnswers.isTaxable) converter.assetTypeQuestion(index) else None,
-      converter.stringQuestion(NamePage(index), "nonEeaBusiness.name", NameController.onPageLoad(index).url),
-      converter.addressQuestion(InternationalAddressPage(index), "nonEeaBusiness.internationalAddress", InternationalAddressController.onPageLoad(index).url),
-      converter.countryQuestion(GoverningCountryPage(index), "nonEeaBusiness.governingCountry", GoverningCountryController.onPageLoad(index).url),
-      converter.dateQuestion(StartDatePage(index), "nonEeaBusiness.startDate", StartDateController.onPageLoad(index).url)
-    ).flatten
+    AnswerSection(headingKey = None, rows = answerRows)
+
   }
 }

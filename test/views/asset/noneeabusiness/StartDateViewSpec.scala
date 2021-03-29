@@ -21,14 +21,14 @@ import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.QuestionViewBehaviours
 import views.html.asset.noneeabusiness.StartDateView
-
 import java.time.LocalDate
+
+import models.NormalMode
 
 class StartDateViewSpec extends QuestionViewBehaviours[LocalDate] {
 
   private val messageKeyPrefix: String = "nonEeaBusiness.startDate"
   override val form: Form[LocalDate] = new StartDateFormProvider(frontendAppConfig).withPrefix(messageKeyPrefix)
-  private val index: Int = 0
   private val name: String = "Test"
 
   "StartDateView view" must {
@@ -36,7 +36,7 @@ class StartDateViewSpec extends QuestionViewBehaviours[LocalDate] {
     val view = viewFor[StartDateView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, index, name)(fakeRequest, messages)
+      view.apply(form, NormalMode, name)(fakeRequest, messages)
 
     val applyViewF = (form : Form[_]) => applyView(form)
 

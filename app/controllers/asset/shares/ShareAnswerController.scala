@@ -19,71 +19,68 @@ package controllers.asset.shares
 import config.annotations.Shares
 import controllers.actions._
 import models.Status.Completed
-import models.requests.RegistrationDataRequest
 import navigation.Navigator
 import pages.AssetStatus
-import pages.asset.shares.{ShareAnswerPage, ShareCompanyNamePage, SharePortfolioNamePage, SharesInAPortfolioPage}
+import pages.asset.shares.{ShareAnswerPage, ShareCompanyNamePage, SharePortfolioNamePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.Gettable
-import repositories.RegistrationsRepository
+import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.SharesPrintHelper
 import views.html.asset.shares.ShareAnswersView
-
 import javax.inject.Inject
+import models.NormalMode
+import viewmodels.AnswerSection
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class ShareAnswerController @Inject()(
                                        override val messagesApi: MessagesApi,
-                                       repository: RegistrationsRepository,
+                                       standardActionSets: StandardActionSets,
+                                       repository: PlaybackRepository,
                                        @Shares navigator: Navigator,
-                                       identify: RegistrationIdentifierAction,
-                                       getData: DraftIdRetrievalActionProvider,
-                                       requireData: RegistrationDataRequiredAction,
-                                       requiredAnswer: RequiredAnswerActionProvider,
                                        view: ShareAnswersView,
                                        val controllerComponents: MessagesControllerComponents,
                                        printHelper: SharesPrintHelper
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private def actions(index: Int): ActionBuilder[RegistrationDataRequest, AnyContent] =
-    identify andThen
-      getData() andThen
-      requireData andThen
-      requiredAnswer(RequiredAnswer(SharesInAPortfolioPage(index), routes.SharesInAPortfolioController.onPageLoad(index)))
+//  private def actions(index: Int): ActionBuilder[RegistrationDataRequest, AnyContent] =
+//    identify andThen
+//      getData() andThen
+//      requireData andThen
+//      requiredAnswer(RequiredAnswer(SharesInAPortfolioPage, routes.SharesInAPortfolioController.onPageLoad(index)))
+// TODO
 
-  def onPageLoad(index: Int): Action[AnyContent] = actions(index) {
+  private val provisional: Boolean = true
+
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
     implicit request =>
 
       def getPage(page: Gettable[String]): Option[String] = {
         request.userAnswers.get(page)
       }
 
-      val name: String = (getPage(ShareCompanyNamePage(index)), getPage(SharePortfolioNamePage(index))) match {
+      val name: String = (getPage(ShareCompanyNamePage), getPage(SharePortfolioNamePage)) match {
         case (Some(name), None) => name
         case (None, Some(name)) => name
         case _ => request.messages(messagesApi)("assets.defaultText")
       }
 
-      val sections = printHelper.checkDetailsSection(
-        userAnswers = request.userAnswers,
-        arg = name,
-        index = index
-      )
+      val section: AnswerSection = printHelper(userAnswers = request.userAnswers, provisional, name)
 
-      Ok(view(index, sections))
+      Ok(view(section))
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = actions(index).async {
+  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
 
-      val answers = request.userAnswers.set(AssetStatus(index), Completed)
+      val answers = request.userAnswers.set(AssetStatus, Completed)
 
       for {
         updatedAnswers <- Future.fromTry(answers)
         _ <- repository.set(updatedAnswers)
-      } yield Redirect(navigator.nextPage(ShareAnswerPage)(request.userAnswers))
+      } yield Redirect(navigator.nextPage(ShareAnswerPage, NormalMode, request.userAnswers))
 
   }
 }

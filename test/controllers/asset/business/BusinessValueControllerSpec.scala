@@ -17,11 +17,14 @@
 package controllers.asset.business
 
 import base.SpecBase
+import config.annotations.Business
 import controllers.routes._
 import forms.ValueFormProvider
-import models.UserAnswers
+import models.{NormalMode, UserAnswers}
+import navigation.Navigator
 import pages.asset.business.{BusinessNamePage, BusinessValuePage}
 import play.api.data.Form
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.asset.buisness.BusinessValueView
@@ -35,10 +38,10 @@ class BusinessValueControllerSpec extends SpecBase {
   val index = 0
   val validAnswer: Long = 4000L
 
-  lazy val currentValueRoute: String = routes.BusinessValueController.onPageLoad(index).url
+  lazy val currentValueRoute: String = routes.BusinessValueController.onPageLoad(NormalMode).url
 
   val baseAnswers: UserAnswers = emptyUserAnswers
-    .set(BusinessNamePage(index), businessName).success.value
+    .set(BusinessNamePage, businessName).success.value
 
   "CurrentValue Controller" must {
 
@@ -55,7 +58,7 @@ class BusinessValueControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, index, businessName)(fakeRequest, messages).toString
+        view(form, NormalMode, businessName)(request, messages).toString
 
       application.stop()
     }
@@ -63,7 +66,7 @@ class BusinessValueControllerSpec extends SpecBase {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = baseAnswers
-        .set(BusinessValuePage(index), validAnswer).success.value
+        .set(BusinessValuePage, validAnswer).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -76,7 +79,7 @@ class BusinessValueControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), index, businessName)(fakeRequest, messages).toString
+        view(form.fill(validAnswer), NormalMode, businessName)(request, messages).toString
 
       application.stop()
     }
@@ -84,7 +87,9 @@ class BusinessValueControllerSpec extends SpecBase {
     "redirect to the next page when valid data is submitted" in {
 
       val application =
-        applicationBuilder(userAnswers = Some(baseAnswers)).build()
+        applicationBuilder(userAnswers = Some(baseAnswers))
+          .overrides(bind[Navigator].qualifiedWith(classOf[Business]).toInstance(fakeNavigator))
+          .build()
 
       val request =
         FakeRequest(POST, currentValueRoute)
@@ -98,25 +103,10 @@ class BusinessValueControllerSpec extends SpecBase {
       application.stop()
     }
 
-    "redirect to Asset Name page when AssetName is not answered" in {
-
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-
-      val request = FakeRequest(GET, currentValueRoute)
-
-      val result = route(application, request).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual routes.BusinessNameController.onPageLoad(index).url
-
-      application.stop()
-    }
-
     "return a Bad Request and errors when invalid data is submitted" in {
 
       val userAnswers = emptyUserAnswers
-        .set(BusinessNamePage(index), businessName).success.value
+        .set(BusinessNamePage, businessName).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -133,7 +123,7 @@ class BusinessValueControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, index, businessName)(fakeRequest, messages).toString
+        view(boundForm, NormalMode, businessName)(request, messages).toString
 
       application.stop()
     }

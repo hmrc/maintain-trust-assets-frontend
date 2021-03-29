@@ -17,6 +17,7 @@
 package views.asset.shares
 
 import forms.QuantityFormProvider
+import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.LongViewBehaviours
@@ -25,7 +26,6 @@ import views.html.asset.shares.ShareQuantityInTrustView
 class ShareQuantityInTrustViewSpec extends LongViewBehaviours {
 
   private val messageKeyPrefix = "shares.quantityInTrust"
-  private val index = 0
   private val companyName = "Company"
 
   override val form: Form[Long] = new QuantityFormProvider(frontendAppConfig).withPrefix(messageKeyPrefix)
@@ -35,7 +35,7 @@ class ShareQuantityInTrustViewSpec extends LongViewBehaviours {
     val view = viewFor[ShareQuantityInTrustView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, index, companyName)(fakeRequest, messages)
+      view.apply(form, NormalMode, companyName)(fakeRequest, messages)
 
     behave like pageWithBackLink(applyView(form))
 

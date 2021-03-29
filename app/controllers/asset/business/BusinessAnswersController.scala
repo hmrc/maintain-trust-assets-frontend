@@ -17,60 +17,48 @@
 package controllers.asset.business
 
 import controllers.actions._
+import controllers.actions.business.NameRequiredAction
 import models.Status.Completed
-import models.requests.RegistrationDataRequest
 import pages.AssetStatus
-import pages.asset.business.BusinessNamePage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
-import repositories.RegistrationsRepository
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.BusinessPrintHelper
 import views.html.asset.buisness.BusinessAnswersView
-
 import javax.inject.Inject
+import viewmodels.AnswerSection
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class BusinessAnswersController @Inject()(
                                            override val messagesApi: MessagesApi,
-                                           registrationsRepository: RegistrationsRepository,
-                                           identify: RegistrationIdentifierAction,
-                                           getData: DraftIdRetrievalActionProvider,
-                                           requireData: RegistrationDataRequiredAction,
-                                           requiredAnswer: RequiredAnswerActionProvider,
+                                           standardActionSets: StandardActionSets,
+                                           nameAction: NameRequiredAction,
+                                           repository: PlaybackRepository,
                                            view: BusinessAnswersView,
                                            val controllerComponents: MessagesControllerComponents,
                                            printHelper: BusinessPrintHelper
                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private def actions(index: Int): ActionBuilder[RegistrationDataRequest, AnyContent] =
-    identify andThen
-      getData() andThen
-      requireData andThen
-      requiredAnswer(RequiredAnswer(BusinessNamePage(index), routes.BusinessNameController.onPageLoad(index)))
+  private val provisional: Boolean = true
 
-  def onPageLoad(index: Int): Action[AnyContent] = actions(index) {
+  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
 
-      val name = request.userAnswers.get(BusinessNamePage(index)).get
+      val section: AnswerSection = printHelper(userAnswers = request.userAnswers, provisional, request.Name)
 
-      val section = printHelper.checkDetailsSection(
-        userAnswers = request.userAnswers,
-        arg = name,
-        index = index
-      )
-
-      Ok(view(index, section))
+      Ok(view(section))
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = actions(index).async {
+  def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
     implicit request =>
 
-      val answers = request.userAnswers.set(AssetStatus(index), Completed)
+      val answers = request.userAnswers.set(AssetStatus, Completed)
 
       for {
         updatedAnswers <- Future.fromTry(answers)
-        _ <- registrationsRepository.set(updatedAnswers)
+        _ <- repository.set(updatedAnswers)
       } yield Redirect(controllers.asset.routes.AddAssetsController.onPageLoad())
 
   }

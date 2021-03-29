@@ -17,31 +17,26 @@
 package controllers.asset.business
 
 import config.annotations.Business
-import controllers.actions.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
-import controllers.filters.IndexActionFilterProvider
+import controllers.actions.StandardActionSets
 import forms.NameFormProvider
-import models.requests.RegistrationDataRequest
 import navigation.Navigator
 import pages.asset.business.BusinessNamePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
-import repositories.RegistrationsRepository
-import sections.Assets
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.asset.buisness.BusinessNameView
-
 import javax.inject.Inject
+import models.Mode
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class BusinessNameController @Inject()(
                                         override val messagesApi: MessagesApi,
-                                        registrationsRepository: RegistrationsRepository,
+                                        standardActionSets: StandardActionSets,
+                                        repository: PlaybackRepository,
                                         @Business navigator: Navigator,
-                                        identify: RegistrationIdentifierAction,
-                                        getData: DraftIdRetrievalActionProvider,
-                                        requireData: RegistrationDataRequiredAction,
-                                        validateIndex: IndexActionFilterProvider,
                                         formProvider: NameFormProvider,
                                         val controllerComponents: MessagesControllerComponents,
                                         view: BusinessNameView
@@ -49,35 +44,30 @@ class BusinessNameController @Inject()(
 
   val form: Form[String] = formProvider.withConfig(105, "business.name")
 
-  private def actions(index: Int): ActionBuilder[RegistrationDataRequest, AnyContent] =
-    identify andThen getData() andThen
-      requireData andThen
-      validateIndex(index, Assets)
-
-  def onPageLoad(index: Int): Action[AnyContent] = actions(index) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(BusinessNamePage(index)) match {
+      val preparedForm = request.userAnswers.get(BusinessNamePage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, index))
+      Ok(view(preparedForm, mode))
 
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = actions(index).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, index))),
+          Future.successful(BadRequest(view(formWithErrors, mode))),
 
         value => {
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(BusinessNamePage(index), value))
-            _ <- registrationsRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(BusinessNamePage(index))(updatedAnswers))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(BusinessNamePage, value))
+            _ <- repository.set(updatedAnswers)
+          } yield Redirect(navigator.nextPage(BusinessNamePage, mode, updatedAnswers))
         }
       )
   }

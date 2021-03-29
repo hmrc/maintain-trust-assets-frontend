@@ -16,19 +16,21 @@
 
 package views.asset.partnership
 
+import play.twirl.api.HtmlFormat
+import viewmodels.AnswerSection
 import views.behaviours.ViewBehaviours
 import views.html.asset.partnership.PartnershipAnswersView
 
 class PartnershipAnswersViewSpec extends ViewBehaviours {
 
   private val prefix: String = "partnership.answers"
-  private val index: Int = 0
 
   "PartnershipAnswers view" must {
 
     val view = viewFor[PartnershipAnswersView](Some(emptyUserAnswers))
 
-    val applyView = view.apply(index, Nil)(fakeRequest, messages)
+    def applyView(): HtmlFormat.Appendable =
+      view.apply(AnswerSection(None, Seq()))(fakeRequest, messages)
 
     behave like normalPage(applyView, prefix)
 

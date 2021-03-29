@@ -17,14 +17,15 @@
 package controllers.asset.property_or_land
 
 import base.SpecBase
+import config.annotations.PropertyOrLand
 import controllers.IndexValidation
 import controllers.routes._
 import forms.ValueFormProvider
-import models.UserAnswers
-import org.scalacheck.Arbitrary.arbitrary
+import models.{NormalMode, UserAnswers}
+import navigation.Navigator
 import pages.asset.property_or_land.{PropertyLandValueTrustPage, PropertyOrLandTotalValuePage}
 import play.api.data.Form
-import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.asset.property_or_land.PropertyLandValueTrustView
@@ -34,12 +35,11 @@ class PropertyLandValueTrustControllerSpec extends SpecBase with IndexValidation
   val formProvider = new ValueFormProvider(frontendAppConfig)
   val form: Form[Long] = formProvider.withConfig(prefix = "propertyOrLand.valueInTrust")
 
-  val index: Int = 0
   val validAnswer: Long = 4000L
 
-  lazy val propertyLandValueTrustRoute: String = routes.PropertyLandValueTrustController.onPageLoad(index).url
+  lazy val propertyLandValueTrustRoute: String = routes.PropertyLandValueTrustController.onPageLoad(NormalMode).url
 
-  val baseAnswers: UserAnswers = emptyUserAnswers.set(PropertyOrLandTotalValuePage(index), 5000L).success.value
+  val baseAnswers: UserAnswers = emptyUserAnswers.set(PropertyOrLandTotalValuePage, 5000L).success.value
 
   "PropertyLandValueTrust Controller" must {
 
@@ -56,14 +56,14 @@ class PropertyLandValueTrustControllerSpec extends SpecBase with IndexValidation
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, index)(request, messages).toString
+        view(form, NormalMode)(request, messages).toString
 
       application.stop()
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = baseAnswers.set(PropertyLandValueTrustPage(index), validAnswer).success.value
+      val userAnswers = baseAnswers.set(PropertyLandValueTrustPage, validAnswer).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -76,14 +76,16 @@ class PropertyLandValueTrustControllerSpec extends SpecBase with IndexValidation
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), index)(fakeRequest, messages).toString
+        view(form.fill(validAnswer), NormalMode)(request, messages).toString
 
       application.stop()
     }
 
     "redirect to the next page when valid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(baseAnswers))
+        .overrides(bind[Navigator].qualifiedWith(classOf[PropertyOrLand]).toInstance(fakeNavigator))
+        .build()
 
       val request = FakeRequest(POST, propertyLandValueTrustRoute)
         .withFormUrlEncodedBody(("value", validAnswer.toString))
@@ -113,7 +115,7 @@ class PropertyLandValueTrustControllerSpec extends SpecBase with IndexValidation
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, index)(fakeRequest, messages).toString
+        view(boundForm, NormalMode)(request, messages).toString
 
       application.stop()
     }
@@ -148,38 +150,5 @@ class PropertyLandValueTrustControllerSpec extends SpecBase with IndexValidation
       application.stop()
     }
 
-    "for a GET" must {
-
-      def getForIndex(index: Int) : FakeRequest[AnyContentAsEmpty.type] = {
-        val route = routes.PropertyLandValueTrustController.onPageLoad(index).url
-
-        FakeRequest(GET, route)
-      }
-
-      validateIndex(
-        arbitrary[Long],
-        PropertyLandValueTrustPage.apply,
-        getForIndex
-      )
-
-    }
-
-    "for a POST" must {
-
-      def postForIndex(index: Int): FakeRequest[AnyContentAsFormUrlEncoded] = {
-
-        val route =
-          routes.PropertyLandValueTrustController.onPageLoad(index).url
-
-        FakeRequest(POST, route)
-          .withFormUrlEncodedBody(("value", validAnswer.toString))
-      }
-
-      validateIndex(
-        arbitrary[Long],
-        PropertyLandValueTrustPage.apply,
-        postForIndex
-      )
-    }
   }
 }

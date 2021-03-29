@@ -17,29 +17,30 @@
 package utils.print
 
 import controllers.asset.partnership.routes._
-import models.UserAnswers
+import models.{CheckMode, Mode, NormalMode, UserAnswers}
 import pages.asset.partnership._
 import play.api.i18n.Messages
-import utils.{AnswerRowConverter, CheckAnswersFormatters}
-import viewmodels.AnswerRow
-
+import utils.AnswerRowConverter
+import viewmodels.{AnswerRow, AnswerSection}
 import javax.inject.Inject
 
-class PartnershipPrintHelper @Inject()(checkAnswersFormatters: CheckAnswersFormatters) extends PrintHelper {
+class PartnershipPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) {
 
-  override val assetType: String = "partnershipAsset"
+  def apply(userAnswers: UserAnswers, provisional: Boolean, name: String)(implicit messages: Messages): AnswerSection = {
 
-  override def answerRows(userAnswers: UserAnswers,
-                          arg: String,
-                          index: Int)
-                         (implicit messages: Messages): Seq[AnswerRow] = {
+    val bound: answerRowConverter.Bound = answerRowConverter.bind(userAnswers, name)
 
-    val converter: AnswerRowConverter = new AnswerRowConverter(checkAnswersFormatters)(userAnswers, arg)
+    def answerRows: Seq[AnswerRow] = {
+      val mode: Mode = if (provisional) NormalMode else CheckMode
+      Seq(
+        bound.assetTypeQuestion(0),
+        bound.stringQuestion(PartnershipDescriptionPage, "partnership.description", PartnershipDescriptionController.onPageLoad(mode).url),
+        bound.dateQuestion(PartnershipStartDatePage, "partnership.startDate", PartnershipStartDateController.onPageLoad(mode).url)
+      ).flatten
+    }
 
-    Seq(
-      converter.assetTypeQuestion(index),
-      converter.stringQuestion(PartnershipDescriptionPage(index), "partnership.description", PartnershipDescriptionController.onPageLoad(index).url),
-      converter.dateQuestion(PartnershipStartDatePage(index), "partnership.startDate", PartnershipStartDateController.onPageLoad(index).url)
-    ).flatten
+    AnswerSection(headingKey = None, rows = answerRows)
+
   }
+
 }

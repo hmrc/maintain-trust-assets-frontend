@@ -21,12 +21,14 @@ import pages.behaviours.PageBehaviours
 
 class PropertyOrLandInternationalAddressPageSpec extends PageBehaviours {
 
+  val page = PropertyOrLandInternationalAddressPage
+
   "PropertyOrLandInternationalAddressPage" must {
 
-    beRetrievable[InternationalAddress](PropertyOrLandInternationalAddressPage(0))
+    beRetrievable[InternationalAddress](page)
 
-    beSettable[InternationalAddress](PropertyOrLandInternationalAddressPage(0))
+    beSettable[InternationalAddress](page)
 
-    beRemovable[InternationalAddress](PropertyOrLandInternationalAddressPage(0))
+    beRemovable[InternationalAddress](page)
   }
 }

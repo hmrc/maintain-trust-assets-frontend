@@ -16,32 +16,28 @@
 
 package controllers.asset
 
-import controllers.actions.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
-import controllers.filters.IndexActionFilterProvider
+import config.annotations.Assets
+import controllers.actions.StandardActionSets
 import forms.WhatKindOfAssetFormProvider
-import models.requests.RegistrationDataRequest
-import models.{Enumerable, UserAnswers, WhatKindOfAsset}
+import models.{Enumerable, NormalMode, UserAnswers, WhatKindOfAsset}
 import navigation.Navigator
 import pages.asset.WhatKindOfAssetPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
-import repositories.RegistrationsRepository
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.RadioOption
 import views.html.asset.WhatKindOfAssetView
-
 import javax.inject.Inject
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class WhatKindOfAssetController @Inject()(
                                            override val messagesApi: MessagesApi,
-                                           repository: RegistrationsRepository,
-                                           navigator: Navigator,
-                                           identify: RegistrationIdentifierAction,
-                                           getData: DraftIdRetrievalActionProvider,
-                                           requireData: RegistrationDataRequiredAction,
-                                           validateIndex: IndexActionFilterProvider,
+                                           standardActionSets: StandardActionSets,
+                                           repository: PlaybackRepository,
+                                           @Assets navigator: Navigator,
                                            formProvider: WhatKindOfAssetFormProvider,
                                            val controllerComponents: MessagesControllerComponents,
                                            view: WhatKindOfAssetView
@@ -49,39 +45,36 @@ class WhatKindOfAssetController @Inject()(
 
   val form: Form[WhatKindOfAsset] = formProvider()
 
-  private def options(userAnswers: UserAnswers, index: Int): List[RadioOption] = {
+  private def options(userAnswers: UserAnswers): List[RadioOption] = {
     val assets = userAnswers.get(sections.Assets).getOrElse(Nil)
-    val assetTypeAtIndex = userAnswers.get(WhatKindOfAssetPage(index))
+    val assetTypeSelected = userAnswers.get(WhatKindOfAssetPage)
 
-    WhatKindOfAsset.nonMaxedOutOptions(assets, assetTypeAtIndex, userAnswers.is5mldEnabled)
+    WhatKindOfAsset.nonMaxedOutOptions(assets, assetTypeSelected, userAnswers.is5mldEnabled)
   }
 
-  private def actions (index: Int): ActionBuilder[RegistrationDataRequest, AnyContent] =
-    identify andThen getData() andThen requireData andThen validateIndex(index, sections.Assets)
-
-  def onPageLoad(index: Int): Action[AnyContent] = actions(index) {
+  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
     implicit request =>
-      val preparedForm = request.userAnswers.get(WhatKindOfAssetPage(index)) match {
+      val preparedForm = request.userAnswers.get(WhatKindOfAssetPage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, index, options(request.userAnswers, index)))
+      Ok(view(preparedForm, index, options(request.userAnswers))) // TODO Index
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = actions(index).async {
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, index, options(request.userAnswers, index)))),
+          Future.successful(BadRequest(view(formWithErrors, index, options(request.userAnswers)))), // TODO Index
 
         value => {
 
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(WhatKindOfAssetPage(index), value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(WhatKindOfAssetPage, value))
             _ <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(WhatKindOfAssetPage(index))(updatedAnswers))
+          } yield Redirect(navigator.nextPage(WhatKindOfAssetPage, NormalMode, updatedAnswers))
         }
       )
   }

@@ -17,31 +17,26 @@
 package controllers.asset.noneeabusiness
 
 import config.annotations.NonEeaBusiness
-import controllers.actions.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
-import controllers.filters.IndexActionFilterProvider
+import controllers.actions.StandardActionSets
 import forms.NameFormProvider
-import models.requests.RegistrationDataRequest
 import navigation.Navigator
 import pages.asset.noneeabusiness.NamePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
-import repositories.RegistrationsRepository
-import sections.Assets
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.asset.noneeabusiness.NameView
-
 import javax.inject.Inject
+import models.Mode
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class NameController @Inject()(
                                 override val messagesApi: MessagesApi,
-                                registrationsRepository: RegistrationsRepository,
+                                standardActionSets: StandardActionSets,
+                                repository: PlaybackRepository,
                                 @NonEeaBusiness navigator: Navigator,
-                                identify: RegistrationIdentifierAction,
-                                getData: DraftIdRetrievalActionProvider,
-                                requireData: RegistrationDataRequiredAction,
-                                validateIndex: IndexActionFilterProvider,
                                 formProvider: NameFormProvider,
                                 val controllerComponents: MessagesControllerComponents,
                                 view: NameView
@@ -49,35 +44,31 @@ class NameController @Inject()(
 
   private val form: Form[String] = formProvider.withConfig(105, "nonEeaBusiness.name")
 
-  private def actions(index: Int): ActionBuilder[RegistrationDataRequest, AnyContent] =
-    identify andThen getData() andThen
-      requireData andThen
-      validateIndex(index, Assets)
 
-  def onPageLoad(index: Int): Action[AnyContent] = actions(index) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(NamePage(index)) match {
+      val preparedForm = request.userAnswers.get(NamePage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, index))
+      Ok(view(preparedForm, mode))
 
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = actions(index).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, index))),
+          Future.successful(BadRequest(view(formWithErrors, mode))),
 
         value => {
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(NamePage(index), value))
-            _ <- registrationsRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(NamePage(index))(updatedAnswers))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(NamePage, value))
+            _ <- repository.set(updatedAnswers)
+          } yield Redirect(navigator.nextPage(NamePage, mode, updatedAnswers))
         }
       )
   }

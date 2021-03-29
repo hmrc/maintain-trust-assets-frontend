@@ -18,74 +18,57 @@ package controllers.asset.shares
 
 import config.annotations.Shares
 import controllers.actions._
-import controllers.filters.IndexActionFilterProvider
+import controllers.actions.shares.CompanyNameRequiredAction
 import forms.shares.ShareClassFormProvider
-import models.Enumerable
-import models.requests.RegistrationDataRequest
+import models.{Enumerable, Mode}
 import navigation.Navigator
-import pages.asset.shares.{ShareClassPage, ShareCompanyNamePage}
+import pages.asset.shares.ShareClassPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
-import repositories.RegistrationsRepository
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.asset.shares.ShareClassView
-
 import javax.inject.Inject
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class ShareClassController @Inject()(
                                       override val messagesApi: MessagesApi,
-                                      repository: RegistrationsRepository,
+                                      standardActionSets: StandardActionSets,
+                                      nameAction: CompanyNameRequiredAction,
+                                      repository: PlaybackRepository,
                                       @Shares navigator: Navigator,
-                                      identify: RegistrationIdentifierAction,
-                                      getData: DraftIdRetrievalActionProvider,
-                                      requireData: RegistrationDataRequiredAction,
                                       formProvider: ShareClassFormProvider,
                                       val controllerComponents: MessagesControllerComponents,
-                                      view: ShareClassView,
-                                      validateIndex: IndexActionFilterProvider,
-                                      requiredAnswer: RequiredAnswerActionProvider
+                                      view: ShareClassView
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
 
   private val form = formProvider()
 
-  private def actions(index : Int): ActionBuilder[RegistrationDataRequest, AnyContent] =
-    identify andThen getData() andThen
-      requireData andThen
-      validateIndex(index, sections.Assets) andThen
-      requiredAnswer(RequiredAnswer(
-        ShareCompanyNamePage(index),
-        routes.ShareCompanyNameController.onPageLoad(index)
-      ))
-
-  def onPageLoad(index: Int): Action[AnyContent] = actions(index) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
 
-      val companyName = request.userAnswers.get(ShareCompanyNamePage(index)).get
-
-      val preparedForm = request.userAnswers.get(ShareClassPage(index)) match {
+      val preparedForm = request.userAnswers.get(ShareClassPage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, index, companyName))
+      Ok(view(preparedForm, mode, request.Name))
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = actions(index).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
     implicit request =>
-
-      val companyName = request.userAnswers.get(ShareCompanyNamePage(index)).get
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, index, companyName))),
+          Future.successful(BadRequest(view(formWithErrors, mode, request.Name))),
 
         value => {
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(ShareClassPage(index), value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(ShareClassPage, value))
             _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(ShareClassPage(index))(updatedAnswers))
+          } yield Redirect(navigator.nextPage(ShareClassPage, mode, updatedAnswers))
         }
       )
   }

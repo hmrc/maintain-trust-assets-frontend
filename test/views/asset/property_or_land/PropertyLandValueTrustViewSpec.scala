@@ -17,6 +17,7 @@
 package views.asset.property_or_land
 
 import forms.ValueFormProvider
+import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.LongViewBehaviours
@@ -26,7 +27,6 @@ class PropertyLandValueTrustViewSpec extends LongViewBehaviours {
 
   private val messageKeyPrefix: String = "propertyOrLand.valueInTrust"
   private val maxValue: Long = 100L
-  private val index: Int = 0
 
   override val form: Form[Long] = new ValueFormProvider(frontendAppConfig)
     .withConfig(prefix = messageKeyPrefix, maxValue = Some(maxValue))
@@ -36,7 +36,7 @@ class PropertyLandValueTrustViewSpec extends LongViewBehaviours {
     val view = viewFor[PropertyLandValueTrustView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, index)(fakeRequest, messages)
+      view.apply(form, NormalMode)(fakeRequest, messages)
 
 
     behave like normalPage(applyView(form), messageKeyPrefix)

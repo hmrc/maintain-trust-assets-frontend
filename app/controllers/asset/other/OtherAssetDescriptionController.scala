@@ -19,66 +19,62 @@ package controllers.asset.other
 import config.annotations.Other
 import controllers.actions._
 import forms.DescriptionFormProvider
-import models.requests.RegistrationDataRequest
 import navigation.Navigator
-import pages.asset.WhatKindOfAssetPage
 import pages.asset.other.OtherAssetDescriptionPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
-import repositories.RegistrationsRepository
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.asset.other.OtherAssetDescriptionView
-
 import javax.inject.Inject
+import models.Mode
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class OtherAssetDescriptionController @Inject()(
                                                  override val messagesApi: MessagesApi,
-                                                 repository: RegistrationsRepository,
+                                                 standardActionSets: StandardActionSets,
+                                                 repository: PlaybackRepository,
                                                  @Other navigator: Navigator,
-                                                 identify: RegistrationIdentifierAction,
-                                                 getData: DraftIdRetrievalActionProvider,
-                                                 requireData: RegistrationDataRequiredAction,
-                                                 requiredAnswer: RequiredAnswerActionProvider,
                                                  formProvider: DescriptionFormProvider,
                                                  val controllerComponents: MessagesControllerComponents,
                                                  view: OtherAssetDescriptionView
                                                )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private def actions(index: Int): ActionBuilder[RegistrationDataRequest, AnyContent] = {
-    identify andThen getData() andThen requireData andThen
-      requiredAnswer(RequiredAnswer(WhatKindOfAssetPage(index), controllers.asset.routes.WhatKindOfAssetController.onPageLoad(index)))
-  }
+//  private def actions(index: Int): ActionBuilder[RegistrationDataRequest, AnyContent] = {
+//    identify andThen getData() andThen requireData andThen
+//      requiredAnswer(RequiredAnswer(WhatKindOfAssetPage(index), controllers.asset.routes.WhatKindOfAssetController.onPageLoad(index)))
+//  } // TODO
 
   val form: Form[String] = formProvider.withConfig(length = 56, prefix = "other.description")
 
-  def onPageLoad(index: Int): Action[AnyContent] = actions(index) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(OtherAssetDescriptionPage(index)) match {
+      val preparedForm = request.userAnswers.get(OtherAssetDescriptionPage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, index))
+      Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = actions(index).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, index))),
+          Future.successful(BadRequest(view(formWithErrors, mode))),
 
         value => {
 
-          val answers = request.userAnswers.set(OtherAssetDescriptionPage(index), value)
+          val answers = request.userAnswers.set(OtherAssetDescriptionPage, value)
 
           for {
             updatedAnswers <- Future.fromTry(answers)
             _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(OtherAssetDescriptionPage(index))(updatedAnswers))
+          } yield Redirect(navigator.nextPage(OtherAssetDescriptionPage, mode, updatedAnswers))
         }
       )
   }

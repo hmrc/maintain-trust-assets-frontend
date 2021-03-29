@@ -19,43 +19,41 @@ package navigation
 import base.SpecBase
 import controllers.asset.partnership.routes._
 import generators.Generators
-import models.UserAnswers
+import models.{NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.asset.partnership._
-
 import java.time.{LocalDate, ZoneOffset}
 
 class PartnershipNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   private val navigator: Navigator = injector.instanceOf[PartnershipNavigator]
-  private val index: Int = 0
   private val validDate: LocalDate = LocalDate.now(ZoneOffset.UTC)
 
   "Partnership Navigator" must {
 
     "navigate from PartnershipDescriptionPage to PartnershipStartDatePage" in {
 
-      val page = PartnershipDescriptionPage(index)
+      val page = PartnershipDescriptionPage
 
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
           val answers = userAnswers.set(page, "Partnership Description").success.value
-          navigator.nextPage(page)(answers)
-            .mustBe(PartnershipStartDateController.onPageLoad(index))
+          navigator.nextPage(page, NormalMode, answers)
+            .mustBe(PartnershipStartDateController.onPageLoad(NormalMode))
       }
     }
 
     "navigate from PartnershipStartDatePage to PartnershipAnswersPage" in {
 
-      val page = PartnershipStartDatePage(index)
+      val page = PartnershipStartDatePage
 
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
           val answers = userAnswers
-            .set(PartnershipStartDatePage(index), validDate).success.value
-          navigator.nextPage(page)(answers)
-            .mustBe(PartnershipAnswerController.onPageLoad(index))
+            .set(PartnershipStartDatePage, validDate).success.value
+          navigator.nextPage(page, NormalMode, answers)
+            .mustBe(PartnershipAnswerController.onPageLoad())
       }
     }
 
@@ -65,7 +63,7 @@ class PartnershipNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks wi
 
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
-          navigator.nextPage(page)(userAnswers)
+          navigator.nextPage(page, NormalMode, userAnswers)
             .mustBe(controllers.asset.routes.AddAssetsController.onPageLoad())
       }
     }

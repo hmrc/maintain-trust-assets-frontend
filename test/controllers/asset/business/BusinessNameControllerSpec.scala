@@ -17,14 +17,15 @@
 package controllers.asset.business
 
 import base.SpecBase
+import config.annotations.Business
 import controllers.IndexValidation
 import controllers.routes._
 import forms.NameFormProvider
-import models.UserAnswers
-import org.scalacheck.Arbitrary.arbitrary
+import models.{NormalMode, UserAnswers}
+import navigation.Navigator
 import pages.asset.business.BusinessNamePage
 import play.api.data.Form
-import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{route, _}
 import views.html.asset.buisness.BusinessNameView
@@ -38,7 +39,7 @@ class BusinessNameControllerSpec extends SpecBase  with IndexValidation {
   val index = 0
   val validAnswer: String = "Name"
 
-  lazy val assetNameRoute: String = routes.BusinessNameController.onPageLoad(index).url
+  lazy val assetNameRoute: String = routes.BusinessNameController.onPageLoad(NormalMode).url
 
   "AssetName Controller" must {
 
@@ -55,7 +56,7 @@ class BusinessNameControllerSpec extends SpecBase  with IndexValidation {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, index)(fakeRequest, messages).toString
+        view(form, NormalMode)(request, messages).toString
 
       application.stop()
     }
@@ -63,7 +64,7 @@ class BusinessNameControllerSpec extends SpecBase  with IndexValidation {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers: UserAnswers = emptyUserAnswers
-        .set(BusinessNamePage(index), validAnswer).success.value
+        .set(BusinessNamePage, validAnswer).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -76,7 +77,7 @@ class BusinessNameControllerSpec extends SpecBase  with IndexValidation {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), index)(fakeRequest, messages).toString
+        view(form.fill(validAnswer), NormalMode)(request, messages).toString
 
       application.stop()
     }
@@ -84,7 +85,9 @@ class BusinessNameControllerSpec extends SpecBase  with IndexValidation {
     "redirect to the next page when valid data is submitted" in {
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind[Navigator].qualifiedWith(classOf[Business]).toInstance(fakeNavigator))
+          .build()
 
       val request =
         FakeRequest(POST, assetNameRoute)
@@ -115,7 +118,7 @@ class BusinessNameControllerSpec extends SpecBase  with IndexValidation {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, index)(fakeRequest, messages).toString
+        view(boundForm, NormalMode)(request, messages).toString
 
       application.stop()
     }
@@ -150,40 +153,6 @@ class BusinessNameControllerSpec extends SpecBase  with IndexValidation {
       redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad().url
 
       application.stop()
-    }
-
-    "for a GET" must {
-
-      def getForIndex(index: Int): FakeRequest[AnyContentAsEmpty.type] = {
-        val route = routes.BusinessNameController.onPageLoad(index).url
-
-        FakeRequest(GET, route)
-      }
-
-      validateIndex(
-        arbitrary[String],
-        BusinessNamePage.apply,
-        getForIndex
-      )
-
-    }
-
-    "for a POST" must {
-
-      def postForIndex(index: Int): FakeRequest[AnyContentAsFormUrlEncoded] = {
-
-        val route =
-          routes.BusinessNameController.onPageLoad(index).url
-
-        FakeRequest(POST, route)
-          .withFormUrlEncodedBody(("value", "true"))
-      }
-
-      validateIndex(
-        arbitrary[String],
-        BusinessNamePage.apply,
-        postForIndex
-      )
     }
 
   }

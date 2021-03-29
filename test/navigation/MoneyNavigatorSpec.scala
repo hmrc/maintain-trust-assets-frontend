@@ -18,7 +18,7 @@ package navigation
 
 import base.SpecBase
 import generators.Generators
-import models.UserAnswers
+import models.{NormalMode, UserAnswers}
 import models.WhatKindOfAsset.Money
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
@@ -28,7 +28,6 @@ import pages.asset.money.AssetMoneyValuePage
 class MoneyNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   private val navigator: Navigator = injector.instanceOf[MoneyNavigator]
-  private val index: Int = 0
 
   "Money Navigator" must {
 
@@ -37,9 +36,9 @@ class MoneyNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
 
-          val answers = userAnswers.set(WhatKindOfAssetPage(index), Money).success.value
+          val answers = userAnswers.set(WhatKindOfAssetPage, Money).success.value
 
-          navigator.nextPage(AssetMoneyValuePage(index))(answers)
+          navigator.nextPage(AssetMoneyValuePage, NormalMode, answers)
             .mustBe(controllers.asset.routes.AddAssetsController.onPageLoad())
 
       }

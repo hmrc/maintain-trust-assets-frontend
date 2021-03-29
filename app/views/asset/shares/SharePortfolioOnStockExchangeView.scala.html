@@ -21,13 +21,13 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], index: Int)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = s"${errorPrefix(form)} ${messages("shares.portfolioOnStockExchangeYesNo.title")}"
 ) {
 
-    @formHelper(action = SharePortfolioOnStockExchangeController.onSubmit(index), 'autoComplete -> "off") {
+    @formHelper(action = SharePortfolioOnStockExchangeController.onSubmit(mode), 'autoComplete -> "off") {
 
         @components.back_link()
 

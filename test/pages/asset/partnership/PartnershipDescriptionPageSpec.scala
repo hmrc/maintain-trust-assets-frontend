@@ -23,10 +23,10 @@ class PartnershipDescriptionPageSpec extends PageBehaviours {
 
   "PartnershipDescriptionPage" must {
 
-    beRetrievable[String](PartnershipDescriptionPage(0))
+    beRetrievable[String](PartnershipDescriptionPage)
 
-    beSettable[String](PartnershipDescriptionPage(0))
+    beSettable[String](PartnershipDescriptionPage)
 
-    beRemovable[String](PartnershipDescriptionPage(0))
+    beRemovable[String](PartnershipDescriptionPage)
   }
 }

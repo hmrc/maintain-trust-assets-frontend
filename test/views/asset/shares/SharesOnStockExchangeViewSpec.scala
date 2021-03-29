@@ -17,6 +17,7 @@
 package views.asset.shares
 
 import forms.YesNoFormProvider
+import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
@@ -25,7 +26,6 @@ import views.html.asset.shares.SharesOnStockExchangeView
 class SharesOnStockExchangeViewSpec extends YesNoViewBehaviours {
 
   private val messageKeyPrefix: String = "shares.onStockExchangeYesNo"
-  private val index: Int = 0
   private val companyName: String = "Company"
 
   override val form: Form[Boolean] = new YesNoFormProvider().withPrefix(messageKeyPrefix)
@@ -35,7 +35,7 @@ class SharesOnStockExchangeViewSpec extends YesNoViewBehaviours {
     val view = viewFor[SharesOnStockExchangeView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, index, companyName)(fakeRequest, messages)
+      view.apply(form, NormalMode, companyName)(fakeRequest, messages)
 
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, companyName, "hint")
 

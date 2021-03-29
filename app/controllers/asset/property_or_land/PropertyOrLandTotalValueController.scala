@@ -17,76 +17,67 @@
 package controllers.asset.property_or_land
 
 import config.annotations.PropertyOrLand
-import controllers.actions.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
-import controllers.filters.IndexActionFilterProvider
+import controllers.actions.StandardActionSets
 import forms.ValueFormProvider
-import models.requests.RegistrationDataRequest
+import models.requests.DataRequest
 import navigation.Navigator
 import pages.asset.property_or_land.{PropertyLandValueTrustPage, PropertyOrLandTotalValuePage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
-import repositories.RegistrationsRepository
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.asset.property_or_land.PropertyOrLandTotalValueView
-
 import javax.inject.Inject
+import models.Mode
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class PropertyOrLandTotalValueController @Inject()(
                                                     override val messagesApi: MessagesApi,
-                                                    repository: RegistrationsRepository,
+                                                    standardActionSets: StandardActionSets,
+                                                    repository: PlaybackRepository,
                                                     @PropertyOrLand navigator: Navigator,
-                                                    identify: RegistrationIdentifierAction,
-                                                    getData: DraftIdRetrievalActionProvider,
-                                                    requireData: RegistrationDataRequiredAction,
-                                                    validateIndex: IndexActionFilterProvider,
                                                     formProvider: ValueFormProvider,
                                                     val controllerComponents: MessagesControllerComponents,
                                                     view: PropertyOrLandTotalValueView
                                                   )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private def actions(index: Int): ActionBuilder[RegistrationDataRequest, AnyContent] =
-    identify andThen
-      getData() andThen
-      requireData andThen
-      validateIndex(index, sections.Assets)
-
-  def onPageLoad(index: Int): Action[AnyContent] = actions(index) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
     implicit request =>
 
-      val form: Form[Long] = configuredForm(index)
+      val form: Form[Long] = configuredForm()
 
-      val preparedForm = request.userAnswers.get(PropertyOrLandTotalValuePage(index)) match {
+      val preparedForm = request.userAnswers.get(PropertyOrLandTotalValuePage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, index))
+      Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = actions(index).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
 
-      val form: Form[Long] = configuredForm(index)
+      val form: Form[Long] = configuredForm()
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, index))),
+          Future.successful(BadRequest(view(formWithErrors, mode))),
 
         value => {
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(PropertyOrLandTotalValuePage(index), value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(PropertyOrLandTotalValuePage, value))
             _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(PropertyOrLandTotalValuePage(index))(updatedAnswers))
+          } yield Redirect(navigator.nextPage(PropertyOrLandTotalValuePage, mode, updatedAnswers))
         }
       )
   }
 
-  private def configuredForm(index: Int)(implicit request: RegistrationDataRequest[AnyContent]): Form[Long] = {
+  private def configuredForm()(implicit request: DataRequest[AnyContent]): Form[Long] = {
     formProvider.withConfig(
       prefix = "propertyOrLand.totalValue",
-      minValue = request.userAnswers.get(PropertyLandValueTrustPage(index))
+      minValue = request.userAnswers.get(PropertyLandValueTrustPage)
     )
   }
 }

@@ -17,6 +17,7 @@
 package views.asset.property_or_land
 
 import forms.InternationalAddressFormProvider
+import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import utils.InputOption
@@ -27,7 +28,6 @@ import views.html.asset.property_or_land.PropertyOrLandInternationalAddressView
 class PropertyOrLandInternationalAddressViewSpec extends InternationalAddressViewBehaviours {
 
   private val messageKeyPrefix: String = "propertyOrLand.internationalAddress"
-  private val index: Int = 0
 
   override val form = new InternationalAddressFormProvider()()
 
@@ -38,7 +38,7 @@ class PropertyOrLandInternationalAddressViewSpec extends InternationalAddressVie
     val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptionsNonUK].options
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, countryOptions, index)(fakeRequest, messages)
+      view.apply(form, countryOptions, NormalMode)(fakeRequest, messages)
 
     behave like pageWithBackLink(applyView(form))
 

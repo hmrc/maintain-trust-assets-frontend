@@ -17,17 +17,12 @@
 package pages
 
 import models.Status
-import pages.AssetStatus.key
 import play.api.libs.json.JsPath
 import sections.Assets
 
-final case class AssetStatus(index : Int) extends QuestionPage[Status] {
+case object AssetStatus extends QuestionPage[Status] {
 
-  override def path: JsPath = JsPath \ Assets \ index \ toString
+  override def path: JsPath = JsPath \ Assets \ toString
 
-  override def toString: String = key
-}
-
-object AssetStatus {
-  val key: String = "status"
+  override def toString: String = "status"
 }

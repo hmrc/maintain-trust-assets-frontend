@@ -19,10 +19,7 @@ package controllers.asset.business
 import base.SpecBase
 import controllers.routes._
 import models.{UKAddress, UserAnswers}
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
 import pages.asset.business._
-import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.print.BusinessPrintHelper
@@ -32,35 +29,33 @@ class BusinessAnswersControllerSpec extends SpecBase {
 
   val index = 0
 
+  private val name: String = "Business"
+
   val answers: UserAnswers = emptyUserAnswers
-    .set(BusinessNamePage(index), "test").success.value
-    .set(BusinessDescriptionPage(index), "test test test").success.value
-    .set(BusinessAddressUkYesNoPage(index), true).success.value
-    .set(BusinessUkAddressPage(index), UKAddress("test", "test", None, None, "NE11NE")).success.value
-    .set(BusinessValuePage(index), 12L).success.value
+    .set(BusinessNamePage, "test").success.value
+    .set(BusinessDescriptionPage, "test test test").success.value
+    .set(BusinessAddressUkYesNoPage, true).success.value
+    .set(BusinessUkAddressPage, UKAddress("test", "test", None, None, "NE11NE")).success.value
+    .set(BusinessValuePage, 12L).success.value
 
   "AssetAnswerPage Controller" must {
 
     "return OK and the correct view for a GET" in {
 
-      val expectedSections = Nil
-      val mockPrintHelper: BusinessPrintHelper = mock[BusinessPrintHelper]
-      when(mockPrintHelper.checkDetailsSection(any(), any(), any())(any())).thenReturn(Nil)
+      val application = applicationBuilder(userAnswers = Some(answers)).build()
 
-      val application = applicationBuilder(userAnswers = Some(answers))
-        .overrides(bind[BusinessPrintHelper].toInstance(mockPrintHelper))
-        .build()
-
-      val request = FakeRequest(GET, routes.BusinessAnswersController.onPageLoad(index).url)
+      val request = FakeRequest(GET, routes.BusinessAnswersController.onPageLoad().url)
 
       val result = route(application, request).value
 
       val view = application.injector.instanceOf[BusinessAnswersView]
+      val printHelper = application.injector.instanceOf[BusinessPrintHelper]
+      val answerSection = printHelper(answers, provisional = true, name)
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(index, expectedSections)(fakeRequest, messages).toString
+        view(answerSection)(request, messages).toString
 
       application.stop()
     }
@@ -69,7 +64,7 @@ class BusinessAnswersControllerSpec extends SpecBase {
 
       val application = applicationBuilder(userAnswers = Some(answers)).build()
 
-      val request = FakeRequest(POST, routes.BusinessAnswersController.onSubmit(index).url)
+      val request = FakeRequest(POST, routes.BusinessAnswersController.onSubmit().url)
 
       val result = route(application, request).value
 
@@ -80,26 +75,11 @@ class BusinessAnswersControllerSpec extends SpecBase {
       application.stop()
     }
 
-    "redirect to AssetNamePage when valid data is submitted with no AssetName answer" in {
-
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-
-      val request = FakeRequest(POST, routes.BusinessAnswersController.onSubmit(index).url)
-
-      val result = route(application, request).value
-
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual routes.BusinessNameController.onPageLoad(index).url
-
-      application.stop()
-    }
-
     "redirect to Session Expired for a GET if no existing data is found" in {
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, routes.BusinessAnswersController.onPageLoad(index).url)
+      val request = FakeRequest(GET, routes.BusinessAnswersController.onPageLoad().url)
 
       val result = route(application, request).value
 
@@ -113,7 +93,7 @@ class BusinessAnswersControllerSpec extends SpecBase {
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(POST, routes.BusinessAnswersController.onSubmit(index).url)
+      val request = FakeRequest(POST, routes.BusinessAnswersController.onSubmit().url)
 
       val result = route(application, request).value
 

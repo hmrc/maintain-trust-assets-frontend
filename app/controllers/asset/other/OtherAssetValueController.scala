@@ -18,71 +18,62 @@ package controllers.asset.other
 
 import config.annotations.Other
 import controllers.actions._
+import controllers.actions.other.NameRequiredAction
 import forms.ValueFormProvider
-import models.requests.RegistrationDataRequest
 import navigation.Navigator
-import pages.asset.other.{OtherAssetDescriptionPage, OtherAssetValuePage}
+import pages.asset.other.OtherAssetValuePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
-import repositories.RegistrationsRepository
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.asset.other.OtherAssetValueView
-
 import javax.inject.Inject
+import models.Mode
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class OtherAssetValueController @Inject()(
                                            override val messagesApi: MessagesApi,
-                                           repository: RegistrationsRepository,
+                                           standardActionSets: StandardActionSets,
+                                           nameAction: NameRequiredAction,
+                                           repository: PlaybackRepository,
                                            @Other navigator: Navigator,
-                                           identify: RegistrationIdentifierAction,
-                                           getData: DraftIdRetrievalActionProvider,
-                                           requireData: RegistrationDataRequiredAction,
-                                           requiredAnswer: RequiredAnswerActionProvider,
                                            formProvider: ValueFormProvider,
                                            val controllerComponents: MessagesControllerComponents,
                                            view: OtherAssetValueView
                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private def actions(index: Int): ActionBuilder[RegistrationDataRequest, AnyContent] = {
-    identify andThen getData() andThen requireData andThen
-      requiredAnswer(RequiredAnswer(OtherAssetDescriptionPage(index), routes.OtherAssetDescriptionController.onPageLoad(index)))
-  }
-
   private val form: Form[Long] = formProvider.withConfig(prefix = "other.value")
 
-  def onPageLoad(index: Int): Action[AnyContent] = actions(index) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(OtherAssetValuePage(index)) match {
+      val preparedForm = request.userAnswers.get(OtherAssetValuePage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, index, description(index)))
+      Ok(view(preparedForm, mode, request.Name))
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = actions(index).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, index, description(index)))),
+          Future.successful(BadRequest(view(formWithErrors, mode, request.Name))),
 
         value => {
 
-          val answers = request.userAnswers.set(OtherAssetValuePage(index), value)
+          val answers = request.userAnswers.set(OtherAssetValuePage, value)
 
           for {
             updatedAnswers <- Future.fromTry(answers)
             _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(OtherAssetValuePage(index))(updatedAnswers))
+          } yield Redirect(navigator.nextPage(OtherAssetValuePage, mode, updatedAnswers))
         }
       )
   }
 
-  private def description(index: Int)(implicit request: RegistrationDataRequest[AnyContent]) = {
-    request.userAnswers.get(OtherAssetDescriptionPage(index)).get
-  }
 }

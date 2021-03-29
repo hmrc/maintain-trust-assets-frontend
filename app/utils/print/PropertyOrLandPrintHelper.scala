@@ -17,35 +17,36 @@
 package utils.print
 
 import controllers.asset.property_or_land.routes._
-import models.UserAnswers
+import models.{CheckMode, Mode, NormalMode, UserAnswers}
 import pages.asset.property_or_land._
 import play.api.i18n.Messages
-import utils.{AnswerRowConverter, CheckAnswersFormatters}
-import viewmodels.AnswerRow
-
+import utils.AnswerRowConverter
+import viewmodels.{AnswerRow, AnswerSection}
 import javax.inject.Inject
 
-class PropertyOrLandPrintHelper @Inject()(checkAnswersFormatters: CheckAnswersFormatters) extends PrintHelper {
+class PropertyOrLandPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) {
 
-  override val assetType: String = "propertyOrLandAsset"
+  def apply(userAnswers: UserAnswers, provisional: Boolean, name: String)(implicit messages: Messages): AnswerSection = {
 
-  override def answerRows(userAnswers: UserAnswers,
-                          arg: String,
-                          index: Int)
-                         (implicit messages: Messages): Seq[AnswerRow] = {
+    val bound: answerRowConverter.Bound = answerRowConverter.bind(userAnswers, name)
 
-    val converter: AnswerRowConverter = new AnswerRowConverter(checkAnswersFormatters)(userAnswers, arg)
+    def answerRows: Seq[AnswerRow] = {
+      val mode: Mode = if (provisional) NormalMode else CheckMode
+      Seq(
+        bound.assetTypeQuestion(0),
+        bound.yesNoQuestion(PropertyOrLandAddressYesNoPage, "propertyOrLand.addressYesNo", PropertyOrLandAddressYesNoController.onPageLoad(mode).url),
+        bound.yesNoQuestion(PropertyOrLandAddressUkYesNoPage, "propertyOrLand.addressUkYesNo", PropertyOrLandAddressUkYesNoController.onPageLoad(mode).url),
+        bound.addressQuestion(PropertyOrLandUKAddressPage, "propertyOrLand.ukAddress", PropertyOrLandUKAddressController.onPageLoad(mode).url),
+        bound.addressQuestion(PropertyOrLandInternationalAddressPage, "propertyOrLand.internationalAddress", PropertyOrLandInternationalAddressController.onPageLoad(mode).url),
+        bound.stringQuestion(PropertyOrLandDescriptionPage, "propertyOrLand.description", PropertyOrLandDescriptionController.onPageLoad(mode).url),
+        bound.currencyQuestion(PropertyOrLandTotalValuePage, "propertyOrLand.totalValue", PropertyOrLandTotalValueController.onPageLoad(mode).url),
+        bound.yesNoQuestion(TrustOwnAllThePropertyOrLandPage, "propertyOrLand.trustOwnAllYesNo", TrustOwnAllThePropertyOrLandController.onPageLoad(mode).url),
+        bound.currencyQuestion(PropertyLandValueTrustPage, "propertyOrLand.valueInTrust", PropertyLandValueTrustController.onPageLoad(mode).url)
+      ).flatten
+    }
 
-    Seq(
-      converter.assetTypeQuestion(index),
-      converter.yesNoQuestion(PropertyOrLandAddressYesNoPage(index), "propertyOrLand.addressYesNo", PropertyOrLandAddressYesNoController.onPageLoad(index).url),
-      converter.yesNoQuestion(PropertyOrLandAddressUkYesNoPage(index), "propertyOrLand.addressUkYesNo", PropertyOrLandAddressUkYesNoController.onPageLoad(index).url),
-      converter.addressQuestion(PropertyOrLandUKAddressPage(index), "propertyOrLand.ukAddress", PropertyOrLandUKAddressController.onPageLoad(index).url),
-      converter.addressQuestion(PropertyOrLandInternationalAddressPage(index), "propertyOrLand.internationalAddress", PropertyOrLandInternationalAddressController.onPageLoad(index).url),
-      converter.stringQuestion(PropertyOrLandDescriptionPage(index), "propertyOrLand.description", PropertyOrLandDescriptionController.onPageLoad(index).url),
-      converter.currencyQuestion(PropertyOrLandTotalValuePage(index), "propertyOrLand.totalValue", PropertyOrLandTotalValueController.onPageLoad(index).url),
-      converter.yesNoQuestion(TrustOwnAllThePropertyOrLandPage(index), "propertyOrLand.trustOwnAllYesNo", TrustOwnAllThePropertyOrLandController.onPageLoad(index).url),
-      converter.currencyQuestion(PropertyLandValueTrustPage(index), "propertyOrLand.valueInTrust", PropertyLandValueTrustController.onPageLoad(index).url)
-    ).flatten
+    AnswerSection(headingKey = None, rows = answerRows)
+
   }
+
 }

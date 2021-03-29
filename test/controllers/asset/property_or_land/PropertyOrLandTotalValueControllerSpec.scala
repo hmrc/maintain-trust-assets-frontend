@@ -17,13 +17,15 @@
 package controllers.asset.property_or_land
 
 import base.SpecBase
+import config.annotations.PropertyOrLand
 import controllers.IndexValidation
 import controllers.routes._
 import forms.ValueFormProvider
-import org.scalacheck.Arbitrary.arbitrary
+import models.NormalMode
+import navigation.Navigator
 import pages.asset.property_or_land.PropertyOrLandTotalValuePage
 import play.api.data.Form
-import play.api.mvc.{AnyContentAsEmpty, AnyContentAsFormUrlEncoded}
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.asset.property_or_land.PropertyOrLandTotalValueView
@@ -32,10 +34,9 @@ class PropertyOrLandTotalValueControllerSpec extends SpecBase with IndexValidati
 
   val formProvider = new ValueFormProvider(frontendAppConfig)
   val form: Form[Long] = formProvider.withConfig(prefix = "propertyOrLand.totalValue")
-  val index = 0
   val validAnswer: Long = 4000L
 
-  lazy val propertyOrLandTotalValueRoute: String = routes.PropertyOrLandTotalValueController.onPageLoad(index).url
+  lazy val propertyOrLandTotalValueRoute: String = routes.PropertyOrLandTotalValueController.onPageLoad(NormalMode).url
 
   "PropertyOrLandTotalValue Controller" must {
 
@@ -52,14 +53,14 @@ class PropertyOrLandTotalValueControllerSpec extends SpecBase with IndexValidati
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, index)(fakeRequest, messages).toString
+        view(form, NormalMode)(request, messages).toString
 
       application.stop()
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(PropertyOrLandTotalValuePage(index), validAnswer).success.value
+      val userAnswers = emptyUserAnswers.set(PropertyOrLandTotalValuePage, validAnswer).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -72,7 +73,7 @@ class PropertyOrLandTotalValueControllerSpec extends SpecBase with IndexValidati
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), index)(fakeRequest, messages).toString
+        view(form.fill(validAnswer), NormalMode)(request, messages).toString
 
       application.stop()
     }
@@ -80,7 +81,9 @@ class PropertyOrLandTotalValueControllerSpec extends SpecBase with IndexValidati
     "redirect to the next page when valid data is submitted" in {
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind[Navigator].qualifiedWith(classOf[PropertyOrLand]).toInstance(fakeNavigator))
+          .build()
 
       val request =
         FakeRequest(POST, propertyOrLandTotalValueRoute)
@@ -111,7 +114,7 @@ class PropertyOrLandTotalValueControllerSpec extends SpecBase with IndexValidati
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, index)(fakeRequest, messages).toString
+        view(boundForm, NormalMode)(request, messages).toString
 
       application.stop()
     }
@@ -147,40 +150,6 @@ class PropertyOrLandTotalValueControllerSpec extends SpecBase with IndexValidati
 
       application.stop()
     }
-
-    "for a GET" must {
-
-      def getForIndex(index: Int) : FakeRequest[AnyContentAsEmpty.type] = {
-        val route = routes.PropertyOrLandTotalValueController.onPageLoad(index).url
-
-        FakeRequest(GET, route)
-      }
-
-      validateIndex(
-        arbitrary[Long],
-        PropertyOrLandTotalValuePage.apply,
-        getForIndex
-      )
-
-    }
-
-    "for a POST" must {
-      def postForIndex(index: Int): FakeRequest[AnyContentAsFormUrlEncoded] = {
-
-        val route =
-          routes.PropertyOrLandTotalValueController.onPageLoad(index).url
-
-        FakeRequest(POST, route)
-          .withFormUrlEncodedBody(("value", validAnswer.toString))
-      }
-
-      validateIndex(
-        arbitrary[Long],
-        PropertyOrLandTotalValuePage.apply,
-        postForIndex
-      )
-    }
-
 
   }
 }

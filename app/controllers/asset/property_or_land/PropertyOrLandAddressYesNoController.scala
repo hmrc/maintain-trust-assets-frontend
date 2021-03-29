@@ -17,29 +17,28 @@
 package controllers.asset.property_or_land
 
 import config.annotations.PropertyOrLand
-import controllers.actions.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
-import controllers.filters.IndexActionFilterProvider
+import controllers.actions.property_or_land.NameRequiredAction
+import controllers.actions.StandardActionSets
 import forms.YesNoFormProvider
 import navigation.Navigator
 import pages.asset.property_or_land.PropertyOrLandAddressYesNoPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.RegistrationsRepository
+import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.asset.property_or_land.PropertyOrLandAddressYesNoView
-
 import javax.inject.Inject
+import models.Mode
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class PropertyOrLandAddressYesNoController @Inject()(
                                                       override val messagesApi: MessagesApi,
-                                                      repository: RegistrationsRepository,
+                                                      standardActionSets: StandardActionSets,
+                                                      nameAction: NameRequiredAction,
+                                                      repository: PlaybackRepository,
                                                       @PropertyOrLand navigator: Navigator,
-                                                      identify: RegistrationIdentifierAction,
-                                                      getData: DraftIdRetrievalActionProvider,
-                                                      requireData: RegistrationDataRequiredAction,
-                                                      validateIndex: IndexActionFilterProvider,
                                                       yesNoFormProvider: YesNoFormProvider,
                                                       val controllerComponents: MessagesControllerComponents,
                                                       view: PropertyOrLandAddressYesNoView
@@ -47,35 +46,29 @@ class PropertyOrLandAddressYesNoController @Inject()(
 
   val form: Form[Boolean] = yesNoFormProvider.withPrefix("propertyOrLand.addressYesNo")
 
-  private def actions(index: Int) =
-    identify andThen
-      getData() andThen
-      requireData andThen
-      validateIndex(index, sections.Assets)
-
-  def onPageLoad(index: Int): Action[AnyContent] = actions(index) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(PropertyOrLandAddressYesNoPage(index)) match {
+      val preparedForm = request.userAnswers.get(PropertyOrLandAddressYesNoPage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, index))
+      Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = actions(index).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, index))),
+          Future.successful(BadRequest(view(formWithErrors, mode))),
 
         value => {
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(PropertyOrLandAddressYesNoPage(index), value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(PropertyOrLandAddressYesNoPage, value))
             _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(PropertyOrLandAddressYesNoPage(index))(updatedAnswers))
+          } yield Redirect(navigator.nextPage(PropertyOrLandAddressYesNoPage, mode, updatedAnswers))
         }
       )
   }

@@ -16,19 +16,21 @@
 
 package views.asset.property_or_land
 
+import play.twirl.api.HtmlFormat
+import viewmodels.AnswerSection
 import views.behaviours.ViewBehaviours
 import views.html.asset.property_or_land.PropertyOrLandAnswersView
 
 class PropertyOrLandAnswerViewSpec extends ViewBehaviours {
 
   private val messageKeyPrefix: String = "propertyOrLand.answers"
-  private val index: Int = 0
 
   "PropertyOrLandAnswer view" must {
 
     val view = viewFor[PropertyOrLandAnswersView](Some(emptyUserAnswers))
 
-    val applyView = view.apply(index, Nil)(fakeRequest, messages)
+    def applyView(): HtmlFormat.Appendable =
+      view.apply(AnswerSection(None, Seq()))(fakeRequest, messages)
 
     behave like normalPage(applyView, messageKeyPrefix)
 

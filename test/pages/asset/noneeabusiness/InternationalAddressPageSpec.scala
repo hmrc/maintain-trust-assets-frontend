@@ -21,7 +21,7 @@ import pages.behaviours.PageBehaviours
 
 class InternationalAddressPageSpec extends PageBehaviours {
 
-  private val page: InternationalAddressPage = InternationalAddressPage(0)
+  private val page = InternationalAddressPage
 
   "InternationalAddressPage" must {
 

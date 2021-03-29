@@ -16,7 +16,7 @@
 
 package utils.print
 
-import models.UserAnswers
+import models.{Mode, UserAnswers}
 import play.api.i18n.Messages
 import viewmodels.{AnswerRow, AnswerSection}
 
@@ -24,13 +24,13 @@ trait PrintHelper {
 
   def checkDetailsSection(userAnswers: UserAnswers,
                           arg: String = "",
-                          index: Int)
+                          mode: Mode)
                          (implicit messages: Messages): Seq[AnswerSection] = {
 
     Seq(section(
       userAnswers = userAnswers,
       arg = arg,
-      index = index,
+      mode = mode,
       headingKey = None
     ))
   }
@@ -39,21 +39,21 @@ trait PrintHelper {
 
   def printSection(userAnswers: UserAnswers,
                    arg: String = "",
-                   index: Int,
+                   mode: Mode,
                    specificIndex: Int)
                   (implicit messages: Messages): AnswerSection = {
 
     section(
       userAnswers = userAnswers,
       arg = arg,
-      index = index,
+      mode = mode,
       headingKey = Some(messages(s"answerPage.section.$assetType.subheading", specificIndex + 1))
     )
   }
 
   private def section(userAnswers: UserAnswers,
                       arg: String,
-                      index: Int,
+                      mode: Mode,
                       headingKey: Option[String])
                      (implicit messages: Messages): AnswerSection = {
 
@@ -62,13 +62,13 @@ trait PrintHelper {
         case Some(key) => Some(messages(key))
         case _ => None
       },
-      rows = answerRows(userAnswers, arg, index)
+      rows = answerRows(userAnswers, arg, mode)
     )
   }
 
   def answerRows(userAnswers: UserAnswers,
                  arg: String,
-                 index: Int)
+                 mode: Mode)
                 (implicit messages: Messages): Seq[AnswerRow]
 
 }

@@ -1,2 +1,5 @@
-GET        /:index/value                          controllers.asset.money.AssetMoneyValueController.onPageLoad(index: Int)
-POST       /:index/value                          controllers.asset.money.AssetMoneyValueController.onSubmit(index: Int)
+GET        /value                          controllers.asset.money.AssetMoneyValueController.onPageLoad(mode: Mode = NormalMode)
+POST       /value                          controllers.asset.money.AssetMoneyValueController.onSubmit(mode: Mode = NormalMode)
+GET        /change-value                   controllers.asset.money.AssetMoneyValueController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-value                   controllers.asset.money.AssetMoneyValueController.onSubmit(mode: Mode = CheckMode)
+

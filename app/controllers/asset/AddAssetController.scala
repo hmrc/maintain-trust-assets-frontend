@@ -29,7 +29,7 @@ trait AddAssetController extends FrontendBaseController with I18nSupport {
 
   def setAssetTypeIfNonTaxable(userAnswers: UserAnswers, index: Int, addAssets: AddAssets = YesNow): Try[UserAnswers] = {
     if (!userAnswers.isTaxable && addAssets == YesNow) {
-      userAnswers.set(WhatKindOfAssetPage(index), NonEeaBusiness)
+      userAnswers.set(WhatKindOfAssetPage, NonEeaBusiness)
     } else {
       Success(userAnswers)
     }

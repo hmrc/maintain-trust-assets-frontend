@@ -8,8 +8,6 @@
 ->         /other                                       other.Routes
 ->         /non-eea-business                            nonEeaBusiness.Routes
 
-GET        /start                                       controllers.IndexController.onPageLoad()
-
 GET        /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)
 
 GET        /language/:lang                              controllers.LanguageSwitchController.switchToLanguage(lang: String)
@@ -20,14 +18,19 @@ GET        /unauthorised                                controllers.Unauthorised
 
 GET        /logout                                      controllers.LogoutController.logout()
 
-GET        /:index/assets-type           controllers.asset.WhatKindOfAssetController.onPageLoad(index: Int)
-POST       /:index/assets-type           controllers.asset.WhatKindOfAssetController.onSubmit(index: Int)
+GET        /assets-type                                 controllers.asset.WhatKindOfAssetController.onPageLoad(index: Int)
+POST       /assets-type                                 controllers.asset.WhatKindOfAssetController.onSubmit(index: Int)
 
-GET        /trust-owns-non-eea-company   controllers.asset.TrustOwnsNonEeaBusinessYesNoController.onPageLoad()
-POST       /trust-owns-non-eea-company   controllers.asset.TrustOwnsNonEeaBusinessYesNoController.onSubmit()
+GET        /trust-owns-non-eea-company          controllers.asset.TrustOwnsNonEeaBusinessYesNoController.onPageLoad(mode: Mode = NormalMode)
+POST       /trust-owns-non-eea-company          controllers.asset.TrustOwnsNonEeaBusinessYesNoController.onSubmit(mode: Mode = NormalMode)
+GET        /change-trust-owns-non-eea-company   controllers.asset.TrustOwnsNonEeaBusinessYesNoController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-trust-owns-non-eea-company   controllers.asset.TrustOwnsNonEeaBusinessYesNoController.onSubmit(mode: Mode = CheckMode)
 
 GET        /information-you-need         controllers.asset.AssetInterruptPageController.onPageLoad()
 POST       /information-you-need         controllers.asset.AssetInterruptPageController.onSubmit()
+
+GET        /what-kind                                   controllers.asset.AddNowController.onPageLoad()
+POST       /what-kind                                   controllers.asset.AddNowController.onSubmit()
 
 GET        /add                          controllers.asset.AddAssetsController.onPageLoad()
 POST       /add                          controllers.asset.AddAssetsController.submitOne()
@@ -36,11 +39,13 @@ POST       /add-another                  controllers.asset.AddAssetsController.s
 GET        /complete                     controllers.asset.AddAssetsController.onPageLoad()
 POST       /complete                     controllers.asset.AddAssetsController.submitComplete()
 
-GET        /:index/remove                controllers.asset.RemoveAssetYesNoController.onPageLoad(index: Int)
-POST       /:index/remove                controllers.asset.RemoveAssetYesNoController.onSubmit(index: Int)
+#GET        /:index/remove                controllers.asset.RemoveAssetYesNoController.onPageLoad(index: Int)
+#POST       /:index/remove                controllers.asset.RemoveAssetYesNoController.onSubmit(index: Int)
 
 GET        /feature-not-available                       controllers.FeatureNotAvailableController.onPageLoad()
 
 GET        /keep-alive                                  controllers.SessionTimeoutController.keepAlive
 
 GET        /timeout                                     controllers.SessionTimeoutController.timeout
+
+GET        /:utr                                       controllers.IndexController.onPageLoad(utr: String)

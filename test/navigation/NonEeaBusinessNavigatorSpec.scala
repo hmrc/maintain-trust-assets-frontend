@@ -19,7 +19,7 @@ package navigation
 import base.SpecBase
 import controllers.asset.noneeabusiness.routes._
 import generators.Generators
-import models.UserAnswers
+import models.{NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.asset.noneeabusiness._
@@ -27,51 +27,50 @@ import pages.asset.noneeabusiness._
 class NonEeaBusinessNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   private val navigator: Navigator = injector.instanceOf[NonEeaBusinessNavigator]
-  private val index: Int = 0
 
   "Non-EEA Business Navigator" must {
 
     "navigate from NamePage to InternationalAddressPage" in {
 
-      val page = NamePage(index)
+      val page = NamePage
 
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
-          navigator.nextPage(page)(userAnswers)
-            .mustBe(InternationalAddressController.onPageLoad(index))
+          navigator.nextPage(page, NormalMode, userAnswers)
+            .mustBe(InternationalAddressController.onPageLoad(NormalMode))
       }
     }
 
     "navigate from InternationalAddressPage to GoverningCountryPage" in {
 
-      val page = InternationalAddressPage(index)
+      val page = InternationalAddressPage
 
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
-          navigator.nextPage(page)(userAnswers)
-            .mustBe(GoverningCountryController.onPageLoad(index))
+          navigator.nextPage(page, NormalMode, userAnswers)
+            .mustBe(GoverningCountryController.onPageLoad(NormalMode))
       }
     }
 
     "navigate from GoverningCountryPage to StartDatePage" in {
 
-      val page = GoverningCountryPage(index)
+      val page = GoverningCountryPage
 
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
-          navigator.nextPage(page)(userAnswers)
-            .mustBe(StartDateController.onPageLoad(index))
+          navigator.nextPage(page, NormalMode, userAnswers)
+            .mustBe(StartDateController.onPageLoad(NormalMode))
       }
     }
 
     "navigate from StartDatePage to Check Answers" in {
 
-      val page = StartDatePage(index)
+      val page = StartDatePage
 
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
-          navigator.nextPage(page)(userAnswers)
-            .mustBe(AnswersController.onPageLoad(index))
+          navigator.nextPage(page, NormalMode, userAnswers)
+            .mustBe(AnswersController.onPageLoad())
       }
     }
   }

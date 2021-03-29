@@ -18,32 +18,28 @@ package controllers.asset.noneeabusiness
 
 import config.annotations.NonEeaBusiness
 import controllers.actions._
-import controllers.filters.IndexActionFilterProvider
+import controllers.actions.noneeabusiness.NameRequiredAction
 import forms.CountryFormProvider
-import models.requests.RegistrationDataRequest
 import navigation.Navigator
-import pages.asset.noneeabusiness.{GoverningCountryPage, NamePage}
+import pages.asset.noneeabusiness.GoverningCountryPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
-import repositories.RegistrationsRepository
-import sections.Assets
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.countryOptions.CountryOptions
 import views.html.asset.noneeabusiness.GoverningCountryView
-
 import javax.inject.Inject
+import models.Mode
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class GoverningCountryController @Inject()(
                                             override val messagesApi: MessagesApi,
-                                            registrationsRepository: RegistrationsRepository,
+                                            standardActionSets: StandardActionSets,
+                                            nameAction: NameRequiredAction,
+                                            repository: PlaybackRepository,
                                             @NonEeaBusiness navigator: Navigator,
-                                            validateIndex: IndexActionFilterProvider,
-                                            identify: RegistrationIdentifierAction,
-                                            getData: DraftIdRetrievalActionProvider,
-                                            requireData: RegistrationDataRequiredAction,
-                                            requiredAnswer: RequiredAnswerActionProvider,
                                             countryFormProvider: CountryFormProvider,
                                             val controllerComponents: MessagesControllerComponents,
                                             view: GoverningCountryView,
@@ -52,40 +48,29 @@ class GoverningCountryController @Inject()(
 
   private val form: Form[String] = countryFormProvider.withPrefix("nonEeaBusiness.governingCountry")
 
-  private def actions(index: Int): ActionBuilder[RegistrationDataRequest, AnyContent] =
-    identify andThen
-      getData() andThen
-      requireData andThen
-      validateIndex(index, Assets) andThen
-      requiredAnswer(RequiredAnswer(NamePage(index), routes.NameController.onPageLoad(index)))
-
-  def onPageLoad(index: Int): Action[AnyContent] = actions(index) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
 
-      val name = request.userAnswers.get(NamePage(index)).get
-
-      val preparedForm = request.userAnswers.get(GoverningCountryPage(index)) match {
+      val preparedForm = request.userAnswers.get(GoverningCountryPage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, countryOptions.options(), index, name))
+      Ok(view(preparedForm, countryOptions.options(), mode, request.Name))
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = actions(index).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
     implicit request =>
-
-      val name = request.userAnswers.get(NamePage(index)).get
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, countryOptions.options(), index, name))),
+          Future.successful(BadRequest(view(formWithErrors, countryOptions.options(), mode, request.Name))),
 
         value => {
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(GoverningCountryPage(index), value))
-            _ <- registrationsRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(GoverningCountryPage(index))(updatedAnswers))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(GoverningCountryPage, value))
+            _ <- repository.set(updatedAnswers)
+          } yield Redirect(navigator.nextPage(GoverningCountryPage, mode, updatedAnswers))
         }
       )
   }

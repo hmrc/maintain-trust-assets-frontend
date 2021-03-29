@@ -18,30 +18,27 @@ package controllers.asset.noneeabusiness
 
 import config.annotations.NonEeaBusiness
 import controllers.actions._
-import controllers.filters.IndexActionFilterProvider
+import controllers.actions.noneeabusiness.NameRequiredAction
 import forms.StartDateFormProvider
-import models.requests.RegistrationDataRequest
 import navigation.Navigator
-import pages.asset.noneeabusiness.{NamePage, StartDatePage}
+import pages.asset.noneeabusiness.StartDatePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
-import repositories.RegistrationsRepository
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.asset.noneeabusiness.StartDateView
-
 import javax.inject.Inject
+import models.Mode
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class StartDateController @Inject()(
                                      override val messagesApi: MessagesApi,
-                                     repository: RegistrationsRepository,
+                                     standardActionSets: StandardActionSets,
+                                     nameAction: NameRequiredAction,
+                                     repository: PlaybackRepository,
                                      @NonEeaBusiness navigator: Navigator,
-                                     identify: RegistrationIdentifierAction,
-                                     getData: DraftIdRetrievalActionProvider,
-                                     validateIndex: IndexActionFilterProvider,
-                                     requireData: RegistrationDataRequiredAction,
-                                     requiredAnswer: RequiredAnswerActionProvider,
                                      formProvider: StartDateFormProvider,
                                      val controllerComponents: MessagesControllerComponents,
                                      view: StartDateView
@@ -49,40 +46,29 @@ class StartDateController @Inject()(
 
   private val form = formProvider.withPrefix("nonEeaBusiness.startDate")
 
-  private def actions(index: Int): ActionBuilder[RegistrationDataRequest, AnyContent] =
-    identify andThen
-      getData() andThen
-      requireData andThen
-      validateIndex(index, sections.Assets) andThen
-      requiredAnswer(RequiredAnswer(NamePage(index), routes.NameController.onPageLoad(index)))
-
-  def onPageLoad(index: Int): Action[AnyContent] = actions(index) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
 
-      val name = request.userAnswers.get(NamePage(index)).get
-
-      val preparedForm = request.userAnswers.get(StartDatePage(index)) match {
+      val preparedForm = request.userAnswers.get(StartDatePage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, index, name))
+      Ok(view(preparedForm, mode, request.Name))
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = actions(index).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
     implicit request =>
-
-      val name = request.userAnswers.get(NamePage(index)).get
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, index, name))),
+          Future.successful(BadRequest(view(formWithErrors, mode, request.Name))),
 
         value => {
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(StartDatePage(index), value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(StartDatePage, value))
             _ <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(StartDatePage(index))(updatedAnswers))
+          } yield Redirect(navigator.nextPage(StartDatePage, mode, updatedAnswers))
         }
       )
   }

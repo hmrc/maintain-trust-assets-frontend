@@ -16,101 +16,96 @@
 
 package controllers.asset
 
-import controllers.actions.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
+import controllers.actions.StandardActionSets
 import controllers.filters.IndexActionFilterProvider
 import forms.YesNoFormProvider
 import models.UserAnswers
-import models.requests.RegistrationDataRequest
+import models.requests.DataRequest
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.libs.json.JsPath
 import play.api.mvc._
-import repositories.RegistrationsRepository
+import repositories.PlaybackRepository
 import sections.Assets
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels._
-import views.html.asset.RemoveAssetYesNoView
-
 import javax.inject.Inject
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class RemoveAssetYesNoController @Inject()(
                                             override val messagesApi: MessagesApi,
-                                            repository: RegistrationsRepository,
-                                            identify: RegistrationIdentifierAction,
-                                            getData: DraftIdRetrievalActionProvider,
-                                            requireData: RegistrationDataRequiredAction,
+                                            standardActionSets: StandardActionSets,
+                                            repository: PlaybackRepository,
                                             yesNoFormProvider: YesNoFormProvider,
                                             validateIndex: IndexActionFilterProvider,
-                                            val controllerComponents: MessagesControllerComponents,
-                                            view: RemoveAssetYesNoView
+                                            val controllerComponents: MessagesControllerComponents
                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private def form(prefix: String): Form[Boolean] = yesNoFormProvider.withPrefix(s"$prefix.removeYesNo")
+// TODO - Implement remove functionality for each asset
 
-  private def redirect(): Result = Redirect(controllers.asset.routes.AddAssetsController.onPageLoad())
-
-  private def actions(index: Int): ActionBuilder[RegistrationDataRequest, AnyContent] =
-    identify andThen getData() andThen requireData andThen validateIndex(index, sections.Assets)
-
-  def onPageLoad(index: Int): Action[AnyContent] = actions(index) {
-    implicit request =>
-
-      val prefix = determinePrefix(request.userAnswers.isTaxable)
-
-      Ok(view(form(prefix), index, prefix, assetLabel(request.userAnswers, index)))
-  }
-
-  def onSubmit(index: Int): Action[AnyContent] = actions(index).async {
-    implicit request =>
-
-      val prefix = determinePrefix(request.userAnswers.isTaxable)
-
-      form(prefix).bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, index, prefix, assetLabel(request.userAnswers, index)))),
-
-        remove => {
-          if (remove) {
-            for {
-              updatedAnswers <- Future.fromTry(
-                request.userAnswers.deleteAtPath(Assets.path \ index)
-              )
-              _ <- repository.set(updatedAnswers)
-            } yield {
-              redirect()
-            }
-          } else {
-            Future.successful(redirect())
-          }
-        }
-      )
-  }
-
-  private def assetLabel(userAnswers: UserAnswers, index: Int)
-                        (implicit request: RegistrationDataRequest[AnyContent]): String = {
-
-    def default(prefix: String = defaultPrefix): String = request.messages(messagesApi)(s"$prefix.defaultText")
-
-    val path: JsPath = JsPath \ Assets \ index
-
-    (for {
-      pick <- userAnswers.data.transform(path.json.pick)
-      asset <- pick.validate[AssetViewModel]
-    } yield {
-      asset match {
-        case _: NonEeaBusinessAssetViewModel =>
-          asset.label.getOrElse(default(determinePrefix(userAnswers.isTaxable)))
-        case _ =>
-          asset.label.getOrElse(default())
-      }
-    }).getOrElse(default())
-  }
-
-  private def determinePrefix(isTaxable: Boolean): String = {
-    defaultPrefix + (if (!isTaxable) ".nonTaxable" else "")
-  }
-
-  private val defaultPrefix: String = "assets"
+//  private def form(prefix: String): Form[Boolean] = yesNoFormProvider.withPrefix(s"$prefix.removeYesNo")
+//
+//  private def redirect(): Result = Redirect(controllers.asset.routes.AddAssetsController.onPageLoad())
+//
+//  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
+//    implicit request =>
+//
+//      val prefix = determinePrefix(request.userAnswers.isTaxable)
+//
+//      Ok(view(form(prefix), index, prefix, assetLabel(request.userAnswers, index)))
+//  }
+//
+//  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
+//    implicit request =>
+//
+//      val prefix = determinePrefix(request.userAnswers.isTaxable)
+//
+//      form(prefix).bindFromRequest().fold(
+//        (formWithErrors: Form[_]) =>
+//          Future.successful(BadRequest(view(formWithErrors, index, prefix, assetLabel(request.userAnswers, index)))),
+//
+//        remove => {
+//          if (remove) {
+//            for {
+//              updatedAnswers <- Future.fromTry(
+//                request.userAnswers.deleteAtPath(Assets.path \ index)
+//              )
+//              _ <- repository.set(updatedAnswers)
+//            } yield {
+//              redirect()
+//            }
+//          } else {
+//            Future.successful(redirect())
+//          }
+//        }
+//      )
+//  }
+//
+//  private def assetLabel(userAnswers: UserAnswers, index: Int)
+//                        (implicit request: DataRequest[AnyContent]): String = {
+//
+//    def default(prefix: String = defaultPrefix): String = request.messages(messagesApi)(s"$prefix.defaultText")
+//
+//    val path: JsPath = JsPath \ Assets \ index
+//
+//    (for {
+//      pick <- userAnswers.data.transform(path.json.pick)
+//      asset <- pick.validate[AssetViewModel]
+//    } yield {
+//      asset match {
+//        case _: NonEeaBusinessAssetViewModel =>
+//          asset.label.getOrElse(default(determinePrefix(userAnswers.isTaxable)))
+//        case _ =>
+//          asset.label.getOrElse(default())
+//      }
+//    }).getOrElse(default())
+//  }
+//
+//  private def determinePrefix(isTaxable: Boolean): String = {
+//    defaultPrefix + (if (!isTaxable) ".nonTaxable" else "")
+//  }
+//
+//  private val defaultPrefix: String = "assets"
 
 }

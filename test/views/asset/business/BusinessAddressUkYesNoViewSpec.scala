@@ -17,6 +17,7 @@
 package views.asset.business
 
 import forms.YesNoFormProvider
+import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
@@ -26,7 +27,6 @@ class BusinessAddressUkYesNoViewSpec extends YesNoViewBehaviours {
 
   private val messageKeyPrefix: String = "business.addressUkYesNo"
   override val form: Form[Boolean] = new YesNoFormProvider().withPrefix(messageKeyPrefix)
-  private val index: Int = 0
   private val businessName: String = "Test"
 
   private val view: BusinessAddressUkYesNoView = viewFor[BusinessAddressUkYesNoView](Some(emptyUserAnswers))
@@ -34,7 +34,7 @@ class BusinessAddressUkYesNoViewSpec extends YesNoViewBehaviours {
   "BusinessAddressUkYesNo view" must {
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, index, businessName)(fakeRequest, messages)
+      view.apply(form, NormalMode, businessName)(fakeRequest, messages)
 
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, businessName)
 

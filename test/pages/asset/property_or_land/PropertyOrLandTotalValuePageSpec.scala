@@ -21,12 +21,14 @@ import pages.behaviours.PageBehaviours
 
 class PropertyOrLandTotalValuePageSpec extends PageBehaviours {
 
+  val page = PropertyOrLandTotalValuePage
+
   "PropertyOrLandTotalValuePage" must {
 
-    beRetrievable[Long](PropertyOrLandTotalValuePage(0))
+    beRetrievable[Long](page)
 
-    beSettable[Long](PropertyOrLandTotalValuePage(0))
+    beSettable[Long](page)
 
-    beRemovable[Long](PropertyOrLandTotalValuePage(0))
+    beRemovable[Long](page)
   }
 }

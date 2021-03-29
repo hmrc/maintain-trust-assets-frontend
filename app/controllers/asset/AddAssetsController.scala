@@ -16,44 +16,46 @@
 
 package controllers.asset
 
-import controllers.actions.{DraftIdRetrievalActionProvider, RegistrationDataRequiredAction, RegistrationIdentifierAction}
+import config.FrontendAppConfig
+import config.annotations.Assets
+import connectors.TrustsStoreConnector
+import controllers.actions.StandardActionSets
 import forms.{AddAssetsFormProvider, YesNoFormProvider}
-import models.AddAssets.NoComplete
 import models.Constants._
-import models.requests.RegistrationDataRequest
-import models.{AddAssets, UserAnswers}
+import models.{AddAssets, NormalMode, UserAnswers}
 import navigation.Navigator
 import pages.asset.{AddAnAssetYesNoPage, AddAssetsPage}
 import play.api.data.Form
 import play.api.i18n.{Messages, MessagesApi, MessagesProvider}
-import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
-import repositories.RegistrationsRepository
-import utils.AddAssetViewHelper
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.PlaybackRepository
+import utils.{AddAssetViewHelper}
 import views.html.asset.{AddAnAssetYesNoView, AddAssetsView, MaxedOutView}
-
 import javax.inject.Inject
+import models.AddAssets.NoComplete
+import play.api.Logging
+import services.TrustService
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class AddAssetsController @Inject()(
                                      override val messagesApi: MessagesApi,
-                                     repository: RegistrationsRepository,
-                                     navigator: Navigator,
-                                     identify: RegistrationIdentifierAction,
-                                     getData: DraftIdRetrievalActionProvider,
-                                     requireData: RegistrationDataRequiredAction,
+                                     standardActionSets: StandardActionSets,
+                                     repository: PlaybackRepository,
+                                     val appConfig: FrontendAppConfig,
+                                     trustStoreConnector: TrustsStoreConnector,
+                                     trustService: TrustService,
+                                     @Assets navigator: Navigator,
                                      addAnotherFormProvider: AddAssetsFormProvider,
                                      yesNoFormProvider: YesNoFormProvider,
                                      val controllerComponents: MessagesControllerComponents,
                                      addAssetsView: AddAssetsView,
                                      yesNoView: AddAnAssetYesNoView,
                                      maxedOutView: MaxedOutView
-                                   )(implicit ec: ExecutionContext) extends AddAssetController {
+                                   )(implicit ec: ExecutionContext) extends AddAssetController with Logging {
 
   private def addAnotherForm(isTaxable: Boolean): Form[AddAssets] = addAnotherFormProvider.withPrefix(determinePrefix(isTaxable))
   private val yesNoForm: Form[Boolean] = yesNoFormProvider.withPrefix("addAnAssetYesNo")
-
-  private def actions(): ActionBuilder[RegistrationDataRequest, AnyContent] =
-    identify andThen getData() andThen requireData
 
   private def determinePrefix(isTaxable: Boolean) = "addAssets" + (if (!isTaxable) ".nonTaxable" else "")
 
@@ -64,7 +66,7 @@ class AddAssetsController @Inject()(
     }
   }
 
-  def onPageLoad(): Action[AnyContent] = actions() {
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
     implicit request =>
 
       val userAnswers: UserAnswers = request.userAnswers
@@ -84,7 +86,7 @@ class AddAssetsController @Inject()(
         case 0 if isTaxable =>
           Ok(yesNoView(yesNoForm))
         case 0 =>
-          Redirect(routes.TrustOwnsNonEeaBusinessYesNoController.onPageLoad())
+          Redirect(routes.TrustOwnsNonEeaBusinessYesNoController.onPageLoad(NormalMode))
         case c if c >= maxLimit =>
           Ok(maxedOutView(assets.inProgress, assets.complete, heading(c, prefix), maxLimit, prefix))
         case c =>
@@ -92,7 +94,7 @@ class AddAssetsController @Inject()(
       }
   }
 
-  def submitOne(): Action[AnyContent] = actions().async {
+  def submitOne(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
 
       yesNoForm.bindFromRequest().fold(
@@ -104,12 +106,12 @@ class AddAssetsController @Inject()(
             answersWithAssetTypeIfNonTaxable <- Future.fromTry(setAssetTypeIfNonTaxable(request.userAnswers, 0))
             updatedAnswers <- Future.fromTry(answersWithAssetTypeIfNonTaxable.set(AddAnAssetYesNoPage, value))
             _ <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(AddAnAssetYesNoPage)(updatedAnswers))
+          } yield Redirect(navigator.nextPage(AddAnAssetYesNoPage, NormalMode, updatedAnswers))
         }
       )
   }
 
-  def submitAnother(): Action[AnyContent] = actions().async {
+  def submitAnother(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
 
       val userAnswers = request.userAnswers
@@ -130,17 +132,17 @@ class AddAssetsController @Inject()(
             answersWithAssetTypeIfNonTaxable <- Future.fromTry(setAssetTypeIfNonTaxable(userAnswers, assets.count, value))
             updatedAnswers <- Future.fromTry(answersWithAssetTypeIfNonTaxable.set(AddAssetsPage, value))
             _ <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(AddAssetsPage)(updatedAnswers))
+          } yield Redirect(navigator.nextPage(AddAssetsPage, NormalMode, updatedAnswers))
         }
       )
   }
 
-  def submitComplete(): Action[AnyContent] = actions().async {
+  def submitComplete(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
 
       for {
         updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAssetsPage, NoComplete))
         _              <- repository.set(updatedAnswers)
-      } yield Redirect(navigator.nextPage(AddAssetsPage)(updatedAnswers))
+      } yield Redirect(navigator.nextPage(AddAssetsPage, NormalMode, updatedAnswers))
   }
 }

@@ -39,12 +39,12 @@ object ShareAssetViewModel extends AssetViewModelReads {
   implicit lazy val reads: Reads[ShareAssetViewModel] = {
 
     val nameReads : Reads[Option[String]] =
-      (__ \ SharePortfolioNamePage.key).read[String].map(_.toOption) orElse
-        (__ \ ShareCompanyNamePage.key).readNullable[String]
+      (__ \ SharePortfolioNamePage).read[String].map(_.toOption) orElse
+        (__ \ ShareCompanyNamePage).readNullable[String]
 
-    ((__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].filter(_ == Shares) and
+    ((__ \ WhatKindOfAssetPage).read[WhatKindOfAsset].filter(_ == Shares) and
       nameReads and
-      (__ \ AssetStatus.key).readWithDefault[Status](InProgress)
+      (__ \ AssetStatus).readWithDefault[Status](InProgress)
       )(ShareAssetViewModel.apply _)
 
   }
