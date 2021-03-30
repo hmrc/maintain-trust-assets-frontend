@@ -39,9 +39,9 @@ class OtherPrintHelperSpec extends SpecBase {
     .set(OtherAssetValuePage, amount).success.value
 
   private val rows: Seq[AnswerRow] = Seq(
-    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Other"), Some(WhatKindOfAssetController.onPageLoad(index).url)),
-    AnswerRow("other.description.checkYourAnswersLabel", Html(description), Some(OtherAssetDescriptionController.onPageLoad(NormalMode).url)),
-    AnswerRow("other.value.checkYourAnswersLabel", Html("£100"), Some(OtherAssetValueController.onPageLoad(NormalMode).url))
+    AnswerRow(label = Html(messages("whatKindOfAsset.first.checkYourAnswersLabel")), Html("Other"), WhatKindOfAssetController.onPageLoad(index).url),
+    AnswerRow(label = Html(messages("other.description.checkYourAnswersLabel")), Html(description), OtherAssetDescriptionController.onPageLoad(NormalMode).url),
+    AnswerRow(label = Html(messages("other.value.checkYourAnswersLabel", description)), Html("£100"), OtherAssetValueController.onPageLoad(NormalMode).url)
   )
 
   "OtherPrintHelper" when {

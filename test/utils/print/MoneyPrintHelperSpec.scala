@@ -38,8 +38,8 @@ class MoneyPrintHelperSpec extends SpecBase {
     .set(AssetMoneyValuePage, amount).success.value
 
   private val rows: Seq[AnswerRow] = Seq(
-    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Money"), Some(WhatKindOfAssetController.onPageLoad(index).url)),
-    AnswerRow("money.value.checkYourAnswersLabel", Html(s"£100"), Some(AssetMoneyValueController.onPageLoad(NormalMode).url))
+    AnswerRow(label = Html(messages("whatKindOfAsset.first.checkYourAnswersLabel")), Html("Money"), WhatKindOfAssetController.onPageLoad(index).url),
+    AnswerRow(label = Html(messages("money.value.checkYourAnswersLabel")), Html(s"£100"), AssetMoneyValueController.onPageLoad(NormalMode).url)
   )
 
   "MoneyPrintHelper" when {

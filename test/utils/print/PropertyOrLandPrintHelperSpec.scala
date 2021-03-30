@@ -59,30 +59,30 @@ class PropertyOrLandPrintHelperSpec extends SpecBase {
     .set(PropertyLandValueTrustPage, secondaryAmount).success.value
 
   private val ukAddressTrustOwnsAllRows: Seq[AnswerRow] = Seq(
-    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Property or land"), Some(WhatKindOfAssetController.onPageLoad(index).url)),
-    AnswerRow("propertyOrLand.addressYesNo.checkYourAnswersLabel", Html("Yes"), Some(PropertyOrLandAddressYesNoController.onPageLoad(NormalMode).url)),
-    AnswerRow("propertyOrLand.addressUkYesNo.checkYourAnswersLabel", Html("Yes"), Some(PropertyOrLandAddressUkYesNoController.onPageLoad(NormalMode).url)),
-    AnswerRow("propertyOrLand.ukAddress.checkYourAnswersLabel", Html("Line 1<br />Line 2<br />AB1 1AB"), Some(PropertyOrLandUKAddressController.onPageLoad(NormalMode).url)),
-    AnswerRow("propertyOrLand.totalValue.checkYourAnswersLabel", Html("£100"), Some(PropertyOrLandTotalValueController.onPageLoad(NormalMode).url)),
-    AnswerRow("propertyOrLand.trustOwnAllYesNo.checkYourAnswersLabel", Html("Yes"), Some(TrustOwnAllThePropertyOrLandController.onPageLoad(NormalMode).url))
+    AnswerRow(label = Html(messages("whatKindOfAsset.first.checkYourAnswersLabel")), Html("Property or land"), WhatKindOfAssetController.onPageLoad(index).url),
+    AnswerRow(label = Html(messages("propertyOrLand.addressYesNo.checkYourAnswersLabel")), Html("Yes"), PropertyOrLandAddressYesNoController.onPageLoad(NormalMode).url),
+    AnswerRow(label = Html(messages("propertyOrLand.addressUkYesNo.checkYourAnswersLabel")), Html("Yes"), PropertyOrLandAddressUkYesNoController.onPageLoad(NormalMode).url),
+    AnswerRow(label = Html(messages("propertyOrLand.ukAddress.checkYourAnswersLabel")), Html("Line 1<br />Line 2<br />AB1 1AB"), PropertyOrLandUKAddressController.onPageLoad(NormalMode).url),
+    AnswerRow(label = Html(messages("propertyOrLand.totalValue.checkYourAnswersLabel")), Html("£100"), PropertyOrLandTotalValueController.onPageLoad(NormalMode).url),
+    AnswerRow(label = Html(messages("propertyOrLand.trustOwnAllYesNo.checkYourAnswersLabel")), Html("Yes"), TrustOwnAllThePropertyOrLandController.onPageLoad(NormalMode).url)
   )
 
   private val nonUkAddressTrustOwnsAllRows: Seq[AnswerRow] = Seq(
-    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Property or land"), Some(WhatKindOfAssetController.onPageLoad(index).url)),
-    AnswerRow("propertyOrLand.addressYesNo.checkYourAnswersLabel", Html("Yes"), Some(PropertyOrLandAddressYesNoController.onPageLoad(NormalMode).url)),
-    AnswerRow("propertyOrLand.addressUkYesNo.checkYourAnswersLabel", Html("Yes"), Some(PropertyOrLandAddressUkYesNoController.onPageLoad(NormalMode).url)),
-    AnswerRow("propertyOrLand.internationalAddress.checkYourAnswersLabel", Html("Line 1<br />Line 2<br />France"), Some(PropertyOrLandInternationalAddressController.onPageLoad(NormalMode).url)),
-    AnswerRow("propertyOrLand.totalValue.checkYourAnswersLabel", Html("£100"), Some(PropertyOrLandTotalValueController.onPageLoad(NormalMode).url)),
-    AnswerRow("propertyOrLand.trustOwnAllYesNo.checkYourAnswersLabel", Html("Yes"), Some(TrustOwnAllThePropertyOrLandController.onPageLoad(NormalMode).url))
+    AnswerRow(label = Html(messages("whatKindOfAsset.first.checkYourAnswersLabel")), Html("Property or land"), WhatKindOfAssetController.onPageLoad(index).url),
+    AnswerRow(label = Html(messages("propertyOrLand.addressYesNo.checkYourAnswersLabel")), Html("Yes"), PropertyOrLandAddressYesNoController.onPageLoad(NormalMode).url),
+    AnswerRow(label = Html(messages("propertyOrLand.addressUkYesNo.checkYourAnswersLabel")), Html("Yes"), PropertyOrLandAddressUkYesNoController.onPageLoad(NormalMode).url),
+    AnswerRow(label = Html(messages("propertyOrLand.internationalAddress.checkYourAnswersLabel")), Html("Line 1<br />Line 2<br />France"), PropertyOrLandInternationalAddressController.onPageLoad(NormalMode).url),
+    AnswerRow(label = Html(messages("propertyOrLand.totalValue.checkYourAnswersLabel")), Html("£100"), PropertyOrLandTotalValueController.onPageLoad(NormalMode).url),
+    AnswerRow(label = Html(messages("propertyOrLand.trustOwnAllYesNo.checkYourAnswersLabel")), Html("Yes"), TrustOwnAllThePropertyOrLandController.onPageLoad(NormalMode).url)
   )
 
   private val descriptionTrustDoesNotOwnAllRows: Seq[AnswerRow] = Seq(
-    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Property or land"), Some(WhatKindOfAssetController.onPageLoad(index).url)),
-    AnswerRow("propertyOrLand.addressYesNo.checkYourAnswersLabel", Html("No"), Some(PropertyOrLandAddressYesNoController.onPageLoad(NormalMode).url)),
-    AnswerRow("propertyOrLand.description.checkYourAnswersLabel", Html(description), Some(PropertyOrLandDescriptionController.onPageLoad(NormalMode).url)),
-    AnswerRow("propertyOrLand.totalValue.checkYourAnswersLabel", Html("£100"), Some(PropertyOrLandTotalValueController.onPageLoad(NormalMode).url)),
-    AnswerRow("propertyOrLand.trustOwnAllYesNo.checkYourAnswersLabel", Html("No"), Some(TrustOwnAllThePropertyOrLandController.onPageLoad(NormalMode).url)),
-    AnswerRow("propertyOrLand.valueInTrust.checkYourAnswersLabel", Html("£50"), Some(PropertyLandValueTrustController.onPageLoad(NormalMode).url))
+    AnswerRow(label = Html(messages("whatKindOfAsset.first.checkYourAnswersLabel")), Html("Property or land"), WhatKindOfAssetController.onPageLoad(index).url),
+    AnswerRow(label = Html(messages("propertyOrLand.addressYesNo.checkYourAnswersLabel")), Html("No"), PropertyOrLandAddressYesNoController.onPageLoad(NormalMode).url),
+    AnswerRow(label = Html(messages("propertyOrLand.description.checkYourAnswersLabel")), Html(description), PropertyOrLandDescriptionController.onPageLoad(NormalMode).url),
+    AnswerRow(label = Html(messages("propertyOrLand.totalValue.checkYourAnswersLabel")), Html("£100"), PropertyOrLandTotalValueController.onPageLoad(NormalMode).url),
+    AnswerRow(label = Html(messages("propertyOrLand.trustOwnAllYesNo.checkYourAnswersLabel")), Html("No"), TrustOwnAllThePropertyOrLandController.onPageLoad(NormalMode).url),
+    AnswerRow(label = Html(messages("propertyOrLand.valueInTrust.checkYourAnswersLabel")), Html("£50"), PropertyLandValueTrustController.onPageLoad(NormalMode).url)
   )
 
   "PropertyOrLandPrintHelper" when {
