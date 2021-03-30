@@ -52,22 +52,22 @@ class SharesPrintHelperSpec extends SpecBase {
     .set(SharePortfolioValueInTrustPage, amount).success.value
 
   private val nonPortfolioRows: Seq[AnswerRow] = Seq(
-    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Shares"), Some(WhatKindOfAssetController.onPageLoad(index).url)),
-    AnswerRow("shares.inAPortfolioYesNo.checkYourAnswersLabel", Html("No"), Some(SharesInAPortfolioController.onPageLoad(NormalMode).url)),
-    AnswerRow("shares.companyName.checkYourAnswersLabel", Html(name), Some(ShareCompanyNameController.onPageLoad(NormalMode).url)),
-    AnswerRow("shares.onStockExchangeYesNo.checkYourAnswersLabel", Html("Yes"), Some(SharesOnStockExchangeController.onPageLoad(NormalMode).url)),
-    AnswerRow("shares.class.checkYourAnswersLabel", Html("Ordinary"), Some(ShareClassController.onPageLoad(NormalMode).url)),
-    AnswerRow("shares.quantityInTrust.checkYourAnswersLabel", Html("200"), Some(ShareQuantityInTrustController.onPageLoad(NormalMode).url)),
-    AnswerRow("shares.valueInTrust.checkYourAnswersLabel", Html("£100"), Some(ShareValueInTrustController.onPageLoad(NormalMode).url))
+    AnswerRow(label = Html(messages("whatKindOfAsset.first.checkYourAnswersLabel")), Html("Shares"), WhatKindOfAssetController.onPageLoad(index).url),
+    AnswerRow(label = Html(messages("shares.inAPortfolioYesNo.checkYourAnswersLabel")), Html("No"), SharesInAPortfolioController.onPageLoad(NormalMode).url),
+    AnswerRow(label = Html(messages("shares.companyName.checkYourAnswersLabel")), Html(name), ShareCompanyNameController.onPageLoad(NormalMode).url),
+    AnswerRow(label = Html(messages("shares.onStockExchangeYesNo.checkYourAnswersLabel", name)), Html("Yes"), SharesOnStockExchangeController.onPageLoad(NormalMode).url),
+    AnswerRow(label = Html(messages("shares.class.checkYourAnswersLabel", name)), Html("Ordinary"), ShareClassController.onPageLoad(NormalMode).url),
+    AnswerRow(label = Html(messages("shares.quantityInTrust.checkYourAnswersLabel", name)), Html("200"), ShareQuantityInTrustController.onPageLoad(NormalMode).url),
+    AnswerRow(label = Html(messages("shares.valueInTrust.checkYourAnswersLabel", name)), Html("£100"), ShareValueInTrustController.onPageLoad(NormalMode).url)
   )
 
   private val portfolioRows: Seq[AnswerRow] = Seq(
-    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Shares"), Some(WhatKindOfAssetController.onPageLoad(index).url)),
-    AnswerRow("shares.inAPortfolioYesNo.checkYourAnswersLabel", Html("Yes"), Some(SharesInAPortfolioController.onPageLoad(NormalMode).url)),
-    AnswerRow("shares.portfolioName.checkYourAnswersLabel", Html(name), Some(SharePortfolioNameController.onPageLoad(NormalMode).url)),
-    AnswerRow("shares.portfolioOnStockExchangeYesNo.checkYourAnswersLabel", Html("Yes"), Some(SharePortfolioOnStockExchangeController.onPageLoad(NormalMode).url)),
-    AnswerRow("shares.portfolioQuantityInTrust.checkYourAnswersLabel", Html("200"), Some(SharePortfolioQuantityInTrustController.onPageLoad(NormalMode).url)),
-    AnswerRow("shares.portfolioValueInTrust.checkYourAnswersLabel", Html("£100"), Some(SharePortfolioValueInTrustController.onPageLoad(NormalMode).url))
+    AnswerRow(label = Html(messages("whatKindOfAsset.first.checkYourAnswersLabel")), Html("Shares"), WhatKindOfAssetController.onPageLoad(index).url),
+    AnswerRow(label = Html(messages("shares.inAPortfolioYesNo.checkYourAnswersLabel")), Html("Yes"), SharesInAPortfolioController.onPageLoad(NormalMode).url),
+    AnswerRow(label = Html(messages("shares.portfolioName.checkYourAnswersLabel")), Html(name), SharePortfolioNameController.onPageLoad(NormalMode).url),
+    AnswerRow(label = Html(messages("shares.portfolioOnStockExchangeYesNo.checkYourAnswersLabel", name)), Html("Yes"), SharePortfolioOnStockExchangeController.onPageLoad(NormalMode).url),
+    AnswerRow(label = Html(messages("shares.portfolioQuantityInTrust.checkYourAnswersLabel", name)), Html("200"), SharePortfolioQuantityInTrustController.onPageLoad(NormalMode).url),
+    AnswerRow(label = Html(messages("shares.portfolioValueInTrust.checkYourAnswersLabel", name)), Html("£100"), SharePortfolioValueInTrustController.onPageLoad(NormalMode).url)
   )
 
   "SharesPrintHelper" when {

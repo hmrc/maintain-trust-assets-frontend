@@ -32,7 +32,7 @@ class BusinessAnswersControllerSpec extends SpecBase {
   private val name: String = "Business"
 
   val answers: UserAnswers = emptyUserAnswers
-    .set(BusinessNamePage, "test").success.value
+    .set(BusinessNamePage, name).success.value
     .set(BusinessDescriptionPage, "test test test").success.value
     .set(BusinessAddressUkYesNoPage, true).success.value
     .set(BusinessUkAddressPage, UKAddress("test", "test", None, None, "NE11NE")).success.value

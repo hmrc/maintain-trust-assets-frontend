@@ -40,9 +40,9 @@ class PartnershipPrintHelperSpec extends SpecBase {
     .set(PartnershipStartDatePage, date).success.value
 
   private val rows: Seq[AnswerRow] = Seq(
-    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Partnership"), Some(WhatKindOfAssetController.onPageLoad(index).url)),
-    AnswerRow("partnership.description.checkYourAnswersLabel", Html(description), Some(PartnershipDescriptionController.onPageLoad(NormalMode).url)),
-    AnswerRow("partnership.startDate.checkYourAnswersLabel", Html("3 February 1996"), Some(PartnershipStartDateController.onPageLoad(NormalMode).url))
+    AnswerRow(label = Html(messages("whatKindOfAsset.first.checkYourAnswersLabel")), Html("Partnership"), WhatKindOfAssetController.onPageLoad(index).url),
+    AnswerRow(label = Html(messages("partnership.description.checkYourAnswersLabel")), Html(description), PartnershipDescriptionController.onPageLoad(NormalMode).url),
+    AnswerRow(label = Html(messages("partnership.startDate.checkYourAnswersLabel", description)), Html("3 February 1996"), PartnershipStartDateController.onPageLoad(NormalMode).url)
   )
 
   "PartnershipPrintHelper" when {

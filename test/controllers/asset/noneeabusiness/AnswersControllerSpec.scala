@@ -31,7 +31,7 @@ class AnswersControllerSpec extends SpecBase {
   private val name: String = "Noneeabusiness"
 
   private val answers: UserAnswers = emptyUserAnswers
-    .set(NamePage, "Name").success.value
+    .set(NamePage, name).success.value
     .set(InternationalAddressPage, InternationalAddress("Line 1", "Line 2", Some("Line 3"), "FR")).success.value
     .set(GoverningCountryPage, "FR").success.value
     .set(StartDatePage, LocalDate.parse("1996-02-03")).success.value

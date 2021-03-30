@@ -51,21 +51,21 @@ class BusinessPrintHelperSpec extends SpecBase {
     .set(BusinessInternationalAddressPage, nonUkAddress).success.value
 
   private val ukAddressRows: Seq[AnswerRow] = Seq(
-    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Business"), Some(WhatKindOfAssetController.onPageLoad(index).url)),
-    AnswerRow("business.name.checkYourAnswersLabel", Html(name), Some(BusinessNameController.onPageLoad(NormalMode).url)),
-    AnswerRow("business.description.checkYourAnswersLabel", Html(description), Some(BusinessDescriptionController.onPageLoad(NormalMode).url)),
-    AnswerRow("business.addressUkYesNo.checkYourAnswersLabel", Html("Yes"), Some(BusinessAddressUkYesNoController.onPageLoad(NormalMode).url)),
-    AnswerRow("business.ukAddress.checkYourAnswersLabel", Html("Line 1<br />Line 2<br />AB1 1AB"), Some(BusinessUkAddressController.onPageLoad(NormalMode).url)),
-    AnswerRow("business.currentValue.checkYourAnswersLabel", Html("£100"), Some(BusinessValueController.onPageLoad(NormalMode).url))
+    AnswerRow(label = Html(messages("whatKindOfAsset.first.checkYourAnswersLabel")), Html("Business"), WhatKindOfAssetController.onPageLoad(index).url),
+    AnswerRow(label = Html(messages("business.name.checkYourAnswersLabel")), Html(name), BusinessNameController.onPageLoad(NormalMode).url),
+    AnswerRow(label = Html(messages("business.description.checkYourAnswersLabel", name)), Html(description), BusinessDescriptionController.onPageLoad(NormalMode).url),
+    AnswerRow(label = Html(messages("business.addressUkYesNo.checkYourAnswersLabel", name)), Html("Yes"), BusinessAddressUkYesNoController.onPageLoad(NormalMode).url),
+    AnswerRow(label = Html(messages("business.ukAddress.checkYourAnswersLabel", name)), Html("Line 1<br />Line 2<br />AB1 1AB"), BusinessUkAddressController.onPageLoad(NormalMode).url),
+    AnswerRow(label = Html(messages("business.currentValue.checkYourAnswersLabel", name)), Html("£100"), BusinessValueController.onPageLoad(NormalMode).url)
   )
 
   private val nonUkAddressRows: Seq[AnswerRow] = Seq(
-    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Business"), Some(WhatKindOfAssetController.onPageLoad(index).url)),
-    AnswerRow("business.name.checkYourAnswersLabel", Html(name), Some(BusinessNameController.onPageLoad(NormalMode).url)),
-    AnswerRow("business.description.checkYourAnswersLabel", Html(description), Some(BusinessDescriptionController.onPageLoad(NormalMode).url)),
-    AnswerRow("business.addressUkYesNo.checkYourAnswersLabel", Html("No"), Some(BusinessAddressUkYesNoController.onPageLoad(NormalMode).url)),
-    AnswerRow("business.internationalAddress.checkYourAnswersLabel", Html("Line 1<br />Line 2<br />France"), Some(BusinessInternationalAddressController.onPageLoad(NormalMode).url)),
-    AnswerRow("business.currentValue.checkYourAnswersLabel", Html("£100"), Some(BusinessValueController.onPageLoad(NormalMode).url))
+    AnswerRow(label = Html(messages("whatKindOfAsset.first.checkYourAnswersLabel")), Html("Business"), WhatKindOfAssetController.onPageLoad(index).url),
+    AnswerRow(label = Html(messages("business.name.checkYourAnswersLabel")), Html(name), BusinessNameController.onPageLoad(NormalMode).url),
+    AnswerRow(label = Html(messages("business.description.checkYourAnswersLabel", name)), Html(description), BusinessDescriptionController.onPageLoad(NormalMode).url),
+    AnswerRow(label = Html(messages("business.addressUkYesNo.checkYourAnswersLabel", name)), Html("No"), BusinessAddressUkYesNoController.onPageLoad(NormalMode).url),
+    AnswerRow(label = Html(messages("business.internationalAddress.checkYourAnswersLabel", name)), Html("Line 1<br />Line 2<br />France"), BusinessInternationalAddressController.onPageLoad(NormalMode).url),
+    AnswerRow(label = Html(messages("business.currentValue.checkYourAnswersLabel", name)), Html("£100"), BusinessValueController.onPageLoad(NormalMode).url)
   )
 
   "BusinessPrintHelper" when {

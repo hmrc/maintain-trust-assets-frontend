@@ -48,11 +48,11 @@ class NonEeaBusinessPrintHelperSpec extends SpecBase {
     .set(StartDatePage, date).success.value
 
   private val taxableRows: Seq[AnswerRow] = Seq(
-    AnswerRow("whatKindOfAsset.first.checkYourAnswersLabel", Html("Non-EEA Company"), Some(WhatKindOfAssetController.onPageLoad(index).url)),
-    AnswerRow("nonEeaBusiness.name.checkYourAnswersLabel", Html(name), Some(NameController.onPageLoad(NormalMode).url)),
-    AnswerRow("nonEeaBusiness.internationalAddress.checkYourAnswersLabel", Html("Line 1<br />Line 2<br />France"), Some(InternationalAddressController.onPageLoad(NormalMode).url)),
-    AnswerRow("nonEeaBusiness.governingCountry.checkYourAnswersLabel", Html("France"), Some(GoverningCountryController.onPageLoad(NormalMode).url)),
-    AnswerRow("nonEeaBusiness.startDate.checkYourAnswersLabel", Html("3 February 1996"), Some(StartDateController.onPageLoad(NormalMode).url))
+    AnswerRow(label = Html(messages("whatKindOfAsset.first.checkYourAnswersLabel")), Html("Non-EEA Company"), WhatKindOfAssetController.onPageLoad(index).url),
+    AnswerRow(label = Html(messages("nonEeaBusiness.name.checkYourAnswersLabel")), Html(name), NameController.onPageLoad(NormalMode).url),
+    AnswerRow(label = Html(messages("nonEeaBusiness.internationalAddress.checkYourAnswersLabel", name)), Html("Line 1<br />Line 2<br />France"), InternationalAddressController.onPageLoad(NormalMode).url),
+    AnswerRow(label = Html(messages("nonEeaBusiness.governingCountry.checkYourAnswersLabel", name)), Html("France"), GoverningCountryController.onPageLoad(NormalMode).url),
+    AnswerRow(label = Html(messages("nonEeaBusiness.startDate.checkYourAnswersLabel", name)), Html("3 February 1996"), StartDateController.onPageLoad(NormalMode).url)
   )
 
   private val nonTaxableRows: Seq[AnswerRow] = taxableRows.tail
