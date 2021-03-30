@@ -39,7 +39,7 @@ class SharesInAPortfolioController @Inject()(
                                               @Shares navigator: Navigator,
                                               formProvider: YesNoFormProvider,
                                               val controllerComponents: MessagesControllerComponents,
-                                              view: SharesInAPortfolioView,
+                                              view: SharesInAPortfolioView
                                             )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   val form: Form[Boolean] = formProvider.withPrefix("shares.inAPortfolioYesNo")
