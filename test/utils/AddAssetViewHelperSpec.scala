@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.asset._
 import models.Status._
 import models.WhatKindOfAsset._
-import models.{InternationalAddress, NormalMode, ShareClass, UKAddress}
+import models.{Assets, InternationalAddress, NormalMode, ShareClass, UKAddress}
 import pages.AssetStatus
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.business._
@@ -51,7 +51,7 @@ class AddAssetViewHelperSpec extends SpecBase {
     ".row" must {
 
       "generate Nil for no user answers" in {
-        val rows = new AddAssetViewHelper(emptyUserAnswers).rows
+        val rows = new AddAssetViewHelper(Assets(Nil, Nil, Nil, Nil, Nil, Nil, Nil)).rows
         rows.inProgress mustBe Nil
         rows.complete mustBe Nil
       }

@@ -19,12 +19,13 @@ package connectors
 import config.FrontendAppConfig
 import javax.inject.Inject
 import models.{Assets, TrustDetails}
+import play.api.Logging
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class TrustsConnector @Inject()(http: HttpClient, config: FrontendAppConfig) {
+class TrustsConnector @Inject()(http: HttpClient, config: FrontendAppConfig) extends Logging {
 
   private val trustsUrl: String = s"${config.trustsUrl}/trusts"
   private val assetsUrl: String = s"$trustsUrl/assets"
@@ -38,6 +39,8 @@ class TrustsConnector @Inject()(http: HttpClient, config: FrontendAppConfig) {
   def getAssets(identifier: String)
                       (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Assets] = {
     val url: String = s"$assetsUrl/$identifier/transformed"
+    logger.info(s"---- getAssets")
+    logger.info(s"---- assets json ${http.GET[String](url)}")
     http.GET[Assets](url)
   }
 

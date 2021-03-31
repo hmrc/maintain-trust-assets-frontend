@@ -34,6 +34,7 @@ final case class UserAnswers(internalId: String,
                              isTaxable: Boolean = true,
                              isUnderlyingData5mld: Boolean = false) extends Logging {
 
+
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] = {
     Reads.at(page.path).reads(data) match {
       case JsSuccess(value, _) => Some(value)

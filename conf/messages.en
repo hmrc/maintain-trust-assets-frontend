@@ -17,13 +17,14 @@ error.number = Please enter a valid number
 error.required = Please enter a value
 error.summary.title = There is a problem
 
-entities.no.name.added = No name added
-entities.no.value.added = No value added
-entities.no.address.added = No address added
-entities.no.description.added = No description added
-entities.no.addressOrDescription.added = No address or description added
-
 entities.assets = Assets
+entities.asset.business = Business
+entities.asset.monetary = Money
+entities.asset.nonEeaBusiness = Non-EEA Company
+entities.asset.partnership = Partnership
+entities.asset.propertyOrLand = Property or land
+entities.asset.shares = Share
+entities.asset.other = Other
 
 footer.links.accessibility.text = Accessibility
 
