@@ -23,13 +23,13 @@ import play.api.libs.json._
 
 sealed trait AssetType
 
-case class Assets(monetary: List[AssetMonetaryAmount],
-                  propertyOrLand: List[PropertyLandType],
-                  shares: List[SharesType],
-                  business: List[BusinessAssetType],
-                  partnerShip: List[PartnershipType],
-                  other: List[OtherAssetType],
-                  nonEEABusiness: List[NonEeaBusinessType])
+case class Assets(monetary: List[AssetMonetaryAmount] = Nil,
+                  propertyOrLand: List[PropertyLandType] = Nil,
+                  shares: List[SharesType] = Nil,
+                  business: List[BusinessAssetType] = Nil,
+                  partnerShip: List[PartnershipType] = Nil,
+                  other: List[OtherAssetType] = Nil,
+                  nonEEABusiness: List[NonEeaBusinessType] = Nil)
 
 
 object Assets {
@@ -94,10 +94,12 @@ object SharesType {
   implicit val sharesTypeFormat: Format[SharesType] = Json.format[SharesType]
 }
 
-case class NonEeaBusinessType(orgName: String,
+case class NonEeaBusinessType(lineNo: Option[String],
+                              orgName: String,
                               address: AddressType,
                               govLawCountry: String,
-                              startDate: LocalDate) extends AssetType
+                              startDate: LocalDate,
+                              endDate: Option[LocalDate]) extends AssetType
 
 object NonEeaBusinessType {
   implicit val format: Format[NonEeaBusinessType] = Json.format[NonEeaBusinessType]

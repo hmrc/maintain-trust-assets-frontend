@@ -74,8 +74,10 @@ class AddAssetsController @Inject()(
 
       for {
         assets <- trustService.getAssets(userAnswers.identifier)
+        updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
+        _ <- repository.set(updatedAnswers)
       } yield {
-        val assetRows = new AddAssetViewHelper(assets).rows
+        val assetRows = new AddAssetViewHelper(assets).rows //Currently only Shows NonEeaBusinessAssets
 
         val maxLimit: Int = (userAnswers.is5mldEnabled, isTaxable) match {
           case (true, true) => MAX_5MLD_TAXABLE_ASSETS
@@ -85,9 +87,7 @@ class AddAssetsController @Inject()(
 
         val prefix = determinePrefix(isTaxable)
 
-        assetRows.count match {
-          case 0 if isTaxable =>
-            Ok(yesNoView(yesNoForm))
+        assets.nonEEABusiness.size match {
           case 0 =>
             Redirect(routes.TrustOwnsNonEeaBusinessYesNoController.onPageLoad(NormalMode))
           case c if c >= maxLimit =>

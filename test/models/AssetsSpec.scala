@@ -240,16 +240,18 @@ class AssetsSpec extends WordSpec with MustMatchers{
         val assets = json.as[Assets]
 
         val monEEAAsset1 = NonEeaBusinessType(
-          orgName = "Panda care Ltd",
-          address = AddressType(
-            line1 = "1010 EASY ST",
-            line2 = "OTTAWA",
-            line3 = Some("ONTARIO"),
-            line4 = Some("ONTARIO"),
-            postCode = None,
-            country = "CA"),
+            lineNo = Some("1"),
+            orgName = "Panda care Ltd",
+            address = AddressType(
+              line1 = "1010 EASY ST",
+              line2 = "OTTAWA",
+              line3 = Some("ONTARIO"),
+              line4 = Some("ONTARIO"),
+              postCode = None,
+              country = "CA"),
           govLawCountry = "CA",
-          startDate = LocalDate.of(2020, 1, 5)
+          startDate = LocalDate.of(2020, 1, 5),
+          endDate = None
         )
         assets mustBe Assets(monetary = Nil,
           propertyOrLand = Nil,

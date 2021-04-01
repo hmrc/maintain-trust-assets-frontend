@@ -18,5 +18,5 @@ POST       /start-date                                                controller
 GET        /change-start-date                                         controllers.asset.noneeabusiness.StartDateController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-start-date                                         controllers.asset.noneeabusiness.StartDateController.onSubmit(mode: Mode = CheckMode)
 
-GET        /check-answers                                             controllers.asset.noneeabusiness.AnswersController.onPageLoad()
-POST       /check-answers                                             controllers.asset.noneeabusiness.AnswersController.onSubmit()
+GET        /check-answers                                             controllers.asset.noneeabusiness.add.AnswersController.onPageLoad()
+POST       /check-answers                                             controllers.asset.noneeabusiness.add.AnswersController.onSubmit()
