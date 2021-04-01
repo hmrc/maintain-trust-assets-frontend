@@ -94,10 +94,12 @@ object SharesType {
   implicit val sharesTypeFormat: Format[SharesType] = Json.format[SharesType]
 }
 
-case class NonEeaBusinessType(orgName: String,
+case class NonEeaBusinessType(lineNo: Option[String],
+                              orgName: String,
                               address: AddressType,
                               govLawCountry: String,
-                              startDate: LocalDate) extends AssetType
+                              startDate: LocalDate,
+                              endDate: Option[LocalDate]) extends AssetType
 
 object NonEeaBusinessType {
   implicit val format: Format[NonEeaBusinessType] = Json.format[NonEeaBusinessType]

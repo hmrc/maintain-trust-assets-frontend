@@ -94,7 +94,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
 
   val mockStoreConnector : TrustsStoreConnector = mock[TrustsStoreConnector]
 
-  val nonEeaBusinessAsset = NonEeaBusinessType("orgName", AddressType("", "", None, None, None, ""), "", LocalDate.now)
+  val nonEeaBusinessAsset = NonEeaBusinessType(None, "orgName", AddressType("", "", None, None, None, ""), "", LocalDate.now, None)
 
   "AddAssets Controller" when {
 

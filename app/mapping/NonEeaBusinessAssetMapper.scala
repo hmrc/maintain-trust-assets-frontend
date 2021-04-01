@@ -32,10 +32,12 @@ class NonEeaBusinessAssetMapper @Inject()(addressMapper: AddressMapper) extends 
   def apply(answers: UserAnswers): Option[NonEeaBusinessType] = {
     val readFromUserAnswers: Reads[NonEeaBusinessType] =
       (
-        NamePage.path.read[String] and
+        Reads(_ => JsSuccess(None)) and
+          NamePage.path.read[String] and
           InternationalAddressPage.path.read[AddressType] and
           GoverningCountryPage.path.read[String] and
-          StartDatePage.path.read[LocalDate]
+          StartDatePage.path.read[LocalDate] and
+          Reads(_ => JsSuccess(None))
         ) (NonEeaBusinessType.apply _)
 
     answers.data.validate[NonEeaBusinessType](readFromUserAnswers) match {
@@ -50,10 +52,12 @@ class NonEeaBusinessAssetMapper @Inject()(addressMapper: AddressMapper) extends 
   override def mapAssets(assets: List[NonEeaBusinessAsset]): List[NonEeaBusinessType] = {
     assets.map(x =>
       NonEeaBusinessType(
+        lineNo = None,
         orgName = x.name,
         address = addressMapper.build(x.address),
         govLawCountry = x.governingCountry,
-        startDate = x.startDate
+        startDate = x.startDate,
+        endDate = None
       )
     )
   }
