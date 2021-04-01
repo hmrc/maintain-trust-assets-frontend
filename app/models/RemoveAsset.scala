@@ -14,12 +14,17 @@
  * limitations under the License.
  */
 
-package models.assets
+package models
 
-import play.api.libs.json._
+import play.api.libs.json.{Format, Json}
 
-case class MonetaryAsset(assetMonetaryAmount: Double) extends Asset
+import java.time.LocalDate
 
-object MonetaryAsset {
-  implicit val moneyAssetFormat: Format[MonetaryAsset] = Json.format[MonetaryAsset]
+case class RemoveAsset(index: Int, endDate: LocalDate)
+
+object RemoveAsset {
+
+  implicit val formats: Format[RemoveAsset] = Json.format[RemoveAsset]
+  def apply(index: Int): RemoveAsset =  RemoveAsset(index, LocalDate.now)
+
 }

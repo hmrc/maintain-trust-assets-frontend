@@ -31,7 +31,7 @@ class PropertyOrLandMapper @Inject()(addressMapper: AddressMapper) extends Mappi
         x.propertyOrLandDescription,
         addressMapper.build(x.address),
         totalValue,
-        x.propertyLandValueTrust.getOrElse(totalValue)
+        x.propertyLandValueTrust.orElse( Some(totalValue))
       )
     }
   }

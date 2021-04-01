@@ -19,8 +19,8 @@ package services
 import com.google.inject.ImplementedBy
 import connectors.TrustsConnector
 import javax.inject.Inject
-import models.Assets
-import uk.gov.hmrc.http.HeaderCarrier
+import models._
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -29,9 +29,29 @@ class TrustServiceImpl @Inject()(connector: TrustsConnector) extends TrustServic
   override def getAssets(identifier: String)(implicit hc:HeaderCarrier, ec:ExecutionContext): Future[Assets] =
     connector.getAssets(identifier)
 
-  // TODO get each asset type
-  // TODO Remove asset
+  override def getMonetaryAsset(identifier: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[AssetMonetaryAmount] =
+    getAssets(identifier).map(_.monetary(index))
 
+  override def getPropertyOrLandAsset(identifier: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[PropertyLandType] =
+    getAssets(identifier).map(_.propertyOrLand(index))
+
+  override def getSharesAsset(identifier: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[SharesType] =
+    getAssets(identifier).map(_.shares(index))
+
+  override def getBusinessAsset(identifier: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[BusinessAssetType] =
+    getAssets(identifier).map(_.business(index))
+
+  override def getOtherAsset(identifier: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[OtherAssetType] =
+    getAssets(identifier).map(_.other(index))
+
+  override def getPartnershipAsset(identifier: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[PartnershipType] =
+    getAssets(identifier).map(_.partnerShip(index))
+
+  override def getNonEeaBusinessAsset(identifier: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[NonEeaBusinessType] =
+    getAssets(identifier).map(_.nonEEABusiness(index))
+
+  override def removeAsset(identifier: String, asset: RemoveAsset)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
+    connector.removeAsset(identifier, asset)
 }
 
 @ImplementedBy(classOf[TrustServiceImpl])
@@ -39,7 +59,20 @@ trait TrustService {
 
   def getAssets(identifier: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Assets]
 
-  // TODO get each asset type
-  // TODO Remove asset
+  def getMonetaryAsset(identifier: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[AssetMonetaryAmount]
+
+  def getPropertyOrLandAsset(identifier: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[PropertyLandType]
+
+  def getSharesAsset(identifier: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[SharesType]
+
+  def getBusinessAsset(identifier: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[BusinessAssetType]
+
+  def getOtherAsset(identifier: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[OtherAssetType]
+
+  def getPartnershipAsset(identifier: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[PartnershipType]
+
+  def getNonEeaBusinessAsset(identifier: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[NonEeaBusinessType]
+
+  def removeAsset(identifier: String, settlor: RemoveAsset)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse]
 
 }

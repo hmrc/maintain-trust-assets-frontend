@@ -29,7 +29,7 @@ import play.api.data.Form
 import play.api.i18n.{Messages, MessagesApi, MessagesProvider}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
-import utils.{AddAssetViewHelper}
+import utils.AddAssetViewHelper
 import views.html.asset.{AddAnAssetYesNoView, AddAssetsView, MaxedOutView}
 import javax.inject.Inject
 import models.AddAssets.NoComplete
@@ -66,35 +66,39 @@ class AddAssetsController @Inject()(
     }
   }
 
-  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
 
       val userAnswers: UserAnswers = request.userAnswers
       val isTaxable = userAnswers.isTaxable
 
-      val assets = new AddAssetViewHelper(userAnswers).rows
+      for {
+        assets <- trustService.getAssets(userAnswers.identifier)
+      } yield {
+        val assetRows = new AddAssetViewHelper(assets).rows
 
-      val maxLimit: Int = (userAnswers.is5mldEnabled, isTaxable) match {
-        case (true, true) => MAX_5MLD_TAXABLE_ASSETS
-        case (true, false) => MAX_5MLD_NON_TAXABLE_ASSETS
-        case _ => MAX_4MLD_ASSETS
-      }
+        val maxLimit: Int = (userAnswers.is5mldEnabled, isTaxable) match {
+          case (true, true) => MAX_5MLD_TAXABLE_ASSETS
+          case (true, false) => MAX_5MLD_NON_TAXABLE_ASSETS
+          case _ => MAX_4MLD_ASSETS
+        }
 
-      val prefix = determinePrefix(isTaxable)
+        val prefix = determinePrefix(isTaxable)
 
-      assets.count match {
-        case 0 if isTaxable =>
-          Ok(yesNoView(yesNoForm))
-        case 0 =>
-          Redirect(routes.TrustOwnsNonEeaBusinessYesNoController.onPageLoad(NormalMode))
-        case c if c >= maxLimit =>
-          Ok(maxedOutView(assets.inProgress, assets.complete, heading(c, prefix), maxLimit, prefix))
-        case c =>
-          Ok(addAssetsView(addAnotherForm(isTaxable), assets.inProgress, assets.complete, heading(c, prefix), prefix))
+        assetRows.count match {
+          case 0 if isTaxable =>
+            Ok(yesNoView(yesNoForm))
+          case 0 =>
+            Redirect(routes.TrustOwnsNonEeaBusinessYesNoController.onPageLoad(NormalMode))
+          case c if c >= maxLimit =>
+            Ok(maxedOutView(assetRows.inProgress, assetRows.complete, heading(c, prefix), maxLimit, prefix))
+          case c =>
+            Ok(addAssetsView(addAnotherForm(isTaxable), assetRows.inProgress, assetRows.complete, heading(c, prefix), prefix))
+        }
       }
   }
 
-  def submitOne(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
+  def submitOne(): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
 
       yesNoForm.bindFromRequest().fold(
@@ -111,33 +115,34 @@ class AddAssetsController @Inject()(
       )
   }
 
-  def submitAnother(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
+  def submitAnother(): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
 
       val userAnswers = request.userAnswers
       val isTaxable = userAnswers.isTaxable
 
-      val assets = new AddAssetViewHelper(userAnswers).rows
+      trustService.getAssets(userAnswers.identifier).flatMap{ assets =>
 
-      val prefix = determinePrefix(isTaxable)
+        val assetRows = new AddAssetViewHelper(assets).rows
 
-      addAnotherForm(isTaxable).bindFromRequest().fold(
-        (formWithErrors: Form[_]) => {
-          Future.successful(
-            BadRequest(addAssetsView(formWithErrors, assets.inProgress, assets.complete, heading(assets.count, prefix), prefix))
-          )
-        },
-        value => {
-          for {
-            answersWithAssetTypeIfNonTaxable <- Future.fromTry(setAssetTypeIfNonTaxable(userAnswers, assets.count, value))
-            updatedAnswers <- Future.fromTry(answersWithAssetTypeIfNonTaxable.set(AddAssetsPage, value))
-            _ <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(AddAssetsPage, NormalMode, updatedAnswers))
-        }
-      )
+        val prefix = determinePrefix(isTaxable)
+
+        addAnotherForm(isTaxable).bindFromRequest().fold(
+          (formWithErrors: Form[_]) => {
+            Future.successful(BadRequest(addAssetsView(formWithErrors, assetRows.inProgress, assetRows.complete, heading(assetRows.count, prefix), prefix)))
+          },
+          value => {
+            for {
+              answersWithAssetTypeIfNonTaxable <- Future.fromTry(setAssetTypeIfNonTaxable(userAnswers, assetRows.count, value))
+              updatedAnswers <- Future.fromTry(answersWithAssetTypeIfNonTaxable.set(AddAssetsPage, value))
+              _ <- repository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(AddAssetsPage, NormalMode, updatedAnswers))
+          }
+        )
+      }
   }
 
-  def submitComplete(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
+  def submitComplete(): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
 
       for {

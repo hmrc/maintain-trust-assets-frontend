@@ -18,21 +18,32 @@ package models
 
 import java.time.LocalDate
 
+import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
 sealed trait AssetType
 
-case class Assets(monetary: Option[List[AssetMonetaryAmount]],
-                  propertyOrLand: Option[List[PropertyLandType]],
-                  shares: Option[List[SharesType]],
-                  business: Option[List[BusinessAssetType]],
-                  partnerShip: Option[List[PartnershipType]],
-                  other: Option[List[OtherAssetType]],
-                  nonEEABusiness: Option[List[NonEeaBusinessType]])
+case class Assets(monetary: List[AssetMonetaryAmount],
+                  propertyOrLand: List[PropertyLandType],
+                  shares: List[SharesType],
+                  business: List[BusinessAssetType],
+                  partnerShip: List[PartnershipType],
+                  other: List[OtherAssetType],
+                  nonEEABusiness: List[NonEeaBusinessType])
+
 
 object Assets {
-  implicit val assetsFormat: Format[Assets] = Json.format[Assets]
+  implicit val reads: Reads[Assets] =
+    ((__ \ "assets" \ "monetary").readWithDefault[List[AssetMonetaryAmount]](Nil)
+      and (__ \ "assets" \ "propertyOrLand").readWithDefault[List[PropertyLandType]](Nil)
+      and (__ \ "assets" \ "shares").readWithDefault[List[SharesType]](Nil)
+      and (__ \ "assets" \ "business").readWithDefault[List[BusinessAssetType]](Nil)
+      and (__ \ "assets" \ "partnerShip").readWithDefault[List[PartnershipType]](Nil)
+      and (__ \ "assets" \ "other").readWithDefault[List[OtherAssetType]](Nil)
+      and (__ \ "assets" \ "nonEEABusiness").readWithDefault[List[NonEeaBusinessType]](Nil)
+      ).apply(Assets.apply _)
 }
+
 
 case class AssetMonetaryAmount(assetMonetaryAmount: Long) extends AssetType
 
@@ -43,7 +54,7 @@ object AssetMonetaryAmount {
 case class PropertyLandType(buildingLandName: Option[String],
                             address: Option[AddressType],
                             valueFull: Long,
-                            valuePrevious: Long) extends AssetType
+                            valuePrevious: Option[Long]) extends AssetType
 
 object PropertyLandType {
   implicit val propertyLandTypeFormat: Format[PropertyLandType] = Json.format[PropertyLandType]
