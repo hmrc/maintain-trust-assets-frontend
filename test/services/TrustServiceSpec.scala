@@ -64,9 +64,7 @@ class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers wi
 
       implicit val hc : HeaderCarrier = HeaderCarrier()
 
-      val result = service.getAssets("1234567890")
-
-      whenReady(result) {
+      whenReady(service.getAssets("1234567890")) {
         _ mustBe assets
       }
     }

@@ -34,6 +34,17 @@ final case class UserAnswers(internalId: String,
                              isTaxable: Boolean = true,
                              isUnderlyingData5mld: Boolean = false) extends Logging {
 
+  def cleanup : Try[UserAnswers] = {
+    this
+      .deleteAtPath(pages.asset.money.basePath)
+      .flatMap(_.deleteAtPath(pages.asset.business.basePath))
+      .flatMap(_.deleteAtPath(pages.asset.other.basePath))
+      .flatMap(_.deleteAtPath(pages.asset.partnerrship.basePath))
+      .flatMap(_.deleteAtPath(pages.asset.property_or_land.basePath))
+      .flatMap(_.deleteAtPath(pages.asset.shares.basePath))
+      .flatMap(_.deleteAtPath(pages.asset.noneeabusiness.basePath))
+      .flatMap(_.remove(pages.asset.AddNowPage))
+  }
 
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] = {
     Reads.at(page.path).reads(data) match {

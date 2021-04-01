@@ -46,70 +46,27 @@ class NonEeaBusinessAssetMapperSpec extends SpecBase {
 
         val answers = baseAnswers
 
-        mapper.build(answers) mustNot be(defined)
+        mapper(answers).isDefined mustBe false
       }
     }
 
-    // TODO
 
-//    "be able to create a non-EEA business asset" when {
-//
-//      "one asset" in {
-//
-//        val answers = baseAnswers
-//          .set(WhatKindOfAssetPage, NonEeaBusiness).success.value
-//          .set(NamePage, name).success.value
-//          .set(InternationalAddressPage, nonUkAddress).success.value
-//          .set(GoverningCountryPage, country).success.value
-//          .set(StartDatePage, date).success.value
-//          .set(AssetStatus, Completed).success.value
-//
-//        val result = mapper.build(answers).get
-//
-//        result mustBe List(
-//          NonEeaBusinessType(
-//            orgName = name,
-//            address = nonUkAddressType,
-//            govLawCountry = country,
-//            startDate = date
-//          )
-//        )
-//      }
-//
-//      "multiple assets" in {
-//
-//        val answers = baseAnswers
-//          .set(WhatKindOfAssetPage, NonEeaBusiness).success.value
-//          .set(NamePage, name).success.value
-//          .set(InternationalAddressPage, nonUkAddress).success.value
-//          .set(GoverningCountryPage, country).success.value
-//          .set(StartDatePage, date).success.value
-//          .set(AssetStatus, Completed).success.value
-//
-//          .set(WhatKindOfAssetPage, NonEeaBusiness).success.value
-//          .set(NamePage, name).success.value
-//          .set(InternationalAddressPage, nonUkAddress).success.value
-//          .set(GoverningCountryPage, country).success.value
-//          .set(StartDatePage, date).success.value
-//          .set(AssetStatus, Completed).success.value
-//
-//        val result = mapper.build(answers).get
-//
-//        result mustBe List(
-//          NonEeaBusinessType(
-//            orgName = name,
-//            address = nonUkAddressType,
-//            govLawCountry = country,
-//            startDate = date
-//          ),
-//          NonEeaBusinessType(
-//            orgName = name,
-//            address = nonUkAddressType,
-//            govLawCountry = country,
-//            startDate = date
-//          )
-//        )
-//      }
-//    }
+    "be able to create a non-EEA business asset" when {
+
+      "one asset" in {
+
+        val answers = baseAnswers
+          .set(WhatKindOfAssetPage, NonEeaBusiness).success.value
+          .set(NamePage, name).success.value
+          .set(InternationalAddressPage, nonUkAddress).success.value
+          .set(GoverningCountryPage, country).success.value
+          .set(StartDatePage, date).success.value
+          .set(AssetStatus, Completed).success.value
+
+        val result = mapper(answers).get
+
+        result mustBe NonEeaBusinessType(orgName = name, address = nonUkAddressType, govLawCountry = country, startDate = date)
+      }
+    }
   }
 }

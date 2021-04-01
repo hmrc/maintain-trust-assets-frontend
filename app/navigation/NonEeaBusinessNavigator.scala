@@ -16,7 +16,7 @@
 
 package navigation
 
-import controllers.asset.noneeabusiness.routes._
+import controllers.asset.noneeabusiness.{routes => rts}
 import models.{Mode, NormalMode, UserAnswers}
 import pages.Page
 import pages.asset.noneeabusiness._
@@ -33,10 +33,10 @@ class NonEeaBusinessNavigator @Inject()() extends Navigator {
     nextPage(page, NormalMode, userAnswers)
 
   def simpleNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
-    case NamePage => _ => InternationalAddressController.onPageLoad(mode)
-    case InternationalAddressPage => _ => GoverningCountryController.onPageLoad(mode)
-    case GoverningCountryPage => _ => StartDateController.onPageLoad(mode)
-    case StartDatePage => _ => AnswersController.onPageLoad()
+    case NamePage => _ => rts.InternationalAddressController.onPageLoad(mode)
+    case InternationalAddressPage => _ => rts.GoverningCountryController.onPageLoad(mode)
+    case GoverningCountryPage => _ => rts.StartDateController.onPageLoad(mode)
+    case StartDatePage => _ => controllers.asset.noneeabusiness.add.routes.AnswersController.onPageLoad()
   }
 
   def routes(mode: Mode): PartialFunction[Page, UserAnswers => Call] =

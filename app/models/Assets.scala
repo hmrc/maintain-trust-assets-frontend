@@ -23,13 +23,13 @@ import play.api.libs.json._
 
 sealed trait AssetType
 
-case class Assets(monetary: List[AssetMonetaryAmount],
-                  propertyOrLand: List[PropertyLandType],
-                  shares: List[SharesType],
-                  business: List[BusinessAssetType],
-                  partnerShip: List[PartnershipType],
-                  other: List[OtherAssetType],
-                  nonEEABusiness: List[NonEeaBusinessType])
+case class Assets(monetary: List[AssetMonetaryAmount] = Nil,
+                  propertyOrLand: List[PropertyLandType] = Nil,
+                  shares: List[SharesType] = Nil,
+                  business: List[BusinessAssetType] = Nil,
+                  partnerShip: List[PartnershipType] = Nil,
+                  other: List[OtherAssetType] = Nil,
+                  nonEEABusiness: List[NonEeaBusinessType] = Nil)
 
 
 object Assets {

@@ -20,7 +20,7 @@ import java.time.LocalDate
 
 import base.SpecBase
 import config.annotations.{Assets => AssetsAnnotations}
-import connectors.TrustsConnector
+import connectors.TrustsStoreConnector
 import forms.{AddAssetsFormProvider, YesNoFormProvider}
 import generators.Generators
 import javax.inject.Inject
@@ -92,12 +92,8 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
     .set(ShareValueInTrustPage, 10L).success.value
     .set(AssetStatus, Completed).success.value
 
-  val moneyAsset = AssetMonetaryAmount(123)
-  val propertyOrLandAsset = PropertyLandType(None, None, 123, None)
-  val sharesAsset = SharesType("", "", "", "", 123)
-  val businessAsset = BusinessAssetType("", "", AddressType("", "", None, None, None, ""), 123)
-  val partnershipAsset = PartnershipType("", LocalDate.now)
-  val otherAsset = OtherAssetType("", 123)
+  val mockStoreConnector : TrustsStoreConnector = mock[TrustsStoreConnector]
+
   val nonEeaBusinessAsset = NonEeaBusinessType("orgName", AddressType("", "", None, None, None, ""), "", LocalDate.now)
 
   "AddAssets Controller" when {
@@ -108,7 +104,8 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
         val fakeService = new FakeService(Assets(Nil, Nil, Nil, Nil, Nil, Nil, Nil))
 
         val application = applicationBuilder(userAnswers = None).overrides(Seq(
-          bind(classOf[TrustService]).toInstance(fakeService)
+          bind(classOf[TrustService]).toInstance(fakeService),
+          bind(classOf[TrustsStoreConnector]).toInstance(mockStoreConnector)
         )).build()
 
         val request = FakeRequest(GET, addAssetsRoute)
@@ -141,49 +138,24 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
 
     "there are no assets" when {
 
-      "taxable" must {
-        "return OK and the correct view for a GET" in {
-          val fakeService = new FakeService(Assets(Nil, Nil, Nil, Nil, Nil, Nil, Nil))
-          val answers = emptyUserAnswers.copy(isTaxable = true)
+      "redirect to TrustOwnsNonEeaBusinessYesNoController" in {
+        val fakeService = new FakeService(Assets(Nil, Nil, Nil, Nil, Nil, Nil, Nil))
+        val answers = emptyUserAnswers
 
-          val application = applicationBuilder(userAnswers = Some(answers)).overrides(Seq(
-            bind(classOf[TrustService]).toInstance(fakeService)
-          )).build()
+        val application = applicationBuilder(userAnswers = Some(answers)).overrides(Seq(
+          bind(classOf[TrustService]).toInstance(fakeService),
+          bind(classOf[TrustsStoreConnector]).toInstance(mockStoreConnector)
+        )).build()
 
-          val request = FakeRequest(GET, addAssetsRoute)
+        val request = FakeRequest(GET, addAssetsRoute)
 
-          val result = route(application, request).value
+        val result = route(application, request).value
 
-          val view = application.injector.instanceOf[AddAnAssetYesNoView]
+        status(result) mustEqual SEE_OTHER
 
-          status(result) mustEqual OK
+        redirectLocation(result).value mustEqual routes.TrustOwnsNonEeaBusinessYesNoController.onPageLoad(NormalMode).url
 
-          contentAsString(result) mustEqual
-            view(addTaxableAssetsForm)(request, messages).toString
-
-          application.stop()
-        }
-      }
-
-      "non-taxable" must {
-        "redirect to TrustOwnsNonEeaBusinessYesNoController" in {
-          val fakeService = new FakeService(Assets(Nil, Nil, Nil, Nil, Nil, Nil, Nil))
-          val answers = emptyUserAnswers.copy(isTaxable = false)
-
-          val application = applicationBuilder(userAnswers = Some(answers)).overrides(Seq(
-            bind(classOf[TrustService]).toInstance(fakeService)
-          )).build()
-
-          val request = FakeRequest(GET, addAssetsRoute)
-
-          val result = route(application, request).value
-
-          status(result) mustEqual SEE_OTHER
-
-          redirectLocation(result).value mustEqual routes.TrustOwnsNonEeaBusinessYesNoController.onPageLoad(NormalMode).url
-
-          application.stop()
-        }
+        application.stop()
       }
 
       "redirect to the next page when valid data is submitted" when {

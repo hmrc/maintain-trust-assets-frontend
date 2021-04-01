@@ -18,6 +18,7 @@ package navigation
 
 import base.SpecBase
 import controllers.asset.noneeabusiness.routes._
+import controllers.asset.noneeabusiness.add.routes._
 import generators.Generators
 import models.{NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary

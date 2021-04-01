@@ -14,19 +14,30 @@
  * limitations under the License.
  */
 
-package controllers.asset.noneeabusiness
+package controllers.asset.noneeabusiness.add
+
+import java.time.LocalDate
 
 import base.SpecBase
+import connectors.TrustsConnector
+import controllers.asset.noneeabusiness.routes
 import controllers.routes._
 import models.{InternationalAddress, UserAnswers}
 import pages.asset.noneeabusiness._
+import org.mockito.Matchers.any
+import org.mockito.Mockito.when
+import org.scalatest.concurrent.ScalaFutures
+import org.scalatestplus.mockito.MockitoSugar
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.print.NonEeaBusinessPrintHelper
-import views.html.asset.noneeabusiness.AnswersView
-import java.time.LocalDate
+import views.html.asset.noneeabusiness.add.AnswersView
+import uk.gov.hmrc.http.HttpResponse
 
-class AnswersControllerSpec extends SpecBase {
+import scala.concurrent.Future
+
+class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures {
 
   private val name: String = "Noneeabusiness"
 
@@ -62,8 +73,13 @@ class AnswersControllerSpec extends SpecBase {
     }
 
     "redirect to the next page when valid data is submitted" in {
+      val mockTrustsConnector = mock[TrustsConnector]
 
-      val application = applicationBuilder(userAnswers = Some(answers)).build()
+      val application = applicationBuilder(userAnswers = Some(answers))
+        .overrides(bind[TrustsConnector].toInstance(mockTrustsConnector))
+        .build()
+
+      when(mockTrustsConnector.addNonEeaBusinessAsset(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val request = FakeRequest(POST, routes.AnswersController.onSubmit().url)
 

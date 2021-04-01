@@ -16,12 +16,36 @@
 
 package mapping
 
+
+import java.time.LocalDate
+
 import mapping.reads.NonEeaBusinessAsset
-import models.NonEeaBusinessType
-
+import models.{AddressType, NonEeaBusinessType, UserAnswers}
 import javax.inject.Inject
+import pages.asset.noneeabusiness.{GoverningCountryPage, InternationalAddressPage, NamePage, StartDatePage}
+import play.api.Logging
+import play.api.libs.json.{JsError, JsSuccess, Reads}
+import play.api.libs.functional.syntax._
 
-class NonEeaBusinessAssetMapper @Inject()(addressMapper: AddressMapper) extends Mapping[NonEeaBusinessType, NonEeaBusinessAsset] {
+class NonEeaBusinessAssetMapper @Inject()(addressMapper: AddressMapper) extends Mapping[NonEeaBusinessType, NonEeaBusinessAsset] with Logging {
+
+  def apply(answers: UserAnswers): Option[NonEeaBusinessType] = {
+    val readFromUserAnswers: Reads[NonEeaBusinessType] =
+      (
+        NamePage.path.read[String] and
+          InternationalAddressPage.path.read[AddressType] and
+          GoverningCountryPage.path.read[String] and
+          StartDatePage.path.read[LocalDate]
+        ) (NonEeaBusinessType.apply _)
+
+    answers.data.validate[NonEeaBusinessType](readFromUserAnswers) match {
+      case JsSuccess(value, _) =>
+        Some(value)
+      case JsError(errors) =>
+        logger.error(s"[Identifier: ${answers.identifier}] Failed to rehydrate NonEeaBusinessType from UserAnswers due to $errors")
+        None
+    }
+  }
 
   override def mapAssets(assets: List[NonEeaBusinessAsset]): List[NonEeaBusinessType] = {
     assets.map(x =>

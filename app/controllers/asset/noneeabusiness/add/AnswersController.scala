@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-package controllers.asset.noneeabusiness
+package controllers.asset.noneeabusiness.add
 
+import connectors.TrustsConnector
 import controllers.actions._
 import controllers.actions.noneeabusiness.NameRequiredAction
-import models.Status.Completed
-import pages.AssetStatus
+import handlers.ErrorHandler
+import javax.inject.Inject
+import mapping.NonEeaBusinessAssetMapper
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.NonEeaBusinessPrintHelper
-import views.html.asset.noneeabusiness.AnswersView
-import javax.inject.Inject
 import viewmodels.AnswerSection
+import views.html.asset.noneeabusiness.add.AnswersView
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -35,10 +35,12 @@ class AnswersController @Inject()(
                                    override val messagesApi: MessagesApi,
                                    standardActionSets: StandardActionSets,
                                    nameAction: NameRequiredAction,
-                                   repository: PlaybackRepository,
+                                   connector: TrustsConnector,
                                    view: AnswersView,
                                    val controllerComponents: MessagesControllerComponents,
-                                   printHelper: NonEeaBusinessPrintHelper
+                                   printHelper: NonEeaBusinessPrintHelper,
+                                   mapper: NonEeaBusinessAssetMapper,
+                                   errorHandler: ErrorHandler
                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val provisional: Boolean = true
@@ -54,12 +56,13 @@ class AnswersController @Inject()(
   def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
 
-      val answers = request.userAnswers.set(AssetStatus, Completed)
-
-      for {
-        updatedAnswers <- Future.fromTry(answers)
-        _ <- repository.set(updatedAnswers)
-      } yield Redirect(controllers.asset.routes.AddAssetsController.onPageLoad())
-
+      mapper(request.userAnswers) match {
+        case None =>
+          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+        case Some(asset) =>
+          connector.addNonEeaBusinessAsset(request.userAnswers.identifier, asset).map(_ =>
+            Redirect(controllers.asset.routes.AddAssetsController.onPageLoad())
+          )
+      }
   }
 }
