@@ -16,14 +16,18 @@
 
 package controllers.asset
 
+import java.time.LocalDate
+
 import base.SpecBase
-import config.annotations.Assets
+import config.annotations.{Assets => AssetsAnnotations}
+import connectors.TrustsConnector
 import forms.{AddAssetsFormProvider, YesNoFormProvider}
 import generators.Generators
+import javax.inject.Inject
 import models.AddAssets.{NoComplete, YesNow}
 import models.Status.Completed
 import models.WhatKindOfAsset.{Money, NonEeaBusiness, Other, Shares}
-import models.{AddAssets, NormalMode, ShareClass, UserAnswers}
+import models.{AddAssets, AddressType, AssetMonetaryAmount, Assets, BusinessAssetType, NonEeaBusinessType, NormalMode, OtherAssetType, PartnershipType, PropertyLandType, RemoveAsset, ShareClass, SharesType, UserAnswers}
 import navigation.Navigator
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
@@ -39,10 +43,12 @@ import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.TrustService
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import viewmodels.AddRow
 import views.html.asset.{AddAnAssetYesNoView, AddAssetsView, MaxedOutView}
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class AddAssetsControllerSpec extends SpecBase with Generators {
 
@@ -86,12 +92,24 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
     .set(ShareValueInTrustPage, 10L).success.value
     .set(AssetStatus, Completed).success.value
 
+  val moneyAsset = AssetMonetaryAmount(123)
+  val propertyOrLandAsset = PropertyLandType(None, None, 123, None)
+  val sharesAsset = SharesType("", "", "", "", 123)
+  val businessAsset = BusinessAssetType("", "", AddressType("", "", None, None, None, ""), 123)
+  val partnershipAsset = PartnershipType("", LocalDate.now)
+  val otherAsset = OtherAssetType("", 123)
+  val nonEeaBusinessAsset = NonEeaBusinessType("orgName", AddressType("", "", None, None, None, ""), "", LocalDate.now)
+
   "AddAssets Controller" when {
 
     "no data" must {
       "redirect to Session Expired for a GET if no existing data is found" in {
 
-        val application = applicationBuilder(userAnswers = None).build()
+        val fakeService = new FakeService(Assets(Nil, Nil, Nil, Nil, Nil, Nil, Nil))
+
+        val application = applicationBuilder(userAnswers = None).overrides(Seq(
+          bind(classOf[TrustService]).toInstance(fakeService)
+        )).build()
 
         val request = FakeRequest(GET, addAssetsRoute)
 
@@ -125,10 +143,12 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
 
       "taxable" must {
         "return OK and the correct view for a GET" in {
-
+          val fakeService = new FakeService(Assets(Nil, Nil, Nil, Nil, Nil, Nil, Nil))
           val answers = emptyUserAnswers.copy(isTaxable = true)
 
-          val application = applicationBuilder(userAnswers = Some(answers)).build()
+          val application = applicationBuilder(userAnswers = Some(answers)).overrides(Seq(
+            bind(classOf[TrustService]).toInstance(fakeService)
+          )).build()
 
           val request = FakeRequest(GET, addAssetsRoute)
 
@@ -147,10 +167,12 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
 
       "non-taxable" must {
         "redirect to TrustOwnsNonEeaBusinessYesNoController" in {
-
+          val fakeService = new FakeService(Assets(Nil, Nil, Nil, Nil, Nil, Nil, Nil))
           val answers = emptyUserAnswers.copy(isTaxable = false)
 
-          val application = applicationBuilder(userAnswers = Some(answers)).build()
+          val application = applicationBuilder(userAnswers = Some(answers)).overrides(Seq(
+            bind(classOf[TrustService]).toInstance(fakeService)
+          )).build()
 
           val request = FakeRequest(GET, addAssetsRoute)
 
@@ -168,14 +190,16 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
 
         "taxable" must {
           "set value in AddAnAssetYesNoPage" in {
-
+            val fakeService = new FakeService(Assets(Nil, Nil, Nil, Nil, Nil, Nil, Nil))
             reset(playbackRepository)
             when(playbackRepository.set(any())).thenReturn(Future.successful(true))
             val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
 
             val application =
               applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(isTaxable = true)))
-                .overrides(bind[Navigator].qualifiedWith(classOf[Assets]).toInstance(fakeNavigator))
+                .overrides(
+                  bind[Navigator].qualifiedWith(classOf[AssetsAnnotations]).toInstance(fakeNavigator),
+                  bind(classOf[TrustService]).toInstance(fakeService))
                 .build()
 
             val request = FakeRequest(POST, addOnePostRoute)
@@ -197,14 +221,16 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
 
         "non-taxable" must {
           "set values in AddAnAssetYesNoPage and WhatKindOfAssetPage" in {
-
+            val fakeService = new FakeService(Assets(Nil, Nil, Nil, Nil, Nil, Nil, Nil))
             reset(playbackRepository)
             when(playbackRepository.set(any())).thenReturn(Future.successful(true))
             val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
 
             val application =
               applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(isTaxable = false)))
-                .overrides(bind[Navigator].qualifiedWith(classOf[Assets]).toInstance(fakeNavigator))
+                .overrides(
+                  bind[Navigator].qualifiedWith(classOf[AssetsAnnotations]).toInstance(fakeNavigator),
+                  bind(classOf[TrustService]).toInstance(fakeService))
                 .build()
 
             val request = FakeRequest(POST, addOnePostRoute)
@@ -658,4 +684,36 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
 //      }
 //    }
   }
+
+
+  class FakeService(testAssets: Assets) extends TrustService {
+
+    override def getAssets(identifier: String)(implicit hc:HeaderCarrier, ec:ExecutionContext): Future[Assets] =
+      Future.successful(testAssets)
+
+    override def getMonetaryAsset(identifier: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[AssetMonetaryAmount] =
+      Future.successful(testAssets.monetary(index))
+
+    override def getPropertyOrLandAsset(identifier: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[PropertyLandType] =
+    Future.successful(testAssets.propertyOrLand(index))
+
+    override def getSharesAsset(identifier: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[SharesType] =
+      Future.successful(testAssets.shares(index))
+
+    override def getBusinessAsset(identifier: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[BusinessAssetType] =
+      Future.successful(testAssets.business(index))
+
+    override def getOtherAsset(identifier: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[OtherAssetType] =
+      Future.successful(testAssets.other(index))
+
+    override def getPartnershipAsset(identifier: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[PartnershipType] =
+      Future.successful(testAssets.partnerShip(index))
+
+    override def getNonEeaBusinessAsset(identifier: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[NonEeaBusinessType] =
+      Future.successful(testAssets.nonEEABusiness(index))
+
+    override def removeAsset(identifier: String, asset: RemoveAsset)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
+      Future.successful(HttpResponse(OK, ""))
+  }
 }
+
