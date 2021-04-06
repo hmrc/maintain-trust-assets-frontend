@@ -20,7 +20,7 @@ import controllers.actions.StandardActionSets
 import forms.RemoveIndexFormProvider
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.RemoveAsset
+import models.{AssetNameType, RemoveAsset}
 import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -77,7 +77,7 @@ class RemoveAssetYesNoController @Inject()(
         },
         value => {
           if (value) {
-            trustService.removeAsset(request.userAnswers.identifier, RemoveAsset(index)).map(_ =>
+            trustService.removeAsset(request.userAnswers.identifier, RemoveAsset(AssetNameType.NonEeaBusinessAssetNameType, index)).map(_ =>
               redirectToAdd
             )
           } else {

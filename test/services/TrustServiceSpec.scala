@@ -117,6 +117,7 @@ class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers wi
       val service = new TrustServiceImpl(mockConnector)
 
       val asset : RemoveAsset =  RemoveAsset(
+        `type` = AssetNameType.NonEeaBusinessAssetNameType,
         index = 0,
         endDate = LocalDate.now()
       )

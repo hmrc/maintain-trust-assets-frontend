@@ -23,7 +23,7 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import generators.Generators
-import models.{AddressType, AssetMonetaryAmount, Assets, BusinessAssetType, NonEeaBusinessType, OtherAssetType, PartnershipType, PropertyLandType, RemoveAsset, SharesType, TrustDetails, TypeOfTrust}
+import models._
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Inside}
 import play.api.libs.json.{JsBoolean, Json}
@@ -907,6 +907,7 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures
         val identifier = "1000000008"
 
         val trustee = RemoveAsset(
+          `type` = AssetNameType.NonEeaBusinessAssetNameType,
           index = 0,
           endDate = LocalDate.now()
         )
@@ -938,6 +939,7 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures
         val identifier = "1000000008"
 
         val trustee = RemoveAsset(
+          `type` = AssetNameType.NonEeaBusinessAssetNameType,
           index = 0,
           endDate = LocalDate.now()
         )

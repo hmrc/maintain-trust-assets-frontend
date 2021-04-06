@@ -16,15 +16,21 @@
 
 package models
 
-import play.api.libs.json.{Format, Json}
-
 import java.time.LocalDate
 
-case class RemoveAsset(index: Int, endDate: LocalDate)
+import play.api.libs.functional.syntax._
+import play.api.libs.json.{JsPath, Writes}
+
+case class RemoveAsset(`type`: AssetNameType, index: Int, endDate: LocalDate)
 
 object RemoveAsset {
 
-  implicit val formats: Format[RemoveAsset] = Json.format[RemoveAsset]
-  def apply(index: Int): RemoveAsset =  RemoveAsset(index, LocalDate.now)
+  implicit val writes : Writes[RemoveAsset] =
+    (
+      (JsPath \ "type").write[AssetNameType](AssetNameType.writesToTrusts) and
+        (JsPath \ "index").write[Int] and
+        (JsPath \ "endDate").write[LocalDate]
+      ).apply(unlift(RemoveAsset.unapply))
 
+  def apply(`type`: AssetNameType, index: Int): RemoveAsset =  RemoveAsset(`type`, index, LocalDate.now)
 }

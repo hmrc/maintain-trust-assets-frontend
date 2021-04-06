@@ -20,3 +20,6 @@ POST       /change-start-date                                         controller
 
 GET        /check-answers                                             controllers.asset.noneeabusiness.add.AnswersController.onPageLoad()
 POST       /check-answers                                             controllers.asset.noneeabusiness.add.AnswersController.onSubmit()
+
+GET        /:index/remove                                             controllers.asset.noneeabusiness.remove.RemoveAssetYesNoController.onPageLoad(index: Int)
+POST       /:index/remove                                             controllers.asset.noneeabusiness.remove.RemoveAssetYesNoController.onSubmit(index: Int)
