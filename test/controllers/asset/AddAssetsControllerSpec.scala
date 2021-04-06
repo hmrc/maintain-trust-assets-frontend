@@ -373,6 +373,9 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
         content mustEqual
           view(Nil, assetRows, s"You have added $max assets", max, "addAssets")(request, messages).toString
 
+        content must include("You cannot add another asset as you have entered a maximum of 25.")
+        content must include("You can add another asset by removing an existing one, or write to HMRC with details of any additional assets.")
+
         application.stop()
       }
     }
