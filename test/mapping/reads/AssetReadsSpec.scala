@@ -82,7 +82,7 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
             |     "line2" : "Grangetown",
             |     "line3" : "Tyne and Wear",
             |     "line4" : "Newcastle",
-            |     "postcode" : "Z99 2YY"
+            |     "postCode" : "Z99 2YY"
             |},
             |"businessValue" : 75
             |}
@@ -102,7 +102,7 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
             |     "line2" : "Grangetown",
             |     "line3" : "Tyne and Wear",
             |     "line4" : "Newcastle",
-            |     "postcode" : "Z99 2YY"
+            |     "postCode" : "Z99 2YY"
             |},
             |"propertyOrLandValueInTrust" : 75
             |}
@@ -205,7 +205,7 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
             |     "line2" : "Grangetown",
             |     "line3" : "Tyne and Wear",
             |     "line4" : "Newcastle",
-            |     "postcode" : "Z99 2YY"
+            |     "postCode" : "Z99 2YY"
             |},
             |"businessValue" : 75,
             |"businessStartDate": "1996-02-03"
@@ -240,7 +240,7 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
             |     "line2" : "Grangetown",
             |     "line3" : "Tyne and Wear",
             |     "line4" : "Newcastle",
-            |     "postcode" : "Z99 2YY"
+            |     "postCode" : "Z99 2YY"
             |},
             |"propertyOrLandValueInTrust" : 75,
             |"propertyOrLandTotalValue" : 1000,
@@ -274,7 +274,7 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
             |"propertyOrLandUkAddress" : {
             |     "line1" : "26",
             |     "line2" : "Newcastle",
-            |     "postcode" : "Z99 2YY"
+            |     "postCode" : "Z99 2YY"
             |},
             |"propertyOrLandTotalValue" : 1000,
             |"propertyOrLandStartDate": "1996-02-03"
