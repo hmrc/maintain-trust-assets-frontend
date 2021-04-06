@@ -14,31 +14,11 @@
  * limitations under the License.
  */
 
-package controllers.asset
+package controllers.asset.noneeabusiness.remove
 
 import base.SpecBase
-import forms.YesNoFormProvider
-import models.ShareClass.Ordinary
-import models.WhatKindOfAsset._
-import models.{InternationalAddress, UKAddress, UserAnswers}
-import org.mockito.ArgumentCaptor
-import org.mockito.Mockito._
-import pages.asset._
-import pages.asset.business._
-import pages.asset.money._
-import pages.asset.noneeabusiness._
-import pages.asset.other._
-import pages.asset.partnership._
-import pages.asset.property_or_land._
-import pages.asset.shares._
-import play.api.data.Form
-import play.api.test.FakeRequest
-import play.api.test.Helpers._
-import java.time.LocalDate
 
 class RemoveAssetYesNoControllerSpec extends SpecBase {
-
-  // TODO - Implement remove tests for each asset
 
 //  private val formProvider = new YesNoFormProvider()
 //  private val prefix: String = "assets.removeYesNo"

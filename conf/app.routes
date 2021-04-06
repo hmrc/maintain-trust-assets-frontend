@@ -39,8 +39,8 @@ POST       /add-another                  controllers.asset.AddAssetsController.s
 GET        /complete                     controllers.asset.AddAssetsController.onPageLoad()
 POST       /complete                     controllers.asset.AddAssetsController.submitComplete()
 
-#GET        /:index/remove                controllers.asset.RemoveAssetYesNoController.onPageLoad(index: Int)
-#POST       /:index/remove                controllers.asset.RemoveAssetYesNoController.onSubmit(index: Int)
+GET        /:index/remove                controllers.asset.noneeabusiness.remove.RemoveAssetYesNoController.onPageLoad(index: Int)
+POST       /:index/remove                controllers.asset.noneeabusiness.remove.RemoveAssetYesNoController.onSubmit(index: Int)
 
 GET        /feature-not-available                       controllers.FeatureNotAvailableController.onPageLoad()
 

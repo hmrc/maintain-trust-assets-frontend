@@ -23,22 +23,10 @@ import config.annotations.{Assets => AssetsAnnotations}
 import connectors.TrustsStoreConnector
 import forms.{AddAssetsFormProvider, YesNoFormProvider}
 import generators.Generators
-import javax.inject.Inject
-import models.AddAssets.{NoComplete, YesNow}
-import models.Status.Completed
-import models.WhatKindOfAsset.{Money, NonEeaBusiness, Other, Shares}
 import models.{AddAssets, AddressType, AssetMonetaryAmount, Assets, BusinessAssetType, NonEeaBusinessType, NormalMode, OtherAssetType, PartnershipType, PropertyLandType, RemoveAsset, ShareClass, SharesType, UserAnswers}
 import navigation.Navigator
-import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
-import org.mockito.Mockito.{reset, verify, when}
-import org.scalacheck.Arbitrary.arbitrary
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks.forAll
-import pages.AssetStatus
-import pages.asset.money._
-import pages.asset.other.OtherAssetDescriptionPage
-import pages.asset.shares._
-import pages.asset.{AddAnAssetYesNoPage, AddAssetsPage, WhatKindOfAssetPage}
+import org.mockito.Mockito.when
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -57,54 +45,38 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
   lazy val addAnotherPostRoute: String = routes.AddAssetsController.submitAnother().url
   lazy val completePostRoute: String = routes.AddAssetsController.submitComplete().url
 
-  def changeMoneyAssetRoute(index: Int): String =
-    money.routes.AssetMoneyValueController.onPageLoad(NormalMode).url
+  def changeNonEeaAssetRoute(index: Int): String =
+    noneeabusiness.add.routes.AnswersController.onPageLoad().url
 
-  def changeSharesAssetRoute(index: Int): String =
-    shares.routes.ShareAnswerController.onPageLoad().url
-
-  def changeOtherAssetRoute(index: Int): String =
-    other.routes.OtherAssetAnswersController.onPageLoad().url
 
   def removeAssetYesNoRoute(index: Int): String =
-    "/foo"
+    controllers.asset.noneeabusiness.remove.routes.RemoveAssetYesNoController.onPageLoad(index).url
 
   val addTaxableAssetsForm: Form[AddAssets] = new AddAssetsFormProvider().withPrefix("addAssets")
   val addNonTaxableAssetsForm: Form[AddAssets] = new AddAssetsFormProvider().withPrefix("addAssets.nonTaxable")
   val yesNoForm: Form[Boolean] = new YesNoFormProvider().withPrefix("addAnAssetYesNo")
 
-  lazy val oneAsset: List[AddRow] = List(AddRow("£4800", typeLabel = "Money", changeMoneyAssetRoute(0), removeAssetYesNoRoute(0)))
+  val addRow1 = AddRow("orgName 1", typeLabel = "Non-EEA Company", changeNonEeaAssetRoute(0), removeAssetYesNoRoute(0))
+  val addRow2 = AddRow("orgName 2", typeLabel = "Non-EEA Company", changeNonEeaAssetRoute(1), removeAssetYesNoRoute(1))
 
-  lazy val multipleAssets: List[AddRow] = oneAsset :+ AddRow("Share Company Name", typeLabel = "Shares", changeSharesAssetRoute(1), removeAssetYesNoRoute(1))
-
-  val userAnswersWithOneAsset: UserAnswers = emptyUserAnswers
-    .set(WhatKindOfAssetPage, Money).success.value
-    .set(AssetMoneyValuePage, 4800L).success.value
-    .set(AssetStatus, Completed).success.value
-
-  val userAnswersWithMultipleAssets: UserAnswers = userAnswersWithOneAsset
-    .set(WhatKindOfAssetPage, Shares).success.value
-    .set(SharesInAPortfolioPage, false).success.value
-    .set(ShareCompanyNamePage, "Share Company Name").success.value
-    .set(SharesOnStockExchangePage, true).success.value
-    .set(ShareClassPage, ShareClass.Ordinary).success.value
-    .set(ShareQuantityInTrustPage, 1000L).success.value
-    .set(ShareValueInTrustPage, 10L).success.value
-    .set(AssetStatus, Completed).success.value
+  lazy val oneAsset: List[AddRow] = List(addRow1)
+  lazy val multipleAssets: List[AddRow] = List(addRow1, addRow2)
 
   val mockStoreConnector : TrustsStoreConnector = mock[TrustsStoreConnector]
+  val nonEeaBusinessAsset1 = NonEeaBusinessType(None, "orgName 1", AddressType("", "", None, None, None, ""), "", LocalDate.now, None)
+  val nonEeaBusinessAsset2 = NonEeaBusinessType(None, "orgName 2", AddressType("", "", None, None, None, ""), "", LocalDate.now, None)
 
-  val nonEeaBusinessAsset = NonEeaBusinessType(None, "orgName", AddressType("", "", None, None, None, ""), "", LocalDate.now, None)
+  val fakeEmptyService = new FakeService(Assets(Nil, Nil, Nil, Nil, Nil, Nil, Nil))
+  val fakeServiceWithOneNonEeaAsset = new FakeService(Assets(Nil, Nil, Nil, Nil, Nil, Nil, List(nonEeaBusinessAsset1)))
+  val fakeServiceWithMultipleNonEeaAssets = new FakeService(Assets(Nil, Nil, Nil, Nil, Nil, Nil, List(nonEeaBusinessAsset1, nonEeaBusinessAsset2)))
 
   "AddAssets Controller" when {
 
     "no data" must {
       "redirect to Session Expired for a GET if no existing data is found" in {
 
-        val fakeService = new FakeService(Assets(Nil, Nil, Nil, Nil, Nil, Nil, Nil))
-
         val application = applicationBuilder(userAnswers = None).overrides(Seq(
-          bind(classOf[TrustService]).toInstance(fakeService),
+          bind(classOf[TrustService]).toInstance(fakeEmptyService),
           bind(classOf[TrustsStoreConnector]).toInstance(mockStoreConnector)
         )).build()
 
@@ -139,11 +111,10 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
     "there are no assets" when {
 
       "redirect to TrustOwnsNonEeaBusinessYesNoController" in {
-        val fakeService = new FakeService(Assets(Nil, Nil, Nil, Nil, Nil, Nil, Nil))
         val answers = emptyUserAnswers
 
         val application = applicationBuilder(userAnswers = Some(answers)).overrides(Seq(
-          bind(classOf[TrustService]).toInstance(fakeService),
+          bind(classOf[TrustService]).toInstance(fakeEmptyService),
           bind(classOf[TrustsStoreConnector]).toInstance(mockStoreConnector)
         )).build()
 
@@ -158,80 +129,34 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
         application.stop()
       }
 
-      "redirect to the next page when valid data is submitted" when {
+      "redirect to the next page when valid data is submitted" in {
 
-        "taxable" must {
-          "set value in AddAnAssetYesNoPage" in {
-            val fakeService = new FakeService(Assets(Nil, Nil, Nil, Nil, Nil, Nil, Nil))
-            reset(playbackRepository)
-            when(playbackRepository.set(any())).thenReturn(Future.successful(true))
-            val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(Seq(
+          bind(classOf[TrustService]).toInstance(fakeEmptyService)
+        )).build()
 
-            val application =
-              applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(isTaxable = true)))
-                .overrides(
-                  bind[Navigator].qualifiedWith(classOf[AssetsAnnotations]).toInstance(fakeNavigator),
-                  bind(classOf[TrustService]).toInstance(fakeService))
-                .build()
+        val request =
+          FakeRequest(POST, addOnePostRoute)
+            .withFormUrlEncodedBody(("value", "true"))
 
-            val request = FakeRequest(POST, addOnePostRoute)
-              .withFormUrlEncodedBody(("value", "true"))
+        val result = route(application, request).value
 
-            val result = route(application, request).value
+        status(result) mustEqual SEE_OTHER
 
-            status(result) mustEqual SEE_OTHER
-
-            redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
-
-            verify(playbackRepository).set(uaCaptor.capture)
-            uaCaptor.getValue.get(AddAnAssetYesNoPage).get mustBe true
-            uaCaptor.getValue.get(WhatKindOfAssetPage) mustNot be(defined)
-
-            application.stop()
-          }
-        }
-
-        "non-taxable" must {
-          "set values in AddAnAssetYesNoPage and WhatKindOfAssetPage" in {
-            val fakeService = new FakeService(Assets(Nil, Nil, Nil, Nil, Nil, Nil, Nil))
-            reset(playbackRepository)
-            when(playbackRepository.set(any())).thenReturn(Future.successful(true))
-            val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
-
-            val application =
-              applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(isTaxable = false)))
-                .overrides(
-                  bind[Navigator].qualifiedWith(classOf[AssetsAnnotations]).toInstance(fakeNavigator),
-                  bind(classOf[TrustService]).toInstance(fakeService))
-                .build()
-
-            val request = FakeRequest(POST, addOnePostRoute)
-              .withFormUrlEncodedBody(("value", "true"))
-
-            val result = route(application, request).value
-
-            status(result) mustEqual SEE_OTHER
-
-            redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
-
-            verify(playbackRepository).set(uaCaptor.capture)
-            uaCaptor.getValue.get(AddAnAssetYesNoPage).get mustBe true
-            uaCaptor.getValue.get(WhatKindOfAssetPage).get mustBe NonEeaBusiness
-
-            application.stop()
-          }
-        }
+        application.stop()
       }
 
       "return a Bad Request and errors when invalid data is submitted" in {
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(Seq(
+          bind(classOf[TrustService]).toInstance(fakeServiceWithOneNonEeaAsset)
+        )).build()
 
         val request =
           FakeRequest(POST, addOnePostRoute)
-            .withFormUrlEncodedBody(("value", ""))
+            .withFormUrlEncodedBody(("value", "invalid value"))
 
-        val boundForm = yesNoForm.bind(Map("value" -> ""))
+        val boundForm = yesNoForm.bind(Map("value" -> "invalid value"))
 
         val view = application.injector.instanceOf[AddAnAssetYesNoView]
 
@@ -246,235 +171,172 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
       }
     }
 
-    // TODO
 
-//    "there is one asset" must {
-//
-//      "return OK and the correct view for a GET" when {
-//
-//        "taxable" in {
-//
-//          val application = applicationBuilder(userAnswers = Some(userAnswersWithOneAsset.copy(isTaxable = true))).build()
-//
-//          val request = FakeRequest(GET, addAssetsRoute)
-//
-//          val result = route(application, request).value
-//
-//          val view = application.injector.instanceOf[AddAssetsView]
-//
-//          status(result) mustEqual OK
-//
-//          contentAsString(result) mustEqual
-//            view(addTaxableAssetsForm, Nil, oneAsset, "Add assets", "addAssets")(request, messages).toString
-//
-//          application.stop()
-//        }
-//
-//        "non-taxable" in {
-//
-//          val application = applicationBuilder(userAnswers = Some(userAnswersWithOneAsset.copy(isTaxable = false))).build()
-//
-//          val request = FakeRequest(GET, addAssetsRoute)
-//
-//          val result = route(application, request).value
-//
-//          val view = application.injector.instanceOf[AddAssetsView]
-//
-//          status(result) mustEqual OK
-//
-//          contentAsString(result) mustEqual
-//            view(addNonTaxableAssetsForm, Nil, oneAsset, "Add a non-EEA company", "addAssets.nonTaxable")(request, messages).toString
-//
-//          application.stop()
-//        }
-//      }
-//    }
+    "there is one asset" must {
 
-//    "there are existing assets" must {
-//
-//      "return OK and the correct view for a GET" when {
-//
-//        "taxable" in {
-//
-//          val application = applicationBuilder(userAnswers = Some(userAnswersWithMultipleAssets.copy(isTaxable = true))).build()
-//
-//          val request = FakeRequest(GET, addAssetsRoute)
-//
-//          val result = route(application, request).value
-//
-//          val view = application.injector.instanceOf[AddAssetsView]
-//
-//          status(result) mustEqual OK
-//
-//          contentAsString(result) mustEqual
-//            view(addTaxableAssetsForm, Nil, multipleAssets, "You have added 2 assets", "addAssets")(request, messages).toString
-//
-//          application.stop()
-//        }
-//
-//        "non-taxable" in {
-//
-//          val application = applicationBuilder(userAnswers = Some(userAnswersWithMultipleAssets.copy(isTaxable = false))).build()
-//
-//          val request = FakeRequest(GET, addAssetsRoute)
-//
-//          val result = route(application, request).value
-//
-//          val view = application.injector.instanceOf[AddAssetsView]
-//
-//          status(result) mustEqual OK
-//
-//          contentAsString(result) mustEqual
-//            view(addNonTaxableAssetsForm, Nil, multipleAssets, "You have added 2 non-EEA companies", "addAssets.nonTaxable")(request, messages).toString
-//
-//          application.stop()
-//        }
-//      }
-//
-//      "redirect to the next page when YesNow is submitted" when {
-//
-//        "taxable" must {
-//          "set value in AddAssetsPage and not set value in WhatKindOfAssetPage" in {
-//
-//            reset(playbackRepository)
-//            when(playbackRepository.set(any())).thenReturn(Future.successful(true))
-//            val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
-//
-//            val application =
-//              applicationBuilder(userAnswers = Some(userAnswersWithMultipleAssets.copy(isTaxable = true))).build()
-//
-//            val request = FakeRequest(POST, addAnotherPostRoute)
-//              .withFormUrlEncodedBody(("value", YesNow.toString))
-//
-//            val result = route(application, request).value
-//
-//            status(result) mustEqual SEE_OTHER
-//
-//            redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
-//
-//            verify(playbackRepository).set(uaCaptor.capture)
-//            uaCaptor.getValue.get(AddAssetsPage).get mustBe YesNow
-//            uaCaptor.getValue.get(WhatKindOfAssetPage) mustNot be(defined)
-//
-//            application.stop()
-//          }
-//        }
-//
-//        "non-taxable" must {
-//          "set values in AddAssetsPage and WhatKindOfAssetPage" in {
-//
-//            reset(playbackRepository)
-//            when(playbackRepository.set(any())).thenReturn(Future.successful(true))
-//            val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
-//
-//            val application =
-//              applicationBuilder(userAnswers = Some(userAnswersWithMultipleAssets.copy(isTaxable = false))).build()
-//
-//            val request = FakeRequest(POST, addAnotherPostRoute)
-//              .withFormUrlEncodedBody(("value", YesNow.toString))
-//
-//            val result = route(application, request).value
-//
-//            status(result) mustEqual SEE_OTHER
-//
-//            redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
-//
-//            verify(playbackRepository).set(uaCaptor.capture)
-//            uaCaptor.getValue.get(AddAssetsPage).get mustBe YesNow
-//            uaCaptor.getValue.get(WhatKindOfAssetPage).get mustBe NonEeaBusiness
-//
-//            application.stop()
-//          }
-//        }
-//      }
-//
-//      "redirect to the next page when YesLater or NoComplete is submitted" when {
-//
-//        "taxable" must {
-//          "set value in AddAssetsPage and not set value in WhatKindOfAssetPage" in {
-//
-//            forAll(arbitrary[AddAssets].filterNot(_ == YesNow)) {
-//              addAssets =>
-//
-//                reset(playbackRepository)
-//                when(playbackRepository.set(any())).thenReturn(Future.successful(true))
-//                val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
-//
-//                val application =
-//                  applicationBuilder(userAnswers = Some(userAnswersWithMultipleAssets.copy(isTaxable = true))).build()
-//
-//                val request = FakeRequest(POST, addAnotherPostRoute)
-//                  .withFormUrlEncodedBody(("value", addAssets.toString))
-//
-//                val result = route(application, request).value
-//
-//                status(result) mustEqual SEE_OTHER
-//
-//                redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
-//
-//                verify(playbackRepository).set(uaCaptor.capture)
-//                uaCaptor.getValue.get(AddAssetsPage).get mustBe addAssets
-//                uaCaptor.getValue.get(WhatKindOfAssetPage) mustNot be(defined)
-//
-//                application.stop()
-//            }
-//          }
-//        }
-//
-//        "non-taxable" must {
-//          "set value in AddAssetsPage and not set value in WhatKindOfAssetPage" in {
-//
-//            forAll(arbitrary[AddAssets].filterNot(_ == YesNow)) {
-//              addAssets =>
-//
-//                reset(playbackRepository)
-//                when(playbackRepository.set(any())).thenReturn(Future.successful(true))
-//                val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
-//
-//                val application =
-//                  applicationBuilder(userAnswers = Some(userAnswersWithMultipleAssets.copy(isTaxable = false))).build()
-//
-//                val request = FakeRequest(POST, addAnotherPostRoute)
-//                  .withFormUrlEncodedBody(("value", addAssets.toString))
-//
-//                val result = route(application, request).value
-//
-//                status(result) mustEqual SEE_OTHER
-//
-//                redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
-//
-//                verify(playbackRepository).set(uaCaptor.capture)
-//                uaCaptor.getValue.get(AddAssetsPage).get mustBe addAssets
-//                uaCaptor.getValue.get(WhatKindOfAssetPage) mustNot be(defined)
-//
-//                application.stop()
-//            }
-//          }
-//        }
-//      }
-//
-//      "return a Bad Request and errors when invalid data is submitted" in {
-//
-//        val application = applicationBuilder(userAnswers = Some(userAnswersWithMultipleAssets)).build()
-//
-//        val request =
-//          FakeRequest(POST, addAnotherPostRoute)
-//            .withFormUrlEncodedBody(("value", "invalid value"))
-//
-//        val boundForm = addTaxableAssetsForm.bind(Map("value" -> "invalid value"))
-//
-//        val view = application.injector.instanceOf[AddAssetsView]
-//
-//        val result = route(application, request).value
-//
-//        status(result) mustEqual BAD_REQUEST
-//
-//        contentAsString(result) mustEqual
-//          view(boundForm, Nil, multipleAssets, "You have added 2 assets", "addAssets")(request, messages).toString
-//
-//        application.stop()
-//      }
-//    }
+      "return OK and the correct view for a GET" when {
+
+        "taxable" in {
+
+          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(isTaxable = true)))
+            .overrides(
+              bind[Navigator].qualifiedWith(classOf[AssetsAnnotations]).toInstance(fakeNavigator),
+              bind(classOf[TrustService]).toInstance(fakeServiceWithOneNonEeaAsset))
+            .build()
+
+          val request = FakeRequest(GET, addAssetsRoute)
+
+          val result = route(application, request).value
+
+          val view = application.injector.instanceOf[AddAssetsView]
+
+          status(result) mustEqual OK
+
+          contentAsString(result) mustEqual
+            view(addTaxableAssetsForm, Nil, oneAsset, "Add assets", "addAssets")(request, messages).toString
+
+          application.stop()
+        }
+
+        "non-taxable" in {
+
+          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(isTaxable = false)))
+            .overrides(
+              bind[Navigator].qualifiedWith(classOf[AssetsAnnotations]).toInstance(fakeNavigator),
+              bind(classOf[TrustService]).toInstance(fakeServiceWithOneNonEeaAsset))
+            .build()
+
+          val request = FakeRequest(GET, addAssetsRoute)
+
+          val result = route(application, request).value
+
+          val view = application.injector.instanceOf[AddAssetsView]
+
+          status(result) mustEqual OK
+
+          contentAsString(result) mustEqual
+            view(addNonTaxableAssetsForm, Nil, oneAsset, "Add a non-EEA company", "addAssets.nonTaxable")(request, messages).toString
+
+          application.stop()
+        }
+      }
+    }
+
+    "there are existing assets" must {
+
+      "return OK and the correct view for a GET" when {
+
+        "taxable" in {
+
+          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(isTaxable = true)))
+            .overrides(
+              bind[Navigator].qualifiedWith(classOf[AssetsAnnotations]).toInstance(fakeNavigator),
+              bind(classOf[TrustService]).toInstance(fakeServiceWithMultipleNonEeaAssets))
+            .build()
+
+          val request = FakeRequest(GET, addAssetsRoute)
+
+          val result = route(application, request).value
+
+          val view = application.injector.instanceOf[AddAssetsView]
+
+          status(result) mustEqual OK
+
+          contentAsString(result) mustEqual
+            view(addTaxableAssetsForm, Nil, multipleAssets, "You have added 2 assets", "addAssets")(request, messages).toString
+
+          application.stop()
+        }
+
+        "non-taxable" in {
+
+          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(isTaxable = false)))
+            .overrides(
+              bind[Navigator].qualifiedWith(classOf[AssetsAnnotations]).toInstance(fakeNavigator),
+              bind(classOf[TrustService]).toInstance(fakeServiceWithMultipleNonEeaAssets))
+            .build()
+
+          val request = FakeRequest(GET, addAssetsRoute)
+
+          val result = route(application, request).value
+
+          val view = application.injector.instanceOf[AddAssetsView]
+
+          status(result) mustEqual OK
+
+          contentAsString(result) mustEqual
+            view(addNonTaxableAssetsForm, Nil, multipleAssets, "You have added 2 non-EEA companies", "addAssets.nonTaxable")(request, messages).toString
+
+          application.stop()
+        }
+      }
+
+      "redirect to the next page when YesNow is submitted" in {
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(isTaxable = true)))
+          .overrides(
+            bind[Navigator].qualifiedWith(classOf[AssetsAnnotations]).toInstance(fakeNavigator),
+            bind(classOf[TrustService]).toInstance(fakeServiceWithMultipleNonEeaAssets),
+            bind(classOf[TrustsStoreConnector]).toInstance(mockStoreConnector))
+          .build()
+
+        val request = FakeRequest(POST, addAnotherPostRoute)
+          .withFormUrlEncodedBody(("value", AddAssets.YesNow.toString))
+
+        when(mockStoreConnector.setTaskComplete(any())(any(), any())).thenReturn(Future.successful(HttpResponse(200, "")))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
+        application.stop()
+      }
+
+      "redirect to the maintain task list when the user says they are done" in {
+
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(Seq(
+          bind(classOf[TrustService]).toInstance(fakeServiceWithMultipleNonEeaAssets),
+          bind(classOf[TrustsStoreConnector]).toInstance(mockStoreConnector)
+        )).build()
+
+        val request =
+          FakeRequest(POST, addAnotherPostRoute)
+            .withFormUrlEncodedBody(("value", AddAssets.NoComplete.toString))
+
+        when(mockStoreConnector.setTaskComplete(any())(any(), any())).thenReturn(Future.successful(HttpResponse(200, "")))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual "http://localhost:9788/maintain-a-trust/overview"
+
+        application.stop()
+      }
+
+      "return a Bad Request and errors when invalid data is submitted" in {
+
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(Seq(
+          bind(classOf[TrustService]).toInstance(fakeServiceWithMultipleNonEeaAssets)
+        )).build()
+
+        val request =
+          FakeRequest(POST, addAnotherPostRoute)
+            .withFormUrlEncodedBody(("value", "invalid value"))
+
+        val boundForm = addTaxableAssetsForm.bind(Map("value" -> "invalid value"))
+
+        val view = application.injector.instanceOf[AddAssetsView]
+
+        val result = route(application, request).value
+
+        status(result) mustEqual BAD_REQUEST
+
+        contentAsString(result) mustEqual view(boundForm, Nil, multipleAssets, "You have added 2 assets", "addAssets")(request, messages).toString
+
+        application.stop()
+      }
+    }
 
 //    "assets maxed out" when {
 //
@@ -493,60 +355,6 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
 //        acc :+ AddRow(description, typeLabel = "Other", changeOtherAssetRoute(i), removeAssetYesNoRoute(i))
 //      })
 //
-//      "4mld" must {
-//
-//        val max: Int = 51
-//
-//        val is5mldEnabled: Boolean = false
-//        val isTaxable: Boolean = true
-//
-//        "return OK and the correct view for a GET" in {
-//
-//          val application = applicationBuilder(userAnswers = Some(userAnswers(max, is5mldEnabled, isTaxable))).build()
-//
-//          val request = FakeRequest(GET, addAssetsRoute)
-//
-//          val view = application.injector.instanceOf[MaxedOutView]
-//
-//          val result = route(application, request).value
-//
-//          status(result) mustEqual OK
-//
-//          val content = contentAsString(result)
-//
-//          content mustEqual
-//            view(Nil, assets(max), "You have added 51 assets", max, "addAssets")(request, messages).toString
-//
-//          content must include("You cannot add another asset as you have entered a maximum of 51.")
-//          content must include("You can add another asset by removing an existing one, or write to HMRC with details of any additional assets.")
-//
-//          application.stop()
-//        }
-//
-//        "redirect to next page and set AddAssetsPage to NoComplete for a POST" in {
-//
-//          reset(playbackRepository)
-//          when(playbackRepository.set(any())).thenReturn(Future.successful(true))
-//          val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
-//
-//          val application = applicationBuilder(userAnswers = Some(userAnswers(max, is5mldEnabled, isTaxable))).build()
-//
-//          val request = FakeRequest(POST, completePostRoute)
-//
-//          val result = route(application, request).value
-//
-//          status(result) mustEqual SEE_OTHER
-//
-//          redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
-//
-//          verify(playbackRepository).set(uaCaptor.capture)
-//          uaCaptor.getValue.get(AddAssetsPage).get mustBe NoComplete
-//
-//          application.stop()
-//        }
-//      }
-//
-//      "5mld" when {
 //
 //        "taxable" must {
 //
@@ -653,7 +461,6 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
 //            application.stop()
 //          }
 //        }
-//      }
 //    }
   }
 

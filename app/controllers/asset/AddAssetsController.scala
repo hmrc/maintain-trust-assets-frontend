@@ -21,10 +21,11 @@ import config.annotations.Assets
 import connectors.TrustsStoreConnector
 import controllers.actions.StandardActionSets
 import forms.{AddAssetsFormProvider, YesNoFormProvider}
+import handlers.ErrorHandler
 import models.Constants._
 import models.{AddAssets, NormalMode, UserAnswers}
 import navigation.Navigator
-import pages.asset.{AddAnAssetYesNoPage, AddAssetsPage}
+import pages.asset.AddAssetsPage
 import play.api.data.Form
 import play.api.i18n.{Messages, MessagesApi, MessagesProvider}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -32,7 +33,6 @@ import repositories.PlaybackRepository
 import utils.AddAssetViewHelper
 import views.html.asset.{AddAnAssetYesNoView, AddAssetsView, MaxedOutView}
 import javax.inject.Inject
-import models.AddAssets.NoComplete
 import play.api.Logging
 import services.TrustService
 
@@ -43,15 +43,16 @@ class AddAssetsController @Inject()(
                                      standardActionSets: StandardActionSets,
                                      repository: PlaybackRepository,
                                      val appConfig: FrontendAppConfig,
-                                     trustStoreConnector: TrustsStoreConnector,
                                      trustService: TrustService,
+                                     trustsStoreConnector: TrustsStoreConnector,
                                      @Assets navigator: Navigator,
                                      addAnotherFormProvider: AddAssetsFormProvider,
                                      yesNoFormProvider: YesNoFormProvider,
                                      val controllerComponents: MessagesControllerComponents,
                                      addAssetsView: AddAssetsView,
                                      yesNoView: AddAnAssetYesNoView,
-                                     maxedOutView: MaxedOutView
+                                     maxedOutView: MaxedOutView,
+                                     errorHandler: ErrorHandler
                                    )(implicit ec: ExecutionContext) extends AddAssetController with Logging {
 
   private def addAnotherForm(isTaxable: Boolean): Form[AddAssets] = addAnotherFormProvider.withPrefix(determinePrefix(isTaxable))
@@ -79,12 +80,7 @@ class AddAssetsController @Inject()(
       } yield {
         val assetRows = new AddAssetViewHelper(assets).rows //Currently only Shows NonEeaBusinessAssets
 
-        val maxLimit: Int = (userAnswers.is5mldEnabled, isTaxable) match {
-          case (true, true) => MAX_5MLD_TAXABLE_ASSETS
-          case (true, false) => MAX_5MLD_NON_TAXABLE_ASSETS
-          case _ => MAX_4MLD_ASSETS
-        }
-
+        val maxLimit: Int = MAX_NON_EEA_BUSINESS_ASSETS
         val prefix = determinePrefix(isTaxable)
 
         assets.nonEEABusiness.size match {
@@ -105,12 +101,20 @@ class AddAssetsController @Inject()(
         (formWithErrors: Form[_]) => {
           Future.successful(BadRequest(yesNoView(formWithErrors)))
         },
-        value => {
-          for {
-            answersWithAssetTypeIfNonTaxable <- Future.fromTry(setAssetTypeIfNonTaxable(request.userAnswers, 0))
-            updatedAnswers <- Future.fromTry(answersWithAssetTypeIfNonTaxable.set(AddAnAssetYesNoPage, value))
-            _ <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(AddAnAssetYesNoPage, NormalMode, updatedAnswers))
+        addNow => {
+          if (addNow) {
+
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
+              _ <- repository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(AddAssetsPage, NormalMode, updatedAnswers))
+          } else {
+            for {
+              _ <- trustsStoreConnector.setTaskComplete(request.userAnswers.identifier)
+            } yield {
+              Redirect(appConfig.maintainATrustOverview)
+            }
+          }
         }
       )
   }
@@ -121,24 +125,39 @@ class AddAssetsController @Inject()(
       val userAnswers = request.userAnswers
       val isTaxable = userAnswers.isTaxable
 
-      trustService.getAssets(userAnswers.identifier).flatMap{ assets =>
-
-        val assetRows = new AddAssetViewHelper(assets).rows
-
-        val prefix = determinePrefix(isTaxable)
-
+      trustService.getAssets(request.userAnswers.identifier).flatMap { assets =>
         addAnotherForm(isTaxable).bindFromRequest().fold(
           (formWithErrors: Form[_]) => {
+
+            val assetRows = new AddAssetViewHelper(assets).rows
+            val prefix = determinePrefix(isTaxable)
+
             Future.successful(BadRequest(addAssetsView(formWithErrors, assetRows.inProgress, assetRows.complete, heading(assetRows.count, prefix), prefix)))
           },
-          value => {
-            for {
-              answersWithAssetTypeIfNonTaxable <- Future.fromTry(setAssetTypeIfNonTaxable(userAnswers, assetRows.count, value))
-              updatedAnswers <- Future.fromTry(answersWithAssetTypeIfNonTaxable.set(AddAssetsPage, value))
-              _ <- repository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(AddAssetsPage, NormalMode, updatedAnswers))
+          {
+            case AddAssets.YesNow =>
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
+                _ <- repository.set(updatedAnswers)
+              } yield Redirect(navigator.nextPage(AddAssetsPage, NormalMode, updatedAnswers))
+
+            case AddAssets.YesLater =>
+              Future.successful(Redirect(appConfig.maintainATrustOverview))
+
+            case AddAssets.NoComplete =>
+              for {
+                _ <- trustsStoreConnector.setTaskComplete(request.userAnswers.identifier)
+              } yield {
+                Redirect(appConfig.maintainATrustOverview)
+              }
           }
         )
+      } recoverWith {
+        case e =>
+          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
+            s" unable add a new asset due to an error getting assets from trusts ${e.getMessage}")
+
+          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
       }
   }
 
@@ -146,8 +165,9 @@ class AddAssetsController @Inject()(
     implicit request =>
 
       for {
-        updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAssetsPage, NoComplete))
-        _              <- repository.set(updatedAnswers)
-      } yield Redirect(navigator.nextPage(AddAssetsPage, NormalMode, updatedAnswers))
+        _ <- trustsStoreConnector.setTaskComplete(request.userAnswers.identifier)
+      } yield {
+        Redirect(appConfig.maintainATrustOverview)
+      }
   }
 }
