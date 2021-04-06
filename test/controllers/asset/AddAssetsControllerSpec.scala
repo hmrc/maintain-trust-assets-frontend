@@ -23,7 +23,7 @@ import config.annotations.{Assets => AssetsAnnotations}
 import connectors.TrustsStoreConnector
 import forms.{AddAssetsFormProvider, YesNoFormProvider}
 import generators.Generators
-import models.{AddAssets, AddressType, AssetMonetaryAmount, Assets, BusinessAssetType, NonEeaBusinessType, NormalMode, OtherAssetType, PartnershipType, PropertyLandType, RemoveAsset, ShareClass, SharesType, UserAnswers}
+import models._
 import navigation.Navigator
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -338,130 +338,44 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
       }
     }
 
-//    "assets maxed out" when {
-//
-//      val description: String = "Description"
-//
-//      def userAnswers(max: Int, is5mldEnabled: Boolean, isTaxable: Boolean): UserAnswers = {
-//        0.until(max).foldLeft(emptyUserAnswers.copy(is5mldEnabled = is5mldEnabled, isTaxable = isTaxable))((ua, i) => {
-//          ua
-//            .set(WhatKindOfAssetPage, Other).success.value
-//            .set(OtherAssetDescriptionPage, description).success.value
-//            .set(AssetStatus, Completed).success.value
-//        })
-//      }
-//
-//      def assets(max: Int): List[AddRow] = 0.until(max).foldLeft[List[AddRow]](List())((acc, i) => {
-//        acc :+ AddRow(description, typeLabel = "Other", changeOtherAssetRoute(i), removeAssetYesNoRoute(i))
-//      })
-//
-//
-//        "taxable" must {
-//
-//          val max: Int = 76
-//
-//          val is5mldEnabled: Boolean = true
-//          val isTaxable: Boolean = true
-//
-//          "return OK and the correct view for a GET" in {
-//
-//            val application = applicationBuilder(userAnswers = Some(userAnswers(max, is5mldEnabled, isTaxable))).build()
-//
-//            val request = FakeRequest(GET, addAssetsRoute)
-//
-//            val view = application.injector.instanceOf[MaxedOutView]
-//
-//            val result = route(application, request).value
-//
-//            status(result) mustEqual OK
-//
-//            val content = contentAsString(result)
-//
-//            content mustEqual
-//              view(Nil, assets(max), "You have added 76 assets", max, "addAssets")(request, messages).toString
-//
-//            content must include("You cannot add another asset as you have entered a maximum of 76.")
-//            content must include("You can add another asset by removing an existing one, or write to HMRC with details of any additional assets.")
-//
-//            application.stop()
-//          }
-//
-//          "redirect to next page and set AddAssetsPage to NoComplete for a POST" in {
-//
-//            reset(playbackRepository)
-//            when(playbackRepository.set(any())).thenReturn(Future.successful(true))
-//            val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
-//
-//            val application = applicationBuilder(userAnswers = Some(userAnswers(max, is5mldEnabled, isTaxable))).build()
-//
-//            val request = FakeRequest(POST, completePostRoute)
-//
-//            val result = route(application, request).value
-//
-//            status(result) mustEqual SEE_OTHER
-//
-//            redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
-//
-//            verify(playbackRepository).set(uaCaptor.capture)
-//            uaCaptor.getValue.get(AddAssetsPage).get mustBe NoComplete
-//
-//            application.stop()
-//          }
-//        }
-//
-//        "non-taxable" must {
-//
-//          val max: Int = 25
-//
-//          val is5mldEnabled: Boolean = true
-//          val isTaxable: Boolean = false
-//
-//          "return OK and the correct view for a GET" in {
-//
-//            val application = applicationBuilder(userAnswers = Some(userAnswers(max, is5mldEnabled, isTaxable))).build()
-//
-//            val request = FakeRequest(GET, addAssetsRoute)
-//
-//            val view = application.injector.instanceOf[MaxedOutView]
-//
-//            val result = route(application, request).value
-//
-//            status(result) mustEqual OK
-//
-//            val content = contentAsString(result)
-//
-//            content mustEqual
-//              view(Nil, assets(max), "You have added 25 non-EEA companies", max, "addAssets.nonTaxable")(request, messages).toString
-//
-//            content must include("You cannot add another non-EEA company as you have entered a maximum of 25.")
-//            content must include("You can add another non-EEA company by removing an existing one, or write to HMRC with details of any additional non-EEA companies.")
-//
-//            application.stop()
-//          }
-//
-//          "redirect to next page and set AddAssetsPage to NoComplete for a POST" in {
-//
-//            reset(playbackRepository)
-//            when(playbackRepository.set(any())).thenReturn(Future.successful(true))
-//            val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
-//
-//            val application = applicationBuilder(userAnswers = Some(userAnswers(max, is5mldEnabled, isTaxable))).build()
-//
-//            val request = FakeRequest(POST, completePostRoute)
-//
-//            val result = route(application, request).value
-//
-//            status(result) mustEqual SEE_OTHER
-//
-//            redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
-//
-//            verify(playbackRepository).set(uaCaptor.capture)
-//            uaCaptor.getValue.get(AddAssetsPage).get mustBe NoComplete
-//
-//            application.stop()
-//          }
-//        }
-//    }
+    "assets maxed out" must {
+      val max = 25
+
+      def createNonEeaAsset(max: Int): List[NonEeaBusinessType] = 0.until(max).foldLeft[List[NonEeaBusinessType]](List())((acc, i) => {
+        acc :+ NonEeaBusinessType(None, s"orgName $i", AddressType("", "", None, None, None, ""), "", LocalDate.now, None)
+      })
+
+      def createAssetRows(max: Int): List[AddRow] = 0.until(max).foldLeft[List[AddRow]](List())((acc, i) => {
+        acc :+ AddRow(s"orgName $i", typeLabel = "Non-EEA Company", changeNonEeaAssetRoute(i), removeAssetYesNoRoute(i))
+      })
+
+      val assets = Assets(Nil, Nil, Nil, Nil, Nil, Nil, createNonEeaAsset(max))
+      val assetRows = createAssetRows(max)
+
+      val fakeService = new FakeService(assets)
+
+      "return OK and the correct view for a GET" in {
+
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind(classOf[TrustService]).toInstance(fakeService))
+          .build()
+
+        val request = FakeRequest(GET, addAssetsRoute)
+
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[MaxedOutView]
+
+        status(result) mustEqual OK
+
+        val content = contentAsString(result)
+
+        content mustEqual
+          view(Nil, assetRows, s"You have added $max assets", max, "addAssets")(request, messages).toString
+
+        application.stop()
+      }
+    }
   }
 
 
