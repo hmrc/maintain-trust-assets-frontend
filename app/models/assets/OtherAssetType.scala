@@ -21,8 +21,7 @@ import java.time.LocalDate
 import play.api.libs.json.{Format, Json}
 
 final case class OtherAssetType(description: String,
-                                value: Long,
-                                startDate: LocalDate) extends AssetType
+                                value: Long) extends AssetType
 
 object OtherAssetType {
   implicit val otherAssetTypeFormat: Format[OtherAssetType] = Json.format[OtherAssetType]

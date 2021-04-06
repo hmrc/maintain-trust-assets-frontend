@@ -22,6 +22,6 @@ import models.assets.AssetMonetaryAmount
 class MoneyAssetMapper extends Mapping[AssetMonetaryAmount, MoneyAsset] {
 
   override def mapAssets(assets: List[MoneyAsset]): List[AssetMonetaryAmount] = {
-    assets.map(x => AssetMonetaryAmount(x.value, x.startDate))
+    assets.map(x => AssetMonetaryAmount(x.value))
   }
 }

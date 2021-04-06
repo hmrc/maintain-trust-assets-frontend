@@ -29,7 +29,7 @@ trait AssetExtractor[T <: AssetType] {
 
   def apply(answers: UserAnswers, asset: T, index: Int): Try[UserAnswers] = {
     answers.deleteAtPath(basePath)
-      .flatMap(_.set(startDatePage, asset.startDate))
+//      .flatMap(_.set(startDatePage, asset.startDate))
       .flatMap(_.set(indexPage, index))
   }
 

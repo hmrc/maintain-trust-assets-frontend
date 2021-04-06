@@ -28,7 +28,6 @@ class BusinessAssetMapper @Inject()(addressMapper: AddressMapper) extends Mappin
         x.assetName,
         x.assetDescription,
         addressMapper.build(x.address),
-        x.currentValue,
-        x.startDate))
+        x.currentValue))
   }
 }

@@ -24,8 +24,7 @@ import play.api.libs.json.{Format, Json}
 final case class BusinessAssetType(orgName: String,
                              businessDescription: String,
                              address: AddressType,
-                             businessValue: Long,
-                             startDate: LocalDate) extends AssetType
+                             businessValue: Long) extends AssetType
 
 object BusinessAssetType {
   implicit val businessAssetTypeFormat: Format[BusinessAssetType] = Json.format[BusinessAssetType]

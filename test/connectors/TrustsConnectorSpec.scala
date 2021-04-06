@@ -80,12 +80,12 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures
   private def amendNonEeaBusinessAssetUrl(identifier: String, index: Int) = s"$assetsUrl/amend-non-eea-business/$identifier/$index"
   private def removeAssetUrl(identifier: String) = s"$assetsUrl/$identifier/remove"
 
-  val moneyAsset = AssetMonetaryAmount(123, startDate = date)
-  val propertyOrLandAsset = PropertyLandType(None, None, 123, None, startDate = date)
-  val sharesAsset = SharesType("", "", "", "", 123, startDate = date)
-  val businessAsset = BusinessAssetType("", "", AddressType("", "", None, None, None, ""), 123, startDate = date)
-  val partnershipAsset = PartnershipType("", LocalDate.now, startDate = date)
-  val otherAsset = OtherAssetType("", 123, startDate = date)
+  val moneyAsset = AssetMonetaryAmount(123)
+  val propertyOrLandAsset = PropertyLandType(None, None, 123, None)
+  val sharesAsset = SharesType("", "", "", "", 123)
+  val businessAsset = BusinessAssetType("", "", AddressType("", "", None, None, None, ""), 123)
+  val partnershipAsset = PartnershipType("", LocalDate.now)
+  val otherAsset = OtherAssetType("", 123)
   val nonEeaBusinessAsset = NonEeaBusinessType(None, "orgName", AddressType("", "", None, None, None, ""), "", LocalDate.now, None)
 
   "trust connector" when {
@@ -272,7 +272,7 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures
 
           whenReady(processed) {
             result =>
-              result mustBe Assets(monetary = List(AssetMonetaryAmount(1000, startDate = date)),
+              result mustBe Assets(monetary = List(AssetMonetaryAmount(1000)),
                 propertyOrLand = Nil,
                 shares = Nil,
                 business = Nil,

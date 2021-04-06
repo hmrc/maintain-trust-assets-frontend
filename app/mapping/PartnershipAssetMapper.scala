@@ -22,6 +22,6 @@ import models.assets.PartnershipType
 class PartnershipAssetMapper extends Mapping[PartnershipType, PartnershipAsset] {
 
   override def mapAssets(assets: List[PartnershipAsset]): List[PartnershipType] = {
-    assets.map(x => PartnershipType(x.description, x.partnershipStartDate, x.startDate))
+    assets.map(x => PartnershipType(x.description, x.partnershipStartDate))
   }
 }

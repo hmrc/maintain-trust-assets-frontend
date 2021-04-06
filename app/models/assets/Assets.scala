@@ -22,7 +22,7 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
 trait AssetType {
-    val startDate: LocalDate
+//    val startDate: Option[LocalDate]
 }
 
 case class Assets(monetary: List[AssetMonetaryAmount] = Nil,

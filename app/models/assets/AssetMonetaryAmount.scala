@@ -20,8 +20,7 @@ import java.time.LocalDate
 
 import play.api.libs.json.{Format, Json}
 
-final case class AssetMonetaryAmount(assetMonetaryAmount: Long,
-                                     startDate: LocalDate) extends AssetType
+final case class AssetMonetaryAmount(assetMonetaryAmount: Long) extends AssetType
 
 object AssetMonetaryAmount {
   implicit val assetMonetaryAmountFormat: Format[AssetMonetaryAmount] = Json.format[AssetMonetaryAmount]

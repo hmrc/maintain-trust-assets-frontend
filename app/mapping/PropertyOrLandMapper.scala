@@ -30,8 +30,7 @@ class PropertyOrLandMapper @Inject()(addressMapper: AddressMapper) extends Mappi
         x.propertyOrLandDescription,
         addressMapper.build(x.address),
         totalValue,
-        x.propertyLandValueTrust.orElse( Some(totalValue)),
-        x.startDate
+        x.propertyLandValueTrust.orElse( Some(totalValue))
       )
     }
   }

@@ -24,8 +24,7 @@ import play.api.libs.json.{Format, Json}
 final case class PropertyLandType(buildingLandName: Option[String],
                                   address: Option[AddressType],
                                   valueFull: Long,
-                                  valuePrevious: Option[Long],
-                                  startDate: LocalDate) extends AssetType
+                                  valuePrevious: Option[Long]) extends AssetType
 
 object PropertyLandType {
   implicit val propertyLandTypeFormat: Format[PropertyLandType] = Json.format[PropertyLandType]
