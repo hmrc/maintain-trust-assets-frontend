@@ -20,7 +20,7 @@ import config.annotations.Business
 import controllers.actions._
 import controllers.actions.business.NameRequiredAction
 import forms.UKAddressFormProvider
-import models.{Mode, UKAddress}
+import models.{Mode, UkAddress}
 import navigation.Navigator
 import pages.asset.business.BusinessUkAddressPage
 import play.api.data.Form
@@ -44,7 +44,7 @@ class BusinessUkAddressController @Inject()(
                                              view: BusinessUkAddressView
                                            )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form: Form[UKAddress] = formProvider()
+  val form: Form[UkAddress] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>

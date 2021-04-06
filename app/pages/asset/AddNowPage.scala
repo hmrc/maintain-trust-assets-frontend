@@ -45,7 +45,7 @@ case object AddNowPage extends QuestionPage[WhatKindOfAsset] {
         userAnswers.deleteAtPath(business.basePath)
 
       case Some(Partnership) =>
-        userAnswers.deleteAtPath(partnerrship.basePath)
+        userAnswers.deleteAtPath(partnership.basePath)
 
       case Some(Other) =>
         userAnswers.deleteAtPath(other.basePath)

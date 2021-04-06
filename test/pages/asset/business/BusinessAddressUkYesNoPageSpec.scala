@@ -16,7 +16,7 @@
 
 package pages.asset.business
 
-import models.{InternationalAddress, UKAddress, UserAnswers}
+import models.{NonUkAddress, UkAddress, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
@@ -38,7 +38,7 @@ class BusinessAddressUkYesNoPageSpec extends PageBehaviours {
         forAll(arbitrary[UserAnswers]) {
           initial =>
             val answers: UserAnswers = initial.set(page, false).success.value
-              .set(BusinessInternationalAddressPage, InternationalAddress("line 1", "line 2", None, "France")).success.value
+              .set(BusinessInternationalAddressPage, NonUkAddress("line 1", "line 2", None, "France")).success.value
 
             val result = answers.set(page, true).success.value
 
@@ -50,7 +50,7 @@ class BusinessAddressUkYesNoPageSpec extends PageBehaviours {
         forAll(arbitrary[UserAnswers]) {
           initial =>
             val answers: UserAnswers = initial.set(page, true).success.value
-              .set(BusinessUkAddressPage, UKAddress("line 1", "line 2", None, None, "NE1 1NE")).success.value
+              .set(BusinessUkAddressPage, UkAddress("line 1", "line 2", None, None, "NE1 1NE")).success.value
 
             val result = answers.set(page, false).success.value
 
@@ -65,7 +65,7 @@ class BusinessAddressUkYesNoPageSpec extends PageBehaviours {
         forAll(arbitrary[UserAnswers]) {
           initial =>
             val answers: UserAnswers = initial
-              .set(BusinessUkAddressPage, UKAddress("line 1", "line 2", None, None, "NE1 1NE")).success.value
+              .set(BusinessUkAddressPage, UkAddress("line 1", "line 2", None, None, "NE1 1NE")).success.value
 
             val result = answers.set(page, true).success.value
 
@@ -77,7 +77,7 @@ class BusinessAddressUkYesNoPageSpec extends PageBehaviours {
         forAll(arbitrary[UserAnswers]) {
           initial =>
             val answers: UserAnswers = initial
-              .set(BusinessInternationalAddressPage, InternationalAddress("line 1", "line 2", None, "France")).success.value
+              .set(BusinessInternationalAddressPage, NonUkAddress("line 1", "line 2", None, "France")).success.value
 
             val result = answers.set(page, false).success.value
 

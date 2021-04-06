@@ -17,13 +17,14 @@
 package mapping.reads
 
 import models.WhatKindOfAsset.Money
-import models.{InternationalAddress, ShareClass, UKAddress, WhatKindOfAsset}
+import models.{NonUkAddress, ShareClass, UkAddress, WhatKindOfAsset}
 import org.scalatest.{FreeSpec, MustMatchers}
 import play.api.libs.json.{JsError, JsSuccess, Json}
-
 import java.time.LocalDate
 
 class AssetReadsSpec extends FreeSpec with MustMatchers {
+
+  private val date: LocalDate = LocalDate.parse("1996-02-03")
 
   "Asset" - {
 
@@ -143,10 +144,11 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
       "a money asset" in {
         val json = Json.obj(
           "whatKindOfAsset" -> "Money",
-          "moneyValue" -> 4000
+          "moneyValue" -> 4000,
+          "moneyStartDate" -> "1996-02-03"
         )
 
-        json.validate[Asset] mustEqual JsSuccess(MoneyAsset(Money, 4000L))
+        json.validate[Asset] mustEqual JsSuccess(MoneyAsset(Money, 4000L, startDate = date))
       }
 
       "a non-portfolio share asset" in {
@@ -161,12 +163,13 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
             |"nonPortfolioSharesValue" : 200,
             |"whatKindOfAsset" : "Shares",
             |"nonPortfolioSharesClass" : "ordinary",
-            |"status": "completed"
+            |"status": "completed",
+            |"sharesStartDate": "1996-02-03"
             |}
           """.stripMargin)
 
         json.validate[Asset] mustEqual JsSuccess(
-          ShareNonPortfolioAsset(whatKindOfAsset = WhatKindOfAsset.Shares, sharesInAPortfolio = false, name = "adam", listedOnTheStockExchange = true, `class` = ShareClass.Ordinary, quantityInTheTrust = 100L, value = 200L))
+          ShareNonPortfolioAsset(whatKindOfAsset = WhatKindOfAsset.Shares, sharesInAPortfolio = false, name = "adam", listedOnTheStockExchange = true, `class` = ShareClass.Ordinary, quantityInTheTrust = 100L, value = 200L, startDate = date))
 
       }
 
@@ -180,12 +183,13 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
             |"portfolioSharesQuantity" : 200,
             |"portfolioSharesValue" : 290000,
             |"whatKindOfAsset" : "Shares",
-            |"status" : "completed"
+            |"status" : "completed",
+            |"sharesStartDate": "1996-02-03"
             |}
           """.stripMargin)
 
         json.validate[Asset] mustEqual JsSuccess(
-          SharePortfolioAsset(whatKindOfAsset = WhatKindOfAsset.Shares, sharesInAPortfolio = true, name = "Adam", listedOnTheStockExchange = true, quantityInTheTrust = 200L, value = 290000L))
+          SharePortfolioAsset(whatKindOfAsset = WhatKindOfAsset.Shares, sharesInAPortfolio = true, name = "Adam", listedOnTheStockExchange = true, quantityInTheTrust = 200L, value = 290000L, startDate = date))
       }
 
       "a business asset" in {
@@ -203,7 +207,8 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
             |     "line4" : "Newcastle",
             |     "postcode" : "Z99 2YY"
             |},
-            |"businessValue" : 75
+            |"businessValue" : 75,
+            |"businessStartDate": "1996-02-03"
             |}
           """.stripMargin)
 
@@ -212,14 +217,15 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
             whatKindOfAsset = WhatKindOfAsset.Business,
             assetName = "Business Ltd",
             assetDescription = "Some description",
-            address = UKAddress(
+            address = UkAddress(
               line1 = "26",
               line2 = "Grangetown",
               line3 = Some("Tyne and Wear"),
               line4 = Some("Newcastle"),
               postcode = "Z99 2YY"
             ),
-            currentValue = 75L
+            currentValue = 75L,
+            startDate = date
           ))
       }
 
@@ -237,7 +243,8 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
             |     "postcode" : "Z99 2YY"
             |},
             |"propertyOrLandValueInTrust" : 75,
-            |"propertyOrLandTotalValue" : 1000
+            |"propertyOrLandTotalValue" : 1000,
+            |"propertyOrLandStartDate": "1996-02-03"
             |}
           """.stripMargin)
 
@@ -246,7 +253,7 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
             whatKindOfAsset = WhatKindOfAsset.PropertyOrLand,
             propertyOrLandDescription = Some("Property Or Land"),
             address = Some(
-              UKAddress(
+              UkAddress(
                 line1 = "26",
                 line2 = "Grangetown",
                 line3 = Some("Tyne and Wear"),
@@ -254,7 +261,8 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
                 postcode = "Z99 2YY"
               )),
             propertyLandValueTrust = Some(75L),
-            propertyOrLandTotalValue = 1000L
+            propertyOrLandTotalValue = 1000L,
+            startDate = date
           ))
       }
 
@@ -268,7 +276,8 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
             |     "line2" : "Newcastle",
             |     "postcode" : "Z99 2YY"
             |},
-            |"propertyOrLandTotalValue" : 1000
+            |"propertyOrLandTotalValue" : 1000,
+            |"propertyOrLandStartDate": "1996-02-03"
             |}
           """.stripMargin)
 
@@ -277,7 +286,7 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
             whatKindOfAsset = WhatKindOfAsset.PropertyOrLand,
             propertyOrLandDescription = None,
             address = Some(
-              UKAddress(
+              UkAddress(
                 line1 = "26",
                 line2 = "Newcastle",
                 line3 = None,
@@ -285,7 +294,8 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
                 postcode = "Z99 2YY"
               )),
             propertyLandValueTrust = None,
-            propertyOrLandTotalValue = 1000L
+            propertyOrLandTotalValue = 1000L,
+            startDate = date
           ))
       }
 
@@ -293,14 +303,16 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
         val json = Json.obj(
           "whatKindOfAsset" -> "Partnership",
           "partnershipDescription" -> "Description",
-          "partnershipStartDate" -> "1996-02-03"
+          "partnershipStartDate" -> "1996-02-03",
+          "startDate" -> "1996-02-03"
         )
 
         json.validate[Asset] mustEqual JsSuccess(
           PartnershipAsset(
             whatKindOfAsset = WhatKindOfAsset.Partnership,
             description = "Description",
-            startDate = LocalDate.parse("1996-02-03")
+            partnershipStartDate = LocalDate.parse("1996-02-03"),
+            startDate = date
           )
         )
       }
@@ -309,14 +321,16 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
         val json = Json.obj(
           "whatKindOfAsset" -> "Other",
           "otherDescription" -> "Description",
-          "otherValue" -> 4000
+          "otherValue" -> 4000,
+          "otherStartDate" -> "1996-02-03"
         )
 
         json.validate[Asset] mustBe JsSuccess(
           OtherAsset(
             whatKindOfAsset = WhatKindOfAsset.Other,
             description = "Description",
-            value = 4000L
+            value = 4000L,
+            startDate = date
           )
         )
       }
@@ -341,7 +355,7 @@ class AssetReadsSpec extends FreeSpec with MustMatchers {
           NonEeaBusinessAsset(
             whatKindOfAsset = WhatKindOfAsset.NonEeaBusiness,
             name = "Name",
-            address = InternationalAddress("21 Test Lane", "Test Town", None, "FR"),
+            address = NonUkAddress("21 Test Lane", "Test Town", None, "FR"),
             governingCountry = "GB",
             startDate = LocalDate.parse("1996-02-03")
           )

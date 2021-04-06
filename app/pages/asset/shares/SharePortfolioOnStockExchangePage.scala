@@ -18,11 +18,10 @@ package pages.asset.shares
 
 import pages.QuestionPage
 import play.api.libs.json.JsPath
-import sections.Assets
 
 case object SharePortfolioOnStockExchangePage extends QuestionPage[Boolean] {
 
-  override def path: JsPath = Assets.path \ toString
+  override def path: JsPath = basePath \ toString
 
   override def toString: String = "portfolioSharesOnStockExchangeYesNo"
 }

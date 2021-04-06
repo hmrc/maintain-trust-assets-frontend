@@ -17,7 +17,8 @@
 package mapping
 
 import mapping.reads.{Asset, Assets}
-import models.{AssetType, UserAnswers}
+import models.UserAnswers
+import models.assets.AssetType
 
 import scala.reflect.ClassTag
 

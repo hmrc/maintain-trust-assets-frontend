@@ -16,14 +16,13 @@
 
 package pages.asset.business
 
-import models.UKAddress
+import models.UkAddress
 import pages.QuestionPage
 import play.api.libs.json.JsPath
-import sections.Assets
 
-case object BusinessUkAddressPage extends QuestionPage[UKAddress] {
+case object BusinessUkAddressPage extends QuestionPage[UkAddress] {
 
-  override def path: JsPath = JsPath \ Assets \ toString
+  override def path: JsPath = basePath \ toString
 
   override def toString: String = "businessUkAddress"
 }

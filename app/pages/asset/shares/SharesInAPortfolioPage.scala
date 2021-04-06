@@ -19,13 +19,12 @@ package pages.asset.shares
 import models.UserAnswers
 import pages.{AssetStatus, QuestionPage}
 import play.api.libs.json.JsPath
-import sections.Assets
 
 import scala.util.Try
 
 case object SharesInAPortfolioPage extends QuestionPage[Boolean] {
 
-  override def path: JsPath = Assets.path \ toString
+  override def path: JsPath = basePath \ toString
 
   override def toString: String = "sharesInPortfolioYesNo"
 

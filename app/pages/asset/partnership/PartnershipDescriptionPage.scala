@@ -18,11 +18,10 @@ package pages.asset.partnership
 
 import pages.QuestionPage
 import play.api.libs.json.JsPath
-import sections.Assets
 
 case object PartnershipDescriptionPage extends QuestionPage[String] {
 
-  override def path: JsPath = Assets.path \ toString
+  override def path: JsPath = basePath \ toString
 
   override def toString: String = "partnershipDescription"
 }

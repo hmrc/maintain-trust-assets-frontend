@@ -19,13 +19,12 @@ package pages.asset.property_or_land
 import models.UserAnswers
 import pages.QuestionPage
 import play.api.libs.json.JsPath
-import sections.Assets
 
 import scala.util.Try
 
 case object PropertyOrLandAddressUkYesNoPage extends QuestionPage[Boolean] {
 
-  override def path: JsPath = Assets.path \ toString
+  override def path: JsPath = basePath \ toString
 
   override def toString: String = "propertyOrLandAddressUkYesNo"
 

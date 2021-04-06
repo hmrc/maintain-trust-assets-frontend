@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.asset.noneeabusiness.routes._
 import controllers.asset.routes.WhatKindOfAssetController
 import models.WhatKindOfAsset.NonEeaBusiness
-import models.{InternationalAddress, NormalMode, UserAnswers}
+import models.{NonUkAddress, NormalMode, UserAnswers}
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.noneeabusiness._
 import play.twirl.api.Html
@@ -37,13 +37,13 @@ class NonEeaBusinessPrintHelperSpec extends SpecBase {
 
   private val name: String = "Name"
   private val country: String = "FR"
-  private val nonUkAddress: InternationalAddress = InternationalAddress("Line 1", "Line 2", None, country)
+  private val nonUkAddress: NonUkAddress = NonUkAddress("Line 1", "Line 2", None, country)
   private val date: LocalDate = LocalDate.parse("1996-02-03")
 
   private val userAnswers: UserAnswers = emptyUserAnswers
     .set(WhatKindOfAssetPage, NonEeaBusiness).success.value
     .set(NamePage, name).success.value
-    .set(InternationalAddressPage, nonUkAddress).success.value
+    .set(NonUkAddressPage, nonUkAddress).success.value
     .set(GoverningCountryPage, country).success.value
     .set(StartDatePage, date).success.value
 

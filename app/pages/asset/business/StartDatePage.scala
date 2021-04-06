@@ -16,17 +16,14 @@
 
 package pages.asset.business
 
-import models.InternationalAddress
-import pages.behaviours.PageBehaviours
+import java.time.LocalDate
 
-class BusinessInternationalAddressPageSpec extends PageBehaviours {
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-  "BusinessInternationalAddressPage" must {
+case object StartDatePage extends QuestionPage[LocalDate] {
 
-    beRetrievable[InternationalAddress](BusinessInternationalAddressPage)
+  override def path: JsPath = basePath \ toString
 
-    beSettable[InternationalAddress](BusinessInternationalAddressPage)
-
-    beRemovable[InternationalAddress](BusinessInternationalAddressPage)
-  }
+  override def toString: String = "businessStartDate"
 }

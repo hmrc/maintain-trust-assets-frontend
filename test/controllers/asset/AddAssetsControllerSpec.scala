@@ -27,7 +27,8 @@ import javax.inject.Inject
 import models.AddAssets.{NoComplete, YesNow}
 import models.Status.Completed
 import models.WhatKindOfAsset.{Money, NonEeaBusiness, Other, Shares}
-import models.{AddAssets, AddressType, AssetMonetaryAmount, Assets, BusinessAssetType, NonEeaBusinessType, NormalMode, OtherAssetType, PartnershipType, PropertyLandType, RemoveAsset, ShareClass, SharesType, UserAnswers}
+import models.assets.{AddressType, AssetMonetaryAmount, Assets, BusinessAssetType, NonEeaBusinessType, OtherAssetType, PartnershipType, PropertyLandType, SharesType}
+import models.{AddAssets, NormalMode, RemoveAsset, ShareClass, UserAnswers}
 import navigation.Navigator
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any

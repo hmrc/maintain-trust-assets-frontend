@@ -18,11 +18,13 @@ package models
 
 import java.time.LocalDate
 
+import models.assets.{AddressType, AssetMonetaryAmount, Assets, BusinessAssetType, NonEeaBusinessType, OtherAssetType, PartnershipType, PropertyLandType, SharesType}
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.Json
 
 class AssetsSpec extends WordSpec with MustMatchers{
 
+  private val date: LocalDate = LocalDate.parse("1996-02-03")
 
   "Assets" must {
     "deserialise from backend JSON" when {
@@ -34,7 +36,8 @@ class AssetsSpec extends WordSpec with MustMatchers{
             |    "assets": {
             |        "monetary": [
             |          {
-            |            "assetMonetaryAmount": 1000
+            |            "assetMonetaryAmount": 1000,
+            |            "startDate": "1996-02-03"
             |          }
             |        ]
             |     }
@@ -43,7 +46,7 @@ class AssetsSpec extends WordSpec with MustMatchers{
 
         val assets = json.as[Assets]
 
-        assets mustBe Assets(monetary = List(AssetMonetaryAmount(1000)),
+        assets mustBe Assets(monetary = List(AssetMonetaryAmount(1000, startDate = date)),
           propertyOrLand = Nil,
           shares = Nil,
           business = Nil,
@@ -61,7 +64,8 @@ class AssetsSpec extends WordSpec with MustMatchers{
             |          {
             |            "buildingLandName": "PropertyOrLand Name",
             |            "valueFull": 1000,
-            |            "valuePrevious": 500
+            |            "valuePrevious": 500,
+            |            "startDate": "1996-02-03"
             |          }
             |        ]
             |    }
@@ -71,7 +75,7 @@ class AssetsSpec extends WordSpec with MustMatchers{
         val assets = json.as[Assets]
 
         assets mustBe Assets(monetary = Nil,
-          propertyOrLand = List(PropertyLandType(Some("PropertyOrLand Name"), None, 1000, Some(500))),
+          propertyOrLand = List(PropertyLandType(Some("PropertyOrLand Name"), None, 1000, Some(500), startDate = date)),
           shares = Nil,
           business = Nil,
           partnerShip = Nil,
@@ -90,7 +94,8 @@ class AssetsSpec extends WordSpec with MustMatchers{
             |            "orgName": "Shares Ltd",
             |            "shareClass": "Other",
             |            "typeOfShare": "Unquoted",
-            |            "value": 999999999999
+            |            "value": 999999999999,
+            |            "startDate": "1996-02-03"
             |          }
             |        ]
             |      }
@@ -101,7 +106,7 @@ class AssetsSpec extends WordSpec with MustMatchers{
 
         assets mustBe Assets(monetary = Nil,
           propertyOrLand = Nil,
-          shares =  List(SharesType("999999999999", "Shares Ltd", "Other", "Unquoted", 999999999999L)),
+          shares =  List(SharesType("999999999999", "Shares Ltd", "Other", "Unquoted", 999999999999L, startDate = date)),
           business = Nil,
           partnerShip = Nil,
           other = Nil,
@@ -126,7 +131,8 @@ class AssetsSpec extends WordSpec with MustMatchers{
             |            },
             |            "orgName": "Business Ltd",
             |            "businessDescription": "Business description",
-            |            "businessValue": 1000
+            |            "businessValue": 1000,
+            |            "startDate": "1996-02-03"
             |          }
             |        ]
              |      }
@@ -145,7 +151,8 @@ class AssetsSpec extends WordSpec with MustMatchers{
             line4 = Some("Test line4"),
             postCode = Some("Z99 2YY"),
             country = "GB"),
-          businessValue = 1000L
+          businessValue = 1000L,
+          startDate = date
         )
 
         assets mustBe Assets(monetary = Nil,
@@ -167,7 +174,8 @@ class AssetsSpec extends WordSpec with MustMatchers{
             |        "other": [
             |          {
             |            "description": "Other description",
-            |            "value": 999999999999
+            |            "value": 999999999999,
+            |            "startDate": "1996-02-03"
             |          }
             |        ]
             |      }
@@ -181,7 +189,7 @@ class AssetsSpec extends WordSpec with MustMatchers{
           shares = Nil,
           business = Nil,
           partnerShip = Nil,
-          other = List(OtherAssetType("Other description", 999999999999L)),
+          other = List(OtherAssetType("Other description", 999999999999L, startDate = date)),
           nonEEABusiness = Nil
         )
       }
@@ -194,7 +202,8 @@ class AssetsSpec extends WordSpec with MustMatchers{
             |        "partnerShip": [
             |          {
             |            "description": "Partnership description",
-            |            "partnershipStart": "2015-03-20"
+            |            "partnershipStart": "2015-03-20",
+            |            "startDate": "1996-02-03"
             |          }
             |        ]
             |    }
@@ -207,7 +216,7 @@ class AssetsSpec extends WordSpec with MustMatchers{
           propertyOrLand = Nil,
           shares = Nil,
           business = Nil,
-          partnerShip = List(PartnershipType("Partnership description", LocalDate.of(2015, 3, 20))),
+          partnerShip = List(PartnershipType("Partnership description", LocalDate.of(2015, 3, 20), startDate = date)),
           other = Nil,
           nonEEABusiness = Nil
         )

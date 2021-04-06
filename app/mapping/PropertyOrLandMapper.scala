@@ -17,9 +17,8 @@
 package mapping
 
 import mapping.reads.PropertyOrLandAsset
-import models.PropertyLandType
-
 import javax.inject.Inject
+import models.assets.PropertyLandType
 
 class PropertyOrLandMapper @Inject()(addressMapper: AddressMapper) extends Mapping[PropertyLandType, PropertyOrLandAsset] {
 
@@ -31,7 +30,8 @@ class PropertyOrLandMapper @Inject()(addressMapper: AddressMapper) extends Mappi
         x.propertyOrLandDescription,
         addressMapper.build(x.address),
         totalValue,
-        x.propertyLandValueTrust.orElse( Some(totalValue))
+        x.propertyLandValueTrust.orElse( Some(totalValue)),
+        x.startDate
       )
     }
   }

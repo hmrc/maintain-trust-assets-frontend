@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
-package pages.asset.property_or_land
+package models.assets
 
-import models.InternationalAddress
-import pages.behaviours.PageBehaviours
+import java.time.LocalDate
 
-class PropertyOrLandInternationalAddressPageSpec extends PageBehaviours {
+import models.Address
+import play.api.libs.json.{Format, Json}
 
-  val page = PropertyOrLandInternationalAddressPage
+final case class PropertyLandType(buildingLandName: Option[String],
+                                  address: Option[AddressType],
+                                  valueFull: Long,
+                                  valuePrevious: Option[Long],
+                                  startDate: LocalDate) extends AssetType
 
-  "PropertyOrLandInternationalAddressPage" must {
-
-    beRetrievable[InternationalAddress](page)
-
-    beSettable[InternationalAddress](page)
-
-    beRemovable[InternationalAddress](page)
-  }
+object PropertyLandType {
+  implicit val propertyLandTypeFormat: Format[PropertyLandType] = Json.format[PropertyLandType]
 }

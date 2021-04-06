@@ -16,55 +16,63 @@
 
 package models
 
-import play.api.libs.json.{Json, OFormat, Reads, Writes}
+import play.api.libs.functional.syntax._
+import play.api.libs.json._
 
-import scala.language.implicitConversions
-
-final case class UKAddress(override val line1: String,
-                           line2: String,
-                           line3: Option[String] = None,
-                           line4: Option[String] = None,
-                           postcode: String) extends Address
-
-object UKAddress {
-
-  implicit lazy val formats: OFormat[UKAddress] = Json.format[UKAddress]
-}
-
-final case class InternationalAddress(override val line1: String,
-                                      line2: String,
-                                      line3: Option[String] = None,
-                                      country: String) extends Address
-
-object InternationalAddress {
-
-  implicit lazy val formats: OFormat[InternationalAddress] = Json.format[InternationalAddress]
-}
-
-sealed abstract class Address {
+sealed trait Address {
   val line1: String
 }
 
+case class UkAddress (line1: String,
+                      line2: String,
+                      line3: Option[String],
+                      line4: Option[String],
+                      postcode: String) extends Address
+
+object UkAddress {
+
+  implicit val reads: Reads[UkAddress] =
+    ((__ \ 'line1).read[String] and
+      (__ \ 'line2).read[String] and
+      (__ \ 'line3).readNullable[String] and
+      (__ \ 'line4).readNullable[String] and
+      (__ \ 'postCode).read[String]).apply(UkAddress.apply _)
+
+  implicit val writes: Writes[UkAddress] =
+    ((__ \ 'line1).write[String] and
+      (__ \ 'line2).write[String] and
+      (__ \ 'line3).writeNullable[String] and
+      (__ \ 'line4).writeNullable[String] and
+      (__ \ 'postCode).write[String] and
+      (__ \ 'country).write[String]
+      ).apply(address => (
+      address.line1,
+      address.line2,
+      address.line3,
+      address.line4,
+      address.postcode,
+      "GB"
+    ))
+
+  implicit val format = Format[UkAddress](reads, writes)
+}
+
+case class NonUkAddress (line1: String,
+                         line2: String,
+                         line3: Option[String] = None,
+                         country: String) extends Address
+
+object NonUkAddress {
+  implicit val format = Json.format[NonUkAddress]
+}
+
 object Address {
+  implicit val reads: Reads[Address] =
+    __.read[UkAddress](UkAddress.reads).widen[Address] orElse
+      __.read[NonUkAddress](NonUkAddress.format).widen[Address]
 
-  implicit lazy val reads: Reads[Address] = {
-
-    implicit class ReadsWithContravariantOr[A](a: Reads[A]) {
-
-      def or[B >: A](b: Reads[B]): Reads[B] = {
-        a.map[B](identity).orElse(b)
-      }
-    }
-
-    implicit def convertToSupertype[A, B >: A](a: Reads[A]): Reads[B] =
-      a.map(identity)
-
-      UKAddress.formats or
-      InternationalAddress.formats
-  }
-
-  implicit lazy val writes: Writes[Address] = Writes {
-    case address: UKAddress            => Json.toJson(address)(UKAddress.formats)
-    case address: InternationalAddress => Json.toJson(address)(InternationalAddress.formats)
+  implicit val writes: Writes[Address] = Writes {
+    case a:UkAddress => Json.toJson(a)(UkAddress.writes)
+    case a:NonUkAddress => Json.toJson(a)(NonUkAddress.format)
   }
 }

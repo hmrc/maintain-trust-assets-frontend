@@ -20,3 +20,7 @@ POST       /change-start-date                                         controller
 
 GET        /check-answers                                             controllers.asset.noneeabusiness.add.AnswersController.onPageLoad()
 POST       /check-answers                                             controllers.asset.noneeabusiness.add.AnswersController.onSubmit()
+
+GET        /:index/check-answers                                      controllers.asset.noneeabusiness.amend.AnswersController.extractAndRender(index: Int)
+GET        /:index/check-answers                                      controllers.asset.noneeabusiness.amend.AnswersController.renderFromUserAnswers(index: Int)
+POST       /:index/check-answers                                      controllers.asset.noneeabusiness.amend.AnswersController.onSubmit(index: Int)

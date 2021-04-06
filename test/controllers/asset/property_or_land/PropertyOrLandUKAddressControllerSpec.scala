@@ -22,7 +22,7 @@ import controllers.IndexValidation
 import controllers.routes._
 import forms.UKAddressFormProvider
 import generators.ModelGenerators
-import models.{NormalMode, UKAddress}
+import models.{NormalMode, UkAddress}
 import navigation.Navigator
 import pages.asset.property_or_land.PropertyOrLandUKAddressPage
 import play.api.data.Form
@@ -34,7 +34,7 @@ import views.html.asset.property_or_land.PropertyOrLandUKAddressView
 class PropertyOrLandUKAddressControllerSpec extends SpecBase with ModelGenerators with IndexValidation {
 
   val formProvider = new UKAddressFormProvider()
-  val form: Form[UKAddress] = formProvider()
+  val form: Form[UkAddress] = formProvider()
 
   lazy val PropertyOrLandUKAddressRoute: String = routes.PropertyOrLandUKAddressController.onPageLoad(NormalMode).url
 
@@ -61,7 +61,7 @@ class PropertyOrLandUKAddressControllerSpec extends SpecBase with ModelGenerator
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers
-        .set(PropertyOrLandUKAddressPage,  UKAddress("line 1", "line 2", Some("line 3"), Some("line 4"),"line 5")).success.value
+        .set(PropertyOrLandUKAddressPage,  UkAddress("line 1", "line 2", Some("line 3"), Some("line 4"),"line 5")).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -74,7 +74,7 @@ class PropertyOrLandUKAddressControllerSpec extends SpecBase with ModelGenerator
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(UKAddress("line 1", "line 2", Some("line 3"), Some("line 4"),"line 5")), NormalMode)(request, messages).toString
+        view(form.fill(UkAddress("line 1", "line 2", Some("line 3"), Some("line 4"),"line 5")), NormalMode)(request, messages).toString
 
       application.stop()
     }

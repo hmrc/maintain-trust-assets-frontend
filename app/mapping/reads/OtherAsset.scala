@@ -16,6 +16,8 @@
 
 package mapping.reads
 
+import java.time.LocalDate
+
 import models.WhatKindOfAsset
 import models.WhatKindOfAsset.Other
 import pages.asset.WhatKindOfAssetPage
@@ -25,7 +27,8 @@ import play.api.libs.json.{Reads, __}
 
 final case class OtherAsset(override val whatKindOfAsset: WhatKindOfAsset,
                             description: String,
-                            value: Long) extends Asset {
+                            value: Long,
+                            startDate: LocalDate) extends Asset {
 
   override val arg: String = description
 }
@@ -35,7 +38,8 @@ object OtherAsset {
   implicit lazy val reads: Reads[OtherAsset] = (
     (__ \ WhatKindOfAssetPage).read[WhatKindOfAsset].filter(_ == Other) and
       (__ \ OtherAssetDescriptionPage).read[String] and
-      (__ \ OtherAssetValuePage).read[Long]
+      (__ \ OtherAssetValuePage).read[Long] and
+      (__ \ StartDatePage).read[LocalDate]
     )(OtherAsset.apply _)
 
 }

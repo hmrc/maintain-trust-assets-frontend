@@ -14,10 +14,19 @@
  * limitations under the License.
  */
 
-package pages.asset
+package models.assets
 
-import play.api.libs.json.JsPath
+import java.time.LocalDate
 
-package object partnerrship {
-  val basePath: JsPath = JsPath \ 'partnerrship
+import play.api.libs.json.{Format, Json}
+
+final case class SharesType(numberOfShares: String,
+                            orgName: String,
+                            shareClass: String,
+                            typeOfShare: String,
+                            value: Long,
+                            startDate: LocalDate) extends AssetType
+
+object SharesType {
+  implicit val sharesTypeFormat: Format[SharesType] = Json.format[SharesType]
 }

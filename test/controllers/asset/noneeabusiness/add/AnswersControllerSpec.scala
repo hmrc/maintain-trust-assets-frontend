@@ -22,7 +22,7 @@ import base.SpecBase
 import connectors.TrustsConnector
 import controllers.asset.noneeabusiness.routes
 import controllers.routes._
-import models.{InternationalAddress, UserAnswers}
+import models.{NonUkAddress, UserAnswers}
 import pages.asset.noneeabusiness._
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -43,7 +43,7 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
 
   private val answers: UserAnswers = emptyUserAnswers
     .set(NamePage, name).success.value
-    .set(InternationalAddressPage, InternationalAddress("Line 1", "Line 2", Some("Line 3"), "FR")).success.value
+    .set(NonUkAddressPage, NonUkAddress("Line 1", "Line 2", Some("Line 3"), "FR")).success.value
     .set(GoverningCountryPage, "FR").success.value
     .set(StartDatePage, LocalDate.parse("1996-02-03")).success.value
 

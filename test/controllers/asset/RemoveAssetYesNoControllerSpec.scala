@@ -20,7 +20,7 @@ import base.SpecBase
 import forms.YesNoFormProvider
 import models.ShareClass.Ordinary
 import models.WhatKindOfAsset._
-import models.{InternationalAddress, UKAddress, UserAnswers}
+import models.UserAnswers
 import org.mockito.ArgumentCaptor
 import org.mockito.Mockito._
 import pages.asset._

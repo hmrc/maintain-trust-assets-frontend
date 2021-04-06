@@ -17,11 +17,11 @@
 package mapping
 
 import mapping.reads.MoneyAsset
-import models.AssetMonetaryAmount
+import models.assets.AssetMonetaryAmount
 
 class MoneyAssetMapper extends Mapping[AssetMonetaryAmount, MoneyAsset] {
 
   override def mapAssets(assets: List[MoneyAsset]): List[AssetMonetaryAmount] = {
-    assets.map(x => AssetMonetaryAmount(x.value))
+    assets.map(x => AssetMonetaryAmount(x.value, x.startDate))
   }
 }
