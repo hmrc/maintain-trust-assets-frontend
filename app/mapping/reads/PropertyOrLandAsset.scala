@@ -16,6 +16,8 @@
 
 package mapping.reads
 
+import java.time.LocalDate
+
 import models.WhatKindOfAsset.PropertyOrLand
 import models.{Address, WhatKindOfAsset}
 import pages.asset.WhatKindOfAssetPage
@@ -27,7 +29,8 @@ final case class PropertyOrLandAsset(override val whatKindOfAsset: WhatKindOfAss
                                      propertyOrLandDescription: Option[String],
                                      address: Option[Address],
                                      propertyLandValueTrust: Option[Long],
-                                     propertyOrLandTotalValue: Long) extends Asset
+                                     propertyOrLandTotalValue: Long,
+                                     startDate: LocalDate) extends Asset
 
 object PropertyOrLandAsset {
 
@@ -43,7 +46,8 @@ object PropertyOrLandAsset {
       (__ \ PropertyOrLandDescriptionPage).readNullable[String] and
       optionalAddressReads and
       (__ \ PropertyLandValueTrustPage).readNullable[Long] and
-      (__ \ PropertyOrLandTotalValuePage).read[Long]
+      (__ \ PropertyOrLandTotalValuePage).read[Long] and
+      (__ \ StartDatePage).read[LocalDate]
       )(PropertyOrLandAsset.apply _)
 
   }

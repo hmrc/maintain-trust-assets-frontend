@@ -18,12 +18,9 @@ package mapping
 
 import base.SpecBase
 import generators.Generators
-import models.Status.Completed
-import models.{AddressType, BusinessAssetType, InternationalAddress, UKAddress, WhatKindOfAsset}
+import models.WhatKindOfAsset
 import org.scalatest.{MustMatchers, OptionValues}
-import pages.AssetStatus
 import pages.asset.WhatKindOfAssetPage
-import pages.asset.business._
 
 class BusinessAssetMapperSpec extends SpecBase with MustMatchers
   with OptionValues with Generators {

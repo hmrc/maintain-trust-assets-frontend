@@ -14,21 +14,16 @@
  * limitations under the License.
  */
 
-package pages.asset.noneeabusiness
+package pages.asset.business
 
-import models.InternationalAddress
-import pages.behaviours.PageBehaviours
+import java.time.LocalDate
 
-class InternationalAddressPageSpec extends PageBehaviours {
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-  private val page = InternationalAddressPage
+case object StartDatePage extends QuestionPage[LocalDate] {
 
-  "InternationalAddressPage" must {
+  override def path: JsPath = basePath \ toString
 
-    beRetrievable[InternationalAddress](page)
-
-    beSettable[InternationalAddress](page)
-
-    beRemovable[InternationalAddress](page)
-  }
+  override def toString: String = "businessStartDate"
 }

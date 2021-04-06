@@ -17,9 +17,8 @@
 package mapping
 
 import mapping.reads.PropertyOrLandAsset
-import models.PropertyLandType
-
 import javax.inject.Inject
+import models.assets.PropertyLandType
 
 class PropertyOrLandMapper @Inject()(addressMapper: AddressMapper) extends Mapping[PropertyLandType, PropertyOrLandAsset] {
 

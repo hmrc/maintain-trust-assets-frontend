@@ -20,6 +20,7 @@ import com.google.inject.ImplementedBy
 import connectors.TrustsConnector
 import javax.inject.Inject
 import models._
+import models.assets.{AssetMonetaryAmount, Assets, BusinessAssetType, NonEeaBusinessType, OtherAssetType, PartnershipType, PropertyLandType, SharesType}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 import scala.concurrent.{ExecutionContext, Future}

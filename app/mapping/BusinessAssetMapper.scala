@@ -17,13 +17,17 @@
 package mapping
 
 import mapping.reads.BusinessAsset
-import models.BusinessAssetType
-
 import javax.inject.Inject
+import models.assets.BusinessAssetType
 
 class BusinessAssetMapper @Inject()(addressMapper: AddressMapper) extends Mapping[BusinessAssetType, BusinessAsset] {
 
   override def mapAssets(assets: List[BusinessAsset]): List[BusinessAssetType] = {
-    assets.map(x => BusinessAssetType(x.assetName, x.assetDescription, addressMapper.build(x.address), x.currentValue))
+    assets.map(x =>
+      BusinessAssetType(
+        x.assetName,
+        x.assetDescription,
+        addressMapper.build(x.address),
+        x.currentValue))
   }
 }

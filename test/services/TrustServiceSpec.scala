@@ -20,6 +20,7 @@ import java.time.LocalDate
 
 import connectors.TrustsConnector
 import models._
+import models.assets.{AddressType, AssetMonetaryAmount, Assets, BusinessAssetType, NonEeaBusinessType, OtherAssetType, PartnershipType, PropertyLandType, SharesType}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
@@ -34,6 +35,7 @@ import scala.concurrent.Future
 class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers with ScalaFutures {
 
   val mockConnector: TrustsConnector = mock[TrustsConnector]
+  val date: LocalDate = LocalDate.parse("2019-02-03")
 
   val moneyAsset = AssetMonetaryAmount(123)
   val propertyOrLandAsset = PropertyLandType(None, None, 123, None)

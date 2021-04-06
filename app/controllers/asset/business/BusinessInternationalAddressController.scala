@@ -21,7 +21,7 @@ import controllers.actions._
 import controllers.actions.business.NameRequiredAction
 import controllers.filters.IndexActionFilterProvider
 import forms.InternationalAddressFormProvider
-import models.{InternationalAddress, Mode}
+import models.{Mode, NonUkAddress}
 import navigation.Navigator
 import pages.asset.business.BusinessInternationalAddressPage
 import play.api.data.Form
@@ -48,7 +48,7 @@ class BusinessInternationalAddressController @Inject()(
                                                         val countryOptions: CountryOptionsNonUK
                                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form: Form[InternationalAddress] = formProvider()
+  val form: Form[NonUkAddress] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>

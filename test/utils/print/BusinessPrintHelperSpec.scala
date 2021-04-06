@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.asset.business.routes._
 import controllers.asset.routes.WhatKindOfAssetController
 import models.WhatKindOfAsset.Business
-import models.{InternationalAddress, NormalMode, UKAddress, UserAnswers}
+import models.{NonUkAddress, NormalMode, UkAddress, UserAnswers}
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.business._
 import play.twirl.api.Html
@@ -32,8 +32,8 @@ class BusinessPrintHelperSpec extends SpecBase {
   private val index: Int = 0
   private val name: String = "Name"
   private val description: String = "Description"
-  private val ukAddress: UKAddress = UKAddress("Line 1", "Line 2", None, None, "AB1 1AB")
-  private val nonUkAddress: InternationalAddress = InternationalAddress("Line 1", "Line 2", None, "FR")
+  private val ukAddress: UkAddress = UkAddress("Line 1", "Line 2", None, None, "AB1 1AB")
+  private val nonUkAddress: NonUkAddress = NonUkAddress("Line 1", "Line 2", None, "FR")
   private val amount: Long = 100L
 
   private val baseAnswers: UserAnswers = emptyUserAnswers

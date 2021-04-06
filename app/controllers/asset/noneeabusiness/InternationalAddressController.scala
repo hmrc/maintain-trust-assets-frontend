@@ -20,9 +20,9 @@ import config.annotations.NonEeaBusiness
 import controllers.actions._
 import controllers.actions.noneeabusiness.NameRequiredAction
 import forms.InternationalAddressFormProvider
-import models.{InternationalAddress, Mode}
+import models.{Mode, NonUkAddress}
 import navigation.Navigator
-import pages.asset.noneeabusiness.InternationalAddressPage
+import pages.asset.noneeabusiness.NonUkAddressPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -46,12 +46,12 @@ class InternationalAddressController @Inject()(
                                                 val countryOptions: CountryOptionsNonUK
                                               )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val form: Form[InternationalAddress] = formProvider()
+  private val form: Form[NonUkAddress] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(InternationalAddressPage) match {
+      val preparedForm = request.userAnswers.get(NonUkAddressPage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
@@ -68,9 +68,9 @@ class InternationalAddressController @Inject()(
 
         value => {
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(InternationalAddressPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(NonUkAddressPage, value))
             _ <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(InternationalAddressPage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(NonUkAddressPage, mode, updatedAnswers))
         }
       )
   }

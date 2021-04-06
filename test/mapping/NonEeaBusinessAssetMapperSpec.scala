@@ -19,12 +19,13 @@ package mapping
 import base.SpecBase
 import models.Status.Completed
 import models.WhatKindOfAsset.NonEeaBusiness
-import models.{AddressType, InternationalAddress, NonEeaBusinessType}
+import models.NonUkAddress
 import pages.AssetStatus
 import pages.asset._
 import pages.asset.noneeabusiness._
-
 import java.time.LocalDate
+
+import models.assets.{AddressType, NonEeaBusinessType}
 
 class NonEeaBusinessAssetMapperSpec extends SpecBase {
 
@@ -34,7 +35,7 @@ class NonEeaBusinessAssetMapperSpec extends SpecBase {
 
   private val name: String = "Name"
   private val country: String = "FR"
-  private val nonUkAddress: InternationalAddress = InternationalAddress("Line 1", "Line 2", Some("Line 3"), country)
+  private val nonUkAddress: NonUkAddress = NonUkAddress("Line 1", "Line 2", Some("Line 3"), country)
   private val nonUkAddressType: AddressType = AddressType("Line 1", "Line 2", Some("Line 3"), None, None, country)
   private val date: LocalDate = LocalDate.parse("1996-02-03")
 
@@ -58,7 +59,7 @@ class NonEeaBusinessAssetMapperSpec extends SpecBase {
         val answers = baseAnswers
           .set(WhatKindOfAssetPage, NonEeaBusiness).success.value
           .set(NamePage, name).success.value
-          .set(InternationalAddressPage, nonUkAddress).success.value
+          .set(NonUkAddressPage, nonUkAddress).success.value
           .set(GoverningCountryPage, country).success.value
           .set(StartDatePage, date).success.value
           .set(AssetStatus, Completed).success.value

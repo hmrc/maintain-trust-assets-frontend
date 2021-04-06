@@ -16,6 +16,8 @@
 
 package mapping.reads
 
+import java.time.LocalDate
+
 import models.WhatKindOfAsset
 import models.WhatKindOfAsset.Shares
 import pages.asset.WhatKindOfAssetPage
@@ -28,7 +30,8 @@ final case class SharePortfolioAsset(override val whatKindOfAsset: WhatKindOfAss
                                      override val name: String,
                                      override val listedOnTheStockExchange: Boolean,
                                      override val quantityInTheTrust: Long,
-                                     value: Long) extends ShareAsset
+                                     value: Long,
+                                     startDate: LocalDate) extends ShareAsset
 
 object SharePortfolioAsset {
 
@@ -38,7 +41,8 @@ object SharePortfolioAsset {
       (__ \ SharePortfolioNamePage).read[String] and
       (__ \ SharePortfolioOnStockExchangePage).read[Boolean] and
       (__ \ SharePortfolioQuantityInTrustPage).read[Long] and
-      (__ \ SharePortfolioValueInTrustPage).read[Long]
+      (__ \ SharePortfolioValueInTrustPage).read[Long] and
+      (__ \ StartDatePage).read[LocalDate]
     )(SharePortfolioAsset.apply _)
 
 }

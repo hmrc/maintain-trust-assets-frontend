@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-package pages.asset.noneeabusiness
+package models.assets
 
-import models.InternationalAddress
-import pages.QuestionPage
-import play.api.libs.json.JsPath
-import sections.Assets
+import java.time.LocalDate
 
-case object  InternationalAddressPage extends QuestionPage[InternationalAddress] {
+import play.api.libs.json.{Format, Json}
 
-  override def path: JsPath = JsPath \ Assets \ toString
+final case class SharesType(numberOfShares: String,
+                            orgName: String,
+                            shareClass: String,
+                            typeOfShare: String,
+                            value: Long) extends AssetType
 
-  override def toString: String = "nonEeaBusinessInternationalAddress"
+object SharesType {
+  implicit val sharesTypeFormat: Format[SharesType] = Json.format[SharesType]
 }

@@ -16,7 +16,7 @@
 
 package pages.asset.property_or_land
 
-import models.{InternationalAddress, UKAddress, UserAnswers}
+import models.{NonUkAddress, UkAddress, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.behaviours.PageBehaviours
 
@@ -39,8 +39,8 @@ class PropertyOrLandAddressYesNoPageSpec extends PageBehaviours {
           initial =>
             val answers: UserAnswers = initial.set(page, true).success.value
               .set(PropertyOrLandAddressUkYesNoPage, true).success.value
-              .set(PropertyOrLandInternationalAddressPage,  InternationalAddress("line 1", "line 2", None, "France")).success.value
-              .set(PropertyOrLandUKAddressPage,  UKAddress("line 1", "line2", None, None, "NE1 1NE")).success.value
+              .set(PropertyOrLandInternationalAddressPage,  NonUkAddress("line 1", "line 2", None, "France")).success.value
+              .set(PropertyOrLandUKAddressPage,  UkAddress("line 1", "line2", None, None, "NE1 1NE")).success.value
 
             val result = answers.set(page, false).success.value
 

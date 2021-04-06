@@ -44,7 +44,7 @@ class NonEeaBusinessNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
 
     "navigate from InternationalAddressPage to GoverningCountryPage" in {
 
-      val page = InternationalAddressPage
+      val page = NonUkAddressPage
 
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>

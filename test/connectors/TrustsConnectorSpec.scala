@@ -23,7 +23,8 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import generators.Generators
-import models.{AddressType, AssetMonetaryAmount, Assets, BusinessAssetType, NonEeaBusinessType, OtherAssetType, PartnershipType, PropertyLandType, RemoveAsset, SharesType, TrustDetails, TypeOfTrust}
+import models.assets.{AddressType, AssetMonetaryAmount, Assets, BusinessAssetType, NonEeaBusinessType, OtherAssetType, PartnershipType, PropertyLandType, SharesType}
+import models.{RemoveAsset, TrustDetails, TypeOfTrust}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Inside}
 import play.api.libs.json.{JsBoolean, Json}
@@ -244,7 +245,8 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures
               |    "assets": {
               |        "monetary": [
               |          {
-              |            "assetMonetaryAmount": 1000
+              |            "assetMonetaryAmount": 1000,
+              |            "startDate": "2019-02-03"
               |          }
               |        ]
               |     }

@@ -17,7 +17,7 @@
 package mapping
 
 import mapping.reads.OtherAsset
-import models.OtherAssetType
+import models.assets.OtherAssetType
 
 class OtherAssetMapper extends Mapping[OtherAssetType, OtherAsset] {
 

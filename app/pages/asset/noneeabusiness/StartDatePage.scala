@@ -18,13 +18,12 @@ package pages.asset.noneeabusiness
 
 import pages.QuestionPage
 import play.api.libs.json.JsPath
-import sections.Assets
 
 import java.time.LocalDate
 
 case object StartDatePage extends QuestionPage[LocalDate] {
 
-  override def path: JsPath = Assets.path \ toString
+  override def path: JsPath = basePath \ toString
 
   override def toString: String = "nonEeaBusinessStartDate"
 }

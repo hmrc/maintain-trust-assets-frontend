@@ -39,7 +39,7 @@ object NonEeaBusinessAsset {
   implicit lazy val reads: Reads[NonEeaBusinessAsset] = (
     (__ \ WhatKindOfAssetPage).read[WhatKindOfAsset].filter(_ == NonEeaBusiness) and
       (__ \ NamePage).read[String] and
-      (__ \ InternationalAddressPage).read[Address] and
+      (__ \ NonUkAddressPage).read[Address] and
       (__ \ GoverningCountryPage).read[String] and
       (__ \ StartDatePage).read[LocalDate]
     )(NonEeaBusinessAsset.apply _)

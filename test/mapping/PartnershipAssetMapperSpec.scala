@@ -19,7 +19,7 @@ package mapping
 import base.SpecBase
 import generators.Generators
 import models.Status.Completed
-import models.{PartnershipType, WhatKindOfAsset}
+import models.WhatKindOfAsset
 import org.scalatest.{MustMatchers, OptionValues}
 import pages.AssetStatus
 import pages.asset.WhatKindOfAssetPage

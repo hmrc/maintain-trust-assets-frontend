@@ -16,6 +16,8 @@
 
 package mapping.reads
 
+import java.time.LocalDate
+
 import models.WhatKindOfAsset.Business
 import models.{Address, WhatKindOfAsset}
 import pages.asset.WhatKindOfAssetPage
@@ -27,7 +29,8 @@ final case class BusinessAsset(override val whatKindOfAsset: WhatKindOfAsset,
                                assetName: String,
                                assetDescription: String,
                                address: Address,
-                               currentValue: Long) extends Asset {
+                               currentValue: Long,
+                               startDate: LocalDate) extends Asset {
 
   override val arg: String = assetName
 }
@@ -45,7 +48,8 @@ object BusinessAsset {
       (__ \ BusinessNamePage).read[String] and
       (__ \ BusinessDescriptionPage).read[String] and
       addressReads and
-      (__ \ BusinessValuePage).read[Long]
+      (__ \ BusinessValuePage).read[Long] and
+      (__ \ StartDatePage).read[LocalDate]
       )(BusinessAsset.apply _)
 
   }

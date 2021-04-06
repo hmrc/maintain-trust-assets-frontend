@@ -130,7 +130,7 @@ case object WhatKindOfAssetPage extends QuestionPage[WhatKindOfAsset] {
 
   private def removeNonEeaBusiness(userAnswers: UserAnswers): Try[UserAnswers] = {
     userAnswers.remove(noneeabusiness.NamePage)
-      .flatMap(_.remove(noneeabusiness.InternationalAddressPage))
+      .flatMap(_.remove(noneeabusiness.NonUkAddressPage))
       .flatMap(_.remove(noneeabusiness.GoverningCountryPage))
       .flatMap(_.remove(noneeabusiness.StartDatePage))
       .flatMap(removeStatus)

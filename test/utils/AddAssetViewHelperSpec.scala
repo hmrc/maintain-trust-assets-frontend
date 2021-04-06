@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.asset._
 import models.Status._
 import models.WhatKindOfAsset._
-import models.{Assets, InternationalAddress, NormalMode, ShareClass, UKAddress}
+import models.{NonUkAddress, NormalMode, ShareClass, UkAddress}
 import pages.AssetStatus
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.business._
@@ -33,11 +33,13 @@ import pages.asset.shares._
 import viewmodels.AddRow
 import java.time.LocalDate
 
+import models.assets.Assets
+
 class AddAssetViewHelperSpec extends SpecBase {
 
   private val assetValue: Long = 4000L
-  private val ukAddress: UKAddress = UKAddress("line 1", "line 2", None, None, "NE1 1NE")
-  private val nonUkAddress: InternationalAddress = InternationalAddress("Line 1", "Line 2", None, "FR")
+  private val ukAddress: UkAddress = UkAddress("line 1", "line 2", None, None, "NE1 1NE")
+  private val nonUkAddress: NonUkAddress = NonUkAddress("Line 1", "Line 2", None, "FR")
   private val date: LocalDate = LocalDate.parse("1996-02-03")
 
   def changeMoneyAssetRoute(index: Int): String =

@@ -19,7 +19,7 @@ package mapping
 import base.SpecBase
 import generators.Generators
 import models.Status.{Completed, InProgress}
-import models.{ShareClass, SharesType, WhatKindOfAsset}
+import models.{ShareClass, WhatKindOfAsset}
 import org.scalatest.{MustMatchers, OptionValues}
 import pages.AssetStatus
 import pages.asset._

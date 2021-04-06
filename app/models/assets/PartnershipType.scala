@@ -14,19 +14,15 @@
  * limitations under the License.
  */
 
-package pages.asset.business
+package models.assets
 
-import models.InternationalAddress
-import pages.behaviours.PageBehaviours
+import java.time.LocalDate
 
-class BusinessInternationalAddressPageSpec extends PageBehaviours {
+import play.api.libs.json.{Format, Json}
 
-  "BusinessInternationalAddressPage" must {
+final case class PartnershipType(description: String,
+                                 partnershipStart: LocalDate) extends AssetType
 
-    beRetrievable[InternationalAddress](BusinessInternationalAddressPage)
-
-    beSettable[InternationalAddress](BusinessInternationalAddressPage)
-
-    beRemovable[InternationalAddress](BusinessInternationalAddressPage)
-  }
+object PartnershipType {
+  implicit val partnershipTypeFormat: Format[PartnershipType] = Json.format[PartnershipType]
 }

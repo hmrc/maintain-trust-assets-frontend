@@ -21,7 +21,7 @@ import config.annotations.Business
 import controllers.IndexValidation
 import controllers.routes._
 import forms.InternationalAddressFormProvider
-import models.{InternationalAddress, NormalMode, UserAnswers}
+import models.{NonUkAddress, NormalMode, UserAnswers}
 import navigation.Navigator
 import pages.asset.business.{BusinessInternationalAddressPage, BusinessNamePage}
 import play.api.data.Form
@@ -35,12 +35,12 @@ import views.html.asset.buisness.BusinessInternationalAddressView
 class BusinessInternationalAddressControllerSpec extends SpecBase with IndexValidation {
 
   val formProvider = new InternationalAddressFormProvider()
-  val form: Form[InternationalAddress] = formProvider()
+  val form: Form[NonUkAddress] = formProvider()
 
   val index = 0
   val businessName = "Test"
 
-  val validAnswer: InternationalAddress = InternationalAddress("line 1", "line 2", Some("line 3"), "country")
+  val validAnswer: NonUkAddress = NonUkAddress("line 1", "line 2", Some("line 3"), "country")
 
   lazy val businessInternationalAddressRoute: String = routes.BusinessInternationalAddressController.onPageLoad(NormalMode).url
 
