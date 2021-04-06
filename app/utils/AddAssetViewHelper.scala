@@ -98,7 +98,7 @@ class AddAssetViewHelper @Inject()(assets: Assets)
     AddRow(
       name = asset.orgName,
       typeLabel = messages(s"entities.asset.nonEeaBusiness"),
-      changeUrl = noneeabusiness.routes.NameController.onPageLoad(NormalMode).url,
+      changeUrl = noneeabusiness.amend.routes.AnswersController.extractAndRender(index).url,
       removeUrl = ""
     )
   }
