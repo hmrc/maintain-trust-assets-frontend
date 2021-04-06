@@ -79,17 +79,15 @@ class AssetsNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
   }
 
   private def routeToAssetIndex(answers: UserAnswers): Call = {
-    val assets = answers.get(sections.Assets).getOrElse(List.empty)
-
-    if (answers.isTaxable) {
-      val index = assets.size
-      WhatKindOfAssetController.onPageLoad(index)
-    } else {
-      // assets includes an in progress non-EEA business asset as we have just set the value in WhatKindOfAssetPage
-      // therefore we need the index to correspond to that asset (i.e. assets.size - 1)
-//      val index = assets.size - 1
-      controllers.asset.noneeabusiness.routes.NameController.onPageLoad(NormalMode)
-    }
+    controllers.asset.noneeabusiness.routes.NameController.onPageLoad(NormalMode)
+//    val assets = answers.get(sections.Assets).getOrElse(List.empty)
+//
+//    if (answers.isTaxable) {
+//      val index = assets.size
+//      WhatKindOfAssetController.onPageLoad(index)
+//    } else {
+//      controllers.asset.noneeabusiness.routes.NameController.onPageLoad(NormalMode)
+//    }
   }
 
   private def yesNoNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
