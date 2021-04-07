@@ -18,8 +18,8 @@ package extractors
 
 import java.time.LocalDate
 
-import models.assets.{AddressType, AssetType}
-import models.{NonUkAddress, UkAddress, UserAnswers}
+import models.assets.AssetType
+import models.{Address, NonUkAddress, UkAddress, UserAnswers}
 import pages.{EmptyPage, QuestionPage}
 import play.api.libs.json.JsPath
 
@@ -29,7 +29,6 @@ trait AssetExtractor[T <: AssetType] {
 
   def apply(answers: UserAnswers, asset: T, index: Int): Try[UserAnswers] = {
     answers.deleteAtPath(basePath)
-//      .flatMap(_.set(startDatePage, asset.startDate))
       .flatMap(_.set(indexPage, index))
   }
 
@@ -45,13 +44,13 @@ trait AssetExtractor[T <: AssetType] {
 
   def basePath: JsPath
 
-  def extractAddress(address: Option[AddressType], answers: UserAnswers): Try[UserAnswers] = {
-    if (answers.isTaxable) {
+  def extractAddress(address: Address, answers: UserAnswers): Try[UserAnswers] = {
+    if (!answers.isTaxable) {
       address match {
-        case Some(uk: UkAddress) => answers
+        case uk: UkAddress => answers
           .set(ukAddressYesNoPage, true)
           .flatMap(_.set(ukAddressPage, uk))
-        case Some(nonUk: NonUkAddress) => answers
+        case nonUk: NonUkAddress => answers
           .set(ukAddressYesNoPage, false)
           .flatMap(_.set(nonUkAddressPage, nonUk))
       }

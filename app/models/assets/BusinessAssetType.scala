@@ -16,14 +16,12 @@
 
 package models.assets
 
-import java.time.LocalDate
-
 import models.Address
 import play.api.libs.json.{Format, Json}
 
 final case class BusinessAssetType(orgName: String,
                              businessDescription: String,
-                             address: AddressType,
+                             address: Address,
                              businessValue: Long) extends AssetType
 
 object BusinessAssetType {

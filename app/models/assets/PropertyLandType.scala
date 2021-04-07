@@ -16,13 +16,11 @@
 
 package models.assets
 
-import java.time.LocalDate
-
 import models.Address
 import play.api.libs.json.{Format, Json}
 
 final case class PropertyLandType(buildingLandName: Option[String],
-                                  address: Option[AddressType],
+                                  address: Option[Address],
                                   valueFull: Long,
                                   valuePrevious: Option[Long]) extends AssetType
 

@@ -25,7 +25,7 @@ import pages.asset._
 import pages.asset.noneeabusiness._
 import java.time.LocalDate
 
-import models.assets.{AddressType, NonEeaBusinessType}
+import models.assets.NonEeaBusinessType
 
 class NonEeaBusinessAssetMapperSpec extends SpecBase {
 
@@ -36,7 +36,6 @@ class NonEeaBusinessAssetMapperSpec extends SpecBase {
   private val name: String = "Name"
   private val country: String = "FR"
   private val nonUkAddress: NonUkAddress = NonUkAddress("Line 1", "Line 2", Some("Line 3"), country)
-  private val nonUkAddressType: AddressType = AddressType("Line 1", "Line 2", Some("Line 3"), None, None, country)
   private val date: LocalDate = LocalDate.parse("1996-02-03")
 
   "NonEeaBusinessAssetMapper" must {
@@ -66,7 +65,7 @@ class NonEeaBusinessAssetMapperSpec extends SpecBase {
 
         val result = mapper(answers).get
 
-        result mustBe NonEeaBusinessType(lineNo = None, orgName = name, address = nonUkAddressType, govLawCountry = country, startDate = date, endDate = None)
+        result mustBe NonEeaBusinessType(lineNo = None, orgName = name, address = nonUkAddress, govLawCountry = country, startDate = date, endDate = None)
       }
     }
   }
