@@ -38,7 +38,7 @@ import scala.concurrent.Future
 
 class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChecks with ScalaFutures {
 
-  val messagesPrefix = "assets"
+  val messagesPrefix = "nonEeaBusiness.removeYesNo"
 
   lazy val formProvider = new RemoveIndexFormProvider()
   lazy val form = formProvider(messagesPrefix)

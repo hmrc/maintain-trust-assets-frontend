@@ -24,7 +24,7 @@
 @(form: Form[_], index: Int, name: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages(s"assets.removeYesNo.title")}"
+    title = s"${errorPrefix(form)} ${messages(s"nonEeaBusiness.removeYesNo.title")}"
 ) {
 
     @formHelper(action = RemoveAssetYesNoController.onSubmit(index), 'autoComplete -> "off") {
@@ -35,7 +35,7 @@
 
         @components.input_yes_no(
             field = form("value"),
-            label = messages(s"assets.removeYesNo.heading", name),
+            label = messages(s"nonEeaBusiness.removeYesNo.heading", name),
             legendClass = Some("heading-large"),
             legendAsHeading = true
         )

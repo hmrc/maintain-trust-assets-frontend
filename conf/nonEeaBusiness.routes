@@ -24,8 +24,8 @@ POST       /check-answers                                             controller
 GET        /:index/remove                                             controllers.asset.noneeabusiness.remove.RemoveAssetYesNoController.onPageLoad(index: Int)
 POST       /:index/remove                                             controllers.asset.noneeabusiness.remove.RemoveAssetYesNoController.onSubmit(index: Int)
 
-GET        /:index/remove-end-date                                    controllers.asset.noneeabusiness.remove.RemoveAssetEndDateController.onPageLoad(index: Int)
-POST       /:index/remove-end-date                                    controllers.asset.noneeabusiness.remove.RemoveAssetEndDateController.onSubmit(index: Int)
+GET        /:index/remove-with-end-date                               controllers.asset.noneeabusiness.remove.RemoveAssetEndDateController.onPageLoad(index: Int)
+POST       /:index/remove-with-end-date                               controllers.asset.noneeabusiness.remove.RemoveAssetEndDateController.onSubmit(index: Int)
 
 GET        /:index/check-answers                                      controllers.asset.noneeabusiness.amend.AnswersController.extractAndRender(index: Int)
 GET        /:index/check-answers                                      controllers.asset.noneeabusiness.amend.AnswersController.renderFromUserAnswers(index: Int)

@@ -151,14 +151,6 @@ addAssets.nonTaxable.maxedOut.p2 = You can add another non-EEA company by removi
 assets.defaultText = the asset
 assets.nonTaxable.defaultText = this non-EEA company
 
-assets.removeYesNo.title = Are you sure you want to remove the asset?
-assets.removeYesNo.heading = Are you sure you want to remove {0}?
-assets.removeYesNo.error.required = Select yes if you want to remove the asset
-
-assets.nonTaxable.removeYesNo.title = Are you sure you want to remove the non-EEA company?
-assets.nonTaxable.removeYesNo.heading = Are you sure you want to remove {0}?
-assets.nonTaxable.removeYesNo.error.required = Select yes if you want to remove the non-EEA company
-
 trustOwnsNonEeaBusinessYesNo.title = Does the trust own or have a controlling interest in a non-EEA company?
 trustOwnsNonEeaBusinessYesNo.heading = Does the trust own or have a controlling interest in a non-EEA company?
 trustOwnsNonEeaBusinessYesNo.error.required = Select yes if the trust owns or has a controlling interest in a non-EEA company
@@ -507,6 +499,10 @@ nonEeaBusiness.startDate.error.required = The date that the trust started their 
 nonEeaBusiness.startDate.error.invalid = Enter a real date for the date that the trust started their ownership or controlling interest in the company
 nonEeaBusiness.startDate.error.future = The date that the trust started their ownership or controlling interest in the company must be today or in the past
 nonEeaBusiness.startDate.error.past = The date that the trust started their ownership or controlling interest in the company must be after 31 December 1499
+
+nonEeaBusiness.removeYesNo.title = Are you sure you want to remove the asset?
+nonEeaBusiness.removeYesNo.heading = Are you sure you want to remove {0}?
+nonEeaBusiness.removeYesNo.error.required = Select yes if you want to remove the asset
 
 nonEeaBusiness.endDate.title = When did ownership or controlling interest in the Non-EEA company end?
 nonEeaBusiness.endDate.heading = When did ownership or controlling interest in {0} end?

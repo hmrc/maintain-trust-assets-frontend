@@ -45,7 +45,7 @@ class RemoveAssetYesNoController @Inject()(
                                             errorHandler: ErrorHandler
                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
-  private val messagesPrefix: String = "assets"
+  private val messagesPrefix: String = "nonEeaBusiness.removeYesNo"
   private val form = formProvider.apply(messagesPrefix)
 
   private def redirectToLandingPage(): Result = Redirect(controllers.asset.routes.AddAssetsController.onPageLoad())
