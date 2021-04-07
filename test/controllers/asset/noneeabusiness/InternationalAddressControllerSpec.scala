@@ -21,9 +21,9 @@ import config.annotations.NonEeaBusiness
 import controllers.IndexValidation
 import controllers.routes._
 import forms.InternationalAddressFormProvider
-import models.{InternationalAddress, NormalMode, UserAnswers}
+import models.{NonUkAddress, NormalMode, UserAnswers}
 import navigation.Navigator
-import pages.asset.noneeabusiness.{InternationalAddressPage, NamePage}
+import pages.asset.noneeabusiness.{NamePage, NonUkAddressPage}
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -35,9 +35,9 @@ import views.html.asset.noneeabusiness.InternationalAddressView
 class InternationalAddressControllerSpec extends SpecBase with IndexValidation {
 
   private val formProvider = new InternationalAddressFormProvider()
-  private val form: Form[InternationalAddress] = formProvider()
+  private val form: Form[NonUkAddress] = formProvider()
   private val name = "Test"
-  private val validAnswer: InternationalAddress = InternationalAddress("value 1", "value 2", Some("value 3"), "FR")
+  private val validAnswer: NonUkAddress = NonUkAddress("value 1", "value 2", Some("value 3"), "FR")
 
   private lazy val onPageLoadRoute: String = routes.InternationalAddressController.onPageLoad(NormalMode).url
 
@@ -69,7 +69,7 @@ class InternationalAddressControllerSpec extends SpecBase with IndexValidation {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = baseAnswers
-        .set(InternationalAddressPage, validAnswer).success.value
+        .set(NonUkAddressPage, validAnswer).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 

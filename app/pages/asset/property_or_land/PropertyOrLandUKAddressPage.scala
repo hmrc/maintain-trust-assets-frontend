@@ -16,14 +16,13 @@
 
 package pages.asset.property_or_land
 
-import models.UKAddress
+import models.{UkAddress}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
-import sections.Assets
 
-case object PropertyOrLandUKAddressPage extends QuestionPage[UKAddress] {
+case object PropertyOrLandUKAddressPage extends QuestionPage[UkAddress] {
 
-  override def path: JsPath = Assets.path \ toString
+  override def path: JsPath = basePath \ toString
 
   override def toString: String = "propertyOrLandUkAddress"
 }

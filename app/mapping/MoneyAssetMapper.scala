@@ -17,7 +17,7 @@
 package mapping
 
 import mapping.reads.MoneyAsset
-import models.AssetMonetaryAmount
+import models.assets.AssetMonetaryAmount
 
 class MoneyAssetMapper extends Mapping[AssetMonetaryAmount, MoneyAsset] {
 

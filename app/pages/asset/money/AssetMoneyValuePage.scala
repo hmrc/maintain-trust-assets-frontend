@@ -18,11 +18,10 @@ package pages.asset.money
 
 import pages.QuestionPage
 import play.api.libs.json.JsPath
-import sections.Assets
 
 case object AssetMoneyValuePage extends QuestionPage[Long] {
 
-  override def path: JsPath = JsPath \ Assets \ toString
+  override def path: JsPath = basePath \ toString
 
   override def toString: String = "moneyValue"
 }

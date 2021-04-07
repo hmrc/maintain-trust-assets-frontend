@@ -18,13 +18,13 @@ package forms
 
 import forms.mappings.Mappings
 import javax.inject.Inject
-import models.InternationalAddress
+import models.NonUkAddress
 import play.api.data.Forms._
 import play.api.data.{Form, Forms}
 
 class InternationalAddressFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[InternationalAddress] = Form(
+  def apply(): Form[NonUkAddress] = Form(
     mapping(
       "line1" ->
         text("internationalAddress.error.line1.required")
@@ -56,6 +56,6 @@ class InternationalAddressFormProvider @Inject() extends Mappings {
               maxLength(35, "internationalAddress.error.country.length"),
               isNotEmpty("country", "internationalAddress.error.country.required")
             ))
-    )(InternationalAddress.apply)(InternationalAddress.unapply)
+    )(NonUkAddress.apply)(NonUkAddress.unapply)
   )
 }

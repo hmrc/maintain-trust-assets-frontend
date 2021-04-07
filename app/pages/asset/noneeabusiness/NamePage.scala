@@ -18,11 +18,10 @@ package pages.asset.noneeabusiness
 
 import pages.QuestionPage
 import play.api.libs.json.JsPath
-import sections.Assets
 
 case object NamePage extends QuestionPage[String] {
 
-  override def path: JsPath = JsPath \ Assets \ toString
+  override def path: JsPath = basePath \ toString
 
   override def toString: String = "nonEeaBusinessName"
 }

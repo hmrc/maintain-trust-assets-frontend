@@ -21,7 +21,7 @@ import config.annotations.PropertyOrLand
 import controllers.IndexValidation
 import controllers.routes._
 import forms.InternationalAddressFormProvider
-import models.{InternationalAddress, NormalMode}
+import models.{NonUkAddress, NormalMode}
 import navigation.Navigator
 import pages.asset.property_or_land.PropertyOrLandInternationalAddressPage
 import play.api.Application
@@ -39,7 +39,7 @@ import scala.concurrent.Future
 class PropertyOrLandInternationalAddressControllerSpec extends SpecBase with IndexValidation {
 
   val formProvider = new InternationalAddressFormProvider()
-  val form: Form[InternationalAddress] = formProvider()
+  val form: Form[NonUkAddress] = formProvider()
 
   lazy val propertyOrLandInternationalAddressRoute: String = routes.PropertyOrLandInternationalAddressController.onPageLoad(NormalMode).url
 
@@ -68,7 +68,7 @@ class PropertyOrLandInternationalAddressControllerSpec extends SpecBase with Ind
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers
-        .set(PropertyOrLandInternationalAddressPage, InternationalAddress("line 1", "line 2", Some("line 3"), "country")).success.value
+        .set(PropertyOrLandInternationalAddressPage, NonUkAddress("line 1", "line 2", Some("line 3"), "country")).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -83,7 +83,7 @@ class PropertyOrLandInternationalAddressControllerSpec extends SpecBase with Ind
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(InternationalAddress("line 1", "line 2", Some("line 3"), "country")), countryOptions, NormalMode)(request, messages).toString
+        view(form.fill(NonUkAddress("line 1", "line 2", Some("line 3"), "country")), countryOptions, NormalMode)(request, messages).toString
 
       application.stop()
     }

@@ -23,7 +23,8 @@ import config.annotations.{Assets => AssetsAnnotations}
 import connectors.TrustsStoreConnector
 import forms.{AddAssetsFormProvider, YesNoFormProvider}
 import generators.Generators
-import models._
+import models.assets._
+import models.{AddAssets, NormalMode, RemoveAsset}
 import navigation.Navigator
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -46,7 +47,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
   lazy val completePostRoute: String = routes.AddAssetsController.submitComplete().url
 
   def changeNonEeaAssetRoute(index: Int): String =
-    noneeabusiness.add.routes.AnswersController.onPageLoad().url
+    noneeabusiness.amend.routes.AnswersController.extractAndRender(index).url
 
 
   def removeAssetYesNoRoute(index: Int): String =

@@ -23,3 +23,8 @@ POST       /check-answers                                             controller
 
 GET        /:index/remove                                             controllers.asset.noneeabusiness.remove.RemoveAssetYesNoController.onPageLoad(index: Int)
 POST       /:index/remove                                             controllers.asset.noneeabusiness.remove.RemoveAssetYesNoController.onSubmit(index: Int)
+
+GET        /:index/check-answers                                      controllers.asset.noneeabusiness.amend.AnswersController.extractAndRender(index: Int)
+GET        /:index/check-answers                                      controllers.asset.noneeabusiness.amend.AnswersController.renderFromUserAnswers(index: Int)
+POST       /:index/check-answers                                      controllers.asset.noneeabusiness.amend.AnswersController.onSubmit(index: Int)
+

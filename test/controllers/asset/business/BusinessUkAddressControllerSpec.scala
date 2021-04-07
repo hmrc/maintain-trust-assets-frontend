@@ -21,7 +21,7 @@ import config.annotations.Business
 import controllers.IndexValidation
 import controllers.routes._
 import forms.UKAddressFormProvider
-import models.{NormalMode, UKAddress, UserAnswers}
+import models.{NormalMode, UkAddress, UserAnswers}
 import navigation.Navigator
 import pages.asset.business.{BusinessNamePage, BusinessUkAddressPage}
 import play.api.data.Form
@@ -33,10 +33,10 @@ import views.html.asset.buisness.BusinessUkAddressView
 class BusinessUkAddressControllerSpec extends SpecBase with IndexValidation {
 
   val formProvider = new UKAddressFormProvider()
-  val form: Form[UKAddress] = formProvider()
+  val form: Form[UkAddress] = formProvider()
   val index = 0
   val businessName = "Test"
-  val validAnswer: UKAddress = UKAddress("value 1", "value 2", Some("value 3"), Some("value 4"), "AB1 1AB")
+  val validAnswer: UkAddress = UkAddress("value 1", "value 2", Some("value 3"), Some("value 4"), "AB1 1AB")
 
   lazy val assetUkAddressRoute: String = routes.BusinessUkAddressController.onPageLoad(NormalMode).url
 

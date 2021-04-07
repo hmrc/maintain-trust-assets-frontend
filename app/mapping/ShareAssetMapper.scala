@@ -17,7 +17,8 @@
 package mapping
 
 import mapping.reads.{ShareAsset, ShareNonPortfolioAsset, SharePortfolioAsset}
-import models.{ShareClass, SharesType}
+import models.ShareClass
+import models.assets.SharesType
 
 class ShareAssetMapper extends Mapping[SharesType, ShareAsset] {
 

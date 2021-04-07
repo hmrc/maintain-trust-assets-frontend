@@ -19,7 +19,7 @@ package navigation
 import base.SpecBase
 import controllers.asset.property_or_land.routes._
 import generators.Generators
-import models.{InternationalAddress, NormalMode, UKAddress, UserAnswers}
+import models.{NonUkAddress, NormalMode, UkAddress, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.asset.property_or_land._
@@ -95,7 +95,7 @@ class PropertyOrLandNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
 
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>
-            val answers = userAnswers.set(page, InternationalAddress("line1", "line2", None, "France")).success.value
+            val answers = userAnswers.set(page, NonUkAddress("line1", "line2", None, "France")).success.value
             navigator.nextPage(page, NormalMode, answers)
               .mustBe(PropertyOrLandTotalValueController.onPageLoad(NormalMode))
         }
@@ -106,7 +106,7 @@ class PropertyOrLandNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
 
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>
-            val answers = userAnswers.set(page, UKAddress("line1", "line2",  None, None, "NE11NE")).success.value
+            val answers = userAnswers.set(page, UkAddress("line1", "line2",  None, None, "NE11NE")).success.value
             navigator.nextPage(page, NormalMode, answers)
               .mustBe(PropertyOrLandTotalValueController.onPageLoad(NormalMode))
         }

@@ -16,17 +16,17 @@
 
 package pages.asset.business
 
-import models.UKAddress
+import models.UkAddress
 import pages.behaviours.PageBehaviours
 
 class BusinessUkAddressPageSpec extends PageBehaviours {
 
   "BusinessUkAddressPage" must {
 
-    beRetrievable[UKAddress](BusinessUkAddressPage)
+    beRetrievable[UkAddress](BusinessUkAddressPage)
 
-    beSettable[UKAddress](BusinessUkAddressPage)
+    beSettable[UkAddress](BusinessUkAddressPage)
 
-    beRemovable[UKAddress](BusinessUkAddressPage)
+    beRemovable[UkAddress](BusinessUkAddressPage)
   }
 }

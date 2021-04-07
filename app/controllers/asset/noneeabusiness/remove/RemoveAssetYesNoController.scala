@@ -20,7 +20,8 @@ import controllers.actions.StandardActionSets
 import forms.RemoveIndexFormProvider
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.{AssetNameType, RemoveAsset}
+import models.RemoveAsset
+import models.assets.AssetNameType
 import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}

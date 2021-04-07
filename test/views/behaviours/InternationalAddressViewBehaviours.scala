@@ -16,7 +16,7 @@
 
 package views.behaviours
 
-import models.InternationalAddress
+import models.NonUkAddress
 import play.api.data.{Form, FormError}
 import play.twirl.api.HtmlFormat
 import views.ViewUtils
@@ -28,9 +28,9 @@ trait InternationalAddressViewBehaviours extends ViewBehaviours {
   val errorMessage = "error.number"
   val error: FormError = FormError(errorKey, errorMessage)
 
-  val form: Form[InternationalAddress]
+  val form: Form[NonUkAddress]
 
-  def internationalAddress(createView: Form[InternationalAddress] => HtmlFormat.Appendable,
+  def internationalAddress(createView: Form[NonUkAddress] => HtmlFormat.Appendable,
                            titleMessagePrefix: Option[String],
                            args: String*): Unit = {
 

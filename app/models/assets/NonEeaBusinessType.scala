@@ -14,21 +14,20 @@
  * limitations under the License.
  */
 
-package pages.asset.property_or_land
+package models.assets
 
-import models.InternationalAddress
-import pages.behaviours.PageBehaviours
+import java.time.LocalDate
 
-class PropertyOrLandInternationalAddressPageSpec extends PageBehaviours {
+import models.Address
+import play.api.libs.json.{Format, Json}
 
-  val page = PropertyOrLandInternationalAddressPage
+final case class NonEeaBusinessType(lineNo: Option[String],
+                              orgName: String,
+                              address: AddressType,
+                              govLawCountry: String,
+                              startDate: LocalDate,
+                              endDate: Option[LocalDate]) extends AssetType
 
-  "PropertyOrLandInternationalAddressPage" must {
-
-    beRetrievable[InternationalAddress](page)
-
-    beSettable[InternationalAddress](page)
-
-    beRemovable[InternationalAddress](page)
-  }
+object NonEeaBusinessType {
+  implicit val format: Format[NonEeaBusinessType] = Json.format[NonEeaBusinessType]
 }

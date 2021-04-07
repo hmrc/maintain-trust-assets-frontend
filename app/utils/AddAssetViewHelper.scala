@@ -17,10 +17,11 @@
 package utils
 
 import controllers.asset._
-import models.{AssetMonetaryAmount, Assets, BusinessAssetType, NonEeaBusinessType, NormalMode, OtherAssetType, PartnershipType, PropertyLandType, SharesType}
+import models.NormalMode
 import play.api.i18n.Messages
 import viewmodels.{AddRow, AddToRows}
 import javax.inject.Inject
+import models.assets.{AssetMonetaryAmount, Assets, BusinessAssetType, NonEeaBusinessType, OtherAssetType, PartnershipType, PropertyLandType, SharesType}
 
 class AddAssetViewHelper @Inject()(assets: Assets)
                                   (implicit messages: Messages) {
@@ -97,7 +98,7 @@ class AddAssetViewHelper @Inject()(assets: Assets)
     AddRow(
       name = asset.orgName,
       typeLabel = messages(s"entities.asset.nonEeaBusiness"),
-      changeUrl = noneeabusiness.add.routes.AnswersController.onPageLoad().url,
+      changeUrl = noneeabusiness.amend.routes.AnswersController.extractAndRender(index).url,
       removeUrl = noneeabusiness.remove.routes.RemoveAssetYesNoController.onPageLoad(index).url
     )
   }

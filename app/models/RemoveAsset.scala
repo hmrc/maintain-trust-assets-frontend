@@ -18,6 +18,7 @@ package models
 
 import java.time.LocalDate
 
+import models.assets.AssetNameType
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsPath, Writes}
 

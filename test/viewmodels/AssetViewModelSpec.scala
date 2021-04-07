@@ -164,7 +164,7 @@ class AssetViewModelSpec extends FreeSpec with MustMatchers with ScalaCheckPrope
                 |"businessUkAddress": {
                 | "line1": "line 1",
                 | "line2": "Newcastle",
-                | "postcode": "NE11TU"
+                | "postCode": "NE11TU"
                 |},
                 |"whatKindOfAsset" : "Business",
                 |"status": "completed"
@@ -286,7 +286,7 @@ class AssetViewModelSpec extends FreeSpec with MustMatchers with ScalaCheckPrope
                   |"propertyOrLandUkAddress": {
                   | "line1": "line 1",
                   | "line2": "Newcastle",
-                  | "postcode": "NE11TU"
+                  | "postCode": "NE11TU"
                   |},
                   |"whatKindOfAsset" : "PropertyOrLand",
                   |"status": "completed"
@@ -477,7 +477,7 @@ class AssetViewModelSpec extends FreeSpec with MustMatchers with ScalaCheckPrope
                 |  "nonEeaBusinessUkAddress": {
                 |    "line1": "line 1",
                 |    "line2": "Line 2",
-                |    "postcode": "AB1 1AB"
+                |    "postCode": "AB1 1AB"
                 |  },
                 |  "nonEeaBusinessGoverningCountry": "GB",
                 |  "nonEeaBusinessStartDate": "1996-02-03",

@@ -14,10 +14,17 @@
  * limitations under the License.
  */
 
-package pages.asset
+package pages.asset.partnership
 
+import java.time.LocalDate
+
+import pages.QuestionPage
 import play.api.libs.json.JsPath
+import sections.Assets
 
-package object partnerrship {
-  val basePath: JsPath = JsPath \ 'partnerrship
+case object  StartDatePage extends QuestionPage[LocalDate] {
+
+  override def path: JsPath = Assets.path \ toString
+
+  override def toString: String = "startDate"
 }

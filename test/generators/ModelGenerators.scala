@@ -29,7 +29,7 @@ trait ModelGenerators {
       Gen.oneOf(WhatKindOfAsset.values)
     }
 
-  implicit lazy val arbitraryUkAddress: Arbitrary[UKAddress] =
+  implicit lazy val arbitraryUkAddress: Arbitrary[UkAddress] =
     Arbitrary {
       for {
         line1 <- arbitrary[String]
@@ -37,14 +37,14 @@ trait ModelGenerators {
         line3 <- arbitrary[String]
         line4 <- arbitrary[String]
         postcode <- arbitrary[String]
-      } yield UKAddress(line1, line2, Some(line3), Some(line4), postcode)
+      } yield UkAddress(line1, line2, Some(line3), Some(line4), postcode)
     }
 
-  implicit lazy val arbitraryInternationalAddress: Arbitrary[InternationalAddress] =
+  implicit lazy val arbitraryInternationalAddress: Arbitrary[NonUkAddress] =
     Arbitrary {
       for {
         str <- arbitrary[String]
-      } yield InternationalAddress(str, str, Some(str), str)
+      } yield NonUkAddress(str, str, Some(str), str)
     }
 
   implicit lazy val arbitraryShareClass: Arbitrary[ShareClass] =

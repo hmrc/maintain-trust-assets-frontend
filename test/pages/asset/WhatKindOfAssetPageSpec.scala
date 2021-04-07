@@ -16,7 +16,7 @@
 
 package pages.asset
 
-import models.{InternationalAddress, ShareClass, Status, UKAddress, UserAnswers, WhatKindOfAsset}
+import models.{NonUkAddress, ShareClass, Status, UkAddress, UserAnswers, WhatKindOfAsset}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.AssetStatus
 import pages.asset.business._
@@ -26,15 +26,14 @@ import pages.asset.partnership._
 import pages.asset.property_or_land._
 import pages.asset.shares._
 import pages.behaviours.PageBehaviours
-
 import java.time.LocalDate
 
 class WhatKindOfAssetPageSpec extends PageBehaviours {
 
   private val str: String = "string"
   private val num: Long = 20L
-  private val ukAddress: UKAddress = UKAddress(str, str, None, None, str)
-  private val internationalAddress: InternationalAddress = InternationalAddress(str, str, None, str)
+  private val ukAddress: UkAddress = UkAddress(str, str, None, None, str)
+  private val internationalAddress: NonUkAddress = NonUkAddress(str, str, None, str)
   private val date: LocalDate = LocalDate.parse("1996-02-03")
 
   "WhatKindOfAssetPage" must {
@@ -213,7 +212,7 @@ class WhatKindOfAssetPageSpec extends PageBehaviours {
       (initial, kind) =>
         val answers: UserAnswers = initial
           .set(noneeabusiness.NamePage, str).success.value
-          .set(noneeabusiness.InternationalAddressPage, internationalAddress).success.value
+          .set(noneeabusiness.NonUkAddressPage, internationalAddress).success.value
           .set(noneeabusiness.GoverningCountryPage, str).success.value
           .set(noneeabusiness.StartDatePage, date).success.value
           .set(AssetStatus, Status.Completed).success.value
@@ -223,7 +222,7 @@ class WhatKindOfAssetPageSpec extends PageBehaviours {
         result.get(WhatKindOfAssetPage).value mustEqual kind
 
         result.get(noneeabusiness.NamePage) mustNot be(defined)
-        result.get(noneeabusiness.InternationalAddressPage) mustNot be(defined)
+        result.get(noneeabusiness.NonUkAddressPage) mustNot be(defined)
         result.get(noneeabusiness.GoverningCountryPage) mustNot be(defined)
         result.get(noneeabusiness.StartDatePage) mustNot be(defined)
         result.get(AssetStatus) mustNot be(defined)

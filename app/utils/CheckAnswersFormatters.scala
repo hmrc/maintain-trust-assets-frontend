@@ -16,15 +16,15 @@
 
 package utils
 
-import models.{Address, InternationalAddress, UKAddress}
+import models.{Address, NonUkAddress, UkAddress}
 import org.joda.time.{LocalDate => JodaDate}
 import play.api.i18n.Messages
 import play.twirl.api.Html
 import play.twirl.api.HtmlFormat.escape
 import uk.gov.hmrc.play.language.LanguageUtils
 import utils.countryOptions.CountryOptions
-
 import java.time.{LocalDate => JavaDate}
+
 import javax.inject.Inject
 
 class CheckAnswersFormatters @Inject()(languageUtils: LanguageUtils,
@@ -38,12 +38,12 @@ class CheckAnswersFormatters @Inject()(languageUtils: LanguageUtils,
 
   def addressFormatter(address: Address)(implicit messages: Messages): Html = {
     address match {
-      case a: UKAddress => ukAddress(a)
-      case a: InternationalAddress => internationalAddress(a)
+      case a: UkAddress => ukAddress(a)
+      case a: NonUkAddress => internationalAddress(a)
     }
   }
 
-  private def ukAddress(address: UKAddress): Html = {
+  private def ukAddress(address: UkAddress): Html = {
 
     val lines: Seq[Html] = Seq(
       Some(escape(address.line1)),
@@ -56,7 +56,7 @@ class CheckAnswersFormatters @Inject()(languageUtils: LanguageUtils,
     breakLines(lines)
   }
 
-  private def internationalAddress(address: InternationalAddress)(implicit messages: Messages): Html = {
+  private def internationalAddress(address: NonUkAddress)(implicit messages: Messages): Html = {
 
     val lines: Seq[Html] = Seq(
       Some(escape(address.line1)),

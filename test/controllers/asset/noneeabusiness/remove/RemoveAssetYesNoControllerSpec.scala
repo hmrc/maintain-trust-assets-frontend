@@ -22,7 +22,7 @@ import base.SpecBase
 import connectors.TrustsConnector
 import controllers.Assets.OK
 import forms.RemoveIndexFormProvider
-import models.{AddressType, Assets, NonEeaBusinessType}
+import models.assets._
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures

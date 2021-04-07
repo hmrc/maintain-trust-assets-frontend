@@ -35,7 +35,7 @@ class NonEeaBusinessPrintHelper @Inject()(answerRowConverter: AnswerRowConverter
       Seq(
         if (userAnswers.isTaxable) bound.assetTypeQuestion(0) else None,
         bound.stringQuestion(NamePage, "nonEeaBusiness.name", NameController.onPageLoad(mode).url),
-        bound.addressQuestion(InternationalAddressPage, "nonEeaBusiness.internationalAddress", InternationalAddressController.onPageLoad(mode).url),
+        bound.addressQuestion(NonUkAddressPage, "nonEeaBusiness.internationalAddress", InternationalAddressController.onPageLoad(mode).url),
         bound.countryQuestion(GoverningCountryPage, "nonEeaBusiness.governingCountry", GoverningCountryController.onPageLoad(mode).url),
         bound.dateQuestion(StartDatePage, "nonEeaBusiness.startDate", StartDateController.onPageLoad(mode).url)
       ).flatten

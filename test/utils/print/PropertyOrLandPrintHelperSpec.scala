@@ -20,7 +20,7 @@ import base.SpecBase
 import controllers.asset.property_or_land.routes._
 import controllers.asset.routes.WhatKindOfAssetController
 import models.WhatKindOfAsset.PropertyOrLand
-import models.{InternationalAddress, NormalMode, UKAddress, UserAnswers}
+import models.{NonUkAddress, NormalMode, UkAddress, UserAnswers}
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.property_or_land._
 import play.twirl.api.Html
@@ -31,8 +31,8 @@ class PropertyOrLandPrintHelperSpec extends SpecBase {
   private val helper: PropertyOrLandPrintHelper = injector.instanceOf[PropertyOrLandPrintHelper]
   private val index: Int = 0
   private val description: String = "Description"
-  private val ukAddress: UKAddress = UKAddress("Line 1", "Line 2", None, None, "AB1 1AB")
-  private val nonUkAddress: InternationalAddress = InternationalAddress("Line 1", "Line 2", None, "FR")
+  private val ukAddress: UkAddress = UkAddress("Line 1", "Line 2", None, None, "AB1 1AB")
+  private val nonUkAddress: NonUkAddress = NonUkAddress("Line 1", "Line 2", None, "FR")
   private val amount: Long = 100L
   private val secondaryAmount: Long = 50L
 

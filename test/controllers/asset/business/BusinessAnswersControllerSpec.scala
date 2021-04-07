@@ -18,7 +18,7 @@ package controllers.asset.business
 
 import base.SpecBase
 import controllers.routes._
-import models.{UKAddress, UserAnswers}
+import models.{UkAddress, UserAnswers}
 import pages.asset.business._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -35,7 +35,7 @@ class BusinessAnswersControllerSpec extends SpecBase {
     .set(BusinessNamePage, name).success.value
     .set(BusinessDescriptionPage, "test test test").success.value
     .set(BusinessAddressUkYesNoPage, true).success.value
-    .set(BusinessUkAddressPage, UKAddress("test", "test", None, None, "NE11NE")).success.value
+    .set(BusinessUkAddressPage, UkAddress("test", "test", None, None, "NE11NE")).success.value
     .set(BusinessValuePage, 12L).success.value
 
   "AssetAnswerPage Controller" must {
