@@ -35,7 +35,7 @@ class NonEeaBusinessExtractor extends AssetExtractor[NonEeaBusinessType] {
     super.apply(answers, noneEaBusiness, index)
       .flatMap(_.set(NamePage, noneEaBusiness.orgName))
       .flatMap(_.set(GoverningCountryPage, noneEaBusiness.govLawCountry))
-      .flatMap(answers => extractAddress(noneEaBusiness.address, answers))
+      .flatMap(answers => extractAddress(Some(noneEaBusiness.address), answers))
       .flatMap(_.set(StartDatePage, noneEaBusiness.startDate))
   }
 

@@ -44,19 +44,15 @@ trait AssetExtractor[T <: AssetType] {
 
   def basePath: JsPath
 
-  def extractAddress(address: Address, answers: UserAnswers): Try[UserAnswers] = {
-    if (!answers.isTaxable) {
+  def extractAddress(address: Option[Address], answers: UserAnswers): Try[UserAnswers] = {
       address match {
-        case uk: UkAddress => answers
+        case Some(uk: UkAddress) => answers
           .set(ukAddressYesNoPage, true)
           .flatMap(_.set(ukAddressPage, uk))
-        case nonUk: NonUkAddress => answers
+        case Some(nonUk: NonUkAddress) => answers
           .set(ukAddressYesNoPage, false)
           .flatMap(_.set(nonUkAddressPage, nonUk))
       }
-    } else {
-      Success(answers)
-    }
   }
 
 }
