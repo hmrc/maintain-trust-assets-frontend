@@ -23,23 +23,18 @@ import config.annotations.{Assets => AssetsAnnotations}
 import connectors.TrustsStoreConnector
 import forms.{AddAssetsFormProvider, YesNoFormProvider}
 import generators.Generators
-import javax.inject.Inject
-import models.AddAssets.{NoComplete, YesNow}
 import models.Status.Completed
-import models.WhatKindOfAsset.{Money, NonEeaBusiness, Other, Shares}
-import models.assets.{AddressType, AssetMonetaryAmount, Assets, BusinessAssetType, NonEeaBusinessType, OtherAssetType, PartnershipType, PropertyLandType, SharesType}
-import models.{AddAssets, NormalMode, RemoveAsset, ShareClass, UserAnswers}
+import models.WhatKindOfAsset.{Money, NonEeaBusiness, Shares}
+import models.assets.{AssetMonetaryAmount, Assets, BusinessAssetType, NonEeaBusinessType, OtherAssetType, PartnershipType, PropertyLandType, SharesType}
+import models.{AddAssets, NonUkAddress, NormalMode, RemoveAsset, ShareClass, UserAnswers}
 import navigation.Navigator
 import org.mockito.ArgumentCaptor
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{reset, verify, when}
-import org.scalacheck.Arbitrary.arbitrary
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks.forAll
 import pages.AssetStatus
 import pages.asset.money._
-import pages.asset.other.OtherAssetDescriptionPage
 import pages.asset.shares._
-import pages.asset.{AddAnAssetYesNoPage, AddAssetsPage, WhatKindOfAssetPage}
+import pages.asset.{AddAnAssetYesNoPage, WhatKindOfAssetPage}
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -47,7 +42,7 @@ import play.api.test.Helpers._
 import services.TrustService
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import viewmodels.AddRow
-import views.html.asset.{AddAnAssetYesNoView, AddAssetsView, MaxedOutView}
+import views.html.asset.AddAnAssetYesNoView
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -95,7 +90,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
 
   val mockStoreConnector : TrustsStoreConnector = mock[TrustsStoreConnector]
 
-  val nonEeaBusinessAsset = NonEeaBusinessType(None, "orgName", AddressType("", "", None, None, None, ""), "", LocalDate.now, None)
+  val nonEeaBusinessAsset = NonEeaBusinessType(None, "orgName", NonUkAddress("", "", None, ""), "", LocalDate.now, None)
 
   "AddAssets Controller" when {
 

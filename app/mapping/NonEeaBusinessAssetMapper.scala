@@ -22,7 +22,7 @@ import java.time.LocalDate
 import mapping.reads.NonEeaBusinessAsset
 import models.{Address, UserAnswers}
 import javax.inject.Inject
-import models.assets.{AddressType, NonEeaBusinessType}
+import models.assets.NonEeaBusinessType
 import pages.asset.noneeabusiness.{GoverningCountryPage, NonUkAddressPage, NamePage, StartDatePage}
 import play.api.Logging
 import play.api.libs.json.{JsError, JsSuccess, Reads}
@@ -35,7 +35,7 @@ class NonEeaBusinessAssetMapper @Inject()(addressMapper: AddressMapper) extends 
       (
         Reads(_ => JsSuccess(None)) and
           NamePage.path.read[String] and
-          NonUkAddressPage.path.read[AddressType] and
+          NonUkAddressPage.path.read[Address] and
           GoverningCountryPage.path.read[String] and
           StartDatePage.path.read[LocalDate] and
           Reads(_ => JsSuccess(None))

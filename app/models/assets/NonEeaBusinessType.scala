@@ -23,7 +23,7 @@ import play.api.libs.json.{Format, Json}
 
 final case class NonEeaBusinessType(lineNo: Option[String],
                               orgName: String,
-                              address: AddressType,
+                              address: Address,
                               govLawCountry: String,
                               startDate: LocalDate,
                               endDate: Option[LocalDate]) extends AssetType

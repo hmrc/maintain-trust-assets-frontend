@@ -18,7 +18,7 @@ package models
 
 import java.time.LocalDate
 
-import models.assets.{AddressType, AssetMonetaryAmount, Assets, BusinessAssetType, NonEeaBusinessType, OtherAssetType, PartnershipType, PropertyLandType, SharesType}
+import models.assets.{AssetMonetaryAmount, Assets, BusinessAssetType, NonEeaBusinessType, OtherAssetType, PartnershipType, PropertyLandType, SharesType}
 import org.scalatest.{MustMatchers, WordSpec}
 import play.api.libs.json.Json
 
@@ -140,13 +140,12 @@ class AssetsSpec extends WordSpec with MustMatchers{
         val businessAsset = BusinessAssetType(
           orgName = "Business Ltd",
           businessDescription = "Business description",
-          address = AddressType(
+          address = UkAddress(
             line1 = "123 Test Street",
             line2 = "Test Village",
             line3 = Some("Test line3"),
             line4 = Some("Test line4"),
-            postCode = Some("Z99 2YY"),
-            country = "GB"),
+            postcode = "Z99 2YY"),
           businessValue = 1000L
         )
 
@@ -244,12 +243,10 @@ class AssetsSpec extends WordSpec with MustMatchers{
         val monEEAAsset1 = NonEeaBusinessType(
             lineNo = Some("1"),
             orgName = "Panda care Ltd",
-            address = AddressType(
+            address = NonUkAddress(
               line1 = "1010 EASY ST",
               line2 = "OTTAWA",
               line3 = Some("ONTARIO"),
-              line4 = Some("ONTARIO"),
-              postCode = None,
               country = "CA"),
           govLawCountry = "CA",
           startDate = LocalDate.of(2020, 1, 5),

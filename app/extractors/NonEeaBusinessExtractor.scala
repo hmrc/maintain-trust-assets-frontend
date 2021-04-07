@@ -36,6 +36,7 @@ class NonEeaBusinessExtractor extends AssetExtractor[NonEeaBusinessType] {
       .flatMap(_.set(NamePage, noneEaBusiness.orgName))
       .flatMap(_.set(GoverningCountryPage, noneEaBusiness.govLawCountry))
       .flatMap(answers => extractAddress(Some(noneEaBusiness.address), answers))
+      .flatMap(_.set(StartDatePage, noneEaBusiness.startDate))
   }
 
   override def namePage: QuestionPage[String] = NamePage
