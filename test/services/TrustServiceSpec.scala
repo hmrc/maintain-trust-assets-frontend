@@ -20,7 +20,7 @@ import java.time.LocalDate
 
 import connectors.TrustsConnector
 import models._
-import models.assets.{AddressType, AssetMonetaryAmount, AssetNameType, Assets, BusinessAssetType, NonEeaBusinessType, OtherAssetType, PartnershipType, PropertyLandType, SharesType}
+import models.assets._
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
@@ -40,10 +40,10 @@ class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers wi
   val moneyAsset = AssetMonetaryAmount(123)
   val propertyOrLandAsset = PropertyLandType(None, None, 123, None)
   val sharesAsset = SharesType("", "", "", "", 123)
-  val businessAsset = BusinessAssetType("", "", AddressType("", "", None, None, None, ""), 123)
+  val businessAsset = BusinessAssetType("", "", NonUkAddress("", "", None, ""), 123)
   val partnershipAsset = PartnershipType("", LocalDate.now)
   val otherAsset = OtherAssetType("", 123)
-  val nonEeaBusinessAsset = NonEeaBusinessType(None, "orgName", AddressType("", "", None, None, None, ""), "", LocalDate.now, None)
+  val nonEeaBusinessAsset = NonEeaBusinessType(None, "orgName", NonUkAddress("", "", None, ""), "", LocalDate.now, None)
 
   val assets = Assets(
     monetary = List(moneyAsset),

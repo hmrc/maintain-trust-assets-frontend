@@ -24,7 +24,7 @@ import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import generators.Generators
 import models.assets._
-import models.{RemoveAsset, TrustDetails, TypeOfTrust}
+import models.{NonUkAddress, RemoveAsset, TrustDetails, TypeOfTrust}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Inside}
 import play.api.libs.json.{JsBoolean, Json}
@@ -83,10 +83,10 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures
   val moneyAsset = AssetMonetaryAmount(123)
   val propertyOrLandAsset = PropertyLandType(None, None, 123, None)
   val sharesAsset = SharesType("", "", "", "", 123)
-  val businessAsset = BusinessAssetType("", "", AddressType("", "", None, None, None, ""), 123)
+  val businessAsset = BusinessAssetType("", "", NonUkAddress("", "", None, ""), 123)
   val partnershipAsset = PartnershipType("", LocalDate.now)
   val otherAsset = OtherAssetType("", 123)
-  val nonEeaBusinessAsset = NonEeaBusinessType(None, "orgName", AddressType("", "", None, None, None, ""), "", LocalDate.now, None)
+  val nonEeaBusinessAsset = NonEeaBusinessType(None, "orgName", NonUkAddress("", "", None, ""), "", LocalDate.now, None)
 
   "trust connector" when {
 

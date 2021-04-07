@@ -22,6 +22,7 @@ import base.SpecBase
 import connectors.TrustsConnector
 import controllers.Assets.OK
 import forms.RemoveIndexFormProvider
+import models.NonUkAddress
 import models.assets._
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -47,7 +48,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
   val mockConnector: TrustsConnector = mock[TrustsConnector]
 
-  def createAsset(id: Int, provisional : Boolean) = NonEeaBusinessType(None, s"OrgName $id", AddressType("", "", None, None, None, ""), "", LocalDate.now, None)
+  def createAsset(id: Int, provisional : Boolean) = NonEeaBusinessType(None, s"OrgName $id", NonUkAddress("", "", None, ""), "", LocalDate.now, None)
 
   val nonEeaAssets = List(
     createAsset(0, provisional = false),

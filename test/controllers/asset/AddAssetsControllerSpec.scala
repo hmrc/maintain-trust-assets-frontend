@@ -23,11 +23,11 @@ import config.annotations.{Assets => AssetsAnnotations}
 import connectors.TrustsStoreConnector
 import forms.{AddAssetsFormProvider, YesNoFormProvider}
 import generators.Generators
-import models.assets._
-import models.{AddAssets, NormalMode, RemoveAsset}
+import models.assets.{AssetMonetaryAmount, Assets, BusinessAssetType, NonEeaBusinessType, OtherAssetType, PartnershipType, PropertyLandType, SharesType}
+import models.{AddAssets, NonUkAddress, NormalMode, RemoveAsset}
 import navigation.Navigator
 import org.mockito.Matchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{reset, verify, when}
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -64,12 +64,14 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
   lazy val multipleAssets: List[AddRow] = List(addRow1, addRow2)
 
   val mockStoreConnector : TrustsStoreConnector = mock[TrustsStoreConnector]
-  val nonEeaBusinessAsset1 = NonEeaBusinessType(None, "orgName 1", AddressType("", "", None, None, None, ""), "", LocalDate.now, None)
-  val nonEeaBusinessAsset2 = NonEeaBusinessType(None, "orgName 2", AddressType("", "", None, None, None, ""), "", LocalDate.now, None)
+  val nonEeaBusinessAsset1 = NonEeaBusinessType(None, "orgName 1", NonUkAddress("", "", None, ""), "", LocalDate.now, None)
+  val nonEeaBusinessAsset2 = NonEeaBusinessType(None, "orgName 2", NonUkAddress("", "", None, ""), "", LocalDate.now, None)
 
   val fakeEmptyService = new FakeService(Assets(Nil, Nil, Nil, Nil, Nil, Nil, Nil))
   val fakeServiceWithOneNonEeaAsset = new FakeService(Assets(Nil, Nil, Nil, Nil, Nil, Nil, List(nonEeaBusinessAsset1)))
   val fakeServiceWithMultipleNonEeaAssets = new FakeService(Assets(Nil, Nil, Nil, Nil, Nil, Nil, List(nonEeaBusinessAsset1, nonEeaBusinessAsset2)))
+
+  val nonEeaBusinessAsset = NonEeaBusinessType(None, "orgName", NonUkAddress("", "", None, ""), "", LocalDate.now, None)
 
   "AddAssets Controller" when {
 
@@ -343,7 +345,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
       val max = 25
 
       def createNonEeaAsset(max: Int): List[NonEeaBusinessType] = 0.until(max).foldLeft[List[NonEeaBusinessType]](List())((acc, i) => {
-        acc :+ NonEeaBusinessType(None, s"orgName $i", AddressType("", "", None, None, None, ""), "", LocalDate.now, None)
+        acc :+ NonEeaBusinessType(None, s"orgName $i", NonUkAddress("", "", None, ""), "", LocalDate.now, None)
       })
 
       def createAssetRows(max: Int): List[AddRow] = 0.until(max).foldLeft[List[AddRow]](List())((acc, i) => {
