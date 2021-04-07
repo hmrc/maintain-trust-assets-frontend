@@ -65,7 +65,8 @@ class NonEeaBusinessAssetMapperSpec extends SpecBase {
 
         val result = mapper(answers).get
 
-        result mustBe NonEeaBusinessType(lineNo = None, orgName = name, address = nonUkAddress, govLawCountry = country, startDate = date, endDate = None)
+        result mustBe
+          NonEeaBusinessType(lineNo = None, orgName = name, address = nonUkAddress, govLawCountry = country, startDate = date, endDate = None, provisional = true)
       }
     }
   }

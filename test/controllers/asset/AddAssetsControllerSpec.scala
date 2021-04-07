@@ -64,14 +64,14 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
   lazy val multipleAssets: List[AddRow] = List(addRow1, addRow2)
 
   val mockStoreConnector : TrustsStoreConnector = mock[TrustsStoreConnector]
-  val nonEeaBusinessAsset1 = NonEeaBusinessType(None, "orgName 1", NonUkAddress("", "", None, ""), "", LocalDate.now, None)
-  val nonEeaBusinessAsset2 = NonEeaBusinessType(None, "orgName 2", NonUkAddress("", "", None, ""), "", LocalDate.now, None)
+  val nonEeaBusinessAsset1 = NonEeaBusinessType(None, "orgName 1", NonUkAddress("", "", None, ""), "", LocalDate.now, None, true)
+  val nonEeaBusinessAsset2 = NonEeaBusinessType(None, "orgName 2", NonUkAddress("", "", None, ""), "", LocalDate.now, None, true)
 
   val fakeEmptyService = new FakeService(Assets(Nil, Nil, Nil, Nil, Nil, Nil, Nil))
   val fakeServiceWithOneNonEeaAsset = new FakeService(Assets(Nil, Nil, Nil, Nil, Nil, Nil, List(nonEeaBusinessAsset1)))
   val fakeServiceWithMultipleNonEeaAssets = new FakeService(Assets(Nil, Nil, Nil, Nil, Nil, Nil, List(nonEeaBusinessAsset1, nonEeaBusinessAsset2)))
 
-  val nonEeaBusinessAsset = NonEeaBusinessType(None, "orgName", NonUkAddress("", "", None, ""), "", LocalDate.now, None)
+  val nonEeaBusinessAsset = NonEeaBusinessType(None, "orgName", NonUkAddress("", "", None, ""), "", LocalDate.now, None, true)
 
   "AddAssets Controller" when {
 
@@ -345,7 +345,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
       val max = 25
 
       def createNonEeaAsset(max: Int): List[NonEeaBusinessType] = 0.until(max).foldLeft[List[NonEeaBusinessType]](List())((acc, i) => {
-        acc :+ NonEeaBusinessType(None, s"orgName $i", NonUkAddress("", "", None, ""), "", LocalDate.now, None)
+        acc :+ NonEeaBusinessType(None, s"orgName $i", NonUkAddress("", "", None, ""), "", LocalDate.now, None, true)
       })
 
       def createAssetRows(max: Int): List[AddRow] = 0.until(max).foldLeft[List[AddRow]](List())((acc, i) => {

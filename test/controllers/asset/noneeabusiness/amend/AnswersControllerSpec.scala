@@ -57,7 +57,8 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
     address = nonUkAddress,
     govLawCountry = country,
     startDate = date,
-    endDate = None
+    endDate = None,
+    provisional = true
   )
 
   private val userAnswers = emptyUserAnswers

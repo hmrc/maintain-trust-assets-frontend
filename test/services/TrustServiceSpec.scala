@@ -43,7 +43,7 @@ class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers wi
   val businessAsset = BusinessAssetType("", "", NonUkAddress("", "", None, ""), 123)
   val partnershipAsset = PartnershipType("", LocalDate.now)
   val otherAsset = OtherAssetType("", 123)
-  val nonEeaBusinessAsset = NonEeaBusinessType(None, "orgName", NonUkAddress("", "", None, ""), "", LocalDate.now, None)
+  val nonEeaBusinessAsset = NonEeaBusinessType(None, "orgName", NonUkAddress("", "", None, ""), "", LocalDate.now, None, true)
 
   val assets = Assets(
     monetary = List(moneyAsset),

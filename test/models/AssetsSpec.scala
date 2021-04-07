@@ -231,7 +231,8 @@ class AssetsSpec extends WordSpec with MustMatchers{
             |              "line4": "ONTARIO"
             |            },
             |            "govLawCountry": "CA",
-            |            "startDate": "2020-01-05"
+            |            "startDate": "2020-01-05",
+            |            "provisional": true
             |          }
             |        ]
             |      }
@@ -250,7 +251,8 @@ class AssetsSpec extends WordSpec with MustMatchers{
               country = "CA"),
           govLawCountry = "CA",
           startDate = LocalDate.of(2020, 1, 5),
-          endDate = None
+          endDate = None,
+          provisional = true
         )
         assets mustBe Assets(monetary = Nil,
           propertyOrLand = Nil,

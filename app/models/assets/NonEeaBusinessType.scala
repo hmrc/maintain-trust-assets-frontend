@@ -26,7 +26,8 @@ final case class NonEeaBusinessType(lineNo: Option[String],
                               address: Address,
                               govLawCountry: String,
                               startDate: LocalDate,
-                              endDate: Option[LocalDate]) extends AssetType
+                              endDate: Option[LocalDate],
+                              provisional: Boolean) extends AssetType
 
 object NonEeaBusinessType {
   implicit val format: Format[NonEeaBusinessType] = Json.format[NonEeaBusinessType]

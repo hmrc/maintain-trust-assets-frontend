@@ -38,7 +38,8 @@ class NonEeaBusinessAssetMapper @Inject()(addressMapper: AddressMapper) extends 
           NonUkAddressPage.path.read[Address] and
           GoverningCountryPage.path.read[String] and
           StartDatePage.path.read[LocalDate] and
-          Reads(_ => JsSuccess(None))
+          Reads(_ => JsSuccess(None)) and
+          Reads(_ => JsSuccess(true))
         ) (NonEeaBusinessType.apply _)
 
     answers.data.validate[NonEeaBusinessType](readFromUserAnswers) match {
@@ -58,7 +59,8 @@ class NonEeaBusinessAssetMapper @Inject()(addressMapper: AddressMapper) extends 
         address = addressMapper.build(x.address),
         govLawCountry = x.governingCountry,
         startDate = x.startDate,
-        endDate = None
+        endDate = None,
+        provisional = true
       )
     )
   }

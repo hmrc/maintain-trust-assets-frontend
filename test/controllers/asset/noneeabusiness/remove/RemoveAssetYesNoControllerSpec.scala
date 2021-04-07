@@ -48,7 +48,8 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
   val mockConnector: TrustsConnector = mock[TrustsConnector]
 
-  def createAsset(id: Int, provisional : Boolean) = NonEeaBusinessType(None, s"OrgName $id", NonUkAddress("", "", None, ""), "", LocalDate.now, None)
+  def createAsset(id: Int, provisional : Boolean) =
+    NonEeaBusinessType(None, s"OrgName $id", NonUkAddress("", "", None, ""), "", LocalDate.now, None, provisional)
 
   val nonEeaAssets = List(
     createAsset(0, provisional = false),
