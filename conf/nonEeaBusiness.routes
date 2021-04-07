@@ -21,8 +21,8 @@ POST       /change-start-date                                         controller
 GET        /check-answers                                             controllers.asset.noneeabusiness.add.AnswersController.onPageLoad()
 POST       /check-answers                                             controllers.asset.noneeabusiness.add.AnswersController.onSubmit()
 
-GET        /:index/remove                                             controllers.asset.noneeabusiness.remove.RemoveAssetYesNoController.onPageLoad(index: Int)
-POST       /:index/remove                                             controllers.asset.noneeabusiness.remove.RemoveAssetYesNoController.onSubmit(index: Int)
+GET        /:index/remove                                             controllers.asset.noneeabusiness.remove.RemoveNonEeaBusinessTypeController.onPageLoad(index: Int)
+POST       /:index/remove                                             controllers.asset.noneeabusiness.remove.RemoveNonEeaBusinessTypeController.onSubmit(index: Int)
 
 GET        /:index/check-answers                                      controllers.asset.noneeabusiness.amend.AnswersController.extractAndRender(index: Int)
 GET        /:index/check-answers                                      controllers.asset.noneeabusiness.amend.AnswersController.renderFromUserAnswers(index: Int)

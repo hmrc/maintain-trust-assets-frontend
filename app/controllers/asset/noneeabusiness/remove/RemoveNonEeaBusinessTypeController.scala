@@ -32,7 +32,7 @@ import views.html.asset.noneeabusiness.remove.RemoveAssetYesNoView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class RemoveAssetYesNoController @Inject()(
+class RemoveNonEeaBusinessTypeController @Inject()(
                                             override val messagesApi: MessagesApi,
                                             standardActionSets: StandardActionSets,
                                             formProvider: RemoveIndexFormProvider,

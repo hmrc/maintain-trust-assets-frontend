@@ -27,7 +27,7 @@
     title = s"${errorPrefix(form)} ${messages(s"assets.removeYesNo.title")}"
 ) {
 
-    @formHelper(action = RemoveAssetYesNoController.onSubmit(index), 'autoComplete -> "off") {
+    @formHelper(action = RemoveNonEeaBusinessTypeController.onSubmit(index), 'autoComplete -> "off") {
 
         @components.back_link()
 
