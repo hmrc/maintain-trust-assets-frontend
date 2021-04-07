@@ -20,7 +20,7 @@ import java.time.LocalDate
 
 import connectors.TrustsConnector
 import models._
-import models.assets.{AssetMonetaryAmount, Assets, BusinessAssetType, NonEeaBusinessType, OtherAssetType, PartnershipType, PropertyLandType, SharesType}
+import models.assets._
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
@@ -119,6 +119,7 @@ class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers wi
       val service = new TrustServiceImpl(mockConnector)
 
       val asset : RemoveAsset =  RemoveAsset(
+        `type` = AssetNameType.NonEeaBusinessAssetNameType,
         index = 0,
         endDate = LocalDate.now()
       )
