@@ -86,7 +86,7 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures
   val businessAsset = BusinessAssetType("", "", NonUkAddress("", "", None, ""), 123)
   val partnershipAsset = PartnershipType("", LocalDate.now)
   val otherAsset = OtherAssetType("", 123)
-  val nonEeaBusinessAsset = NonEeaBusinessType(None, "orgName", NonUkAddress("", "", None, ""), "", LocalDate.now, None)
+  val nonEeaBusinessAsset = NonEeaBusinessType(None, "orgName", NonUkAddress("", "", None, ""), "", LocalDate.now, None, true)
 
   "trust connector" when {
 

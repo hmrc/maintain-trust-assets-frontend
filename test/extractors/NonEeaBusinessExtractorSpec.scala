@@ -49,7 +49,8 @@ class NonEeaBusinessExtractorSpec extends SpecBase {
             address = nonUkAddress,
             govLawCountry = country,
             startDate = date,
-            endDate = None
+            endDate = None,
+            provisional = true
           )
 
           val result = extractor(baseAnswers, nonEeaBusiness, index).get
