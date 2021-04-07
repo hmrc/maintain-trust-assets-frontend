@@ -51,7 +51,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
 
 
   def removeAssetYesNoRoute(index: Int): String =
-    controllers.asset.noneeabusiness.remove.routes.RemoveNonEeaBusinessTypeController.onPageLoad(index).url
+    controllers.asset.noneeabusiness.remove.routes.RemoveAssetYesNoController.onPageLoad(index).url
 
   val addTaxableAssetsForm: Form[AddAssets] = new AddAssetsFormProvider().withPrefix("addAssets")
   val addNonTaxableAssetsForm: Form[AddAssets] = new AddAssetsFormProvider().withPrefix("addAssets.nonTaxable")

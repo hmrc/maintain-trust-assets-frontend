@@ -16,23 +16,26 @@
 
 package controllers.asset.noneeabusiness.remove
 
+import config.annotations.NonEeaBusiness
 import controllers.actions.StandardActionSets
 import forms.RemoveIndexFormProvider
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.RemoveAsset
 import models.assets.AssetNameType
+import navigation.Navigator
 import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import services.TrustService
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.asset.noneeabusiness.remove.RemoveAssetYesNoView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class RemoveNonEeaBusinessTypeController @Inject()(
+class RemoveAssetYesNoController @Inject()(
                                             override val messagesApi: MessagesApi,
                                             standardActionSets: StandardActionSets,
                                             formProvider: RemoveIndexFormProvider,
@@ -45,7 +48,7 @@ class RemoveNonEeaBusinessTypeController @Inject()(
   private val messagesPrefix: String = "assets"
   private val form = formProvider.apply(messagesPrefix)
 
-  private def redirectToAdd(): Result = Redirect(controllers.asset.routes.AddAssetsController.onPageLoad())
+  private def redirectToLandingPage(): Result = Redirect(controllers.asset.routes.AddAssetsController.onPageLoad())
 
   def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
@@ -58,7 +61,7 @@ class RemoveNonEeaBusinessTypeController @Inject()(
           logger.warn(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
             s" user cannot remove asset as asset was not found ${iobe.getMessage}: IndexOutOfBoundsException")
 
-          Future.successful(redirectToAdd)
+          Future.successful(redirectToLandingPage)
         case _ =>
           logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
             s" user cannot remove asset as asset was not found")
@@ -78,14 +81,24 @@ class RemoveNonEeaBusinessTypeController @Inject()(
         },
         value => {
           if (value) {
-            trustService.removeAsset(request.userAnswers.identifier, RemoveAsset(AssetNameType.NonEeaBusinessAssetNameType, index)).map(_ =>
-              redirectToAdd
-            )
+            trustService.getNonEeaBusinessAsset(request.userAnswers.identifier, index).flatMap {
+              asset =>
+                if (asset.provisional){
+                  removeAsset(request.userAnswers.identifier, index)
+                } else {
+                  Future.successful(Redirect(controllers.asset.noneeabusiness.remove.routes.RemoveAssetEndDateController.onPageLoad(index)))
+                }
+            }
           } else {
-            Future.successful(redirectToAdd)
+            Future.successful(redirectToLandingPage)
           }
         }
       )
   }
 
+  private def removeAsset(identifier: String, index: Int)(implicit hc: HeaderCarrier): Future[Result] = {
+    trustService.removeAsset(identifier, RemoveAsset(AssetNameType.NonEeaBusinessAssetNameType, index)).map(_ =>
+      redirectToLandingPage
+    )
+  }
 }

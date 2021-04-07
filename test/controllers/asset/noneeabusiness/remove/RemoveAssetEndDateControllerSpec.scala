@@ -21,7 +21,7 @@ import java.time.LocalDate
 import base.SpecBase
 import connectors.TrustsConnector
 import controllers.Assets.OK
-import forms.RemoveIndexFormProvider
+import forms.EndDateFormProvider
 import models.NonUkAddress
 import models.assets._
 import org.mockito.Matchers.any
@@ -32,19 +32,19 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpResponse
-import views.html.asset.noneeabusiness.remove.RemoveAssetYesNoView
+import views.html.asset.noneeabusiness.remove.RemoveAssetEndDateView
 
 import scala.concurrent.Future
 
-class RemoveNonEeaBusinessTypeControllerSpec extends SpecBase with ScalaCheckPropertyChecks with ScalaFutures {
+class RemoveAssetEndDateControllerSpec extends SpecBase with ScalaCheckPropertyChecks with ScalaFutures {
 
-  val messagesPrefix = "assets"
+  private val formProvider = new EndDateFormProvider(frontendAppConfig)
+  private val prefix: String = "nonEeaBusiness.endDate"
+  private val form = formProvider.withPrefix(prefix)
 
-  lazy val formProvider = new RemoveIndexFormProvider()
-  lazy val form = formProvider(messagesPrefix)
+  lazy val formRoute = routes.RemoveAssetEndDateController.onSubmit(0)
 
-  lazy val formRoute = routes.RemoveNonEeaBusinessTypeController.onSubmit(0)
-
+  private val validAnswer: LocalDate = LocalDate.parse("1996-02-03")
 
   val mockConnector: TrustsConnector = mock[TrustsConnector]
 
@@ -57,7 +57,7 @@ class RemoveNonEeaBusinessTypeControllerSpec extends SpecBase with ScalaCheckPro
     createAsset(2, provisional = true)
   )
 
-  "RemoveAssetYesNo Controller" when {
+  "RemoveAssetEndDateController" when {
 
     "return OK and the correct view for a GET" in {
 
@@ -70,11 +70,11 @@ class RemoveNonEeaBusinessTypeControllerSpec extends SpecBase with ScalaCheckPro
         .overrides(bind[TrustsConnector].toInstance(mockConnector))
         .build()
 
-      val request = FakeRequest(GET, routes.RemoveNonEeaBusinessTypeController.onPageLoad(index).url)
+      val request = FakeRequest(GET, routes.RemoveAssetEndDateController.onPageLoad(index).url)
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[RemoveAssetYesNoView]
+      val view = application.injector.instanceOf[RemoveAssetEndDateView]
 
       status(result) mustEqual OK
 
@@ -83,34 +83,9 @@ class RemoveNonEeaBusinessTypeControllerSpec extends SpecBase with ScalaCheckPro
       application.stop()
     }
 
-    "not removing the asset" must {
-
-      "redirect to the add to page when valid data is submitted" in {
-
-        val index = 0
-
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(bind[TrustsConnector].toInstance(mockConnector))
-          .build()
-
-        val request =
-          FakeRequest(POST, routes.RemoveNonEeaBusinessTypeController.onSubmit(index).url)
-            .withFormUrlEncodedBody(("value", "false"))
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual controllers.asset.routes.AddAssetsController.onPageLoad().url
-
-        application.stop()
-      }
-    }
-
-
     "removing a new asset" must {
 
-      "redirect to the add to page, removing the beneficiary" in {
+      "redirect to the add to page, removing the asset" in {
 
         val index = 2
 
@@ -125,8 +100,46 @@ class RemoveNonEeaBusinessTypeControllerSpec extends SpecBase with ScalaCheckPro
           .thenReturn(Future.successful(HttpResponse(200, "")))
 
         val request =
-          FakeRequest(POST, routes.RemoveNonEeaBusinessTypeController.onSubmit(index).url)
-            .withFormUrlEncodedBody(("value", "true"))
+          FakeRequest(POST, routes.RemoveAssetEndDateController.onSubmit(index).url)
+            .withFormUrlEncodedBody(
+              "value.day" -> validAnswer.getDayOfMonth.toString,
+              "value.month" -> validAnswer.getMonthValue.toString,
+              "value.year" -> validAnswer.getYear.toString
+            )
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual controllers.asset.routes.AddAssetsController.onPageLoad().url
+
+        application.stop()
+      }
+    }
+
+    "removing an old asset" must {
+
+      "redirect to the add to page, removing the beneficiary" in {
+
+        val index = 0
+
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind[TrustsConnector].toInstance(mockConnector))
+          .build()
+
+        when(mockConnector.getAssets(any())(any(), any()))
+          .thenReturn(Future.successful(Assets(Nil, Nil, Nil, Nil, Nil, Nil, nonEeaAssets)))
+
+        when(mockConnector.removeAsset(any(), any())(any(), any()))
+          .thenReturn(Future.successful(HttpResponse(200, "")))
+
+        val request =
+          FakeRequest(POST, routes.RemoveAssetEndDateController.onSubmit(index).url)
+            .withFormUrlEncodedBody(
+              "value.day" -> validAnswer.getDayOfMonth.toString,
+              "value.month" -> validAnswer.getMonthValue.toString,
+              "value.year" -> validAnswer.getYear.toString
+            )
 
         val result = route(application, request).value
 
@@ -145,12 +158,12 @@ class RemoveNonEeaBusinessTypeControllerSpec extends SpecBase with ScalaCheckPro
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(bind[TrustsConnector].toInstance(mockConnector)).build()
 
       val request =
-        FakeRequest(POST, routes.RemoveNonEeaBusinessTypeController.onSubmit(index).url)
-          .withFormUrlEncodedBody(("value", ""))
+        FakeRequest(POST, routes.RemoveAssetEndDateController.onSubmit(index).url)
+          .withFormUrlEncodedBody(("value", "invalid value"))
 
-      val boundForm = form.bind(Map("value" -> ""))
+      val boundForm = form.bind(Map("value" -> "invalid value"))
 
-      val view = application.injector.instanceOf[RemoveAssetYesNoView]
+      val view = application.injector.instanceOf[RemoveAssetEndDateView]
 
       val result = route(application, request).value
 
@@ -168,7 +181,7 @@ class RemoveNonEeaBusinessTypeControllerSpec extends SpecBase with ScalaCheckPro
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, routes.RemoveNonEeaBusinessTypeController.onPageLoad(index).url)
+      val request = FakeRequest(GET, routes.RemoveAssetEndDateController.onPageLoad(index).url)
 
       val result = route(application, request).value
 
@@ -186,8 +199,12 @@ class RemoveNonEeaBusinessTypeControllerSpec extends SpecBase with ScalaCheckPro
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, routes.RemoveNonEeaBusinessTypeController.onSubmit(index).url)
-          .withFormUrlEncodedBody(("value", "true"))
+        FakeRequest(POST, routes.RemoveAssetEndDateController.onSubmit(index).url)
+          .withFormUrlEncodedBody(
+            "value.day" -> validAnswer.getDayOfMonth.toString,
+            "value.month" -> validAnswer.getMonthValue.toString,
+            "value.year" -> validAnswer.getYear.toString
+          )
 
       val result = route(application, request).value
 

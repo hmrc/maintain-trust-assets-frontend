@@ -508,5 +508,16 @@ nonEeaBusiness.startDate.error.invalid = Enter a real date for the date that the
 nonEeaBusiness.startDate.error.future = The date that the trust started their ownership or controlling interest in the company must be today or in the past
 nonEeaBusiness.startDate.error.past = The date that the trust started their ownership or controlling interest in the company must be after 31 December 1499
 
+nonEeaBusiness.endDate.title = When did ownership or controlling interest in the Non-EEA company end?
+nonEeaBusiness.endDate.heading = When did ownership or controlling interest in {0} end?
+nonEeaBusiness.endDate.checkYourAnswersLabel = When did ownership or controlling interest in {0} end?
+nonEeaBusiness.endDate.hint = For example, 31 3 2015.
+nonEeaBusiness.endDate.error.required.all = Enter the date that the trust ended their ownership or controlling interest in the company
+nonEeaBusiness.endDate.error.required.two = The date that the trust ended their ownership or controlling interest in the company must include a {0} and a {1}
+nonEeaBusiness.endDate.error.required = The date that the trust ended their ownership or controlling interest in the company must include a {0}
+nonEeaBusiness.endDate.error.invalid = Enter a real date for the date that the trust ended their ownership or controlling interest in the company
+nonEeaBusiness.endDate.error.future = The date that the trust ended their ownership or controlling interest in the company must be today or in the past
+nonEeaBusiness.endDate.error.past = The date that the trust ended their ownership or controlling interest in the company must be after 31 December 1499
+
 nonEeaBusiness.answers.title = Check non-EEA company details
 nonEeaBusiness.answers.heading = Check non-EEA company details
