@@ -16,43 +16,39 @@
 
 package controllers.asset.noneeabusiness.remove
 
-import config.annotations.NonEeaBusiness
 import controllers.actions.StandardActionSets
-import forms.RemoveIndexFormProvider
+import controllers.actions.noneeabusiness.NameRequiredAction
+import forms.EndDateFormProvider
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.RemoveAsset
+import models.{Mode, RemoveAsset}
 import models.assets.AssetNameType
-import navigation.Navigator
 import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import services.TrustService
-import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.asset.noneeabusiness.remove.RemoveAssetYesNoView
+import views.html.asset.noneeabusiness.remove.RemoveAssetEndDateView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class RemoveAssetYesNoController @Inject()(
+class RemoveAssetEndDateController @Inject()(
                                             override val messagesApi: MessagesApi,
                                             standardActionSets: StandardActionSets,
-                                            formProvider: RemoveIndexFormProvider,
+                                            formProvider: EndDateFormProvider,
                                             trustService: TrustService,
                                             val controllerComponents: MessagesControllerComponents,
-                                            view: RemoveAssetYesNoView,
+                                            view: RemoveAssetEndDateView,
                                             errorHandler: ErrorHandler
                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
-  private val messagesPrefix: String = "nonEeaBusiness.removeYesNo"
-  private val form = formProvider.apply(messagesPrefix)
+  private val form = formProvider.withPrefix("nonEeaBusiness.endDate")
 
   private def redirectToLandingPage(): Result = Redirect(controllers.asset.routes.AddAssetsController.onPageLoad())
 
   def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
-
       trustService.getNonEeaBusinessAsset(request.userAnswers.identifier, index).map {
         asset =>
           Ok(view(form, index, asset.orgName))
@@ -79,26 +75,12 @@ class RemoveAssetYesNoController @Inject()(
               BadRequest(view(formWithErrors, index, asset.orgName))
           }
         },
-        value => {
-          if (value) {
-            trustService.getNonEeaBusinessAsset(request.userAnswers.identifier, index).flatMap {
-              asset =>
-                if (asset.provisional){
-                  removeAsset(request.userAnswers.identifier, index)
-                } else {
-                  Future.successful(Redirect(controllers.asset.noneeabusiness.remove.routes.RemoveAssetEndDateController.onPageLoad(index)))
-                }
-            }
-          } else {
-            Future.successful(redirectToLandingPage)
-          }
+        endDate => {
+          trustService.removeAsset(request.userAnswers.identifier, RemoveAsset(AssetNameType.NonEeaBusinessAssetNameType, index, endDate)).map(_ =>
+            Redirect(controllers.asset.routes.AddAssetsController.onPageLoad())
+          )
         }
       )
   }
 
-  private def removeAsset(identifier: String, index: Int)(implicit hc: HeaderCarrier): Future[Result] = {
-    trustService.removeAsset(identifier, RemoveAsset(AssetNameType.NonEeaBusinessAssetNameType, index)).map(_ =>
-      redirectToLandingPage
-    )
-  }
 }

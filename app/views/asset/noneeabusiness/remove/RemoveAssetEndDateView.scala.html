@@ -24,20 +24,21 @@
 @(form: Form[_], index: Int, name: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages(s"nonEeaBusiness.removeYesNo.title")}"
+    title = s"${errorPrefix(form)} ${messages(s"nonEeaBusiness.endDate.title")}"
 ) {
 
-    @formHelper(action = RemoveAssetYesNoController.onSubmit(index), 'autoComplete -> "off") {
+    @formHelper(action = RemoveAssetEndDateController.onSubmit(index), 'autoComplete -> "off") {
 
         @components.back_link()
 
         @components.error_summary(form.errors)
 
-        @components.input_yes_no(
+        @components.input_date(
             field = form("value"),
-            label = messages(s"nonEeaBusiness.removeYesNo.heading", name),
-            legendClass = Some("heading-large"),
-            legendAsHeading = true
+            legend = messages("nonEeaBusiness.endDate.heading", name),
+            legendClass = "heading-large",
+            legendAsHeading = true,
+            hint = Some(messages("nonEeaBusiness.endDate.hint"))
         )
 
         @components.submit_button()
