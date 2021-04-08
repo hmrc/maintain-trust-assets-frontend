@@ -62,6 +62,7 @@ class AssetsNavigator @Inject()(config: FrontendAppConfig) extends Navigator wit
     }
 
   private def addAssetsRoute()(answers: UserAnswers): Call = {
+    logger.info(s"-------------addAssetsRoute ${answers.get(AddAssetsPage)}")
     answers.get(AddAssetsPage) match {
       case Some(AddAssets.YesNow) =>
         routeToAssetIndex(answers)

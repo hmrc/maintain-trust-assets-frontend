@@ -106,7 +106,7 @@ class AddAssetsController @Inject()(
             cleanedAnswers <- Future.fromTry(request.userAnswers.cleanup)
             updatedAnswers <- Future.fromTry(cleanedAnswers.set(AddAnAssetYesNoPage, value))
             _ <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(AddAssetsPage, NormalMode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(AddAnAssetYesNoPage, NormalMode, updatedAnswers))
         }
       )
   }
