@@ -85,7 +85,7 @@ class AddAssetsController @Inject()(
 
         assets.nonEEABusiness.size match {
           case 0 =>
-            Ok(yesNoView(yesNoForm))
+            Redirect(routes.TrustOwnsNonEeaBusinessYesNoController.onPageLoad(NormalMode))
           case c if c >= maxLimit =>
             Ok(maxedOutView(assetRows.inProgress, assetRows.complete, heading(c, prefix), maxLimit, prefix))
           case c =>

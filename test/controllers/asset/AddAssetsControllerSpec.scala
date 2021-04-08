@@ -113,11 +113,9 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
 
     "there are no assets" when {
 
-      "return OK and the correct view for a GET" in {
+      "redirect to Session Expired for a GET if no existing data is found" in {
 
-        val answers = emptyUserAnswers
-
-        val application = applicationBuilder(userAnswers = Some(answers)).overrides(Seq(
+        val application = applicationBuilder(userAnswers = None).overrides(Seq(
           bind(classOf[TrustService]).toInstance(fakeEmptyService),
           bind(classOf[TrustsStoreConnector]).toInstance(mockStoreConnector)
         )).build()
@@ -126,11 +124,8 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[AddAnAssetYesNoView]
-
-        status(result) mustEqual OK
-        //contentAsString(result) mustEqual
-        //  view(yesNoForm)(fakeRequest, messages).toString
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
 
         application.stop()
       }
