@@ -17,6 +17,8 @@
 package navigation
 
 import controllers.asset.noneeabusiness.{routes => rts}
+import controllers.asset.noneeabusiness.add.{routes => addRts}
+import controllers.asset.noneeabusiness.amend.{routes => amendRts}
 import models.{Mode, NormalMode, UserAnswers}
 import pages.Page
 import pages.asset.noneeabusiness._
@@ -35,11 +37,22 @@ class NonEeaBusinessNavigator @Inject()() extends Navigator {
   def simpleNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
     case NamePage => _ => rts.InternationalAddressController.onPageLoad(mode)
     case NonUkAddressPage => _ => rts.GoverningCountryController.onPageLoad(mode)
-    case GoverningCountryPage => _ => rts.StartDateController.onPageLoad(mode)
-    case StartDatePage => _ => controllers.asset.noneeabusiness.add.routes.AnswersController.onPageLoad()
+    case GoverningCountryPage => navigateToStartDateOrCheckAnswers(_, mode)
+    case StartDatePage => _ => addRts.AnswersController.onPageLoad()
   }
 
   def routes(mode: Mode): PartialFunction[Page, UserAnswers => Call] =
     simpleNavigation(mode)
+
+  private def navigateToStartDateOrCheckAnswers(ua: UserAnswers, mode: Mode): Call = {
+    if (mode == NormalMode) {
+      rts.StartDateController.onPageLoad(mode)
+    } else {
+      ua.get(IndexPage) match {
+        case Some(index) => amendRts.AnswersController.renderFromUserAnswers(index)
+        case None => controllers.routes.SessionExpiredController.onPageLoad()
+      }
+    }
+  }
 
 }
