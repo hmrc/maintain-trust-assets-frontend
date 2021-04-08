@@ -27,7 +27,7 @@ import models.assets.{AssetMonetaryAmount, Assets, BusinessAssetType, NonEeaBusi
 import models.{AddAssets, NonUkAddress, NormalMode, RemoveAsset}
 import navigation.Navigator
 import org.mockito.Matchers.any
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.Mockito.when
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -299,7 +299,8 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
 
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(Seq(
           bind(classOf[TrustService]).toInstance(fakeServiceWithMultipleNonEeaAssets),
-          bind(classOf[TrustsStoreConnector]).toInstance(mockStoreConnector)
+          bind(classOf[TrustsStoreConnector]).toInstance(mockStoreConnector),
+          bind[Navigator].qualifiedWith(classOf[AssetsAnnotations]).toInstance(fakeNavigator)
         )).build()
 
         val request =
@@ -312,7 +313,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual "http://localhost:9788/maintain-a-trust/overview"
+        redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
 
         application.stop()
       }

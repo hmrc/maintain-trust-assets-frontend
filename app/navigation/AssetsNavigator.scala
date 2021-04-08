@@ -17,16 +17,17 @@
 package navigation
 
 import config.FrontendAppConfig
-import controllers.asset.routes.{WhatKindOfAssetController, AssetInterruptPageController}
+import controllers.asset.routes.{AssetInterruptPageController, WhatKindOfAssetController}
 import controllers.routes.SessionExpiredController
 import javax.inject.Inject
 import models.WhatKindOfAsset.{Business, Money, NonEeaBusiness, Other, Partnership, PropertyOrLand, Shares}
 import models.{AddAssets, Mode, NormalMode, UserAnswers}
 import pages.Page
 import pages.asset.{AddAnAssetYesNoPage, AddAssetsPage, AssetInterruptPage, TrustOwnsNonEeaBusinessYesNoPage, WhatKindOfAssetPage}
+import play.api.Logging
 import play.api.mvc.Call
 
-class AssetsNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
+class AssetsNavigator @Inject()(config: FrontendAppConfig) extends Navigator with Logging {
 
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
     routes(mode)(page)(userAnswers)
@@ -61,9 +62,7 @@ class AssetsNavigator @Inject()(config: FrontendAppConfig) extends Navigator {
     }
 
   private def addAssetsRoute()(answers: UserAnswers): Call = {
-    val addAnother = answers.get(AddAssetsPage)
-
-    addAnother match {
+    answers.get(AddAssetsPage) match {
       case Some(AddAssets.YesNow) =>
         routeToAssetIndex(answers)
       case Some(AddAssets.YesLater) =>

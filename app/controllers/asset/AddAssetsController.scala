@@ -25,7 +25,7 @@ import handlers.ErrorHandler
 import models.Constants._
 import models.{AddAssets, NormalMode, UserAnswers}
 import navigation.Navigator
-import pages.asset.AddAssetsPage
+import pages.asset.{AddAnAssetYesNoPage, AddAssetsPage}
 import play.api.data.Form
 import play.api.i18n.{Messages, MessagesApi, MessagesProvider}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -101,20 +101,12 @@ class AddAssetsController @Inject()(
         (formWithErrors: Form[_]) => {
           Future.successful(BadRequest(yesNoView(formWithErrors)))
         },
-        addNow => {
-          if (addNow) {
-
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
-              _ <- repository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(AddAssetsPage, NormalMode, updatedAnswers))
-          } else {
-            for {
-              _ <- trustsStoreConnector.setTaskComplete(request.userAnswers.identifier)
-            } yield {
-              Redirect(appConfig.maintainATrustOverview)
-            }
-          }
+        value => {
+          for {
+            cleanedAnswers <- Future.fromTry(request.userAnswers.cleanup)
+            updatedAnswers <- Future.fromTry(cleanedAnswers.set(AddAnAssetYesNoPage, value))
+            _ <- repository.set(updatedAnswers)
+          } yield Redirect(navigator.nextPage(AddAssetsPage, NormalMode, updatedAnswers))
         }
       )
   }
@@ -135,21 +127,15 @@ class AddAssetsController @Inject()(
             Future.successful(BadRequest(addAssetsView(formWithErrors, assetRows.inProgress, assetRows.complete, heading(assetRows.count, prefix), prefix)))
           },
           {
-            case AddAssets.YesNow =>
+            value => {
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
+                cleanedAnswers <- Future.fromTry(request.userAnswers.cleanup)
+                updatedAnswers <- Future.fromTry(cleanedAnswers.set(AddAssetsPage, value))
                 _ <- repository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(AddAssetsPage, NormalMode, updatedAnswers))
-
-            case AddAssets.YesLater =>
-              Future.successful(Redirect(appConfig.maintainATrustOverview))
-
-            case AddAssets.NoComplete =>
-              for {
-                _ <- trustsStoreConnector.setTaskComplete(request.userAnswers.identifier)
               } yield {
-                Redirect(appConfig.maintainATrustOverview)
+                Redirect(navigator.nextPage(AddAssetsPage, NormalMode, updatedAnswers))
               }
+            }
           }
         )
       } recoverWith {
