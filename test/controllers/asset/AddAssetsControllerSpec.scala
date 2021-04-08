@@ -24,7 +24,7 @@ import connectors.TrustsStoreConnector
 import forms.{AddAssetsFormProvider, YesNoFormProvider}
 import generators.Generators
 import models.assets.{AssetMonetaryAmount, Assets, BusinessAssetType, NonEeaBusinessType, OtherAssetType, PartnershipType, PropertyLandType, SharesType}
-import models.{AddAssets, NonUkAddress, NormalMode, RemoveAsset}
+import models.{AddAssets, NonUkAddress, RemoveAsset}
 import navigation.Navigator
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -113,7 +113,8 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
 
     "there are no assets" when {
 
-      "redirect to TrustOwnsNonEeaBusinessYesNoController" in {
+      "return OK and the correct view for a GET" in {
+
         val answers = emptyUserAnswers
 
         val application = applicationBuilder(userAnswers = Some(answers)).overrides(Seq(
@@ -125,9 +126,11 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
+        val view = application.injector.instanceOf[AddAnAssetYesNoView]
 
-        redirectLocation(result).value mustEqual routes.TrustOwnsNonEeaBusinessYesNoController.onPageLoad(NormalMode).url
+        status(result) mustEqual OK
+        //contentAsString(result) mustEqual
+        //  view(yesNoForm)(fakeRequest, messages).toString
 
         application.stop()
       }

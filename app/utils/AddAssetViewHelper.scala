@@ -17,7 +17,6 @@
 package utils
 
 import controllers.asset._
-import models.NormalMode
 import play.api.i18n.Messages
 import viewmodels.{AddRow, AddToRows}
 import javax.inject.Inject
@@ -29,12 +28,12 @@ class AddAssetViewHelper @Inject()(assets: Assets)
   def rows: AddToRows = {
 
     val complete = assets.nonEEABusiness.zipWithIndex.map(x => renderNonEEABusiness(x._1, x._2))
-//        assets.business.zipWithIndex.map(x => renderBusiness(x._1, x._2)) ++
-//        assets.monetary.zipWithIndex.map(x => renderMonetary(x._1, x._2)) ++
-//        assets.partnerShip.zipWithIndex.map(x => renderPartnership(x._1, x._2)) ++
-//        assets.propertyOrLand.zipWithIndex.map(x => renderPropertyOrLand(x._1, x._2)) ++
-//        assets.shares.zipWithIndex.map(x => renderShares(x._1, x._2)) ++
-//        assets.other.zipWithIndex.map(x => renderOther(x._1, x._2))
+        assets.business.zipWithIndex.map(x => renderBusiness(x._1, x._2)) ++
+        assets.monetary.zipWithIndex.map(x => renderMonetary(x._1, x._2)) ++
+        assets.partnerShip.zipWithIndex.map(x => renderPartnership(x._1, x._2)) ++
+        assets.propertyOrLand.zipWithIndex.map(x => renderPropertyOrLand(x._1, x._2)) ++
+        assets.shares.zipWithIndex.map(x => renderShares(x._1, x._2)) ++
+        assets.other.zipWithIndex.map(x => renderOther(x._1, x._2))
 
     AddToRows(Nil, complete)
   }

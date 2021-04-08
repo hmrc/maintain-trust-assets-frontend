@@ -23,11 +23,10 @@ sealed trait AddAssets
 object AddAssets extends Enumerable.Implicits {
 
   case object YesNow extends WithName("add-them-now") with AddAssets
-  case object YesLater extends WithName("add-them-later") with AddAssets
   case object NoComplete extends WithName("no-complete") with AddAssets
 
   val values: List[AddAssets] = List(
-    YesNow, YesLater, NoComplete
+    YesNow, NoComplete
   )
 
   def options(prefix: String): List[RadioOption] = values.map {

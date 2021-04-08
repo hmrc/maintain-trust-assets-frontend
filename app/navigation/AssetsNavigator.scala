@@ -65,8 +65,6 @@ class AssetsNavigator @Inject()(config: FrontendAppConfig) extends Navigator wit
     answers.get(AddAssetsPage) match {
       case Some(AddAssets.YesNow) =>
         routeToAssetIndex(answers)
-      case Some(AddAssets.YesLater) =>
-        assetsCompleteLaterRoute()
       case Some(AddAssets.NoComplete) =>
         assetsCompletedRoute()
       case _ => SessionExpiredController.onPageLoad()
@@ -77,13 +75,15 @@ class AssetsNavigator @Inject()(config: FrontendAppConfig) extends Navigator wit
     controllers.asset.routes.AddAssetsController.submitComplete()
   }
 
-  def assetsCompleteLaterRoute() : Call = {
-    Call("GET", config.maintainATrustOverview)
-  }
-
-
   private def routeToAssetIndex(answers: UserAnswers): Call = {
-    controllers.asset.noneeabusiness.routes.NameController.onPageLoad(NormalMode)
+    val assets = answers.get(sections.Assets).getOrElse(List.empty)
+    if (answers.isTaxable) {
+      val index = assets.size
+      WhatKindOfAssetController.onPageLoad(index)
+    } else {
+      // assets includes an in progress non-EEA business asset as we have just set the value in WhatKindOfAssetPage
+      controllers.asset.noneeabusiness.routes.NameController.onPageLoad(NormalMode)
+    }
   }
 
   private def yesNoNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {

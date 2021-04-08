@@ -25,7 +25,6 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.asset.{AddAnAssetYesNoPage, AddAssetsPage, AssetInterruptPage, TrustOwnsNonEeaBusinessYesNoPage, WhatKindOfAssetPage}
 import play.api.mvc.Call
-import play.api.test.Helpers.redirectLocation
 
 class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -33,10 +32,6 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
 
   private val assetsCompletedRoute: Call = {
     controllers.asset.routes.AddAssetsController.submitComplete()
-  }
-
-  private val assetsCompleteLaterRoute: Call = {
-    Call("GET", frontendAppConfig.maintainATrustOverview)
   }
 
   "Navigator" when {
@@ -70,10 +65,10 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
 
         val baseAnswers = emptyUserAnswers.copy(isTaxable = true)
 
-        "redirect to non-EEA business asset name page" in {
+        "redirect to asset type page" in {
 
           navigator.nextPage(AssetInterruptPage, NormalMode, baseAnswers)
-            .mustBe(controllers.asset.noneeabusiness.routes.NameController.onPageLoad(NormalMode))
+            .mustBe(controllers.asset.routes.WhatKindOfAssetController.onPageLoad(0))
         }
       }
 
@@ -98,12 +93,12 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
         val baseAnswers = emptyUserAnswers.copy(isTaxable = true)
 
         "yes selected" must {
-          "redirect to non-EEA business asset name page" in {
+          "redirect to asset type page" in {
 
             val answers = baseAnswers.set(AddAnAssetYesNoPage, true).success.value
 
             navigator.nextPage(AddAnAssetYesNoPage, NormalMode, answers)
-              .mustBe(controllers.asset.noneeabusiness.routes.NameController.onPageLoad(NormalMode))
+              .mustBe(controllers.asset.routes.WhatKindOfAssetController.onPageLoad(0))
           }
         }
 
@@ -153,25 +148,13 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
         val baseAnswers = emptyUserAnswers.copy(isTaxable = true)
 
         "add them now selected" must {
-          "go to non-EEA business asset name page" in {
+          "go to What Asset Type page" in {
             val answers = baseAnswers
               .set(WhatKindOfAssetPage, Money).success.value
               .set(AddAssetsPage, AddAssets.YesNow).success.value
 
             navigator.nextPage(AddAssetsPage, NormalMode, answers)
-              .mustBe(controllers.asset.noneeabusiness.routes.NameController.onPageLoad(NormalMode))
-          }
-        }
-
-        "add them later selected" must {
-          "go to MaintenanceProgress" in {
-
-            val answers = baseAnswers
-              .set(WhatKindOfAssetPage, Money).success.value
-              .set(AddAssetsPage, AddAssets.YesLater).success.value
-
-            navigator.nextPage(AddAssetsPage, NormalMode, answers)
-              .mustBe(assetsCompleteLaterRoute)
+              .mustBe(controllers.asset.routes.WhatKindOfAssetController.onPageLoad(0))
           }
         }
 
@@ -202,18 +185,6 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
 
             navigator.nextPage(AddAssetsPage, NormalMode, answers)
               .mustBe(controllers.asset.noneeabusiness.routes.NameController.onPageLoad(NormalMode))
-          }
-        }
-
-        "add them later selected" must {
-          "go to RegistrationProgress" in {
-
-            val answers = baseAnswers
-              .set(WhatKindOfAssetPage, Money).success.value
-              .set(AddAssetsPage, AddAssets.YesLater).success.value
-
-            navigator.nextPage(AddAssetsPage, NormalMode, answers)
-              .mustBe(assetsCompleteLaterRoute)
           }
         }
 

@@ -48,7 +48,7 @@ class RemoveAssetYesNoController @Inject()(
   private val messagesPrefix: String = "nonEeaBusiness.removeYesNo"
   private val form = formProvider.apply(messagesPrefix)
 
-  private def redirectToLandingPage(): Result = Redirect(controllers.asset.routes.AddAssetsController.onPageLoad())
+  private def redirectToAddAssetsPage(): Result = Redirect(controllers.asset.routes.AddAssetsController.onPageLoad())
 
   def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
@@ -61,7 +61,7 @@ class RemoveAssetYesNoController @Inject()(
           logger.warn(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
             s" user cannot remove asset as asset was not found ${iobe.getMessage}: IndexOutOfBoundsException")
 
-          Future.successful(redirectToLandingPage)
+          Future.successful(redirectToAddAssetsPage)
         case _ =>
           logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
             s" user cannot remove asset as asset was not found")
@@ -90,7 +90,7 @@ class RemoveAssetYesNoController @Inject()(
                 }
             }
           } else {
-            Future.successful(redirectToLandingPage)
+            Future.successful(redirectToAddAssetsPage)
           }
         }
       )
@@ -98,7 +98,7 @@ class RemoveAssetYesNoController @Inject()(
 
   private def removeAsset(identifier: String, index: Int)(implicit hc: HeaderCarrier): Future[Result] = {
     trustService.removeAsset(identifier, RemoveAsset(AssetNameType.NonEeaBusinessAssetNameType, index)).map(_ =>
-      redirectToLandingPage
+      redirectToAddAssetsPage
     )
   }
 }
