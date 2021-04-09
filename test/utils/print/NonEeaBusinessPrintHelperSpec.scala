@@ -36,8 +36,6 @@ class NonEeaBusinessPrintHelperSpec extends SpecBase {
 
   private val index: Int = 0
 
-  private val heading: String = s"Non-EEA Company ${index + 1}"
-
   private val name: String = "Name"
   private val country: String = "FR"
   private val nonUkAddress: NonUkAddress = NonUkAddress("Line 1", "Line 2", None, country)

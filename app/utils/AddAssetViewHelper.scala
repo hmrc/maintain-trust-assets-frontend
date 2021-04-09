@@ -17,7 +17,6 @@
 package utils
 
 import controllers.asset._
-import models.NormalMode
 import play.api.i18n.Messages
 import viewmodels.{AddRow, AddToRows}
 import javax.inject.Inject

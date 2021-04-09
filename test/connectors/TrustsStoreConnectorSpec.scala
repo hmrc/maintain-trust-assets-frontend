@@ -41,7 +41,7 @@ class TrustsStoreConnectorSpec extends SpecBase
 
     ".setTasksComplete" must {
 
-      val url = s"/trusts-store/maintain/tasks/assets/$identifier"
+      val url = s"/trusts-store/maintain/tasks/non-eea-company/$identifier"
 
       "return OK with the current task status" in {
         val application = applicationBuilder()

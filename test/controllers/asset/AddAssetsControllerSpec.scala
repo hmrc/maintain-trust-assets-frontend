@@ -24,7 +24,7 @@ import connectors.TrustsStoreConnector
 import forms.{AddAssetsFormProvider, YesNoFormProvider}
 import generators.Generators
 import models.assets.{AssetMonetaryAmount, Assets, BusinessAssetType, NonEeaBusinessType, OtherAssetType, PartnershipType, PropertyLandType, SharesType}
-import models.{AddAssets, NonUkAddress, NormalMode, RemoveAsset}
+import models.{AddAssets, NonUkAddress, RemoveAsset}
 import navigation.Navigator
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -113,10 +113,9 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
 
     "there are no assets" when {
 
-      "redirect to TrustOwnsNonEeaBusinessYesNoController" in {
-        val answers = emptyUserAnswers
+      "redirect to Session Expired for a GET if no existing data is found" in {
 
-        val application = applicationBuilder(userAnswers = Some(answers)).overrides(Seq(
+        val application = applicationBuilder(userAnswers = None).overrides(Seq(
           bind(classOf[TrustService]).toInstance(fakeEmptyService),
           bind(classOf[TrustsStoreConnector]).toInstance(mockStoreConnector)
         )).build()
@@ -126,8 +125,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual routes.TrustOwnsNonEeaBusinessYesNoController.onPageLoad(NormalMode).url
+        redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
 
         application.stop()
       }
@@ -196,7 +194,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(addTaxableAssetsForm, Nil, oneAsset, "Add assets", "addAssets")(request, messages).toString
+            view(addTaxableAssetsForm, Nil, oneAsset, "Add a non-EEA company", "addAssets")(request, messages).toString
 
           application.stop()
         }
@@ -246,7 +244,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(addTaxableAssetsForm, Nil, multipleAssets, "You have added 2 assets", "addAssets")(request, messages).toString
+            view(addTaxableAssetsForm, Nil, multipleAssets, "You have added 2 non-EEA companies", "addAssets")(request, messages).toString
 
           application.stop()
         }
@@ -299,7 +297,8 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
 
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(Seq(
           bind(classOf[TrustService]).toInstance(fakeServiceWithMultipleNonEeaAssets),
-          bind(classOf[TrustsStoreConnector]).toInstance(mockStoreConnector)
+          bind(classOf[TrustsStoreConnector]).toInstance(mockStoreConnector),
+          bind[Navigator].qualifiedWith(classOf[AssetsAnnotations]).toInstance(fakeNavigator)
         )).build()
 
         val request =
@@ -312,7 +311,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual "http://localhost:9788/maintain-a-trust/overview"
+        redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
 
         application.stop()
       }
@@ -335,7 +334,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
 
         status(result) mustEqual BAD_REQUEST
 
-        contentAsString(result) mustEqual view(boundForm, Nil, multipleAssets, "You have added 2 assets", "addAssets")(request, messages).toString
+        contentAsString(result) mustEqual view(boundForm, Nil, multipleAssets, "You have added 2 non-EEA companies", "addAssets")(request, messages).toString
 
         application.stop()
       }
@@ -374,10 +373,10 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
         val content = contentAsString(result)
 
         content mustEqual
-          view(Nil, assetRows, s"You have added $max assets", max, "addAssets")(request, messages).toString
+          view(Nil, assetRows, s"You have added $max non-EEA companies", max, "addAssets")(request, messages).toString
 
-        content must include("You cannot add another asset as you have entered a maximum of 25.")
-        content must include("You can add another asset by removing an existing one, or write to HMRC with details of any additional assets.")
+        content must include("You cannot add another non-EEA company as you have entered a maximum of 25.")
+        content must include("You can add another non-EEA company by removing an existing one, or write to HMRC with details of any additional non-EEA companies.")
 
         application.stop()
       }
