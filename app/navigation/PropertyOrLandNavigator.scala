@@ -43,21 +43,21 @@ class PropertyOrLandNavigator @Inject()() extends Navigator {
   }
 
   private def yesNoNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
-    case page @ PropertyOrLandAddressYesNoPage => ua => yesNoNav(
+    case PropertyOrLandAddressYesNoPage => ua => yesNoNav(
       ua = ua,
-      fromPage = page,
+      fromPage = PropertyOrLandAddressYesNoPage,
       yesCall = PropertyOrLandAddressUkYesNoController.onPageLoad(mode),
       noCall = PropertyOrLandDescriptionController.onPageLoad(mode)
     )
-    case page @ PropertyOrLandAddressUkYesNoPage => ua => yesNoNav(
+    case PropertyOrLandAddressUkYesNoPage => ua => yesNoNav(
       ua = ua,
-      fromPage = page,
+      fromPage = PropertyOrLandAddressUkYesNoPage,
       yesCall = PropertyOrLandUKAddressController.onPageLoad(mode),
       noCall = PropertyOrLandInternationalAddressController.onPageLoad(mode)
     )
-    case page @ TrustOwnAllThePropertyOrLandPage => ua => yesNoNav(
+    case TrustOwnAllThePropertyOrLandPage => ua => yesNoNav(
       ua = ua,
-      fromPage = page,
+      fromPage = TrustOwnAllThePropertyOrLandPage,
       yesCall = PropertyOrLandAnswerController.onPageLoad(),
       noCall = PropertyLandValueTrustController.onPageLoad(mode)
     )

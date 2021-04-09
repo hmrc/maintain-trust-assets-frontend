@@ -22,18 +22,18 @@ import base.SpecBase
 import connectors.TrustsConnector
 import controllers.routes._
 import models.{NonUkAddress, UserAnswers}
-import pages.asset.noneeabusiness._
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
+import pages.asset.noneeabusiness._
 import pages.asset.noneeabusiness.add.StartDatePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.http.HttpResponse
 import utils.print.NonEeaBusinessPrintHelper
 import views.html.asset.noneeabusiness.add.AnswersView
-import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.Future
 

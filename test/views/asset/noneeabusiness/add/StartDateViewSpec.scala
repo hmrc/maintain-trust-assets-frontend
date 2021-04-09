@@ -19,7 +19,6 @@ package views.asset.noneeabusiness.add
 import java.time.LocalDate
 
 import forms.StartDateFormProvider
-import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.QuestionViewBehaviours

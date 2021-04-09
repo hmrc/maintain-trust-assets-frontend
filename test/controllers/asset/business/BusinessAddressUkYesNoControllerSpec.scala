@@ -24,8 +24,8 @@ import forms.YesNoFormProvider
 import models.{NormalMode, UserAnswers}
 import navigation.Navigator
 import pages.asset.business.{BusinessAddressUkYesNoPage, BusinessNamePage}
-import play.api.inject.bind
 import play.api.data.Form
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{route, _}
 import views.html.asset.buisness.BusinessAddressUkYesNoView

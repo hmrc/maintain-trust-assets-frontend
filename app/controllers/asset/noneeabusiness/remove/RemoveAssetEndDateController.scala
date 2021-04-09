@@ -17,11 +17,10 @@
 package controllers.asset.noneeabusiness.remove
 
 import controllers.actions.StandardActionSets
-import controllers.actions.noneeabusiness.NameRequiredAction
 import forms.EndDateFormProvider
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.{Mode, RemoveAsset}
+import models.RemoveAsset
 import models.assets.AssetNameType
 import play.api.Logging
 import play.api.data.Form

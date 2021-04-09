@@ -16,16 +16,16 @@
 
 package mapping
 
+import java.time.LocalDate
+
 import base.SpecBase
+import models.NonUkAddress
 import models.Status.Completed
 import models.WhatKindOfAsset.NonEeaBusiness
-import models.NonUkAddress
+import models.assets.NonEeaBusinessType
 import pages.AssetStatus
 import pages.asset._
 import pages.asset.noneeabusiness._
-import java.time.LocalDate
-
-import models.assets.NonEeaBusinessType
 import pages.asset.noneeabusiness.add.StartDatePage
 
 class NonEeaBusinessAssetMapperSpec extends SpecBase {

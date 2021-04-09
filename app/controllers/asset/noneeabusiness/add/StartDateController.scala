@@ -21,7 +21,6 @@ import controllers.actions._
 import controllers.actions.noneeabusiness.NameRequiredAction
 import forms.StartDateFormProvider
 import javax.inject.Inject
-import models.Mode
 import navigation.Navigator
 import pages.asset.noneeabusiness.add.StartDatePage
 import play.api.data.Form

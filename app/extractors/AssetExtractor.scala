@@ -23,7 +23,7 @@ import models.{Address, NonUkAddress, UkAddress, UserAnswers}
 import pages.{EmptyPage, QuestionPage}
 import play.api.libs.json.JsPath
 
-import scala.util.{Success, Try}
+import scala.util.Try
 
 trait AssetExtractor[T <: AssetType] {
 
@@ -52,6 +52,7 @@ trait AssetExtractor[T <: AssetType] {
         case Some(nonUk: NonUkAddress) => answers
           .set(ukAddressYesNoPage, false)
           .flatMap(_.set(nonUkAddressPage, nonUk))
+        case None => Try(answers)
       }
   }
 

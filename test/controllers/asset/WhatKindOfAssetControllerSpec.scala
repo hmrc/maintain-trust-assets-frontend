@@ -47,7 +47,6 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
     "4mld" must {
 
       val options = optionsFor4mld
-      val optionsWithoutMoney = options.filterNot(_.value == Money.toString)
       val baseAnswers = emptyUserAnswers.copy(is5mldEnabled = false)
 
       "return OK and the correct view for a GET" in {
@@ -110,51 +109,6 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
         application.stop()
       }
 
-      "not display Money if an in progress or complete Money asset already exists for a different index" when {
-
-        val initialAnswers = baseAnswers
-          .set(WhatKindOfAssetPage, Money).success.value
-
-//        "it's in progress" in {
-//
-//          val application = applicationBuilder(userAnswers = Some(initialAnswers)).build()
-//
-//          val request = FakeRequest(GET, whatKindOfAssetRoute(index = 1))
-//
-//          val view = application.injector.instanceOf[WhatKindOfAssetView]
-//
-//          val result = route(application, request).value
-//
-//          status(result) mustEqual OK
-//
-//          contentAsString(result) mustEqual
-//            view(form, 1, optionsWithoutMoney)(request, messages).toString
-//
-//          application.stop()
-//        }
-//
-//        "it's complete" in {
-//
-//          val userAnswers = initialAnswers
-//            .set(AssetStatus, Completed).success.value
-//
-//          val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-//
-//          val request = FakeRequest(GET, whatKindOfAssetRoute(index = 1))
-//
-//          val view = application.injector.instanceOf[WhatKindOfAssetView]
-//
-//          val result = route(application, request).value
-//
-//          status(result) mustEqual OK
-//
-//          contentAsString(result) mustEqual
-//            view(form, 1, optionsWithoutMoney)(request, messages).toString
-//
-//          application.stop()
-//        }
-      }
-
       "return a Bad Request and errors when invalid data is submitted" in {
 
         val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
@@ -181,7 +135,6 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
     "5mld" must {
 
       val options = optionsFor5mld
-      val optionsWithoutMoney = options.filterNot(_.value == Money.toString)
       val baseAnswers = emptyUserAnswers.copy(is5mldEnabled = true)
 
       "return OK and the correct view for a GET" in {
@@ -242,51 +195,6 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
           view(form.fill(Money), index, options)(request, messages).toString
 
         application.stop()
-      }
-
-      "not display Money if an in progress or complete Money asset already exists for a different index" when {
-
-        val initialAnswers = baseAnswers
-          .set(WhatKindOfAssetPage, Money).success.value
-
-//        "it's in progress" in {
-//
-//          val application = applicationBuilder(userAnswers = Some(initialAnswers)).build()
-//
-//          val request = FakeRequest(GET, whatKindOfAssetRoute(index = 1))
-//
-//          val view = application.injector.instanceOf[WhatKindOfAssetView]
-//
-//          val result = route(application, request).value
-//
-//          status(result) mustEqual OK
-//
-//          contentAsString(result) mustEqual
-//            view(form, 1, optionsWithoutMoney)(request, messages).toString
-//
-//          application.stop()
-//        }
-//
-//        "it's complete" in {
-//
-//          val userAnswers = initialAnswers
-//            .set(AssetStatus, Completed).success.value
-//
-//          val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-//
-//          val request = FakeRequest(GET, whatKindOfAssetRoute(index = 1))
-//
-//          val view = application.injector.instanceOf[WhatKindOfAssetView]
-//
-//          val result = route(application, request).value
-//
-//          status(result) mustEqual OK
-//
-//          contentAsString(result) mustEqual
-//            view(form, 1, optionsWithoutMoney)(request, messages).toString
-//
-//          application.stop()
-//        }
       }
 
       "return a Bad Request and errors when invalid data is submitted" in {

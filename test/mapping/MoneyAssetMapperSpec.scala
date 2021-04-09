@@ -18,19 +18,16 @@ package mapping
 
 import base.SpecBase
 import generators.Generators
-import models.Status.Completed
 import models._
 import org.scalatest.{MustMatchers, OptionValues}
-import pages.AssetStatus
 import pages.asset._
-import pages.asset.money._
 
 class MoneyAssetMapperSpec extends SpecBase with MustMatchers
   with OptionValues with Generators {
 
   val moneyAssetMapper: MoneyAssetMapper = injector.instanceOf[MoneyAssetMapper]
 
-  private val assetValue: Long = 2000L
+  //private val assetValue: Long = 2000L
 
   "MoneyAssetMapper" must {
 

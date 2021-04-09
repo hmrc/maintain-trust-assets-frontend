@@ -189,7 +189,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
         }
 
         "no complete selected" must {
-          "go to RegistrationProgress" in {
+          "go to Maintenance Completed" in {
 
             val answers = baseAnswers
               .set(WhatKindOfAssetPage, Money).success.value

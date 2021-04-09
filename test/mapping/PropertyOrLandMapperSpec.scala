@@ -28,8 +28,8 @@ class PropertyOrLandMapperSpec extends SpecBase with MustMatchers
 
   val propertyOrLandMapper: PropertyOrLandMapper = injector.instanceOf[PropertyOrLandMapper]
 
-  private val assetTotalValue: Long = 1000L
-  private val assetTrustValue: Long = 750L
+  //private val assetTotalValue: Long = 1000L
+  //private val assetTrustValue: Long = 750L
 
   "propertyOrLandMapper" must {
 

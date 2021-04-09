@@ -18,8 +18,8 @@ package mapping
 
 import base.SpecBase
 import generators.Generators
-import models.Status.{Completed, InProgress}
-import models.{ShareClass, WhatKindOfAsset}
+import models.Status.InProgress
+import models.WhatKindOfAsset
 import org.scalatest.{MustMatchers, OptionValues}
 import pages.AssetStatus
 import pages.asset._
@@ -30,8 +30,8 @@ class ShareAssetMapperSpec extends SpecBase with MustMatchers
 
   val shareAssetMapper: ShareAssetMapper = injector.instanceOf[ShareAssetMapper]
 
-  private val assetValue: Long = 300L
-  private val quantity: Long = 20L
+  //private val assetValue: Long = 300L
+  //private val quantity: Long = 20L
 
   "ShareAssetMapper" must {
     "not be able to create a share asset when missing values in user answers" in {

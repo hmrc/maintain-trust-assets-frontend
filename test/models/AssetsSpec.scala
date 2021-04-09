@@ -24,8 +24,6 @@ import play.api.libs.json.Json
 
 class AssetsSpec extends WordSpec with MustMatchers{
 
-  private val date: LocalDate = LocalDate.parse("1996-02-03")
-
   "Assets" must {
     "deserialise from backend JSON" when {
 

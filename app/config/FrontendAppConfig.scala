@@ -50,8 +50,6 @@ class FrontendAppConfig @Inject() (val configuration: Configuration) {
   lazy val authUrl: String = configuration.get[Service]("auth").baseUrl
   lazy val loginUrl: String = configuration.get[String]("urls.login")
   lazy val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
-  lazy val registrationProgressUrlTemplate: String = configuration.get[String]("urls.registrationProgress")
-  def registrationProgressUrl(): String = registrationProgressUrlTemplate
 
   lazy val logoutUrl: String = configuration.get[String]("urls.logout")
 

@@ -16,6 +16,8 @@
 
 package controllers.asset.partnership
 
+import java.time.{LocalDate, ZoneOffset}
+
 import base.SpecBase
 import models.Status.Completed
 import models.WhatKindOfAsset.Partnership
@@ -26,7 +28,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.print.PartnershipPrintHelper
 import views.html.asset.partnership.PartnershipAnswersView
-import java.time.{LocalDate, ZoneOffset}
 
 class PartnershipAnswerControllerSpec extends SpecBase {
 
