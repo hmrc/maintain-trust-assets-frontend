@@ -194,7 +194,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(addTaxableAssetsForm, Nil, oneAsset, "Add assets", "addAssets")(request, messages).toString
+            view(addTaxableAssetsForm, Nil, oneAsset, "Add a non-EEA company", "addAssets")(request, messages).toString
 
           application.stop()
         }
@@ -244,7 +244,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(addTaxableAssetsForm, Nil, multipleAssets, "You have added 2 assets", "addAssets")(request, messages).toString
+            view(addTaxableAssetsForm, Nil, multipleAssets, "You have added 2 non-EEA companies", "addAssets")(request, messages).toString
 
           application.stop()
         }
@@ -334,7 +334,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
 
         status(result) mustEqual BAD_REQUEST
 
-        contentAsString(result) mustEqual view(boundForm, Nil, multipleAssets, "You have added 2 assets", "addAssets")(request, messages).toString
+        contentAsString(result) mustEqual view(boundForm, Nil, multipleAssets, "You have added 2 non-EEA companies", "addAssets")(request, messages).toString
 
         application.stop()
       }
@@ -373,10 +373,10 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
         val content = contentAsString(result)
 
         content mustEqual
-          view(Nil, assetRows, s"You have added $max assets", max, "addAssets")(request, messages).toString
+          view(Nil, assetRows, s"You have added $max non-EEA companies", max, "addAssets")(request, messages).toString
 
-        content must include("You cannot add another asset as you have entered a maximum of 25.")
-        content must include("You can add another asset by removing an existing one, or write to HMRC with details of any additional assets.")
+        content must include("You cannot add another non-EEA company as you have entered a maximum of 25.")
+        content must include("You can add another non-EEA company by removing an existing one, or write to HMRC with details of any additional non-EEA companies.")
 
         application.stop()
       }

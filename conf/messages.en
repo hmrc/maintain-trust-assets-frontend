@@ -120,20 +120,20 @@ answerPage.section.businessAsset.subheading = Business {0}
 answerPage.section.otherAsset.subheading = Other {0}
 answerPage.section.nonEeaBusinessAsset.subheading = Non-EEA Company {0}
 
-addAnAssetYesNo.title = Do you want to add an asset?
-addAnAssetYesNo.heading = Do you want to add an asset?
-addAnAssetYesNo.error.required = Select yes if you want to add an asset
+addAnAssetYesNo.title = Do you want to add a non-EEA company?
+addAnAssetYesNo.heading = Do you want to add a non-EEA company?
+addAnAssetYesNo.error.required = Select yes if you want to add a non-EEA company
 
-addAssets.title = Add assets
-addAssets.heading = Add assets
-addAssets.additional-content = Do you want to add another asset?
+addAssets.title = Add a non-EEA company
+addAssets.heading = Add a non-EEA company
+addAssets.additional-content = Do you want to add another non-EEA company?
 addAssets.add-them-now = Yes, add one now
-addAssets.no-complete = No, I have added all assets
-addAssets.error.required = Select yes if you want to add another asset
-addAssets.count.title = You have added {0} assets
-addAssets.count.heading = You have added {0} assets
-addAssets.maxedOut.p1 = You cannot add another asset as you have entered a maximum of {0}.
-addAssets.maxedOut.p2 = You can add another asset by removing an existing one, or write to HMRC with details of any additional assets.
+addAssets.no-complete = No, I have added all non-EEA companies
+addAssets.error.required = Select yes if you want to add a non-EEA company
+addAssets.count.title = You have added {0} non-EEA companies
+addAssets.count.heading = You have added {0} non-EEA companies
+addAssets.maxedOut.p1 = You cannot add another non-EEA company as you have entered a maximum of {0}.
+addAssets.maxedOut.p2 = You can add another non-EEA company by removing an existing one, or write to HMRC with details of any additional non-EEA companies.
 
 addAssets.nonTaxable.title = Add a non-EEA company
 addAssets.nonTaxable.heading = Add a non-EEA company

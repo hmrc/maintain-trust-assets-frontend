@@ -17,7 +17,7 @@
 package navigation
 
 import config.FrontendAppConfig
-import controllers.asset.routes.{AssetInterruptPageController, WhatKindOfAssetController}
+import controllers.asset.routes.AssetInterruptPageController
 import controllers.routes.SessionExpiredController
 import javax.inject.Inject
 import models.WhatKindOfAsset.{Business, Money, NonEeaBusiness, Other, Partnership, PropertyOrLand, Shares}
