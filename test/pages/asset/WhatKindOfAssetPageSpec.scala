@@ -28,6 +28,8 @@ import pages.asset.shares._
 import pages.behaviours.PageBehaviours
 import java.time.LocalDate
 
+import pages.asset.noneeabusiness.add
+
 class WhatKindOfAssetPageSpec extends PageBehaviours {
 
   private val str: String = "string"
@@ -214,7 +216,7 @@ class WhatKindOfAssetPageSpec extends PageBehaviours {
           .set(noneeabusiness.NamePage, str).success.value
           .set(noneeabusiness.NonUkAddressPage, internationalAddress).success.value
           .set(noneeabusiness.GoverningCountryPage, str).success.value
-          .set(noneeabusiness.StartDatePage, date).success.value
+          .set(add.StartDatePage, date).success.value
           .set(AssetStatus, Status.Completed).success.value
 
         val result = answers.set(WhatKindOfAssetPage, kind).success.value
@@ -224,7 +226,7 @@ class WhatKindOfAssetPageSpec extends PageBehaviours {
         result.get(noneeabusiness.NamePage) mustNot be(defined)
         result.get(noneeabusiness.NonUkAddressPage) mustNot be(defined)
         result.get(noneeabusiness.GoverningCountryPage) mustNot be(defined)
-        result.get(noneeabusiness.StartDatePage) mustNot be(defined)
+        result.get(add.StartDatePage) mustNot be(defined)
         result.get(AssetStatus) mustNot be(defined)
     }
   }

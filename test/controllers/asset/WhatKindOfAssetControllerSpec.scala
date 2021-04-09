@@ -21,11 +21,9 @@ import config.annotations.Assets
 import controllers.IndexValidation
 import controllers.routes._
 import forms.WhatKindOfAssetFormProvider
-import models.Status.Completed
 import models.WhatKindOfAsset
 import models.WhatKindOfAsset._
 import navigation.Navigator
-import pages.AssetStatus
 import pages.asset.WhatKindOfAssetPage
 import play.api.inject.bind
 import play.api.test.FakeRequest

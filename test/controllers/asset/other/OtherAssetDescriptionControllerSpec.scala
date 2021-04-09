@@ -30,8 +30,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.asset.other.OtherAssetDescriptionView
 
-import scala.concurrent.Future
-
 class OtherAssetDescriptionControllerSpec extends SpecBase {
 
   val formProvider = new DescriptionFormProvider()

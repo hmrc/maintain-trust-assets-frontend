@@ -21,7 +21,8 @@ import java.time.LocalDate
 import models.{NonUkAddress, UkAddress, UserAnswers}
 import models.assets.NonEeaBusinessType
 import pages.QuestionPage
-import pages.asset.noneeabusiness.{GoverningCountryPage, IndexPage, NonUkAddressPage, NamePage, StartDatePage, UkAddressPage, UkAddressYesNoPage}
+import pages.asset.noneeabusiness.add.StartDatePage
+import pages.asset.noneeabusiness.{GoverningCountryPage, IndexPage, NamePage, NonUkAddressPage, UkAddressPage, UkAddressYesNoPage}
 import play.api.libs.json.JsPath
 
 import scala.util.Try

@@ -17,7 +17,7 @@
 package controllers.asset
 
 import base.SpecBase
-import config.annotations.{Assets, Business}
+import config.annotations.Assets
 import models.UserAnswers
 import models.WhatKindOfAsset.NonEeaBusiness
 import navigation.Navigator

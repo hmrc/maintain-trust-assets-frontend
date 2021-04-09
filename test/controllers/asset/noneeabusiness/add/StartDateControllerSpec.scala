@@ -14,21 +14,22 @@
  * limitations under the License.
  */
 
-package controllers.asset.noneeabusiness
+package controllers.asset.noneeabusiness.add
 
-import base.SpecBase
-import controllers.IndexValidation
-import forms.StartDateFormProvider
-import models.{NormalMode, UserAnswers}
-import pages.asset.noneeabusiness.{NamePage, StartDatePage}
-import play.api.test.FakeRequest
-import play.api.test.Helpers.{route, _}
-import views.html.asset.noneeabusiness.StartDateView
 import java.time.LocalDate
 
+import base.SpecBase
 import config.annotations.NonEeaBusiness
+import controllers.IndexValidation
+import forms.StartDateFormProvider
+import models.UserAnswers
 import navigation.Navigator
+import pages.asset.noneeabusiness.NamePage
+import pages.asset.noneeabusiness.add.StartDatePage
 import play.api.inject.bind
+import play.api.test.FakeRequest
+import play.api.test.Helpers.{route, _}
+import views.html.asset.noneeabusiness.add.StartDateView
 
 class StartDateControllerSpec extends SpecBase with IndexValidation {
 
@@ -39,7 +40,7 @@ class StartDateControllerSpec extends SpecBase with IndexValidation {
 
   private val validAnswer: LocalDate = LocalDate.parse("1996-02-03")
 
-  private lazy val onPageLoadRoute = routes.StartDateController.onPageLoad(NormalMode).url
+  private lazy val onPageLoadRoute = routes.StartDateController.onPageLoad().url
 
   private val baseAnswers: UserAnswers = emptyUserAnswers
     .set(NamePage, name).success.value
@@ -59,7 +60,7 @@ class StartDateControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode, name)(request, messages).toString
+        view(form, name)(request, messages).toString
 
       application.stop()
     }
@@ -80,7 +81,7 @@ class StartDateControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), NormalMode, name)(request, messages).toString
+        view(form.fill(validAnswer), name)(request, messages).toString
 
       application.stop()
     }
@@ -125,7 +126,7 @@ class StartDateControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode, name)(request, messages).toString
+        view(boundForm, name)(request, messages).toString
 
       application.stop()
     }

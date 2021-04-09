@@ -24,6 +24,7 @@ import pages.Page
 import pages.asset.noneeabusiness._
 import play.api.mvc.Call
 import javax.inject.{Inject, Singleton}
+import pages.asset.noneeabusiness.add.StartDatePage
 
 @Singleton
 class NonEeaBusinessNavigator @Inject()() extends Navigator {
@@ -46,7 +47,7 @@ class NonEeaBusinessNavigator @Inject()() extends Navigator {
 
   private def navigateToStartDateOrCheckAnswers(ua: UserAnswers, mode: Mode): Call = {
     if (mode == NormalMode) {
-      rts.StartDateController.onPageLoad(mode)
+      addRts.StartDateController.onPageLoad()
     } else {
       ua.get(IndexPage) match {
         case Some(index) => amendRts.AnswersController.renderFromUserAnswers(index)
