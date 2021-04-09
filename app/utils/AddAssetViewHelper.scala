@@ -20,7 +20,7 @@ import controllers.asset._
 import play.api.i18n.Messages
 import viewmodels.{AddRow, AddToRows}
 import javax.inject.Inject
-import models.assets.{AssetMonetaryAmount, Assets, BusinessAssetType, NonEeaBusinessType, OtherAssetType, PartnershipType, PropertyLandType, SharesType}
+import models.assets._
 
 class AddAssetViewHelper @Inject()(assets: Assets)
                                   (implicit messages: Messages) {
@@ -38,7 +38,16 @@ class AddAssetViewHelper @Inject()(assets: Assets)
     AddToRows(Nil, complete)
   }
 
+  private def renderNonEEABusiness(asset: NonEeaBusinessType, index: Int): AddRow = {
+    AddRow(
+      name = asset.orgName,
+      typeLabel = messages(s"entities.asset.nonEeaBusiness"),
+      changeUrl = noneeabusiness.amend.routes.AnswersController.extractAndRender(index).url,
+      removeUrl = noneeabusiness.remove.routes.RemoveAssetYesNoController.onPageLoad(index).url
+    )
+  }
 
+/**
   private def renderMonetary(asset: AssetMonetaryAmount, index: Int): AddRow = {
     AddRow(
       name = asset.assetMonetaryAmount.toString,
@@ -92,14 +101,5 @@ class AddAssetViewHelper @Inject()(assets: Assets)
       removeUrl = ""
     )
   }
-  
-  private def renderNonEEABusiness(asset: NonEeaBusinessType, index: Int): AddRow = {
-    AddRow(
-      name = asset.orgName,
-      typeLabel = messages(s"entities.asset.nonEeaBusiness"),
-      changeUrl = noneeabusiness.amend.routes.AnswersController.extractAndRender(index).url,
-      removeUrl = noneeabusiness.remove.routes.RemoveAssetYesNoController.onPageLoad(index).url
-    )
-  }
-
+  */
 }

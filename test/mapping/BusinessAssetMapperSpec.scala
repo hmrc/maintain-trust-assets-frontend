@@ -27,7 +27,7 @@ class BusinessAssetMapperSpec extends SpecBase with MustMatchers
 
   val businessAssetMapper: BusinessAssetMapper = injector.instanceOf[BusinessAssetMapper]
 
-  private val assetValue: Long = 123L
+  //private val assetValue: Long = 123L
 
   "BusinessAssetMapper" must {
 

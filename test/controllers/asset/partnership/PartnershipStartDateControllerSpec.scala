@@ -16,19 +16,19 @@
 
 package controllers.asset.partnership
 
+import java.time.{LocalDate, ZoneOffset}
+
 import base.SpecBase
+import config.annotations.Partnership
 import controllers.IndexValidation
 import forms.StartDateFormProvider
+import models.NormalMode
+import navigation.Navigator
 import pages.asset.partnership.PartnershipStartDatePage
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{route, _}
 import views.html.asset.partnership.PartnershipStartDateView
-import java.time.{LocalDate, ZoneOffset}
-
-import config.annotations.Partnership
-import models.NormalMode
-import navigation.Navigator
-import play.api.inject.bind
 
 class PartnershipStartDateControllerSpec extends SpecBase with IndexValidation {
 

@@ -19,8 +19,8 @@ package controllers.asset.other
 import base.SpecBase
 import config.annotations.{Other => other}
 import forms.DescriptionFormProvider
-import models.{NormalMode, UserAnswers}
 import models.WhatKindOfAsset.Other
+import models.{NormalMode, UserAnswers}
 import navigation.Navigator
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.other.OtherAssetDescriptionPage

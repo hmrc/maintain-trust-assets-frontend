@@ -16,11 +16,12 @@
 
 package mapping.reads
 
+import java.time.LocalDate
+
 import models.WhatKindOfAsset.Money
 import models.{NonUkAddress, ShareClass, UkAddress, WhatKindOfAsset}
 import org.scalatest.{FreeSpec, MustMatchers}
 import play.api.libs.json.{JsError, JsSuccess, Json}
-import java.time.LocalDate
 
 class AssetReadsSpec extends FreeSpec with MustMatchers {
 

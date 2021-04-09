@@ -23,7 +23,7 @@ import config.annotations.{Assets => AssetsAnnotations}
 import connectors.TrustsStoreConnector
 import forms.{AddAssetsFormProvider, YesNoFormProvider}
 import generators.Generators
-import models.assets.{AssetMonetaryAmount, Assets, BusinessAssetType, NonEeaBusinessType, OtherAssetType, PartnershipType, PropertyLandType, SharesType}
+import models.assets._
 import models.{AddAssets, NonUkAddress, RemoveAsset}
 import navigation.Navigator
 import org.mockito.Matchers.any

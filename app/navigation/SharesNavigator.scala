@@ -52,9 +52,9 @@ class SharesNavigator @Inject()() extends Navigator() {
   }
 
   private def yesNoNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
-    case page @ SharesInAPortfolioPage => ua => yesNoNav(
+    case SharesInAPortfolioPage => ua => yesNoNav(
       ua = ua,
-      fromPage = page,
+      fromPage = SharesInAPortfolioPage,
       yesCall = SharePortfolioNameController.onPageLoad(mode),
       noCall = ShareCompanyNameController.onPageLoad(mode)
     )

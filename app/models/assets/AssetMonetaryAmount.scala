@@ -16,8 +16,6 @@
 
 package models.assets
 
-import java.time.LocalDate
-
 import play.api.libs.json.{Format, Json}
 
 final case class AssetMonetaryAmount(assetMonetaryAmount: Long) extends AssetType

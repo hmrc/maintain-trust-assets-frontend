@@ -40,9 +40,9 @@ class BusinessNavigator @Inject()() extends Navigator {
   }
 
   private def yesNoNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
-    case page @ BusinessAddressUkYesNoPage => ua => yesNoNav(
+    case BusinessAddressUkYesNoPage => ua => yesNoNav(
       ua = ua,
-      fromPage = page,
+      fromPage = BusinessAddressUkYesNoPage,
       yesCall = BusinessUkAddressController.onPageLoad(mode),
       noCall = BusinessInternationalAddressController.onPageLoad(mode)
     )

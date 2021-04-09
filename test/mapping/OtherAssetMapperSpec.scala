@@ -18,20 +18,17 @@ package mapping
 
 import base.SpecBase
 import generators.Generators
-import models.Status.Completed
 import models.WhatKindOfAsset
 import org.scalatest.{MustMatchers, OptionValues}
-import pages.AssetStatus
 import pages.asset.WhatKindOfAssetPage
-import pages.asset.other._
 
 class OtherAssetMapperSpec extends SpecBase with MustMatchers
   with OptionValues with Generators {
 
   val otherAssetMapper: OtherAssetMapper = injector.instanceOf[OtherAssetMapper]
 
-  private val assetValue1: Long = 4000L
-  private val assetValue2: Long = 6000L
+  //private val assetValue1: Long = 4000L
+  //private val assetValue2: Long = 6000L
 
   "OtherAssetMapper" must {
 
