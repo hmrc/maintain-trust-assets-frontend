@@ -19,7 +19,6 @@ package controllers.asset.business
 import config.annotations.Business
 import controllers.actions._
 import controllers.actions.business.NameRequiredAction
-import controllers.filters.IndexActionFilterProvider
 import forms.InternationalAddressFormProvider
 import models.{Mode, NonUkAddress}
 import navigation.Navigator
@@ -41,7 +40,6 @@ class BusinessInternationalAddressController @Inject()(
                                                         nameAction: NameRequiredAction,
                                                         repository: PlaybackRepository,
                                                         @Business navigator: Navigator,
-                                                        validateIndex: IndexActionFilterProvider,
                                                         formProvider: InternationalAddressFormProvider,
                                                         val controllerComponents: MessagesControllerComponents,
                                                         view: BusinessInternationalAddressView,

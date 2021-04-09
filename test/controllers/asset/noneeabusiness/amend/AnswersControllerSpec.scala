@@ -27,7 +27,8 @@ import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import pages.asset.noneeabusiness.add.StartDatePage
-import pages.asset.noneeabusiness.{GoverningCountryPage, IndexPage, NamePage, NonUkAddressPage}
+import pages.asset.noneeabusiness.amend.IndexPage
+import pages.asset.noneeabusiness.{GoverningCountryPage, NamePage, NonUkAddressPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._

@@ -18,7 +18,6 @@ package controllers.asset.partnership
 
 import config.annotations.Partnership
 import controllers.actions.StandardActionSets
-import controllers.filters.IndexActionFilterProvider
 import forms.DescriptionFormProvider
 import navigation.Navigator
 import pages.asset.partnership.PartnershipDescriptionPage
@@ -38,7 +37,6 @@ class PartnershipDescriptionController @Inject()(
                                                   standardActionSets: StandardActionSets,
                                                   repository: PlaybackRepository,
                                                   @Partnership navigator: Navigator,
-                                                  validateIndex: IndexActionFilterProvider,
                                                   formProvider: DescriptionFormProvider,
                                                   val controllerComponents: MessagesControllerComponents,
                                                   view: PartnershipDescriptionView
