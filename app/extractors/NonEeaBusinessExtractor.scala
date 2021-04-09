@@ -22,7 +22,8 @@ import models.{NonUkAddress, UkAddress, UserAnswers}
 import models.assets.NonEeaBusinessType
 import pages.QuestionPage
 import pages.asset.noneeabusiness.add.StartDatePage
-import pages.asset.noneeabusiness.{GoverningCountryPage, IndexPage, NamePage, NonUkAddressPage, UkAddressPage, UkAddressYesNoPage}
+import pages.asset.noneeabusiness.amend.IndexPage
+import pages.asset.noneeabusiness.{GoverningCountryPage, NamePage, NonUkAddressPage, UkAddressPage, UkAddressYesNoPage}
 import play.api.libs.json.JsPath
 
 import scala.util.Try

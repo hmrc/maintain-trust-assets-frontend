@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package pages.asset.noneeabusiness
+package pages.asset.noneeabusiness.amend
 
 import pages.QuestionPage
+import pages.asset.noneeabusiness.basePath
 import play.api.libs.json.JsPath
 
 case object IndexPage extends QuestionPage[Int] {

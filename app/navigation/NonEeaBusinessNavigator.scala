@@ -25,6 +25,7 @@ import pages.asset.noneeabusiness._
 import play.api.mvc.Call
 import javax.inject.{Inject, Singleton}
 import pages.asset.noneeabusiness.add.StartDatePage
+import pages.asset.noneeabusiness.amend.IndexPage
 
 @Singleton
 class NonEeaBusinessNavigator @Inject()() extends Navigator {
@@ -38,7 +39,7 @@ class NonEeaBusinessNavigator @Inject()() extends Navigator {
   def simpleNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
     case NamePage => _ => rts.InternationalAddressController.onPageLoad(mode)
     case NonUkAddressPage => _ => rts.GoverningCountryController.onPageLoad(mode)
-    case GoverningCountryPage => navigateToStartDateOrCheckAnswers(_, mode)
+    case GoverningCountryPage => ua => navigateToStartDateOrCheckAnswers(ua, mode)
     case StartDatePage => _ => addRts.AnswersController.onPageLoad()
   }
 

@@ -26,6 +26,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.asset.noneeabusiness._
 import pages.asset.noneeabusiness.add.StartDatePage
+import pages.asset.noneeabusiness.amend.IndexPage
 
 class NonEeaBusinessNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 

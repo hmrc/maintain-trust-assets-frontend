@@ -26,6 +26,6 @@ GET        /:index/remove/end-date                                    controller
 POST       /:index/remove/end-date                                    controllers.asset.noneeabusiness.remove.RemoveAssetEndDateController.onSubmit(index: Int)
 
 GET        /:index/check-answers                                      controllers.asset.noneeabusiness.amend.AnswersController.extractAndRender(index: Int)
-GET        /:index/check-answers                                      controllers.asset.noneeabusiness.amend.AnswersController.renderFromUserAnswers(index: Int)
+GET        /:index/updated-answers                                    controllers.asset.noneeabusiness.amend.AnswersController.renderFromUserAnswers(index: Int)
 POST       /:index/check-answers                                      controllers.asset.noneeabusiness.amend.AnswersController.onSubmit(index: Int)
 
