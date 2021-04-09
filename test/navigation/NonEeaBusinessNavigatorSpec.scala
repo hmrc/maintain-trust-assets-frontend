@@ -25,6 +25,7 @@ import models.{CheckMode, NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.asset.noneeabusiness._
+import pages.asset.noneeabusiness.add.StartDatePage
 
 class NonEeaBusinessNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -65,7 +66,7 @@ class NonEeaBusinessNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>
             navigator.nextPage(page, mode, userAnswers)
-              .mustBe(rts.StartDateController.onPageLoad(mode))
+              .mustBe(addRts.StartDateController.onPageLoad())
         }
       }
 

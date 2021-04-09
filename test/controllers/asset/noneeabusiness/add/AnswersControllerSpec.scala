@@ -20,7 +20,6 @@ import java.time.LocalDate
 
 import base.SpecBase
 import connectors.TrustsConnector
-import controllers.asset.noneeabusiness.routes
 import controllers.routes._
 import models.{NonUkAddress, UserAnswers}
 import pages.asset.noneeabusiness._
@@ -28,6 +27,7 @@ import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
+import pages.asset.noneeabusiness.add.StartDatePage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._

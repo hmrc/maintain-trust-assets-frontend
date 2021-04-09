@@ -14,20 +14,20 @@
  * limitations under the License.
  *@
 
-@import controllers.asset.noneeabusiness.routes._
+@import controllers.asset.noneeabusiness.add.routes._
 
 @this(
     main_template: MainTemplate,
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], mode: Mode, name: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], name: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = s"${errorPrefix(form)} ${messages("nonEeaBusiness.startDate.title")}"
 ) {
 
-    @formHelper(action = StartDateController.onSubmit(mode), 'autoComplete -> "off") {
+    @formHelper(action = StartDateController.onSubmit(), 'autoComplete -> "off") {
 
         @components.back_link()
 

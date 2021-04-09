@@ -22,8 +22,9 @@ import pages.asset.WhatKindOfAssetPage
 import pages.asset.noneeabusiness._
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
-
 import java.time.LocalDate
+
+import pages.asset.noneeabusiness.add.StartDatePage
 
 final case class NonEeaBusinessAsset(override val whatKindOfAsset: WhatKindOfAsset,
                                      name: String,

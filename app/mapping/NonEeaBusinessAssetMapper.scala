@@ -23,7 +23,8 @@ import mapping.reads.NonEeaBusinessAsset
 import models.{Address, UserAnswers}
 import javax.inject.Inject
 import models.assets.NonEeaBusinessType
-import pages.asset.noneeabusiness.{GoverningCountryPage, NonUkAddressPage, NamePage, StartDatePage}
+import pages.asset.noneeabusiness.add.StartDatePage
+import pages.asset.noneeabusiness.{GoverningCountryPage, NamePage, NonUkAddressPage}
 import play.api.Logging
 import play.api.libs.json.{JsError, JsSuccess, Reads}
 import play.api.libs.functional.syntax._

@@ -18,6 +18,7 @@ package utils.print
 
 import base.SpecBase
 import controllers.asset.noneeabusiness.routes._
+import controllers.asset.noneeabusiness.add.routes._
 import controllers.asset.routes.WhatKindOfAssetController
 import models.WhatKindOfAsset.NonEeaBusiness
 import models.{NonUkAddress, NormalMode, UserAnswers}
@@ -26,6 +27,8 @@ import pages.asset.noneeabusiness._
 import play.twirl.api.Html
 import viewmodels.{AnswerRow, AnswerSection}
 import java.time.LocalDate
+
+import pages.asset.noneeabusiness.add.StartDatePage
 
 class NonEeaBusinessPrintHelperSpec extends SpecBase {
 
@@ -52,7 +55,7 @@ class NonEeaBusinessPrintHelperSpec extends SpecBase {
     AnswerRow(label = Html(messages("nonEeaBusiness.name.checkYourAnswersLabel")), Html(name), NameController.onPageLoad(NormalMode).url),
     AnswerRow(label = Html(messages("nonEeaBusiness.internationalAddress.checkYourAnswersLabel", name)), Html("Line 1<br />Line 2<br />France"), InternationalAddressController.onPageLoad(NormalMode).url),
     AnswerRow(label = Html(messages("nonEeaBusiness.governingCountry.checkYourAnswersLabel", name)), Html("France"), GoverningCountryController.onPageLoad(NormalMode).url),
-    AnswerRow(label = Html(messages("nonEeaBusiness.startDate.checkYourAnswersLabel", name)), Html("3 February 1996"), StartDateController.onPageLoad(NormalMode).url)
+    AnswerRow(label = Html(messages("nonEeaBusiness.startDate.checkYourAnswersLabel", name)), Html("3 February 1996"), StartDateController.onPageLoad().url)
   )
 
   private val nonTaxableRows: Seq[AnswerRow] = taxableRows.tail

@@ -27,7 +27,7 @@ import models.assets.{AssetMonetaryAmount, Assets, BusinessAssetType, NonEeaBusi
 import models.{AddAssets, NonUkAddress, NormalMode, RemoveAsset}
 import navigation.Navigator
 import org.mockito.Matchers.any
-import org.mockito.Mockito.{reset, verify, when}
+import org.mockito.Mockito.when
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
