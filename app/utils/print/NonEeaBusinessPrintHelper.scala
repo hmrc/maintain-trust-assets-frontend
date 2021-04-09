@@ -17,12 +17,14 @@
 package utils.print
 
 import controllers.asset.noneeabusiness.routes._
+import controllers.asset.noneeabusiness.add.routes._
 import models.{CheckMode, Mode, NormalMode, UserAnswers}
 import pages.asset.noneeabusiness._
 import play.api.i18n.Messages
 import utils.AnswerRowConverter
 import viewmodels.{AnswerRow, AnswerSection}
 import javax.inject.Inject
+import pages.asset.noneeabusiness.add.StartDatePage
 
 class NonEeaBusinessPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) {
 
@@ -37,7 +39,7 @@ class NonEeaBusinessPrintHelper @Inject()(answerRowConverter: AnswerRowConverter
         bound.stringQuestion(NamePage, "nonEeaBusiness.name", NameController.onPageLoad(mode).url),
         bound.addressQuestion(NonUkAddressPage, "nonEeaBusiness.internationalAddress", InternationalAddressController.onPageLoad(mode).url),
         bound.countryQuestion(GoverningCountryPage, "nonEeaBusiness.governingCountry", GoverningCountryController.onPageLoad(mode).url),
-        bound.dateQuestion(StartDatePage, "nonEeaBusiness.startDate", StartDateController.onPageLoad(mode).url)
+        if (mode == NormalMode) bound.dateQuestion(StartDatePage, "nonEeaBusiness.startDate", StartDateController.onPageLoad().url) else None
       ).flatten
     }
 

@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package controllers.asset.noneeabusiness
+package controllers.asset.noneeabusiness.add
 
 import config.annotations.NonEeaBusiness
 import controllers.actions._
 import controllers.actions.noneeabusiness.NameRequiredAction
 import forms.StartDateFormProvider
+import javax.inject.Inject
+import models.Mode
 import navigation.Navigator
-import pages.asset.noneeabusiness.StartDatePage
+import pages.asset.noneeabusiness.add.StartDatePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.asset.noneeabusiness.StartDateView
-import javax.inject.Inject
-import models.Mode
+import views.html.asset.noneeabusiness.add.StartDateView
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -46,7 +46,7 @@ class StartDateController @Inject()(
 
   private val form = formProvider.withPrefix("nonEeaBusiness.startDate")
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
+  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(StartDatePage) match {
@@ -54,21 +54,21 @@ class StartDateController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, request.Name))
+      Ok(view(preparedForm, request.Name))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
+  def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode, request.Name))),
+          Future.successful(BadRequest(view(formWithErrors, request.Name))),
 
         value => {
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(StartDatePage, value))
             _ <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(StartDatePage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(StartDatePage, updatedAnswers))
         }
       )
   }

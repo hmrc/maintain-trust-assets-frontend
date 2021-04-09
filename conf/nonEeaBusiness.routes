@@ -13,10 +13,8 @@ POST       /governing-country                                         controller
 GET        /change-governing-country                                  controllers.asset.noneeabusiness.GoverningCountryController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-governing-country                                  controllers.asset.noneeabusiness.GoverningCountryController.onSubmit(mode: Mode = CheckMode)
 
-GET        /start-date                                                controllers.asset.noneeabusiness.StartDateController.onPageLoad(mode: Mode = NormalMode)
-POST       /start-date                                                controllers.asset.noneeabusiness.StartDateController.onSubmit(mode: Mode = NormalMode)
-GET        /change-start-date                                         controllers.asset.noneeabusiness.StartDateController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-start-date                                         controllers.asset.noneeabusiness.StartDateController.onSubmit(mode: Mode = CheckMode)
+GET        /start-date                                                controllers.asset.noneeabusiness.add.StartDateController.onPageLoad()
+POST       /start-date                                                controllers.asset.noneeabusiness.add.StartDateController.onSubmit()
 
 GET        /check-answers                                             controllers.asset.noneeabusiness.add.AnswersController.onPageLoad()
 POST       /check-answers                                             controllers.asset.noneeabusiness.add.AnswersController.onSubmit()

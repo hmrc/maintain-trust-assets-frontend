@@ -21,7 +21,8 @@ import java.time.LocalDate
 import base.SpecBase
 import models.assets.NonEeaBusinessType
 import models.{NonUkAddress, UserAnswers}
-import pages.asset.noneeabusiness.{GoverningCountryPage, IndexPage, NamePage, NonUkAddressPage, StartDatePage}
+import pages.asset.noneeabusiness.add.StartDatePage
+import pages.asset.noneeabusiness.{GoverningCountryPage, IndexPage, NamePage, NonUkAddressPage}
 
 class NonEeaBusinessExtractorSpec extends SpecBase {
 
