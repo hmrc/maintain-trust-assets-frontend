@@ -17,10 +17,11 @@
 package navigation
 
 import base.SpecBase
-import controllers.asset.noneeabusiness.routes._
-import controllers.asset.noneeabusiness.add.routes._
+import controllers.asset.noneeabusiness.{routes => rts}
+import controllers.asset.noneeabusiness.add.{routes => addRts}
+import controllers.asset.noneeabusiness.amend.{routes => amendRts}
 import generators.Generators
-import models.{NormalMode, UserAnswers}
+import models.{CheckMode, NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.asset.noneeabusiness._
@@ -29,49 +30,93 @@ class NonEeaBusinessNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
 
   private val navigator: Navigator = injector.instanceOf[NonEeaBusinessNavigator]
 
-  "Non-EEA Business Navigator" must {
+  "Non-EEA Business Navigator" when {
 
-    "navigate from NamePage to InternationalAddressPage" in {
+    "adding" must {
 
-      val page = NamePage
+      val mode = NormalMode
 
-      forAll(arbitrary[UserAnswers]) {
-        userAnswers =>
-          navigator.nextPage(page, NormalMode, userAnswers)
-            .mustBe(InternationalAddressController.onPageLoad(NormalMode))
+      "navigate from NamePage to InternationalAddressPage" in {
+
+        val page = NamePage
+
+        forAll(arbitrary[UserAnswers]) {
+          userAnswers =>
+            navigator.nextPage(page, mode, userAnswers)
+              .mustBe(rts.InternationalAddressController.onPageLoad(mode))
+        }
+      }
+
+      "navigate from InternationalAddressPage to GoverningCountryPage" in {
+
+        val page = NonUkAddressPage
+
+        forAll(arbitrary[UserAnswers]) {
+          userAnswers =>
+            navigator.nextPage(page, mode, userAnswers)
+              .mustBe(rts.GoverningCountryController.onPageLoad(mode))
+        }
+      }
+
+      "navigate from GoverningCountryPage to StartDatePage" in {
+
+        val page = GoverningCountryPage
+
+        forAll(arbitrary[UserAnswers]) {
+          userAnswers =>
+            navigator.nextPage(page, mode, userAnswers)
+              .mustBe(rts.StartDateController.onPageLoad(mode))
+        }
+      }
+
+      "navigate from StartDatePage to Check Answers" in {
+
+        val page = StartDatePage
+
+        forAll(arbitrary[UserAnswers]) {
+          userAnswers =>
+            navigator.nextPage(page, mode, userAnswers)
+              .mustBe(addRts.AnswersController.onPageLoad())
+        }
       }
     }
 
-    "navigate from InternationalAddressPage to GoverningCountryPage" in {
+    "amending" must {
 
-      val page = NonUkAddressPage
+      val mode = CheckMode
+      val index = 0
 
-      forAll(arbitrary[UserAnswers]) {
-        userAnswers =>
-          navigator.nextPage(page, NormalMode, userAnswers)
-            .mustBe(GoverningCountryController.onPageLoad(NormalMode))
+      "navigate from NamePage to InternationalAddressPage" in {
+
+        val page = NamePage
+
+        forAll(arbitrary[UserAnswers]) {
+          userAnswers =>
+            navigator.nextPage(page, mode, userAnswers.set(IndexPage, index).success.value)
+              .mustBe(rts.InternationalAddressController.onPageLoad(mode))
+        }
       }
-    }
 
-    "navigate from GoverningCountryPage to StartDatePage" in {
+      "navigate from InternationalAddressPage to GoverningCountryPage" in {
 
-      val page = GoverningCountryPage
+        val page = NonUkAddressPage
 
-      forAll(arbitrary[UserAnswers]) {
-        userAnswers =>
-          navigator.nextPage(page, NormalMode, userAnswers)
-            .mustBe(StartDateController.onPageLoad(NormalMode))
+        forAll(arbitrary[UserAnswers]) {
+          userAnswers =>
+            navigator.nextPage(page, mode, userAnswers.set(IndexPage, index).success.value)
+              .mustBe(rts.GoverningCountryController.onPageLoad(mode))
+        }
       }
-    }
 
-    "navigate from StartDatePage to Check Answers" in {
+      "navigate from GoverningCountryPage to Check Answers" in {
 
-      val page = StartDatePage
+        val page = GoverningCountryPage
 
-      forAll(arbitrary[UserAnswers]) {
-        userAnswers =>
-          navigator.nextPage(page, NormalMode, userAnswers)
-            .mustBe(AnswersController.onPageLoad())
+        forAll(arbitrary[UserAnswers]) {
+          userAnswers =>
+            navigator.nextPage(page, mode, userAnswers.set(IndexPage, index).success.value)
+              .mustBe(amendRts.AnswersController.renderFromUserAnswers(index))
+        }
       }
     }
   }
