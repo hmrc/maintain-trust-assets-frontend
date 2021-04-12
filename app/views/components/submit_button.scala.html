@@ -19,7 +19,7 @@
 <div class="section">
     <button id="submit" formnovalidate class="button @if(submitClass.nonEmpty){@{submitClass.get}}">
          @if(overrideMessage.isEmpty) {
-             @messages("site.save.continue")
+             @messages("site.continue")
          } else {
              @messages(overrideMessage.get)
          }
