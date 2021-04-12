@@ -53,8 +53,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
   def removeAssetYesNoRoute(index: Int): String =
     controllers.asset.noneeabusiness.remove.routes.RemoveAssetYesNoController.onPageLoad(index).url
 
-  val addTaxableAssetsForm: Form[AddAssets] = new AddAssetsFormProvider().withPrefix("addAssets")
-  val addNonTaxableAssetsForm: Form[AddAssets] = new AddAssetsFormProvider().withPrefix("addAssets.nonTaxable")
+  val addAssetsForm: Form[AddAssets] = new AddAssetsFormProvider().withPrefix("addAssets")
   val yesNoForm: Form[Boolean] = new YesNoFormProvider().withPrefix("addAnAssetYesNo")
 
   val addRow1 = AddRow("orgName 1", typeLabel = "Non-EEA Company", changeNonEeaAssetRoute(0), removeAssetYesNoRoute(0))
@@ -194,29 +193,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(addTaxableAssetsForm, Nil, oneAsset, "Add a non-EEA company", "addAssets")(request, messages).toString
-
-          application.stop()
-        }
-
-        "non-taxable" in {
-
-          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(isTaxable = false)))
-            .overrides(
-              bind[Navigator].qualifiedWith(classOf[AssetsAnnotations]).toInstance(fakeNavigator),
-              bind(classOf[TrustService]).toInstance(fakeServiceWithOneNonEeaAsset))
-            .build()
-
-          val request = FakeRequest(GET, addAssetsRoute)
-
-          val result = route(application, request).value
-
-          val view = application.injector.instanceOf[AddAssetsView]
-
-          status(result) mustEqual OK
-
-          contentAsString(result) mustEqual
-            view(addNonTaxableAssetsForm, Nil, oneAsset, "Add a non-EEA company", "addAssets.nonTaxable")(request, messages).toString
+            view(addAssetsForm, Nil, oneAsset, "Add a non-EEA company", "addAssets")(request, messages).toString
 
           application.stop()
         }
@@ -244,29 +221,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(addTaxableAssetsForm, Nil, multipleAssets, "You have added 2 non-EEA companies", "addAssets")(request, messages).toString
-
-          application.stop()
-        }
-
-        "non-taxable" in {
-
-          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(isTaxable = false)))
-            .overrides(
-              bind[Navigator].qualifiedWith(classOf[AssetsAnnotations]).toInstance(fakeNavigator),
-              bind(classOf[TrustService]).toInstance(fakeServiceWithMultipleNonEeaAssets))
-            .build()
-
-          val request = FakeRequest(GET, addAssetsRoute)
-
-          val result = route(application, request).value
-
-          val view = application.injector.instanceOf[AddAssetsView]
-
-          status(result) mustEqual OK
-
-          contentAsString(result) mustEqual
-            view(addNonTaxableAssetsForm, Nil, multipleAssets, "You have added 2 non-EEA companies", "addAssets.nonTaxable")(request, messages).toString
+            view(addAssetsForm, Nil, multipleAssets, "You have added 2 non-EEA companies", "addAssets")(request, messages).toString
 
           application.stop()
         }
@@ -326,7 +281,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
           FakeRequest(POST, addAnotherPostRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
 
-        val boundForm = addTaxableAssetsForm.bind(Map("value" -> "invalid value"))
+        val boundForm = addAssetsForm.bind(Map("value" -> "invalid value"))
 
         val view = application.injector.instanceOf[AddAssetsView]
 

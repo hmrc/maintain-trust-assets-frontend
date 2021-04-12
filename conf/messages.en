@@ -135,33 +135,16 @@ addAssets.count.heading = You have added {0} non-EEA companies
 addAssets.maxedOut.p1 = You cannot add another non-EEA company as you have entered a maximum of {0}.
 addAssets.maxedOut.p2 = You can add another non-EEA company by removing an existing one, or write to HMRC with details of any additional non-EEA companies.
 
-addAssets.nonTaxable.title = Add a non-EEA company
-addAssets.nonTaxable.heading = Add a non-EEA company
-addAssets.nonTaxable.additional-content = Do you want to add another non-EEA company?
-addAssets.nonTaxable.add-them-now = Yes, add one now
-addAssets.nonTaxable.no-complete = No, I have added all non-EEA companies
-addAssets.nonTaxable.error.required = Select yes if you want to add another non-EEA company
-addAssets.nonTaxable.count.title = You have added {0} non-EEA companies
-addAssets.nonTaxable.count.heading = You have added {0} non-EEA companies
-addAssets.nonTaxable.maxedOut.p1 = You cannot add another non-EEA company as you have entered a maximum of {0}.
-addAssets.nonTaxable.maxedOut.p2 = You can add another non-EEA company by removing an existing one, or write to HMRC with details of any additional non-EEA companies.
-
-assets.defaultText = the asset
-assets.nonTaxable.defaultText = this non-EEA company
+assets.defaultText = this non-EEA company
 
 trustOwnsNonEeaBusinessYesNo.title = Does the trust own or have a controlling interest in a non-EEA company?
 trustOwnsNonEeaBusinessYesNo.heading = Does the trust own or have a controlling interest in a non-EEA company?
 trustOwnsNonEeaBusinessYesNo.error.required = Select yes if the trust owns or has a controlling interest in a non-EEA company
 
-assetInterruptPage.title = Information you’ll need to provide
-assetInterruptPage.heading = Information you’ll need to provide
+assetInterruptPage.title = Information you need to know to add assets
+assetInterruptPage.heading = Information you need to know to add assets
 assetInterruptPage.caption = Assets
 assetInterruptPage.caption.hidden = This section is
-
-assetInterruptPage.5mld.title = Information you need to know to add assets
-assetInterruptPage.5mld.heading = Information you need to know to add assets
-assetInterruptPage.5mld.caption = Assets
-assetInterruptPage.5mld.caption.hidden = This section is
 
 assetInterruptPage.subheading1 = Money
 assetInterruptPage.paragraph1 = Tell us the total amount of money in the trust. If more than one amount has been added to the trust, add them together.

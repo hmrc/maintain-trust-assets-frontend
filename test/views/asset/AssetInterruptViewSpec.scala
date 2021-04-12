@@ -17,19 +17,19 @@
 package views.asset
 
 import views.behaviours.ViewBehaviours
-import views.html.asset.TaxableInfoView
+import views.html.asset.AssetInterruptView
 
-class TaxableInfoViewSpec extends ViewBehaviours {
+class AssetInterruptViewSpec extends ViewBehaviours {
 
-  "TaxableInfoView" must {
+  "AddAssetInfoView" must {
 
-      val view = viewFor[TaxableInfoView](Some(emptyUserAnswers))
+      val view = viewFor[AssetInterruptView](Some(emptyUserAnswers))
 
-      val applyView = view.apply(is5mldEnabled = true)(fakeRequest, messages)
+      val applyView = view.apply()(fakeRequest, messages)
 
-      behave like normalPage(applyView, "assetInterruptPage.5mld", ignoreTitle = true)
+      behave like normalPage(applyView, "assetInterruptPage", ignoreTitle = true)
 
-      behave like pageWithTitleAndCaption(applyView, "assetInterruptPage.5mld")
+      behave like pageWithTitleAndCaption(applyView, "assetInterruptPage")
 
       behave like pageWithGuidance(applyView,
         messageKeyPrefix = "assetInterruptPage",

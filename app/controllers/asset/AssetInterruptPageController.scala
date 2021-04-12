@@ -20,12 +20,13 @@ import config.annotations.Assets
 import controllers.actions.StandardActionSets
 import navigation.Navigator
 import pages.asset.AssetInterruptPage
-import play.api.i18n.MessagesApi
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
-import views.html.asset.{NonTaxableInfoView, TaxableInfoView}
+import views.html.asset.AssetInterruptView
 import javax.inject.Inject
 import models.NormalMode
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -35,26 +36,18 @@ class AssetInterruptPageController @Inject()(
                                               repository: PlaybackRepository,
                                               @Assets navigator: Navigator,
                                               val controllerComponents: MessagesControllerComponents,
-                                              taxableView: TaxableInfoView,
-                                              nonTaxableView: NonTaxableInfoView
-                                            )(implicit ec: ExecutionContext) extends AddAssetController {
+                                              assetInterruptView: AssetInterruptView
+                                            )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
-    implicit request =>
-      Ok(
-        if (request.userAnswers.isTaxable) {
-          taxableView(request.userAnswers.is5mldEnabled)
-        } else {
-          nonTaxableView()
-        }
-      )
+    implicit request => Ok(assetInterruptView())
   }
 
   def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
       for {
-        updatedAnswers <- Future.fromTry(setAssetTypeIfNonTaxable(request.userAnswers, 0))
-        _ <- repository.set(updatedAnswers)
+        updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
+        _ <- repository.set(request.userAnswers)
       } yield {
         Redirect(navigator.nextPage(AssetInterruptPage, NormalMode, updatedAnswers))
       }

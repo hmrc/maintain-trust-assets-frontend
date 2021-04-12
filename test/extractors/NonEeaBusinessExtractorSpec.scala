@@ -39,31 +39,27 @@ class NonEeaBusinessExtractorSpec extends SpecBase {
 
     "Populate user answers" when {
 
-      "5mld" when {
+      val baseAnswers: UserAnswers = emptyUserAnswers.copy(is5mldEnabled = true, isTaxable = true, isUnderlyingData5mld = false)
 
-        val baseAnswers: UserAnswers = emptyUserAnswers.copy(is5mldEnabled = true, isTaxable = true, isUnderlyingData5mld = false)
+      "has nonEeaBusiness asset data" in {
 
-        "has nonEeaBusiness asset data" in {
+        val nonEeaBusiness = NonEeaBusinessType(
+          lineNo = None,
+          orgName = name,
+          address = nonUkAddress,
+          govLawCountry = country,
+          startDate = date,
+          endDate = None,
+          provisional = true
+        )
 
-          val nonEeaBusiness = NonEeaBusinessType(
-            lineNo = None,
-            orgName = name,
-            address = nonUkAddress,
-            govLawCountry = country,
-            startDate = date,
-            endDate = None,
-            provisional = true
-          )
+        val result = extractor(baseAnswers, nonEeaBusiness, index).get
 
-          val result = extractor(baseAnswers, nonEeaBusiness, index).get
-
-          result.get(IndexPage).get mustBe index
-          result.get(NamePage).get mustBe name
-          result.get(NonUkAddressPage).get mustBe nonUkAddress
-          result.get(GoverningCountryPage).get mustBe country
-          result.get(StartDatePage).get mustBe date
-        }
-
+        result.get(IndexPage).get mustBe index
+        result.get(NamePage).get mustBe name
+        result.get(NonUkAddressPage).get mustBe nonUkAddress
+        result.get(GoverningCountryPage).get mustBe country
+        result.get(StartDatePage).get mustBe date
       }
 
     }
