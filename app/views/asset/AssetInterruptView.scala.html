@@ -24,24 +24,24 @@
 @()(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("assetInterruptPage.nonTaxable.title")
+    title = messages("assetInterruptPage.title")
 ) {
 
     @formHelper(action = AssetInterruptPageController.onSubmit(), 'autoComplete -> "off") {
 
         @components.back_link()
 
-        @components.heading_with_caption("assetInterruptPage.nonTaxable")
+        @components.heading_with_caption("assetInterruptPage")
 
-        <p>@messages("assetInterruptPage.nonTaxable.paragraph1")</p>
-
+        <h2>@messages("assetInterruptPage.subheading7")</h2>
+        <p>@messages("assetInterruptPage.paragraph10")</p>
         @components.bullet_list(
-            "assetInterruptPage.nonTaxable",
+            "assetInterruptPage",
             List(
-                "bullet1",
-                "bullet2",
-                "bullet3",
-                "bullet4"
+                "bullet11",
+                "bullet12",
+                "bullet13",
+                "bullet14"
             )
         )
 

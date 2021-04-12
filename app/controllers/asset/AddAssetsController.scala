@@ -27,7 +27,7 @@ import models.{AddAssets, NormalMode, UserAnswers}
 import navigation.Navigator
 import pages.asset.{AddAnAssetYesNoPage, AddAssetsPage}
 import play.api.data.Form
-import play.api.i18n.{Messages, MessagesApi, MessagesProvider}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi, MessagesProvider}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import utils.AddAssetViewHelper
@@ -35,6 +35,7 @@ import views.html.asset.{AddAnAssetYesNoView, AddAssetsView, MaxedOutView}
 import javax.inject.Inject
 import play.api.Logging
 import services.TrustService
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -53,12 +54,11 @@ class AddAssetsController @Inject()(
                                      yesNoView: AddAnAssetYesNoView,
                                      maxedOutView: MaxedOutView,
                                      errorHandler: ErrorHandler
-                                   )(implicit ec: ExecutionContext) extends AddAssetController with Logging {
+                                   )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
-  private def addAnotherForm(isTaxable: Boolean): Form[AddAssets] = addAnotherFormProvider.withPrefix(determinePrefix(isTaxable))
+  private val prefix = "addAssets"
+  private val addAnotherForm: Form[AddAssets] = addAnotherFormProvider.withPrefix(prefix)
   private val yesNoForm: Form[Boolean] = yesNoFormProvider.withPrefix("addAnAssetYesNo")
-
-  private def determinePrefix(isTaxable: Boolean) = "addAssets" + (if (!isTaxable) ".nonTaxable" else "")
 
   private def heading(count: Int, prefix: String)(implicit mp: MessagesProvider): String = {
     count match {
@@ -71,7 +71,6 @@ class AddAssetsController @Inject()(
     implicit request =>
 
       val userAnswers: UserAnswers = request.userAnswers
-      val isTaxable = userAnswers.isTaxable
 
       for {
         assets <- trustService.getAssets(userAnswers.identifier)
@@ -81,7 +80,6 @@ class AddAssetsController @Inject()(
         val assetRows = new AddAssetViewHelper(assets).rows //Currently only Shows NonEeaBusinessAssets
 
         val maxLimit: Int = MAX_NON_EEA_BUSINESS_ASSETS
-        val prefix = determinePrefix(isTaxable)
 
         assets.nonEEABusiness.size match {
           case 0 =>
@@ -89,7 +87,7 @@ class AddAssetsController @Inject()(
           case c if c >= maxLimit =>
             Ok(maxedOutView(assetRows.inProgress, assetRows.complete, heading(c, prefix), maxLimit, prefix))
           case c =>
-            Ok(addAssetsView(addAnotherForm(isTaxable), assetRows.inProgress, assetRows.complete, heading(c, prefix), prefix))
+            Ok(addAssetsView(addAnotherForm, assetRows.inProgress, assetRows.complete, heading(c, prefix), prefix))
         }
       }
   }
@@ -114,15 +112,11 @@ class AddAssetsController @Inject()(
   def submitAnother(): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
 
-      val userAnswers = request.userAnswers
-      val isTaxable = userAnswers.isTaxable
-
       trustService.getAssets(request.userAnswers.identifier).flatMap { assets =>
-        addAnotherForm(isTaxable).bindFromRequest().fold(
+        addAnotherForm.bindFromRequest().fold(
           (formWithErrors: Form[_]) => {
 
             val assetRows = new AddAssetViewHelper(assets).rows
-            val prefix = determinePrefix(isTaxable)
 
             Future.successful(BadRequest(addAssetsView(formWithErrors, assetRows.inProgress, assetRows.complete, heading(assetRows.count, prefix), prefix)))
           },

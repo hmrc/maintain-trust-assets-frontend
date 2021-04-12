@@ -33,39 +33,9 @@ class MaxedOutViewSpec extends OptionsViewBehaviours with TabularDataViewBehavio
 
       val messageKeyPrefix: String = "addAssets"
 
-      "5mld" must {
+      val max: Int = 76
 
-        val max: Int = 76
-
-        val view: MaxedOutView = viewFor[MaxedOutView](Some(emptyUserAnswers.copy(is5mldEnabled = true, isTaxable = true)))
-
-        def applyView(): HtmlFormat.Appendable =
-          view.apply(Nil, completeRows(max), "Add a non-EEA company", max, messageKeyPrefix)(fakeRequest, messages)
-
-        behave like normalPage(applyView(), messageKeyPrefix)
-
-        behave like pageWithBackLink(applyView())
-
-        behave like pageWithCompleteTabularData(applyView(), completeRows(max))
-
-        behave like pageWithASubmitButton(applyView())
-
-        "show maxed out assets content" in {
-          val doc = asDocument(applyView())
-
-          assertContainsText(doc, s"You cannot add another non-EEA company as you have entered a maximum of $max.")
-          assertContainsText(doc, "You can add another non-EEA company by removing an existing one, or write to HMRC with details of any additional non-EEA companies.")
-        }
-      }
-    }
-
-    "non-taxable" must {
-
-      val messageKeyPrefix: String = "addAssets.nonTaxable"
-
-      val max: Int = 25
-
-      val view: MaxedOutView = viewFor[MaxedOutView](Some(emptyUserAnswers.copy(is5mldEnabled = true, isTaxable = false)))
+      val view: MaxedOutView = viewFor[MaxedOutView](Some(emptyUserAnswers.copy(is5mldEnabled = true, isTaxable = true)))
 
       def applyView(): HtmlFormat.Appendable =
         view.apply(Nil, completeRows(max), "Add a non-EEA company", max, messageKeyPrefix)(fakeRequest, messages)

@@ -28,12 +28,6 @@ class AddAssetViewHelper @Inject()(assets: Assets)
   def rows: AddToRows = {
 
     val complete = assets.nonEEABusiness.zipWithIndex.map(x => renderNonEEABusiness(x._1, x._2))
-//        assets.business.zipWithIndex.map(x => renderBusiness(x._1, x._2)) ++
-//        assets.monetary.zipWithIndex.map(x => renderMonetary(x._1, x._2)) ++
-//        assets.partnerShip.zipWithIndex.map(x => renderPartnership(x._1, x._2)) ++
-//        assets.propertyOrLand.zipWithIndex.map(x => renderPropertyOrLand(x._1, x._2)) ++
-//        assets.shares.zipWithIndex.map(x => renderShares(x._1, x._2)) ++
-//        assets.other.zipWithIndex.map(x => renderOther(x._1, x._2))
 
     AddToRows(Nil, complete)
   }
@@ -46,60 +40,4 @@ class AddAssetViewHelper @Inject()(assets: Assets)
       removeUrl = noneeabusiness.remove.routes.RemoveAssetYesNoController.onPageLoad(index).url
     )
   }
-
-/**
-  private def renderMonetary(asset: AssetMonetaryAmount, index: Int): AddRow = {
-    AddRow(
-      name = asset.assetMonetaryAmount.toString,
-      typeLabel = messages(s"entities.asset.monetary"),
-      changeUrl = "", //money.routes.AssetMoneyValueController.onPageLoad(NormalMode).url,
-      removeUrl = ""
-    )
-  }
-
-  private def renderPropertyOrLand(asset: PropertyLandType, index: Int): AddRow = {
-    AddRow(
-      name = asset.valueFull.toString,
-      typeLabel = messages(s"entities.asset.propertyOrLand"),
-      changeUrl = "", //property_or_land.routes.PropertyOrLandAnswerController.onPageLoad().url,
-      removeUrl = ""
-    )
-  }
-
-  private def renderShares(asset: SharesType, index: Int): AddRow = {
-    AddRow(
-      name = asset.orgName,
-      typeLabel = messages(s"entities.asset.shares"),
-      changeUrl = "", //shares.routes.ShareAnswerController.onPageLoad().url,
-      removeUrl = ""
-    )
-  }
-
-  private def renderBusiness(asset: BusinessAssetType, index: Int): AddRow = {
-    AddRow(
-      name = asset.orgName,
-      typeLabel = messages(s"entities.asset.business"),
-      changeUrl = "", //business.routes.BusinessNameController.onPageLoad(NormalMode).url,
-      removeUrl = ""
-    )
-  }
-
-  private def renderPartnership(asset: PartnershipType, index: Int): AddRow = {
-    AddRow(
-      name = asset.description,
-      typeLabel = messages(s"entities.asset.partnership"),
-      changeUrl = "", //partnership.routes.PartnershipAnswerController.onPageLoad().url,
-      removeUrl = ""
-    )
-  }
-
-  private def renderOther(asset: OtherAssetType, index: Int): AddRow = {
-    AddRow(
-      name = asset.description,
-      typeLabel = messages(s"entities.asset.other"),
-      changeUrl = "", //other.routes.OtherAssetAnswersController.onPageLoad().url,
-      removeUrl = ""
-    )
-  }
-  */
 }
