@@ -8,7 +8,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers.running
 import play.modules.reactivemongo.ReactiveMongoApi
-import reactivemongo.api.MongoConnection
+import reactivemongo.api.{DefaultDB, MongoConnection}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -20,16 +20,16 @@ trait MongoSuite extends ScalaFutures {
   // Database boilerplate
   private val connectionString = "mongodb://localhost:27017/maintain-protectors-frontend-it"
 
-  private def getDatabase(connection: MongoConnection) = {
+  private def getDatabase(connection: MongoConnection): Future[DefaultDB] = {
     connection.database("maintain-protectors-frontend-integration")
   }
 
-  private def getConnection(application: Application) = {
+  private def getConnection(application: Application): Future[MongoConnection] = {
     val mongoDriver = application.injector.instanceOf[ReactiveMongoApi]
 
     for {
-      uri <- MongoConnection.parseURI(connectionString)
-      connection <- mongoDriver.driver.connection(uri, true)
+      uri <- MongoConnection.fromString(connectionString)
+      connection <- mongoDriver.asyncDriver.connect(uri)
     } yield connection
   }
 
@@ -49,11 +49,11 @@ trait MongoSuite extends ScalaFutures {
     ).build()
 
   def assertMongoTest(application: Application)(block: (Application, MongoConnection) => Assertion) : Future[Assertion] =
-    running(application) {
       for {
-        connection <- Future.fromTry(getConnection(application))
+        connection <- getConnection(application)
         _ <- dropTheDatabase(connection)
-      } yield block(application, connection)
-    }
+      } yield running(application) {
+        block(application, connection)
+      }
 
 }

@@ -2,6 +2,7 @@ import play.sbt.routes.RoutesKeys
 import sbt.Def
 import scoverage.ScoverageKeys
 import uk.gov.hmrc.DefaultBuildSettings
+import uk.gov.hmrc.DefaultBuildSettings.integrationTestSettings
 import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 
 lazy val appName: String = "maintain-trust-assets-frontend"
@@ -62,6 +63,8 @@ lazy val root = (project in file("."))
     includeFilter in uglify := GlobFilter("maintaintrustassetsfrontend-*.js")
   )
   .settings(inConfig(Test)(testSettings): _*)
+  .configs(IntegrationTest)
+  .settings(integrationTestSettings(): _*)
 
 lazy val testSettings: Seq[Def.Setting[_]] = Seq(
   fork        := true,

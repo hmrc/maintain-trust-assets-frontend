@@ -5,7 +5,7 @@ object AppDependencies {
 
   val compile: Seq[ModuleID] = Seq(
     play.sbt.PlayImport.ws,
-    "org.reactivemongo" %% "play2-reactivemongo"            % "0.18.8-play27",
+    "org.reactivemongo" %% "play2-reactivemongo"            % "0.20.13-play27",
     "uk.gov.hmrc"       %% "govuk-template"                 % "5.60.0-play-27",
     "uk.gov.hmrc"       %% "play-health"                    % "3.15.0-play-27",
     "uk.gov.hmrc"       %% "play-ui"                        % "9.0.0-play-27",
@@ -23,7 +23,7 @@ object AppDependencies {
     "org.mockito"                 %  "mockito-all"        % "1.10.19",
     "org.scalacheck"              %% "scalacheck"         % "1.14.3",
     "com.github.tomakehurst"      % "wiremock-standalone" % "2.25.1"
-  ).map(_ % Test)
+  ).map(_ % "it, test")
 
   def apply(): Seq[ModuleID] = compile ++ test
 
