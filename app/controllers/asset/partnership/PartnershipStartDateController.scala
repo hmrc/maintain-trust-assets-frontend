@@ -44,7 +44,7 @@ class PartnershipStartDateController @Inject()(
                                                 view: PartnershipStartDateView
                                               )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val form = formProvider.withPrefix("partnership.startDate")
+  private val form = formProvider.withConfig("partnership.startDate")
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
@@ -59,7 +59,6 @@ class PartnershipStartDateController @Inject()(
 
   def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
     implicit request =>
-
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(view(formWithErrors, mode))),

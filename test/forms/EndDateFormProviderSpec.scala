@@ -16,18 +16,18 @@
 
 package forms
 
+import java.time.{LocalDate, ZoneOffset}
+
 import base.FakeTrustsApp
 import forms.behaviours.DateBehaviours
 import play.api.data.FormError
 
-import java.time.{LocalDate, ZoneOffset}
-
-class StartDateFormProviderSpec extends DateBehaviours with FakeTrustsApp {
+class EndDateFormProviderSpec extends DateBehaviours with FakeTrustsApp {
 
   private val min = frontendAppConfig.minDate
   private val max = LocalDate.now(ZoneOffset.UTC)
-  private val prefix: String = "partnership.startDate"
-  private val form = new StartDateFormProvider(frontendAppConfig).withConfig(prefix, min)
+  private val prefix: String = "partnership.endDate"
+  private val form = new EndDateFormProvider().withConfig(prefix, min)
 
   ".value" should {
 
@@ -47,7 +47,7 @@ class StartDateFormProviderSpec extends DateBehaviours with FakeTrustsApp {
 
     behave like dateFieldWithMin(form, "value",
       min = min,
-      FormError("value", s"$prefix.error.tooEarly", List("day", "month", "year"))
+      FormError("value", s"$prefix.error.beforeAssetStartDate", List("day", "month", "year"))
     )
 
   }
