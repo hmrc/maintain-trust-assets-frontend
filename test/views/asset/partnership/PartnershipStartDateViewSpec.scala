@@ -28,8 +28,7 @@ import models.NormalMode
 class PartnershipStartDateViewSpec extends QuestionViewBehaviours[LocalDate] {
 
   private val messageKeyPrefix: String = "partnership.startDate"
-
-  override val form: Form[LocalDate] = new StartDateFormProvider(frontendAppConfig).withPrefix(messageKeyPrefix)
+  override val form: Form[LocalDate] = new StartDateFormProvider().withConfig(messageKeyPrefix, LocalDate.now())
 
   "PartnershipStartDateView view" must {
 

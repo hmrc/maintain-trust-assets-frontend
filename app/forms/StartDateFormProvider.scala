@@ -16,25 +16,24 @@
 
 package forms
 
-import config.FrontendAppConfig
 import forms.mappings.Mappings
 import play.api.data.Form
 
 import java.time.LocalDate
 import javax.inject.Inject
 
-class StartDateFormProvider @Inject()(appConfig: FrontendAppConfig) extends Mappings {
+class StartDateFormProvider @Inject() extends Mappings {
 
-  def withPrefix(prefix: String): Form[LocalDate] =
+  def withConfig(prefix: String, trustSetupDate: LocalDate): Form[LocalDate] =
     Form(
       "value" -> localDate(
-        invalidKey     = "partnership.startDate.error.invalid",
-        allRequiredKey = "partnership.startDate.error.required.all",
-        twoRequiredKey = "partnership.startDate.error.required.two",
-        requiredKey    = "partnership.startDate.error.required"
+        invalidKey     = s"$prefix.error.invalid",
+        allRequiredKey = s"$prefix.error.required.all",
+        twoRequiredKey = s"$prefix.error.required.two",
+        requiredKey    = s"$prefix.error.required"
       ).verifying(firstError(
-        maxDate(LocalDate.now, s"partnership.startDate.error.future", "day", "month", "year"),
-        minDate(appConfig.minDate, s"partnership.startDate.error.past", "day", "month", "year")
+        maxDate(LocalDate.now, s"$prefix.error.future", "day", "month", "year"),
+        minDate(trustSetupDate, s"$prefix.error.beforeTrustSetup", "day", "month", "year")
       ))
     )
 }

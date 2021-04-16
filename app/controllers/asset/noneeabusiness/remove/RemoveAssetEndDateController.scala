@@ -42,12 +42,14 @@ class RemoveAssetEndDateController @Inject()(
                                             errorHandler: ErrorHandler
                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
-  private val form = formProvider.withPrefix("nonEeaBusiness.endDate")
+  private val messagePrefix: String = "nonEeaBusiness.endDate"
 
   private def redirectToLandingPage(): Result = Redirect(controllers.asset.routes.AddAssetsController.onPageLoad())
 
   def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
+
+      val form = formProvider.withConfig(messagePrefix, request.userAnswers.whenTrustSetup)
       trustService.getNonEeaBusinessAsset(request.userAnswers.identifier, index).map {
         asset =>
           Ok(view(form, index, asset.orgName))
@@ -67,6 +69,7 @@ class RemoveAssetEndDateController @Inject()(
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
 
+      val form = formProvider.withConfig(messagePrefix, request.userAnswers.whenTrustSetup)
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) => {
           trustService.getNonEeaBusinessAsset(request.userAnswers.identifier, index).map {

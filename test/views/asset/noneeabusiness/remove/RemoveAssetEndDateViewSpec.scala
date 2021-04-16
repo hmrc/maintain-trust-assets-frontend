@@ -27,7 +27,7 @@ import views.html.asset.noneeabusiness.remove.RemoveAssetEndDateView
 class RemoveAssetEndDateViewSpec extends QuestionViewBehaviours[LocalDate] {
 
   private val messageKeyPrefix: String = "nonEeaBusiness.endDate"
-  override val form: Form[LocalDate] = new EndDateFormProvider(frontendAppConfig).withPrefix(messageKeyPrefix)
+  override val form: Form[LocalDate] = new EndDateFormProvider().withConfig(messageKeyPrefix, LocalDate.now())
   private val name: String = "Test"
   val index = 0
 

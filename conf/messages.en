@@ -415,6 +415,7 @@ partnership.startDate.error.required = The date the partnership started must inc
 partnership.startDate.error.invalid = Enter a real date for the partnership start date
 partnership.startDate.error.future = The date the partnership started must be today or in the past
 partnership.startDate.error.past = The date the partnership started must be after 31 December 1499
+partnership.startDate.error.beforeTrustSetup = The date that the partnership started cannot be before the start date of the trust
 
 partnership.answers.title = Check asset details
 partnership.answers.heading = Check asset details
@@ -470,6 +471,7 @@ nonEeaBusiness.startDate.error.required = The date that the trust started their 
 nonEeaBusiness.startDate.error.invalid = Enter a real date for the date that the trust started their ownership or controlling interest in the company
 nonEeaBusiness.startDate.error.future = The date that the trust started their ownership or controlling interest in the company must be today or in the past
 nonEeaBusiness.startDate.error.past = The date that the trust started their ownership or controlling interest in the company must be after 31 December 1499
+nonEeaBusiness.startDate.error.beforeTrustSetup = The date that the trust started their ownership or controlling interest in the company cannot be before the start date of the trust
 
 nonEeaBusiness.removeYesNo.title = Are you sure you want to remove the asset?
 nonEeaBusiness.removeYesNo.heading = Are you sure you want to remove {0}?
@@ -485,6 +487,7 @@ nonEeaBusiness.endDate.error.required = The date that the trust ended their owne
 nonEeaBusiness.endDate.error.invalid = Enter a real date for the date that the trust ended their ownership or controlling interest in the company
 nonEeaBusiness.endDate.error.future = The date that the trust ended their ownership or controlling interest in the company must be today or in the past
 nonEeaBusiness.endDate.error.past = The date that the trust ended their ownership or controlling interest in the company must be after 31 December 1499
+nonEeaBusiness.endDate.error.beforeTrustSetup = The date that the trust ended their ownership or controlling interest in the company cannot be before the start date of the trust
 
 nonEeaBusiness.answers.title = Check non-EEA company details
 nonEeaBusiness.answers.heading = Check non-EEA company details

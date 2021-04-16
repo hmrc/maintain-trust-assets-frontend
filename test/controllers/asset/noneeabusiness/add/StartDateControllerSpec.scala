@@ -33,17 +33,21 @@ import views.html.asset.noneeabusiness.add.StartDateView
 
 class StartDateControllerSpec extends SpecBase with IndexValidation {
 
-  private val formProvider = new StartDateFormProvider(frontendAppConfig)
-  private val prefix: String = "nonEeaBusiness.startDate"
-  private val form = formProvider.withPrefix(prefix)
   private val name = "Test"
 
+  private val trustStartDate: LocalDate = LocalDate.parse("1996-02-03")
   private val validAnswer: LocalDate = LocalDate.parse("1996-02-03")
+  private val toEarlyDate: LocalDate = LocalDate.parse("1996-02-02")
+
+  private val formProvider = new StartDateFormProvider()
+  private val prefix: String = "nonEeaBusiness.startDate"
+  private val form = formProvider.withConfig(prefix, trustStartDate)
 
   private lazy val onPageLoadRoute = routes.StartDateController.onPageLoad().url
 
-  private val baseAnswers: UserAnswers = emptyUserAnswers
+  private val baseAnswers: UserAnswers = emptyUserAnswers.copy(whenTrustSetup = trustStartDate)
     .set(NamePage, name).success.value
+
 
   "StartDateController" must {
 
@@ -105,6 +109,36 @@ class StartDateControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
+
+      application.stop()
+    }
+
+    "return a Bad Request and errors when the entered date is before the trust start date" in {
+
+      val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
+
+      val request =
+        FakeRequest(POST, onPageLoadRoute)
+          .withFormUrlEncodedBody(
+            "value.day" -> toEarlyDate.getDayOfMonth.toString,
+            "value.month" -> toEarlyDate.getMonthValue.toString,
+            "value.year" -> toEarlyDate.getYear.toString
+          )
+
+      val boundForm = form.bind(Map(
+        "value.day" -> toEarlyDate.getDayOfMonth.toString,
+        "value.month" -> toEarlyDate.getMonthValue.toString,
+        "value.year" -> toEarlyDate.getYear.toString
+      ))
+
+      val view = application.injector.instanceOf[StartDateView]
+
+      val result = route(application, request).value
+
+      status(result) mustEqual BAD_REQUEST
+
+      contentAsString(result) mustEqual
+        view(boundForm, name)(request, messages).toString
 
       application.stop()
     }

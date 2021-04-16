@@ -21,8 +21,8 @@ import java.time.LocalDate
 import base.SpecBase
 import connectors.TrustsConnector
 import controllers.Assets.OK
-import forms.EndDateFormProvider
-import models.NonUkAddress
+import forms.{EndDateFormProvider, StartDateFormProvider}
+import models.{NonUkAddress, UserAnswers}
 import models.assets._
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -32,19 +32,23 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpResponse
+import views.html.asset.noneeabusiness.add.StartDateView
 import views.html.asset.noneeabusiness.remove.RemoveAssetEndDateView
 
 import scala.concurrent.Future
 
 class RemoveAssetEndDateControllerSpec extends SpecBase with ScalaCheckPropertyChecks with ScalaFutures {
 
-  private val formProvider = new EndDateFormProvider(frontendAppConfig)
-  private val prefix: String = "nonEeaBusiness.endDate"
-  private val form = formProvider.withPrefix(prefix)
 
   lazy val formRoute = routes.RemoveAssetEndDateController.onSubmit(0)
 
+  private val trustStartDate: LocalDate = LocalDate.parse("1996-02-03")
   private val validAnswer: LocalDate = LocalDate.parse("1996-02-03")
+  private val toEarlyDate: LocalDate = LocalDate.parse("1996-02-02")
+
+  private val formProvider = new EndDateFormProvider()
+  private val prefix: String = "nonEeaBusiness.endDate"
+  private val form = formProvider.withConfig(prefix, trustStartDate)
 
   val mockConnector: TrustsConnector = mock[TrustsConnector]
 
@@ -149,6 +153,37 @@ class RemoveAssetEndDateControllerSpec extends SpecBase with ScalaCheckPropertyC
 
         application.stop()
       }
+    }
+
+    "return a Bad Request and errors when the entered date is before the trust start date" in {
+      val baseAnswers: UserAnswers = emptyUserAnswers.copy(whenTrustSetup = trustStartDate)
+      val index = 0
+      val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
+
+      val request =
+        FakeRequest(POST, routes.RemoveAssetEndDateController.onSubmit(index).url)
+          .withFormUrlEncodedBody(
+            "value.day" -> toEarlyDate.getDayOfMonth.toString,
+            "value.month" -> toEarlyDate.getMonthValue.toString,
+            "value.year" -> toEarlyDate.getYear.toString
+          )
+
+      val boundForm = form.bind(Map(
+        "value.day" -> toEarlyDate.getDayOfMonth.toString,
+        "value.month" -> toEarlyDate.getMonthValue.toString,
+        "value.year" -> toEarlyDate.getYear.toString
+      ))
+
+      val view = application.injector.instanceOf[RemoveAssetEndDateView]
+
+      val result = route(application, request).value
+
+      status(result) mustEqual BAD_REQUEST
+
+      contentAsString(result) mustEqual
+        view(boundForm, index, s"OrgName $index")(request, messages).toString
+
+      application.stop()
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {

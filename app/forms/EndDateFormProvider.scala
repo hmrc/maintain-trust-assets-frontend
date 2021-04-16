@@ -18,14 +18,13 @@ package forms
 
 import java.time.LocalDate
 
-import config.FrontendAppConfig
 import forms.mappings.Mappings
 import javax.inject.Inject
 import play.api.data.Form
 
-class EndDateFormProvider @Inject()(appConfig: FrontendAppConfig) extends Mappings {
+class EndDateFormProvider @Inject() extends Mappings {
 
-  def withPrefix(prefix: String): Form[LocalDate] =
+  def withConfig(prefix: String, trustSetupDate: LocalDate): Form[LocalDate] =
     Form(
       "value" -> localDate(
         invalidKey     = s"$prefix.error.invalid",
@@ -34,7 +33,7 @@ class EndDateFormProvider @Inject()(appConfig: FrontendAppConfig) extends Mappin
         requiredKey    = s"$prefix.error.required"
       ).verifying(firstError(
         maxDate(LocalDate.now, s"$prefix.error.future", "day", "month", "year"),
-        minDate(appConfig.minDate, s"$prefix.error.past", "day", "month", "year")
+        minDate(trustSetupDate, s"$prefix.error.beforeTrustSetup", "day", "month", "year")
       ))
     )
 }

@@ -43,11 +43,12 @@ class StartDateController @Inject()(
                                      view: StartDateView
                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val form = formProvider.withPrefix("nonEeaBusiness.startDate")
+  private val messagePrefix: String = "nonEeaBusiness.startDate"
 
   def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
 
+      val form = formProvider.withConfig(messagePrefix, request.userAnswers.whenTrustSetup)
       val preparedForm = request.userAnswers.get(StartDatePage) match {
         case None => form
         case Some(value) => form.fill(value)
@@ -59,6 +60,7 @@ class StartDateController @Inject()(
   def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
     implicit request =>
 
+      val form = formProvider.withConfig(messagePrefix, request.userAnswers.whenTrustSetup)
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(view(formWithErrors, request.Name))),
