@@ -39,7 +39,7 @@ class StartDateControllerSpec extends SpecBase with IndexValidation {
   private val validAnswer: LocalDate = LocalDate.parse("1996-02-03")
   private val toEarlyDate: LocalDate = LocalDate.parse("1996-02-02")
 
-  private val formProvider = new StartDateFormProvider()
+  private val formProvider = new StartDateFormProvider(frontendAppConfig)
   private val prefix: String = "nonEeaBusiness.startDate"
   private val form = formProvider.withConfig(prefix, trustStartDate)
 

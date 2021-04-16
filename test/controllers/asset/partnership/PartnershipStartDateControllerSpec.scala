@@ -34,10 +34,9 @@ class PartnershipStartDateControllerSpec extends SpecBase with IndexValidation {
 
   private val prefix: String = "partnership.startDate"
   private val validAnswer = LocalDate.now(ZoneOffset.UTC)
-  private val trustStartDate: LocalDate = LocalDate.parse("1996-02-03")
 
-  private val formProvider = new StartDateFormProvider()
-  private val form = formProvider.withConfig(prefix, trustStartDate)
+  private val formProvider = new StartDateFormProvider(frontendAppConfig)
+  private val form = formProvider.withConfig(prefix)
 
   private lazy val partnershipStartDateRoute = routes.PartnershipStartDateController.onPageLoad(NormalMode).url
 
