@@ -22,7 +22,6 @@ import handlers.ErrorHandler
 import javax.inject.Inject
 import models.RemoveAsset
 import models.assets.AssetNameType
-import pages.asset.noneeabusiness.add.StartDatePage
 import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
