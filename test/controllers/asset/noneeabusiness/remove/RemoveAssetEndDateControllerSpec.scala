@@ -21,7 +21,7 @@ import java.time.LocalDate
 import base.SpecBase
 import connectors.TrustsConnector
 import controllers.Assets.OK
-import forms.{EndDateFormProvider, StartDateFormProvider}
+import forms.EndDateFormProvider
 import models.{NonUkAddress, UserAnswers}
 import models.assets._
 import org.mockito.Matchers.any
@@ -32,7 +32,6 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpResponse
-import views.html.asset.noneeabusiness.add.StartDateView
 import views.html.asset.noneeabusiness.remove.RemoveAssetEndDateView
 
 import scala.concurrent.Future
@@ -42,18 +41,18 @@ class RemoveAssetEndDateControllerSpec extends SpecBase with ScalaCheckPropertyC
 
   lazy val formRoute = routes.RemoveAssetEndDateController.onSubmit(0)
 
-  private val trustStartDate: LocalDate = LocalDate.parse("1996-02-03")
+  private val assetStartDate: LocalDate = LocalDate.parse("1996-02-03")
   private val validAnswer: LocalDate = LocalDate.parse("1996-02-03")
   private val toEarlyDate: LocalDate = LocalDate.parse("1996-02-02")
 
   private val formProvider = new EndDateFormProvider()
   private val prefix: String = "nonEeaBusiness.endDate"
-  private val form = formProvider.withConfig(prefix, trustStartDate)
+  private val form = formProvider.withConfig(prefix, assetStartDate)
 
   val mockConnector: TrustsConnector = mock[TrustsConnector]
 
   def createAsset(id: Int, provisional : Boolean) =
-    NonEeaBusinessType(None, s"OrgName $id", NonUkAddress("", "", None, ""), "", LocalDate.now, None, provisional)
+    NonEeaBusinessType(None, s"OrgName $id", NonUkAddress("", "", None, ""), "", assetStartDate, None, provisional)
 
   val nonEeaAssets = List(
     createAsset(0, provisional = false),
@@ -123,7 +122,7 @@ class RemoveAssetEndDateControllerSpec extends SpecBase with ScalaCheckPropertyC
 
     "removing an old asset" must {
 
-      "redirect to the add to page, removing the beneficiary" in {
+      "redirect to the add to page, removing the asset" in {
 
         val index = 0
 
@@ -155,10 +154,14 @@ class RemoveAssetEndDateControllerSpec extends SpecBase with ScalaCheckPropertyC
       }
     }
 
-    "return a Bad Request and errors when the entered date is before the trust start date" in {
-      val baseAnswers: UserAnswers = emptyUserAnswers.copy(whenTrustSetup = trustStartDate)
+    "return a Bad Request and errors when the entered date is before the asset start date" in {
       val index = 0
-      val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[TrustsConnector].toInstance(mockConnector))
+        .build()
+
+      when(mockConnector.getAssets(any())(any(), any()))
+        .thenReturn(Future.successful(Assets(Nil, Nil, Nil, Nil, Nil, Nil, nonEeaAssets)))
 
       val request =
         FakeRequest(POST, routes.RemoveAssetEndDateController.onSubmit(index).url)

@@ -487,7 +487,7 @@ nonEeaBusiness.endDate.error.required = The date that the trust ended their owne
 nonEeaBusiness.endDate.error.invalid = Enter a real date for the date that the trust ended their ownership or controlling interest in the company
 nonEeaBusiness.endDate.error.future = The date that the trust ended their ownership or controlling interest in the company must be today or in the past
 nonEeaBusiness.endDate.error.past = The date that the trust ended their ownership or controlling interest in the company must be after 31 December 1499
-nonEeaBusiness.endDate.error.beforeTrustSetup = The date that the trust ended their ownership or controlling interest in the company cannot be before the start date of the trust
+nonEeaBusiness.endDate.error.beforeAssetStartDate = The date that the trust ended their ownership or controlling interest in the company cannot be before it started
 
 nonEeaBusiness.answers.title = Check non-EEA company details
 nonEeaBusiness.answers.heading = Check non-EEA company details

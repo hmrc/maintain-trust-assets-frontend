@@ -22,6 +22,7 @@ import handlers.ErrorHandler
 import javax.inject.Inject
 import models.RemoveAsset
 import models.assets.AssetNameType
+import pages.asset.noneeabusiness.add.StartDatePage
 import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -49,9 +50,9 @@ class RemoveAssetEndDateController @Inject()(
   def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
 
-      val form = formProvider.withConfig(messagePrefix, request.userAnswers.whenTrustSetup)
       trustService.getNonEeaBusinessAsset(request.userAnswers.identifier, index).map {
         asset =>
+          val form = formProvider.withConfig(messagePrefix, asset.startDate)
           Ok(view(form, index, asset.orgName))
       } recoverWith {
         case iobe: IndexOutOfBoundsException =>
@@ -69,20 +70,20 @@ class RemoveAssetEndDateController @Inject()(
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
 
-      val form = formProvider.withConfig(messagePrefix, request.userAnswers.whenTrustSetup)
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) => {
-          trustService.getNonEeaBusinessAsset(request.userAnswers.identifier, index).map {
-            asset =>
-              BadRequest(view(formWithErrors, index, asset.orgName))
-          }
-        },
-        endDate => {
-          trustService.removeAsset(request.userAnswers.identifier, RemoveAsset(AssetNameType.NonEeaBusinessAssetNameType, index, endDate)).map(_ =>
-            Redirect(controllers.asset.routes.AddAssetsController.onPageLoad())
+      trustService.getNonEeaBusinessAsset(request.userAnswers.identifier, index).flatMap{
+        asset => {
+          val form = formProvider.withConfig(messagePrefix, asset.startDate)
+          form.bindFromRequest().fold(
+            (formWithErrors: Form[_]) =>
+              Future.successful(BadRequest(view(formWithErrors, index, asset.orgName))),
+            endDate => {
+              trustService.removeAsset(request.userAnswers.identifier, RemoveAsset(AssetNameType.NonEeaBusinessAssetNameType, index, endDate)).map(_ =>
+                Redirect(controllers.asset.routes.AddAssetsController.onPageLoad())
+              )
+            }
           )
         }
-      )
+      }
   }
 
 }
