@@ -22,7 +22,7 @@ import base.SpecBase
 import connectors.TrustsConnector
 import controllers.Assets.OK
 import forms.EndDateFormProvider
-import models.{NonUkAddress, UserAnswers}
+import models.NonUkAddress
 import models.assets._
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
