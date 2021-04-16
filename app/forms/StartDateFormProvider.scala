@@ -33,7 +33,7 @@ class StartDateFormProvider @Inject() extends Mappings {
         requiredKey    = s"$prefix.error.required"
       ).verifying(firstError(
         maxDate(LocalDate.now, s"$prefix.error.future", "day", "month", "year"),
-        minDate(trustSetupDate, s"$prefix.error.beforeTrustSetup", "day", "month", "year")
+        minDate(trustSetupDate, s"$prefix.error.tooEarly", "day", "month", "year")
       ))
     )
 }

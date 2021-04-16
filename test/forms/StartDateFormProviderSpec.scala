@@ -47,7 +47,7 @@ class StartDateFormProviderSpec extends DateBehaviours with FakeTrustsApp {
 
     behave like dateFieldWithMin(form, "value",
       min = min,
-      FormError("value", s"$prefix.error.beforeTrustSetup", List("day", "month", "year"))
+      FormError("value", s"$prefix.error.tooEarly", List("day", "month", "year"))
     )
 
   }

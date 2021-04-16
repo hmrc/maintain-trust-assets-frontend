@@ -16,6 +16,7 @@
 
 package controllers.asset.partnership
 
+import config.FrontendAppConfig
 import config.annotations.Partnership
 import controllers.actions.partnership.NameRequiredAction
 import controllers.actions.StandardActionSets
@@ -41,7 +42,8 @@ class PartnershipStartDateController @Inject()(
                                                 @Partnership navigator: Navigator,
                                                 formProvider: StartDateFormProvider,
                                                 val controllerComponents: MessagesControllerComponents,
-                                                view: PartnershipStartDateView
+                                                view: PartnershipStartDateView,
+                                                appConfig: FrontendAppConfig
                                               )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val messagePrefix: String = "partnership.startDate"
@@ -49,7 +51,7 @@ class PartnershipStartDateController @Inject()(
   def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
 
-      val form = formProvider.withConfig(messagePrefix, request.userAnswers.whenTrustSetup)
+      val form = formProvider.withConfig(messagePrefix, appConfig.minDate)
 
       val preparedForm = request.userAnswers.get(PartnershipStartDatePage) match {
         case None => form
@@ -61,7 +63,7 @@ class PartnershipStartDateController @Inject()(
 
   def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
     implicit request =>
-      val form = formProvider.withConfig(messagePrefix, request.userAnswers.whenTrustSetup)
+      val form = formProvider.withConfig(messagePrefix, appConfig.minDate)
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(view(formWithErrors, mode))),
