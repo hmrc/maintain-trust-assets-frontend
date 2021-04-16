@@ -28,13 +28,13 @@ class StartDateFormProvider @Inject()(appConfig: FrontendAppConfig) extends Mapp
   def withPrefix(prefix: String): Form[LocalDate] =
     Form(
       "value" -> localDate(
-        invalidKey     = "partnership.startDate.error.invalid",
-        allRequiredKey = "partnership.startDate.error.required.all",
-        twoRequiredKey = "partnership.startDate.error.required.two",
-        requiredKey    = "partnership.startDate.error.required"
+        invalidKey     = s"$prefix.error.invalid",
+        allRequiredKey = s"$prefix.error.required.all",
+        twoRequiredKey = s"$prefix.error.required.two",
+        requiredKey    = s"$prefix.error.required"
       ).verifying(firstError(
-        maxDate(LocalDate.now, s"partnership.startDate.error.future", "day", "month", "year"),
-        minDate(appConfig.minDate, s"partnership.startDate.error.past", "day", "month", "year")
+        maxDate(LocalDate.now, s"$prefix.error.future", "day", "month", "year"),
+        minDate(appConfig.minDate, s"$prefix.error.past", "day", "month", "year")
       ))
     )
 }

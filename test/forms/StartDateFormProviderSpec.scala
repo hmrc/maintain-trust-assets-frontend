@@ -26,7 +26,7 @@ class StartDateFormProviderSpec extends DateBehaviours with FakeTrustsApp {
 
   private val min = frontendAppConfig.minDate
   private val max = LocalDate.now(ZoneOffset.UTC)
-  private val prefix: String = "partnership.startDate"
+  private val prefix: String = "nonEeaBusiness.startDate"
   private val form = new StartDateFormProvider(frontendAppConfig).withPrefix(prefix)
 
   ".value" should {
