@@ -24,11 +24,11 @@ import views.html.asset.AddAnAssetYesNoView
 
 class AddAnAssetYesNoViewSpec extends YesNoViewBehaviours {
 
-  private val messageKeyPrefix: String = "addAnAssetYesNo"
+  private val messageKeyPrefix: String = "addNonEeaBusinessAssetYesNo"
 
   override val form: Form[Boolean] = new YesNoFormProvider().withPrefix(messageKeyPrefix)
 
-  "AddAnAssetYesNo view" must {
+  "AddNonEeaBusinessAssetYesNo view" must {
 
     val view = viewFor[AddAnAssetYesNoView](Some(emptyUserAnswers))
 

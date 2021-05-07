@@ -44,7 +44,7 @@ class RemoveAssetEndDateController @Inject()(
 
   private val messagePrefix: String = "nonEeaBusiness.endDate"
 
-  private def redirectToLandingPage(): Result = Redirect(controllers.asset.routes.AddAssetsController.onPageLoad())
+  private def redirectToLandingPage(): Result = Redirect(controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad())
 
   def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
@@ -77,7 +77,7 @@ class RemoveAssetEndDateController @Inject()(
               Future.successful(BadRequest(view(formWithErrors, index, asset.orgName))),
             endDate => {
               trustService.removeAsset(request.userAnswers.identifier, RemoveAsset(AssetNameType.NonEeaBusinessAssetNameType, index, endDate)).map(_ =>
-                Redirect(controllers.asset.routes.AddAssetsController.onPageLoad())
+                Redirect(controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad())
               )
             }
           )

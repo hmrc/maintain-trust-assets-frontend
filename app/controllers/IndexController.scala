@@ -60,7 +60,7 @@ class IndexController @Inject()(
         )
         _ <- cacheRepository.set(ua)
       } yield {
-        Redirect(controllers.asset.routes.AddAssetsController.onPageLoad())
+        Redirect(controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad())
       }
   }
 

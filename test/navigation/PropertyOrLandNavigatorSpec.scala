@@ -173,7 +173,7 @@ class PropertyOrLandNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
           navigator.nextPage(page, NormalMode, userAnswers)
-            .mustBe(controllers.asset.routes.AddAssetsController.onPageLoad())
+            .mustBe(controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad())
       }
     }
   }

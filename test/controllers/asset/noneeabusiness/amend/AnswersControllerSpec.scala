@@ -45,7 +45,7 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
   private lazy val answersRoute = routes.AnswersController.extractAndRender(index).url
   private lazy val submitAnswersRoute = routes.AnswersController.onSubmit(index).url
 
-  private lazy val onwardRoute = controllers.asset.routes.AddAssetsController.onPageLoad().url
+  private lazy val onwardRoute = controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad().url
 
   private val index = 0
   private val name: String = "OrgName"

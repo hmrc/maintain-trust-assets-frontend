@@ -46,7 +46,7 @@ class RemoveAssetYesNoController @Inject()(
   private val messagesPrefix: String = "nonEeaBusiness.removeYesNo"
   private val form = formProvider.apply(messagesPrefix)
 
-  private def redirectToAddAssetsPage(): Result = Redirect(controllers.asset.routes.AddAssetsController.onPageLoad())
+  private def redirectToAddAssetsPage(): Result = Redirect(controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad())
 
   def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>

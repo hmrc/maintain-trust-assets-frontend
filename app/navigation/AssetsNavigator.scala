@@ -72,7 +72,7 @@ class AssetsNavigator @Inject()(config: FrontendAppConfig) extends Navigator wit
   }
 
   def assetsCompletedRoute() : Call = {
-    controllers.asset.routes.AddAssetsController.submitComplete()
+    controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.submitComplete()
   }
 
   private def routeToAssetIndex(answers: UserAnswers): Call = {

@@ -16,12 +16,11 @@
 
 package navigation
 
-import controllers.asset.routes._
+import javax.inject.Inject
 import models.{Mode, NormalMode, UserAnswers}
 import pages.Page
 import pages.asset.money._
 import play.api.mvc.Call
-import javax.inject.Inject
 
 class MoneyNavigator @Inject()() extends Navigator {
 
@@ -32,7 +31,7 @@ class MoneyNavigator @Inject()() extends Navigator {
     nextPage(page, NormalMode, userAnswers)
 
   def simpleNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
-    case AssetMoneyValuePage => _ => AddAssetsController.onPageLoad()
+    case AssetMoneyValuePage => _ => controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad()
   }
 
   def routes(mode: Mode): PartialFunction[Page, UserAnswers => Call] =

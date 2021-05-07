@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.asset.routes._
+@import controllers.asset.noneeabusiness.routes._
 @import models.AddAssets
 @import viewmodels.AddRow
 
@@ -30,7 +30,7 @@
     title = s"${errorPrefix(form)} $heading"
 ) {
 
-    @formHelper(action = AddAssetsController.submitAnother(), 'autoComplete -> "off") {
+    @formHelper(action = AddNonEeaBusinessAssetController.submitAnother(), 'autoComplete -> "off") {
 
         @components.back_link()
 

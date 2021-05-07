@@ -16,13 +16,12 @@
 
 package navigation
 
-import controllers.asset.routes._
 import controllers.asset.shares.routes._
+import javax.inject.Inject
 import models.{Mode, NormalMode, UserAnswers}
 import pages.Page
 import pages.asset.shares._
 import play.api.mvc.Call
-import javax.inject.Inject
 
 class SharesNavigator @Inject()() extends Navigator() {
 
@@ -33,7 +32,7 @@ class SharesNavigator @Inject()() extends Navigator() {
     nextPage(page, NormalMode, userAnswers)
 
   def simpleNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
-    case ShareAnswerPage => _ => AddAssetsController.onPageLoad()
+    case ShareAnswerPage => _ => controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad()
   }
 
   private def portfolioRoutes(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {

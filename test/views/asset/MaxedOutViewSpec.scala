@@ -31,7 +31,7 @@ class MaxedOutViewSpec extends OptionsViewBehaviours with TabularDataViewBehavio
 
     "taxable" when {
 
-      val messageKeyPrefix: String = "addAssets"
+      val messageKeyPrefix: String = "addNonEeaBusinessAsset"
 
       val max: Int = 76
 

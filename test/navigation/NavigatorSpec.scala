@@ -31,7 +31,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
   private val navigator: Navigator = injector.instanceOf[AssetsNavigator]
 
   private val assetsCompletedRoute: Call = {
-    controllers.asset.routes.AddAssetsController.submitComplete()
+    controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.submitComplete()
   }
 
   "Navigator" when {
