@@ -499,3 +499,17 @@ nonEeaBusiness.endDate.error.beforeAssetStartDate = The date that the trust ende
 
 nonEeaBusiness.answers.title = Check non-EEA company details
 nonEeaBusiness.answers.heading = Check non-EEA company details
+
+taxable.addAssetsYesNo.title = Do you need to add any new assets to the trust?
+taxable.addAssetsYesNo.heading = Do you need to add any new assets to the trust?
+taxable.addAssetsYesNo.checkYourAnswersLabel = Do you need to add any new assets to the trust?
+taxable.addAssetsYesNo.error.required = Select yes if you need to add any new taxable assets.
+taxable.addAssetsYesNo.paragraph1 = You need to add at least one asset to register the trust as taxable.
+taxable.addAssetsYesNo.paragraph2 = Assets can include:
+taxable.addAssetsYesNo.bullet1 = businesses
+taxable.addAssetsYesNo.bullet2 = land or property
+taxable.addAssetsYesNo.bullet3 = money
+taxable.addAssetsYesNo.bullet4 = ownerships or controlling interests in non-European Economic Area companies
+taxable.addAssetsYesNo.bullet5 = partnerships
+taxable.addAssetsYesNo.bullet6 = shares
+taxable.addAssetsYesNo.bullet7 = other assets

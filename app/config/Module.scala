@@ -44,5 +44,6 @@ class Module extends AbstractModule {
     bind(classOf[Navigator]).annotatedWith(classOf[Partnership]).to(classOf[PartnershipNavigator]).asEagerSingleton()
     bind(classOf[Navigator]).annotatedWith(classOf[Other]).to(classOf[OtherNavigator]).asEagerSingleton()
     bind(classOf[Navigator]).annotatedWith(classOf[NonEeaBusiness]).to(classOf[NonEeaBusinessNavigator]).asEagerSingleton()
+    bind(classOf[Navigator]).annotatedWith(classOf[Taxable]).to(classOf[TaxableNavigator]).asEagerSingleton()
   }
 }
