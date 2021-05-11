@@ -143,7 +143,7 @@ trustOwnsNonEeaBusinessYesNo.error.required = Select yes if the trust owns or ha
 
 assetInterruptPage.title = Information you need to know to add assets
 assetInterruptPage.heading = Information you need to know to add assets
-assetInterruptPage.caption = Assets
+assetInterruptPage.caption = Non-EEA Company
 assetInterruptPage.caption.hidden = This section is
 
 assetInterruptPage.subheading1 = Money
