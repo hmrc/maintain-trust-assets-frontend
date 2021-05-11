@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package config.annotations;
+package models.http
 
-import com.google.inject.BindingAnnotation;
+import play.api.libs.json.{Format, Json}
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+case class TaxableMigrationFlag(value: Option[Boolean]) {
 
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.PARAMETER, ElementType.METHOD, ElementType.FIELD})
-@BindingAnnotation
-public @interface Taxable {}
+  def migratingFromNonTaxableToTaxable: Boolean = value.contains(true)
+}
+
+object TaxableMigrationFlag {
+  implicit val formats: Format[TaxableMigrationFlag] = Json.format[TaxableMigrationFlag]
+}

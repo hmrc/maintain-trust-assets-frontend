@@ -7,7 +7,7 @@
 ->         /partnership                                 partnership.Routes
 ->         /other                                       other.Routes
 ->         /non-eea-business                            nonEeaBusiness.Routes
-->         /taxable                                     taxable.Routes
+->         /nonTaxableToTaxable                         nonTaxableToTaxable.Routes
 
 GET        /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)
 
@@ -39,4 +39,4 @@ GET        /keep-alive                                  controllers.SessionTimeo
 
 GET        /timeout                                     controllers.SessionTimeoutController.timeout
 
-GET        /:utr                                       controllers.IndexController.onPageLoad(utr: String)
+GET        /:identifier                                       controllers.IndexController.onPageLoad(identifier: String)

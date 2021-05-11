@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package pages.asset.taxable
+package pages.asset.nontaxabletotaxable
 
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 
 case object AddAssetsYesNoPage extends QuestionPage[Boolean] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ "nonTaxableToTaxable" \ toString
 
   override def toString: String = "addAssetsYesNo"
 }

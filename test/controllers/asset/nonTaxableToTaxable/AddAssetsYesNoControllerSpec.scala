@@ -14,26 +14,26 @@
  * limitations under the License.
  */
 
-package controllers.asset.taxable
+package controllers.asset.nonTaxableToTaxable
 
 import base.SpecBase
-import config.annotations.PropertyOrLand
+import config.annotations.{Assets, PropertyOrLand}
 import controllers.IndexValidation
 import controllers.routes._
 import forms.YesNoFormProvider
 import models.NormalMode
 import navigation.Navigator
-import pages.asset.taxable.AddAssetsYesNoPage
+import pages.asset.nontaxabletotaxable.AddAssetsYesNoPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.asset.taxable.AddAssetsYesNoView
+import views.html.asset.nonTaxableToTaxable.AddAssetsYesNoView
 
 class AddAssetsYesNoControllerSpec extends SpecBase with IndexValidation {
 
   val form = new YesNoFormProvider().withPrefix("taxable.addAssetsYesNo")
 
-  lazy val addAssetsYesNoRoute = routes.AddAssetsYesNoController.onPageLoad(NormalMode).url
+  lazy val addAssetsYesNoRoute = routes.AddAssetsYesNoController.onPageLoad().url
 
   "AddAssetsYesNoRoute Controller" must {
 
@@ -50,7 +50,7 @@ class AddAssetsYesNoControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode)(request, messages).toString
+        view(form)(request, messages).toString
 
       application.stop()
     }
@@ -70,7 +70,7 @@ class AddAssetsYesNoControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), NormalMode)(request, messages).toString
+        view(form.fill(true))(request, messages).toString
 
       application.stop()
     }
@@ -79,7 +79,7 @@ class AddAssetsYesNoControllerSpec extends SpecBase with IndexValidation {
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(bind[Navigator].qualifiedWith(classOf[PropertyOrLand]).toInstance(fakeNavigator))
+          .overrides(bind[Navigator].qualifiedWith(classOf[Assets]).toInstance(fakeNavigator))
           .build()
 
       val request =
@@ -112,7 +112,7 @@ class AddAssetsYesNoControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode)(request, messages).toString
+        view(boundForm)(request, messages).toString
 
       application.stop()
     }

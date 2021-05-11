@@ -14,20 +14,20 @@
  * limitations under the License.
  *@
 
-@import controllers.asset.taxable.routes._
+@import controllers.asset.nonTaxableToTaxable.routes._
 
 @this(
     main_template: MainTemplate,
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_])(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = s"${errorPrefix(form)} ${messages("taxable.addAssetsYesNo.title")}"
 ) {
 
-    @formHelper(action = AddAssetsYesNoController.onSubmit(mode), 'autoComplete -> "off") {
+    @formHelper(action = AddAssetsYesNoController.onSubmit(), 'autoComplete -> "off") {
 
         @components.back_link()
 

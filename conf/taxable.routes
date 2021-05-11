@@ -1,5 +1,0 @@
-
-GET        /has-address                                      controllers.asset.taxable.AddAssetsYesNoController.onPageLoad(mode: Mode = NormalMode)
-POST       /has-address                                      controllers.asset.taxable.AddAssetsYesNoController.onSubmit(mode: Mode = NormalMode)
-GET        /change-has-address                               controllers.asset.taxable.AddAssetsYesNoController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-has-address                               controllers.asset.taxable.AddAssetsYesNoController.onSubmit(mode: Mode = CheckMode)

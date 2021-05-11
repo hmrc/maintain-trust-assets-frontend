@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package views.asset
+package views.asset.noneeabusiness
 
 import forms.AddAssetsFormProvider
 import models.{AddAssets, WhatKindOfAsset}
@@ -42,11 +42,11 @@ class AddNonEeaBusinessAssetViewSpec extends OptionsViewBehaviours with TabularD
   private val view: AddNonEeaBusinessAssetView = viewFor[AddNonEeaBusinessAssetView](Some(emptyUserAnswers))
 
   private def applyView(form: Form[_]): HtmlFormat.Appendable =
-    view.apply(form, Nil, Nil, "Add a non-EEA company", messageKeyPrefix)(fakeRequest, messages)
+    view.apply(form, Nil, Nil, "Add a non-EEA company")(fakeRequest, messages)
 
   private def applyView(form: Form[_], inProgressAssets: Seq[AddRow], completeAssets: Seq[AddRow], count: Int): HtmlFormat.Appendable = {
     val title = if (count > 1) s"You have added $count non-EEA companies" else "Add a non-EEA company"
-    view.apply(form, inProgressAssets, completeAssets, title, messageKeyPrefix)(fakeRequest, messages)
+    view.apply(form, inProgressAssets, completeAssets, title)(fakeRequest, messages)
   }
 
   "AddNonEeaBusinessAsset View" when {

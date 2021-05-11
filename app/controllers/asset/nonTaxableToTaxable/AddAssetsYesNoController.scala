@@ -14,39 +14,36 @@
  * limitations under the License.
  */
 
-package controllers.asset.taxable
+package controllers.asset.nonTaxableToTaxable
 
-import config.annotations.Taxable
+import config.annotations.Assets
 import controllers.actions.StandardActionSets
-import controllers.actions.property_or_land.NameRequiredAction
 import forms.YesNoFormProvider
 import javax.inject.Inject
-import models.Mode
 import navigation.Navigator
-import pages.asset.taxable.AddAssetsYesNoPage
+import pages.asset.nontaxabletotaxable.AddAssetsYesNoPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.asset.taxable.AddAssetsYesNoView
+import views.html.asset.nonTaxableToTaxable.AddAssetsYesNoView
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class AddAssetsYesNoController @Inject()(
-                                                      override val messagesApi: MessagesApi,
-                                                      standardActionSets: StandardActionSets,
-                                                      nameAction: NameRequiredAction,
-                                                      repository: PlaybackRepository,
-                                                      @Taxable navigator: Navigator,
-                                                      yesNoFormProvider: YesNoFormProvider,
-                                                      val controllerComponents: MessagesControllerComponents,
-                                                      view: AddAssetsYesNoView
+                                          override val messagesApi: MessagesApi,
+                                          standardActionSets: StandardActionSets,
+                                          repository: PlaybackRepository,
+                                          @Assets navigator: Navigator,
+                                          yesNoFormProvider: YesNoFormProvider,
+                                          val controllerComponents: MessagesControllerComponents,
+                                          view: AddAssetsYesNoView
                                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   val form: Form[Boolean] = yesNoFormProvider.withPrefix("taxable.addAssetsYesNo")
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
+  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier) {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(AddAssetsYesNoPage) match {
@@ -54,21 +51,21 @@ class AddAssetsYesNoController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode))
+      Ok(view(preparedForm))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
+  def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier).async {
     implicit request =>
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
+          Future.successful(BadRequest(view(formWithErrors))),
 
         value => {
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAssetsYesNoPage, value))
             _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(AddAssetsYesNoPage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(AddAssetsYesNoPage, updatedAnswers))
         }
       )
   }

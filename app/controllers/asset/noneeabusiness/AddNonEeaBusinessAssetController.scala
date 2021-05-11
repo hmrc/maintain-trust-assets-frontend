@@ -61,7 +61,7 @@ class AddNonEeaBusinessAssetController @Inject()(
   private val addAnotherForm: Form[AddAssets] = addAnotherFormProvider.withPrefix(prefix)
   private val yesNoForm: Form[Boolean] = yesNoFormProvider.withPrefix("addNonEeaBusinessAssetYesNo")
 
-  private def heading(count: Int, prefix: String)(implicit mp: MessagesProvider): String = {
+  private def heading(count: Int)(implicit mp: MessagesProvider): String = {
     count match {
       case c if c > 1 => Messages(s"$prefix.count.heading", c)
       case _ => Messages(s"$prefix.heading")
@@ -86,9 +86,9 @@ class AddNonEeaBusinessAssetController @Inject()(
           case 0 =>
             Redirect(controllers.asset.routes.TrustOwnsNonEeaBusinessYesNoController.onPageLoad(NormalMode))
           case c if c >= maxLimit =>
-            Ok(maxedOutView(assetRows.inProgress, assetRows.complete, heading(c, prefix), maxLimit, prefix))
+            Ok(maxedOutView(assetRows.inProgress, assetRows.complete, heading(c), maxLimit, prefix))
           case c =>
-            Ok(addAssetsView(addAnotherForm, assetRows.inProgress, assetRows.complete, heading(c, prefix), prefix))
+            Ok(addAssetsView(addAnotherForm, assetRows.inProgress, assetRows.complete, heading(c)))
         }
       }
   }
@@ -119,7 +119,7 @@ class AddNonEeaBusinessAssetController @Inject()(
 
             val assetRows = new AddAssetViewHelper(assets).rows
 
-            Future.successful(BadRequest(addAssetsView(formWithErrors, assetRows.inProgress, assetRows.complete, heading(assetRows.count, prefix), prefix)))
+            Future.successful(BadRequest(addAssetsView(formWithErrors, assetRows.inProgress, assetRows.complete, heading(assetRows.count))))
           },
           {
             value => {

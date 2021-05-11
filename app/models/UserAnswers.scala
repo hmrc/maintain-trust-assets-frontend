@@ -32,7 +32,8 @@ final case class UserAnswers(internalId: String,
                              updatedAt: LocalDateTime = LocalDateTime.now,
                              is5mldEnabled: Boolean = false,
                              isTaxable: Boolean = true,
-                             isUnderlyingData5mld: Boolean = false) extends Logging {
+                             isUnderlyingData5mld: Boolean = false,
+                             isMigratingToTaxable: Boolean = false ) extends Logging {
 
   def cleanup : Try[UserAnswers] = {
     this
@@ -116,7 +117,8 @@ object UserAnswers {
       (__ \ "updatedAt").read(MongoDateTimeFormats.localDateTimeRead) and
       (__ \ "is5mldEnabled").readWithDefault[Boolean](false) and
       (__ \ "isTaxable").readWithDefault[Boolean](true) and
-      (__ \ "isUnderlyingData5mld").readWithDefault[Boolean](false)
+      (__ \ "isUnderlyingData5mld").readWithDefault[Boolean](false) and
+      (__ \ "migratingFromNonTaxableToTaxable").readWithDefault[Boolean](false)
     )(UserAnswers.apply _)
 
   implicit lazy val writes: OWrites[UserAnswers] = (
@@ -127,7 +129,8 @@ object UserAnswers {
       (__ \ "updatedAt").write(MongoDateTimeFormats.localDateTimeWrite) and
       (__ \ "is5mldEnabled").write[Boolean] and
       (__ \ "isTaxable").write[Boolean] and
-      (__ \ "isUnderlyingData5mld").write[Boolean]
+      (__ \ "isUnderlyingData5mld").write[Boolean] and
+      (__ \ "migratingFromNonTaxableToTaxable").write[Boolean]
     )(unlift(UserAnswers.unapply))
 
 }

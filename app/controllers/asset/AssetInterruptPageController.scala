@@ -24,6 +24,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import views.html.asset.AssetInterruptView
+import views.html.asset.nonTaxableToTaxable.{AssetInterruptView => MigrationInteruptPage}
 import javax.inject.Inject
 import models.NormalMode
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -36,11 +37,18 @@ class AssetInterruptPageController @Inject()(
                                               repository: PlaybackRepository,
                                               @Assets navigator: Navigator,
                                               val controllerComponents: MessagesControllerComponents,
-                                              assetInterruptView: AssetInterruptView
+                                              assetInterruptView: AssetInterruptView,
+                                              migrationAssetInterruptView: MigrationInteruptPage
                                             )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
-    implicit request => Ok(assetInterruptView())
+    implicit request => Ok(
+      if (request.userAnswers.isMigratingToTaxable) {
+        migrationAssetInterruptView()
+      } else {
+        assetInterruptView()
+      }
+    )
   }
 
   def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {

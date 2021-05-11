@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package views.asset.taxable
+package views.asset.nonTaxableToTaxable
 
 import forms.YesNoFormProvider
 import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.asset.taxable.AddAssetsYesNoView
+import views.html.asset.nonTaxableToTaxable.AddAssetsYesNoView
 
 class AddAssetsYesNoViewSpec extends YesNoViewBehaviours {
 
@@ -34,7 +34,7 @@ class AddAssetsYesNoViewSpec extends YesNoViewBehaviours {
     val view = viewFor[AddAssetsYesNoView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, NormalMode)(fakeRequest, messages)
+      view.apply(form)(fakeRequest, messages)
 
     behave like normalPage(applyView(form), messageKeyPrefix)
 
