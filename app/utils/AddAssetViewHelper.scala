@@ -17,50 +17,33 @@
 package utils
 
 import controllers.asset._
-import javax.inject.Inject
-import models.Status.Completed
-import models.{Mode, NormalMode, UserAnswers}
 import play.api.i18n.Messages
-import sections.Assets
-import viewmodels._
+import viewmodels.{AddRow, AddToRows}
+import javax.inject.Inject
+import models.assets._
 
-class AddAssetViewHelper @Inject()(userAnswers: UserAnswers)
+class AddAssetViewHelper @Inject()(assets: Assets)
                                   (implicit messages: Messages) {
 
   def rows: AddToRows = {
 
-    val assets = userAnswers.get(Assets).toList.flatten.zipWithIndex
-
-    val complete = assets.filter(_._1.status == Completed).flatMap(parseAsset)
+    val complete = assets.nonEEABusiness.zipWithIndex.map(x => renderNonEEABusiness(x._1, x._2))
 
     AddToRows(Nil, complete)
   }
 
-  private val defaultName = messages("entities.no.name.added")
-
-  private def parseAsset(asset: (AssetViewModel, Int)): Option[AddRow] = {
-    val vm = asset._1
-    val index = asset._2
-
-    vm match {
-      case money: MoneyAssetViewModel => Some(renderMoney(money, mode = NormalMode))
-      case nonEeaBusiness: NonEeaBusinessAssetViewModel => Some(renderNonEEABusiness(nonEeaBusiness, index))
-      case _ => None
-    }
-  }
-
-  private def renderMoney(asset: MoneyAssetViewModel, mode: Mode): AddRow = {
+  private def renderMoney(asset: AssetMonetaryAmount): AddRow = {
     AddRow(
-      name = asset.label.getOrElse(defaultName),
-      typeLabel = messages(s"entities.asset.money"),
-      changeUrl = money.routes.AssetMoneyValueController.onPageLoad(mode).url,
+      name = asset.assetMonetaryAmount.toString,
+      typeLabel = messages(s"entities.asset.nonEeaBusiness"),
+      changeUrl = ???,
       removeUrl = ???
     )
   }
 
-  private def renderNonEEABusiness(asset: NonEeaBusinessAssetViewModel, index: Int): AddRow = {
+  private def renderNonEEABusiness(asset: NonEeaBusinessType, index: Int): AddRow = {
     AddRow(
-      name = asset.label.getOrElse(defaultName),
+      name = asset.orgName,
       typeLabel = messages(s"entities.asset.nonEeaBusiness"),
       changeUrl = noneeabusiness.amend.routes.AnswersController.extractAndRender(index).url,
       removeUrl = noneeabusiness.remove.routes.RemoveAssetYesNoController.onPageLoad(index).url

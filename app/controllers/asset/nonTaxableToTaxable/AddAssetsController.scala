@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.asset
+package controllers.asset.nonTaxableToTaxable
 
 import config.FrontendAppConfig
 import config.annotations.Assets
@@ -23,8 +23,8 @@ import controllers.actions.StandardActionSets
 import forms.{AddAssetsFormProvider, YesNoFormProvider}
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.{AddAssets, NormalMode, UserAnswers}
 import models.Constants._
+import models.{AddAssets, NormalMode, UserAnswers}
 import navigation.Navigator
 import pages.asset.{AddAnAssetYesNoPage, AddAssetsPage}
 import play.api.Logging
@@ -79,7 +79,7 @@ class AddAssetsController @Inject()(
         _ <- repository.set(updatedAnswers)
       } yield {
 
-        val assetRows = new AddAssetViewHelper(userAnswers).rows
+        val assetRows = new AddAssetViewHelper(assets).rows
 
         val maxLimit: Int = userAnswers.isMigratingToTaxable match {
           case true => MAX_ALL_ASSETS
@@ -121,8 +121,7 @@ class AddAssetsController @Inject()(
         addAnotherForm.bindFromRequest().fold(
           (formWithErrors: Form[_]) => {
 
-            val userAnswers = request.userAnswers
-            val assetRows = new AddAssetViewHelper(userAnswers).rows
+            val assetRows = new AddAssetViewHelper(assets).rows
 
             Future.successful(BadRequest(addAssetsView(formWithErrors, assetRows.inProgress, assetRows.complete, heading(assetRows.count))))
           },

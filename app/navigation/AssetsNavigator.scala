@@ -37,7 +37,7 @@ class AssetsNavigator @Inject()(config: FrontendAppConfig) extends Navigator wit
     nextPage(page, NormalMode, userAnswers)
 
   def simpleNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
-    case AssetInterruptPage => ua => routeToWhatKindOfAsset(ua)
+    case AssetInterruptPage => ua => routeToAssetIndex(ua)
     case WhatKindOfAssetPage => ua => whatKindOfAssetRoute(ua)
     case AddAssetsPage => ua => addAssetsRoute()(ua)
   }
@@ -77,10 +77,6 @@ class AssetsNavigator @Inject()(config: FrontendAppConfig) extends Navigator wit
   }
 
   private def routeToAssetIndex(answers: UserAnswers): Call = {
-    controllers.asset.noneeabusiness.routes.NameController.onPageLoad(NormalMode)
-  }
-
-  private def routeToWhatKindOfAsset(answers: UserAnswers): Call = {
     val assets = answers.get(sections.Assets).getOrElse(List.empty)
     if (answers.isMigratingToTaxable) {
       val index = assets.size
@@ -116,7 +112,7 @@ class AssetsNavigator @Inject()(config: FrontendAppConfig) extends Navigator wit
         if (assets.isEmpty) {
           assetsInProgressHubRoute()
         } else {
-          ??? // Add asset page
+          controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
         }
   }
 
