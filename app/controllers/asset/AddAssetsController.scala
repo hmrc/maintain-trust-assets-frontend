@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.asset.noneeabusiness
+package controllers.asset
 
 import config.FrontendAppConfig
 import config.annotations.Assets
@@ -23,8 +23,8 @@ import controllers.actions.StandardActionSets
 import forms.{AddAssetsFormProvider, YesNoFormProvider}
 import handlers.ErrorHandler
 import javax.inject.Inject
-import models.Constants._
 import models.{AddAssets, NormalMode, UserAnswers}
+import models.Constants._
 import navigation.Navigator
 import pages.asset.{AddAnAssetYesNoPage, AddAssetsPage}
 import play.api.Logging
@@ -40,26 +40,26 @@ import views.html.asset.{AddAnAssetYesNoView, MaxedOutView}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddNonEeaBusinessAssetController @Inject()(
-                                     override val messagesApi: MessagesApi,
-                                     standardActionSets: StandardActionSets,
-                                     repository: PlaybackRepository,
-                                     val appConfig: FrontendAppConfig,
-                                     trustService: TrustService,
-                                     trustsStoreConnector: TrustsStoreConnector,
-                                     @Assets navigator: Navigator,
-                                     addAnotherFormProvider: AddAssetsFormProvider,
-                                     yesNoFormProvider: YesNoFormProvider,
-                                     val controllerComponents: MessagesControllerComponents,
-                                     addAssetsView: AddNonEeaBusinessAssetView,
-                                     yesNoView: AddAnAssetYesNoView,
-                                     maxedOutView: MaxedOutView,
-                                     errorHandler: ErrorHandler
-                                   )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+class AddAssetsController @Inject()(
+                                                  override val messagesApi: MessagesApi,
+                                                  standardActionSets: StandardActionSets,
+                                                  repository: PlaybackRepository,
+                                                  val appConfig: FrontendAppConfig,
+                                                  trustService: TrustService,
+                                                  trustsStoreConnector: TrustsStoreConnector,
+                                                  @Assets navigator: Navigator,
+                                                  addAnotherFormProvider: AddAssetsFormProvider,
+                                                  yesNoFormProvider: YesNoFormProvider,
+                                                  val controllerComponents: MessagesControllerComponents,
+                                                  addAssetsView: AddNonEeaBusinessAssetView,
+                                                  yesNoView: AddAnAssetYesNoView,
+                                                  maxedOutView: MaxedOutView,
+                                                  errorHandler: ErrorHandler
+                                                )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
-  private val prefix = "addNonEeaBusinessAsset"
+  private val prefix = "addAssets"
   private val addAnotherForm: Form[AddAssets] = addAnotherFormProvider.withPrefix(prefix)
-  private val yesNoForm: Form[Boolean] = yesNoFormProvider.withPrefix("addNonEeaBusinessAssetYesNo")
+  private val yesNoForm: Form[Boolean] = yesNoFormProvider.withPrefix("addAssetsYesNo")
 
   private def heading(count: Int)(implicit mp: MessagesProvider): String = {
     count match {
@@ -78,11 +78,15 @@ class AddNonEeaBusinessAssetController @Inject()(
         updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
         _ <- repository.set(updatedAnswers)
       } yield {
-        val assetRows = new AddAssetViewHelper(userAnswers).rows //Currently only Shows NonEeaBusinessAssets
 
-        val maxLimit: Int = MAX_NON_EEA_BUSINESS_ASSETS
+        val assetRows = new AddAssetViewHelper(userAnswers).rows
 
-        assets.nonEEABusiness.size match {
+        val maxLimit: Int = userAnswers.isMigratingToTaxable match {
+          case true => MAX_ALL_ASSETS
+          case _ => MAX_NON_EEA_BUSINESS_ASSETS
+        }
+
+        assetRows.count match {
           case 0 =>
             Redirect(controllers.asset.routes.TrustOwnsNonEeaBusinessYesNoController.onPageLoad(NormalMode))
           case c if c >= maxLimit =>
@@ -117,7 +121,8 @@ class AddNonEeaBusinessAssetController @Inject()(
         addAnotherForm.bindFromRequest().fold(
           (formWithErrors: Form[_]) => {
 
-            val assetRows = new AddAssetViewHelper(request.userAnswers).rows
+            val userAnswers = request.userAnswers
+            val assetRows = new AddAssetViewHelper(userAnswers).rows
 
             Future.successful(BadRequest(addAssetsView(formWithErrors, assetRows.inProgress, assetRows.complete, heading(assetRows.count))))
           },

@@ -18,23 +18,30 @@ package utils
 
 import base.SpecBase
 import controllers.asset._
-import models.NonUkAddress
+import models.{Mode, NonUkAddress}
 import viewmodels.AddRow
 import java.time.LocalDate
 
+import models.Status.Completed
+import models.WhatKindOfAsset.Money
 import models.assets.{Assets, NonEeaBusinessType}
+import pages.AssetStatus
+import pages.asset.WhatKindOfAssetPage
+import pages.asset.money.AssetMoneyValuePage
 
 class AddAssetViewHelperSpec extends SpecBase {
 
+  private val assetValue: Long = 4000L
+
   def removeAssetYesNoRoute(index: Int): String =
-    "/foo"
+    ???
 
   "AddAssetViewHelper" when {
 
     ".row" must {
 
       "generate Nil for no user answers" in {
-        val rows = new AddAssetViewHelper(Assets(Nil, Nil, Nil, Nil, Nil, Nil, Nil)).rows
+        val rows = new AddAssetViewHelper(emptyUserAnswers).rows
         rows.inProgress mustBe Nil
         rows.complete mustBe Nil
       }
@@ -43,15 +50,26 @@ class AddAssetViewHelperSpec extends SpecBase {
         val nonEeaAsset = NonEeaBusinessType(None, "Non-EEA Business Name", NonUkAddress("", "", None, ""), "", LocalDate.now, None, true)
         val assets = Assets(Nil, Nil, Nil, Nil, Nil, Nil, List(nonEeaAsset))
 
+        def changeMoneyAssetRoute(mode: Mode): String =
+          money.routes.AssetMoneyValueController.onPageLoad(mode).url
+
         def changeNonEeaBusinessAssetRoute(index: Int): String =
           noneeabusiness.amend.routes.AnswersController.extractAndRender(index).url
 
         def removeNonEeaBusinessAssetRoute(index: Int): String =
           noneeabusiness.remove.routes.RemoveAssetYesNoController.onPageLoad(index).url
 
-        val rows = new AddAssetViewHelper(assets).rows
+
+
+        val userAnswers = emptyUserAnswers
+          .set(WhatKindOfAssetPage(1), Money).success.value
+          .set(AssetMoneyValuePage(1), assetValue).success.value
+          .set(AssetStatus(1), Completed).success.value
+
+        val rows = new AddAssetViewHelper(userAnswers).rows
         rows.complete mustBe List(
-          AddRow("Non-EEA Business Name", typeLabel = "Non-EEA Company", changeNonEeaBusinessAssetRoute(0), removeNonEeaBusinessAssetRoute(0))
+          AddRow("Non-EEA Business Name", typeLabel = "Non-EEA Company", changeNonEeaBusinessAssetRoute(0), removeNonEeaBusinessAssetRoute(0)),
+          AddRow("£4000", typeLabel = "Money", changeMoneyAssetRoute(1), removeAssetYesNoRoute(1)),
         )
         rows.inProgress mustBe Nil
       }

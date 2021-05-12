@@ -17,24 +17,50 @@
 package utils
 
 import controllers.asset._
-import play.api.i18n.Messages
-import viewmodels.{AddRow, AddToRows}
 import javax.inject.Inject
-import models.assets._
+import models.Status.Completed
+import models.{Mode, NormalMode, UserAnswers}
+import play.api.i18n.Messages
+import sections.Assets
+import viewmodels._
 
-class AddAssetViewHelper @Inject()(assets: Assets)
+class AddAssetViewHelper @Inject()(userAnswers: UserAnswers)
                                   (implicit messages: Messages) {
 
   def rows: AddToRows = {
 
-    val complete = assets.nonEEABusiness.zipWithIndex.map(x => renderNonEEABusiness(x._1, x._2))
+    val assets = userAnswers.get(Assets).toList.flatten.zipWithIndex
+
+    val complete = assets.filter(_._1.status == Completed).flatMap(parseAsset)
 
     AddToRows(Nil, complete)
   }
 
-  private def renderNonEEABusiness(asset: NonEeaBusinessType, index: Int): AddRow = {
+  private val defaultName = messages("entities.no.name.added")
+
+  private def parseAsset(asset: (AssetViewModel, Int)): Option[AddRow] = {
+    val vm = asset._1
+    val index = asset._2
+
+    vm match {
+      case money: MoneyAssetViewModel => Some(renderMoney(money, mode = NormalMode))
+      case nonEeaBusiness: NonEeaBusinessAssetViewModel => Some(renderNonEEABusiness(nonEeaBusiness, index))
+      case _ => None
+    }
+  }
+
+  private def renderMoney(asset: MoneyAssetViewModel, mode: Mode): AddRow = {
     AddRow(
-      name = asset.orgName,
+      name = asset.label.getOrElse(defaultName),
+      typeLabel = messages(s"entities.asset.money"),
+      changeUrl = money.routes.AssetMoneyValueController.onPageLoad(mode).url,
+      removeUrl = ???
+    )
+  }
+
+  private def renderNonEEABusiness(asset: NonEeaBusinessAssetViewModel, index: Int): AddRow = {
+    AddRow(
+      name = asset.label.getOrElse(defaultName),
       typeLabel = messages(s"entities.asset.nonEeaBusiness"),
       changeUrl = noneeabusiness.amend.routes.AnswersController.extractAndRender(index).url,
       removeUrl = noneeabusiness.remove.routes.RemoveAssetYesNoController.onPageLoad(index).url
