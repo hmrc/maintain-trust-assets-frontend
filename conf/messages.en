@@ -128,9 +128,6 @@ addNonEeaBusinessAssetYesNo.title = Do you want to add a non-EEA company?
 addNonEeaBusinessAssetYesNo.heading = Do you want to add a non-EEA company?
 addNonEeaBusinessAssetYesNo.error.required = Select yes if you want to add a non-EEA company
 
-
-
-
 addNonEeaBusinessAsset.title = Add a non-EEA company
 addNonEeaBusinessAsset.heading = Add a non-EEA company
 addNonEeaBusinessAsset.additional-content = Do you want to add another non-EEA company?
@@ -141,10 +138,6 @@ addNonEeaBusinessAsset.count.title = You have added {0} non-EEA companies
 addNonEeaBusinessAsset.count.heading = You have added {0} non-EEA companies
 addNonEeaBusinessAsset.maxedOut.p1 = You cannot add another non-EEA company as you have entered a maximum of {0}.
 addNonEeaBusinessAsset.maxedOut.p2 = You can add another non-EEA company by removing an existing one, or write to HMRC with details of any additional non-EEA companies.
-
-
-
-
 
 assets.defaultText = this non-EEA company
 
@@ -221,6 +214,10 @@ money.value.error.invalid = Total assets value must be a number
 money.value.error.wholeNumber = Total assets value must be a whole number
 money.value.error.zero = Total amount of money in the trust must be 1 or more
 money.value.link = Return to registration progress
+
+money.removeYesNo.title = Are you sure you want to remove the asset?
+money.removeYesNo.heading = Are you sure you want to remove {0}?
+money.removeYesNo.error.required = Select yes if you want to remove the asset
 
 
 propertyOrLand.addressYesNo.title = Does the property or land have an address?
@@ -525,14 +522,14 @@ nonTaxableToTaxable.assetInterruptPage.bullet2 = the estimated total value of th
 nonTaxableToTaxable.assetInterruptPage.bullet3 = the estimated value of the proportion of the property or land that the trust owns
 nonTaxableToTaxable.assetInterruptPage.paragraph3 = You must tell us the current value of the property or land, not the value when it first entered the trust. This can be an estimate.
 nonTaxableToTaxable.assetInterruptPage.subHeading3 = Shares
-nonTaxableToTaxable.assetInterruptPage.paragraph3 = Tell us the:
+nonTaxableToTaxable.assetInterruptPage.paragraph4 = Tell us the:
 nonTaxableToTaxable.assetInterruptPage.bullet4 = share company or share portfolio name
 nonTaxableToTaxable.assetInterruptPage.bullet5 = number of shares (for a share portfolio you will need to estimate the total number of shares across all share holdings)
 nonTaxableToTaxable.assetInterruptPage.bullet6 = total current value
-nonTaxableToTaxable.assetInterruptPage.paragraph4 = You also need to tell us whether the shares are listed on a stock exchange (quoted shares) or not.
-nonTaxableToTaxable.assetInterruptPage.paragraph5 = For individual shares, you will need to tell us the class type.
+nonTaxableToTaxable.assetInterruptPage.paragraph5 = You also need to tell us whether the shares are listed on a stock exchange (quoted shares) or not.
+nonTaxableToTaxable.assetInterruptPage.paragraph6 = For individual shares, you will need to tell us the class type.
 nonTaxableToTaxable.assetInterruptPage.subHeading4 = Business
-nonTaxableToTaxable.assetInterruptPage.paragraph6 = Tell us the:
+nonTaxableToTaxable.assetInterruptPage.paragraph7 = Tell us the:
 nonTaxableToTaxable.assetInterruptPage.bullet7 = business's name
 nonTaxableToTaxable.assetInterruptPage.bullet8 = description of the business
 nonTaxableToTaxable.assetInterruptPage.bullet9 = business address
@@ -543,6 +540,18 @@ nonTaxableToTaxable.assetInterruptPage.bullet12 = company address
 nonTaxableToTaxable.assetInterruptPage.bullet13 = which country’s laws govern the company
 nonTaxableToTaxable.assetInterruptPage.bullet14 = the start date of the trust’s ownership or controlling interest in the company
 nonTaxableToTaxable.assetInterruptPage.subHeading6 = Partnerships
-nonTaxableToTaxable.assetInterruptPage.paragraph7 = Tell us the name of the partnership, a description of the partnership and the start date.
+nonTaxableToTaxable.assetInterruptPage.paragraph8 = Tell us the name of the partnership, a description of the partnership and the start date.
 nonTaxableToTaxable.assetInterruptPage.subHeading7 = Other assets
-nonTaxableToTaxable.assetInterruptPage.paragraph8 = You need to give a description of the asset and an estimate of its current value.
+nonTaxableToTaxable.assetInterruptPage.paragraph9 = You need to give a description of the asset and an estimate of its current value.
+
+nonTaxableToTaxable.addAssets.title = Add assets
+nonTaxableToTaxable.addAssets.heading = Add assets
+nonTaxableToTaxable.addAssets.additional-content = Do you want to add another asset?
+nonTaxableToTaxable.addAssets.add-them-now = Yes, I want to add them now
+nonTaxableToTaxable.addAssets.add-them-later = Yes, I want to add them later
+nonTaxableToTaxable.addAssets.no-complete = No, I have added all assets
+nonTaxableToTaxable.addAssets.error.required = Select yes if you want to add another asset
+nonTaxableToTaxable.addAssets.count.title = You have added {0} assets
+nonTaxableToTaxable.addAssets.count.heading = You have added {0} assets
+nonTaxableToTaxable.addAssets.maxedOut.p1 = You cannot add another asset as you have entered a maximum of {0}.
+nonTaxableToTaxable.addAssets.maxedOut.p2 = You can add another asset by removing an existing one, or write to HMRC with details of any additional assets.

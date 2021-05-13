@@ -17,23 +17,22 @@
 package controllers.asset.nonTaxableToTaxable
 
 import base.SpecBase
-import config.annotations.{Assets, PropertyOrLand}
+import config.annotations.Assets
 import controllers.IndexValidation
 import controllers.routes._
 import forms.YesNoFormProvider
-import models.NormalMode
 import navigation.Navigator
 import pages.asset.nontaxabletotaxable.AddAssetsYesNoPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.asset.nonTaxableToTaxable.AddAssetsYesNoView
+import views.html.asset.nonTaxableToTaxable.AddAssetYesNoView
 
-class AddAssetsYesNoControllerSpec extends SpecBase with IndexValidation {
+class AddAssetYesNoControllerSpec extends SpecBase with IndexValidation {
 
   val form = new YesNoFormProvider().withPrefix("taxable.addAssetsYesNo")
 
-  lazy val addAssetsYesNoRoute = routes.AddAssetsYesNoController.onPageLoad().url
+  lazy val addAssetsYesNoRoute = routes.AddAssetYesNoController.onPageLoad().url
 
   "AddAssetsYesNoRoute Controller" must {
 
@@ -45,7 +44,7 @@ class AddAssetsYesNoControllerSpec extends SpecBase with IndexValidation {
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[AddAssetsYesNoView]
+      val view = application.injector.instanceOf[AddAssetYesNoView]
 
       status(result) mustEqual OK
 
@@ -63,7 +62,7 @@ class AddAssetsYesNoControllerSpec extends SpecBase with IndexValidation {
 
       val request = FakeRequest(GET, addAssetsYesNoRoute)
 
-      val view = application.injector.instanceOf[AddAssetsYesNoView]
+      val view = application.injector.instanceOf[AddAssetYesNoView]
 
       val result = route(application, request).value
 
@@ -105,7 +104,7 @@ class AddAssetsYesNoControllerSpec extends SpecBase with IndexValidation {
 
       val boundForm = form.bind(Map("value" -> ""))
 
-      val view = application.injector.instanceOf[AddAssetsYesNoView]
+      val view = application.injector.instanceOf[AddAssetYesNoView]
 
       val result = route(application, request).value
 

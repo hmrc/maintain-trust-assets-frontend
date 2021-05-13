@@ -35,8 +35,7 @@ import repositories.PlaybackRepository
 import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AddAssetViewHelper
-import views.html.asset.noneeabusiness.AddNonEeaBusinessAssetView
-import views.html.asset.{AddAnAssetYesNoView, MaxedOutView}
+import views.html.asset.noneeabusiness.{AddAnAssetYesNoView, AddNonEeaBusinessAssetView, MaxedOutView}
 
 import scala.concurrent.{ExecutionContext, Future}
 

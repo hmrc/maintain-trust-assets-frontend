@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package views.asset
+package views.asset.noneeabusiness
 
 import play.twirl.api.HtmlFormat
 import viewmodels.AddRow
 import views.behaviours.{OptionsViewBehaviours, TabularDataViewBehaviours}
-import views.html.asset.MaxedOutView
+import views.html.asset.noneeabusiness.MaxedOutView
 
 class MaxedOutViewSpec extends OptionsViewBehaviours with TabularDataViewBehaviours {
 

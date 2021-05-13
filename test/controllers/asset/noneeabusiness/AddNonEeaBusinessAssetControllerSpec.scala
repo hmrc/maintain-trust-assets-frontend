@@ -36,8 +36,7 @@ import play.api.test.Helpers._
 import services.TrustService
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import viewmodels.AddRow
-import views.html.asset.noneeabusiness.AddNonEeaBusinessAssetView
-import views.html.asset.{AddAnAssetYesNoView, MaxedOutView}
+import views.html.asset.noneeabusiness.{AddAnAssetYesNoView, AddNonEeaBusinessAssetView, MaxedOutView}
 
 import scala.concurrent.{ExecutionContext, Future}
 

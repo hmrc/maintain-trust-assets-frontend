@@ -44,7 +44,7 @@ class IndexController @Inject()(
 
       def redirect(userAnswers: UserAnswers): Result = {
           if (userAnswers.isMigratingToTaxable) {
-            Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsYesNoController.onPageLoad())
+            Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetYesNoController.onPageLoad())
           } else {
             Redirect(controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad())
           }

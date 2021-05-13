@@ -170,7 +170,7 @@ class IndexControllerSpec extends SpecBase {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result) mustBe Some(controllers.asset.nonTaxableToTaxable.routes.AddAssetsYesNoController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.asset.nonTaxableToTaxable.routes.AddAssetYesNoController.onPageLoad().url)
 
       val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(playbackRepository).set(uaCaptor.capture)

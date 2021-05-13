@@ -17,17 +17,19 @@
 package utils
 
 import controllers.asset._
+import javax.inject.Inject
+import models.CheckMode
+import models.assets._
 import play.api.i18n.Messages
 import viewmodels.{AddRow, AddToRows}
-import javax.inject.Inject
-import models.assets._
 
 class AddAssetViewHelper @Inject()(assets: Assets)
                                   (implicit messages: Messages) {
 
   def rows: AddToRows = {
 
-    val complete = assets.nonEEABusiness.zipWithIndex.map(x => renderNonEEABusiness(x._1, x._2))
+    val complete = assets.nonEEABusiness.zipWithIndex.map(x => renderNonEEABusiness(x._1, x._2)) ++
+                   assets.monetary.zipWithIndex.map(x => renderMoney(x._1))
 
     AddToRows(Nil, complete)
   }
@@ -36,8 +38,8 @@ class AddAssetViewHelper @Inject()(assets: Assets)
     AddRow(
       name = asset.assetMonetaryAmount.toString,
       typeLabel = messages(s"entities.asset.nonEeaBusiness"),
-      changeUrl = ???,
-      removeUrl = ???
+      changeUrl = controllers.asset.money.routes.AssetMoneyValueController.onPageLoad(mode = CheckMode).url,
+      removeUrl = controllers.asset.money.remove.routes.RemoveAssetYesNoController.onPageLoad().url
     )
   }
 

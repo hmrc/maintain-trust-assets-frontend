@@ -1,6 +1,6 @@
 
-GET        /has-address                                      controllers.asset.nonTaxableToTaxable.AddAssetsYesNoController.onPageLoad()
-POST       /has-address                                      controllers.asset.nonTaxableToTaxable.AddAssetsYesNoController.onSubmit()
+GET        /add-asset                                      controllers.asset.nonTaxableToTaxable.AddAssetYesNoController.onPageLoad()
+POST       /add-asset                                      controllers.asset.nonTaxableToTaxable.AddAssetYesNoController.onSubmit()
 
 GET        /add                                              controllers.asset.nonTaxableToTaxable.AddAssetsController.onPageLoad()
 POST       /add                                              controllers.asset.nonTaxableToTaxable.AddAssetsController.submitOne()

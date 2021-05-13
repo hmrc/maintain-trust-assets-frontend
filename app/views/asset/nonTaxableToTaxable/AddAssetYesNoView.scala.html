@@ -24,10 +24,10 @@
 @(form: Form[_])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("taxable.addAssetsYesNo.title")}"
+    title = s"${errorPrefix(form)} ${messages("nonTaxableToTaxable.addAssetsYesNo.title")}"
 ) {
 
-    @formHelper(action = AddAssetsYesNoController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = AddAssetYesNoController.onSubmit(), 'autoComplete -> "off") {
 
         @components.back_link()
 
@@ -35,7 +35,7 @@
 
         @components.input_yes_no(
             field = form("value"),
-            label = messages("taxable.addAssetsYesNo.heading"),
+            label = messages("nonTaxableToTaxable.addAssetsYesNo.heading"),
             legendClass = Some("heading-large"),
             legendAsHeading = true
         )

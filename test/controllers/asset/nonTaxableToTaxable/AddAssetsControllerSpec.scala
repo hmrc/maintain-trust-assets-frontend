@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.asset
+package controllers.asset.nonTaxableToTaxable
 
 import java.time.LocalDate
 
@@ -24,7 +24,7 @@ import connectors.TrustsStoreConnector
 import forms.{AddAssetsFormProvider, YesNoFormProvider}
 import generators.Generators
 import models.assets._
-import models.{AddAssets, NonUkAddress, RemoveAsset}
+import models.{AddAssets, CheckMode, NonUkAddress, RemoveAsset}
 import navigation.Navigator
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -35,28 +35,27 @@ import play.api.test.Helpers._
 import services.TrustService
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import viewmodels.AddRow
-import views.html.asset.noneeabusiness.AddNonEeaBusinessAssetView
-import views.html.asset.{AddAnAssetYesNoView, MaxedOutView}
+import views.html.asset.nonTaxableToTaxable.{AddAssetYesNoView, AddAssetsView, MaxedOutView}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class AddAssetsControllerSpec extends SpecBase with Generators {
 
-  lazy val addAssetsRoute: String = controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad().url
-  lazy val addOnePostRoute: String = controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.submitOne().url
-  lazy val addAnotherPostRoute: String = controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.submitAnother().url
-  lazy val completePostRoute: String = controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.submitComplete().url
+  lazy val addAssetsRoute: String = controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+  lazy val addOnePostRoute: String = controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.submitOne().url
+  lazy val addAnotherPostRoute: String = controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.submitAnother().url
+  lazy val completePostRoute: String = controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.submitComplete().url
 
   def changeNonEeaAssetRoute(index: Int): String =
-    noneeabusiness.amend.routes.AnswersController.extractAndRender(index).url
+    controllers.asset.money.routes.AssetMoneyValueController.onPageLoad(mode = CheckMode).url
 
 
   def removeAssetYesNoRoute(index: Int): String =
-    controllers.asset.noneeabusiness.remove.routes.RemoveAssetYesNoController.onPageLoad(index).url
+    controllers.asset.money.remove.routes.RemoveAssetYesNoController.onPageLoad().url
 
-  val prefix = "addNonEeaBusinessAsset"
-  val AddNonEeaBusinessAssetForm: Form[AddAssets] = new AddAssetsFormProvider().withPrefix(prefix)
-  val yesNoForm: Form[Boolean] = new YesNoFormProvider().withPrefix("addNonEeaBusinessAssetYesNo")
+  val prefix = "addAssets"
+  val AddAssetForm: Form[AddAssets] = new AddAssetsFormProvider().withPrefix(prefix)
+  val yesNoForm: Form[Boolean] = new YesNoFormProvider().withPrefix("addAssetsYesNo")
 
   val addRow1 = AddRow("orgName 1", typeLabel = "Non-EEA Company", changeNonEeaAssetRoute(0), removeAssetYesNoRoute(0))
   val addRow2 = AddRow("orgName 2", typeLabel = "Non-EEA Company", changeNonEeaAssetRoute(1), removeAssetYesNoRoute(1))
@@ -67,6 +66,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
   val mockStoreConnector : TrustsStoreConnector = mock[TrustsStoreConnector]
   val nonEeaBusinessAsset1 = NonEeaBusinessType(None, "orgName 1", NonUkAddress("", "", None, ""), "", LocalDate.now, None, true)
   val nonEeaBusinessAsset2 = NonEeaBusinessType(None, "orgName 2", NonUkAddress("", "", None, ""), "", LocalDate.now, None, true)
+  val moneyAsset = AssetMonetaryAmount(4000)
 
   val fakeEmptyService = new FakeService(Assets(Nil, Nil, Nil, Nil, Nil, Nil, Nil))
   val fakeServiceWithOneNonEeaAsset = new FakeService(Assets(Nil, Nil, Nil, Nil, Nil, Nil, List(nonEeaBusinessAsset1)))
@@ -74,7 +74,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
 
   val nonEeaBusinessAsset = NonEeaBusinessType(None, "orgName", NonUkAddress("", "", None, ""), "", LocalDate.now, None, true)
 
-  "AddNonEeaBusinessAssetController Controller" when {
+  "AddAssets Controller" when {
 
     "no data" must {
       "redirect to Session Expired for a GET if no existing data is found" in {
@@ -160,7 +160,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
 
         val boundForm = yesNoForm.bind(Map("value" -> "invalid value"))
 
-        val view = application.injector.instanceOf[AddAnAssetYesNoView]
+        val view = application.injector.instanceOf[AddAssetYesNoView]
 
         val result = route(application, request).value
 
@@ -190,12 +190,12 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
 
           val result = route(application, request).value
 
-          val view = application.injector.instanceOf[AddNonEeaBusinessAssetView]
+          val view = application.injector.instanceOf[AddAssetsView]
 
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(AddNonEeaBusinessAssetForm, Nil, oneAsset, "Add a non-EEA company")(request, messages).toString
+            view(AddAssetForm, Nil, oneAsset, "Add a non-EEA company")(request, messages).toString
 
           application.stop()
         }
@@ -218,12 +218,12 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
 
           val result = route(application, request).value
 
-          val view = application.injector.instanceOf[AddNonEeaBusinessAssetView]
+          val view = application.injector.instanceOf[AddAssetsView]
 
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(AddNonEeaBusinessAssetForm, Nil, multipleAssets, "You have added 2 non-EEA companies")(request, messages).toString
+            view(AddAssetForm, Nil, multipleAssets, "You have added 2 non-EEA companies")(request, messages).toString
 
           application.stop()
         }
@@ -283,9 +283,9 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
           FakeRequest(POST, addAnotherPostRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
 
-        val boundForm = AddNonEeaBusinessAssetForm.bind(Map("value" -> "invalid value"))
+        val boundForm = AddAssetForm.bind(Map("value" -> "invalid value"))
 
-        val view = application.injector.instanceOf[AddNonEeaBusinessAssetView]
+        val view = application.injector.instanceOf[AddAssetsView]
 
         val result = route(application, request).value
 

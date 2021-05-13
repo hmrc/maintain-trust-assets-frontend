@@ -27,21 +27,21 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.asset.nonTaxableToTaxable.AddAssetsYesNoView
+import views.html.asset.nonTaxableToTaxable.AddAssetYesNoView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddAssetsYesNoController @Inject()(
+class AddAssetYesNoController @Inject()(
                                           override val messagesApi: MessagesApi,
                                           standardActionSets: StandardActionSets,
                                           repository: PlaybackRepository,
                                           @Assets navigator: Navigator,
                                           yesNoFormProvider: YesNoFormProvider,
                                           val controllerComponents: MessagesControllerComponents,
-                                          view: AddAssetsYesNoView
+                                          view: AddAssetYesNoView
                                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form: Form[Boolean] = yesNoFormProvider.withPrefix("taxable.addAssetsYesNo")
+  val form: Form[Boolean] = yesNoFormProvider.withPrefix("nonTaxableToTaxable.addAssetsYesNo")
 
   def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier) {
     implicit request =>

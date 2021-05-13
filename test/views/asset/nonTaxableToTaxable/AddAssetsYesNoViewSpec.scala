@@ -17,11 +17,10 @@
 package views.asset.nonTaxableToTaxable
 
 import forms.YesNoFormProvider
-import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.asset.nonTaxableToTaxable.AddAssetsYesNoView
+import views.html.asset.nonTaxableToTaxable.AddAssetYesNoView
 
 class AddAssetsYesNoViewSpec extends YesNoViewBehaviours {
 
@@ -31,7 +30,7 @@ class AddAssetsYesNoViewSpec extends YesNoViewBehaviours {
 
   "AddAssetsYesNo view" must {
 
-    val view = viewFor[AddAssetsYesNoView](Some(emptyUserAnswers))
+    val view = viewFor[AddAssetYesNoView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
       view.apply(form)(fakeRequest, messages)

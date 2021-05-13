@@ -17,6 +17,7 @@
 package controllers.asset.money
 
 import config.annotations.Money
+import connectors.TrustsConnector
 import controllers.actions.StandardActionSets
 import forms.ValueFormProvider
 import models.Status.Completed
@@ -30,7 +31,8 @@ import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.asset.money.AssetMoneyValueView
 import javax.inject.Inject
-import models.Mode
+import models.assets.AssetMonetaryAmount
+import models.{CheckMode, Mode}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -41,7 +43,8 @@ class AssetMoneyValueController @Inject()(
                                            @Money navigator: Navigator,
                                            formProvider: ValueFormProvider,
                                            val controllerComponents: MessagesControllerComponents,
-                                           view: AssetMoneyValueView
+                                           view: AssetMoneyValueView,
+                                           connector: TrustsConnector
                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form: Form[Long] = formProvider.withConfig(prefix = "money.value")
@@ -70,9 +73,14 @@ class AssetMoneyValueController @Inject()(
             .flatMap(_.set(AssetStatus, Completed))
 
           for {
-                updatedAnswers <- Future.fromTry(answers)
-                _              <- repository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(AssetMoneyValuePage, mode, updatedAnswers))
+            updatedAnswers <- Future.fromTry(answers)
+            _              <- repository.set(updatedAnswers)
+            _ = if(mode == CheckMode) {
+              connector.amendMoneyAsset(request.userAnswers.identifier, 0, AssetMonetaryAmount(value))
+            } else {
+              connector.addMoneyAsset(request.userAnswers.identifier, AssetMonetaryAmount(value))
+            }
+          } yield Redirect(navigator.nextPage(AssetMoneyValuePage, mode, updatedAnswers))
           }
       )
   }

@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package views.asset
+package views.asset.noneeabusiness
 
 import forms.YesNoFormProvider
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.asset.AddAnAssetYesNoView
+import views.html.asset.noneeabusiness.AddAnAssetYesNoView
 
 class AddAnAssetYesNoViewSpec extends YesNoViewBehaviours {
 

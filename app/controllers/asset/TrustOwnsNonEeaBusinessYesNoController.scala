@@ -19,6 +19,8 @@ package controllers.asset
 import config.annotations.Assets
 import controllers.actions.StandardActionSets
 import forms.YesNoFormProvider
+import javax.inject.Inject
+import models.Mode
 import navigation.Navigator
 import pages.asset.TrustOwnsNonEeaBusinessYesNoPage
 import play.api.data.Form
@@ -26,9 +28,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.asset.TrustOwnsNonEeaBusinessYesNoView
-import javax.inject.Inject
-import models.Mode
+import views.html.asset.noneeabusiness.TrustOwnsNonEeaBusinessYesNoView
 
 import scala.concurrent.{ExecutionContext, Future}
 

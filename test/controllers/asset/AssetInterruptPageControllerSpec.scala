@@ -22,8 +22,8 @@ import navigation.Navigator
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.asset.AssetInterruptView
 import views.html.asset.nonTaxableToTaxable.{AssetInterruptView => MigrationInteruptPage}
+import views.html.asset.noneeabusiness.AssetInterruptView
 
 class AssetInterruptPageControllerSpec extends SpecBase {
 

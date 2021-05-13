@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package views.asset
+package views.asset.noneeabusiness
 
 import views.behaviours.ViewBehaviours
-import views.html.asset.AssetInterruptView
+import views.html.asset.noneeabusiness.AssetInterruptView
 
 class AssetInterruptViewSpec extends ViewBehaviours {
 

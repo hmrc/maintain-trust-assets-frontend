@@ -3,3 +3,5 @@ POST       /value                          controllers.asset.money.AssetMoneyVal
 GET        /change-value                   controllers.asset.money.AssetMoneyValueController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-value                   controllers.asset.money.AssetMoneyValueController.onSubmit(mode: Mode = CheckMode)
 
+GET        /remove                  controllers.asset.money.remove.RemoveAssetYesNoController.onPageLoad()
+POST       /remove                  controllers.asset.money.remove.RemoveAssetYesNoController.onSubmit()

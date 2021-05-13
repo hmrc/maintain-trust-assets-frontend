@@ -35,8 +35,7 @@ import repositories.PlaybackRepository
 import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AddAssetViewHelper
-import views.html.asset.noneeabusiness.AddNonEeaBusinessAssetView
-import views.html.asset.{AddAnAssetYesNoView, MaxedOutView}
+import views.html.asset.nonTaxableToTaxable.{AddAssetYesNoView, AddAssetsView, MaxedOutView}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -51,15 +50,15 @@ class AddAssetsController @Inject()(
                                                   addAnotherFormProvider: AddAssetsFormProvider,
                                                   yesNoFormProvider: YesNoFormProvider,
                                                   val controllerComponents: MessagesControllerComponents,
-                                                  addAssetsView: AddNonEeaBusinessAssetView,
-                                                  yesNoView: AddAnAssetYesNoView,
+                                                  addAssetsView: AddAssetsView,
+                                                  yesNoView: AddAssetYesNoView,
                                                   maxedOutView: MaxedOutView,
                                                   errorHandler: ErrorHandler
                                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
-  private val prefix = "addAssets"
+  private val prefix = "nonTaxableToTaxable.addAssets"
   private val addAnotherForm: Form[AddAssets] = addAnotherFormProvider.withPrefix(prefix)
-  private val yesNoForm: Form[Boolean] = yesNoFormProvider.withPrefix("addAssetsYesNo")
+  private val yesNoForm: Form[Boolean] = yesNoFormProvider.withPrefix("nonTaxableToTaxable.addAssetsYesNo")
 
   private def heading(count: Int)(implicit mp: MessagesProvider): String = {
     count match {
@@ -88,7 +87,7 @@ class AddAssetsController @Inject()(
 
         assetRows.count match {
           case 0 =>
-            Redirect(controllers.asset.routes.TrustOwnsNonEeaBusinessYesNoController.onPageLoad(NormalMode))
+            Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetYesNoController.onPageLoad())
           case c if c >= maxLimit =>
             Ok(maxedOutView(assetRows.inProgress, assetRows.complete, heading(c), maxLimit, prefix))
           case c =>
