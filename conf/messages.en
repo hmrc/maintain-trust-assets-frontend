@@ -141,9 +141,9 @@ trustOwnsNonEeaBusinessYesNo.title = Does the trust own or have a controlling in
 trustOwnsNonEeaBusinessYesNo.heading = Does the trust own or have a controlling interest in a non-EEA company?
 trustOwnsNonEeaBusinessYesNo.error.required = Select yes if the trust owns or has a controlling interest in a non-EEA company
 
-assetInterruptPage.title = Information you need to know to add assets
-assetInterruptPage.heading = Information you need to know to add assets
-assetInterruptPage.caption = Assets
+assetInterruptPage.title = Information you need to know to add a non-EEA company
+assetInterruptPage.heading = Information you need to know to add a non-EEA company
+assetInterruptPage.caption = Non-EEA Company
 assetInterruptPage.caption.hidden = This section is
 
 assetInterruptPage.subheading1 = Money
