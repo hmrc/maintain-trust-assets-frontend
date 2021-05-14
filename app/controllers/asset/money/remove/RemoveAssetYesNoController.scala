@@ -53,7 +53,7 @@ class RemoveAssetYesNoController @Inject()(
 
       trustService.getMonetaryAsset(request.userAnswers.identifier, 0).map {
         asset =>
-          Ok(view(form, 0, asset.assetMonetaryAmount.toString))
+          Ok(view(form, 0))
       } recoverWith {
         case iobe: IndexOutOfBoundsException =>
           logger.warn(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
@@ -74,7 +74,7 @@ class RemoveAssetYesNoController @Inject()(
         (formWithErrors: Form[_]) => {
           trustService.getMonetaryAsset(request.userAnswers.identifier, 0).map {
             asset =>
-              BadRequest(view(formWithErrors, 0, asset.assetMonetaryAmount.toString))
+              BadRequest(view(formWithErrors, 0))
           }
         },
         value => {

@@ -16,13 +16,11 @@
 
 package controllers.asset.money.remove
 
-import java.time.LocalDate
-
 import base.SpecBase
 import connectors.TrustsConnector
 import controllers.Assets.OK
 import forms.RemoveIndexFormProvider
-import models.NonUkAddress
+import models.NormalMode
 import models.assets._
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -32,29 +30,24 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpResponse
-import views.html.asset.noneeabusiness.remove.RemoveAssetYesNoView
+import views.html.asset.money.remove.RemoveAssetYesNoView
 
 import scala.concurrent.Future
 
 class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChecks with ScalaFutures {
 
-  val messagesPrefix = "nonEeaBusiness.removeYesNo"
+  val messagesPrefix = "money.removeYesNo"
 
   lazy val formProvider = new RemoveIndexFormProvider()
   lazy val form = formProvider(messagesPrefix)
 
-  lazy val formRoute = routes.RemoveAssetYesNoController.onSubmit()
+  lazy val formRoute = controllers.asset.money.remove.routes.RemoveAssetYesNoController.onSubmit()
 
 
   val mockConnector: TrustsConnector = mock[TrustsConnector]
 
-  def createAsset(id: Int, provisional : Boolean) =
-    NonEeaBusinessType(None, s"OrgName $id", NonUkAddress("", "", None, ""), "", LocalDate.now, None, provisional)
-
-  val nonEeaAssets = List(
-    createAsset(0, provisional = false),
-    createAsset(1, provisional = true),
-    createAsset(2, provisional = true)
+  val moneyAsset = List(
+    AssetMonetaryAmount(4000)
   )
 
   "RemoveAssetYesNo Controller" when {
@@ -64,13 +57,13 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
       val index = 0
 
       when(mockConnector.getAssets(any())(any(), any()))
-        .thenReturn(Future.successful(Assets(Nil, Nil, Nil, Nil, Nil, Nil, nonEeaAssets)))
+        .thenReturn(Future.successful(Assets(moneyAsset, Nil, Nil, Nil, Nil, Nil, Nil)))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[TrustsConnector].toInstance(mockConnector))
         .build()
 
-      val request = FakeRequest(GET, routes.RemoveAssetYesNoController.onPageLoad().url)
+      val request = FakeRequest(GET, controllers.asset.money.remove.routes.RemoveAssetYesNoController.onPageLoad().url)
 
       val result = route(application, request).value
 
@@ -78,7 +71,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
       status(result) mustEqual OK
 
-      contentAsString(result) mustEqual view(form, index, s"OrgName $index")(request, messages).toString
+      contentAsString(result) mustEqual view(form, index)(request, messages).toString
 
       application.stop()
     }
@@ -94,14 +87,14 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
           .build()
 
         val request =
-          FakeRequest(POST, routes.RemoveAssetYesNoController.onSubmit().url)
+          FakeRequest(POST, controllers.asset.money.remove.routes.RemoveAssetYesNoController.onSubmit().url)
             .withFormUrlEncodedBody(("value", "false"))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.asset.money.routes.AssetMoneyValueController.onPageLoad(mode = NormalMode).url
 
         application.stop()
       }
@@ -119,47 +112,20 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
           .build()
 
         when(mockConnector.getAssets(any())(any(), any()))
-          .thenReturn(Future.successful(Assets(Nil, Nil, Nil, Nil, Nil, Nil, nonEeaAssets)))
+          .thenReturn(Future.successful(Assets(moneyAsset, Nil, Nil, Nil, Nil, Nil, Nil)))
 
         when(mockConnector.removeAsset(any(), any())(any(), any()))
           .thenReturn(Future.successful(HttpResponse(200, "")))
 
         val request =
-          FakeRequest(POST, routes.RemoveAssetYesNoController.onSubmit().url)
+          FakeRequest(POST, controllers.asset.money.remove.routes.RemoveAssetYesNoController.onSubmit().url)
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad().url
-
-        application.stop()
-      }
-    }
-
-    "removing an old asset" must {
-
-      "redirect to the end date" in {
-
-        val index = 0
-
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(bind[TrustsConnector].toInstance(mockConnector))
-          .build()
-
-        when(mockConnector.getAssets(any())(any(), any()))
-          .thenReturn(Future.successful(Assets(Nil, Nil, Nil, Nil, Nil, Nil, nonEeaAssets)))
-
-        val request =
-          FakeRequest(POST, routes.RemoveAssetYesNoController.onSubmit().url)
-            .withFormUrlEncodedBody(("value", "true"))
-
-        val result = route(application, request).value
-
-        status(result) mustEqual SEE_OTHER
-
-        redirectLocation(result).value mustEqual controllers.asset.noneeabusiness.remove.routes.RemoveAssetEndDateController.onPageLoad(index).url
+        redirectLocation(result).value mustEqual controllers.asset.money.routes.AssetMoneyValueController.onPageLoad(mode = NormalMode).url
 
         application.stop()
       }
@@ -172,7 +138,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(bind[TrustsConnector].toInstance(mockConnector)).build()
 
       val request =
-        FakeRequest(POST, routes.RemoveAssetYesNoController.onSubmit().url)
+        FakeRequest(POST, controllers.asset.money.remove.routes.RemoveAssetYesNoController.onSubmit().url)
           .withFormUrlEncodedBody(("value", ""))
 
       val boundForm = form.bind(Map("value" -> ""))
@@ -184,7 +150,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, index, s"OrgName $index")(request, messages).toString
+        view(boundForm, index)(request, messages).toString
 
       application.stop()
     }
@@ -195,7 +161,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, routes.RemoveAssetYesNoController.onPageLoad().url)
+      val request = FakeRequest(GET, controllers.asset.money.remove.routes.RemoveAssetYesNoController.onPageLoad().url)
 
       val result = route(application, request).value
 
@@ -213,7 +179,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, routes.RemoveAssetYesNoController.onSubmit().url)
+        FakeRequest(POST, controllers.asset.money.remove.routes.RemoveAssetYesNoController.onSubmit().url)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value

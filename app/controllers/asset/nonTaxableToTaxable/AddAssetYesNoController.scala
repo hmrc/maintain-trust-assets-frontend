@@ -41,7 +41,7 @@ class AddAssetYesNoController @Inject()(
                                           view: AddAssetYesNoView
                                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form: Form[Boolean] = yesNoFormProvider.withPrefix("nonTaxableToTaxable.addAssetsYesNo")
+  val form: Form[Boolean] = yesNoFormProvider.withPrefix("nonTaxableToTaxable.addAssetYesNo")
 
   def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier) {
     implicit request =>

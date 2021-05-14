@@ -22,13 +22,13 @@ import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
 import views.html.asset.nonTaxableToTaxable.AddAssetYesNoView
 
-class AddAssetsYesNoViewSpec extends YesNoViewBehaviours {
+class AddAssetYesNoViewSpec extends YesNoViewBehaviours {
 
-  private val messageKeyPrefix: String = "taxable.addAssetsYesNo"
+  private val messageKeyPrefix: String = "nonTaxableToTaxable.addAssetYesNo"
 
   override val form: Form[Boolean] = new YesNoFormProvider().withPrefix(messageKeyPrefix)
 
-  "AddAssetsYesNo view" must {
+  "AddAssetYesNo view" must {
 
     val view = viewFor[AddAssetYesNoView](Some(emptyUserAnswers))
 

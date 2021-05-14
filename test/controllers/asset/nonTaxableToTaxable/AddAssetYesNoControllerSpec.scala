@@ -30,17 +30,17 @@ import views.html.asset.nonTaxableToTaxable.AddAssetYesNoView
 
 class AddAssetYesNoControllerSpec extends SpecBase with IndexValidation {
 
-  val form = new YesNoFormProvider().withPrefix("taxable.addAssetsYesNo")
+  val form = new YesNoFormProvider().withPrefix("nonTaxableToTaxable.addAssetYesNo")
 
-  lazy val addAssetsYesNoRoute = routes.AddAssetYesNoController.onPageLoad().url
+  lazy val addAssetYesNoRoute = controllers.asset.nonTaxableToTaxable.routes.AddAssetYesNoController.onPageLoad().url
 
-  "AddAssetsYesNoRoute Controller" must {
+  "AddAssetYesNo Controller" must {
 
     "return OK and the correct view for a GET" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-      val request = FakeRequest(GET, addAssetsYesNoRoute)
+      val request = FakeRequest(GET, addAssetYesNoRoute)
 
       val result = route(application, request).value
 
@@ -60,7 +60,7 @@ class AddAssetYesNoControllerSpec extends SpecBase with IndexValidation {
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
-      val request = FakeRequest(GET, addAssetsYesNoRoute)
+      val request = FakeRequest(GET, addAssetYesNoRoute)
 
       val view = application.injector.instanceOf[AddAssetYesNoView]
 
@@ -82,7 +82,7 @@ class AddAssetYesNoControllerSpec extends SpecBase with IndexValidation {
           .build()
 
       val request =
-        FakeRequest(POST, addAssetsYesNoRoute)
+        FakeRequest(POST, addAssetYesNoRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value
@@ -99,7 +99,7 @@ class AddAssetYesNoControllerSpec extends SpecBase with IndexValidation {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
       val request =
-        FakeRequest(POST, addAssetsYesNoRoute)
+        FakeRequest(POST, addAssetYesNoRoute)
           .withFormUrlEncodedBody(("value", ""))
 
       val boundForm = form.bind(Map("value" -> ""))
@@ -120,7 +120,7 @@ class AddAssetYesNoControllerSpec extends SpecBase with IndexValidation {
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, addAssetsYesNoRoute)
+      val request = FakeRequest(GET, addAssetYesNoRoute)
 
       val result = route(application, request).value
 
@@ -136,7 +136,7 @@ class AddAssetYesNoControllerSpec extends SpecBase with IndexValidation {
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, addAssetsYesNoRoute)
+        FakeRequest(POST, addAssetYesNoRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value
