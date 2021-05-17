@@ -52,7 +52,7 @@ class SharesPrintHelperSpec extends SpecBase {
     .set(SharePortfolioValueInTrustPage, amount).success.value
 
   private val nonPortfolioRows: Seq[AnswerRow] = Seq(
-    AnswerRow(label = Html(messages("whatKindOfAsset.first.checkYourAnswersLabel")), Html("Shares"), WhatKindOfAssetController.onPageLoad(index).url),
+    AnswerRow(label = Html(messages("whatKindOfAsset.first.checkYourAnswersLabel")), Html("Shares"), WhatKindOfAssetController.onPageLoad().url),
     AnswerRow(label = Html(messages("shares.inAPortfolioYesNo.checkYourAnswersLabel")), Html("No"), SharesInAPortfolioController.onPageLoad(NormalMode).url),
     AnswerRow(label = Html(messages("shares.companyName.checkYourAnswersLabel")), Html(name), ShareCompanyNameController.onPageLoad(NormalMode).url),
     AnswerRow(label = Html(messages("shares.onStockExchangeYesNo.checkYourAnswersLabel", name)), Html("Yes"), SharesOnStockExchangeController.onPageLoad(NormalMode).url),
@@ -62,7 +62,7 @@ class SharesPrintHelperSpec extends SpecBase {
   )
 
   private val portfolioRows: Seq[AnswerRow] = Seq(
-    AnswerRow(label = Html(messages("whatKindOfAsset.first.checkYourAnswersLabel")), Html("Shares"), WhatKindOfAssetController.onPageLoad(index).url),
+    AnswerRow(label = Html(messages("whatKindOfAsset.first.checkYourAnswersLabel")), Html("Shares"), WhatKindOfAssetController.onPageLoad().url),
     AnswerRow(label = Html(messages("shares.inAPortfolioYesNo.checkYourAnswersLabel")), Html("Yes"), SharesInAPortfolioController.onPageLoad(NormalMode).url),
     AnswerRow(label = Html(messages("shares.portfolioName.checkYourAnswersLabel")), Html(name), SharePortfolioNameController.onPageLoad(NormalMode).url),
     AnswerRow(label = Html(messages("shares.portfolioOnStockExchangeYesNo.checkYourAnswersLabel", name)), Html("Yes"), SharePortfolioOnStockExchangeController.onPageLoad(NormalMode).url),

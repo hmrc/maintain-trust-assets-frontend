@@ -17,11 +17,11 @@
 package models.assets
 
 
+import models.WhatKindOfAsset
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
-trait AssetType {
-}
+trait AssetType
 
 case class Assets(monetary: List[AssetMonetaryAmount] = Nil,
                   propertyOrLand: List[PropertyLandType] = Nil,
@@ -29,7 +29,18 @@ case class Assets(monetary: List[AssetMonetaryAmount] = Nil,
                   business: List[BusinessAssetType] = Nil,
                   partnerShip: List[PartnershipType] = Nil,
                   other: List[OtherAssetType] = Nil,
-                  nonEEABusiness: List[NonEeaBusinessType] = Nil)
+                  nonEEABusiness: List[NonEeaBusinessType] = Nil) {
+
+  def sizeForKind(kind: WhatKindOfAsset): Int = kind match {
+    case WhatKindOfAsset.Money => monetary.size
+    case WhatKindOfAsset.PropertyOrLand => propertyOrLand.size
+    case WhatKindOfAsset.Shares => shares.size
+    case WhatKindOfAsset.Business => business.size
+    case WhatKindOfAsset.Partnership => partnerShip.size
+    case WhatKindOfAsset.Other =>other.size
+    case WhatKindOfAsset.NonEeaBusiness => nonEEABusiness.size
+  }
+}
 
 
 object Assets {

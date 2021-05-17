@@ -43,7 +43,6 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
   lazy val formRoute = controllers.asset.money.remove.routes.RemoveAssetYesNoController.onSubmit()
 
-
   val mockConnector: TrustsConnector = mock[TrustsConnector]
 
   val moneyAsset = List(
@@ -71,7 +70,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
       status(result) mustEqual OK
 
-      contentAsString(result) mustEqual view(form, index)(request, messages).toString
+      contentAsString(result) mustEqual view(form, "£4000")(request, messages).toString
 
       application.stop()
     }
@@ -131,9 +130,8 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val index = 0
-
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(bind[TrustsConnector].toInstance(mockConnector)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[TrustsConnector].toInstance(mockConnector)).build()
 
       val request =
         FakeRequest(POST, controllers.asset.money.remove.routes.RemoveAssetYesNoController.onSubmit().url)
@@ -148,14 +146,12 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, index)(request, messages).toString
+        view(boundForm, "£4000")(request, messages).toString
 
       application.stop()
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {
-
-      val index = 0
 
       val application = applicationBuilder(userAnswers = None).build()
 
@@ -171,8 +167,6 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
-
-      val index = 0
 
       val application = applicationBuilder(userAnswers = None).build()
 

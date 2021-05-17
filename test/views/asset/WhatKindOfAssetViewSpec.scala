@@ -36,7 +36,7 @@ class WhatKindOfAssetViewSpec extends ViewBehaviours {
   private val view: WhatKindOfAssetView = application.injector.instanceOf[WhatKindOfAssetView]
 
   def applyView(form: Form[_], index : Int): HtmlFormat.Appendable =
-    view.apply(form, index, WhatKindOfAsset.options())(fakeRequest, messages)
+    view.apply(form, WhatKindOfAsset.options())(fakeRequest, messages)
 
   "WhatKindOfAssetView" when {
 

@@ -32,9 +32,7 @@ import views.html.asset.WhatKindOfAssetView
 
 class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
 
-  private val index = 0
-
-  private def whatKindOfAssetRoute(index: Int = index): String = routes.WhatKindOfAssetController.onPageLoad(index).url
+  private def whatKindOfAssetRoute(): String = routes.WhatKindOfAssetController.onPageLoad().url
 
   private val formProvider = new WhatKindOfAssetFormProvider()
   private val form = formProvider()
@@ -62,7 +60,7 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form, index, options)(request, messages).toString
+          view(form, options)(request, messages).toString
 
         application.stop()
       }
@@ -83,7 +81,7 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form.fill(Shares), index, options)(request, messages).toString
+          view(form.fill(Shares), options)(request, messages).toString
 
         application.stop()
       }
@@ -104,7 +102,7 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form.fill(Money), index, options)(request, messages).toString
+          view(form.fill(Money), options)(request, messages).toString
 
         application.stop()
       }
@@ -126,7 +124,7 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm, index, options)(request, messages).toString
+          view(boundForm, options)(request, messages).toString
 
         application.stop()
       }
@@ -150,7 +148,7 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form, index, options)(request, messages).toString
+          view(form, options)(request, messages).toString
 
         application.stop()
       }
@@ -171,7 +169,7 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form.fill(Shares), index, options)(request, messages).toString
+          view(form.fill(Shares), options)(request, messages).toString
 
         application.stop()
       }
@@ -192,7 +190,7 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(form.fill(Money), index, options)(request, messages).toString
+          view(form.fill(Money), options)(request, messages).toString
 
         application.stop()
       }
@@ -214,7 +212,7 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm, index, options)(request, messages).toString
+          view(boundForm, options)(request, messages).toString
 
         application.stop()
       }

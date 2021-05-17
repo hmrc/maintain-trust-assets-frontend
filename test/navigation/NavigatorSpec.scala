@@ -80,7 +80,7 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
           "redirect to what Kind Of Asset page" in {
 
             navigator.nextPage(AssetInterruptPage, NormalMode, baseAnswers)
-              .mustBe(controllers.asset.routes.WhatKindOfAssetController.onPageLoad(index = 0))
+              .mustBe(controllers.asset.routes.WhatKindOfAssetController.onPageLoad())
           }
         }
 
