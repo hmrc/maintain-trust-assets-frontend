@@ -34,7 +34,6 @@ class AssetMoneyValueControllerSpec extends SpecBase {
   val formProvider = new ValueFormProvider(frontendAppConfig)
   val form: Form[Long] = formProvider.withConfig(prefix = "money.value")
 
-  val index = 0
   val validAnswer: Long = 4000L
 
   lazy val assetMoneyValueRoute: String = routes.AssetMoneyValueController.onPageLoad(NormalMode).url

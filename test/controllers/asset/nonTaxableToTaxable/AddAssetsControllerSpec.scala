@@ -349,8 +349,8 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
     override def getAssets(identifier: String)(implicit hc:HeaderCarrier, ec:ExecutionContext): Future[Assets] =
       Future.successful(testAssets)
 
-    override def getMonetaryAsset(identifier: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[AssetMonetaryAmount] =
-      Future.successful(testAssets.monetary(index))
+    override def getMonetaryAsset(identifier: String)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[Option[AssetMonetaryAmount]] =
+      Future.successful(Some(testAssets.monetary.head))
 
     override def getPropertyOrLandAsset(identifier: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[PropertyLandType] =
     Future.successful(testAssets.propertyOrLand(index))

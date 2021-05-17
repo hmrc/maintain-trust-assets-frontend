@@ -47,10 +47,8 @@ class WhatKindOfAssetController @Inject()(
 
   val form: Form[WhatKindOfAsset] = formProvider()
 
-  private def options(assets: models.assets.Assets): List[RadioOption] = {
-
-    WhatKindOfAsset.options()
-  }
+  private def options(assets: models.assets.Assets): List[RadioOption] =
+    WhatKindOfAsset.nonMaxedOutOptions(assets)
 
   def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
@@ -74,11 +72,8 @@ class WhatKindOfAssetController @Inject()(
 
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
-
-            Future.successful(BadRequest(view(formWithErrors, options(assets))))
-          ,
+            Future.successful(BadRequest(view(formWithErrors, options(assets)))),
           value => {
-
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(WhatKindOfAssetPage, value))
               _ <- repository.set(updatedAnswers)

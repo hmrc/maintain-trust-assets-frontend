@@ -53,15 +53,19 @@ class RemoveAssetYesNoController @Inject()(
   def onPageLoad(): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
 
-      trustService.getMonetaryAsset(request.userAnswers.identifier, 0).map {
+      trustService.getMonetaryAsset(request.userAnswers.identifier).map {
         asset =>
-          Ok(view(form, currencyFormat(asset.assetMonetaryAmount.toString)))
+          asset.map{ x =>
+            Ok(view(form, currencyFormat(x.assetMonetaryAmount.toString)))
+          }.getOrElse {
+            redirectToAddAssetsPage()
+          }
       } recoverWith {
         case iobe: IndexOutOfBoundsException =>
-          logger.warn(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
+          logger.warn(s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
             s" user cannot remove asset as asset was not found ${iobe.getMessage}: IndexOutOfBoundsException")
 
-          Future.successful(redirectToAddAssetsPage)
+          Future.successful(redirectToAddAssetsPage())
         case _ =>
           logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
             s" user cannot remove asset as asset was not found")
@@ -74,17 +78,18 @@ class RemoveAssetYesNoController @Inject()(
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) => {
-          trustService.getMonetaryAsset(request.userAnswers.identifier, 0).map {
+          trustService.getMonetaryAsset(request.userAnswers.identifier).map {
             asset =>
-              BadRequest(view(formWithErrors, currencyFormat(asset.assetMonetaryAmount.toString)))
+              asset.map{ x =>
+                BadRequest(view(formWithErrors, currencyFormat(x.assetMonetaryAmount.toString)))
+              }.getOrElse {
+                redirectToAddAssetsPage()
+              }
           }
         },
         value => {
           if (value) {
-            trustService.getMonetaryAsset(request.userAnswers.identifier, 0).flatMap {
-              _ =>
-                removeAsset(request.userAnswers.identifier, 0)
-                }
+              removeAsset(request.userAnswers.identifier, 0)
           } else {
             Future.successful(redirectToAddAssetsPage())
           }

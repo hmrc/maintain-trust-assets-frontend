@@ -17,14 +17,13 @@
 package services
 
 import java.time.LocalDate
-
 import connectors.TrustsConnector
 import models._
 import models.assets._
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.{FreeSpec, MustMatchers}
+import org.scalatest.{FreeSpec, MustMatchers, OptionValues}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.OK
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
@@ -32,7 +31,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import scala.concurrent.ExecutionContext.Implicits._
 import scala.concurrent.Future
 
-class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers with ScalaFutures {
+class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers with ScalaFutures with OptionValues {
 
   val mockConnector: TrustsConnector = mock[TrustsConnector]
   val date: LocalDate = LocalDate.parse("2019-02-03")
@@ -98,8 +97,8 @@ class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers wi
         _ mustBe sharesAsset
       }
 
-      whenReady(service.getMonetaryAsset("1234567890", index)) {
-        _ mustBe moneyAsset
+      whenReady(service.getMonetaryAsset("1234567890")) { money =>
+        money.value mustBe moneyAsset
       }
 
       whenReady(service.getOtherAsset("1234567890", index)) {

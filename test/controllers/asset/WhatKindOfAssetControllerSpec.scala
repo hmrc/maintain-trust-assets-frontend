@@ -17,18 +17,23 @@
 package controllers.asset
 
 import base.SpecBase
-import config.annotations.Assets
+import models.assets.Assets
 import controllers.IndexValidation
 import controllers.routes._
 import forms.WhatKindOfAssetFormProvider
 import models.WhatKindOfAsset
 import models.WhatKindOfAsset._
 import navigation.Navigator
+import org.mockito.Mockito.when
 import pages.asset.WhatKindOfAssetPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{route, _}
+import services.TrustService
 import views.html.asset.WhatKindOfAssetView
+import org.mockito.Matchers.any
+
+import scala.concurrent.Future
 
 class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
 
@@ -37,107 +42,24 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
   private val formProvider = new WhatKindOfAssetFormProvider()
   private val form = formProvider()
 
+  private val mockTrustService: TrustService = mock[TrustService]
+
   private val optionsFor5mld = WhatKindOfAsset.options()
-  private val optionsFor4mld = optionsFor5mld.filterNot(_.value == NonEeaBusiness.toString)
 
-  "WhatKindOfAsset Controller" when {
-
-    "4mld" must {
-
-      val options = optionsFor4mld
-      val baseAnswers = emptyUserAnswers.copy(is5mldEnabled = false)
-
-      "return OK and the correct view for a GET" in {
-
-        val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
-
-        val request = FakeRequest(GET, whatKindOfAssetRoute())
-
-        val result = route(application, request).value
-
-        val view = application.injector.instanceOf[WhatKindOfAssetView]
-
-        status(result) mustEqual OK
-
-        contentAsString(result) mustEqual
-          view(form, options)(request, messages).toString
-
-        application.stop()
-      }
-
-      "populate the view correctly on a GET when the question has previously been answered" in {
-
-        val userAnswers = baseAnswers
-          .set(WhatKindOfAssetPage, Shares).success.value
-
-        val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
-        val request = FakeRequest(GET, whatKindOfAssetRoute())
-
-        val view = application.injector.instanceOf[WhatKindOfAssetView]
-
-        val result = route(application, request).value
-
-        status(result) mustEqual OK
-
-        contentAsString(result) mustEqual
-          view(form.fill(Shares), options)(request, messages).toString
-
-        application.stop()
-      }
-
-      "display Money if the same index is an in progress Money asset" in {
-
-        val userAnswers = baseAnswers
-          .set(WhatKindOfAssetPage, Money).success.value
-
-        val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-
-        val request = FakeRequest(GET, whatKindOfAssetRoute())
-
-        val view = application.injector.instanceOf[WhatKindOfAssetView]
-
-        val result = route(application, request).value
-
-        status(result) mustEqual OK
-
-        contentAsString(result) mustEqual
-          view(form.fill(Money), options)(request, messages).toString
-
-        application.stop()
-      }
-
-      "return a Bad Request and errors when invalid data is submitted" in {
-
-        val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
-
-        val request =
-          FakeRequest(POST, whatKindOfAssetRoute())
-            .withFormUrlEncodedBody(("value", "invalid value"))
-
-        val boundForm = form.bind(Map("value" -> "invalid value"))
-
-        val view = application.injector.instanceOf[WhatKindOfAssetView]
-
-        val result = route(application, request).value
-
-        status(result) mustEqual BAD_REQUEST
-
-        contentAsString(result) mustEqual
-          view(boundForm, options)(request, messages).toString
-
-        application.stop()
-      }
-    }
-
-    "5mld" must {
+  "WhatKindOfAsset Controller" must {
 
       val options = optionsFor5mld
       val baseAnswers = emptyUserAnswers.copy(is5mldEnabled = true)
 
       "return OK and the correct view for a GET" in {
 
-        val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
+        val application = applicationBuilder(userAnswers = Some(baseAnswers))
+          .overrides(
+            bind[TrustService].to(mockTrustService)
+          )
+          .build()
+
+        when(mockTrustService.getAssets(any())(any(), any())).thenReturn(Future.successful(Assets()))
 
         val request = FakeRequest(GET, whatKindOfAssetRoute())
 
@@ -158,7 +80,13 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
         val userAnswers = baseAnswers
           .set(WhatKindOfAssetPage, Shares).success.value
 
-        val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+        val application = applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(
+            bind[TrustService].to(mockTrustService)
+          )
+          .build()
+
+        when(mockTrustService.getAssets(any())(any(), any())).thenReturn(Future.successful(Assets()))
 
         val request = FakeRequest(GET, whatKindOfAssetRoute())
 
@@ -179,7 +107,13 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
         val userAnswers = baseAnswers
           .set(WhatKindOfAssetPage, Money).success.value
 
-        val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+        val application = applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(
+            bind[TrustService].to(mockTrustService)
+          )
+          .build()
+
+        when(mockTrustService.getAssets(any())(any(), any())).thenReturn(Future.successful(Assets()))
 
         val request = FakeRequest(GET, whatKindOfAssetRoute())
 
@@ -197,7 +131,13 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
 
       "return a Bad Request and errors when invalid data is submitted" in {
 
-        val application = applicationBuilder(userAnswers = Some(baseAnswers)).build()
+        val application = applicationBuilder(userAnswers = Some(baseAnswers))
+          .overrides(
+            bind[TrustService].to(mockTrustService)
+          )
+          .build()
+
+        when(mockTrustService.getAssets(any())(any(), any())).thenReturn(Future.successful(Assets()))
 
         val request =
           FakeRequest(POST, whatKindOfAssetRoute())
@@ -222,8 +162,13 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(bind[Navigator].qualifiedWith(classOf[Assets]).toInstance(fakeNavigator))
+          .overrides(
+            bind[Navigator].qualifiedWith(classOf[config.annotations.Assets]).toInstance(fakeNavigator),
+            bind[TrustService].to(mockTrustService)
+          )
           .build()
+
+      when(mockTrustService.getAssets(any())(any(), any())).thenReturn(Future.successful(Assets()))
 
       val request =
         FakeRequest(POST, whatKindOfAssetRoute())
@@ -268,6 +213,4 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
 
       application.stop()
     }
-
-  }
 }

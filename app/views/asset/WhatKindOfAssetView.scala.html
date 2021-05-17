@@ -25,16 +25,8 @@
 
 @(form: Form[_], options: List[RadioOption])(implicit request: Request[_], messages: Messages)
 
-@title = {
-    @if(true) {@messages("whatKindOfAsset.first.title")} else {@messages("whatKindOfAsset.next.title")}
-}
-
-@heading = {
-    @if(true) {@messages("whatKindOfAsset.first.heading")} else {@messages("whatKindOfAsset.next.heading")}
-}
-
 @main_template(
-    title = s"${errorPrefix(form)} $title"
+    title = s"${errorPrefix(form)}${messages("whatKindOfAsset.title")}"
     ) {
 
     @formHelper(action = WhatKindOfAssetController.onSubmit(), 'autoComplete -> "off") {
@@ -45,7 +37,7 @@
 
         @components.input_radio(
             field = form("value"),
-            legend = heading.toString,
+            legend = messages("whatKindOfAsset.heading"),
             legendClass = Some("heading-large"),
             inputs = options,
             legendAsHeading = true

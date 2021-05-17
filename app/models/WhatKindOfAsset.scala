@@ -68,7 +68,7 @@ object WhatKindOfAsset extends Enumerable.Implicits {
 
     def isMaxed(option: WhatKindOfAsset, size: Int) : Boolean = {
       val definedLimit = maximumDataSet.filter(_.kind == option).head
-      definedLimit.limit == size
+      size >= definedLimit.limit
     }
 
     val filtered = values.filterNot(x => isMaxed(x, assets.sizeForKind(x)))

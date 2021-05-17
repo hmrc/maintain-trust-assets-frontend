@@ -97,7 +97,7 @@ class WhatKindOfAssetSpec extends SpecBase with ScalaCheckPropertyChecks {
       }
 
       "there are a 10 Completed 'other' assets" in {
-        val generator = for (_ <- 0 to 10) yield OtherAssetType("desc", 200L)
+        val generator = for (_ <- 1 to 10) yield OtherAssetType("desc", 200L)
         val assets = Assets(other = generator.toList)
 
         WhatKindOfAsset.nonMaxedOutOptions(assets) mustBe List(
@@ -111,7 +111,7 @@ class WhatKindOfAssetSpec extends SpecBase with ScalaCheckPropertyChecks {
       }
 
       "there are a 25 non-EEA business assets" in {
-        val generator = for (i <- 0 to 25) yield NonEeaBusinessType(Some(s"$i"), "orgName", UkAddress("line1", "line2", None, None, "NE981ZZ"), "GB", LocalDate.now, None, provisional = false)
+        val generator = for (i <- 1 to 25) yield NonEeaBusinessType(Some(s"$i"), "orgName", UkAddress("line1", "line2", None, None, "NE981ZZ"), "GB", LocalDate.now, None, provisional = false)
         val assets = Assets(nonEEABusiness = generator.toList)
 
         WhatKindOfAsset.nonMaxedOutOptions(assets) mustBe List(

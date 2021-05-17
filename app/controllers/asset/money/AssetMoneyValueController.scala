@@ -34,6 +34,7 @@ import views.html.asset.money.AssetMoneyValueView
 import javax.inject.Inject
 import models.assets.AssetMonetaryAmount
 import models.{CheckMode, Mode}
+import services.TrustService
 import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -46,20 +47,21 @@ class AssetMoneyValueController @Inject()(
                                            formProvider: ValueFormProvider,
                                            val controllerComponents: MessagesControllerComponents,
                                            view: AssetMoneyValueView,
-                                           connector: TrustsConnector
+                                           connector: TrustsConnector,
+                                           trustService: TrustService
                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form: Form[Long] = formProvider.withConfig(prefix = "money.value")
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
+  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-
-      val preparedForm = request.userAnswers.get(AssetMoneyValuePage) match {
-        case None => form
-        case Some(value) => form.fill(value)
+      trustService.getMonetaryAsset(request.userAnswers.identifier).map { money =>
+        val preparedForm = money match {
+          case Some(value) => form.fill(value = value.assetMonetaryAmount)
+          case None => form
+        }
+        Ok(view(preparedForm, mode))
       }
-
-      Ok(view(preparedForm, mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
@@ -70,10 +72,6 @@ class AssetMoneyValueController @Inject()(
           Future.successful(BadRequest(view(formWithErrors, mode))),
 
         value => {
-
-          val answers = request.userAnswers.set(AssetMoneyValuePage, value)
-            .flatMap(_.set(AssetStatus, Completed))
-
           val addOrAmendMoney = if(mode == CheckMode) {
             connector.amendMoneyAsset(request.userAnswers.identifier, 0, AssetMonetaryAmount(value))
           } else {
@@ -81,10 +79,8 @@ class AssetMoneyValueController @Inject()(
           }
 
           for {
-            updatedAnswers <- Future.fromTry(answers)
-            _              <- repository.set(updatedAnswers)
-            _              <- addOrAmendMoney
-          } yield Redirect(navigator.nextPage(AssetMoneyValuePage, mode, updatedAnswers))
+            _ <- addOrAmendMoney
+          } yield Redirect(navigator.nextPage(AssetMoneyValuePage, mode, request.userAnswers))
           }
       )
   }
