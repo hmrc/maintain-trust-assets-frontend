@@ -39,7 +39,7 @@ class MoneyNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
           val answers = userAnswers.set(WhatKindOfAssetPage, Money).success.value
 
           navigator.nextPage(AssetMoneyValuePage, NormalMode, answers)
-            .mustBe(controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad())
+            .mustBe(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
 
       }
     }

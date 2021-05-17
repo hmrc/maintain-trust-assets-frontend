@@ -31,7 +31,7 @@ class MoneyNavigator @Inject()() extends Navigator {
     nextPage(page, NormalMode, userAnswers)
 
   def simpleNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
-    case AssetMoneyValuePage => _ => controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad()
+    case AssetMoneyValuePage => _ => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
   }
 
   def routes(mode: Mode): PartialFunction[Page, UserAnswers => Call] =

@@ -59,7 +59,7 @@ class AddAssetViewHelperSpec extends SpecBase {
         val rows = new AddAssetViewHelper(assets).rows
         rows.complete mustBe List(
           AddRow("Non-EEA Business Name", typeLabel = "Non-EEA Company", changeNonEeaBusinessAssetRoute(0), removeNonEeaBusinessAssetRoute(0)),
-          AddRow("4000", typeLabel = "Money", ???, removeAssetYesNoRoute(1))
+          AddRow("4000", typeLabel = "Money", removeAssetYesNoRoute(1), removeAssetYesNoRoute(1))
         )
         rows.inProgress mustBe Nil
       }

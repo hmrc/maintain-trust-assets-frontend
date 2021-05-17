@@ -21,6 +21,7 @@ import java.time.LocalDate
 import base.SpecBase
 import config.annotations.{Assets => AssetsAnnotations}
 import connectors.TrustsStoreConnector
+import controllers.asset.noneeabusiness
 import forms.{AddAssetsFormProvider, YesNoFormProvider}
 import generators.Generators
 import models.assets._
@@ -46,22 +47,28 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
   lazy val addAnotherPostRoute: String = controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.submitAnother().url
   lazy val completePostRoute: String = controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.submitComplete().url
 
-  def changeNonEeaAssetRoute(index: Int): String =
+  def changeMoneyAssetRoute(index: Int): String =
     controllers.asset.money.routes.AssetMoneyValueController.onPageLoad(mode = CheckMode).url
 
-
-  def removeAssetYesNoRoute(index: Int): String =
+  def removeMoneyAssetYesNoRoute(index: Int): String =
     controllers.asset.money.remove.routes.RemoveAssetYesNoController.onPageLoad().url
+
+  def changeNonEeaAssetRoute(index: Int): String =
+    noneeabusiness.amend.routes.AnswersController.extractAndRender(index).url
+
+  def removeNoneEeaAssetYesNoRoute(index: Int): String =
+    controllers.asset.noneeabusiness.remove.routes.RemoveAssetYesNoController.onPageLoad(index).url
 
   val prefix = "addAssets"
   val AddAssetForm: Form[AddAssets] = new AddAssetsFormProvider().withPrefix(prefix)
   val yesNoForm: Form[Boolean] = new YesNoFormProvider().withPrefix("addAssetsYesNo")
 
-  val addRow1 = AddRow("orgName 1", typeLabel = "Non-EEA Company", changeNonEeaAssetRoute(0), removeAssetYesNoRoute(0))
-  val addRow2 = AddRow("orgName 2", typeLabel = "Non-EEA Company", changeNonEeaAssetRoute(1), removeAssetYesNoRoute(1))
+  val addRow1 = AddRow("orgName 1", typeLabel = "Non-EEA Company", changeNonEeaAssetRoute(0), removeNoneEeaAssetYesNoRoute(0))
+  val addRow2 = AddRow("orgName 2", typeLabel = "Non-EEA Company", changeNonEeaAssetRoute(1), removeNoneEeaAssetYesNoRoute(1))
+  val addRow3 = AddRow("£4800", typeLabel = "Money", changeMoneyAssetRoute(0), removeMoneyAssetYesNoRoute(0))
 
   lazy val oneAsset: List[AddRow] = List(addRow1)
-  lazy val multipleAssets: List[AddRow] = List(addRow1, addRow2)
+  lazy val multipleAssets: List[AddRow] = List(addRow1, addRow2, addRow3)
 
   val mockStoreConnector : TrustsStoreConnector = mock[TrustsStoreConnector]
   val nonEeaBusinessAsset1 = NonEeaBusinessType(None, "orgName 1", NonUkAddress("", "", None, ""), "", LocalDate.now, None, true)
@@ -70,7 +77,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
 
   val fakeEmptyService = new FakeService(Assets(Nil, Nil, Nil, Nil, Nil, Nil, Nil))
   val fakeServiceWithOneNonEeaAsset = new FakeService(Assets(Nil, Nil, Nil, Nil, Nil, Nil, List(nonEeaBusinessAsset1)))
-  val fakeServiceWithMultipleNonEeaAssets = new FakeService(Assets(Nil, Nil, Nil, Nil, Nil, Nil, List(nonEeaBusinessAsset1, nonEeaBusinessAsset2)))
+  val fakeServiceWithMultipleNonEeaAssets = new FakeService(Assets(List(moneyAsset), Nil, Nil, Nil, Nil, Nil, List(nonEeaBusinessAsset1, nonEeaBusinessAsset2)))
 
   val nonEeaBusinessAsset = NonEeaBusinessType(None, "orgName", NonUkAddress("", "", None, ""), "", LocalDate.now, None, true)
 
@@ -173,14 +180,11 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
       }
     }
 
+    "there is one asset" when {
 
-    "there is one asset" must {
+      "return OK and the correct view for a GET" in {
 
-      "return OK and the correct view for a GET" when {
-
-        "taxable" in {
-
-          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(isTaxable = true)))
+          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(isMigratingToTaxable = true)))
             .overrides(
               bind[Navigator].qualifiedWith(classOf[AssetsAnnotations]).toInstance(fakeNavigator),
               bind(classOf[TrustService]).toInstance(fakeServiceWithOneNonEeaAsset))
@@ -195,20 +199,18 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(AddAssetForm, Nil, oneAsset, "Add a non-EEA company")(request, messages).toString
+            view(AddAssetForm, Nil, oneAsset, "Add assets")(request, messages).toString
 
           application.stop()
-        }
+
       }
     }
 
-    "there are existing assets" must {
+    "there are existing assets" when {
 
-      "return OK and the correct view for a GET" when {
+      "return OK and the correct view for a GET" in {
 
-        "taxable" in {
-
-          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(isTaxable = true)))
+          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(isMigratingToTaxable = true)))
             .overrides(
               bind[Navigator].qualifiedWith(classOf[AssetsAnnotations]).toInstance(fakeNavigator),
               bind(classOf[TrustService]).toInstance(fakeServiceWithMultipleNonEeaAssets))
@@ -223,14 +225,15 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(AddAssetForm, Nil, multipleAssets, "You have added 2 non-EEA companies")(request, messages).toString
+            view(AddAssetForm, Nil, multipleAssets, "You have added 3 assets")(request, messages).toString
 
           application.stop()
         }
       }
 
       "redirect to the next page when YesNow is submitted" in {
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(isTaxable = true)))
+
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(isMigratingToTaxable = true)))
           .overrides(
             bind[Navigator].qualifiedWith(classOf[AssetsAnnotations]).toInstance(fakeNavigator),
             bind(classOf[TrustService]).toInstance(fakeServiceWithMultipleNonEeaAssets),
@@ -291,31 +294,31 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
 
         status(result) mustEqual BAD_REQUEST
 
-        contentAsString(result) mustEqual view(boundForm, Nil, multipleAssets, "You have added 2 non-EEA companies")(request, messages).toString
+        contentAsString(result) mustEqual view(boundForm, Nil, multipleAssets, "You have added 2 assets")(request, messages).toString
 
         application.stop()
       }
-    }
+
 
     "assets maxed out" must {
-      val max = 25
+      val max = 26
 
       def createNonEeaAsset(max: Int): List[NonEeaBusinessType] = 0.until(max).foldLeft[List[NonEeaBusinessType]](List())((acc, i) => {
         acc :+ NonEeaBusinessType(None, s"orgName $i", NonUkAddress("", "", None, ""), "", LocalDate.now, None, true)
       })
 
       def createAssetRows(max: Int): List[AddRow] = 0.until(max).foldLeft[List[AddRow]](List())((acc, i) => {
-        acc :+ AddRow(s"orgName $i", typeLabel = "Non-EEA Company", changeNonEeaAssetRoute(i), removeAssetYesNoRoute(i))
+        acc :+ AddRow(s"orgName $i", typeLabel = "Non-EEA Company", changeNonEeaAssetRoute(i), removeNoneEeaAssetYesNoRoute(i))
       })
 
-      val assets = Assets(Nil, Nil, Nil, Nil, Nil, Nil, createNonEeaAsset(max))
+      val assets = Assets(List(moneyAsset), Nil, Nil, Nil, Nil, Nil, createNonEeaAsset(max))
       val assetRows = createAssetRows(max)
 
       val fakeService = new FakeService(assets)
 
       "return OK and the correct view for a GET" in {
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(isMigratingToTaxable = true)))
           .overrides(bind(classOf[TrustService]).toInstance(fakeService))
           .build()
 
@@ -330,10 +333,10 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
         val content = contentAsString(result)
 
         content mustEqual
-          view(Nil, assetRows, s"You have added $max non-EEA companies", max, prefix)(request, messages).toString
+          view(Nil, assetRows, s"You have added $max assets", max, prefix)(request, messages).toString
 
-        content must include("You cannot add another non-EEA company as you have entered a maximum of 25.")
-        content must include("You can add another non-EEA company by removing an existing one, or write to HMRC with details of any additional non-EEA companies.")
+        content must include("You cannot add another asset as you have entered a maximum of 26.")
+        content must include("You can add another asset by removing an existing one, or write to HMRC with details of any additional assets.")
 
         application.stop()
       }

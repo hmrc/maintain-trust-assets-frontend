@@ -94,7 +94,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.asset.money.routes.AssetMoneyValueController.onPageLoad(mode = NormalMode).url
+        redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
 
         application.stop()
       }
@@ -104,8 +104,6 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
     "removing a new asset" must {
 
       "redirect to the add to page, removing the asset" in {
-
-        val index = 2
 
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(bind[TrustsConnector].toInstance(mockConnector))
@@ -125,7 +123,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.asset.money.routes.AssetMoneyValueController.onPageLoad(mode = NormalMode).url
+        redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
 
         application.stop()
       }
