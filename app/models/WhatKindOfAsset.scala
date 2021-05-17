@@ -18,6 +18,7 @@ package models
 
 import models.Constants._
 import models.WhatKindOfAsset.prefix
+import models.assets.Assets
 import play.api.i18n.Messages
 import viewmodels._
 
@@ -53,19 +54,7 @@ object WhatKindOfAsset extends Enumerable.Implicits {
 
   type AssetTypeCount = (WhatKindOfAsset, Int)
 
-  def nonMaxedOutOptions(assets: List[AssetViewModel],
-                         assetTypeAtIndex: Option[WhatKindOfAsset],
-                         is5mldEnabled: Boolean): List[RadioOption] = {
-
-    val assetTypeCounts: List[AssetTypeCount] = List(
-      (Money, assets.count(_.isInstanceOf[MoneyAssetViewModel])),
-      (PropertyOrLand, assets.count(_.isInstanceOf[PropertyOrLandAssetViewModel])),
-      (Shares, assets.count(_.isInstanceOf[ShareAssetViewModel])),
-      (Business, assets.count(_.isInstanceOf[BusinessAssetViewModel])),
-      (NonEeaBusiness, assets.count(_.isInstanceOf[NonEeaBusinessAssetViewModel])),
-      (Partnership, assets.count(_.isInstanceOf[PartnershipAssetViewModel])),
-      (Other, assets.count(_.isInstanceOf[OtherAssetViewModel]))
-    )
+  def nonMaxedOutOptions(assets: List[Assets]): List[RadioOption] = {
 
     def meetsLimitConditions(assetTypeCount: AssetTypeCount): Boolean = {
 

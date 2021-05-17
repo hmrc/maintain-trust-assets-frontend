@@ -30,9 +30,11 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.asset.money.AssetMoneyValueView
+
 import javax.inject.Inject
 import models.assets.AssetMonetaryAmount
 import models.{CheckMode, Mode}
+import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -72,14 +74,16 @@ class AssetMoneyValueController @Inject()(
           val answers = request.userAnswers.set(AssetMoneyValuePage, value)
             .flatMap(_.set(AssetStatus, Completed))
 
+          val addOrAmendMoney = if(mode == CheckMode) {
+            connector.amendMoneyAsset(request.userAnswers.identifier, 0, AssetMonetaryAmount(value))
+          } else {
+            connector.addMoneyAsset(request.userAnswers.identifier, AssetMonetaryAmount(value))
+          }
+
           for {
             updatedAnswers <- Future.fromTry(answers)
             _              <- repository.set(updatedAnswers)
-            _ = if(mode == CheckMode) {
-              connector.amendMoneyAsset(request.userAnswers.identifier, 0, AssetMonetaryAmount(value))
-            } else {
-              connector.addMoneyAsset(request.userAnswers.identifier, AssetMonetaryAmount(value))
-            }
+            _              <- addOrAmendMoney
           } yield Redirect(navigator.nextPage(AssetMoneyValuePage, mode, updatedAnswers))
           }
       )

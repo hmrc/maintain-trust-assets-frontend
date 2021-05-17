@@ -19,6 +19,7 @@ package controllers.asset.money.remove
 import controllers.actions.StandardActionSets
 import forms.RemoveIndexFormProvider
 import handlers.ErrorHandler
+
 import javax.inject.Inject
 import models.RemoveAsset
 import models.assets.AssetNameType
@@ -29,6 +30,7 @@ import play.api.mvc._
 import services.TrustService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import utils.CheckAnswersFormatters.currencyFormat
 import views.html.asset.money.remove.RemoveAssetYesNoView
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -53,7 +55,7 @@ class RemoveAssetYesNoController @Inject()(
 
       trustService.getMonetaryAsset(request.userAnswers.identifier, 0).map {
         asset =>
-          Ok(view(form, 0))
+          Ok(view(form, currencyFormat(asset.assetMonetaryAmount.toString)))
       } recoverWith {
         case iobe: IndexOutOfBoundsException =>
           logger.warn(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
@@ -74,7 +76,7 @@ class RemoveAssetYesNoController @Inject()(
         (formWithErrors: Form[_]) => {
           trustService.getMonetaryAsset(request.userAnswers.identifier, 0).map {
             asset =>
-              BadRequest(view(formWithErrors, 0))
+              BadRequest(view(formWithErrors, currencyFormat(asset.assetMonetaryAmount.toString)))
           }
         },
         value => {

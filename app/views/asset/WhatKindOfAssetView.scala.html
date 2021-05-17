@@ -23,21 +23,21 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], index: Int, options: List[RadioOption])(implicit request: Request[_], messages: Messages)
+@(form: Form[_], options: List[RadioOption])(implicit request: Request[_], messages: Messages)
 
 @title = {
-    @if(index == 0) {@messages("whatKindOfAsset.first.title")} else {@messages("whatKindOfAsset.next.title")}
+    @if(true) {@messages("whatKindOfAsset.first.title")} else {@messages("whatKindOfAsset.next.title")}
 }
 
 @heading = {
-    @if(index == 0) {@messages("whatKindOfAsset.first.heading")} else {@messages("whatKindOfAsset.next.heading")}
+    @if(true) {@messages("whatKindOfAsset.first.heading")} else {@messages("whatKindOfAsset.next.heading")}
 }
 
 @main_template(
     title = s"${errorPrefix(form)} $title"
     ) {
 
-    @formHelper(action = WhatKindOfAssetController.onSubmit(index), 'autoComplete -> "off") {
+    @formHelper(action = WhatKindOfAssetController.onSubmit(), 'autoComplete -> "off") {
 
         @components.back_link()
 

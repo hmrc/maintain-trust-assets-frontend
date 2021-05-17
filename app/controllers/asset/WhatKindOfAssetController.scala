@@ -26,11 +26,12 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
+import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.RadioOption
 import views.html.asset.WhatKindOfAssetView
-import javax.inject.Inject
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class WhatKindOfAssetController @Inject()(
@@ -40,42 +41,50 @@ class WhatKindOfAssetController @Inject()(
                                            @Assets navigator: Navigator,
                                            formProvider: WhatKindOfAssetFormProvider,
                                            val controllerComponents: MessagesControllerComponents,
-                                           view: WhatKindOfAssetView
+                                           view: WhatKindOfAssetView,
+                                           trustService: TrustService
                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
 
   val form: Form[WhatKindOfAsset] = formProvider()
 
-  private def options(userAnswers: UserAnswers): List[RadioOption] = {
-    val assets = userAnswers.get(sections.Assets).getOrElse(Nil)
-    val assetTypeSelected = userAnswers.get(WhatKindOfAssetPage)
+  private def options(assets: models.assets.Assets): List[RadioOption] = {
 
-    WhatKindOfAsset.nonMaxedOutOptions(assets, assetTypeSelected, userAnswers.is5mldEnabled)
+    WhatKindOfAsset.options()
   }
 
-  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(WhatKindOfAssetPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
+
+      for {
+        assets <- trustService.getAssets(request.userAnswers.identifier)
+      } yield {
+        val preparedForm = request.userAnswers.get(WhatKindOfAssetPage) match {
+          case None => form
+          case Some(value) => form.fill(value)
+        }
+
+        Ok(view(preparedForm, options(assets)))
       }
 
-      Ok(view(preparedForm, index, options(request.userAnswers))) // TODO Index
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
+  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
+      trustService.getAssets(request.userAnswers.identifier).flatMap{ assets =>
 
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, index, options(request.userAnswers)))), // TODO Index
+        form.bindFromRequest().fold(
+          (formWithErrors: Form[_]) =>
 
-        value => {
+            Future.successful(BadRequest(view(formWithErrors, options(assets))))
+          ,
+          value => {
 
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(WhatKindOfAssetPage, value))
-            _ <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(WhatKindOfAssetPage, NormalMode, updatedAnswers))
-        }
-      )
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(WhatKindOfAssetPage, value))
+              _ <- repository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(WhatKindOfAssetPage, NormalMode, updatedAnswers))
+          }
+        )
+      }
   }
 }

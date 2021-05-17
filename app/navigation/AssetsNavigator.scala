@@ -80,7 +80,7 @@ class AssetsNavigator @Inject()(config: FrontendAppConfig) extends Navigator wit
     val assets = answers.get(sections.Assets).getOrElse(List.empty)
     if (answers.isMigratingToTaxable) {
       val index = assets.size
-      controllers.asset.routes.WhatKindOfAssetController.onPageLoad(index)
+      controllers.asset.routes.WhatKindOfAssetController.onPageLoad()
     } else {
       controllers.asset.noneeabusiness.routes.NameController.onPageLoad(NormalMode)
     }

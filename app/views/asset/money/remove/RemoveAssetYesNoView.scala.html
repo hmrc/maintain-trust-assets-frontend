@@ -21,7 +21,7 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], index: Int)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], amount: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = s"${errorPrefix(form)} ${messages(s"money.removeYesNo.title")}"
@@ -35,7 +35,7 @@
 
         @components.input_yes_no(
             field = form("value"),
-            label = messages(s"money.removeYesNo.heading"),
+            label = messages(s"money.removeYesNo.heading", amount),
             legendClass = Some("heading-large"),
             legendAsHeading = true
         )

@@ -88,7 +88,7 @@ class AnswerRowConverter @Inject()(checkAnswersFormatters: CheckAnswersFormatter
         WhatKindOfAssetPage,
         s"whatKindOfAsset.$label",
         format,
-        WhatKindOfAssetController.onPageLoad(index).url
+        WhatKindOfAssetController.onPageLoad().url
       )
     }
 
