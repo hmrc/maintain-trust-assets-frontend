@@ -18,10 +18,11 @@ package utils
 
 import base.SpecBase
 import controllers.asset._
-import models.{Mode, NonUkAddress}
+import models.{CheckMode, Mode, NonUkAddress, NormalMode}
 import viewmodels.AddRow
 import java.time.LocalDate
 
+import akka.actor.FSM.Normal
 import models.Status.Completed
 import models.WhatKindOfAsset.Money
 import models.assets.{AssetMonetaryAmount, Assets, NonEeaBusinessType}
@@ -56,10 +57,16 @@ class AddAssetViewHelperSpec extends SpecBase {
         def removeNonEeaBusinessAssetRoute(index: Int): String =
           noneeabusiness.remove.routes.RemoveAssetYesNoController.onPageLoad(index).url
 
+        def changeMoneyAssetRoute(index: Int): String =
+          controllers.asset.money.routes.AssetMoneyValueController.onPageLoad(mode = CheckMode).url
+
+        def removeMoneyAssetRoute(index: Int): String =
+          controllers.asset.money.remove.routes.RemoveAssetYesNoController.onPageLoad().url
+
         val rows = new AddAssetViewHelper(assets).rows
         rows.complete mustBe List(
           AddRow("Non-EEA Business Name", typeLabel = "Non-EEA Company", changeNonEeaBusinessAssetRoute(0), removeNonEeaBusinessAssetRoute(0)),
-          AddRow("4000", typeLabel = "Money", removeAssetYesNoRoute(1), removeAssetYesNoRoute(1))
+          AddRow("4000", typeLabel = "Money", changeMoneyAssetRoute(1), removeMoneyAssetRoute(1))
         )
         rows.inProgress mustBe Nil
       }

@@ -37,7 +37,7 @@ class AddAssetViewHelper @Inject()(assets: Assets)
   private def renderMoney(asset: AssetMonetaryAmount): AddRow = {
     AddRow(
       name = asset.assetMonetaryAmount.toString,
-      typeLabel = messages(s"entities.asset.nonEeaBusiness"),
+      typeLabel = messages(s"entities.asset.monetary"),
       changeUrl = controllers.asset.money.routes.AssetMoneyValueController.onPageLoad(mode = CheckMode).url,
       removeUrl = controllers.asset.money.remove.routes.RemoveAssetYesNoController.onPageLoad().url
     )

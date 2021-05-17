@@ -65,7 +65,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
 
   val addRow1 = AddRow("orgName 1", typeLabel = "Non-EEA Company", changeNonEeaAssetRoute(0), removeNoneEeaAssetYesNoRoute(0))
   val addRow2 = AddRow("orgName 2", typeLabel = "Non-EEA Company", changeNonEeaAssetRoute(1), removeNoneEeaAssetYesNoRoute(1))
-  val addRow3 = AddRow("£4800", typeLabel = "Money", changeMoneyAssetRoute(0), removeMoneyAssetYesNoRoute(0))
+  val addRow3 = AddRow("4800", typeLabel = "Money", changeMoneyAssetRoute(0), removeMoneyAssetYesNoRoute(0))
 
   lazy val oneAsset: List[AddRow] = List(addRow1)
   lazy val multipleAssets: List[AddRow] = List(addRow1, addRow2, addRow3)
@@ -73,7 +73,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
   val mockStoreConnector : TrustsStoreConnector = mock[TrustsStoreConnector]
   val nonEeaBusinessAsset1 = NonEeaBusinessType(None, "orgName 1", NonUkAddress("", "", None, ""), "", LocalDate.now, None, true)
   val nonEeaBusinessAsset2 = NonEeaBusinessType(None, "orgName 2", NonUkAddress("", "", None, ""), "", LocalDate.now, None, true)
-  val moneyAsset = AssetMonetaryAmount(4000)
+  val moneyAsset = AssetMonetaryAmount(4800)
 
   val fakeEmptyService = new FakeService(Assets(Nil, Nil, Nil, Nil, Nil, Nil, Nil))
   val fakeServiceWithOneNonEeaAsset = new FakeService(Assets(Nil, Nil, Nil, Nil, Nil, Nil, List(nonEeaBusinessAsset1)))
@@ -294,14 +294,14 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
 
         status(result) mustEqual BAD_REQUEST
 
-        contentAsString(result) mustEqual view(boundForm, Nil, multipleAssets, "You have added 2 assets")(request, messages).toString
+        contentAsString(result) mustEqual view(boundForm, Nil, multipleAssets, "You have added 3 assets")(request, messages).toString
 
         application.stop()
       }
 
 
     "assets maxed out" must {
-      val max = 26
+      val max = 25
 
       def createNonEeaAsset(max: Int): List[NonEeaBusinessType] = 0.until(max).foldLeft[List[NonEeaBusinessType]](List())((acc, i) => {
         acc :+ NonEeaBusinessType(None, s"orgName $i", NonUkAddress("", "", None, ""), "", LocalDate.now, None, true)
@@ -333,7 +333,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
         val content = contentAsString(result)
 
         content mustEqual
-          view(Nil, assetRows, s"You have added $max assets", max, prefix)(request, messages).toString
+          view(Nil, assetRows, s"You have added 26 assets", max, prefix)(request, messages).toString
 
         content must include("You cannot add another asset as you have entered a maximum of 26.")
         content must include("You can add another asset by removing an existing one, or write to HMRC with details of any additional assets.")
