@@ -28,12 +28,12 @@ class AddAssetYesNoViewSpec extends YesNoViewBehaviours {
 
   override val form: Form[Boolean] = new YesNoFormProvider().withPrefix(messageKeyPrefix)
 
+  val view = viewFor[AddAssetYesNoView](Some(emptyUserAnswers))
+
+  def applyView(form: Form[_]): HtmlFormat.Appendable =
+    view.apply(form)(fakeRequest, messages)
+
   "AddAssetYesNo view" must {
-
-    val view = viewFor[AddAssetYesNoView](Some(emptyUserAnswers))
-
-    def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form)(fakeRequest, messages)
 
     behave like normalPage(applyView(form), messageKeyPrefix)
 
@@ -42,5 +42,12 @@ class AddAssetYesNoViewSpec extends YesNoViewBehaviours {
     behave like yesNoPage(form, applyView, messageKeyPrefix)
 
     behave like pageWithASubmitButton(applyView(form))
+  }
+
+  "renders content" in {
+    val doc = asDocument(applyView(form))
+    assertContainsText(doc, "You need to add at least one asset to register the trust as taxable.")
+    assertContainsText(doc, "land or property")
+    assertContainsText(doc, "ownerships or controlling interests in non-European Economic Area companies")
   }
 }
