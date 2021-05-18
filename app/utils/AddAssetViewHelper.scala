@@ -33,7 +33,7 @@ class AddAssetViewHelper @Inject()(assets: Assets)
     val complete = assets.nonEEABusiness.zipWithIndex.map(x => renderNonEEABusiness(x._1, x._2)) ++
                    assets.monetary.zipWithIndex.map(x => renderMoney(x._1))
 
-    AddToRows(Nil, complete)
+    AddToRows(complete)
   }
 
   private def renderMoney(asset: AssetMonetaryAmount): AddRow = {

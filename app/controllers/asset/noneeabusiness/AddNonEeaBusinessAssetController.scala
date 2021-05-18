@@ -85,9 +85,9 @@ class AddNonEeaBusinessAssetController @Inject()(
           case 0 =>
             Redirect(controllers.asset.routes.TrustOwnsNonEeaBusinessYesNoController.onPageLoad(NormalMode))
           case c if c >= maxLimit =>
-            Ok(maxedOutView(assetRows.inProgress, assetRows.complete, heading(c), maxLimit, prefix))
+            Ok(maxedOutView(assetRows.complete, heading(c), maxLimit, prefix))
           case c =>
-            Ok(addAssetsView(addAnotherForm, assetRows.inProgress, assetRows.complete, heading(c)))
+            Ok(addAssetsView(addAnotherForm, assetRows.complete, heading(c)))
         }
       }
   }
@@ -118,7 +118,7 @@ class AddNonEeaBusinessAssetController @Inject()(
 
             val assetRows = new AddAssetViewHelper(assets).rows
 
-            Future.successful(BadRequest(addAssetsView(formWithErrors, assetRows.inProgress, assetRows.complete, heading(assetRows.count))))
+            Future.successful(BadRequest(addAssetsView(formWithErrors, assetRows.complete, heading(assetRows.count))))
           },
           {
             value => {

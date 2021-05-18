@@ -22,7 +22,7 @@ import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import viewmodels.AddRow
 import views.behaviours.{OptionsViewBehaviours, TabularDataViewBehaviours}
-import views.html.asset.noneeabusiness.AddNonEeaBusinessAssetView
+import views.html.asset.nonTaxableToTaxable.AddAssetsView
 
 class AddAssetViewSpec extends OptionsViewBehaviours with TabularDataViewBehaviours {
 
@@ -31,25 +31,21 @@ class AddAssetViewSpec extends OptionsViewBehaviours with TabularDataViewBehavio
     AddRow("4500", WhatKindOfAsset.Money.toString, "#", "#")
   )
 
-  private val inProgressAssets: Seq[AddRow] = Seq(
-    AddRow("Tesco", WhatKindOfAsset.Shares.toString, "#", "#")
-  )
-
-  private val messageKeyPrefix: String = "addNonEeaBusinessAsset"
+  private val messageKeyPrefix: String = "nonTaxableToTaxable.addAssets"
 
   private val form: Form[AddAssets] = new AddAssetsFormProvider().withPrefix(messageKeyPrefix)
 
-  private val view: AddNonEeaBusinessAssetView = viewFor[AddNonEeaBusinessAssetView](Some(emptyUserAnswers))
+  private val view: AddAssetsView = viewFor[AddAssetsView](Some(emptyUserAnswers))
 
   private def applyView(form: Form[_]): HtmlFormat.Appendable =
-    view.apply(form, Nil, Nil, "Add a non-EEA company")(fakeRequest, messages)
+    view.apply(form, Nil, "Add assets")(fakeRequest, messages)
 
-  private def applyView(form: Form[_], inProgressAssets: Seq[AddRow], completeAssets: Seq[AddRow], count: Int): HtmlFormat.Appendable = {
-    val title = if (count > 1) s"You have added $count non-EEA companies" else "Add a non-EEA company"
-    view.apply(form, inProgressAssets, completeAssets, title)(fakeRequest, messages)
+  private def applyView(form: Form[_], completeAssets: Seq[AddRow], count: Int): HtmlFormat.Appendable = {
+    val title = if (count > 1) s"You have added $count assets" else "Add assets"
+    view.apply(form, completeAssets, title)(fakeRequest, messages)
   }
 
-  "AddNonEeaBusinessAsset View" when {
+  "AddAsset View" when {
 
     "there are no assets" must {
       behave like normalPage(applyView(form), messageKeyPrefix)
@@ -61,29 +57,13 @@ class AddAssetViewSpec extends OptionsViewBehaviours with TabularDataViewBehavio
       behave like pageWithOptions(form, applyView, AddAssets.options(messageKeyPrefix).toSet)
     }
 
-    "there is data in progress" must {
+    "there are assets" must {
 
-      val viewWithData = applyView(form, inProgressAssets, Nil, 1)
-
-      behave like dynamicTitlePage(viewWithData, s"$messageKeyPrefix", "1")
-
-      behave like pageWithBackLink(viewWithData)
-
-      behave like pageWithInProgressTabularData(viewWithData, inProgressAssets)
-
-      behave like pageWithOptions(form, applyView, AddAssets.options(messageKeyPrefix).toSet)
-
-    }
-
-    "there is complete data" must {
-
-      val viewWithData = applyView(form, Nil, completeAssets, 2)
+      val viewWithData = applyView(form, completeAssets, 2)
 
       behave like dynamicTitlePage(viewWithData, s"$messageKeyPrefix.count", "2")
 
       behave like pageWithBackLink(viewWithData)
-
-      behave like pageWithCompleteTabularData(viewWithData, completeAssets)
 
       behave like pageWithOptions(form, applyView, AddAssets.options(messageKeyPrefix).toSet)
     }

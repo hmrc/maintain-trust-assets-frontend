@@ -23,7 +23,7 @@
     formHelper: FormWithCSRF
 )
 
-@(inProgressAssets: Seq[AddRow], completeAssets: Seq[AddRow], heading: String, maxLimit: Int, prefix: String)(implicit request: Request[_], messages: Messages)
+@(completeAssets: Seq[AddRow], heading: String, maxLimit: Int, prefix: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = heading
@@ -34,8 +34,6 @@
         @components.back_link()
 
         @components.heading(heading)
-
-        @components.data_list(inProgressAssets, "inprogress", "asset")
 
         @components.data_list(completeAssets, "complete", "asset")
 
