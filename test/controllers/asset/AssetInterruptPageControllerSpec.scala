@@ -19,11 +19,16 @@ package controllers.asset
 import base.SpecBase
 import config.annotations.Assets
 import navigation.Navigator
+import org.mockito.Matchers.any
+import org.mockito.Mockito.when
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.TrustService
 import views.html.asset.nonTaxableToTaxable.{AssetInterruptView => MigrationInteruptPage}
 import views.html.asset.noneeabusiness.AssetInterruptView
+
+import scala.concurrent.Future
 
 class AssetInterruptPageControllerSpec extends SpecBase {
 
@@ -83,11 +88,15 @@ class AssetInterruptPageControllerSpec extends SpecBase {
         val isTaxable: Boolean = true
 
         "not set value in WhatKindOfAssetPage" in {
-
+          
+          val mockTrustService: TrustService = mock[TrustService]
 
           val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(isTaxable = isTaxable)))
             .overrides(bind[Navigator].qualifiedWith(classOf[Assets]).toInstance(fakeNavigator))
+            .overrides(bind[TrustService].toInstance(mockTrustService))
             .build()
+
+          when(mockTrustService.getAssets(any())(any(), any())).thenReturn(Future.successful(models.assets.Assets()))
 
           val request = FakeRequest(POST, routes.AssetInterruptPageController.onSubmit().url)
 

@@ -19,8 +19,10 @@ package navigation
 import config.FrontendAppConfig
 import controllers.asset.routes.AssetInterruptPageController
 import controllers.routes.SessionExpiredController
+
 import javax.inject.Inject
 import models.WhatKindOfAsset.{Business, Money, NonEeaBusiness, Other, Partnership, PropertyOrLand, Shares}
+import models.assets.Assets
 import models.{AddAssets, Mode, NormalMode, UserAnswers}
 import pages.Page
 import pages.asset.nontaxabletotaxable.AddAssetsYesNoPage
@@ -31,15 +33,15 @@ import play.api.mvc.Call
 class AssetsNavigator @Inject()(config: FrontendAppConfig) extends Navigator with Logging {
 
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
-    routes(mode)(page)(userAnswers)
+    routes(mode, Assets(Nil, Nil, Nil, Nil, Nil, Nil, Nil))(page)(userAnswers)
 
-  override def nextPage(page: Page, userAnswers: UserAnswers): Call =
-    nextPage(page, NormalMode, userAnswers)
+  override def nextPage(page: Page, userAnswers: UserAnswers, assets: Assets = Assets(Nil, Nil, Nil, Nil, Nil, Nil, Nil)): Call =
+    routes(NormalMode, assets)(page)(userAnswers)
 
-  def simpleNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
-    case AssetInterruptPage => ua => routeToAssetIndex(ua)
+  def simpleNavigation(mode: Mode, assets: Assets): PartialFunction[Page, UserAnswers => Call] = {
+    case AssetInterruptPage => ua => routeToAssetIndex(ua, assets)
     case WhatKindOfAssetPage => ua => whatKindOfAssetRoute(ua)
-    case AddAssetsPage => ua => addAssetsRoute()(ua)
+    case AddAssetsPage => ua => addAssetsRoute()(ua, assets)
   }
 
   private def whatKindOfAssetRoute(answers: UserAnswers): Call =
@@ -62,10 +64,10 @@ class AssetsNavigator @Inject()(config: FrontendAppConfig) extends Navigator wit
         SessionExpiredController.onPageLoad()
     }
 
-  private def addAssetsRoute()(answers: UserAnswers): Call = {
+  private def addAssetsRoute()(answers: UserAnswers, assets: Assets): Call = {
     answers.get(AddAssetsPage) match {
       case Some(AddAssets.YesNow) =>
-        routeToAssetIndex(answers)
+        routeToAssetIndex(answers, assets)
       case Some(AddAssets.NoComplete) =>
         nonEEAAssetCompletedRoute()
       case _ => SessionExpiredController.onPageLoad()
@@ -76,27 +78,25 @@ class AssetsNavigator @Inject()(config: FrontendAppConfig) extends Navigator wit
     controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.submitComplete()
   }
 
-  private def routeToAssetIndex(answers: UserAnswers): Call = {
-    val assets = answers.get(sections.Assets).getOrElse(List.empty)
-    if (answers.isMigratingToTaxable) {
-      val index = assets.size
-      controllers.asset.routes.WhatKindOfAssetController.onPageLoad()
-    } else {
-      controllers.asset.noneeabusiness.routes.NameController.onPageLoad(NormalMode)
+  private def routeToAssetIndex(answers: UserAnswers, assets: Assets): Call = {
+    (answers.isMigratingToTaxable,  assets)  match {
+      case (true, Assets(Nil, Nil, Nil, Nil, Nil, Nil, Nil)) => controllers.asset.routes.WhatKindOfAssetController.onPageLoad()
+      case (true, _)  => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
+      case (false, _) => controllers.asset.noneeabusiness.routes.NameController.onPageLoad(NormalMode)
     }
   }
 
-  private def yesNoNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
+  private def yesNoNavigation(mode: Mode, assets: Assets): PartialFunction[Page, UserAnswers => Call] = {
     case AddAssetsYesNoPage => ua => yesNoNav(
       ua = ua,
       fromPage = AddAssetsYesNoPage,
       yesCall = AssetInterruptPageController.onPageLoad(),
-      noCall = noRouteToMaintenance(ua)
+      noCall = noRouteToMaintenance(ua, assets)
     )
     case AddAnAssetYesNoPage => ua => yesNoNav(
       ua = ua,
       fromPage = AddAnAssetYesNoPage,
-      yesCall = routeToAssetIndex(ua),
+      yesCall = routeToAssetIndex(ua, assets),
       noCall = nonEEAAssetCompletedRoute()
     )
     case TrustOwnsNonEeaBusinessYesNoPage => ua => yesNoNav(
@@ -107,9 +107,8 @@ class AssetsNavigator @Inject()(config: FrontendAppConfig) extends Navigator wit
     )
   }
 
-  private def noRouteToMaintenance(answers: UserAnswers): Call = {
-        val assets = answers.get(sections.Assets)
-        if (assets.isEmpty) {
+  private def noRouteToMaintenance(answers: UserAnswers, assets: Assets): Call = {
+        if (assets == Assets(Nil, Nil, Nil, Nil, Nil, Nil, Nil)) {
           assetsInProgressHubRoute()
         } else {
           controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
@@ -120,8 +119,8 @@ class AssetsNavigator @Inject()(config: FrontendAppConfig) extends Navigator wit
     Call("GET", config.maintainATrustOverview)
   }
 
-  def routes(mode: Mode): PartialFunction[Page, UserAnswers => Call] =
-    simpleNavigation(mode) orElse
-      yesNoNavigation(mode)
+  def routes(mode: Mode, assets: Assets): PartialFunction[Page, UserAnswers => Call] =
+    simpleNavigation(mode, assets) orElse
+      yesNoNavigation(mode, assets)
 
 }

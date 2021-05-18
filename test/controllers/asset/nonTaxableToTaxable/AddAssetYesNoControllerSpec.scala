@@ -22,17 +22,24 @@ import controllers.IndexValidation
 import controllers.routes._
 import forms.YesNoFormProvider
 import navigation.Navigator
+import org.mockito.Matchers.any
+import org.mockito.Mockito.when
 import pages.asset.nontaxabletotaxable.AddAssetsYesNoPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.TrustService
 import views.html.asset.nonTaxableToTaxable.AddAssetYesNoView
+
+import scala.concurrent.Future
 
 class AddAssetYesNoControllerSpec extends SpecBase with IndexValidation {
 
   val form = new YesNoFormProvider().withPrefix("nonTaxableToTaxable.addAssetYesNo")
 
   lazy val addAssetYesNoRoute = controllers.asset.nonTaxableToTaxable.routes.AddAssetYesNoController.onPageLoad().url
+
+  private val mockTrustService: TrustService = mock[TrustService]
 
   "AddAssetYesNo Controller" must {
 
@@ -79,7 +86,10 @@ class AddAssetYesNoControllerSpec extends SpecBase with IndexValidation {
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(bind[Navigator].qualifiedWith(classOf[Assets]).toInstance(fakeNavigator))
+          .overrides(bind[TrustService].toInstance(mockTrustService))
           .build()
+
+      when(mockTrustService.getAssets(any())(any(), any())).thenReturn(Future.successful(models.assets.Assets()))
 
       val request =
         FakeRequest(POST, addAssetYesNoRoute)
@@ -96,7 +106,11 @@ class AddAssetYesNoControllerSpec extends SpecBase with IndexValidation {
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[TrustService].toInstance(mockTrustService))
+        .build()
+
+      when(mockTrustService.getAssets(any())(any(), any())).thenReturn(Future.successful(models.assets.Assets()))
 
       val request =
         FakeRequest(POST, addAssetYesNoRoute)

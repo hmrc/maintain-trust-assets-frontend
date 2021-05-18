@@ -25,8 +25,10 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import views.html.asset.noneeabusiness.AssetInterruptView
 import views.html.asset.nonTaxableToTaxable.{AssetInterruptView => MigrationInteruptPage}
+
 import javax.inject.Inject
 import models.NormalMode
+import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -35,6 +37,7 @@ class AssetInterruptPageController @Inject()(
                                               override val messagesApi: MessagesApi,
                                               standardActionSets: StandardActionSets,
                                               repository: PlaybackRepository,
+                                              trustService: TrustService,
                                               @Assets navigator: Navigator,
                                               val controllerComponents: MessagesControllerComponents,
                                               assetInterruptView: AssetInterruptView,
@@ -56,8 +59,9 @@ class AssetInterruptPageController @Inject()(
       for {
         updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
         _ <- repository.set(request.userAnswers)
+        assets <- trustService.getAssets(updatedAnswers.identifier)
       } yield {
-        Redirect(navigator.nextPage(AssetInterruptPage, NormalMode, updatedAnswers))
+        Redirect(navigator.nextPage(AssetInterruptPage, updatedAnswers, assets))
       }
   }
 

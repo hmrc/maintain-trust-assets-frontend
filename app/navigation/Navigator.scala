@@ -16,13 +16,14 @@
 
 package navigation
 
+import models.assets.Assets
 import models.{Mode, UserAnswers}
 import pages.{Page, QuestionPage}
 import play.api.mvc.Call
 
 trait Navigator {
 
-  def nextPage(page: Page, userAnswers: UserAnswers): Call
+  def nextPage(page: Page, userAnswers: UserAnswers, assets: Assets = Assets(Nil, Nil, Nil, Nil, Nil, Nil, Nil)): Call
 
   def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call
 

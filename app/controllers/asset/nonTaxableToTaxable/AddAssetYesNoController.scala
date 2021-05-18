@@ -19,6 +19,7 @@ package controllers.asset.nonTaxableToTaxable
 import config.annotations.Assets
 import controllers.actions.StandardActionSets
 import forms.YesNoFormProvider
+
 import javax.inject.Inject
 import navigation.Navigator
 import pages.asset.nontaxabletotaxable.AddAssetsYesNoPage
@@ -26,6 +27,7 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
+import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.asset.nonTaxableToTaxable.AddAssetYesNoView
 
@@ -37,6 +39,7 @@ class AddAssetYesNoController @Inject()(
                                           repository: PlaybackRepository,
                                           @Assets navigator: Navigator,
                                           yesNoFormProvider: YesNoFormProvider,
+                                          trustService: TrustService,
                                           val controllerComponents: MessagesControllerComponents,
                                           view: AddAssetYesNoView
                                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
@@ -65,7 +68,8 @@ class AddAssetYesNoController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAssetsYesNoPage, value))
             _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(AddAssetsYesNoPage, updatedAnswers))
+            assets <- trustService.getAssets(updatedAnswers.identifier)
+          } yield Redirect(navigator.nextPage(AddAssetsYesNoPage, updatedAnswers, assets))
         }
       )
   }
