@@ -33,9 +33,9 @@ import play.api.mvc.Call
 class AssetsNavigator @Inject()(config: FrontendAppConfig) extends Navigator with Logging {
 
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
-    routes(mode, Assets(Nil, Nil, Nil, Nil, Nil, Nil, Nil))(page)(userAnswers)
+    routes(mode, Assets())(page)(userAnswers)
 
-  override def nextPage(page: Page, userAnswers: UserAnswers, assets: Assets = Assets(Nil, Nil, Nil, Nil, Nil, Nil, Nil)): Call =
+  override def nextPage(page: Page, userAnswers: UserAnswers, assets: Assets = Assets()): Call =
     routes(NormalMode, assets)(page)(userAnswers)
 
   def simpleNavigation(mode: Mode, assets: Assets): PartialFunction[Page, UserAnswers => Call] = {

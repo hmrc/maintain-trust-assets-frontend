@@ -88,7 +88,7 @@ class AssetInterruptPageControllerSpec extends SpecBase {
         val isTaxable: Boolean = true
 
         "not set value in WhatKindOfAssetPage" in {
-          
+
           val mockTrustService: TrustService = mock[TrustService]
 
           val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(isTaxable = isTaxable)))

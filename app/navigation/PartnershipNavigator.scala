@@ -31,7 +31,7 @@ class PartnershipNavigator @Inject()() extends Navigator {
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
     routes(mode)(page)(userAnswers)
 
-  override def nextPage(page: Page, userAnswers: UserAnswers, assets: Assets = Assets(Nil, Nil, Nil, Nil, Nil, Nil, Nil)): Call =
+  override def nextPage(page: Page, userAnswers: UserAnswers, assets: Assets = Assets()): Call =
     nextPage(page, NormalMode, userAnswers)
 
   def simpleNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
