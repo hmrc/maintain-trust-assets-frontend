@@ -47,10 +47,10 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
   lazy val addAnotherPostRoute: String = controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.submitAnother().url
   lazy val completePostRoute: String = controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.submitComplete().url
 
-  def changeMoneyAssetRoute(index: Int): String =
+  def changeMoneyAssetRoute(): String =
     controllers.asset.money.routes.AssetMoneyValueController.onPageLoad(mode = CheckMode).url
 
-  def removeMoneyAssetYesNoRoute(index: Int): String =
+  def removeMoneyAssetYesNoRoute(): String =
     controllers.asset.money.remove.routes.RemoveAssetYesNoController.onPageLoad().url
 
   def changeNonEeaAssetRoute(index: Int): String =
@@ -59,13 +59,13 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
   def removeNoneEeaAssetYesNoRoute(index: Int): String =
     controllers.asset.noneeabusiness.remove.routes.RemoveAssetYesNoController.onPageLoad(index).url
 
-  val prefix = "addAssets"
+  val prefix = "nonTaxableToTaxable.addAssets"
   val AddAssetForm: Form[AddAssets] = new AddAssetsFormProvider().withPrefix(prefix)
   val yesNoForm: Form[Boolean] = new YesNoFormProvider().withPrefix("addAssetsYesNo")
 
   val addRow1 = AddRow("orgName 1", typeLabel = "Non-EEA Company", changeNonEeaAssetRoute(0), removeNoneEeaAssetYesNoRoute(0))
   val addRow2 = AddRow("orgName 2", typeLabel = "Non-EEA Company", changeNonEeaAssetRoute(1), removeNoneEeaAssetYesNoRoute(1))
-  val addRow3 = AddRow("4800", typeLabel = "Money", changeMoneyAssetRoute(0), removeMoneyAssetYesNoRoute(0))
+  val addRow3 = AddRow("4800", typeLabel = "Money", changeMoneyAssetRoute(), removeMoneyAssetYesNoRoute())
 
   lazy val oneAsset: List[AddRow] = List(addRow1)
   lazy val multipleAssets: List[AddRow] = List(addRow1, addRow2, addRow3)
@@ -301,18 +301,20 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
 
 
     "assets maxed out" must {
-      val max = 25
+      val max = 26
+      val maxNonEeaAssets = 25
 
       def createNonEeaAsset(max: Int): List[NonEeaBusinessType] = 0.until(max).foldLeft[List[NonEeaBusinessType]](List())((acc, i) => {
         acc :+ NonEeaBusinessType(None, s"orgName $i", NonUkAddress("", "", None, ""), "", LocalDate.now, None, true)
       })
 
-      def createAssetRows(max: Int): List[AddRow] = 0.until(max).foldLeft[List[AddRow]](List())((acc, i) => {
+      def createNonEeaAssetRows(max: Int): List[AddRow] = 0.until(max).foldLeft[List[AddRow]](List())((acc, i) => {
         acc :+ AddRow(s"orgName $i", typeLabel = "Non-EEA Company", changeNonEeaAssetRoute(i), removeNoneEeaAssetYesNoRoute(i))
       })
 
-      val assets = Assets(List(moneyAsset), Nil, Nil, Nil, Nil, Nil, createNonEeaAsset(max))
-      val assetRows = createAssetRows(max)
+      val assets = Assets(List(moneyAsset), Nil, Nil, Nil, Nil, Nil, createNonEeaAsset(maxNonEeaAssets))
+      val assetRows: List[AddRow] = createNonEeaAssetRows(maxNonEeaAssets) ++
+        List(AddRow(s"${moneyAsset.assetMonetaryAmount}", "Money", changeMoneyAssetRoute(), removeMoneyAssetYesNoRoute()))
 
       val fakeService = new FakeService(assets)
 

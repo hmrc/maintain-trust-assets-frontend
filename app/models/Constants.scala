@@ -27,5 +27,5 @@ object Constants {
   final val MAX_PARTNERSHIP_ASSETS = MAX_LIMIT_FOR_MOST_ASSET_TYPES
   final val MAX_OTHER_ASSETS = MAX_LIMIT_FOR_MOST_ASSET_TYPES
 
-  final val MAX_ALL_ASSETS = 26
+  final val MAX_ALL_ASSETS = 26 //TODO: Update this when more asset types are added
 }
