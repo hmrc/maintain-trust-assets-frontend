@@ -21,18 +21,26 @@ import config.annotations.Money
 import controllers.routes._
 import forms.ValueFormProvider
 import models.NormalMode
+import models.assets.{AssetMonetaryAmount, Assets}
 import navigation.Navigator
+import org.mockito.Matchers.any
+import org.mockito.Mockito.when
 import pages.asset.money.AssetMoneyValuePage
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.TrustService
 import views.html.asset.money.AssetMoneyValueView
+
+import scala.concurrent.Future
 
 class AssetMoneyValueControllerSpec extends SpecBase {
 
   val formProvider = new ValueFormProvider(frontendAppConfig)
   val form: Form[Long] = formProvider.withConfig(prefix = "money.value")
+
+  val mockTrustService = mock[TrustService]
 
   val validAnswer: Long = 4000L
 
@@ -42,7 +50,12 @@ class AssetMoneyValueControllerSpec extends SpecBase {
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(
+        bind(classOf[TrustService]).toInstance(mockTrustService)
+      ).build()
+
+      when(mockTrustService.getMonetaryAsset(any())(any(), any()))
+        .thenReturn(Future.successful(None))
 
       val request = FakeRequest(GET, assetMoneyValueRoute)
 
@@ -62,7 +75,12 @@ class AssetMoneyValueControllerSpec extends SpecBase {
 
       val userAnswers = emptyUserAnswers.set(AssetMoneyValuePage, validAnswer).success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers)).overrides(
+        bind(classOf[TrustService]).toInstance(mockTrustService)
+      ).build()
+
+      when(mockTrustService.getMonetaryAsset(any())(any(), any()))
+        .thenReturn(Future.successful(Some(AssetMonetaryAmount(validAnswer))))
 
       val request = FakeRequest(GET, assetMoneyValueRoute)
 
@@ -82,8 +100,13 @@ class AssetMoneyValueControllerSpec extends SpecBase {
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(bind[Navigator].qualifiedWith(classOf[Money]).toInstance(fakeNavigator))
-          .build()
+          .overrides(Seq(
+            bind[Navigator].qualifiedWith(classOf[Money]).toInstance(fakeNavigator),
+            bind(classOf[TrustService]).toInstance(mockTrustService)
+          )).build()
+
+      when(mockTrustService.getMonetaryAsset(any())(any(), any()))
+        .thenReturn(Future.successful(Some(AssetMonetaryAmount(validAnswer))))
 
       val request =
         FakeRequest(POST, assetMoneyValueRoute)
@@ -99,7 +122,12 @@ class AssetMoneyValueControllerSpec extends SpecBase {
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(
+        bind(classOf[TrustService]).toInstance(mockTrustService)
+      ).build()
+
+      when(mockTrustService.getMonetaryAsset(any())(any(), any()))
+        .thenReturn(Future.successful(Some(AssetMonetaryAmount(validAnswer))))
 
       val request =
         FakeRequest(POST, assetMoneyValueRoute)

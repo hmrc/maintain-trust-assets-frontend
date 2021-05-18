@@ -20,23 +20,19 @@ import config.annotations.Money
 import connectors.TrustsConnector
 import controllers.actions.StandardActionSets
 import forms.ValueFormProvider
-import models.Status.Completed
+import models.assets.AssetMonetaryAmount
+import models.{CheckMode, Mode}
 import navigation.Navigator
-import pages.AssetStatus
 import pages.asset.money.AssetMoneyValuePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
+import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.asset.money.AssetMoneyValueView
 
 import javax.inject.Inject
-import models.assets.AssetMonetaryAmount
-import models.{CheckMode, Mode}
-import services.TrustService
-import uk.gov.hmrc.http.HttpResponse
-
 import scala.concurrent.{ExecutionContext, Future}
 
 class AssetMoneyValueController @Inject()(
