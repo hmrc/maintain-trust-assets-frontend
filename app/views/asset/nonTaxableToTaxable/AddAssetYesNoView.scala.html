@@ -33,12 +33,19 @@
 
         @components.error_summary(form.errors)
 
+        @components.input_yes_no(
+            field = form("value"),
+            label = messages("nonTaxableToTaxable.addAssetYesNo.heading"),
+            legendClass = Some("heading-large"),
+            legendAsHeading = true
+        )
+
     <h2>@messages("nonTaxableToTaxable.addAssetYesNo.paragraph1")</h2>
     <p>@messages("nonTaxableToTaxable.addAssetYesNo.paragraph2")</p>
 
         @components.bullet_list(
         "nonTaxableToTaxable.addAssetYesNo",
-            List(
+        List(
             "bullet1",
             "bullet2",
             "bullet3",
@@ -47,13 +54,6 @@
             "bullet6",
             "bullet7"
             )
-        )
-
-        @components.input_yes_no(
-            field = form("value"),
-            label = messages("nonTaxableToTaxable.addAssetYesNo.heading"),
-            legendClass = Some("heading-large"),
-            legendAsHeading = true
         )
 
         @components.submit_button()
