@@ -23,7 +23,6 @@ import play.api.libs.json._
 
 trait AssetType
 
-// TODO add provisional?
 case class Assets(monetary: List[AssetMonetaryAmount] = Nil,
                   propertyOrLand: List[PropertyLandType] = Nil,
                   shares: List[SharesType] = Nil,
@@ -40,6 +39,11 @@ case class Assets(monetary: List[AssetMonetaryAmount] = Nil,
     case WhatKindOfAsset.Partnership => partnerShip.size
     case WhatKindOfAsset.Other => other.size
     case WhatKindOfAsset.NonEeaBusiness => nonEEABusiness.size
+  }
+
+  def isEmpty: Boolean = this match {
+    case Assets(Nil, Nil, Nil, Nil, Nil, Nil, Nil) => true
+    case _ => false
   }
 }
 

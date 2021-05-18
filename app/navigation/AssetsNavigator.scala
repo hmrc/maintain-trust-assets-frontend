@@ -33,9 +33,9 @@ import play.api.mvc.Call
 class AssetsNavigator @Inject()(config: FrontendAppConfig) extends Navigator with Logging {
 
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
-    routes(mode, Assets(Nil, Nil, Nil, Nil, Nil, Nil, Nil))(page)(userAnswers)
+    routes(mode, Assets())(page)(userAnswers)
 
-  override def nextPage(page: Page, userAnswers: UserAnswers, assets: Assets = Assets(Nil, Nil, Nil, Nil, Nil, Nil, Nil)): Call =
+  override def nextPage(page: Page, userAnswers: UserAnswers, assets: Assets = Assets()): Call =
     routes(NormalMode, assets)(page)(userAnswers)
 
   def simpleNavigation(mode: Mode, assets: Assets): PartialFunction[Page, UserAnswers => Call] = {
@@ -80,7 +80,7 @@ class AssetsNavigator @Inject()(config: FrontendAppConfig) extends Navigator wit
 
   private def routeToAssetIndex(answers: UserAnswers, assets: Assets): Call = {
     (answers.isMigratingToTaxable,  assets)  match {
-      case (true, Assets(Nil, Nil, Nil, Nil, Nil, Nil, Nil)) => controllers.asset.routes.WhatKindOfAssetController.onPageLoad()
+      case (true, x) if x.isEmpty => controllers.asset.routes.WhatKindOfAssetController.onPageLoad()
       case (true, _)  => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
       case (false, _) => controllers.asset.noneeabusiness.routes.NameController.onPageLoad(NormalMode)
     }
@@ -91,7 +91,7 @@ class AssetsNavigator @Inject()(config: FrontendAppConfig) extends Navigator wit
       ua = ua,
       fromPage = AddAssetsYesNoPage,
       yesCall = AssetInterruptPageController.onPageLoad(),
-      noCall = noRouteToMaintenance(ua, assets)
+      noCall = noRouteToMaintenance(assets)
     )
     case AddAnAssetYesNoPage => ua => yesNoNav(
       ua = ua,
@@ -107,13 +107,12 @@ class AssetsNavigator @Inject()(config: FrontendAppConfig) extends Navigator wit
     )
   }
 
-  private def noRouteToMaintenance(answers: UserAnswers, assets: Assets): Call = {
-        if (assets == Assets(Nil, Nil, Nil, Nil, Nil, Nil, Nil)) {
-          assetsInProgressHubRoute()
-        } else {
-          controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
-        }
-  }
+  private def noRouteToMaintenance(assets: Assets): Call =
+    if (assets.isEmpty) {
+      assetsInProgressHubRoute()
+    } else {
+      controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
+    }
 
   def assetsInProgressHubRoute() : Call = {
     Call("GET", config.maintainATrustOverview)
