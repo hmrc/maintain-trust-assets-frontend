@@ -27,7 +27,6 @@ import pages.asset.money.AssetMoneyValuePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.PlaybackRepository
 import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.asset.money.AssetMoneyValueView
@@ -38,7 +37,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class AssetMoneyValueController @Inject()(
                                            override val messagesApi: MessagesApi,
                                            standardActionSets: StandardActionSets,
-                                           repository: PlaybackRepository,
                                            @Money navigator: Navigator,
                                            formProvider: ValueFormProvider,
                                            val controllerComponents: MessagesControllerComponents,

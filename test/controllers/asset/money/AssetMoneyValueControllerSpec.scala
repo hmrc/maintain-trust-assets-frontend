@@ -18,6 +18,7 @@ package controllers.asset.money
 
 import base.SpecBase
 import config.annotations.Money
+import connectors.TrustsConnector
 import controllers.routes._
 import forms.ValueFormProvider
 import models.NormalMode
@@ -31,6 +32,7 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.TrustService
+import uk.gov.hmrc.http.HttpResponse
 import views.html.asset.money.AssetMoneyValueView
 
 import scala.concurrent.Future
@@ -41,6 +43,7 @@ class AssetMoneyValueControllerSpec extends SpecBase {
   val form: Form[Long] = formProvider.withConfig(prefix = "money.value")
 
   val mockTrustService = mock[TrustService]
+  val mockConnector = mock[TrustsConnector]
 
   val validAnswer: Long = 4000L
 
@@ -102,11 +105,14 @@ class AssetMoneyValueControllerSpec extends SpecBase {
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(Seq(
             bind[Navigator].qualifiedWith(classOf[Money]).toInstance(fakeNavigator),
-            bind(classOf[TrustService]).toInstance(mockTrustService)
+            bind(classOf[TrustService]).toInstance(mockTrustService),
+            bind[TrustsConnector].to(mockConnector)
           )).build()
 
       when(mockTrustService.getMonetaryAsset(any())(any(), any()))
         .thenReturn(Future.successful(Some(AssetMonetaryAmount(validAnswer))))
+
+      when(mockConnector.addMoneyAsset(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val request =
         FakeRequest(POST, assetMoneyValueRoute)
