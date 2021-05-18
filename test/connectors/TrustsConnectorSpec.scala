@@ -16,7 +16,6 @@
 
 package connectors
 
-import java.time.LocalDate
 import base.SpecBase
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock._
@@ -26,16 +25,14 @@ import models.assets._
 import models.http.TaxableMigrationFlag
 import models.{NonUkAddress, RemoveAsset, TrustDetails, TypeOfTrust}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
-import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Inside}
+import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
 import play.api.libs.json.{JsBoolean, Json}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.Await
-import scala.concurrent.duration.DurationInt
+import java.time.LocalDate
 
-class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures
-  with Inside with BeforeAndAfterAll with BeforeAndAfterEach with IntegrationPatience {
+class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures with BeforeAndAfterAll with BeforeAndAfterEach with IntegrationPatience {
 
   implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
