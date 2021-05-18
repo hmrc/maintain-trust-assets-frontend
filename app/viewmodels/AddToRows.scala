@@ -16,8 +16,8 @@
 
 package viewmodels
 
-case class AddToRows(inProgress : List[AddRow], complete: List[AddRow]) {
+case class AddToRows(complete: List[AddRow]) {
 
-  def count : Int = inProgress.size + complete.size
+  def count : Int = complete.size
 
 }

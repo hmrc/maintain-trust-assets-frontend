@@ -199,7 +199,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(AddAssetForm, Nil, oneAsset, "Add assets")(request, messages).toString
+            view(AddAssetForm, oneAsset, "Add assets")(request, messages).toString
 
           application.stop()
 
@@ -225,7 +225,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(AddAssetForm, Nil, multipleAssets, "You have added 3 assets")(request, messages).toString
+            view(AddAssetForm, multipleAssets, "You have added 3 assets")(request, messages).toString
 
           application.stop()
         }
@@ -294,7 +294,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
 
         status(result) mustEqual BAD_REQUEST
 
-        contentAsString(result) mustEqual view(boundForm, Nil, multipleAssets, "You have added 3 assets")(request, messages).toString
+        contentAsString(result) mustEqual view(boundForm, multipleAssets, "You have added 3 assets")(request, messages).toString
 
         application.stop()
       }
@@ -335,7 +335,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
         val content = contentAsString(result)
 
         content mustEqual
-          view(Nil, assetRows, s"You have added 26 assets", max, prefix)(request, messages).toString
+          view(assetRows, s"You have added 26 assets", max, prefix)(request, messages).toString
 
         content must include("You cannot add another asset as you have entered a maximum of 26.")
         content must include("You can add another asset by removing an existing one, or write to HMRC with details of any additional assets.")
