@@ -65,7 +65,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
 
   val addRow1 = AddRow("orgName 1", typeLabel = "Non-EEA Company", changeNonEeaAssetRoute(0), removeNoneEeaAssetYesNoRoute(0))
   val addRow2 = AddRow("orgName 2", typeLabel = "Non-EEA Company", changeNonEeaAssetRoute(1), removeNoneEeaAssetYesNoRoute(1))
-  val addRow3 = AddRow("4800", typeLabel = "Money", changeMoneyAssetRoute(), removeMoneyAssetYesNoRoute())
+  val addRow3 = AddRow("£4800", typeLabel = "Money", changeMoneyAssetRoute(), removeMoneyAssetYesNoRoute())
 
   lazy val oneAsset: List[AddRow] = List(addRow1)
   lazy val multipleAssets: List[AddRow] = List(addRow1, addRow2, addRow3)
@@ -314,7 +314,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
 
       val assets = Assets(List(moneyAsset), Nil, Nil, Nil, Nil, Nil, createNonEeaAsset(maxNonEeaAssets))
       val assetRows: List[AddRow] = createNonEeaAssetRows(maxNonEeaAssets) ++
-        List(AddRow(s"${moneyAsset.assetMonetaryAmount}", "Money", changeMoneyAssetRoute(), removeMoneyAssetYesNoRoute()))
+        List(AddRow(s"£${moneyAsset.assetMonetaryAmount}", "Money", changeMoneyAssetRoute(), removeMoneyAssetYesNoRoute()))
 
       val fakeService = new FakeService(assets)
 
