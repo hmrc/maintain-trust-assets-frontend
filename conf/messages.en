@@ -53,6 +53,8 @@ site.error = Error:
 site.sign_out = Sign out
 site.sign_in = Sign in
 
+symbolText.asSterling = As pounds sterling.
+
 site.address.uk.title = What is the address?
 site.address.uk.heading = What is {0}’s address?
 site.address.uk.line1 = Address line 1
@@ -511,6 +513,7 @@ nonTaxableToTaxable.addAssetYesNo.bullet7 = other assets
 
 nonTaxableToTaxable.assetInterruptPage.title = Information you need to know to add assets
 nonTaxableToTaxable.assetInterruptPage.caption = Assets
+nonTaxableToTaxable.assetInterruptPage.caption.hidden = This section is
 nonTaxableToTaxable.assetInterruptPage.heading = Information you need to know to add assets
 nonTaxableToTaxable.assetInterruptPage.subheading1 = Money
 nonTaxableToTaxable.assetInterruptPage.paragraph1 = Tell us the total amount of money in the trust. If more than one amount has been added to the trust, add them together.
@@ -529,7 +532,7 @@ nonTaxableToTaxable.assetInterruptPage.paragraph5 = You also need to tell us whe
 nonTaxableToTaxable.assetInterruptPage.paragraph6 = For individual shares, you will need to tell us the class type.
 nonTaxableToTaxable.assetInterruptPage.subheading4 = Business
 nonTaxableToTaxable.assetInterruptPage.paragraph7 = Tell us the:
-nonTaxableToTaxable.assetInterruptPage.bullet7 = business's name
+nonTaxableToTaxable.assetInterruptPage.bullet7 = business’s name
 nonTaxableToTaxable.assetInterruptPage.bullet8 = description of the business
 nonTaxableToTaxable.assetInterruptPage.bullet9 = business address
 nonTaxableToTaxable.assetInterruptPage.bullet10 = current estimated value
