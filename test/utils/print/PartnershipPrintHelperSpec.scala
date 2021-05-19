@@ -30,7 +30,7 @@ import java.time.LocalDate
 class PartnershipPrintHelperSpec extends SpecBase {
 
   private val helper: PartnershipPrintHelper = injector.instanceOf[PartnershipPrintHelper]
-  private val index: Int = 0
+
   private val description: String = "Description"
   private val date: LocalDate = LocalDate.parse("1996-02-03")
 

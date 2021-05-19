@@ -20,7 +20,6 @@ import base.SpecBase
 import connectors.TrustsConnector
 import controllers.Assets.OK
 import forms.RemoveIndexFormProvider
-import models.NormalMode
 import models.assets._
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -45,15 +44,11 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
   val mockConnector: TrustsConnector = mock[TrustsConnector]
 
-  val moneyAsset = List(
-    AssetMonetaryAmount(4000)
-  )
+  val moneyAsset = List(AssetMonetaryAmount(4000))
 
   "RemoveAssetYesNo Controller" when {
 
     "return OK and the correct view for a GET" in {
-
-      val index = 0
 
       when(mockConnector.getAssets(any())(any(), any()))
         .thenReturn(Future.successful(Assets(moneyAsset, Nil, Nil, Nil, Nil, Nil, Nil)))
@@ -78,8 +73,6 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
     "not removing the asset" must {
 
       "redirect to the add to page when valid data is submitted" in {
-
-        val index = 0
 
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(bind[TrustsConnector].toInstance(mockConnector))

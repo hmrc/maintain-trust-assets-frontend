@@ -29,7 +29,7 @@ import viewmodels.{AnswerRow, AnswerSection}
 class OtherPrintHelperSpec extends SpecBase {
 
   private val helper: OtherPrintHelper = injector.instanceOf[OtherPrintHelper]
-  private val index: Int = 0
+
   private val description: String = "Description"
   private val amount: Long = 100L
 

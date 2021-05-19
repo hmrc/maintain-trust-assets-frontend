@@ -29,7 +29,7 @@ import viewmodels.{AnswerRow, AnswerSection}
 class SharesPrintHelperSpec extends SpecBase {
 
   private val helper: SharesPrintHelper = injector.instanceOf[SharesPrintHelper]
-  private val index: Int = 0
+
   private val name: String = "Name"
   private val quantity: Long = 200L
   private val amount: Long = 100L

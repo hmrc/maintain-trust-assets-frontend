@@ -19,7 +19,7 @@ package controllers.asset
 import config.annotations.Assets
 import controllers.actions.StandardActionSets
 import forms.WhatKindOfAssetFormProvider
-import models.{Enumerable, NormalMode, UserAnswers, WhatKindOfAsset}
+import models.{Enumerable, NormalMode, WhatKindOfAsset}
 import navigation.Navigator
 import pages.asset.WhatKindOfAssetPage
 import play.api.data.Form

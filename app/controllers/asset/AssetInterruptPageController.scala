@@ -23,14 +23,12 @@ import pages.asset.AssetInterruptPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
-import views.html.asset.noneeabusiness.AssetInterruptView
-import views.html.asset.nonTaxableToTaxable.{AssetInterruptView => MigrationInteruptPage}
-
-import javax.inject.Inject
-import models.NormalMode
 import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import views.html.asset.nonTaxableToTaxable.{AssetInterruptView => MigrationInteruptPage}
+import views.html.asset.noneeabusiness.AssetInterruptView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AssetInterruptPageController @Inject()(

@@ -22,7 +22,7 @@ import connectors.TrustsConnector
 import controllers.routes._
 import forms.ValueFormProvider
 import models.NormalMode
-import models.assets.{AssetMonetaryAmount, Assets}
+import models.assets.AssetMonetaryAmount
 import navigation.Navigator
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when

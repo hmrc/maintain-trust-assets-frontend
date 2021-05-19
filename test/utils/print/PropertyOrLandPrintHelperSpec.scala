@@ -29,7 +29,7 @@ import viewmodels.{AnswerRow, AnswerSection}
 class PropertyOrLandPrintHelperSpec extends SpecBase {
 
   private val helper: PropertyOrLandPrintHelper = injector.instanceOf[PropertyOrLandPrintHelper]
-  private val index: Int = 0
+
   private val description: String = "Description"
   private val ukAddress: UkAddress = UkAddress("Line 1", "Line 2", None, None, "AB1 1AB")
   private val nonUkAddress: NonUkAddress = NonUkAddress("Line 1", "Line 2", None, "FR")

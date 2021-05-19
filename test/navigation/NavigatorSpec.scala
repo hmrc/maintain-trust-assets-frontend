@@ -314,15 +314,6 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
         }
       }
 
-      "go to Add assets page" ignore {
-        forAll(arbitrary[UserAnswers]) {
-          userAnswers =>
-
-            val answers = userAnswers.set(AddAssetsYesNoPage, false).success.value
-
-        }
-
-      }
     }
 
   }
