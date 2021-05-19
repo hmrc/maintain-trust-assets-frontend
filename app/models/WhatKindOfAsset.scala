@@ -53,7 +53,7 @@ object WhatKindOfAsset extends Enumerable.Implicits {
     OptionAndLimit(Business, MAX_LIMIT_FOR_MOST_ASSET_TYPES),
     OptionAndLimit(Partnership, MAX_LIMIT_FOR_MOST_ASSET_TYPES),
     OptionAndLimit(Other, MAX_LIMIT_FOR_MOST_ASSET_TYPES),
-    OptionAndLimit(NonEeaBusiness, MAX_NON_EEA_BUSINESS_ASSETS),
+    OptionAndLimit(NonEeaBusiness, MAX_NON_EEA_BUSINESS_ASSETS)
   )
 
   def options(kindsOfAsset: List[WhatKindOfAsset] = values): List[RadioOption] = kindsOfAsset.map {
