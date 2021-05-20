@@ -105,6 +105,74 @@ class TrustsStoreConnectorSpec extends SpecBase
       }
     }
 
+    ".setTaskInProgress" must {
+
+      val url = s"/trusts-store/maintain/tasks/reset/assets/$identifier"
+
+      "return OK with the current task status" in {
+        val application = applicationBuilder()
+          .configure(
+            Seq(
+              "microservice.services.trusts-store.port" -> server.port(),
+              "auditing.enabled" -> false
+            ): _*
+          ).build()
+
+        val connector = application.injector.instanceOf[TrustsStoreConnector]
+
+        val json = Json.parse(
+          """
+            |{
+            |  "trustees": true,
+            |  "beneficiaries": false,
+            |  "settlors": false,
+            |  "protectors": false,
+            |  "other": false
+            |}
+            |""".stripMargin)
+
+        server.stubFor(
+          post(urlEqualTo(url))
+            .willReturn(okJson(json.toString))
+        )
+
+        val futureResult = connector.setTaskInProgress(identifier)
+
+        whenReady(futureResult) {
+          r =>
+            r.status mustBe OK
+        }
+
+        application.stop()
+      }
+
+      "return default tasks when a failure occurs" in {
+        val application = applicationBuilder()
+          .configure(
+            Seq(
+              "microservice.services.trusts-store.port" -> server.port(),
+              "auditing.enabled" -> false
+            ): _*
+          ).build()
+
+        val connector = application.injector.instanceOf[TrustsStoreConnector]
+
+        server.stubFor(
+          post(urlEqualTo(url))
+            .willReturn(serverError())
+        )
+
+        val futureResult = connector.setTaskInProgress(identifier)
+
+        whenReady(futureResult) {
+          r =>
+            r.status mustBe INTERNAL_SERVER_ERROR
+        }
+
+        application.stop()
+      }
+    }
+
     ".getFeature" must {
 
       val feature = "5mld"

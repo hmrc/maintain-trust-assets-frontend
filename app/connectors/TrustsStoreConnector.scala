@@ -31,6 +31,11 @@ class TrustsStoreConnector @Inject()(http: HttpClient, config: FrontendAppConfig
     http.POSTEmpty[HttpResponse](url)
   }
 
+  def setTaskInProgress(identifier: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+    val url: String = s"${config.trustsStoreUrl}/trusts-store/maintain/tasks/reset/assets/$identifier"
+    http.POSTEmpty[HttpResponse](url)
+  }
+
   def getFeature(feature: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[FeatureResponse] = {
     val url: String = s"${config.trustsStoreUrl}/trusts-store/features/$feature"
     http.GET[FeatureResponse](url)
