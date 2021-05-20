@@ -22,6 +22,8 @@ import connectors.TrustsStoreConnector
 import controllers.IndexValidation
 import controllers.routes._
 import forms.YesNoFormProvider
+import models.UkAddress
+import models.assets.NonEeaBusinessType
 import navigation.Navigator
 import org.mockito.Matchers.any
 import org.mockito.Mockito.{atLeastOnce, never, verify, when}
@@ -34,6 +36,7 @@ import services.TrustService
 import uk.gov.hmrc.http.HttpResponse
 import views.html.asset.nonTaxableToTaxable.AddAssetYesNoView
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class AddAssetYesNoControllerSpec extends SpecBase with IndexValidation with ScalaFutures {
@@ -86,7 +89,7 @@ class AddAssetYesNoControllerSpec extends SpecBase with IndexValidation with Sca
       application.stop()
     }
 
-    "redirect to the next page when valid data is submitted and set to in progress" in {
+    "redirect to the next page when valid data is submitted, when no assets and not adding any more" in {
 
       val mockTrustService: TrustService = mock[TrustService]
       val mockTrustStoreConnector: TrustsStoreConnector = mock[TrustsStoreConnector]
@@ -121,7 +124,7 @@ class AddAssetYesNoControllerSpec extends SpecBase with IndexValidation with Sca
       application.stop()
     }
 
-    "redirect to the next page when valid data is submitted and not set to in progress" in {
+    "redirect to the next page when valid data is submitted, when no assets and adding more" in {
 
       val mockTrustService: TrustService = mock[TrustService]
       val mockTrustStoreConnector: TrustsStoreConnector = mock[TrustsStoreConnector]
@@ -144,6 +147,45 @@ class AddAssetYesNoControllerSpec extends SpecBase with IndexValidation with Sca
 
       whenReady(result) { _ =>
         verify(mockTrustStoreConnector, never()).setTaskInProgress(any())(any(), any())
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
+      }
+
+      application.stop()
+    }
+
+    "redirect to the next page when valid data is submitted, when has non-eea asset and adding no more" in {
+
+      val mockTrustService: TrustService = mock[TrustService]
+      val mockTrustStoreConnector: TrustsStoreConnector = mock[TrustsStoreConnector]
+
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind[Navigator].qualifiedWith(classOf[Assets]).toInstance(fakeNavigator))
+          .overrides(bind[TrustService].toInstance(mockTrustService))
+          .overrides(bind[TrustsStoreConnector].toInstance(mockTrustStoreConnector))
+          .build()
+
+      val nonEEACompanies = List(
+        NonEeaBusinessType(None, "Non-eea Business", address = UkAddress("line 1", "line 2", None, None, "ne981zz"), "GB", LocalDate.now, None, provisional = false)
+      )
+
+      when(mockTrustService.getAssets(any())(any(), any()))
+        .thenReturn(Future.successful(models.assets.Assets(nonEEABusiness = nonEEACompanies)))
+
+      when(mockTrustStoreConnector.setTaskComplete(any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(OK, "")))
+
+      val request =
+        FakeRequest(POST, addAssetYesNoPostRoute)
+          .withFormUrlEncodedBody(("value", "false"))
+
+      val result = route(application, request).value
+
+      whenReady(result) { _ =>
+        verify(mockTrustStoreConnector, atLeastOnce()).setTaskComplete(any())(any(), any())
 
         status(result) mustEqual SEE_OTHER
 

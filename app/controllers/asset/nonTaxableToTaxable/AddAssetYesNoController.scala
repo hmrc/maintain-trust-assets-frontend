@@ -72,9 +72,17 @@ class AddAssetYesNoController @Inject()(
             updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAssetsYesNoPage, value))
             _              <- repository.set(updatedAnswers)
             assets <- trustService.getAssets(request.userAnswers.identifier)
-            _ <- if (!value) {
-              trustStoreConnector.setTaskInProgress(request.userAnswers.identifier).map(_ => ())
+            _ <- if (!value) { // If answered no don't want to add
+              assets match {
+                case x if x.isEmpty =>
+                  // If no assets, set task list to in progress
+                  trustStoreConnector.setTaskInProgress(request.userAnswers.identifier).map(_ => ())
+                case _ =>
+                  // Has a taxable asset or Non-EEA company
+                  trustStoreConnector.setTaskComplete(request.userAnswers.identifier).map(_ => ())
+              }
             } else {
+              // Do nothing and continue in the journey if adding an asset, status is decided later
               Future.successful(())
             }
           } yield Redirect(navigator.nextPage(AddAssetsYesNoPage, updatedAnswers, assets))
