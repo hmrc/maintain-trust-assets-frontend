@@ -17,6 +17,7 @@
 package controllers.asset.nonTaxableToTaxable
 
 import config.annotations.Assets
+import connectors.TrustsStoreConnector
 import controllers.actions.StandardActionSets
 import forms.YesNoFormProvider
 
@@ -41,8 +42,9 @@ class AddAssetYesNoController @Inject()(
                                           yesNoFormProvider: YesNoFormProvider,
                                           trustService: TrustService,
                                           val controllerComponents: MessagesControllerComponents,
-                                          view: AddAssetYesNoView
-                                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                          view: AddAssetYesNoView,
+                                          trustStoreConnector: TrustsStoreConnector
+                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   val form: Form[Boolean] = yesNoFormProvider.withPrefix("nonTaxableToTaxable.addAssetYesNo")
 
@@ -65,10 +67,16 @@ class AddAssetYesNoController @Inject()(
           Future.successful(BadRequest(view(formWithErrors))),
 
         value => {
+
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAssetsYesNoPage, value))
             _              <- repository.set(updatedAnswers)
-            assets <- trustService.getAssets(updatedAnswers.identifier)
+            assets <- trustService.getAssets(request.userAnswers.identifier)
+            _ <- if (!value) {
+              trustStoreConnector.setTaskInProgress(request.userAnswers.identifier).map(_ => ())
+            } else {
+              Future.successful(())
+            }
           } yield Redirect(navigator.nextPage(AddAssetsYesNoPage, updatedAnswers, assets))
         }
       )

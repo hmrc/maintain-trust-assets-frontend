@@ -80,9 +80,10 @@ class AddAssetsController @Inject()(
 
         val assetRows = new AddAssetViewHelper(assets).rows
 
-        val maxLimit: Int = userAnswers.isMigratingToTaxable match {
-          case true => MAX_ALL_ASSETS
-          case _ => MAX_NON_EEA_BUSINESS_ASSETS
+        val maxLimit: Int = if(userAnswers.isMigratingToTaxable) {
+          MAX_ALL_ASSETS
+        } else {
+          MAX_NON_EEA_BUSINESS_ASSETS
         }
 
         assetRows.count match {

@@ -18,28 +18,33 @@ package controllers.asset.nonTaxableToTaxable
 
 import base.SpecBase
 import config.annotations.Assets
+import connectors.TrustsStoreConnector
 import controllers.IndexValidation
 import controllers.routes._
 import forms.YesNoFormProvider
 import navigation.Navigator
 import org.mockito.Matchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{atLeastOnce, never, verify, when}
+import org.scalatest.concurrent.ScalaFutures
 import pages.asset.nontaxabletotaxable.AddAssetsYesNoPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.TrustService
+import uk.gov.hmrc.http.HttpResponse
 import views.html.asset.nonTaxableToTaxable.AddAssetYesNoView
 
 import scala.concurrent.Future
 
-class AddAssetYesNoControllerSpec extends SpecBase with IndexValidation {
+class AddAssetYesNoControllerSpec extends SpecBase with IndexValidation with ScalaFutures {
 
   val form = new YesNoFormProvider().withPrefix("nonTaxableToTaxable.addAssetYesNo")
 
-  lazy val addAssetYesNoRoute = controllers.asset.nonTaxableToTaxable.routes.AddAssetYesNoController.onPageLoad().url
+  lazy val addAssetYesNoRoute =
+    controllers.asset.nonTaxableToTaxable.routes.AddAssetYesNoController.onPageLoad().url
 
-  private val mockTrustService: TrustService = mock[TrustService]
+  lazy val addAssetYesNoPostRoute =
+    controllers.asset.nonTaxableToTaxable.routes.AddAssetYesNoController.onSubmit().url
 
   "AddAssetYesNo Controller" must {
 
@@ -81,30 +86,76 @@ class AddAssetYesNoControllerSpec extends SpecBase with IndexValidation {
       application.stop()
     }
 
-    "redirect to the next page when valid data is submitted" in {
+    "redirect to the next page when valid data is submitted and set to in progress" in {
+
+      val mockTrustService: TrustService = mock[TrustService]
+      val mockTrustStoreConnector: TrustsStoreConnector = mock[TrustsStoreConnector]
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(bind[Navigator].qualifiedWith(classOf[Assets]).toInstance(fakeNavigator))
           .overrides(bind[TrustService].toInstance(mockTrustService))
+          .overrides(bind[TrustsStoreConnector].toInstance(mockTrustStoreConnector))
           .build()
 
-      when(mockTrustService.getAssets(any())(any(), any())).thenReturn(Future.successful(models.assets.Assets()))
+      when(mockTrustService.getAssets(any())(any(), any()))
+        .thenReturn(Future.successful(models.assets.Assets()))
+
+      when(mockTrustStoreConnector.setTaskInProgress(any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val request =
-        FakeRequest(POST, addAssetYesNoRoute)
+        FakeRequest(POST, addAssetYesNoPostRoute)
+          .withFormUrlEncodedBody(("value", "false"))
+
+      val result = route(application, request).value
+
+      whenReady(result) { _ =>
+        verify(mockTrustStoreConnector, atLeastOnce()).setTaskInProgress(any())(any(), any())
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
+      }
+
+      application.stop()
+    }
+
+    "redirect to the next page when valid data is submitted and not set to in progress" in {
+
+      val mockTrustService: TrustService = mock[TrustService]
+      val mockTrustStoreConnector: TrustsStoreConnector = mock[TrustsStoreConnector]
+
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind[Navigator].qualifiedWith(classOf[Assets]).toInstance(fakeNavigator))
+          .overrides(bind[TrustService].toInstance(mockTrustService))
+          .overrides(bind[TrustsStoreConnector].toInstance(mockTrustStoreConnector))
+          .build()
+
+      when(mockTrustService.getAssets(any())(any(), any()))
+        .thenReturn(Future.successful(models.assets.Assets()))
+
+      val request =
+        FakeRequest(POST, addAssetYesNoPostRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value
 
-      status(result) mustEqual SEE_OTHER
+      whenReady(result) { _ =>
+        verify(mockTrustStoreConnector, never()).setTaskInProgress(any())(any(), any())
 
-      redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
+      }
 
       application.stop()
     }
 
     "return a Bad Request and errors when invalid data is submitted" in {
+
+      val mockTrustService: TrustService = mock[TrustService]
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[TrustService].toInstance(mockTrustService))
@@ -113,7 +164,7 @@ class AddAssetYesNoControllerSpec extends SpecBase with IndexValidation {
       when(mockTrustService.getAssets(any())(any(), any())).thenReturn(Future.successful(models.assets.Assets()))
 
       val request =
-        FakeRequest(POST, addAssetYesNoRoute)
+        FakeRequest(POST, addAssetYesNoPostRoute)
           .withFormUrlEncodedBody(("value", ""))
 
       val boundForm = form.bind(Map("value" -> ""))
@@ -150,7 +201,7 @@ class AddAssetYesNoControllerSpec extends SpecBase with IndexValidation {
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, addAssetYesNoRoute)
+        FakeRequest(POST, addAssetYesNoPostRoute)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value
