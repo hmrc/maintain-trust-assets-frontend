@@ -33,7 +33,7 @@ final case class UserAnswers(internalId: String,
                              is5mldEnabled: Boolean = false,
                              isTaxable: Boolean = true,
                              isUnderlyingData5mld: Boolean = false,
-                             isMigratingToTaxable: Boolean = false ) extends Logging {
+                             isMigratingToTaxable: Boolean = false) extends Logging {
 
   def cleanup : Try[UserAnswers] = {
     this

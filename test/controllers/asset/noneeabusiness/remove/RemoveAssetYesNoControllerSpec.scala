@@ -17,12 +17,11 @@
 package controllers.asset.noneeabusiness.remove
 
 import java.time.LocalDate
-
 import base.SpecBase
 import connectors.TrustsConnector
 import controllers.Assets.OK
 import forms.RemoveIndexFormProvider
-import models.NonUkAddress
+import models.{NonUkAddress, UserAnswers}
 import models.assets._
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -45,7 +44,6 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
   lazy val formRoute = routes.RemoveAssetYesNoController.onSubmit(0)
 
-
   val mockConnector: TrustsConnector = mock[TrustsConnector]
 
   def createAsset(id: Int, provisional : Boolean) =
@@ -56,6 +54,8 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
     createAsset(1, provisional = true),
     createAsset(2, provisional = true)
   )
+
+  def userAnswers(migrating: Boolean) = UserAnswers("internalId", "identifier", LocalDate.now, isMigratingToTaxable = migrating)
 
   "RemoveAssetYesNo Controller" when {
 
@@ -85,11 +85,13 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
     "not removing the asset" must {
 
-      "redirect to the add to page when valid data is submitted" in {
+      "redirect to the 'add non-eea asset' page when valid data is submitted and not migrating" in {
 
         val index = 0
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        val answers = userAnswers(migrating = false)
+
+        val application = applicationBuilder(userAnswers = Some(answers))
           .overrides(bind[TrustsConnector].toInstance(mockConnector))
           .build()
 
@@ -105,16 +107,41 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
         application.stop()
       }
+
+      "redirect to the 'add asset' page when valid data is submitted and migrating" in {
+
+        val index = 0
+
+        val answers = userAnswers(migrating = true)
+
+        val application = applicationBuilder(userAnswers = Some(answers))
+          .overrides(bind[TrustsConnector].toInstance(mockConnector))
+          .build()
+
+        val request =
+          FakeRequest(POST, routes.RemoveAssetYesNoController.onSubmit(index).url)
+            .withFormUrlEncodedBody(("value", "false"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+
+        application.stop()
+      }
     }
 
 
     "removing a new asset" must {
 
-      "redirect to the add to page, removing the asset" in {
+      "redirect to the 'add non-eea asset' page, removing the asset when not migrating" in {
 
         val index = 2
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        val answers = userAnswers(migrating = false)
+
+        val application = applicationBuilder(userAnswers = Some(answers))
           .overrides(bind[TrustsConnector].toInstance(mockConnector))
           .build()
 
@@ -133,6 +160,35 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad().url
+
+        application.stop()
+      }
+
+      "redirect to the 'add asset' page, removing the asset when and migrating" in {
+
+        val index = 2
+
+        val answers = userAnswers(migrating = true)
+
+        val application = applicationBuilder(userAnswers = Some(answers))
+          .overrides(bind[TrustsConnector].toInstance(mockConnector))
+          .build()
+
+        when(mockConnector.getAssets(any())(any(), any()))
+          .thenReturn(Future.successful(Assets(Nil, Nil, Nil, Nil, Nil, Nil, nonEeaAssets)))
+
+        when(mockConnector.removeAsset(any(), any())(any(), any()))
+          .thenReturn(Future.successful(HttpResponse(200, "")))
+
+        val request =
+          FakeRequest(POST, routes.RemoveAssetYesNoController.onSubmit(index).url)
+            .withFormUrlEncodedBody(("value", "true"))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
 
         application.stop()
       }

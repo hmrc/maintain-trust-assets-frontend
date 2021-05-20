@@ -44,12 +44,11 @@ class IndexController @Inject()(
 
       def redirect(userAnswers: UserAnswers): Result = {
           if (userAnswers.isMigratingToTaxable) {
-            Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetYesNoController.onPageLoad())
+            Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
           } else {
             Redirect(controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad())
           }
         }
-
 
       logger.info(s"[Session ID: ${Session.id(hc)}][UTR/URN: $identifier]" +
         s" user has started to maintain assets")
