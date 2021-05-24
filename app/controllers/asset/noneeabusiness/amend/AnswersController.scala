@@ -96,7 +96,11 @@ class AnswersController @Inject()(
       mapper(request.userAnswers).map {
         asset =>
           connector.amendNonEeaBusinessAsset(request.userAnswers.identifier, index, asset).map(_ =>
-            Redirect(controllers.asset.routes.AddAssetsController.onPageLoad())
+            if (request.userAnswers.isMigratingToTaxable) {
+              Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
+            } else {
+              Redirect(controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad())
+            }
           )
       }.getOrElse {
         logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +

@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package mapping
+package pages.asset.nontaxabletotaxable
 
-import mapping.reads.MoneyAsset
-import models.assets.AssetMonetaryAmount
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-class MoneyAssetMapper extends Mapping[AssetMonetaryAmount, MoneyAsset] {
+case object AddAssetsYesNoPage extends QuestionPage[Boolean] {
 
-  override def mapAssets(assets: List[MoneyAsset]): List[AssetMonetaryAmount] = {
-    assets.map(x => AssetMonetaryAmount(x.value))
-  }
+  override def path: JsPath = JsPath \ "nonTaxableToTaxable" \ toString
+
+  override def toString: String = "addAssetsYesNo"
 }

@@ -17,12 +17,11 @@
 package controllers.asset.noneeabusiness.remove
 
 import java.time.LocalDate
-
 import base.SpecBase
 import connectors.TrustsConnector
 import controllers.Assets.OK
 import forms.EndDateFormProvider
-import models.NonUkAddress
+import models.{NonUkAddress, UserAnswers}
 import models.assets._
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -60,6 +59,8 @@ class RemoveAssetEndDateControllerSpec extends SpecBase with ScalaCheckPropertyC
     createAsset(2, provisional = true)
   )
 
+  def userAnswers(migrating: Boolean) = UserAnswers("internalId", "identifier", LocalDate.now, isMigratingToTaxable = migrating)
+
   "RemoveAssetEndDateController" when {
 
     "return OK and the correct view for a GET" in {
@@ -88,11 +89,13 @@ class RemoveAssetEndDateControllerSpec extends SpecBase with ScalaCheckPropertyC
 
     "removing a new asset" must {
 
-      "redirect to the add to page, removing the asset" in {
+      "redirect to the 'add non-eea asset' page, removing the asset when not migrating" in {
 
         val index = 2
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        val answers = userAnswers(migrating = false)
+
+        val application = applicationBuilder(userAnswers = Some(answers))
           .overrides(bind[TrustsConnector].toInstance(mockConnector))
           .build()
 
@@ -114,7 +117,40 @@ class RemoveAssetEndDateControllerSpec extends SpecBase with ScalaCheckPropertyC
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.asset.routes.AddAssetsController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad().url
+
+        application.stop()
+      }
+
+      "redirect to the 'add asset' page, removing the asset when migrating" in {
+
+        val index = 2
+
+        val answers = userAnswers(migrating = true)
+
+        val application = applicationBuilder(userAnswers = Some(answers))
+          .overrides(bind[TrustsConnector].toInstance(mockConnector))
+          .build()
+
+        when(mockConnector.getAssets(any())(any(), any()))
+          .thenReturn(Future.successful(Assets(Nil, Nil, Nil, Nil, Nil, Nil, nonEeaAssets)))
+
+        when(mockConnector.removeAsset(any(), any())(any(), any()))
+          .thenReturn(Future.successful(HttpResponse(200, "")))
+
+        val request =
+          FakeRequest(POST, routes.RemoveAssetEndDateController.onSubmit(index).url)
+            .withFormUrlEncodedBody(
+              "value.day" -> validAnswer.getDayOfMonth.toString,
+              "value.month" -> validAnswer.getMonthValue.toString,
+              "value.year" -> validAnswer.getYear.toString
+            )
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
 
         application.stop()
       }
@@ -122,11 +158,13 @@ class RemoveAssetEndDateControllerSpec extends SpecBase with ScalaCheckPropertyC
 
     "removing an old asset" must {
 
-      "redirect to the add to page, removing the asset" in {
+      "redirect to the 'add non-eea asset' page, removing the asset and not migrating" in {
 
         val index = 0
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        val answers = userAnswers(migrating = false)
+
+        val application = applicationBuilder(userAnswers = Some(answers))
           .overrides(bind[TrustsConnector].toInstance(mockConnector))
           .build()
 
@@ -148,7 +186,40 @@ class RemoveAssetEndDateControllerSpec extends SpecBase with ScalaCheckPropertyC
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.asset.routes.AddAssetsController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad().url
+
+        application.stop()
+      }
+
+      "redirect to the 'add asset' page, removing the asset when migrating" in {
+
+        val index = 0
+
+        val answers = userAnswers(migrating = true)
+
+        val application = applicationBuilder(userAnswers = Some(answers))
+          .overrides(bind[TrustsConnector].toInstance(mockConnector))
+          .build()
+
+        when(mockConnector.getAssets(any())(any(), any()))
+          .thenReturn(Future.successful(Assets(Nil, Nil, Nil, Nil, Nil, Nil, nonEeaAssets)))
+
+        when(mockConnector.removeAsset(any(), any())(any(), any()))
+          .thenReturn(Future.successful(HttpResponse(200, "")))
+
+        val request =
+          FakeRequest(POST, routes.RemoveAssetEndDateController.onSubmit(index).url)
+            .withFormUrlEncodedBody(
+              "value.day" -> validAnswer.getDayOfMonth.toString,
+              "value.month" -> validAnswer.getMonthValue.toString,
+              "value.year" -> validAnswer.getYear.toString
+            )
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
 
         application.stop()
       }

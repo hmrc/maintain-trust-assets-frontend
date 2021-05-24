@@ -17,14 +17,16 @@
 package models
 
 import base.SpecBase
-import models.Status._
 import models.WhatKindOfAsset._
+import models.assets.{AssetMonetaryAmount, Assets, NonEeaBusinessType, OtherAssetType}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.i18n.{Lang, MessagesImpl}
 import play.api.libs.json.{JsError, JsString, Json}
 import viewmodels._
+
+import java.time.LocalDate
 
 class WhatKindOfAssetSpec extends SpecBase with ScalaCheckPropertyChecks {
 
@@ -65,13 +67,9 @@ class WhatKindOfAssetSpec extends SpecBase with ScalaCheckPropertyChecks {
 
     "return the non maxed out options" when {
 
-      val is5mldEnabled: Boolean = true
-
       "no assets" in {
 
-        val assets: List[AssetViewModel] = Nil
-
-        WhatKindOfAsset.nonMaxedOutOptions(assets, assetTypeAtIndex = None, is5mldEnabled) mustBe List(
+        WhatKindOfAsset.nonMaxedOutOptions(Assets()) mustBe List(
           RadioOption("whatKindOfAsset", Money.toString),
           RadioOption("whatKindOfAsset", PropertyOrLand.toString),
           RadioOption("whatKindOfAsset", Shares.toString),
@@ -83,103 +81,48 @@ class WhatKindOfAssetSpec extends SpecBase with ScalaCheckPropertyChecks {
 
       }
 
-      "there is a 'Money' asset" when {
+      "there is a 'Money' asset" in {
 
-        val moneyAsset = MoneyAssetViewModel(Money, Some("4000"), Completed)
-        val assets: List[AssetViewModel] = List(moneyAsset)
+        val moneyAsset = AssetMonetaryAmount(4000L)
+        val assets: Assets = Assets(monetary = List(moneyAsset))
 
-        "at this index" in {
-
-          WhatKindOfAsset.nonMaxedOutOptions(assets, assetTypeAtIndex = Some(Money), is5mldEnabled) mustBe List(
-            RadioOption("whatKindOfAsset", Money.toString),
-            RadioOption("whatKindOfAsset", PropertyOrLand.toString),
-            RadioOption("whatKindOfAsset", Shares.toString),
-            RadioOption("whatKindOfAsset", Business.toString),
-            RadioOption("whatKindOfAsset", NonEeaBusiness.toString),
-            RadioOption("whatKindOfAsset", Partnership.toString),
-            RadioOption("whatKindOfAsset", Other.toString)
-          )
-        }
-
-        "at a different index" in {
-
-          WhatKindOfAsset.nonMaxedOutOptions(assets, assetTypeAtIndex = None, is5mldEnabled) mustBe List(
-            RadioOption("whatKindOfAsset", PropertyOrLand.toString),
-            RadioOption("whatKindOfAsset", Shares.toString),
-            RadioOption("whatKindOfAsset", Business.toString),
-            RadioOption("whatKindOfAsset", NonEeaBusiness.toString),
-            RadioOption("whatKindOfAsset", Partnership.toString),
-            RadioOption("whatKindOfAsset", Other.toString)
-          )
-        }
+        WhatKindOfAsset.nonMaxedOutOptions(assets) mustBe List(
+          RadioOption("whatKindOfAsset", PropertyOrLand.toString),
+          RadioOption("whatKindOfAsset", Shares.toString),
+          RadioOption("whatKindOfAsset", Business.toString),
+          RadioOption("whatKindOfAsset", NonEeaBusiness.toString),
+          RadioOption("whatKindOfAsset", Partnership.toString),
+          RadioOption("whatKindOfAsset", Other.toString)
+        )
       }
 
-      "there are a combined 10 Completed and InProgress assets of a particular type that isn't 'Money'" when {
+      "there are a 10 Completed 'other' assets" in {
+        val generator = for (_ <- 1 to 10) yield OtherAssetType("desc", 200L)
+        val assets = Assets(other = generator.toList)
 
-        "asset at this index is of that type" in {
-          val otherAssetCompleted = OtherAssetViewModel(Other, Some("description"), Completed)
-          val otherAssetInProgress = OtherAssetViewModel(Other, None, InProgress)
-
-          val assets: List[AssetViewModel] = List.fill(5)(otherAssetCompleted) ++ List.fill(5)(otherAssetInProgress)
-
-          WhatKindOfAsset.nonMaxedOutOptions(assets, assetTypeAtIndex = Some(Other), is5mldEnabled) mustBe List(
-            RadioOption("whatKindOfAsset", Money.toString),
-            RadioOption("whatKindOfAsset", PropertyOrLand.toString),
-            RadioOption("whatKindOfAsset", Shares.toString),
-            RadioOption("whatKindOfAsset", Business.toString),
-            RadioOption("whatKindOfAsset", NonEeaBusiness.toString),
-            RadioOption("whatKindOfAsset", Partnership.toString),
-            RadioOption("whatKindOfAsset", Other.toString)
-          )
-        }
-
-        "no asset at this index" in {
-          val otherAssetCompleted = OtherAssetViewModel(Other, Some("description"), Completed)
-          val otherAssetInProgress = OtherAssetViewModel(Other, None, InProgress)
-
-          val assets: List[AssetViewModel] = List.fill(5)(otherAssetCompleted) ++ List.fill(5)(otherAssetInProgress)
-
-          WhatKindOfAsset.nonMaxedOutOptions(assets, assetTypeAtIndex = None, is5mldEnabled) mustBe List(
-            RadioOption("whatKindOfAsset", Money.toString),
-            RadioOption("whatKindOfAsset", PropertyOrLand.toString),
-            RadioOption("whatKindOfAsset", Shares.toString),
-            RadioOption("whatKindOfAsset", Business.toString),
-            RadioOption("whatKindOfAsset", NonEeaBusiness.toString),
-            RadioOption("whatKindOfAsset", Partnership.toString)
-          )
-        }
+        WhatKindOfAsset.nonMaxedOutOptions(assets) mustBe List(
+          RadioOption("whatKindOfAsset", Money.toString),
+          RadioOption("whatKindOfAsset", PropertyOrLand.toString),
+          RadioOption("whatKindOfAsset", Shares.toString),
+          RadioOption("whatKindOfAsset", Business.toString),
+          RadioOption("whatKindOfAsset", NonEeaBusiness.toString),
+          RadioOption("whatKindOfAsset", Partnership.toString)
+        )
       }
 
-      "there are a combined 25 Completed and InProgress non-EEA business assets" when {
+      "there are a 25 non-EEA business assets" in {
+        val generator = for (i <- 1 to 25) yield NonEeaBusinessType(Some(s"$i"), "orgName", UkAddress("line1", "line2", None, None, "NE981ZZ"), "GB", LocalDate.now, None, provisional = false)
+        val assets = Assets(nonEEABusiness = generator.toList)
 
-        val nonEeaBusinessAssetCompleted = NonEeaBusinessAssetViewModel(NonEeaBusiness, Some("name"), Completed)
-        val nonEeaBusinessAssetInProgress = NonEeaBusinessAssetViewModel(NonEeaBusiness, None, InProgress)
-
-        val assets: List[AssetViewModel] = List.fill(20)(nonEeaBusinessAssetCompleted) ++List.fill(5)(nonEeaBusinessAssetInProgress)
-
-        "asset at this index is of type NonEeaBusiness" in {
-          WhatKindOfAsset.nonMaxedOutOptions(assets, assetTypeAtIndex = Some(NonEeaBusiness), is5mldEnabled) mustBe List(
-            RadioOption("whatKindOfAsset", Money.toString),
-            RadioOption("whatKindOfAsset", PropertyOrLand.toString),
-            RadioOption("whatKindOfAsset", Shares.toString),
-            RadioOption("whatKindOfAsset", Business.toString),
-            RadioOption("whatKindOfAsset", NonEeaBusiness.toString),
-            RadioOption("whatKindOfAsset", Partnership.toString),
-            RadioOption("whatKindOfAsset", Other.toString)
-          )
-        }
-
-        "no asset at this index" in {
-          WhatKindOfAsset.nonMaxedOutOptions(assets, assetTypeAtIndex = None, is5mldEnabled) mustBe List(
-            RadioOption("whatKindOfAsset", Money.toString),
-            RadioOption("whatKindOfAsset", PropertyOrLand.toString),
-            RadioOption("whatKindOfAsset", Shares.toString),
-            RadioOption("whatKindOfAsset", Business.toString),
-            RadioOption("whatKindOfAsset", Partnership.toString),
-            RadioOption("whatKindOfAsset", Other.toString)
-          )
-        }
-      }
+        WhatKindOfAsset.nonMaxedOutOptions(assets) mustBe List(
+          RadioOption("whatKindOfAsset", Money.toString),
+          RadioOption("whatKindOfAsset", PropertyOrLand.toString),
+          RadioOption("whatKindOfAsset", Shares.toString),
+          RadioOption("whatKindOfAsset", Business.toString),
+          RadioOption("whatKindOfAsset", Partnership.toString),
+          RadioOption("whatKindOfAsset", Other.toString)
+        )
+    }
     }
 
     "display label in correct language" when {

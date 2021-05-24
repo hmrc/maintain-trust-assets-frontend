@@ -30,7 +30,7 @@ import java.time.LocalDate
 class PartnershipPrintHelperSpec extends SpecBase {
 
   private val helper: PartnershipPrintHelper = injector.instanceOf[PartnershipPrintHelper]
-  private val index: Int = 0
+
   private val description: String = "Description"
   private val date: LocalDate = LocalDate.parse("1996-02-03")
 
@@ -40,7 +40,7 @@ class PartnershipPrintHelperSpec extends SpecBase {
     .set(PartnershipStartDatePage, date).success.value
 
   private val rows: Seq[AnswerRow] = Seq(
-    AnswerRow(label = Html(messages("whatKindOfAsset.first.checkYourAnswersLabel")), Html("Partnership"), WhatKindOfAssetController.onPageLoad(index).url),
+    AnswerRow(label = Html(messages("whatKindOfAsset.first.checkYourAnswersLabel")), Html("Partnership"), WhatKindOfAssetController.onPageLoad().url),
     AnswerRow(label = Html(messages("partnership.description.checkYourAnswersLabel")), Html(description), PartnershipDescriptionController.onPageLoad(NormalMode).url),
     AnswerRow(label = Html(messages("partnership.startDate.checkYourAnswersLabel", description)), Html("3 February 1996"), PartnershipStartDateController.onPageLoad(NormalMode).url)
   )

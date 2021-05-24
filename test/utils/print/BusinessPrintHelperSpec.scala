@@ -29,7 +29,7 @@ import viewmodels.{AnswerRow, AnswerSection}
 class BusinessPrintHelperSpec extends SpecBase {
 
   private val helper: BusinessPrintHelper = injector.instanceOf[BusinessPrintHelper]
-  private val index: Int = 0
+
   private val name: String = "Name"
   private val description: String = "Description"
   private val ukAddress: UkAddress = UkAddress("Line 1", "Line 2", None, None, "AB1 1AB")
@@ -51,7 +51,7 @@ class BusinessPrintHelperSpec extends SpecBase {
     .set(BusinessInternationalAddressPage, nonUkAddress).success.value
 
   private val ukAddressRows: Seq[AnswerRow] = Seq(
-    AnswerRow(label = Html(messages("whatKindOfAsset.first.checkYourAnswersLabel")), Html("Business"), WhatKindOfAssetController.onPageLoad(index).url),
+    AnswerRow(label = Html(messages("whatKindOfAsset.first.checkYourAnswersLabel")), Html("Business"), WhatKindOfAssetController.onPageLoad().url),
     AnswerRow(label = Html(messages("business.name.checkYourAnswersLabel")), Html(name), BusinessNameController.onPageLoad(NormalMode).url),
     AnswerRow(label = Html(messages("business.description.checkYourAnswersLabel", name)), Html(description), BusinessDescriptionController.onPageLoad(NormalMode).url),
     AnswerRow(label = Html(messages("business.addressUkYesNo.checkYourAnswersLabel", name)), Html("Yes"), BusinessAddressUkYesNoController.onPageLoad(NormalMode).url),
@@ -60,7 +60,7 @@ class BusinessPrintHelperSpec extends SpecBase {
   )
 
   private val nonUkAddressRows: Seq[AnswerRow] = Seq(
-    AnswerRow(label = Html(messages("whatKindOfAsset.first.checkYourAnswersLabel")), Html("Business"), WhatKindOfAssetController.onPageLoad(index).url),
+    AnswerRow(label = Html(messages("whatKindOfAsset.first.checkYourAnswersLabel")), Html("Business"), WhatKindOfAssetController.onPageLoad().url),
     AnswerRow(label = Html(messages("business.name.checkYourAnswersLabel")), Html(name), BusinessNameController.onPageLoad(NormalMode).url),
     AnswerRow(label = Html(messages("business.description.checkYourAnswersLabel", name)), Html(description), BusinessDescriptionController.onPageLoad(NormalMode).url),
     AnswerRow(label = Html(messages("business.addressUkYesNo.checkYourAnswersLabel", name)), Html("No"), BusinessAddressUkYesNoController.onPageLoad(NormalMode).url),

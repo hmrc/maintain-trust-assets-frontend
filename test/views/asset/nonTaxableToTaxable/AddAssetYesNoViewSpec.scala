@@ -14,26 +14,26 @@
  * limitations under the License.
  */
 
-package views.asset
+package views.asset.nonTaxableToTaxable
 
 import forms.YesNoFormProvider
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.asset.AddAnAssetYesNoView
+import views.html.asset.nonTaxableToTaxable.AddAssetYesNoView
 
-class AddAnAssetYesNoViewSpec extends YesNoViewBehaviours {
+class AddAssetYesNoViewSpec extends YesNoViewBehaviours {
 
-  private val messageKeyPrefix: String = "addAnAssetYesNo"
+  private val messageKeyPrefix: String = "nonTaxableToTaxable.addAssetYesNo"
 
   override val form: Form[Boolean] = new YesNoFormProvider().withPrefix(messageKeyPrefix)
 
-  "AddAnAssetYesNo view" must {
+  val view = viewFor[AddAssetYesNoView](Some(emptyUserAnswers))
 
-    val view = viewFor[AddAnAssetYesNoView](Some(emptyUserAnswers))
+  def applyView(form: Form[_]): HtmlFormat.Appendable =
+    view.apply(form)(fakeRequest, messages)
 
-    def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form)(fakeRequest, messages)
+  "AddAssetYesNo view" must {
 
     behave like normalPage(applyView(form), messageKeyPrefix)
 
@@ -41,6 +41,13 @@ class AddAnAssetYesNoViewSpec extends YesNoViewBehaviours {
 
     behave like yesNoPage(form, applyView, messageKeyPrefix)
 
-    behave like pageWithASubmitButton(applyView((form)))
+    behave like pageWithASubmitButton(applyView(form))
+  }
+
+  "renders content" in {
+    val doc = asDocument(applyView(form))
+    assertContainsText(doc, "You need to add at least one asset to register the trust as taxable.")
+    assertContainsText(doc, "land or property")
+    assertContainsText(doc, "ownerships or controlling interests in non-European Economic Area companies")
   }
 }

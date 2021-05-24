@@ -17,12 +17,13 @@
 package navigation
 
 import controllers.asset.partnership.routes._
-import controllers.asset.routes._
+import models.assets.Assets
+
+import javax.inject.{Inject, Singleton}
 import models.{Mode, NormalMode, UserAnswers}
 import pages.Page
 import pages.asset.partnership._
 import play.api.mvc.Call
-import javax.inject.{Inject, Singleton}
 
 @Singleton
 class PartnershipNavigator @Inject()() extends Navigator {
@@ -30,13 +31,13 @@ class PartnershipNavigator @Inject()() extends Navigator {
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
     routes(mode)(page)(userAnswers)
 
-  override def nextPage(page: Page, userAnswers: UserAnswers): Call =
+  override def nextPage(page: Page, userAnswers: UserAnswers, assets: Assets = Assets()): Call =
     nextPage(page, NormalMode, userAnswers)
 
   def simpleNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
     case PartnershipDescriptionPage  => _ => PartnershipStartDateController.onPageLoad(mode)
     case PartnershipStartDatePage => _ => PartnershipAnswerController.onPageLoad()
-    case PartnershipAnswerPage => _ => AddAssetsController.onPageLoad()
+    case PartnershipAnswerPage => _ => controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad()
   }
 
   def routes(mode: Mode): PartialFunction[Page, UserAnswers => Call] =

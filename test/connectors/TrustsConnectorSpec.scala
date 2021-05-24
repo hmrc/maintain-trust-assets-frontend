@@ -16,23 +16,24 @@
 
 package connectors
 
-import java.time.LocalDate
-
 import base.SpecBase
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock._
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig
 import generators.Generators
 import models.assets._
+import models.http.TaxableMigrationFlag
 import models.{NonUkAddress, RemoveAsset, TrustDetails, TypeOfTrust}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
-import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach, Inside}
+import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
 import play.api.libs.json.{JsBoolean, Json}
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 
-class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures
-  with Inside with BeforeAndAfterAll with BeforeAndAfterEach with IntegrationPatience {
+import java.time.LocalDate
+
+class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures with BeforeAndAfterAll with BeforeAndAfterEach with IntegrationPatience {
+
   implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
   protected val server: WireMockServer = new WireMockServer(wireMockConfig().dynamicPort())
@@ -79,6 +80,7 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures
   private def addNonEeaBusinessAssetUrl(identifier: String) = s"$assetsUrl/add-non-eea-business/$identifier"
   private def amendNonEeaBusinessAssetUrl(identifier: String, index: Int) = s"$assetsUrl/amend-non-eea-business/$identifier/$index"
   private def removeAssetUrl(identifier: String) = s"$assetsUrl/$identifier/remove"
+  private def getTrustMigrationFlagUrl(identifier: String) = s"/trusts/$identifier/taxable-migration/migrating-to-taxable"
 
   val moneyAsset = AssetMonetaryAmount(123)
   val propertyOrLandAsset = PropertyLandType(None, None, 123, None)
@@ -303,8 +305,12 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures
             .willReturn(ok)
         )
 
-        val result = connector.addMoneyAsset(identifier, moneyAsset)
-        result.futureValue.status mustBe OK
+        val processed = connector.addMoneyAsset(identifier, moneyAsset)
+
+        whenReady(processed) {
+          r =>
+            r.status mustBe OK
+        }
         application.stop()
       }
 
@@ -324,11 +330,17 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures
             .willReturn(badRequest)
         )
 
-        val result = connector.addMoneyAsset(identifier, moneyAsset)
-        result.map(response => response.status mustBe BAD_REQUEST)
+        val processed = connector.addMoneyAsset(identifier, moneyAsset)
+
+        whenReady(processed) {
+          r =>
+            r.status mustBe BAD_REQUEST
+        }
+
         application.stop()
       }
     }
+
     "amendMoneyAsset" must {
 
       "Return OK when the request is successful" in {
@@ -347,8 +359,12 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures
             .willReturn(ok)
         )
 
-        val result = connector.amendMoneyAsset(identifier, index, moneyAsset)
-        result.futureValue.status mustBe OK
+        val processed = connector.amendMoneyAsset(identifier, index, moneyAsset)
+
+        whenReady(processed) {
+          r =>
+            r.status mustBe OK
+        }
         application.stop()
       }
 
@@ -368,13 +384,18 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures
             .willReturn(badRequest)
         )
 
-        val result = connector.amendMoneyAsset(identifier, index, moneyAsset)
-        result.map(response => response.status mustBe BAD_REQUEST)
+        val processed = connector.amendMoneyAsset(identifier, index, moneyAsset)
+
+        whenReady(processed) {
+          r =>
+            r.status mustBe BAD_REQUEST
+        }
         application.stop()
       }
     }
 
     "addPropertyOrLandAsset" must {
+
       "Return OK when the request is successful" in {
         val application = applicationBuilder()
           .configure(
@@ -391,8 +412,12 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures
             .willReturn(ok)
         )
 
-        val result = connector.addPropertyOrLandAsset(identifier, propertyOrLandAsset)
-        result.futureValue.status mustBe OK
+        val processed = connector.addPropertyOrLandAsset(identifier, propertyOrLandAsset)
+
+        whenReady(processed) {
+          r =>
+            r.status mustBe OK
+        }
         application.stop()
       }
 
@@ -412,8 +437,12 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures
             .willReturn(badRequest)
         )
 
-        val result = connector.addPropertyOrLandAsset(identifier, propertyOrLandAsset)
-        result.map(response => response.status mustBe BAD_REQUEST)
+        val processed = connector.addPropertyOrLandAsset(identifier, propertyOrLandAsset)
+
+        whenReady(processed) {
+          r =>
+            r.status mustBe BAD_REQUEST
+        }
         application.stop()
       }
     }
@@ -435,8 +464,12 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures
             .willReturn(ok)
         )
 
-        val result = connector.amendPropertyOrLandAsset(identifier, index, propertyOrLandAsset)
-        result.futureValue.status mustBe OK
+        val processed = connector.amendPropertyOrLandAsset(identifier, index, propertyOrLandAsset)
+
+        whenReady(processed) {
+          r =>
+            r.status mustBe OK
+        }
         application.stop()
       }
 
@@ -456,13 +489,18 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures
             .willReturn(badRequest)
         )
 
-        val result = connector.amendPropertyOrLandAsset(identifier, index, propertyOrLandAsset)
-        result.map(response => response.status mustBe BAD_REQUEST)
+        val processed = connector.amendPropertyOrLandAsset(identifier, index, propertyOrLandAsset)
+
+        whenReady(processed) {
+          r =>
+            r.status mustBe BAD_REQUEST
+        }
         application.stop()
       }
     }
 
     "addSharesAsset" must {
+
       "Return OK when the request is successful" in {
         val application = applicationBuilder()
           .configure(
@@ -479,8 +517,12 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures
             .willReturn(ok)
         )
 
-        val result = connector.addSharesAsset(identifier, sharesAsset)
-        result.futureValue.status mustBe OK
+        val processed = connector.addSharesAsset(identifier, sharesAsset)
+
+        whenReady(processed) {
+          r =>
+            r.status mustBe OK
+        }
         application.stop()
       }
 
@@ -500,8 +542,12 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures
             .willReturn(badRequest)
         )
 
-        val result = connector.addSharesAsset(identifier, sharesAsset)
-        result.map(response => response.status mustBe BAD_REQUEST)
+        val processed = connector.addSharesAsset(identifier, sharesAsset)
+
+        whenReady(processed) {
+          r =>
+            r.status mustBe BAD_REQUEST
+        }
         application.stop()
       }
     }
@@ -523,8 +569,12 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures
             .willReturn(ok)
         )
 
-        val result = connector.amendSharesAsset(identifier, index, sharesAsset)
-        result.futureValue.status mustBe OK
+        val processed = connector.amendSharesAsset(identifier, index, sharesAsset)
+
+        whenReady(processed) {
+          r =>
+            r.status mustBe OK
+        }
         application.stop()
       }
 
@@ -544,13 +594,18 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures
             .willReturn(badRequest)
         )
 
-        val result = connector.amendSharesAsset(identifier, index, sharesAsset)
-        result.map(response => response.status mustBe BAD_REQUEST)
+        val processed = connector.amendSharesAsset(identifier, index, sharesAsset)
+
+        whenReady(processed) {
+          r =>
+            r.status mustBe BAD_REQUEST
+        }
         application.stop()
       }
     }
 
     "addBusinessAsset" must {
+
       "Return OK when the request is successful" in {
         val application = applicationBuilder()
           .configure(
@@ -567,8 +622,12 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures
             .willReturn(ok)
         )
 
-        val result = connector.addBusinessAsset(identifier, businessAsset)
-        result.futureValue.status mustBe OK
+        val processed = connector.addBusinessAsset(identifier, businessAsset)
+
+        whenReady(processed) {
+          r =>
+            r.status mustBe OK
+        }
         application.stop()
       }
 
@@ -588,8 +647,12 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures
             .willReturn(badRequest)
         )
 
-        val result = connector.addBusinessAsset(identifier, businessAsset)
-        result.map(response => response.status mustBe BAD_REQUEST)
+        val processed = connector.addBusinessAsset(identifier, businessAsset)
+
+        whenReady(processed) {
+          r =>
+            r.status mustBe BAD_REQUEST
+        }
         application.stop()
       }
     }
@@ -611,8 +674,12 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures
             .willReturn(ok)
         )
 
-        val result = connector.amendBusinessAsset(identifier, index, businessAsset)
-        result.futureValue.status mustBe OK
+        val processed = connector.amendBusinessAsset(identifier, index, businessAsset)
+
+        whenReady(processed) {
+          r =>
+            r.status mustBe OK
+        }
         application.stop()
       }
 
@@ -632,8 +699,12 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures
             .willReturn(badRequest)
         )
 
-        val result = connector.amendBusinessAsset(identifier, index, businessAsset)
-        result.map(response => response.status mustBe BAD_REQUEST)
+        val processed = connector.amendBusinessAsset(identifier, index, businessAsset)
+
+        whenReady(processed) {
+          r =>
+            r.status mustBe BAD_REQUEST
+        }
         application.stop()
       }
     }
@@ -655,8 +726,12 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures
             .willReturn(ok)
         )
 
-        val result = connector.addPartnershipAsset(identifier, partnershipAsset)
-        result.futureValue.status mustBe OK
+        val processed = connector.addPartnershipAsset(identifier, partnershipAsset)
+
+        whenReady(processed) {
+          r =>
+            r.status mustBe OK
+        }
         application.stop()
       }
 
@@ -676,8 +751,12 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures
             .willReturn(badRequest)
         )
 
-        val result = connector.addPartnershipAsset(identifier, partnershipAsset)
-        result.map(response => response.status mustBe BAD_REQUEST)
+        val processed = connector.addPartnershipAsset(identifier, partnershipAsset)
+
+        whenReady(processed) {
+          r =>
+            r.status mustBe BAD_REQUEST
+        }
         application.stop()
       }
     }
@@ -699,8 +778,12 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures
             .willReturn(ok)
         )
 
-        val result = connector.amendPartnershipAsset(identifier, index, partnershipAsset)
-        result.futureValue.status mustBe OK
+        val processed = connector.amendPartnershipAsset(identifier, index, partnershipAsset)
+
+        whenReady(processed) {
+          r =>
+            r.status mustBe OK
+        }
         application.stop()
       }
 
@@ -720,8 +803,12 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures
             .willReturn(badRequest)
         )
 
-        val result = connector.amendPartnershipAsset(identifier, index, partnershipAsset)
-        result.map(response => response.status mustBe BAD_REQUEST)
+        val processed = connector.amendPartnershipAsset(identifier, index, partnershipAsset)
+
+        whenReady(processed) {
+          r =>
+            r.status mustBe BAD_REQUEST
+        }
         application.stop()
       }
     }
@@ -743,8 +830,12 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures
             .willReturn(ok)
         )
 
-        val result = connector.addOtherAsset(identifier, otherAsset)
-        result.futureValue.status mustBe OK
+        val processed = connector.addOtherAsset(identifier, otherAsset)
+
+        whenReady(processed) {
+          r =>
+            r.status mustBe OK
+        }
         application.stop()
       }
 
@@ -764,8 +855,12 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures
             .willReturn(badRequest)
         )
 
-        val result = connector.addOtherAsset(identifier, otherAsset)
-        result.map(response => response.status mustBe BAD_REQUEST)
+        val processed = connector.addOtherAsset(identifier, otherAsset)
+
+        whenReady(processed) {
+          r =>
+            r.status mustBe BAD_REQUEST
+        }
         application.stop()
       }
     }
@@ -787,8 +882,12 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures
             .willReturn(ok)
         )
 
-        val result = connector.amendOtherAsset(identifier, index, otherAsset)
-        result.futureValue.status mustBe OK
+        val processed = connector.amendOtherAsset(identifier, index, otherAsset)
+
+        whenReady(processed) {
+          r =>
+            r.status mustBe OK
+        }
         application.stop()
       }
 
@@ -808,8 +907,12 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures
             .willReturn(badRequest)
         )
 
-        val result = connector.amendOtherAsset(identifier, index, otherAsset)
-        result.map(response => response.status mustBe BAD_REQUEST)
+        val processed = connector.amendOtherAsset(identifier, index, otherAsset)
+
+        whenReady(processed) {
+          r =>
+            r.status mustBe BAD_REQUEST
+        }
         application.stop()
       }
     }
@@ -831,8 +934,12 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures
             .willReturn(ok)
         )
 
-        val result = connector.addNonEeaBusinessAsset(identifier, nonEeaBusinessAsset)
-        result.futureValue.status mustBe OK
+        val processed = connector.addNonEeaBusinessAsset(identifier, nonEeaBusinessAsset)
+
+        whenReady(processed) {
+          r =>
+            r.status mustBe OK
+        }
         application.stop()
       }
 
@@ -852,8 +959,12 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures
             .willReturn(badRequest)
         )
 
-        val result = connector.addNonEeaBusinessAsset(identifier, nonEeaBusinessAsset)
-        result.map(response => response.status mustBe BAD_REQUEST)
+        val processed = connector.addNonEeaBusinessAsset(identifier, nonEeaBusinessAsset)
+
+        whenReady(processed) {
+          r =>
+            r.status mustBe BAD_REQUEST
+        }
         application.stop()
       }
     }
@@ -875,8 +986,12 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures
             .willReturn(ok)
         )
 
-        val result = connector.amendNonEeaBusinessAsset(identifier, index, nonEeaBusinessAsset)
-        result.futureValue.status mustBe OK
+        val processed = connector.amendNonEeaBusinessAsset(identifier, index, nonEeaBusinessAsset)
+
+        whenReady(processed) {
+          r =>
+            r.status mustBe OK
+        }
         application.stop()
       }
 
@@ -896,8 +1011,12 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures
             .willReturn(badRequest)
         )
 
-        val result = connector.amendNonEeaBusinessAsset(identifier, index, nonEeaBusinessAsset)
-        result.map(response => response.status mustBe BAD_REQUEST)
+        val processed = connector.amendNonEeaBusinessAsset(identifier, index, nonEeaBusinessAsset)
+
+        whenReady(processed) {
+          r =>
+            r.status mustBe BAD_REQUEST
+        }
         application.stop()
       }
     }
@@ -929,10 +1048,12 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures
             .willReturn(ok)
         )
 
-        val result = connector.removeAsset(identifier, trustee)
+        val processed = connector.removeAsset(identifier, trustee)
 
-        result.futureValue.status mustBe (OK)
-
+        whenReady(processed) {
+          r =>
+            r.status mustBe OK
+        }
         application.stop()
       }
 
@@ -961,13 +1082,82 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures
             .willReturn(badRequest)
         )
 
-        val result = connector.removeAsset(identifier, trustee)
+        val processed = connector.removeAsset(identifier, trustee)
 
-        result.map(response => response.status mustBe BAD_REQUEST)
-
+        whenReady(processed) {
+          r =>
+            r.status mustBe BAD_REQUEST
+        }
         application.stop()
       }
 
     }
+    "getTrustMigrationFlag" when {
+
+      "value defined" in {
+
+        val json = Json.parse(
+          """
+            |{
+            | "value": true
+            |}
+            |""".stripMargin)
+
+        val application = applicationBuilder()
+          .configure(
+            Seq(
+              "microservice.services.trusts.port" -> server.port(),
+              "auditing.enabled" -> false
+            ): _*
+          ).build()
+
+        val connector = application.injector.instanceOf[TrustsConnector]
+
+        server.stubFor(
+          get(urlEqualTo(getTrustMigrationFlagUrl(identifier)))
+            .willReturn(okJson(json.toString))
+        )
+
+        val result = connector.getTrustMigrationFlag(identifier)
+
+        whenReady(result) { r =>
+          r mustBe TaxableMigrationFlag(Some(true))
+        }
+
+        application.stop()
+      }
+
+      "value undefined" in {
+
+        val json = Json.parse(
+          """
+            |{}
+            |""".stripMargin)
+
+        val application = applicationBuilder()
+          .configure(
+            Seq(
+              "microservice.services.trusts.port" -> server.port(),
+              "auditing.enabled" -> false
+            ): _*
+          ).build()
+
+        val connector = application.injector.instanceOf[TrustsConnector]
+
+        server.stubFor(
+          get(urlEqualTo(getTrustMigrationFlagUrl(identifier)))
+            .willReturn(okJson(json.toString))
+        )
+
+        val result = connector.getTrustMigrationFlag(identifier)
+
+        whenReady(result) { r =>
+          r mustBe TaxableMigrationFlag(None)
+        }
+
+        application.stop()
+      }
+    }
+
   }
 }

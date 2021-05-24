@@ -14,35 +14,39 @@
  * limitations under the License.
  *@
 
-@import controllers.asset.routes._
+@import controllers.asset.nonTaxableToTaxable.routes._
 @import models.AddAssets
 @import viewmodels.AddRow
+
 
 @this(
     main_template: MainTemplate,
     formHelper: FormWithCSRF
 )
 
-@(inProgressAssets: Seq[AddRow], completeAssets: Seq[AddRow], heading: String, maxLimit: Int, prefix: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], completeAssets: Seq[AddRow], heading: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = heading
+    title = s"${errorPrefix(form)} $heading"
 ) {
 
-    @formHelper(action = AddAssetsController.submitComplete(), 'autoComplete -> "off") {
+    @formHelper(action = AddAssetsController.submitAnother(), 'autoComplete -> "off") {
 
         @components.back_link()
 
-        @components.heading(heading)
+        @components.error_summary(form.errors)
 
-        @components.data_list(inProgressAssets, "inprogress", "asset")
+        @components.heading(heading)
 
         @components.data_list(completeAssets, "complete", "asset")
 
-        <ul>
-            <li class="panel-indent"><p>@messages(s"$prefix.maxedOut.p1", maxLimit)</p></li>
-            <li class="panel-indent"><p>@messages(s"$prefix.maxedOut.p2")</p></li>
-        </ul>
+        @components.input_radio(
+            field = form("value"),
+            legend = messages("nonTaxableToTaxable.addAssets.additional-content"),
+            legendClass = Some("heading-medium"),
+            inputs = AddAssets.options("nonTaxableToTaxable.addAssets"),
+            legendAsH2Heading = true
+        )
 
         @components.submit_button()
     }

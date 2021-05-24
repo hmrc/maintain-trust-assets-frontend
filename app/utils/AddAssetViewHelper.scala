@@ -17,19 +17,32 @@
 package utils
 
 import controllers.asset._
-import play.api.i18n.Messages
-import viewmodels.{AddRow, AddToRows}
+
 import javax.inject.Inject
+import models.CheckMode
 import models.assets._
+import play.api.i18n.Messages
+import utils.CheckAnswersFormatters.currencyFormat
+import viewmodels.{AddRow, AddToRows}
 
 class AddAssetViewHelper @Inject()(assets: Assets)
                                   (implicit messages: Messages) {
 
   def rows: AddToRows = {
 
-    val complete = assets.nonEEABusiness.zipWithIndex.map(x => renderNonEEABusiness(x._1, x._2))
+    val complete = assets.nonEEABusiness.zipWithIndex.map(x => renderNonEEABusiness(x._1, x._2)) ++
+                   assets.monetary.zipWithIndex.map(x => renderMoney(x._1))
 
-    AddToRows(Nil, complete)
+    AddToRows(complete)
+  }
+
+  private def renderMoney(asset: AssetMonetaryAmount): AddRow = {
+    AddRow(
+      name = currencyFormat(asset.assetMonetaryAmount.toString),
+      typeLabel = messages(s"entities.asset.monetary"),
+      changeUrl = controllers.asset.money.routes.AssetMoneyValueController.onPageLoad(mode = CheckMode).url,
+      removeUrl = controllers.asset.money.remove.routes.RemoveAssetYesNoController.onPageLoad().url
+    )
   }
 
   private def renderNonEEABusiness(asset: NonEeaBusinessType, index: Int): AddRow = {

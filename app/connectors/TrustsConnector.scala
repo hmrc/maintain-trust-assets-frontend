@@ -20,6 +20,7 @@ import config.FrontendAppConfig
 import javax.inject.Inject
 import models._
 import models.assets.{AssetMonetaryAmount, Assets, BusinessAssetType, NonEeaBusinessType, OtherAssetType, PartnershipType, PropertyLandType, SharesType}
+import models.http.TaxableMigrationFlag
 import play.api.Logging
 import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.http.HttpReads.Implicits._
@@ -138,6 +139,11 @@ class TrustsConnector @Inject()(http: HttpClient, config: FrontendAppConfig) ext
                  (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Boolean] = {
     val url: String = s"$trustsUrl/$identifier/is-trust-5mld"
     http.GET[Boolean](url)
+  }
+
+  def getTrustMigrationFlag(identifier: String)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[TaxableMigrationFlag] = {
+    val url = s"$trustsUrl/$identifier/taxable-migration/migrating-to-taxable"
+    http.GET[TaxableMigrationFlag](url)
   }
 
 }

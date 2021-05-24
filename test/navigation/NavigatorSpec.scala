@@ -23,15 +23,17 @@ import models.WhatKindOfAsset._
 import models.{AddAssets, NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.asset.nontaxabletotaxable.AddAssetsYesNoPage
 import pages.asset.{AddAnAssetYesNoPage, AddAssetsPage, AssetInterruptPage, TrustOwnsNonEeaBusinessYesNoPage, WhatKindOfAssetPage}
 import play.api.mvc.Call
 
 class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
+  private lazy val onwardRoute = frontendAppConfig.maintainATrustOverview
   private val navigator: Navigator = injector.instanceOf[AssetsNavigator]
 
   private val assetsCompletedRoute: Call = {
-    controllers.asset.routes.AddAssetsController.submitComplete()
+    controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.submitComplete()
   }
 
   "Navigator" when {
@@ -61,28 +63,27 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
 
     "asset interrupt page" when {
 
-      "taxable" must {
-
-        val baseAnswers = emptyUserAnswers.copy(isTaxable = true)
+      "not migrating from non tax to tax" must {
 
         "redirect to non-EEA business asset name page" in {
+
+          val baseAnswers = emptyUserAnswers.copy(isMigratingToTaxable = false)
 
           navigator.nextPage(AssetInterruptPage, NormalMode, baseAnswers)
             .mustBe(controllers.asset.noneeabusiness.routes.NameController.onPageLoad(NormalMode))
         }
-      }
 
-      "non-taxable" must {
+        "migration non-tax to taxable" must {
 
-        val baseAnswers = emptyUserAnswers.copy(isTaxable = false)
+          val baseAnswers = emptyUserAnswers.copy(isMigratingToTaxable = true)
 
-        "redirect to non-EEA business asset name page" in {
+          "redirect to what Kind Of Asset page" in {
 
-          val answers = baseAnswers.set(WhatKindOfAssetPage, NonEeaBusiness).success.value
-
-          navigator.nextPage(AssetInterruptPage, NormalMode, answers)
-            .mustBe(controllers.asset.noneeabusiness.routes.NameController.onPageLoad(NormalMode))
+            navigator.nextPage(AssetInterruptPage, NormalMode, baseAnswers)
+              .mustBe(controllers.asset.routes.WhatKindOfAssetController.onPageLoad())
+          }
         }
+
       }
     }
 
@@ -288,5 +289,32 @@ class NavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generato
         }
       }
     }
+
+    "Add Assets Yes No page" when {
+
+      "go to Asset interrupt page" in {
+        forAll(arbitrary[UserAnswers]) {
+          userAnswers =>
+
+            val answers = userAnswers.set(AddAssetsYesNoPage, true).success.value
+
+            navigator.nextPage(AddAssetsYesNoPage, answers)
+              .mustBe(controllers.asset.routes.AssetInterruptPageController.onPageLoad())
+        }
+      }
+
+      "go back to trusts hub" in {
+        forAll(arbitrary[UserAnswers]) {
+          userAnswers =>
+
+            val answers = userAnswers.set(AddAssetsYesNoPage, false).success.value
+
+            navigator.nextPage(AddAssetsYesNoPage, answers).url
+              .mustBe(onwardRoute)
+        }
+      }
+
+    }
+
   }
 }

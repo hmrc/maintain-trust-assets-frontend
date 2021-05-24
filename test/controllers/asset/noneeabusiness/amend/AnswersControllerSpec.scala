@@ -17,10 +17,9 @@
 package controllers.asset.noneeabusiness.amend
 
 import java.time.LocalDate
-
 import base.SpecBase
 import connectors.TrustsConnector
-import models.NonUkAddress
+import models.{NonUkAddress, UserAnswers}
 import models.assets.NonEeaBusinessType
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -45,8 +44,6 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
   private lazy val answersRoute = routes.AnswersController.extractAndRender(index).url
   private lazy val submitAnswersRoute = routes.AnswersController.onSubmit(index).url
 
-  private lazy val onwardRoute = controllers.asset.routes.AddAssetsController.onPageLoad().url
-
   private val index = 0
   private val name: String = "OrgName"
   private val date: LocalDate = LocalDate.parse("1996-02-03")
@@ -63,7 +60,7 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
     provisional = true
   )
 
-  private val userAnswers = emptyUserAnswers
+  def userAnswers(migrating: Boolean) = UserAnswers("internalId", "identifier", LocalDate.now, isMigratingToTaxable = migrating)
     .set(NamePage, name).success.value
     .set(IndexPage, index).success.value
     .set(NonUkAddressPage, nonUkAddress).success.value
@@ -76,7 +73,9 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
 
       val mockService : TrustService = mock[TrustService]
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers))
+      val answers = userAnswers(migrating = false)
+
+      val application = applicationBuilder(userAnswers = Some(answers))
         .overrides(
           bind[TrustService].toInstance(mockService)
         )
@@ -91,7 +90,7 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
 
       val view = application.injector.instanceOf[AnswersView]
       val printHelper = application.injector.instanceOf[NonEeaBusinessPrintHelper]
-      val answerSection = printHelper(userAnswers, provisional = false, name)
+      val answerSection = printHelper(answers, provisional = false, name)
 
       status(result) mustEqual OK
 
@@ -99,12 +98,14 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
         view(answerSection, index)(request, messages).toString
     }
 
-    "redirect to the 'add an asset' page when submitted" in {
+    "redirect to the 'add non-eea asset' page when submitted and not migrating" in {
 
       val mockTrustConnector = mock[TrustsConnector]
 
+      val answers = userAnswers(migrating = false)
+
       val application =
-        applicationBuilder(userAnswers = Some(userAnswers), affinityGroup = Agent)
+        applicationBuilder(userAnswers = Some(answers), affinityGroup = Agent)
           .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
           .build()
 
@@ -116,7 +117,31 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual onwardRoute
+      redirectLocation(result).value mustEqual controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad().url
+
+      application.stop()
+    }
+
+    "redirect to the 'add asset' page when submitted and migrating to taxable" in {
+
+      val mockTrustConnector = mock[TrustsConnector]
+
+      val answers = userAnswers(migrating = true)
+
+      val application =
+        applicationBuilder(userAnswers = Some(answers), affinityGroup = Agent)
+          .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
+          .build()
+
+      when(mockTrustConnector.amendNonEeaBusinessAsset(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+
+      val request = FakeRequest(POST, submitAnswersRoute)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
 
       application.stop()
     }

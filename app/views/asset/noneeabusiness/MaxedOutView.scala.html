@@ -14,41 +14,33 @@
  * limitations under the License.
  *@
 
-@import controllers.asset.routes._
+@import controllers.asset.noneeabusiness.routes._
 @import models.AddAssets
 @import viewmodels.AddRow
-
 
 @this(
     main_template: MainTemplate,
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], inProgressAssets: Seq[AddRow], completeAssets: Seq[AddRow], heading: String, prefix: String)(implicit request: Request[_], messages: Messages)
+@(completeAssets: Seq[AddRow], heading: String, maxLimit: Int, prefix: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} $heading"
+    title = heading
 ) {
 
-    @formHelper(action = AddAssetsController.submitAnother(), 'autoComplete -> "off") {
+    @formHelper(action = AddNonEeaBusinessAssetController.submitComplete(), 'autoComplete -> "off") {
 
         @components.back_link()
 
-        @components.error_summary(form.errors)
-
         @components.heading(heading)
-
-        @components.data_list(inProgressAssets, "inprogress", "asset")
 
         @components.data_list(completeAssets, "complete", "asset")
 
-        @components.input_radio(
-            field = form("value"),
-            legend = messages(s"$prefix.additional-content"),
-            legendClass = Some("heading-medium"),
-            inputs = AddAssets.options(prefix),
-            legendAsH2Heading = true
-        )
+        <ul>
+            <li class="panel-indent"><p>@messages(s"$prefix.maxedOut.p1", maxLimit)</p></li>
+            <li class="panel-indent"><p>@messages(s"$prefix.maxedOut.p2")</p></li>
+        </ul>
 
         @components.submit_button()
     }

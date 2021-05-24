@@ -19,6 +19,13 @@ POST       /start-date                                                controller
 GET        /check-answers                                             controllers.asset.noneeabusiness.add.AnswersController.onPageLoad()
 POST       /check-answers                                             controllers.asset.noneeabusiness.add.AnswersController.onSubmit()
 
+GET        /add                          controllers.asset.noneeabusiness.AddNonEeaBusinessAssetController.onPageLoad()
+POST       /add                          controllers.asset.noneeabusiness.AddNonEeaBusinessAssetController.submitOne()
+GET        /add-another                  controllers.asset.noneeabusiness.AddNonEeaBusinessAssetController.onPageLoad()
+POST       /add-another                  controllers.asset.noneeabusiness.AddNonEeaBusinessAssetController.submitAnother()
+GET        /complete                     controllers.asset.noneeabusiness.AddNonEeaBusinessAssetController.submitComplete()
+POST       /complete                     controllers.asset.noneeabusiness.AddNonEeaBusinessAssetController.submitComplete()
+
 GET        /:index/remove                                             controllers.asset.noneeabusiness.remove.RemoveAssetYesNoController.onPageLoad(index: Int)
 POST       /:index/remove                                             controllers.asset.noneeabusiness.remove.RemoveAssetYesNoController.onSubmit(index: Int)
 

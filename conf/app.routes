@@ -7,6 +7,7 @@
 ->         /partnership                                 partnership.Routes
 ->         /other                                       other.Routes
 ->         /non-eea-business                            nonEeaBusiness.Routes
+->         /migrate-to-taxable                          nonTaxableToTaxable.Routes
 
 GET        /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)
 
@@ -18,8 +19,8 @@ GET        /unauthorised                                controllers.Unauthorised
 
 GET        /logout                                      controllers.LogoutController.logout()
 
-GET        /assets-type                                 controllers.asset.WhatKindOfAssetController.onPageLoad(index: Int)
-POST       /assets-type                                 controllers.asset.WhatKindOfAssetController.onSubmit(index: Int)
+GET        /assets-type                                 controllers.asset.WhatKindOfAssetController.onPageLoad()
+POST       /assets-type                                 controllers.asset.WhatKindOfAssetController.onSubmit()
 
 GET        /trust-owns-non-eea-company          controllers.asset.TrustOwnsNonEeaBusinessYesNoController.onPageLoad(mode: Mode = NormalMode)
 POST       /trust-owns-non-eea-company          controllers.asset.TrustOwnsNonEeaBusinessYesNoController.onSubmit(mode: Mode = NormalMode)
@@ -32,17 +33,10 @@ POST       /information-you-need         controllers.asset.AssetInterruptPageCon
 GET        /what-kind                                   controllers.asset.AddNowController.onPageLoad()
 POST       /what-kind                                   controllers.asset.AddNowController.onSubmit()
 
-GET        /add                          controllers.asset.AddAssetsController.onPageLoad()
-POST       /add                          controllers.asset.AddAssetsController.submitOne()
-GET        /add-another                  controllers.asset.AddAssetsController.onPageLoad()
-POST       /add-another                  controllers.asset.AddAssetsController.submitAnother()
-GET        /complete                     controllers.asset.AddAssetsController.submitComplete()
-POST       /complete                     controllers.asset.AddAssetsController.submitComplete()
-
 GET        /feature-not-available                       controllers.FeatureNotAvailableController.onPageLoad()
 
 GET        /keep-alive                                  controllers.SessionTimeoutController.keepAlive
 
 GET        /timeout                                     controllers.SessionTimeoutController.timeout
 
-GET        /:utr                                       controllers.IndexController.onPageLoad(utr: String)
+GET        /:identifier                                       controllers.IndexController.onPageLoad(identifier: String)

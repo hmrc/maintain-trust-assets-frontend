@@ -21,7 +21,7 @@ import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.asset.TrustOwnsNonEeaBusinessYesNoView
+import views.html.asset.noneeabusiness.TrustOwnsNonEeaBusinessYesNoView
 
 class TrustOwnsNonEeaBusinessYesNoViewSpec extends YesNoViewBehaviours {
 

@@ -18,14 +18,14 @@ package controllers
 
 import connectors.TrustsConnector
 import controllers.actions.StandardActionSets
+import javax.inject.Inject
 import models.UserAnswers
+import play.api.Logging
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.PlaybackRepository
 import services.FeatureFlagService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import javax.inject.Inject
-import play.api.Logging
 import utils.Session
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,13 +38,24 @@ class IndexController @Inject()(
                                  featureFlagService: FeatureFlagService
                                )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
-  def onPageLoad(identifier: String): Action[AnyContent] = (actions.auth andThen actions.saveSession(identifier) andThen actions.getData).async {
+  def onPageLoad(identifier: String): Action[AnyContent] =
+    (actions.auth andThen actions.saveSession(identifier) andThen actions.getData).async {
     implicit request =>
-      logger.info(s"[Session ID: ${Session.id(hc)}][UTR/URN/URN: $identifier]" +
+
+      def redirect(userAnswers: UserAnswers): Result = {
+          if (userAnswers.isMigratingToTaxable) {
+            Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
+          } else {
+            Redirect(controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad())
+          }
+        }
+
+      logger.info(s"[Session ID: ${Session.id(hc)}][UTR/URN: $identifier]" +
         s" user has started to maintain assets")
       for {
         details <- connector.getTrustDetails(identifier)
         is5mldEnabled <- featureFlagService.is5mldEnabled()
+        isMigrating <- connector.getTrustMigrationFlag(identifier)
         isUnderlyingData5mld <- connector.isTrust5mld(identifier)
         ua <- Future.successful(
           request.userAnswers.getOrElse {
@@ -54,13 +65,14 @@ class IndexController @Inject()(
               whenTrustSetup = details.startDate,
               is5mldEnabled = is5mldEnabled,
               isTaxable = details.trustTaxable.getOrElse(true),
+              isMigratingToTaxable = isMigrating.migratingFromNonTaxableToTaxable,
               isUnderlyingData5mld = isUnderlyingData5mld
             )
           }
         )
         _ <- cacheRepository.set(ua)
       } yield {
-        Redirect(controllers.asset.routes.AddAssetsController.onPageLoad())
+        redirect(ua)
       }
   }
 

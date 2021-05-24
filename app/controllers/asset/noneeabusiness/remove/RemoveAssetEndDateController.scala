@@ -44,8 +44,6 @@ class RemoveAssetEndDateController @Inject()(
 
   private val messagePrefix: String = "nonEeaBusiness.endDate"
 
-  private def redirectToLandingPage(): Result = Redirect(controllers.asset.routes.AddAssetsController.onPageLoad())
-
   def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
 
@@ -58,7 +56,11 @@ class RemoveAssetEndDateController @Inject()(
           logger.warn(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
             s" user cannot remove asset as asset was not found ${iobe.getMessage}: IndexOutOfBoundsException")
 
-          Future.successful(redirectToLandingPage)
+          if (request.userAnswers.isMigratingToTaxable) {
+            Future.successful(Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()))
+          } else {
+            Future.successful(Redirect(controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad()))
+          }
         case _ =>
           logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
             s" user cannot remove asset as asset was not found")
@@ -77,7 +79,11 @@ class RemoveAssetEndDateController @Inject()(
               Future.successful(BadRequest(view(formWithErrors, index, asset.orgName))),
             endDate => {
               trustService.removeAsset(request.userAnswers.identifier, RemoveAsset(AssetNameType.NonEeaBusinessAssetNameType, index, endDate)).map(_ =>
-                Redirect(controllers.asset.routes.AddAssetsController.onPageLoad())
+                if (request.userAnswers.isMigratingToTaxable) {
+                  Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
+                } else {
+                  Redirect(controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad())
+                }
               )
             }
           )

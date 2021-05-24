@@ -22,11 +22,9 @@ import models.FeatureResponse
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import play.api.http.Status
 import play.api.libs.json.Json
+import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.WireMockHelper
-
-import scala.concurrent.Await
-import scala.concurrent.duration.Duration
 
 class TrustsStoreConnectorSpec extends SpecBase
   with ScalaFutures
@@ -74,7 +72,7 @@ class TrustsStoreConnectorSpec extends SpecBase
 
         whenReady(futureResult) {
           r =>
-            r.status mustBe 200
+            r.status mustBe OK
         }
 
         application.stop()
@@ -96,8 +94,79 @@ class TrustsStoreConnectorSpec extends SpecBase
             .willReturn(serverError())
         )
 
-        connector.setTaskComplete(identifier) map { response =>
-          response.status mustBe 500
+        val futureResult = connector.setTaskComplete(identifier)
+
+        whenReady(futureResult) {
+          r =>
+            r.status mustBe INTERNAL_SERVER_ERROR
+        }
+
+        application.stop()
+      }
+    }
+
+    ".setTaskInProgress" must {
+
+      val url = s"/trusts-store/maintain/tasks/reset/assets/$identifier"
+
+      "return OK with the current task status" in {
+        val application = applicationBuilder()
+          .configure(
+            Seq(
+              "microservice.services.trusts-store.port" -> server.port(),
+              "auditing.enabled" -> false
+            ): _*
+          ).build()
+
+        val connector = application.injector.instanceOf[TrustsStoreConnector]
+
+        val json = Json.parse(
+          """
+            |{
+            |  "trustees": true,
+            |  "beneficiaries": false,
+            |  "settlors": false,
+            |  "protectors": false,
+            |  "other": false
+            |}
+            |""".stripMargin)
+
+        server.stubFor(
+          post(urlEqualTo(url))
+            .willReturn(okJson(json.toString))
+        )
+
+        val futureResult = connector.setTaskInProgress(identifier)
+
+        whenReady(futureResult) {
+          r =>
+            r.status mustBe OK
+        }
+
+        application.stop()
+      }
+
+      "return default tasks when a failure occurs" in {
+        val application = applicationBuilder()
+          .configure(
+            Seq(
+              "microservice.services.trusts-store.port" -> server.port(),
+              "auditing.enabled" -> false
+            ): _*
+          ).build()
+
+        val connector = application.injector.instanceOf[TrustsStoreConnector]
+
+        server.stubFor(
+          post(urlEqualTo(url))
+            .willReturn(serverError())
+        )
+
+        val futureResult = connector.setTaskInProgress(identifier)
+
+        whenReady(futureResult) {
+          r =>
+            r.status mustBe INTERNAL_SERVER_ERROR
         }
 
         application.stop()
@@ -134,8 +203,14 @@ class TrustsStoreConnectorSpec extends SpecBase
             )
         )
 
-        val result = Await.result(connector.getFeature(feature), Duration.Inf)
-        result mustBe FeatureResponse(feature, isEnabled = true)
+        val futureResult = connector.getFeature(feature)
+
+        whenReady(futureResult) {
+          r =>
+            r mustBe FeatureResponse(feature, isEnabled = true)
+        }
+
+        application.stop()
       }
 
       "return a feature flag of false if 5mld is not enabled" in {
@@ -163,8 +238,14 @@ class TrustsStoreConnectorSpec extends SpecBase
             )
         )
 
-        val result = Await.result(connector.getFeature(feature), Duration.Inf)
-        result mustBe FeatureResponse(feature, isEnabled = false)
+        val futureResult = connector.getFeature(feature)
+
+        whenReady(futureResult) {
+          r =>
+            r mustBe FeatureResponse(feature, isEnabled = false)
+        }
+
+        application.stop()
       }
     }
 

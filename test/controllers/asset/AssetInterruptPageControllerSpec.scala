@@ -19,34 +19,67 @@ package controllers.asset
 import base.SpecBase
 import config.annotations.Assets
 import navigation.Navigator
+import org.mockito.Matchers.any
+import org.mockito.Mockito.when
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import views.html.asset.AssetInterruptView
+import services.TrustService
+import views.html.asset.nonTaxableToTaxable.{AssetInterruptView => MigrationInteruptPage}
+import views.html.asset.noneeabusiness.AssetInterruptView
+
+import scala.concurrent.Future
 
 class AssetInterruptPageControllerSpec extends SpecBase {
 
   "AssetInterruptPage Controller" must {
 
-    "return OK and the correct view for a GET" in {
+    "return OK and the correct view for a GET" when {
 
-      val is5mldEnabled: Boolean = true
-      val isTaxable: Boolean = true
+      "nonEEA" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(is5mldEnabled = is5mldEnabled, isTaxable = isTaxable))).build()
+        val is5mldEnabled: Boolean = true
+        val isTaxable: Boolean = true
+        val migrating: Boolean = false
 
-      val request = FakeRequest(GET, routes.AssetInterruptPageController.onPageLoad().url)
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(is5mldEnabled = is5mldEnabled, isTaxable = isTaxable, isMigratingToTaxable = migrating ))).build()
 
-      val result = route(application, request).value
+        val request = FakeRequest(GET, routes.AssetInterruptPageController.onPageLoad().url)
 
-      val view = application.injector.instanceOf[AssetInterruptView]
+        val result = route(application, request).value
 
-      status(result) mustEqual OK
+        val view = application.injector.instanceOf[AssetInterruptView]
 
-      contentAsString(result) mustEqual
-        view()(request, messages).toString
+        status(result) mustEqual OK
 
-      application.stop()
+        contentAsString(result) mustEqual
+          view()(request, messages).toString
+
+        application.stop()
+      }
+
+      "migrating" in {
+
+        val is5mldEnabled: Boolean = true
+        val isTaxable: Boolean = true
+        val migrating: Boolean = true
+
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(is5mldEnabled = is5mldEnabled, isTaxable = isTaxable, isMigratingToTaxable = migrating))).build()
+
+        val request = FakeRequest(GET, routes.AssetInterruptPageController.onPageLoad().url)
+
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[MigrationInteruptPage]
+
+        status(result) mustEqual OK
+
+        contentAsString(result) mustEqual
+          view()(request, messages).toString
+
+        application.stop()
+      }
+
     }
 
     "redirect to the correct page for a POST" when {
@@ -56,10 +89,14 @@ class AssetInterruptPageControllerSpec extends SpecBase {
 
         "not set value in WhatKindOfAssetPage" in {
 
+          val mockTrustService: TrustService = mock[TrustService]
 
           val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(isTaxable = isTaxable)))
             .overrides(bind[Navigator].qualifiedWith(classOf[Assets]).toInstance(fakeNavigator))
+            .overrides(bind[TrustService].toInstance(mockTrustService))
             .build()
+
+          when(mockTrustService.getAssets(any())(any(), any())).thenReturn(Future.successful(models.assets.Assets()))
 
           val request = FakeRequest(POST, routes.AssetInterruptPageController.onSubmit().url)
 

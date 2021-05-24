@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package controllers.asset
+package controllers.asset.noneeabusiness
 
 import java.time.LocalDate
 
 import base.SpecBase
 import config.annotations.{Assets => AssetsAnnotations}
 import connectors.TrustsStoreConnector
+import controllers.asset.noneeabusiness
 import forms.{AddAssetsFormProvider, YesNoFormProvider}
 import generators.Generators
 import models.assets._
@@ -35,16 +36,16 @@ import play.api.test.Helpers._
 import services.TrustService
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import viewmodels.AddRow
-import views.html.asset.{AddAnAssetYesNoView, AddAssetsView, MaxedOutView}
+import views.html.asset.noneeabusiness.{AddAnAssetYesNoView, AddNonEeaBusinessAssetView, MaxedOutView}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddAssetsControllerSpec extends SpecBase with Generators {
+class AddNonEeaBusinessAssetControllerSpec extends SpecBase with Generators {
 
-  lazy val addAssetsRoute: String = routes.AddAssetsController.onPageLoad().url
-  lazy val addOnePostRoute: String = routes.AddAssetsController.submitOne().url
-  lazy val addAnotherPostRoute: String = routes.AddAssetsController.submitAnother().url
-  lazy val completePostRoute: String = routes.AddAssetsController.submitComplete().url
+  lazy val addAssetsRoute: String = controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad().url
+  lazy val addOnePostRoute: String = controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.submitOne().url
+  lazy val addAnotherPostRoute: String = controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.submitAnother().url
+  lazy val completePostRoute: String = controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.submitComplete().url
 
   def changeNonEeaAssetRoute(index: Int): String =
     noneeabusiness.amend.routes.AnswersController.extractAndRender(index).url
@@ -53,8 +54,9 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
   def removeAssetYesNoRoute(index: Int): String =
     controllers.asset.noneeabusiness.remove.routes.RemoveAssetYesNoController.onPageLoad(index).url
 
-  val addAssetsForm: Form[AddAssets] = new AddAssetsFormProvider().withPrefix("addAssets")
-  val yesNoForm: Form[Boolean] = new YesNoFormProvider().withPrefix("addAnAssetYesNo")
+  val prefix = "addNonEeaBusinessAsset"
+  val AddNonEeaBusinessAssetForm: Form[AddAssets] = new AddAssetsFormProvider().withPrefix(prefix)
+  val yesNoForm: Form[Boolean] = new YesNoFormProvider().withPrefix("addNonEeaBusinessAssetYesNo")
 
   val addRow1 = AddRow("orgName 1", typeLabel = "Non-EEA Company", changeNonEeaAssetRoute(0), removeAssetYesNoRoute(0))
   val addRow2 = AddRow("orgName 2", typeLabel = "Non-EEA Company", changeNonEeaAssetRoute(1), removeAssetYesNoRoute(1))
@@ -72,7 +74,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
 
   val nonEeaBusinessAsset = NonEeaBusinessType(None, "orgName", NonUkAddress("", "", None, ""), "", LocalDate.now, None, true)
 
-  "AddAssets Controller" when {
+  "AddNonEeaBusinessAssetController Controller" when {
 
     "no data" must {
       "redirect to Session Expired for a GET if no existing data is found" in {
@@ -188,12 +190,12 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
 
           val result = route(application, request).value
 
-          val view = application.injector.instanceOf[AddAssetsView]
+          val view = application.injector.instanceOf[AddNonEeaBusinessAssetView]
 
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(addAssetsForm, Nil, oneAsset, "Add a non-EEA company", "addAssets")(request, messages).toString
+            view(AddNonEeaBusinessAssetForm, oneAsset, "Add a non-EEA company")(request, messages).toString
 
           application.stop()
         }
@@ -216,12 +218,12 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
 
           val result = route(application, request).value
 
-          val view = application.injector.instanceOf[AddAssetsView]
+          val view = application.injector.instanceOf[AddNonEeaBusinessAssetView]
 
           status(result) mustEqual OK
 
           contentAsString(result) mustEqual
-            view(addAssetsForm, Nil, multipleAssets, "You have added 2 non-EEA companies", "addAssets")(request, messages).toString
+            view(AddNonEeaBusinessAssetForm, multipleAssets, "You have added 2 non-EEA companies")(request, messages).toString
 
           application.stop()
         }
@@ -281,15 +283,15 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
           FakeRequest(POST, addAnotherPostRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
 
-        val boundForm = addAssetsForm.bind(Map("value" -> "invalid value"))
+        val boundForm = AddNonEeaBusinessAssetForm.bind(Map("value" -> "invalid value"))
 
-        val view = application.injector.instanceOf[AddAssetsView]
+        val view = application.injector.instanceOf[AddNonEeaBusinessAssetView]
 
         val result = route(application, request).value
 
         status(result) mustEqual BAD_REQUEST
 
-        contentAsString(result) mustEqual view(boundForm, Nil, multipleAssets, "You have added 2 non-EEA companies", "addAssets")(request, messages).toString
+        contentAsString(result) mustEqual view(boundForm, multipleAssets, "You have added 2 non-EEA companies")(request, messages).toString
 
         application.stop()
       }
@@ -328,7 +330,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
         val content = contentAsString(result)
 
         content mustEqual
-          view(Nil, assetRows, s"You have added $max non-EEA companies", max, "addAssets")(request, messages).toString
+          view(assetRows, s"You have added $max non-EEA companies", max, prefix)(request, messages).toString
 
         content must include("You cannot add another non-EEA company as you have entered a maximum of 25.")
         content must include("You can add another non-EEA company by removing an existing one, or write to HMRC with details of any additional non-EEA companies.")
@@ -344,8 +346,8 @@ class AddAssetsControllerSpec extends SpecBase with Generators {
     override def getAssets(identifier: String)(implicit hc:HeaderCarrier, ec:ExecutionContext): Future[Assets] =
       Future.successful(testAssets)
 
-    override def getMonetaryAsset(identifier: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[AssetMonetaryAmount] =
-      Future.successful(testAssets.monetary(index))
+    override def getMonetaryAsset(identifier: String)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[Option[AssetMonetaryAmount]] =
+      Future.successful(Some(testAssets.monetary.head))
 
     override def getPropertyOrLandAsset(identifier: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[PropertyLandType] =
     Future.successful(testAssets.propertyOrLand(index))

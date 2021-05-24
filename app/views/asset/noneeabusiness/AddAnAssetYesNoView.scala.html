@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.asset.routes._
+@import controllers.asset.noneeabusiness.routes._
 
 @this(
     main_template: MainTemplate,
@@ -24,10 +24,10 @@
 @(form: Form[_])(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = s"${errorPrefix(form)} ${messages("addAnAssetYesNo.title")}"
+    title = s"${errorPrefix(form)} ${messages("addNonEeaBusinessAssetYesNo.title")}"
 ) {
 
-@formHelper(action = AddAssetsController.submitOne(), 'autoComplete -> "off") {
+@formHelper(action = AddNonEeaBusinessAssetController.submitOne(), 'autoComplete -> "off") {
 
     @components.back_link()
 
@@ -35,7 +35,7 @@
 
     @components.input_yes_no(
       field = form("value"),
-      label = messages("addAnAssetYesNo.heading"),
+      label = messages("addNonEeaBusinessAssetYesNo.heading"),
       legendClass = Some("heading-large"),
       legendAsHeading = true
     )

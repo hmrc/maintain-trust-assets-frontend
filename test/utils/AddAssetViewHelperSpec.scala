@@ -18,11 +18,11 @@ package utils
 
 import base.SpecBase
 import controllers.asset._
-import models.NonUkAddress
+import models.assets.{AssetMonetaryAmount, Assets, NonEeaBusinessType}
+import models.{CheckMode, NonUkAddress}
 import viewmodels.AddRow
-import java.time.LocalDate
 
-import models.assets.{Assets, NonEeaBusinessType}
+import java.time.LocalDate
 
 class AddAssetViewHelperSpec extends SpecBase {
 
@@ -35,13 +35,14 @@ class AddAssetViewHelperSpec extends SpecBase {
 
       "generate Nil for no user answers" in {
         val rows = new AddAssetViewHelper(Assets(Nil, Nil, Nil, Nil, Nil, Nil, Nil)).rows
-        rows.inProgress mustBe Nil
         rows.complete mustBe Nil
       }
 
       "generate rows from user answers for complete assets" in {
         val nonEeaAsset = NonEeaBusinessType(None, "Non-EEA Business Name", NonUkAddress("", "", None, ""), "", LocalDate.now, None, true)
-        val assets = Assets(Nil, Nil, Nil, Nil, Nil, Nil, List(nonEeaAsset))
+        val moneyAsset = AssetMonetaryAmount(4000)
+
+        val assets = Assets(List(moneyAsset), Nil, Nil, Nil, Nil, Nil, List(nonEeaAsset))
 
         def changeNonEeaBusinessAssetRoute(index: Int): String =
           noneeabusiness.amend.routes.AnswersController.extractAndRender(index).url
@@ -49,11 +50,17 @@ class AddAssetViewHelperSpec extends SpecBase {
         def removeNonEeaBusinessAssetRoute(index: Int): String =
           noneeabusiness.remove.routes.RemoveAssetYesNoController.onPageLoad(index).url
 
+        def changeMoneyAssetRoute(index: Int): String =
+          controllers.asset.money.routes.AssetMoneyValueController.onPageLoad(mode = CheckMode).url
+
+        def removeMoneyAssetRoute(index: Int): String =
+          controllers.asset.money.remove.routes.RemoveAssetYesNoController.onPageLoad().url
+
         val rows = new AddAssetViewHelper(assets).rows
         rows.complete mustBe List(
-          AddRow("Non-EEA Business Name", typeLabel = "Non-EEA Company", changeNonEeaBusinessAssetRoute(0), removeNonEeaBusinessAssetRoute(0))
+          AddRow("Non-EEA Business Name", typeLabel = "Non-EEA Company", changeNonEeaBusinessAssetRoute(0), removeNonEeaBusinessAssetRoute(0)),
+          AddRow("£4000", typeLabel = "Money", changeMoneyAssetRoute(1), removeMoneyAssetRoute(1))
         )
-        rows.inProgress mustBe Nil
       }
 
     }

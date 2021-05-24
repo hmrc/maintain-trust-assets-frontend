@@ -19,9 +19,11 @@ package controllers.asset.noneeabusiness.remove
 import controllers.actions.StandardActionSets
 import forms.RemoveIndexFormProvider
 import handlers.ErrorHandler
+
 import javax.inject.Inject
 import models.RemoveAsset
 import models.assets.AssetNameType
+import models.requests.DataRequest
 import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -46,8 +48,6 @@ class RemoveAssetYesNoController @Inject()(
   private val messagesPrefix: String = "nonEeaBusiness.removeYesNo"
   private val form = formProvider.apply(messagesPrefix)
 
-  private def redirectToAddAssetsPage(): Result = Redirect(controllers.asset.routes.AddAssetsController.onPageLoad())
-
   def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
 
@@ -59,7 +59,11 @@ class RemoveAssetYesNoController @Inject()(
           logger.warn(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
             s" user cannot remove asset as asset was not found ${iobe.getMessage}: IndexOutOfBoundsException")
 
-          Future.successful(redirectToAddAssetsPage)
+          if (request.userAnswers.isMigratingToTaxable) {
+            Future.successful(Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()))
+          } else {
+            Future.successful(Redirect(controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad()))
+          }
         case _ =>
           logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
             s" user cannot remove asset as asset was not found")
@@ -88,15 +92,23 @@ class RemoveAssetYesNoController @Inject()(
                 }
             }
           } else {
-            Future.successful(redirectToAddAssetsPage)
+            if (request.userAnswers.isMigratingToTaxable) {
+              Future.successful(Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()))
+            } else {
+              Future.successful(Redirect(controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad()))
+            }
           }
         }
       )
   }
 
-  private def removeAsset(identifier: String, index: Int)(implicit hc: HeaderCarrier): Future[Result] = {
+  private def removeAsset(identifier: String, index: Int)(implicit request: DataRequest[AnyContent]): Future[Result] = {
     trustService.removeAsset(identifier, RemoveAsset(AssetNameType.NonEeaBusinessAssetNameType, index)).map(_ =>
-      redirectToAddAssetsPage
+      if (request.userAnswers.isMigratingToTaxable) {
+        Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
+      } else {
+        Redirect(controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad())
+      }
     )
   }
 }

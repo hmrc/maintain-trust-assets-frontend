@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package views.asset
+package views.asset.noneeabusiness
 
 import play.twirl.api.HtmlFormat
 import viewmodels.AddRow
 import views.behaviours.{OptionsViewBehaviours, TabularDataViewBehaviours}
-import views.html.asset.MaxedOutView
+import views.html.asset.noneeabusiness.MaxedOutView
 
 class MaxedOutViewSpec extends OptionsViewBehaviours with TabularDataViewBehaviours {
 
@@ -31,14 +31,14 @@ class MaxedOutViewSpec extends OptionsViewBehaviours with TabularDataViewBehavio
 
     "taxable" when {
 
-      val messageKeyPrefix: String = "addAssets"
+      val messageKeyPrefix: String = "addNonEeaBusinessAsset"
 
       val max: Int = 76
 
       val view: MaxedOutView = viewFor[MaxedOutView](Some(emptyUserAnswers.copy(is5mldEnabled = true, isTaxable = true)))
 
       def applyView(): HtmlFormat.Appendable =
-        view.apply(Nil, completeRows(max), "Add a non-EEA company", max, messageKeyPrefix)(fakeRequest, messages)
+        view.apply(completeRows(max), "Add a non-EEA company", max, messageKeyPrefix)(fakeRequest, messages)
 
       behave like normalPage(applyView(), messageKeyPrefix)
 

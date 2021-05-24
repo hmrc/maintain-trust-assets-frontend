@@ -17,12 +17,13 @@
 package navigation
 
 import controllers.asset.property_or_land.routes._
-import controllers.asset.routes._
+import models.assets.Assets
+
+import javax.inject.{Inject, Singleton}
 import models.{Mode, NormalMode, UserAnswers}
 import pages.Page
 import pages.asset.property_or_land._
 import play.api.mvc.Call
-import javax.inject.{Inject, Singleton}
 
 @Singleton
 class PropertyOrLandNavigator @Inject()() extends Navigator {
@@ -30,7 +31,7 @@ class PropertyOrLandNavigator @Inject()() extends Navigator {
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
     routes(mode)(page)(userAnswers)
 
-  override def nextPage(page: Page, userAnswers: UserAnswers): Call =
+  override def nextPage(page: Page, userAnswers: UserAnswers, assets: Assets = Assets()): Call =
     nextPage(page, NormalMode, userAnswers)
 
   def simpleNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
@@ -39,7 +40,7 @@ class PropertyOrLandNavigator @Inject()() extends Navigator {
     case PropertyOrLandInternationalAddressPage  => _ => PropertyOrLandTotalValueController.onPageLoad(mode)
     case PropertyOrLandTotalValuePage => _ => TrustOwnAllThePropertyOrLandController.onPageLoad(mode)
     case PropertyLandValueTrustPage => _ => PropertyOrLandAnswerController.onPageLoad()
-    case PropertyOrLandAnswerPage => _ => AddAssetsController.onPageLoad()
+    case PropertyOrLandAnswerPage => _ => controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad()
   }
 
   private def yesNoNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {

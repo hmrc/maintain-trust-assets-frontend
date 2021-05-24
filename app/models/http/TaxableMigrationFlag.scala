@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package pages.asset
+package models.http
 
-import pages.QuestionPage
-import play.api.libs.json.JsPath
+import play.api.libs.json.{Format, Json}
 
-case object DefaultRemoveAssetPage extends QuestionPage[Nothing] {
+case class TaxableMigrationFlag(value: Option[Boolean]) {
 
-  override def path: JsPath = JsPath \ toString
+  def migratingFromNonTaxableToTaxable: Boolean = value.contains(true)
+}
 
-  override def toString: String = "defaultRemoveAsset"
+object TaxableMigrationFlag {
+  implicit val formats: Format[TaxableMigrationFlag] = Json.format[TaxableMigrationFlag]
 }

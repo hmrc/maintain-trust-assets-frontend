@@ -74,7 +74,7 @@ class OtherAssetAnswersControllerSpec extends SpecBase {
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual
-        controllers.asset.routes.AddAssetsController.onPageLoad().url
+        controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad().url
 
       application.stop()
     }

@@ -1,0 +1,10 @@
+
+GET        /has-taxable-asset                                      controllers.asset.nonTaxableToTaxable.AddAssetYesNoController.onPageLoad()
+POST       /has-taxable-asset                                      controllers.asset.nonTaxableToTaxable.AddAssetYesNoController.onSubmit()
+
+GET        /add                                              controllers.asset.nonTaxableToTaxable.AddAssetsController.onPageLoad()
+POST       /add                                              controllers.asset.nonTaxableToTaxable.AddAssetsController.submitOne()
+GET        /add-another                                      controllers.asset.nonTaxableToTaxable.AddAssetsController.onPageLoad()
+POST       /add-another                                      controllers.asset.nonTaxableToTaxable.AddAssetsController.submitAnother()
+GET        /complete                                         controllers.asset.nonTaxableToTaxable.AddAssetsController.submitComplete()
+POST       /complete                                         controllers.asset.nonTaxableToTaxable.AddAssetsController.submitComplete()

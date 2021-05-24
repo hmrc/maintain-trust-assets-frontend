@@ -18,6 +18,7 @@ package models
 
 import models.Constants._
 import models.WhatKindOfAsset.prefix
+import models.assets.Assets
 import play.api.i18n.Messages
 import viewmodels._
 
@@ -43,6 +44,18 @@ object WhatKindOfAsset extends Enumerable.Implicits {
 
   val prefix: String = "whatKindOfAsset"
 
+  case class OptionAndLimit(kind: WhatKindOfAsset, limit: Int)
+
+  private val maximumDataSet : Set[OptionAndLimit] = Set(
+    OptionAndLimit(Money, MAX_MONEY_ASSETS),
+    OptionAndLimit(PropertyOrLand, MAX_LIMIT_FOR_MOST_ASSET_TYPES),
+    OptionAndLimit(Shares, MAX_LIMIT_FOR_MOST_ASSET_TYPES),
+    OptionAndLimit(Business, MAX_LIMIT_FOR_MOST_ASSET_TYPES),
+    OptionAndLimit(Partnership, MAX_LIMIT_FOR_MOST_ASSET_TYPES),
+    OptionAndLimit(Other, MAX_LIMIT_FOR_MOST_ASSET_TYPES),
+    OptionAndLimit(NonEeaBusiness, MAX_NON_EEA_BUSINESS_ASSETS)
+  )
+
   def options(kindsOfAsset: List[WhatKindOfAsset] = values): List[RadioOption] = kindsOfAsset.map {
     value =>
       RadioOption(prefix, value.toString)
@@ -51,44 +64,15 @@ object WhatKindOfAsset extends Enumerable.Implicits {
   implicit val enumerable: Enumerable[WhatKindOfAsset] =
     Enumerable(values.map(v => v.toString -> v): _*)
 
-  type AssetTypeCount = (WhatKindOfAsset, Int)
+  def nonMaxedOutOptions(assets: Assets): List[RadioOption] = {
 
-  def nonMaxedOutOptions(assets: List[AssetViewModel],
-                         assetTypeAtIndex: Option[WhatKindOfAsset],
-                         is5mldEnabled: Boolean): List[RadioOption] = {
-
-    val assetTypeCounts: List[AssetTypeCount] = List(
-      (Money, assets.count(_.isInstanceOf[MoneyAssetViewModel])),
-      (PropertyOrLand, assets.count(_.isInstanceOf[PropertyOrLandAssetViewModel])),
-      (Shares, assets.count(_.isInstanceOf[ShareAssetViewModel])),
-      (Business, assets.count(_.isInstanceOf[BusinessAssetViewModel])),
-      (NonEeaBusiness, assets.count(_.isInstanceOf[NonEeaBusinessAssetViewModel])),
-      (Partnership, assets.count(_.isInstanceOf[PartnershipAssetViewModel])),
-      (Other, assets.count(_.isInstanceOf[OtherAssetViewModel]))
-    )
-
-    def meetsLimitConditions(assetTypeCount: AssetTypeCount): Boolean = {
-
-      def meetsCondition(maxLimit: Int, assetType: WhatKindOfAsset): Boolean = {
-        (assetTypeCount._2 < maxLimit || assetTypeAtIndex.contains(assetType)) && assetTypeCount._1 == assetType
-      }
-
-      val meetsMoneyAssetConditions: Boolean = meetsCondition(MAX_MONEY_ASSETS, Money)
-
-      val meetsNonMoneyAssetsConditions: Boolean = {
-        values.filterNot(_ == Money).foldLeft(false)((conditionAlreadyMet, assetType) => {
-          val limit: Int = assetType match {
-            case NonEeaBusiness if is5mldEnabled => MAX_NON_EEA_BUSINESS_ASSETS
-            case NonEeaBusiness => 0
-            case _ => MAX_LIMIT_FOR_MOST_ASSET_TYPES
-          }
-          meetsCondition(limit, assetType) || conditionAlreadyMet
-        })
-      }
-
-      meetsMoneyAssetConditions || meetsNonMoneyAssetsConditions
+    def isMaxed(option: WhatKindOfAsset, size: Int) : Boolean = {
+      val definedLimit = maximumDataSet.filter(_.kind == option).head
+      size >= definedLimit.limit
     }
 
-    options(assetTypeCounts.filter(meetsLimitConditions).map(_._1))
+    val filtered = values.filterNot(x => isMaxed(x, assets.sizeForKind(x)))
+
+    options(filtered)
   }
 }

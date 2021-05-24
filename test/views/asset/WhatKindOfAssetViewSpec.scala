@@ -26,8 +26,7 @@ import views.html.asset.WhatKindOfAssetView
 
 class WhatKindOfAssetViewSpec extends ViewBehaviours {
 
-  private val messageKeyPrefixFirst: String = "whatKindOfAsset.first"
-  private val messageKeyPrefixNext: String = "whatKindOfAsset.next"
+  private val messageKeyPrefix: String = "whatKindOfAsset"
 
   private val form: Form[WhatKindOfAsset] = new WhatKindOfAssetFormProvider()()
 
@@ -35,26 +34,18 @@ class WhatKindOfAssetViewSpec extends ViewBehaviours {
 
   private val view: WhatKindOfAssetView = application.injector.instanceOf[WhatKindOfAssetView]
 
-  def applyView(form: Form[_], index : Int): HtmlFormat.Appendable =
-    view.apply(form, index, WhatKindOfAsset.options())(fakeRequest, messages)
+  def applyView(form: Form[_]): HtmlFormat.Appendable =
+    view.apply(form, WhatKindOfAsset.options())(fakeRequest, messages)
 
   "WhatKindOfAssetView" when {
 
-    "no assets have been added" must {
-
-      behave like normalPage(applyView(form, 0), messageKeyPrefixFirst)
-    }
-
-    "an asset has been added" must {
-
-      behave like normalPage(applyView(form, 1), messageKeyPrefixNext)
-    }
-
     "rendered" must {
+
+      behave like normalPage(applyView(form), messageKeyPrefix)
 
       "contain radio buttons for the value" in {
 
-        val doc = asDocument(applyView(form, 0))
+        val doc = asDocument(applyView(form))
 
         for (option <- WhatKindOfAsset.options()) {
           assertContainsRadioButton(doc, option.id, "value", option.value, isChecked = false)
@@ -68,7 +59,7 @@ class WhatKindOfAssetViewSpec extends ViewBehaviours {
 
         s"have the '${option.value}' radio button selected" in {
 
-          val doc = asDocument(applyView(form.bind(Map("value" -> s"${option.value}")), 0))
+          val doc = asDocument(applyView(form.bind(Map("value" -> s"${option.value}"))))
 
           assertContainsRadioButton(doc, option.id, "value", option.value, isChecked = true)
 
@@ -79,8 +70,8 @@ class WhatKindOfAssetViewSpec extends ViewBehaviours {
       }
     }
 
-    behave like pageWithBackLink(applyView(form, 0))
+    behave like pageWithBackLink(applyView(form))
 
-    behave like pageWithASubmitButton(applyView(form, 0))
+    behave like pageWithASubmitButton(applyView(form))
   }
 }
