@@ -38,5 +38,5 @@ POST       /has-address                                      controllers.asset.p
 GET        /change-has-address                               controllers.asset.property_or_land.PropertyOrLandAddressYesNoController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-has-address                               controllers.asset.property_or_land.PropertyOrLandAddressYesNoController.onSubmit(mode: Mode = CheckMode)
 
-GET        /check-property-or-land-answers                   controllers.asset.property_or_land.PropertyOrLandAnswerController.onPageLoad()
-POST       /check-property-or-land-answers                   controllers.asset.property_or_land.PropertyOrLandAnswerController.onSubmit()
+GET        /check-property-or-land-answers                   controllers.asset.property_or_land.add.PropertyOrLandAnswerController.onPageLoad()
+POST       /check-property-or-land-answers                   controllers.asset.property_or_land.add.PropertyOrLandAnswerController.onSubmit()

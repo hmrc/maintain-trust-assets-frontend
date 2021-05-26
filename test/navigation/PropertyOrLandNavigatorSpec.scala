@@ -23,6 +23,7 @@ import models.{NonUkAddress, NormalMode, UkAddress, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.asset.property_or_land._
+import pages.asset.property_or_land.add.PropertyOrLandAnswerPage
 
 class PropertyOrLandNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -149,7 +150,7 @@ class PropertyOrLandNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
           userAnswers =>
             val answers = userAnswers.set(page, 100L).success.value
             navigator.nextPage(page, NormalMode, answers)
-              .mustBe(PropertyOrLandAnswerController.onPageLoad())
+              .mustBe(controllers.asset.property_or_land.add.routes.PropertyOrLandAnswerController.onPageLoad())
         }
       }
 
@@ -161,7 +162,7 @@ class PropertyOrLandNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
           userAnswers =>
             val answers = userAnswers.set(page, true).success.value
             navigator.nextPage(page, NormalMode, answers)
-              .mustBe(PropertyOrLandAnswerController.onPageLoad())
+              .mustBe(controllers.asset.property_or_land.add.routes.PropertyOrLandAnswerController.onPageLoad())
         }
       }
     }

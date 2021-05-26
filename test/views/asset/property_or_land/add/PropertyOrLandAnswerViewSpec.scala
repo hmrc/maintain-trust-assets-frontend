@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package views.asset.property_or_land
+package views.asset.property_or_land.add
 
 import play.twirl.api.HtmlFormat
 import viewmodels.AnswerSection
 import views.behaviours.ViewBehaviours
-import views.html.asset.property_or_land.PropertyOrLandAnswersView
+import views.html.asset.property_or_land.add.PropertyOrLandAnswersView
 
 class PropertyOrLandAnswerViewSpec extends ViewBehaviours {
 

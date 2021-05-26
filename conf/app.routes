@@ -39,4 +39,4 @@ GET        /keep-alive                                  controllers.SessionTimeo
 
 GET        /timeout                                     controllers.SessionTimeoutController.timeout
 
-GET        /:identifier                                       controllers.IndexController.onPageLoad(identifier: String)
+GET        /:identifier                                 controllers.IndexController.onPageLoad(identifier: String)

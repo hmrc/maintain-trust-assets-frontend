@@ -18,9 +18,14 @@ package mapping
 
 import mapping.reads.PropertyOrLandAsset
 import javax.inject.Inject
+import models.UserAnswers
 import models.assets.PropertyLandType
 
 class PropertyOrLandMapper @Inject()(addressMapper: AddressMapper) extends Mapping[PropertyLandType, PropertyOrLandAsset] {
+
+  def apply(answers: UserAnswers): Option[PropertyLandType] = {
+    None
+  }
 
   override def mapAssets(assets: List[PropertyOrLandAsset]): List[PropertyLandType] = {
     assets.map { x =>
