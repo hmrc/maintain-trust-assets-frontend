@@ -18,13 +18,38 @@ package mapping
 
 import mapping.reads.PropertyOrLandAsset
 import javax.inject.Inject
-import models.UserAnswers
+import models.{Address, NonUkAddress, UkAddress, UserAnswers}
 import models.assets.PropertyLandType
+import pages.asset.property_or_land._
+import play.api.Logging
+import play.api.libs.json.{JsError, JsSuccess, Reads}
+import play.api.libs.functional.syntax._
 
-class PropertyOrLandMapper @Inject()(addressMapper: AddressMapper) extends Mapping[PropertyLandType, PropertyOrLandAsset] {
+class PropertyOrLandMapper @Inject()(addressMapper: AddressMapper) extends Mapping[PropertyLandType, PropertyOrLandAsset] with Logging {
 
   def apply(answers: UserAnswers): Option[PropertyLandType] = {
-    None
+    val readFromUserAnswers: Reads[PropertyLandType] =
+      (
+          PropertyOrLandDescriptionPage.path.readNullable[String] and
+          PropertyOrLandAddressUkYesNoPage.path.readNullable[Boolean].flatMap {
+            case Some(true) => PropertyOrLandUKAddressPage.path.readNullable[UkAddress].widen[Option[Address]]
+            case Some(false) => PropertyOrLandInternationalAddressPage.path.readNullable[NonUkAddress].widen[Option[Address]]
+            case _ => Reads(_ => JsSuccess(None)).widen[Option[Address]]
+          } and
+          PropertyOrLandTotalValuePage.path.read[Long] and
+          TrustOwnAllThePropertyOrLandPage.path.read[Boolean].flatMap {
+            case true => PropertyOrLandTotalValuePage.path.readNullable[Long]
+            case false => PropertyLandValueTrustPage.path.readNullable[Long]
+          }
+        ) (PropertyLandType.apply _)
+
+    answers.data.validate[PropertyLandType](readFromUserAnswers) match {
+      case JsSuccess(value, _) =>
+        Some(value)
+      case JsError(errors) =>
+        logger.error(s"[Identifier: ${answers.identifier}] Failed to rehydrate PropertyLandType from UserAnswers due to $errors")
+        None
+    }
   }
 
   override def mapAssets(assets: List[PropertyOrLandAsset]): List[PropertyLandType] = {
