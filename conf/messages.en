@@ -200,7 +200,7 @@ whatKindOfAsset.Business = Business
 whatKindOfAsset.Partnership = Partnership
 whatKindOfAsset.Other = Other
 whatKindOfAsset.NonEeaBusiness = Non-EEA Company
-whatKindOfAsset.checkYourAnswersLabel = What kind of asset do you need to add?
+whatKindOfAsset.checkYourAnswersLabel = Asset type added
 whatKindOfAsset.error.required = Select the kind of asset you need to add
 
 money.value.title = What is the total amount of money in the trust?

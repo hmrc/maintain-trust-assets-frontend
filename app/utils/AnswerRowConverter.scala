@@ -82,11 +82,10 @@ class AnswerRowConverter @Inject()(checkAnswersFormatters: CheckAnswersFormatter
     }
 
     def assetTypeQuestion(index: Int): Option[AnswerRow] = {
-      val label: String = if (index == 0) "first" else "next"
       val format = (x: WhatKindOfAsset) => formatEnum("whatKindOfAsset", x)
       question(
         WhatKindOfAssetPage,
-        s"whatKindOfAsset.$label",
+        s"whatKindOfAsset",
         format,
         WhatKindOfAssetController.onPageLoad().url
       )
