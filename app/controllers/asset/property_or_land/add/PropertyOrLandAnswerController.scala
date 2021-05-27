@@ -19,7 +19,7 @@ package controllers.asset.property_or_land.add
 import config.annotations.PropertyOrLand
 import connectors.TrustsConnector
 import controllers.actions._
-import controllers.actions.noneeabusiness.NameRequiredAction
+import controllers.actions.property_or_land.NameRequiredAction
 import handlers.ErrorHandler
 import javax.inject.Inject
 import mapping.PropertyOrLandMapper
