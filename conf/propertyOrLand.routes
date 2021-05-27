@@ -43,3 +43,7 @@ POST       /check-property-or-land-answers                   controllers.asset.p
 
 GET        /:index/remove                                    controllers.asset.property_or_land.remove.RemoveAssetYesNoController.onPageLoad(index: Int)
 POST       /:index/remove                                    controllers.asset.property_or_land.remove.RemoveAssetYesNoController.onSubmit(index: Int)
+
+GET        /:index/check-answers                             controllers.asset.property_or_land.amend.AnswersController.extractAndRender(index: Int)
+GET        /:index/updated-answers                           controllers.asset.property_or_land.amend.AnswersController.renderFromUserAnswers(index: Int)
+POST       /:index/check-answers                             controllers.asset.property_or_land.amend.AnswersController.onSubmit(index: Int)
