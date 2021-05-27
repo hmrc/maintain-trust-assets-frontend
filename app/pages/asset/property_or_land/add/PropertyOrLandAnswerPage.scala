@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package pages.asset.property_or_land
+package pages.asset.property_or_land.add
 
 import pages.Page
 

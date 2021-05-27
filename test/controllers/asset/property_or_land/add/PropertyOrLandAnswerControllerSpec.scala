@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.asset.property_or_land
+package controllers.asset.property_or_land.add
 
 import base.SpecBase
 import controllers.routes._
@@ -26,7 +26,7 @@ import pages.asset.property_or_land._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.print.PropertyOrLandPrintHelper
-import views.html.asset.property_or_land.PropertyOrLandAnswersView
+import views.html.asset.property_or_land.add.PropertyOrLandAnswersView
 
 class PropertyOrLandAnswerControllerSpec extends SpecBase {
 

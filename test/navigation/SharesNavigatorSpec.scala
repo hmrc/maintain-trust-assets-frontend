@@ -17,7 +17,6 @@
 package navigation
 
 import base.SpecBase
-import controllers.asset.noneeabusiness.routes
 import controllers.asset.shares.routes._
 import generators.Generators
 import models.{NormalMode, UserAnswers}
@@ -146,7 +145,7 @@ class SharesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
         userAnswers =>
 
           navigator.nextPage(ShareAnswerPage, NormalMode, userAnswers)
-            .mustBe(routes.AddNonEeaBusinessAssetController.onPageLoad())
+            .mustBe(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
       }
     }
   }

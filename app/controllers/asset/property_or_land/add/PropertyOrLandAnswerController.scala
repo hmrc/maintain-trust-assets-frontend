@@ -14,55 +14,58 @@
  * limitations under the License.
  */
 
-package controllers.asset.property_or_land
+package controllers.asset.property_or_land.add
 
 import config.annotations.PropertyOrLand
+import connectors.TrustsConnector
 import controllers.actions._
-import models.Status.Completed
+import controllers.actions.property_or_land.NameRequiredAction
+import handlers.ErrorHandler
+import javax.inject.Inject
+import mapping.PropertyOrLandMapper
+import models.NormalMode
 import navigation.Navigator
-import pages.AssetStatus
-import pages.asset.property_or_land.PropertyOrLandAnswerPage
+import pages.asset.property_or_land.add.PropertyOrLandAnswerPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.PropertyOrLandPrintHelper
-import views.html.asset.property_or_land.PropertyOrLandAnswersView
-import javax.inject.Inject
-import models.NormalMode
 import viewmodels.AnswerSection
+import views.html.asset.property_or_land.add.PropertyOrLandAnswersView
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class PropertyOrLandAnswerController @Inject()(
                                                 override val messagesApi: MessagesApi,
-                                                repository: PlaybackRepository,
                                                 @PropertyOrLand navigator: Navigator,
                                                 standardActionSets: StandardActionSets,
+                                                nameAction: NameRequiredAction,
                                                 view: PropertyOrLandAnswersView,
                                                 val controllerComponents: MessagesControllerComponents,
-                                                printHelper: PropertyOrLandPrintHelper
+                                                printHelper: PropertyOrLandPrintHelper,
+                                                connector: TrustsConnector,
+                                                mapper: PropertyOrLandMapper,
+                                                errorHandler: ErrorHandler
                                               )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val provisional: Boolean = true
 
-  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
+  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
-
-      val section: AnswerSection = printHelper(userAnswers = request.userAnswers, provisional, "request.Name") // TODO name
-
+      val section: AnswerSection = printHelper(userAnswers = request.userAnswers, provisional, request.Name)
       Ok(view(section))
   }
 
   def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
 
-      val answers = request.userAnswers.set(AssetStatus, Completed)
-
-      for {
-        updatedAnswers <- Future.fromTry(answers)
-        _ <- repository.set(updatedAnswers)
-      } yield Redirect(navigator.nextPage(PropertyOrLandAnswerPage, NormalMode, request.userAnswers))
-
+      mapper(request.userAnswers) match {
+        case None =>
+          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+        case Some(asset) =>
+          connector.addPropertyOrLandAsset(request.userAnswers.identifier, asset).map(_ =>
+            Redirect(navigator.nextPage(PropertyOrLandAnswerPage, NormalMode, request.userAnswers))
+          )
+      }
   }
 }

@@ -37,7 +37,7 @@ class PartnershipNavigator @Inject()() extends Navigator {
   def simpleNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
     case PartnershipDescriptionPage  => _ => PartnershipStartDateController.onPageLoad(mode)
     case PartnershipStartDatePage => _ => PartnershipAnswerController.onPageLoad()
-    case PartnershipAnswerPage => _ => controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad()
+    case PartnershipAnswerPage => _ => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
   }
 
   def routes(mode: Mode): PartialFunction[Page, UserAnswers => Call] =

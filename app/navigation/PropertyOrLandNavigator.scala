@@ -18,11 +18,11 @@ package navigation
 
 import controllers.asset.property_or_land.routes._
 import models.assets.Assets
-
 import javax.inject.{Inject, Singleton}
 import models.{Mode, NormalMode, UserAnswers}
 import pages.Page
 import pages.asset.property_or_land._
+import pages.asset.property_or_land.add.PropertyOrLandAnswerPage
 import play.api.mvc.Call
 
 @Singleton
@@ -39,8 +39,8 @@ class PropertyOrLandNavigator @Inject()() extends Navigator {
     case PropertyOrLandUKAddressPage  => _ => PropertyOrLandTotalValueController.onPageLoad(mode)
     case PropertyOrLandInternationalAddressPage  => _ => PropertyOrLandTotalValueController.onPageLoad(mode)
     case PropertyOrLandTotalValuePage => _ => TrustOwnAllThePropertyOrLandController.onPageLoad(mode)
-    case PropertyLandValueTrustPage => _ => PropertyOrLandAnswerController.onPageLoad()
-    case PropertyOrLandAnswerPage => _ => controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad()
+    case PropertyLandValueTrustPage => _ => controllers.asset.property_or_land.add.routes.PropertyOrLandAnswerController.onPageLoad()
+    case PropertyOrLandAnswerPage => _ => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
   }
 
   private def yesNoNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
@@ -59,7 +59,7 @@ class PropertyOrLandNavigator @Inject()() extends Navigator {
     case TrustOwnAllThePropertyOrLandPage => ua => yesNoNav(
       ua = ua,
       fromPage = TrustOwnAllThePropertyOrLandPage,
-      yesCall = PropertyOrLandAnswerController.onPageLoad(),
+      yesCall = controllers.asset.property_or_land.add.routes.PropertyOrLandAnswerController.onPageLoad(),
       noCall = PropertyLandValueTrustController.onPageLoad(mode)
     )
   }

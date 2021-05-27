@@ -31,7 +31,8 @@ class AddAssetViewHelper @Inject()(assets: Assets)
   def rows: AddToRows = {
 
     val complete = assets.nonEEABusiness.zipWithIndex.map(x => renderNonEEABusiness(x._1, x._2)) ++
-                   assets.monetary.zipWithIndex.map(x => renderMoney(x._1))
+                   assets.monetary.zipWithIndex.map(x => renderMoney(x._1)) ++
+                   assets.propertyOrLand.zipWithIndex.map(x => renderPropertyOrLand(x._1, x._2))
 
     AddToRows(complete)
   }
@@ -40,8 +41,17 @@ class AddAssetViewHelper @Inject()(assets: Assets)
     AddRow(
       name = currencyFormat(asset.assetMonetaryAmount.toString),
       typeLabel = messages(s"entities.asset.monetary"),
-      changeUrl = controllers.asset.money.routes.AssetMoneyValueController.onPageLoad(mode = CheckMode).url,
-      removeUrl = controllers.asset.money.remove.routes.RemoveAssetYesNoController.onPageLoad().url
+      changeUrl = money.routes.AssetMoneyValueController.onPageLoad(mode = CheckMode).url,
+      removeUrl = money.remove.routes.RemoveAssetYesNoController.onPageLoad().url
+    )
+  }
+
+  private def renderPropertyOrLand(asset: PropertyLandType, index: Int): AddRow = {
+    AddRow(
+      name = asset.name,
+      typeLabel = messages(s"entities.asset.propertyOrLand"),
+      changeUrl = "",  //ToDo Add Amend Journey
+      removeUrl = property_or_land.remove.routes.RemoveAssetYesNoController.onPageLoad(index).url
     )
   }
 
