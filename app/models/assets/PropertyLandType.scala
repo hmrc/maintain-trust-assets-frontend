@@ -24,7 +24,7 @@ final case class PropertyLandType(buildingLandName: Option[String],
                                   valueFull: Long,
                                   valuePrevious: Option[Long]) extends AssetType {
   def name = {
-    buildingLandName.getOrElse("")
+    buildingLandName.getOrElse("")  //ToDo Output the Address if we have no buildingLandName
   }
 }
 

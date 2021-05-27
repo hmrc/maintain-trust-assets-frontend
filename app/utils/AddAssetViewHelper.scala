@@ -50,7 +50,7 @@ class AddAssetViewHelper @Inject()(assets: Assets)
     AddRow(
       name = asset.name,
       typeLabel = messages(s"entities.asset.propertyOrLand"),
-      changeUrl = "",
+      changeUrl = "",  //ToDo Add Amend Journey
       removeUrl = property_or_land.remove.routes.RemoveAssetYesNoController.onPageLoad(index).url
     )
   }
