@@ -276,6 +276,9 @@ propertyOrLand.valueInTrust.error.moreThanTotal = The current value of the prope
 propertyOrLand.answers.title = Check property or land details
 propertyOrLand.answers.heading = Check property or land details
 
+propertyOrLand.removeYesNo.title = Are you sure you want to remove the asset?
+propertyOrLand.removeYesNo.heading = Are you sure you want to remove {0}?
+propertyOrLand.removeYesNo.error.required = Select yes if you want to remove the asset
 
 shares.class.title = What class are the shares?
 shares.class.heading = What class are the {0} shares?

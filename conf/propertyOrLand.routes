@@ -40,3 +40,6 @@ POST       /change-has-address                               controllers.asset.p
 
 GET        /check-property-or-land-answers                   controllers.asset.property_or_land.add.PropertyOrLandAnswerController.onPageLoad()
 POST       /check-property-or-land-answers                   controllers.asset.property_or_land.add.PropertyOrLandAnswerController.onSubmit()
+
+GET        /:index/remove                                    controllers.asset.property_or_land.remove.RemoveAssetYesNoController.onPageLoad(index: Int)
+POST       /:index/remove                                    controllers.asset.property_or_land.remove.RemoveAssetYesNoController.onSubmit(index: Int)
