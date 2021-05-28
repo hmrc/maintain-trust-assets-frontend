@@ -21,6 +21,7 @@ import models.assets.Assets
 import javax.inject.{Inject, Singleton}
 import models.{Mode, NormalMode, UserAnswers}
 import pages.Page
+import pages.asset.property_or_land.amend.IndexPage
 import pages.asset.property_or_land._
 import pages.asset.property_or_land.add.PropertyOrLandAnswerPage
 import play.api.mvc.Call
@@ -39,7 +40,7 @@ class PropertyOrLandNavigator @Inject()() extends Navigator {
     case PropertyOrLandUKAddressPage  => _ => PropertyOrLandTotalValueController.onPageLoad(mode)
     case PropertyOrLandInternationalAddressPage  => _ => PropertyOrLandTotalValueController.onPageLoad(mode)
     case PropertyOrLandTotalValuePage => _ => TrustOwnAllThePropertyOrLandController.onPageLoad(mode)
-    case PropertyLandValueTrustPage => _ => controllers.asset.property_or_land.add.routes.PropertyOrLandAnswerController.onPageLoad()
+    case PropertyLandValueTrustPage => ua => navigateToCheckAnswers(ua, mode)
     case PropertyOrLandAnswerPage => _ => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
   }
 
@@ -59,7 +60,7 @@ class PropertyOrLandNavigator @Inject()() extends Navigator {
     case TrustOwnAllThePropertyOrLandPage => ua => yesNoNav(
       ua = ua,
       fromPage = TrustOwnAllThePropertyOrLandPage,
-      yesCall = controllers.asset.property_or_land.add.routes.PropertyOrLandAnswerController.onPageLoad(),
+      yesCall = navigateToCheckAnswers(ua, mode),
       noCall = PropertyLandValueTrustController.onPageLoad(mode)
     )
   }
@@ -68,4 +69,14 @@ class PropertyOrLandNavigator @Inject()() extends Navigator {
     simpleNavigation(mode) orElse
       yesNoNavigation(mode)
 
+  private def navigateToCheckAnswers(ua: UserAnswers, mode: Mode): Call = {
+    if (mode == NormalMode) {
+      controllers.asset.property_or_land.add.routes.PropertyOrLandAnswerController.onPageLoad()
+    } else {
+      ua.get(IndexPage) match {
+        case Some(index) => controllers.asset.property_or_land.amend.routes.AnswersController.renderFromUserAnswers(index)
+        case None => controllers.routes.SessionExpiredController.onPageLoad()
+      }
+    }
+  }
 }
