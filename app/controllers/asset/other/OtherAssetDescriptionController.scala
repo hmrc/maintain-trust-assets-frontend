@@ -42,11 +42,6 @@ class OtherAssetDescriptionController @Inject()(
                                                  view: OtherAssetDescriptionView
                                                )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-//  private def actions(index: Int): ActionBuilder[RegistrationDataRequest, AnyContent] = {
-//    identify andThen getData() andThen requireData andThen
-//      requiredAnswer(RequiredAnswer(WhatKindOfAssetPage(index), controllers.asset.routes.WhatKindOfAssetController.onPageLoad(index)))
-//  } // TODO
-
   val form: Form[String] = formProvider.withConfig(length = 56, prefix = "other.description")
 
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier {

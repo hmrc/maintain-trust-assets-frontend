@@ -8,5 +8,8 @@ POST       /value                                                       controll
 GET        /change-value                                                controllers.asset.other.OtherAssetValueController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-value                                                controllers.asset.other.OtherAssetValueController.onSubmit(mode: Mode = CheckMode)
 
-GET        /check-answers                                               controllers.asset.other.OtherAssetAnswersController.onPageLoad()
-POST       /check-answers                                               controllers.asset.other.OtherAssetAnswersController.onSubmit()
+GET        /check-answers                                               controllers.asset.other.add.OtherAssetAnswersController.onPageLoad()
+POST       /check-answers                                               controllers.asset.other.add.OtherAssetAnswersController.onSubmit()
+
+GET        /:index/remove                                               controllers.asset.other.remove.RemoveAssetYesNoController.onPageLoad(index: Int)
+POST       /:index/remove                                               controllers.asset.other.remove.RemoveAssetYesNoController.onSubmit(index: Int)
