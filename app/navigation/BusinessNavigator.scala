@@ -22,7 +22,6 @@ import models.{Mode, NormalMode, UserAnswers}
 import pages.Page
 import pages.asset.business._
 import play.api.mvc.Call
-
 import javax.inject.Inject
 
 class BusinessNavigator @Inject()() extends Navigator {
@@ -38,7 +37,7 @@ class BusinessNavigator @Inject()() extends Navigator {
     case BusinessDescriptionPage => _ => BusinessAddressUkYesNoController.onPageLoad(mode)
     case BusinessUkAddressPage => _ => BusinessValueController.onPageLoad(mode)
     case BusinessInternationalAddressPage => _ => BusinessValueController.onPageLoad(mode)
-    case BusinessValuePage => _ => BusinessAnswersController.onPageLoad()
+    case BusinessValuePage => ua => navigateToCheckAnswers(ua, mode)
   }
 
   private def yesNoNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
@@ -54,4 +53,16 @@ class BusinessNavigator @Inject()() extends Navigator {
   simpleNavigation(mode) orElse
     yesNoNavigation(mode)
 
+
+  private def navigateToCheckAnswers(ua: UserAnswers, mode: Mode): Call = {
+    controllers.asset.business.add.routes.BusinessAnswersController.onPageLoad()
+//    if (mode == NormalMode) {
+//      controllers.asset.business.add.routes.BusinessAnswersController.onPageLoad()
+//    } else {
+//      ua.get(IndexPage) match {
+//        case Some(index) => controllers.asset.business.amend.routes.BusinessAmendAnswersController.renderFromUserAnswers(index)
+//        case None => controllers.routes.SessionExpiredController.onPageLoad()
+//      }
+//    }
+  }
 }

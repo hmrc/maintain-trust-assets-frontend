@@ -30,7 +30,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.{route, _}
 import utils.InputOption
 import utils.countryOptions.CountryOptionsNonUK
-import views.html.asset.buisness.BusinessInternationalAddressView
+import views.html.asset.business.BusinessInternationalAddressView
 
 class BusinessInternationalAddressControllerSpec extends SpecBase with IndexValidation {
 

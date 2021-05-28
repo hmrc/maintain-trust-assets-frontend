@@ -21,7 +21,7 @@ import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.StringViewBehaviours
-import views.html.asset.buisness.BusinessDescriptionView
+import views.html.asset.business.BusinessDescriptionView
 
 class BusinessDescriptionViewSpec extends StringViewBehaviours {
 

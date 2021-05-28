@@ -21,7 +21,7 @@ import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.YesNoViewBehaviours
-import views.html.asset.buisness.BusinessAddressUkYesNoView
+import views.html.asset.business.BusinessAddressUkYesNoView
 
 class BusinessAddressUkYesNoViewSpec extends YesNoViewBehaviours {
 

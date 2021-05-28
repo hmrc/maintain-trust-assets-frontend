@@ -29,7 +29,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.countryOptions.CountryOptionsNonUK
-import views.html.asset.buisness.BusinessInternationalAddressView
+import views.html.asset.business.BusinessInternationalAddressView
 import javax.inject.Inject
 
 import scala.concurrent.{ExecutionContext, Future}
