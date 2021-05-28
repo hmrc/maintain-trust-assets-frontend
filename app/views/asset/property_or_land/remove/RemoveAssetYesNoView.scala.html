@@ -27,7 +27,7 @@
     title = s"${errorPrefix(form)} ${messages(s"propertyOrLand.removeYesNo.title")}"
 ) {
 
-    @formHelper(action = RemoveAssetYesNoController.onSubmit(index), 'autoComplete -> "off") {
+    @formHelper(action = PropertyOrLandRemoveAssetYesNoController.onSubmit(index), 'autoComplete -> "off") {
 
         @components.back_link()
 

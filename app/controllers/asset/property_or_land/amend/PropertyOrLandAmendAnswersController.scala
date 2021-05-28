@@ -37,7 +37,7 @@ import views.html.asset.property_or_land.amend.AnswersView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AnswersController @Inject()(
+class PropertyOrLandAmendAnswersController @Inject()(
                                    override val messagesApi: MessagesApi,
                                    standardActionSets: StandardActionSets,
                                    val controllerComponents: MessagesControllerComponents,
@@ -74,7 +74,7 @@ class AnswersController @Inject()(
             extractedF <- Future.fromTry(extractedAnswers)
             _ <- playbackRepository.set(extractedF)
           } yield {
-              render(extractedF, index, propertyOrLand.name)
+            render(extractedF, index, propertyOrLand.name)
           }
       } recoverWith {
         case e =>
