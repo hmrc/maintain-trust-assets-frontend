@@ -74,7 +74,7 @@ class AnswersController @Inject()(
             extractedF <- Future.fromTry(extractedAnswers)
             _ <- playbackRepository.set(extractedF)
           } yield {
-              render(extractedF, index, propertyOrLand.name)
+            render(extractedF, index, propertyOrLand.description)
           }
       } recoverWith {
         case e =>

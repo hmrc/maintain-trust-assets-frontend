@@ -48,7 +48,7 @@ class AddAssetViewHelper @Inject()(assets: Assets)
 
   private def renderPropertyOrLand(asset: PropertyLandType, index: Int): AddRow = {
     AddRow(
-      name = asset.name,
+      name = asset.description,
       typeLabel = messages(s"entities.asset.propertyOrLand"),
       changeUrl = property_or_land.amend.routes.AnswersController.extractAndRender(index).url,
       removeUrl = property_or_land.remove.routes.RemoveAssetYesNoController.onPageLoad(index).url
