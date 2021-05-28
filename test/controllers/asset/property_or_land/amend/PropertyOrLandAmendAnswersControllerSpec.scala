@@ -39,10 +39,10 @@ import views.html.asset.property_or_land.amend.AnswersView
 
 import scala.concurrent.Future
 
-class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures {
+class PropertyOrLandAmendAnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures {
 
-  private lazy val answersRoute = routes.AnswersController.extractAndRender(index).url
-  private lazy val submitAnswersRoute = routes.AnswersController.onSubmit(index).url
+  private lazy val answersRoute = routes.PropertyOrLandAmendAnswersController.extractAndRender(index).url
+  private lazy val submitAnswersRoute = routes.PropertyOrLandAmendAnswersController.onSubmit(index).url
 
   private val index = 0
   private val name: String = "BusinessName"
@@ -63,7 +63,7 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
     .set(TrustOwnAllThePropertyOrLandPage, true).success.value
 
 
-  "PropertyOrLand Answers Controller" must {
+  "PropertyOrLandAmendAnswersController" must {
 
     "return OK and the correct view for a GET for a given index" in {
 

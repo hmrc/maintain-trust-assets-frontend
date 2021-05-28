@@ -32,7 +32,7 @@ import views.html.asset.property_or_land.remove.RemoveAssetYesNoView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class RemoveAssetYesNoController @Inject()(
+class PropertyOrLandRemoveAssetYesNoController @Inject()(
                                             override val messagesApi: MessagesApi,
                                             standardActionSets: StandardActionSets,
                                             formProvider: RemoveIndexFormProvider,

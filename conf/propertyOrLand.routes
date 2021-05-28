@@ -41,9 +41,9 @@ POST       /change-has-address                               controllers.asset.p
 GET        /check-property-or-land-answers                   controllers.asset.property_or_land.add.PropertyOrLandAnswerController.onPageLoad()
 POST       /check-property-or-land-answers                   controllers.asset.property_or_land.add.PropertyOrLandAnswerController.onSubmit()
 
-GET        /:index/remove                                    controllers.asset.property_or_land.remove.RemoveAssetYesNoController.onPageLoad(index: Int)
-POST       /:index/remove                                    controllers.asset.property_or_land.remove.RemoveAssetYesNoController.onSubmit(index: Int)
+GET        /:index/remove                                    controllers.asset.property_or_land.remove.PropertyOrLandRemoveAssetYesNoController.onPageLoad(index: Int)
+POST       /:index/remove                                    controllers.asset.property_or_land.remove.PropertyOrLandRemoveAssetYesNoController.onSubmit(index: Int)
 
-GET        /:index/check-answers                             controllers.asset.property_or_land.amend.AnswersController.extractAndRender(index: Int)
-GET        /:index/updated-answers                           controllers.asset.property_or_land.amend.AnswersController.renderFromUserAnswers(index: Int)
-POST       /:index/check-answers                             controllers.asset.property_or_land.amend.AnswersController.onSubmit(index: Int)
+GET        /:index/check-answers                             controllers.asset.property_or_land.amend.PropertyOrLandAmendAnswersController.extractAndRender(index: Int)
+GET        /:index/updated-answers                           controllers.asset.property_or_land.amend.PropertyOrLandAmendAnswersController.renderFromUserAnswers(index: Int)
+POST       /:index/check-answers                             controllers.asset.property_or_land.amend.PropertyOrLandAmendAnswersController.onSubmit(index: Int)

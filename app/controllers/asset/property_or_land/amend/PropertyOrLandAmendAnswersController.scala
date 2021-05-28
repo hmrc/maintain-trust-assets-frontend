@@ -37,7 +37,7 @@ import views.html.asset.property_or_land.amend.AnswersView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AnswersController @Inject()(
+class PropertyOrLandAmendAnswersController @Inject()(
                                    override val messagesApi: MessagesApi,
                                    standardActionSets: StandardActionSets,
                                    val controllerComponents: MessagesControllerComponents,

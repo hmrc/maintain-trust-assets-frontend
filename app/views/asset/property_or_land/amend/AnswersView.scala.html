@@ -34,7 +34,7 @@
 
     @components.answer_section(answerSections)
 
-    @formHelper(action = AnswersController.onSubmit(index), 'autoComplete -> "off") {
+    @formHelper(action = PropertyOrLandAmendAnswersController.onSubmit(index), 'autoComplete -> "off") {
         @components.submit_button()
     }
 }
