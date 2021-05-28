@@ -50,7 +50,7 @@ class RemoveAssetYesNoController @Inject()(
 
       trustService.getPropertyOrLandAsset(request.userAnswers.identifier, index).map {
         asset =>
-          Ok(view(form, index, asset.description))
+          Ok(view(form, index, asset.name))
       } recoverWith {
         case iobe: IndexOutOfBoundsException =>
           logger.warn(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
@@ -71,7 +71,7 @@ class RemoveAssetYesNoController @Inject()(
         (formWithErrors: Form[_]) => {
           trustService.getPropertyOrLandAsset(request.userAnswers.identifier, index).map {
             asset =>
-              BadRequest(view(formWithErrors, index, asset.description))
+              BadRequest(view(formWithErrors, index, asset.name))
           }
         },
         value => {
