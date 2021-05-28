@@ -19,11 +19,12 @@ package navigation
 import base.SpecBase
 import controllers.asset.property_or_land.routes._
 import generators.Generators
-import models.{NonUkAddress, NormalMode, UkAddress, UserAnswers}
+import models.{CheckMode, NonUkAddress, NormalMode, UkAddress, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.asset.property_or_land._
 import pages.asset.property_or_land.add.PropertyOrLandAnswerPage
+import pages.asset.property_or_land.amend.IndexPage
 
 class PropertyOrLandNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -163,6 +164,47 @@ class PropertyOrLandNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
             val answers = userAnswers.set(page, true).success.value
             navigator.nextPage(page, NormalMode, answers)
               .mustBe(controllers.asset.property_or_land.add.routes.PropertyOrLandAnswerController.onPageLoad())
+        }
+      }
+    }
+
+    "navigate to amend Answers Page" when {
+      "navigating from PropertyLandValueTrustPage" in {
+
+        val page = PropertyLandValueTrustPage
+        val index = 0
+
+        forAll(arbitrary[UserAnswers]) {
+          userAnswers =>
+            val answers = userAnswers.set(page, 100L).success.value.set(IndexPage, index).success.value
+
+            navigator.nextPage(page, CheckMode, answers)
+              .mustBe(controllers.asset.property_or_land.amend.routes.AnswersController.renderFromUserAnswers(index))
+        }
+      }
+
+      "navigating from TrustOwnAllThePropertyOrLandPage when user answers no" in {
+
+        val page = TrustOwnAllThePropertyOrLandPage
+        val index = 0
+
+        forAll(arbitrary[UserAnswers]) {
+          userAnswers =>
+            val answers = userAnswers.set(page, true).success.value.set(IndexPage, index).success.value
+
+            navigator.nextPage(page, CheckMode, answers)
+              .mustBe(controllers.asset.property_or_land.amend.routes.AnswersController.renderFromUserAnswers(index))
+        }
+      }
+
+      "navigating from PropertyLandTrustOwnAllThePropertyOrLandPage fails if we have no index" in {
+
+        val page = TrustOwnAllThePropertyOrLandPage
+
+        forAll(arbitrary[UserAnswers]) {
+          userAnswers =>
+            val answers = userAnswers.set(page, true).success.value
+            navigator.nextPage(page, CheckMode, answers).mustBe(controllers.routes.SessionExpiredController.onPageLoad())
         }
       }
     }
