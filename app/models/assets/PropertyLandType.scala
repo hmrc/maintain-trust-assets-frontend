@@ -24,7 +24,8 @@ final case class PropertyLandType(buildingLandName: Option[String],
                                   valueFull: Long,
                                   valuePrevious: Option[Long]) extends AssetType {
 
-  val name: String = (buildingLandName orElse address.map(_.line1)).getOrElse("")
+  val description : Option[String] = buildingLandName orElse address.map(_.line1)
+  val name: String = description.getOrElse("")
 }
 
 object PropertyLandType {
