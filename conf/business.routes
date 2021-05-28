@@ -28,5 +28,5 @@ POST       /current-value                                             controller
 GET        /change-current-value                                      controllers.asset.business.BusinessValueController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-current-value                                      controllers.asset.business.BusinessValueController.onSubmit(mode: Mode = CheckMode)
 
-GET        /check-answers                                             controllers.asset.business.BusinessAnswersController.onPageLoad()
-POST       /check-answers                                             controllers.asset.business.BusinessAnswersController.onSubmit()
+GET        /check-answers                                             controllers.asset.business.add.BusinessAnswersController.onPageLoad()
+POST       /check-answers                                             controllers.asset.business.add.BusinessAnswersController.onSubmit()

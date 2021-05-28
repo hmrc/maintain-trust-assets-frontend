@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package views.asset.business
+package views.asset.business.add
 
 import play.twirl.api.HtmlFormat
 import viewmodels.AnswerSection
 import views.behaviours.ViewBehaviours
-import views.html.asset.buisness.BusinessAnswersView
+import views.html.asset.business.add.BusinessAnswersView
 
 class BusinessAnswersViewSpec extends ViewBehaviours {
 

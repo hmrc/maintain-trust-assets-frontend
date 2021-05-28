@@ -26,7 +26,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.asset.buisness.BusinessNameView
+import views.html.asset.business.BusinessNameView
 import javax.inject.Inject
 import models.Mode
 
