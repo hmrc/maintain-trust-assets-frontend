@@ -17,13 +17,20 @@
 package controllers.asset.business.add
 
 import base.SpecBase
+import connectors.TrustsConnector
 import controllers.routes._
 import models.{UkAddress, UserAnswers}
+import org.mockito.Matchers.any
+import org.mockito.Mockito.when
 import pages.asset.business._
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.http.HttpResponse
 import utils.print.BusinessPrintHelper
 import views.html.asset.business.add.BusinessAnswersView
+
+import scala.concurrent.Future
 
 class BusinessAnswersControllerSpec extends SpecBase {
 
@@ -38,7 +45,7 @@ class BusinessAnswersControllerSpec extends SpecBase {
     .set(BusinessUkAddressPage, UkAddress("test", "test", None, None, "NE11NE")).success.value
     .set(BusinessValuePage, 12L).success.value
 
-  "AssetAnswerPage Controller" must {
+  "BusinessAnswersController" must {
 
     "return OK and the correct view for a GET" in {
 
@@ -61,8 +68,13 @@ class BusinessAnswersControllerSpec extends SpecBase {
     }
 
     "redirect to the next page when valid data is submitted" in {
+      val mockTrustConnector = mock[TrustsConnector]
 
-      val application = applicationBuilder(userAnswers = Some(answers)).build()
+      val application = applicationBuilder(userAnswers = Some(answers))
+        .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
+        .build()
+
+      when(mockTrustConnector.addBusinessAsset(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val request = FakeRequest(POST, routes.BusinessAnswersController.onSubmit().url)
 
