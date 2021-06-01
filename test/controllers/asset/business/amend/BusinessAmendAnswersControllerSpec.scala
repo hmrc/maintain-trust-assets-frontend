@@ -35,7 +35,6 @@ import services.TrustService
 import uk.gov.hmrc.auth.core.AffinityGroup.Agent
 import uk.gov.hmrc.http.HttpResponse
 import utils.print.BusinessPrintHelper
-import views.html.asset.business.add.BusinessAnswersView
 import views.html.asset.business.amend.BusinessAmendAnswersView
 
 import scala.concurrent.Future
