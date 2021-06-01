@@ -19,11 +19,12 @@ package navigation
 import base.SpecBase
 import controllers.asset.business.routes._
 import generators.Generators
-import models.{NormalMode, UserAnswers}
+import models.{CheckMode, NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.asset.business._
 import pages.asset.business.add.BusinessAnswerPage
+import pages.asset.business.amend.IndexPage
 
 class BusinessNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -97,6 +98,22 @@ class BusinessNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
         userAnswers =>
           navigator.nextPage(page, NormalMode, userAnswers)
             .mustBe(BusinessValueController.onPageLoad(NormalMode))
+      }
+    }
+
+    "navigate to amend Answers Page" when {
+      "navigating from BusinessValuePage" in {
+
+        val page = BusinessValuePage
+        val index = 0
+
+        forAll(arbitrary[UserAnswers]) {
+          userAnswers =>
+            val answers = userAnswers.set(page, 100L).success.value.set(IndexPage, index).success.value
+
+            navigator.nextPage(page, CheckMode, answers)
+              .mustBe(controllers.asset.business.amend.routes.BusinessAmendAnswersController.renderFromUserAnswers(index))
+        }
       }
     }
 

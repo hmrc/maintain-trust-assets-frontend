@@ -24,6 +24,7 @@ import pages.asset.business._
 import play.api.mvc.Call
 import javax.inject.Inject
 import pages.asset.business.add.BusinessAnswerPage
+import pages.asset.business.amend.IndexPage
 
 class BusinessNavigator @Inject()() extends Navigator {
 
@@ -57,14 +58,13 @@ class BusinessNavigator @Inject()() extends Navigator {
 
 
   private def navigateToCheckAnswers(ua: UserAnswers, mode: Mode): Call = {
-    controllers.asset.business.add.routes.BusinessAnswersController.onPageLoad()
-//    if (mode == NormalMode) {
-//      controllers.asset.business.add.routes.BusinessAnswersController.onPageLoad()
-//    } else {
-//      ua.get(IndexPage) match {
-//        case Some(index) => controllers.asset.business.amend.routes.BusinessAmendAnswersController.renderFromUserAnswers(index)
-//        case None => controllers.routes.SessionExpiredController.onPageLoad()
-//      }
-//    }
+    if (mode == NormalMode) {
+      controllers.asset.business.add.routes.BusinessAnswersController.onPageLoad()
+    } else {
+      ua.get(IndexPage) match {
+        case Some(index) => controllers.asset.business.amend.routes.BusinessAmendAnswersController.renderFromUserAnswers(index)
+        case None => controllers.routes.SessionExpiredController.onPageLoad()
+      }
+    }
   }
 }
