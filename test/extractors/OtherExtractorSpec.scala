@@ -36,19 +36,17 @@ class OtherExtractorSpec extends SpecBase {
 
       "has asset data" in {
 
-        val propertyOrLandAsset = OtherAssetType(
+        val otherAsset = OtherAssetType(
           description = "Other Asset",
-          value = 4000,
-
+          value = 4000
         )
 
-        val result = extractor(baseAnswers, propertyOrLandAsset, index).get
+        val result = extractor(baseAnswers, otherAsset, index).get
 
         result.get(IndexPage).get mustBe index
         result.get(OtherAssetDescriptionPage).get mustBe "Other Asset"
         result.get(OtherAssetValuePage).get mustBe 4000
       }
-
     }
   }
 }

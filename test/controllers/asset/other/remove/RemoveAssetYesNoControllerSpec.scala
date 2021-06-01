@@ -38,7 +38,7 @@ import scala.concurrent.Future
 
 class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChecks with ScalaFutures {
 
-  val messagesPrefix = "propertyOrLand.removeYesNo"
+  val messagesPrefix = "other.removeYesNo"
 
   lazy val formProvider = new RemoveIndexFormProvider()
   lazy val form = formProvider(messagesPrefix)
@@ -48,7 +48,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
   val mockConnector: TrustsConnector = mock[TrustsConnector]
 
   def createAsset(id: Int, provisional : Boolean) =
-    OtherAssetType(s"Other Aseet $id", 4000)
+    OtherAssetType(s"Other Asset $id", 4000)
 
   val otherAssets = List(
     createAsset(0, provisional = false),

@@ -51,8 +51,8 @@ class AddAssetViewHelper @Inject()(assets: Assets)
     AddRow(
       name = asset.description,
       typeLabel = messages(s"entities.asset.other"),
-      changeUrl = "",
-      removeUrl = ""
+      changeUrl = other.amend.routes.AnswersController.extractAndRender(index).url,
+      removeUrl = other.remove.routes.RemoveAssetYesNoController.onPageLoad(index).url
     )
   }
 

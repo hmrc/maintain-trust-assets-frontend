@@ -32,7 +32,7 @@ import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.OtherPrintHelper
 import viewmodels.AnswerSection
-import views.html.asset.noneeabusiness.amend.AnswersView
+import views.html.asset.other.amend.AnswersView
 
 import scala.concurrent.{ExecutionContext, Future}
 

@@ -21,7 +21,7 @@ import controllers.actions._
 import controllers.actions.other.NameRequiredAction
 import forms.ValueFormProvider
 import navigation.Navigator
-import pages.asset.other.OtherAssetValuePage
+import pages.asset.other.{OtherAssetDescriptionPage, OtherAssetValuePage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -49,20 +49,24 @@ class OtherAssetValueController @Inject()(
   def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
 
+      val description = request.userAnswers.get(OtherAssetDescriptionPage).get
+
       val preparedForm = request.userAnswers.get(OtherAssetValuePage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, request.Name))
+      Ok(view(preparedForm, mode, description))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
     implicit request =>
 
+      val description = request.userAnswers.get(OtherAssetDescriptionPage).get
+
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode, request.Name))),
+          Future.successful(BadRequest(view(formWithErrors, mode, description))),
 
         value => {
 

@@ -45,7 +45,7 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
   private lazy val submitAnswersRoute = controllers.asset.other.amend.routes.AnswersController.onSubmit(index).url
 
   private val index = 0
-  private val name: String = "BusinessName"
+  private val name: String = "Other Asset"
 
   private val otherAsset = OtherAssetType(
     description = "Other Asset",
@@ -59,7 +59,7 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
 
 
 
-  "PropertyOrLand Answers Controller" must {
+  "Asset Answers Controller" must {
 
     "return OK and the correct view for a GET for a given index" in {
 
