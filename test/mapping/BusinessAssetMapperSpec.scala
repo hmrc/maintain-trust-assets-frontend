@@ -39,7 +39,7 @@ class BusinessAssetMapperSpec extends SpecBase with MustMatchers
         emptyUserAnswers
           .set(WhatKindOfAssetPage, WhatKindOfAsset.Business).success.value
 
-      mapper.build(userAnswers) mustNot be(defined)
+      mapper(userAnswers).isDefined mustBe false
     }
 
     "be able to create a Business Asset" when {
