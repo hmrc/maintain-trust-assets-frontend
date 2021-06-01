@@ -19,11 +19,10 @@ package controllers.asset.other.amend
 import config.FrontendAppConfig
 import connectors.TrustsConnector
 import controllers.actions._
-import controllers.actions.noneeabusiness.NameRequiredAction
-import extractors.NonEeaBusinessExtractor
+import extractors.OtherAssetExtractor
 import handlers.ErrorHandler
 import javax.inject.Inject
-import mapping.NonEeaBusinessAssetMapper
+import mapping.OtherAssetMapper
 import models.UserAnswers
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -31,26 +30,25 @@ import play.api.mvc._
 import repositories.PlaybackRepository
 import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.print.NonEeaBusinessPrintHelper
+import utils.print.OtherPrintHelper
 import viewmodels.AnswerSection
 import views.html.asset.noneeabusiness.amend.AnswersView
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class AnswersController @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        standardActionSets: StandardActionSets,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: AnswersView,
-                                        service: TrustService,
-                                        connector: TrustsConnector,
-                                        val appConfig: FrontendAppConfig,
-                                        playbackRepository: PlaybackRepository,
-                                        printHelper: NonEeaBusinessPrintHelper,
-                                        mapper: NonEeaBusinessAssetMapper,
-                                        nameAction: NameRequiredAction,
-                                        extractor: NonEeaBusinessExtractor,
-                                        errorHandler: ErrorHandler
+                                   override val messagesApi: MessagesApi,
+                                   standardActionSets: StandardActionSets,
+                                   val controllerComponents: MessagesControllerComponents,
+                                   view: AnswersView,
+                                   service: TrustService,
+                                   connector: TrustsConnector,
+                                   val appConfig: FrontendAppConfig,
+                                   playbackRepository: PlaybackRepository,
+                                   printHelper: OtherPrintHelper,
+                                   mapper: OtherAssetMapper,
+                                   extractor: OtherAssetExtractor,
+                                   errorHandler: ErrorHandler
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   private val provisional: Boolean = false
@@ -60,34 +58,34 @@ class AnswersController @Inject()(
                      name: String)
                     (implicit request: Request[AnyContent]): Result=
   {
-    val section: AnswerSection = printHelper(userAnswers, provisional, name)
+    val section: AnswerSection = printHelper(userAnswers,provisional, name)
     Ok(view(section, index))
   }
 
   def extractAndRender(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
 
-      service.getNonEeaBusinessAsset(request.userAnswers.identifier, index) flatMap {
-        noneeabusiness =>
-          val extractedAnswers = extractor(request.userAnswers, noneeabusiness, index)
+      service.getOtherAsset(request.userAnswers.identifier, index) flatMap {
+        otherAsset =>
+          val extractedAnswers = extractor(request.userAnswers, otherAsset, index)
           for {
             extractedF <- Future.fromTry(extractedAnswers)
             _ <- playbackRepository.set(extractedF)
           } yield {
-              render(extractedF, index, noneeabusiness.orgName)
+              render(extractedF, index, otherAsset.description)
           }
       } recoverWith {
         case e =>
           logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
-            s" error showing the user the check answers for NonEeaBusiness Asset $index ${e.getMessage}")
+            s" error showing the user the check answers for Other Asset $index ${e.getMessage}")
 
           Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
       }
   }
 
-  def renderFromUserAnswers(index: Int) : Action[AnyContent] = standardActionSets.verifiedForIdentifier.andThen(nameAction) {
+  def renderFromUserAnswers(index: Int) : Action[AnyContent] = standardActionSets.verifiedForIdentifier {
     implicit request =>
-      render(request.userAnswers, index, request.Name)
+      render(request.userAnswers, index, "")
   }
 
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
@@ -95,16 +93,12 @@ class AnswersController @Inject()(
 
       mapper(request.userAnswers).map {
         asset =>
-          connector.amendNonEeaBusinessAsset(request.userAnswers.identifier, index, asset).map(_ =>
-            if (request.userAnswers.isMigratingToTaxable) {
+          connector.amendOtherAsset(request.userAnswers.identifier, index, asset).map(_ =>
               Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
-            } else {
-              Redirect(controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad())
-            }
           )
       }.getOrElse {
         logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
-          s" error mapping user answers to NonEeaBusiness Asset $index, isNew: $provisional")
+          s" error mapping user answers to Other Asset $index")
 
         Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
       }

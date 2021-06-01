@@ -18,10 +18,9 @@ package utils
 
 import base.SpecBase
 import controllers.asset._
-import models.assets.{AssetMonetaryAmount, Assets, NonEeaBusinessType}
+import models.assets.{AssetMonetaryAmount, Assets, NonEeaBusinessType, OtherAssetType}
 import models.{CheckMode, NonUkAddress}
 import viewmodels.AddRow
-
 import java.time.LocalDate
 
 class AddAssetViewHelperSpec extends SpecBase {
@@ -41,8 +40,9 @@ class AddAssetViewHelperSpec extends SpecBase {
       "generate rows from user answers for complete assets" in {
         val nonEeaAsset = NonEeaBusinessType(None, "Non-EEA Business Name", NonUkAddress("", "", None, ""), "", LocalDate.now, None, true)
         val moneyAsset = AssetMonetaryAmount(4000)
+        val other = OtherAssetType("Other Asset", 4000)
 
-        val assets = Assets(List(moneyAsset), Nil, Nil, Nil, Nil, Nil, List(nonEeaAsset))
+        val assets = Assets(List(moneyAsset), Nil, Nil, Nil, Nil, List(other), List(nonEeaAsset))
 
         def changeNonEeaBusinessAssetRoute(index: Int): String =
           noneeabusiness.amend.routes.AnswersController.extractAndRender(index).url
@@ -56,10 +56,17 @@ class AddAssetViewHelperSpec extends SpecBase {
         def removeMoneyAssetRoute(index: Int): String =
           controllers.asset.money.remove.routes.RemoveAssetYesNoController.onPageLoad().url
 
+        def changeOtherAssetRoute(index: Int): String =
+          controllers.asset.other.amend.routes.AnswersController.extractAndRender(index).url
+
+        def removeOtherAssetRoute(index: Int): String =
+          controllers.asset.other.remove.routes.RemoveAssetYesNoController.onPageLoad(index).url
+
         val rows = new AddAssetViewHelper(assets).rows
         rows.complete mustBe List(
           AddRow("Non-EEA Business Name", typeLabel = "Non-EEA Company", changeNonEeaBusinessAssetRoute(0), removeNonEeaBusinessAssetRoute(0)),
-          AddRow("£4000", typeLabel = "Money", changeMoneyAssetRoute(1), removeMoneyAssetRoute(1))
+          AddRow("£4000", typeLabel = "Money", changeMoneyAssetRoute(1), removeMoneyAssetRoute(1)),
+          AddRow("Other Asset", typeLabel = "Other", changeOtherAssetRoute(2), removeOtherAssetRoute(2))
         )
       }
 

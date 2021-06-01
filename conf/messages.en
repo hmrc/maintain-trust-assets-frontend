@@ -449,10 +449,8 @@ other.removeYesNo.title = Are you sure you want to remove the asset?
 other.removeYesNo.heading = Are you sure you want to remove {0}?
 other.removeYesNo.error.required = Select yes if you want to remove the asset
 
-
 other.answers.title = Check asset details
 other.answers.heading = Check asset details
-
 
 nonEeaBusiness.name.title = What is the company’s name?
 nonEeaBusiness.name.heading = What is the company’s name?

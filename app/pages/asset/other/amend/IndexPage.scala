@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,31 +12,17 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import controllers.asset.other.add.routes._
-@import viewmodels.{AnswerSection, RepeaterAnswerSection, Section}
+package pages.asset.other.amend
 
-@this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
-)
+import pages.QuestionPage
+import pages.asset.noneeabusiness.basePath
+import play.api.libs.json.JsPath
 
-@(answerSections: AnswerSection)(implicit request: Request[_], messages: Messages)
+case object IndexPage extends QuestionPage[Int] {
 
-@main_template(
-    title = messages("other.answers.title")
-) {
+  override def path: JsPath = basePath \ toString
 
-    @components.back_link()
-
-    @components.heading("other.answers.heading")
-
-    @components.answer_section(answerSections)
-
-    @formHelper(action = OtherAnswerController.onSubmit(), 'autoComplete -> "off") {
-
-        @components.submit_button()
-
-    }
+  override def toString: String = "index"
 }

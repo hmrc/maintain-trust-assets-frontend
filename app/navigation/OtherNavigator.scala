@@ -35,7 +35,7 @@ class OtherNavigator @Inject()() extends Navigator() {
 
   def simpleNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
     case OtherAssetDescriptionPage => _ => OtherAssetValueController.onPageLoad(mode)
-    case OtherAssetValuePage => _ => OtherAssetAnswersController.onPageLoad()
+    case OtherAssetValuePage => _ => controllers.asset.other.add.routes.OtherAnswerController.onPageLoad()
   }
 
   def routes(mode: Mode): PartialFunction[Page, UserAnswers => Call] =

@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.asset.noneeabusiness.amend.routes._
+@import controllers.asset.other.amend.routes._
 @import viewmodels._
 
 @this(
@@ -25,12 +25,12 @@
 @(answerSections: AnswerSection, index: Int)(implicit request: Request[_], messages: Messages)
 
 @main_template(
-    title = messages("nonEeaBusiness.answers.title")
+    title = messages("other.answers.title")
 ) {
 
     @components.back_link()
 
-    @components.heading("nonEeaBusiness.answers.heading")
+    @components.heading("other.answers.heading")
 
     @components.answer_section(answerSections)
 
