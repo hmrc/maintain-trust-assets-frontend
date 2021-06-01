@@ -23,6 +23,7 @@ import pages.Page
 import pages.asset.business._
 import play.api.mvc.Call
 import javax.inject.Inject
+import pages.asset.business.add.BusinessAnswerPage
 
 class BusinessNavigator @Inject()() extends Navigator {
 
@@ -38,6 +39,7 @@ class BusinessNavigator @Inject()() extends Navigator {
     case BusinessUkAddressPage => _ => BusinessValueController.onPageLoad(mode)
     case BusinessInternationalAddressPage => _ => BusinessValueController.onPageLoad(mode)
     case BusinessValuePage => ua => navigateToCheckAnswers(ua, mode)
+    case BusinessAnswerPage => _ => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
   }
 
   private def yesNoNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {

@@ -23,6 +23,7 @@ import models.{NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.asset.business._
+import pages.asset.business.add.BusinessAnswerPage
 
 class BusinessNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -96,6 +97,17 @@ class BusinessNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
         userAnswers =>
           navigator.nextPage(page, NormalMode, userAnswers)
             .mustBe(BusinessValueController.onPageLoad(NormalMode))
+      }
+    }
+
+    "navigate from BusinessAnswerPage" in {
+
+      val page = BusinessAnswerPage
+
+      forAll(arbitrary[UserAnswers]) {
+        userAnswers =>
+          navigator.nextPage(page, NormalMode, userAnswers)
+            .mustBe(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
       }
     }
   }
