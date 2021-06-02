@@ -19,8 +19,8 @@ package mapping
 import base.SpecBase
 import generators.Generators
 import models.Status.Completed
-import models.WhatKindOfAsset
-import models.assets.{NonEeaBusinessType, OtherAssetType}
+import models.WhatKindOfAsset.Other
+import models.assets.OtherAssetType
 import org.scalatest.{MustMatchers, OptionValues}
 import pages.AssetStatus
 import pages.asset.WhatKindOfAssetPage
@@ -32,7 +32,6 @@ class OtherAssetMapperSpec extends SpecBase with MustMatchers
   val otherAssetMapper: OtherAssetMapper = injector.instanceOf[OtherAssetMapper]
 
   private val assetValue1: Long = 4000L
-  private val assetValue2: Long = 6000L
 
   "OtherAssetMapper" must {
 
@@ -40,16 +39,16 @@ class OtherAssetMapperSpec extends SpecBase with MustMatchers
 
       val userAnswers =
         emptyUserAnswers
-          .set(WhatKindOfAssetPage, WhatKindOfAsset.Other).success.value
+          .set(WhatKindOfAssetPage, Other).success.value
 
-      otherAssetMapper(userAnswers) mustNot be(defined)
+      otherAssetMapper(userAnswers).isDefined mustBe false
     }
 
     "must able to create an Other Asset" in {
 
       val userAnswers =
         emptyUserAnswers
-          .set(WhatKindOfAssetPage, WhatKindOfAsset.Other).success.value
+          .set(WhatKindOfAssetPage, Other).success.value
           .set(OtherAssetDescriptionPage, "Description").success.value
           .set(OtherAssetValuePage, assetValue1).success.value
           .set(AssetStatus, Completed).success.value
