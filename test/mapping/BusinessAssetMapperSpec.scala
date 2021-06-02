@@ -18,16 +18,18 @@ package mapping
 
 import base.SpecBase
 import generators.Generators
-import models.WhatKindOfAsset
+import models.assets.BusinessAssetType
+import models.{NonUkAddress, UkAddress, WhatKindOfAsset}
 import org.scalatest.{MustMatchers, OptionValues}
 import pages.asset.WhatKindOfAssetPage
+import pages.asset.business._
 
 class BusinessAssetMapperSpec extends SpecBase with MustMatchers
   with OptionValues with Generators {
 
-  val businessAssetMapper: BusinessAssetMapper = injector.instanceOf[BusinessAssetMapper]
+  val mapper: BusinessAssetMapper = injector.instanceOf[BusinessAssetMapper]
 
-  //private val assetValue: Long = 123L
+  private val assetValue: Long = 123L
 
   "BusinessAssetMapper" must {
 
@@ -37,88 +39,63 @@ class BusinessAssetMapperSpec extends SpecBase with MustMatchers
         emptyUserAnswers
           .set(WhatKindOfAssetPage, WhatKindOfAsset.Business).success.value
 
-      businessAssetMapper.build(userAnswers) mustNot be(defined)
+      mapper(userAnswers).isDefined mustBe false
     }
 
-    // TODO
-//    "must able to create a Business Asset" when {
-//
-//      "UK address" in {
-//
-//        val userAnswers =
-//          emptyUserAnswers
-//            .set(WhatKindOfAssetPage, WhatKindOfAsset.Business).success.value
-//            .set(BusinessNamePage, "Test").success.value
-//            .set(BusinessDescriptionPage, "Description").success.value
-//            .set(BusinessAddressUkYesNoPage, true).success.value
-//            .set(BusinessUkAddressPage, UKAddress("26", "Grangetown", Some("Tyne and Wear"), Some("Newcastle"), "Z99 2YY")).success.value
-//            .set(BusinessValuePage, assetValue).success.value
-//            .set(AssetStatus, Completed).success.value
-//
-//        businessAssetMapper.build(userAnswers).value mustBe List(BusinessAssetType(
-//          "Test",
-//          "Description",
-//          AddressType("26","Grangetown", Some("Tyne and Wear"), Some("Newcastle"), Some("Z99 2YY"), "GB"),
-//          assetValue
-//        ))
-//      }
-//
-//      "when international address" in {
-//
-//        val userAnswers =
-//          emptyUserAnswers
-//            .set(WhatKindOfAssetPage, WhatKindOfAsset.Business).success.value
-//            .set(BusinessNamePage, "Test").success.value
-//            .set(BusinessDescriptionPage, "Description").success.value
-//            .set(BusinessAddressUkYesNoPage, false).success.value
-//            .set(BusinessInternationalAddressPage, InternationalAddress("1", "Broadway", Some("New York"), "US")).success.value
-//            .set(BusinessValuePage, assetValue).success.value
-//            .set(AssetStatus, Completed).success.value
-//
-//        businessAssetMapper.build(userAnswers).value mustBe List(BusinessAssetType(
-//          "Test",
-//          "Description",
-//          AddressType("1","Broadway", Some("New York"), None, None, "US"),
-//          assetValue
-//        ))
-//      }
-//    }
+    "be able to create a Business Asset" when {
 
-//    "must able to create multiple Business Assets" in {
-//
-//      val userAnswers =
-//        emptyUserAnswers
-//          .set(WhatKindOfAssetPage, WhatKindOfAsset.Business).success.value
-//          .set(BusinessNamePage, "Test 1").success.value
-//          .set(BusinessDescriptionPage, "Description 1").success.value
-//          .set(BusinessAddressUkYesNoPage, true).success.value
-//          .set(BusinessUkAddressPage, UKAddress("26", "Grangetown", Some("Tyne and Wear"), Some("Newcastle"), "Z99 2YY")).success.value
-//          .set(BusinessValuePage, assetValue).success.value
-//          .set(AssetStatus, Completed).success.value
-//          .set(WhatKindOfAssetPage, WhatKindOfAsset.Business).success.value
-//          .set(BusinessNamePage, "Test 2").success.value
-//          .set(BusinessDescriptionPage, "Description 2").success.value
-//          .set(BusinessAddressUkYesNoPage, true).success.value
-//          .set(BusinessUkAddressPage, UKAddress("26", "Grangetown", Some("Tyne and Wear"), Some("Newcastle"), "Z99 2YY")).success.value
-//          .set(BusinessValuePage, assetValue).success.value
-//          .set(AssetStatus, Completed).success.value
-//
-//      businessAssetMapper.build(userAnswers).value mustBe List(
-//        BusinessAssetType(
-//          "Test 1",
-//          "Description 1",
-//          AddressType("26","Grangetown", Some("Tyne and Wear"), Some("Newcastle"), Some("Z99 2YY"), "GB"),
-//          assetValue
-//        ),
-//        BusinessAssetType(
-//          "Test 2",
-//          "Description 2",
-//          AddressType("26","Grangetown", Some("Tyne and Wear"), Some("Newcastle"), Some("Z99 2YY"), "GB"),
-//          assetValue
-//        )
-//      )
-//
-//      businessAssetMapper.build(userAnswers).value.length mustBe 2
-//    }
+      "uk address" in {
+
+        val userAnswers = emptyUserAnswers
+          .set(WhatKindOfAssetPage, WhatKindOfAsset.Business).success.value
+          .set(BusinessNamePage, "businessName").success.value
+          .set(BusinessDescriptionPage, "businessDesc").success.value
+          .set(BusinessAddressUkYesNoPage, true).success.value
+          .set(BusinessUkAddressPage, UkAddress("26", "Grangetown", Some("Tyne and Wear"), Some("Newcastle"), "Z99 2YY")).success.value
+          .set(BusinessValuePage, assetValue).success.value
+
+        val result = mapper(userAnswers).get
+
+        result mustBe
+          BusinessAssetType(
+            orgName = "businessName",
+            businessDescription = "businessDesc",
+            address = UkAddress(
+                line1 = "26",
+                line2 = "Grangetown",
+                line3 = Some("Tyne and Wear"),
+                line4 = Some("Newcastle"),
+                postcode = "Z99 2YY"
+              ),
+            businessValue = assetValue
+          )
+      }
+
+      "international address" in {
+
+        val userAnswers = emptyUserAnswers
+          .set(WhatKindOfAssetPage, WhatKindOfAsset.Business).success.value
+          .set(BusinessNamePage, "businessName").success.value
+          .set(BusinessDescriptionPage, "businessDesc").success.value
+          .set(BusinessAddressUkYesNoPage, false).success.value
+          .set(BusinessInternationalAddressPage, NonUkAddress("1", "Broadway", Some("New York"), "US")).success.value
+          .set(BusinessValuePage, assetValue).success.value
+
+        val result = mapper(userAnswers).get
+
+        result mustBe
+          BusinessAssetType(
+            orgName = "businessName",
+            businessDescription = "businessDesc",
+            address = NonUkAddress(
+                line1 = "1",
+                line2 = "Broadway",
+                line3 = Some("New York"),
+                country = "US"
+              ),
+            businessValue = assetValue
+          )
+      }
+    }
   }
 }

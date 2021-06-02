@@ -16,18 +16,26 @@
 
 package mapping
 
-import mapping.reads.BusinessAsset
-import javax.inject.Inject
+import models.{Address, NonUkAddress, UkAddress, UserAnswers}
 import models.assets.BusinessAssetType
+import pages.asset.business._
+import play.api.libs.json.Reads
+import play.api.libs.functional.syntax._
 
-class BusinessAssetMapper @Inject()(addressMapper: AddressMapper) extends Mapping[BusinessAssetType, BusinessAsset] {
+class BusinessAssetMapper extends Mapper[BusinessAssetType] {
 
-  override def mapAssets(assets: List[BusinessAsset]): List[BusinessAssetType] = {
-    assets.map(x =>
-      BusinessAssetType(
-        x.assetName,
-        x.assetDescription,
-        addressMapper.build(x.address),
-        x.currentValue))
+  def apply(answers: UserAnswers): Option[BusinessAssetType] = {
+    val readFromUserAnswers: Reads[BusinessAssetType] =
+      (
+        BusinessNamePage.path.read[String] and
+          BusinessDescriptionPage.path.read[String] and
+          BusinessAddressUkYesNoPage.path.read[Boolean].flatMap {
+            case true => BusinessUkAddressPage.path.read[UkAddress].widen[Address]
+            case false => BusinessInternationalAddressPage.path.read[NonUkAddress].widen[Address]
+          } and
+          BusinessValuePage.path.read[Long]
+        ) (BusinessAssetType.apply _)
+
+    mapAnswersWithExplicitReads(answers, readFromUserAnswers)
   }
 }

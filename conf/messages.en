@@ -403,6 +403,9 @@ business.currentValue.link = Return to registration progress
 business.answers.title = Check asset details
 business.answers.heading = Check asset details
 
+business.removeYesNo.title = Are you sure you want to remove the asset?
+business.removeYesNo.heading = Are you sure you want to remove {0}?
+business.removeYesNo.error.required = Select yes if you want to remove the asset
 
 partnership.description.title = What is the description for the partnership?
 partnership.description.heading = What is the description for the partnership?

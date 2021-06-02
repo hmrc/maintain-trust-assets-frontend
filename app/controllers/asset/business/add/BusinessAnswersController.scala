@@ -16,14 +16,18 @@
 
 package controllers.asset.business.add
 
+import config.annotations.Business
+import connectors.TrustsConnector
 import controllers.actions._
 import controllers.actions.business.NameRequiredAction
+import handlers.ErrorHandler
 import javax.inject.Inject
-import models.Status.Completed
-import pages.AssetStatus
+import mapping.BusinessAssetMapper
+import models.NormalMode
+import navigation.Navigator
+import pages.asset.business.add.BusinessAnswerPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.BusinessPrintHelper
 import viewmodels.AnswerSection
@@ -33,33 +37,34 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class BusinessAnswersController @Inject()(
                                            override val messagesApi: MessagesApi,
+                                           @Business navigator: Navigator,
                                            standardActionSets: StandardActionSets,
                                            nameAction: NameRequiredAction,
-                                           repository: PlaybackRepository,
                                            view: BusinessAnswersView,
                                            val controllerComponents: MessagesControllerComponents,
-                                           printHelper: BusinessPrintHelper
+                                           printHelper: BusinessPrintHelper,
+                                           connector: TrustsConnector,
+                                           mapper: BusinessAssetMapper,
+                                           errorHandler: ErrorHandler
                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val provisional: Boolean = true
 
   def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
-
       val section: AnswerSection = printHelper(userAnswers = request.userAnswers, provisional, request.Name)
-
       Ok(view(section))
   }
 
   def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
     implicit request =>
-
-      val answers = request.userAnswers.set(AssetStatus, Completed)
-
-      for {
-        updatedAnswers <- Future.fromTry(answers)
-        _ <- repository.set(updatedAnswers)
-      } yield Redirect(controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad())
-
+      mapper(request.userAnswers) match {
+        case None =>
+          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+        case Some(asset) =>
+          connector.addBusinessAsset(request.userAnswers.identifier, asset).map(_ =>
+            Redirect(navigator.nextPage(BusinessAnswerPage, NormalMode, request.userAnswers))
+          )
+      }
   }
 }

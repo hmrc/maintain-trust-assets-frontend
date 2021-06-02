@@ -30,3 +30,10 @@ POST       /change-current-value                                      controller
 
 GET        /check-answers                                             controllers.asset.business.add.BusinessAnswersController.onPageLoad()
 POST       /check-answers                                             controllers.asset.business.add.BusinessAnswersController.onSubmit()
+
+GET        /:index/remove                                             controllers.asset.business.remove.RemoveBusinessAssetYesNoController.onPageLoad(index: Int)
+POST       /:index/remove                                             controllers.asset.business.remove.RemoveBusinessAssetYesNoController.onSubmit(index: Int)
+
+GET        /:index/check-answers                                      controllers.asset.business.amend.BusinessAmendAnswersController.extractAndRender(index: Int)
+GET        /:index/updated-answers                                    controllers.asset.business.amend.BusinessAmendAnswersController.renderFromUserAnswers(index: Int)
+POST       /:index/check-answers                                      controllers.asset.business.amend.BusinessAmendAnswersController.onSubmit(index: Int)

@@ -17,16 +17,23 @@
 package controllers.asset.property_or_land.add
 
 import base.SpecBase
+import connectors.TrustsConnector
 import controllers.routes._
 import models.Status.Completed
 import models.WhatKindOfAsset.PropertyOrLand
+import org.mockito.Matchers.any
+import org.mockito.Mockito.when
 import pages.AssetStatus
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.property_or_land._
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.http.HttpResponse
 import utils.print.PropertyOrLandPrintHelper
 import views.html.asset.property_or_land.add.PropertyOrLandAnswersView
+
+import scala.concurrent.Future
 
 class PropertyOrLandAnswerControllerSpec extends SpecBase {
 
@@ -37,18 +44,18 @@ class PropertyOrLandAnswerControllerSpec extends SpecBase {
 
   "PropertyOrLandAnswer Controller" must {
 
+    val answers =
+      emptyUserAnswers
+        .set(WhatKindOfAssetPage, PropertyOrLand).success.value
+        .set(PropertyOrLandAddressYesNoPage, false).success.value
+        .set(PropertyOrLandDescriptionPage, "Property Land Description").success.value
+        .set(PropertyOrLandTotalValuePage, totalValue).success.value
+        .set(TrustOwnAllThePropertyOrLandPage, true).success.value
+        .set(AssetStatus, Completed).success.value
+
     "property or land does not have an address and total value is owned by the trust" must {
 
       "return OK and the correct view for a GET" in {
-
-        val answers =
-          emptyUserAnswers
-            .set(WhatKindOfAssetPage, PropertyOrLand).success.value
-            .set(PropertyOrLandAddressYesNoPage, false).success.value
-            .set(PropertyOrLandDescriptionPage, "Property Land Description").success.value
-            .set(PropertyOrLandTotalValuePage, totalValue).success.value
-            .set(TrustOwnAllThePropertyOrLandPage, true).success.value
-            .set(AssetStatus, Completed).success.value
 
         val application = applicationBuilder(userAnswers = Some(answers)).build()
 
@@ -68,6 +75,26 @@ class PropertyOrLandAnswerControllerSpec extends SpecBase {
         application.stop()
       }
 
+    }
+
+    "redirect to the next page when valid data is submitted" in {
+      val mockTrustConnector = mock[TrustsConnector]
+
+      val application = applicationBuilder(userAnswers = Some(answers))
+        .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
+        .build()
+
+      when(mockTrustConnector.addPropertyOrLandAsset(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+
+      val request = FakeRequest(POST, routes.PropertyOrLandAnswerController.onSubmit().url)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+
+      application.stop()
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {
