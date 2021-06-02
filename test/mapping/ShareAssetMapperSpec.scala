@@ -18,8 +18,10 @@ package mapping
 
 import base.SpecBase
 import generators.Generators
-import models.Status.InProgress
-import models.WhatKindOfAsset
+import models.Status.{Completed, InProgress}
+import models.assets.SharesType
+import models.ShareClass
+import models.WhatKindOfAsset.Shares
 import org.scalatest.{MustMatchers, OptionValues}
 import pages.AssetStatus
 import pages.asset._
@@ -30,118 +32,70 @@ class ShareAssetMapperSpec extends SpecBase with MustMatchers
 
   val shareAssetMapper: ShareAssetMapper = injector.instanceOf[ShareAssetMapper]
 
-  //private val assetValue: Long = 300L
-  //private val quantity: Long = 20L
+  private val assetValue: Long = 300L
+  private val quantity: Long = 20L
 
   "ShareAssetMapper" must {
     "not be able to create a share asset when missing values in user answers" in {
 
       val userAnswers = emptyUserAnswers
-        .set(WhatKindOfAssetPage, WhatKindOfAsset.Shares).success.value
+        .set(WhatKindOfAssetPage, Shares).success.value
         .set(SharesInAPortfolioPage, true).success.value
         .set(AssetStatus, InProgress).success.value
 
-      shareAssetMapper.build(userAnswers) mustNot be(defined)
+      shareAssetMapper(userAnswers).isDefined mustBe false
     }
 
-    // TODO
+    "non-portfolio" must {
 
-//    "non-portfolio" must {
-//
-//      "be able to create a Share Asset" in {
-//        val userAnswers = emptyUserAnswers
-//          .set(WhatKindOfAssetPage, WhatKindOfAsset.Shares).success.value
-//          .set(SharesInAPortfolioPage, false).success.value
-//          .set(ShareCompanyNamePage, "Non-Portfolio").success.value
-//          .set(ShareQuantityInTrustPage, quantity).success.value
-//          .set(ShareValueInTrustPage, assetValue).success.value
-//          .set(SharesOnStockExchangePage, true).success.value
-//          .set(ShareClassPage, ShareClass.Deferred).success.value
-//          .set(AssetStatus, Completed).success.value
-//
-//        shareAssetMapper.build(userAnswers).value mustBe
-//            List(
-//              SharesType(
-//                numberOfShares = quantity.toString,
-//                orgName = "Non-Portfolio",
-//                shareClass = "Deferred ordinary shares",
-//                typeOfShare = "Quoted",
-//                value = assetValue
-//              )
-//            )
-//      }
-//
-//      "be able to create multiple Share Assets" in {
-//        val userAnswers = emptyUserAnswers
-//          .set(WhatKindOfAssetPage, WhatKindOfAsset.Shares).success.value
-//          .set(SharesInAPortfolioPage, false).success.value
-//          .set(ShareCompanyNamePage, "Non-Portfolio").success.value
-//          .set(ShareQuantityInTrustPage, quantity).success.value
-//          .set(ShareValueInTrustPage, assetValue).success.value
-//          .set(SharesOnStockExchangePage, true).success.value
-//          .set(ShareClassPage, ShareClass.Deferred).success.value
-//          .set(AssetStatus, Completed).success.value
-//          .set(WhatKindOfAssetPage, WhatKindOfAsset.Shares).success.value
-//          .set(SharesInAPortfolioPage, false).success.value
-//          .set(ShareCompanyNamePage, "Non-Portfolio").success.value
-//          .set(ShareQuantityInTrustPage, quantity).success.value
-//          .set(ShareValueInTrustPage, assetValue).success.value
-//          .set(SharesOnStockExchangePage, true).success.value
-//          .set(ShareClassPage, ShareClass.Deferred).success.value
-//          .set(AssetStatus, Completed).success.value
-//
-//
-//        shareAssetMapper.build(userAnswers).value.length mustBe 2
-//      }
-//
-//    }
+      "be able to create a Share Asset" in {
+        val userAnswers = emptyUserAnswers
+          .set(WhatKindOfAssetPage, Shares).success.value
+          .set(SharesInAPortfolioPage, false).success.value
+          .set(ShareCompanyNamePage, "Non-Portfolio").success.value
+          .set(ShareQuantityInTrustPage, quantity).success.value
+          .set(ShareValueInTrustPage, assetValue).success.value
+          .set(SharesOnStockExchangePage, true).success.value
+          .set(ShareClassPage, ShareClass.Deferred).success.value
+          .set(AssetStatus, Completed).success.value
 
-    // TODO
+        val result = shareAssetMapper(userAnswers)
+        result.isDefined mustBe true
 
-//    "portfolio" must {
-//
-//      "be able to create a Share Asset" in {
-//        val userAnswers = emptyUserAnswers
-//          .set(WhatKindOfAssetPage, WhatKindOfAsset.Shares).success.value
-//          .set(SharesInAPortfolioPage, true).success.value
-//          .set(SharePortfolioNamePage, "Portfolio").success.value
-//          .set(SharePortfolioQuantityInTrustPage, quantity).success.value
-//          .set(SharePortfolioValueInTrustPage, assetValue).success.value
-//          .set(SharePortfolioOnStockExchangePage, false).success.value
-//          .set(AssetStatus, Completed).success.value
-//
-//        shareAssetMapper.build(userAnswers).value mustBe
-//            List(
-//              SharesType(
-//                numberOfShares = quantity.toString,
-//                orgName = "Portfolio",
-//                shareClass = "Other",
-//                typeOfShare = "Unquoted",
-//                value = assetValue
-//              )
-//            )
-//      }
-//
-//      "be able to create multiple Share Assets" in {
-//
-//        val userAnswers = emptyUserAnswers
-//          .set(WhatKindOfAssetPage, WhatKindOfAsset.Shares).success.value
-//          .set(SharesInAPortfolioPage, true).success.value
-//          .set(SharePortfolioNamePage, "Portfolio").success.value
-//          .set(SharePortfolioQuantityInTrustPage, quantity).success.value
-//          .set(SharePortfolioValueInTrustPage, assetValue).success.value
-//          .set(SharePortfolioOnStockExchangePage, false).success.value
-//          .set(AssetStatus, Completed).success.value
-//          .set(WhatKindOfAssetPage, WhatKindOfAsset.Shares).success.value
-//          .set(SharesInAPortfolioPage, true).success.value
-//          .set(SharePortfolioNamePage, "Portfolio").success.value
-//          .set(SharePortfolioQuantityInTrustPage, quantity).success.value
-//          .set(SharePortfolioValueInTrustPage, assetValue).success.value
-//          .set(SharePortfolioOnStockExchangePage, false).success.value
-//          .set(AssetStatus, Completed).success.value
-//
-//        shareAssetMapper.build(userAnswers).value.length mustBe 2
-//      }
-//    }
+        result.get mustBe
+          SharesType(
+            numberOfShares = quantity.toString,
+            orgName = "Non-Portfolio",
+            shareClass = "Deferred ordinary shares",
+            typeOfShare = "Quoted",
+            value = assetValue
+          )
+      }
+    }
+
+    "portfolio" must {
+
+      "be able to create a Share Asset" in {
+        val userAnswers = emptyUserAnswers
+          .set(WhatKindOfAssetPage, Shares).success.value
+          .set(SharesInAPortfolioPage, true).success.value
+          .set(SharePortfolioNamePage, "Portfolio").success.value
+          .set(SharePortfolioQuantityInTrustPage, quantity).success.value
+          .set(SharePortfolioValueInTrustPage, assetValue).success.value
+          .set(SharePortfolioOnStockExchangePage, false).success.value
+          .set(AssetStatus, Completed).success.value
+
+        val result = shareAssetMapper(userAnswers)
+        result.isDefined mustBe true
+        result.get mustBe
+          SharesType(
+            numberOfShares = quantity.toString,
+            orgName = "Portfolio",
+            shareClass = "Other",
+            typeOfShare = "Unquoted",
+            value = assetValue
+          )
+      }
+    }
   }
 }

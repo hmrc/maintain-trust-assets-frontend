@@ -16,20 +16,57 @@
 
 package mapping
 
-import mapping.reads.{ShareAsset, ShareNonPortfolioAsset, SharePortfolioAsset}
-import models.ShareClass
 import models.assets.SharesType
+import models.{ShareClass, UserAnswers}
+import pages.QuestionPage
+import pages.asset.shares._
+import play.api.libs.json.{JsSuccess, Reads}
+import play.api.libs.functional.syntax._
 
-class ShareAssetMapper extends Mapping[SharesType, ShareAsset] {
+class ShareAssetMapper extends Mapper[SharesType] {
 
-  override def mapAssets(assets: List[ShareAsset]): List[SharesType] = {
-    assets.flatMap {
-      case x: ShareNonPortfolioAsset =>
-        Some(SharesType(x.quantity, x.name, ShareClass.toDES(x.`class`), x.quoted, x.value))
-      case x: SharePortfolioAsset =>
-        Some(SharesType(x.quantity, x.name, ShareClass.toDES(ShareClass.Other), x.quoted, x.value))
-      case _ =>
-        None
+  def apply(answers: UserAnswers): Option[SharesType] = {
+    val readFromUserAnswers: Reads[SharesType] =
+      SharesInAPortfolioPage.path.read[Boolean].flatMap {
+        case true => readPortfolio
+        case false => readNonPortfolio
+      }
+
+    mapAnswersWithExplicitReads(answers, readFromUserAnswers)
+  }
+
+  private def readPortfolio: Reads[SharesType] = {
+    (
+      readStringToLong(SharePortfolioQuantityInTrustPage) and
+        SharePortfolioNamePage.path.read[String] and
+        Reads(_ => JsSuccess(ShareClass.toDES(ShareClass.Other))) and
+        onStockExchange(SharePortfolioOnStockExchangePage) and
+        SharePortfolioValueInTrustPage.path.read[Long]
+    ) (SharesType.apply _)
+  }
+
+  private def readNonPortfolio: Reads[SharesType] = {
+    (
+      readStringToLong(ShareQuantityInTrustPage) and
+        ShareCompanyNamePage.path.read[String] and
+        ShareClassPage.path.read[ShareClass].flatMap {
+          case shareClassValue => Reads(_ => JsSuccess(ShareClass.toDES(shareClassValue)))
+        } and
+        onStockExchange(SharesOnStockExchangePage) and
+        ShareValueInTrustPage.path.read[Long]
+    ) (SharesType.apply _)
+  }
+
+  private def readStringToLong(page: QuestionPage[Long]): Reads[String] = {
+    page.path.read[Long].flatMap {
+      case value =>  Reads(_ => JsSuccess(value.toString))
+    }
+  }
+
+  private def onStockExchange(page: QuestionPage[Boolean]): Reads[String] = {
+    page.path.read[Boolean].flatMap {
+      case true => Reads(_ => JsSuccess("Quoted"))
+      case false => Reads(_ => JsSuccess("Unquoted"))
     }
   }
 }
