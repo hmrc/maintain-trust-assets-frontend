@@ -17,7 +17,7 @@
 package pages.asset.business.amend
 
 import pages.QuestionPage
-import pages.asset.property_or_land.basePath
+import pages.asset.business.basePath
 import play.api.libs.json.JsPath
 
 case object IndexPage extends QuestionPage[Int] {
