@@ -20,7 +20,7 @@ import base.SpecBase
 import models.UserAnswers
 import models.assets.OtherAssetType
 import pages.asset.other.{OtherAssetDescriptionPage, OtherAssetValuePage}
-import pages.asset.property_or_land.amend.IndexPage
+import pages.asset.other.amend.IndexPage
 
 class OtherExtractorSpec extends SpecBase {
 
