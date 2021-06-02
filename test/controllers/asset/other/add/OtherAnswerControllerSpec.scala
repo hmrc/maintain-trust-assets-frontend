@@ -30,7 +30,7 @@ import views.html.asset.other.add.OtherAssetAnswersView
 
 class OtherAnswerControllerSpec extends SpecBase {
 
-  val name: String = "Description"
+  val description: String = "Other asset"
 
   lazy val otherAnswerRoute: String = routes.OtherAnswerController.onPageLoad().url
 
@@ -53,7 +53,7 @@ class OtherAnswerControllerSpec extends SpecBase {
 
       val view = application.injector.instanceOf[OtherAssetAnswersView]
       val printHelper = application.injector.instanceOf[OtherPrintHelper]
-      val answerSection = printHelper(answers, provisional = true, name)
+      val answerSection = printHelper(answers, provisional = true, description)
 
       status(result) mustEqual OK
 

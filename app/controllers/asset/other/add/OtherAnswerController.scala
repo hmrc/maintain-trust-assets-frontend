@@ -22,6 +22,7 @@ import controllers.actions.property_or_land.NameRequiredAction
 import handlers.ErrorHandler
 import javax.inject.Inject
 import mapping.OtherAssetMapper
+import pages.asset.other.OtherAssetDescriptionPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -47,7 +48,10 @@ class OtherAnswerController @Inject()(
 
   def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
-      val section: AnswerSection = printHelper(userAnswers = request.userAnswers, provisional, request.Name)
+
+      val description = request.userAnswers.get(OtherAssetDescriptionPage).get
+
+      val section: AnswerSection = printHelper(userAnswers = request.userAnswers, provisional, description)
       Ok(view(section))
   }
 

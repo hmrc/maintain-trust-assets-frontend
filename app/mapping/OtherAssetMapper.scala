@@ -44,6 +44,10 @@ class OtherAssetMapper extends Mapping[OtherAssetType, OtherAsset] with Logging 
   }
 
   override def mapAssets(assets: List[OtherAsset]): List[OtherAssetType] = {
-    assets.map(x => OtherAssetType(x.description, x.value))
+    assets.map { x =>
+      OtherAssetType(
+        x.description,
+        x.value)
+    }
   }
 }
