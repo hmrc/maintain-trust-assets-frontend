@@ -17,16 +17,15 @@
 package mapping
 
 import models.assets.AssetType
-import models.{Address, NonUkAddress, UkAddress, UserAnswers}
-import pages.{EmptyPage, QuestionPage}
+import models.UserAnswers
 import play.api.Logging
 import play.api.libs.json.{JsError, JsSuccess, Reads}
 
 import scala.reflect.{ClassTag, classTag}
 
-abstract class Mapper[T <: AssetType : ClassTag] extends Logging {
+class Mapper[T <: AssetType : ClassTag] extends Logging {
 
-  def apply(answers: UserAnswers): Option[T] = {
+  def mapAnswersWithExplicitReads(answers: UserAnswers, reads: Reads[T]): Option[T] = {
     answers.data.validate[T](reads) match {
       case JsSuccess(value, _) =>
         Some(value)
@@ -35,19 +34,4 @@ abstract class Mapper[T <: AssetType : ClassTag] extends Logging {
         None
     }
   }
-
-  val reads: Reads[T]
-
-  def ukAddressYesNoPage: QuestionPage[Boolean] = new EmptyPage[Boolean]
-  def ukAddressPage: QuestionPage[UkAddress] = new EmptyPage[UkAddress]
-  def nonUkAddressPage: QuestionPage[NonUkAddress] = new EmptyPage[NonUkAddress]
-
-  def readAddress: Reads[Option[Address]] = {
-    ukAddressYesNoPage.path.readNullable[Boolean].flatMap {
-      case Some(true) => ukAddressPage.path.readNullable[UkAddress].widen[Option[Address]]
-      case Some(false) => nonUkAddressPage.path.readNullable[NonUkAddress].widen[Option[Address]]
-      case _ => Reads(_ => JsSuccess(None)).widen[Option[Address]]
-    }
-  }
-
 }

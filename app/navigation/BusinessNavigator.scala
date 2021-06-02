@@ -23,6 +23,8 @@ import pages.Page
 import pages.asset.business._
 import play.api.mvc.Call
 import javax.inject.Inject
+import pages.asset.business.add.BusinessAnswerPage
+import pages.asset.business.amend.IndexPage
 
 class BusinessNavigator @Inject()() extends Navigator {
 
@@ -38,6 +40,7 @@ class BusinessNavigator @Inject()() extends Navigator {
     case BusinessUkAddressPage => _ => BusinessValueController.onPageLoad(mode)
     case BusinessInternationalAddressPage => _ => BusinessValueController.onPageLoad(mode)
     case BusinessValuePage => ua => navigateToCheckAnswers(ua, mode)
+    case BusinessAnswerPage => _ => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
   }
 
   private def yesNoNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
@@ -55,14 +58,13 @@ class BusinessNavigator @Inject()() extends Navigator {
 
 
   private def navigateToCheckAnswers(ua: UserAnswers, mode: Mode): Call = {
-    controllers.asset.business.add.routes.BusinessAnswersController.onPageLoad()
-//    if (mode == NormalMode) {
-//      controllers.asset.business.add.routes.BusinessAnswersController.onPageLoad()
-//    } else {
-//      ua.get(IndexPage) match {
-//        case Some(index) => controllers.asset.business.amend.routes.BusinessAmendAnswersController.renderFromUserAnswers(index)
-//        case None => controllers.routes.SessionExpiredController.onPageLoad()
-//      }
-//    }
+    if (mode == NormalMode) {
+      controllers.asset.business.add.routes.BusinessAnswersController.onPageLoad()
+    } else {
+      ua.get(IndexPage) match {
+        case Some(index) => controllers.asset.business.amend.routes.BusinessAmendAnswersController.renderFromUserAnswers(index)
+        case None => controllers.routes.SessionExpiredController.onPageLoad()
+      }
+    }
   }
 }

@@ -16,16 +16,13 @@
 
 package mapping
 
-import mapping.reads.PropertyOrLandAsset
-import javax.inject.Inject
 import models.{Address, NonUkAddress, UkAddress, UserAnswers}
 import models.assets.PropertyLandType
 import pages.asset.property_or_land._
-import play.api.Logging
-import play.api.libs.json.{JsError, JsSuccess, Reads}
+import play.api.libs.json.{JsSuccess, Reads}
 import play.api.libs.functional.syntax._
 
-class PropertyOrLandMapper @Inject()(addressMapper: AddressMapper) extends Mapping[PropertyLandType, PropertyOrLandAsset] with Logging {
+class PropertyOrLandMapper extends Mapper[PropertyLandType] {
 
   def apply(answers: UserAnswers): Option[PropertyLandType] = {
     val readFromUserAnswers: Reads[PropertyLandType] =
@@ -43,25 +40,6 @@ class PropertyOrLandMapper @Inject()(addressMapper: AddressMapper) extends Mappi
           }
         ) (PropertyLandType.apply _)
 
-    answers.data.validate[PropertyLandType](readFromUserAnswers) match {
-      case JsSuccess(value, _) =>
-        Some(value)
-      case JsError(errors) =>
-        logger.error(s"[Identifier: ${answers.identifier}] Failed to rehydrate PropertyLandType from UserAnswers due to $errors")
-        None
-    }
-  }
-
-  override def mapAssets(assets: List[PropertyOrLandAsset]): List[PropertyLandType] = {
-    assets.map { x =>
-      val totalValue: Long = x.propertyOrLandTotalValue
-
-      PropertyLandType(
-        x.propertyOrLandDescription,
-        addressMapper.build(x.address),
-        totalValue,
-        x.propertyLandValueTrust.orElse( Some(totalValue))
-      )
-    }
+    mapAnswersWithExplicitReads(answers, readFromUserAnswers)
   }
 }
