@@ -20,7 +20,7 @@ import base.SpecBase
 import generators.Generators
 import models.Status.Completed
 import models.WhatKindOfAsset
-import models.assets.OtherAssetType
+import models.assets.{NonEeaBusinessType, OtherAssetType}
 import org.scalatest.{MustMatchers, OptionValues}
 import pages.AssetStatus
 import pages.asset.WhatKindOfAssetPage
@@ -42,7 +42,7 @@ class OtherAssetMapperSpec extends SpecBase with MustMatchers
         emptyUserAnswers
           .set(WhatKindOfAssetPage, WhatKindOfAsset.Other).success.value
 
-      otherAssetMapper.build(userAnswers) mustNot be(defined)
+      otherAssetMapper(userAnswers) mustNot be(defined)
     }
 
     "must able to create an Other Asset" in {
@@ -54,28 +54,10 @@ class OtherAssetMapperSpec extends SpecBase with MustMatchers
           .set(OtherAssetValuePage, assetValue1).success.value
           .set(AssetStatus, Completed).success.value
 
-      otherAssetMapper.build(userAnswers).value mustBe List(OtherAssetType("Description", assetValue1))
-    }
+      val result = otherAssetMapper(userAnswers).get
 
-    "must able to create multiple Other Assets" in {
-
-      val userAnswers =
-        emptyUserAnswers
-          .set(WhatKindOfAssetPage, WhatKindOfAsset.Other).success.value
-          .set(OtherAssetDescriptionPage, "Description 1").success.value
-          .set(OtherAssetValuePage, assetValue1).success.value
-          .set(AssetStatus, Completed).success.value
-          .set(WhatKindOfAssetPage, WhatKindOfAsset.Other).success.value
-          .set(OtherAssetDescriptionPage, "Description 2").success.value
-          .set(OtherAssetValuePage, assetValue2).success.value
-          .set(AssetStatus, Completed).success.value
-
-      otherAssetMapper.build(userAnswers).value mustBe List(
-        OtherAssetType("Description 1", assetValue1),
-        OtherAssetType("Description 2", assetValue2)
-      )
-
-      otherAssetMapper.build(userAnswers).value.length mustBe 2
+      result mustBe
+        OtherAssetType("Description", assetValue1)
     }
   }
 }

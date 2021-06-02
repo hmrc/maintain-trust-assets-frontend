@@ -43,9 +43,9 @@ class OtherExtractorSpec extends SpecBase {
 
         val result = extractor(baseAnswers, otherAsset, index).get
 
-        result.get(IndexPage).get mustBe index
-        result.get(OtherAssetDescriptionPage).get mustBe "Other Asset"
-        result.get(OtherAssetValuePage).get mustBe 4000
+        result.get(IndexPage) mustBe Some(index)
+        result.get(OtherAssetDescriptionPage) mustBe Some("Other Asset")
+        result.get(OtherAssetValuePage) mustBe Some(4000)
       }
     }
   }

@@ -40,9 +40,10 @@ class AddAssetViewHelperSpec extends SpecBase {
       "generate rows from user answers for complete assets" in {
         val nonEeaAsset = NonEeaBusinessType(None, "Non-EEA Business Name", NonUkAddress("", "", None, ""), "", LocalDate.now, None, true)
         val moneyAsset = AssetMonetaryAmount(4000)
-        val other = OtherAssetType("Other Asset", 4000)
+        val other1 = OtherAssetType("Other Asset1", 4000)
+        val other2 = OtherAssetType("Other Asset2", 4000)
 
-        val assets = Assets(List(moneyAsset), Nil, Nil, Nil, Nil, List(other), List(nonEeaAsset))
+        val assets = Assets(List(moneyAsset), Nil, Nil, Nil, Nil, List(other1, other2), List(nonEeaAsset))
 
         def changeNonEeaBusinessAssetRoute(index: Int): String =
           noneeabusiness.amend.routes.AnswersController.extractAndRender(index).url
@@ -65,11 +66,11 @@ class AddAssetViewHelperSpec extends SpecBase {
         val rows = new AddAssetViewHelper(assets).rows
         rows.complete mustBe List(
           AddRow("Non-EEA Business Name", typeLabel = "Non-EEA Company", changeNonEeaBusinessAssetRoute(0), removeNonEeaBusinessAssetRoute(0)),
-          AddRow("£4000", typeLabel = "Money", changeMoneyAssetRoute(1), removeMoneyAssetRoute(1)),
-          AddRow("Other Asset", typeLabel = "Other", changeOtherAssetRoute(2), removeOtherAssetRoute(2))
+          AddRow("£4000", typeLabel = "Money", changeMoneyAssetRoute(0), removeMoneyAssetRoute(0)),
+          AddRow("Other Asset1", typeLabel = "Other", changeOtherAssetRoute(0), removeOtherAssetRoute(0)),
+          AddRow("Other Asset2", typeLabel = "Other", changeOtherAssetRoute(1), removeOtherAssetRoute(1))
         )
       }
-
     }
   }
 }
