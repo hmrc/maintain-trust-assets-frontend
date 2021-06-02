@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package controllers.asset.business
+package controllers.asset.business.add
 
 import controllers.actions._
 import controllers.actions.business.NameRequiredAction
+import javax.inject.Inject
 import models.Status.Completed
 import pages.AssetStatus
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -25,9 +26,8 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.BusinessPrintHelper
-import views.html.asset.buisness.BusinessAnswersView
-import javax.inject.Inject
 import viewmodels.AnswerSection
+import views.html.asset.business.add.BusinessAnswersView
 
 import scala.concurrent.{ExecutionContext, Future}
 

@@ -23,7 +23,7 @@ import play.twirl.api.HtmlFormat
 import utils.InputOption
 import utils.countryOptions.CountryOptionsNonUK
 import views.behaviours.InternationalAddressViewBehaviours
-import views.html.asset.buisness.BusinessInternationalAddressView
+import views.html.asset.business.BusinessInternationalAddressView
 
 class BusinessInternationalAddressViewSpec extends InternationalAddressViewBehaviours {
 

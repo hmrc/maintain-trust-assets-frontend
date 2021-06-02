@@ -36,14 +36,14 @@ import views.html.asset.property_or_land.remove.RemoveAssetYesNoView
 
 import scala.concurrent.Future
 
-class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChecks with ScalaFutures {
+class PropertyOrLandPropertyOrLandRemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChecks with ScalaFutures {
 
   val messagesPrefix = "propertyOrLand.removeYesNo"
 
   lazy val formProvider = new RemoveIndexFormProvider()
   lazy val form = formProvider(messagesPrefix)
 
-  lazy val formRoute = routes.RemoveAssetYesNoController.onSubmit(0)
+  lazy val formRoute = routes.PropertyOrLandRemoveAssetYesNoController.onSubmit(0)
 
   val mockConnector: TrustsConnector = mock[TrustsConnector]
 
@@ -58,7 +58,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
   def userAnswers(migrating: Boolean) = UserAnswers("internalId", "identifier", LocalDate.now, isMigratingToTaxable = migrating)
 
-  "property_or_land.RemoveAssetYesNo Controller" when {
+  "PropertyOrLandPropertyOrLandRemoveAssetYesNoController" when {
 
     "return OK and the correct view for a GET" in {
 
@@ -71,7 +71,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
         .overrides(bind[TrustsConnector].toInstance(mockConnector))
         .build()
 
-      val request = FakeRequest(GET, routes.RemoveAssetYesNoController.onPageLoad(index).url)
+      val request = FakeRequest(GET, routes.PropertyOrLandRemoveAssetYesNoController.onPageLoad(index).url)
 
       val result = route(application, request).value
 
@@ -97,7 +97,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
           .build()
 
         val request =
-          FakeRequest(POST, routes.RemoveAssetYesNoController.onSubmit(index).url)
+          FakeRequest(POST, routes.PropertyOrLandRemoveAssetYesNoController.onSubmit(index).url)
             .withFormUrlEncodedBody(("value", "false"))
 
         val result = route(application, request).value
@@ -129,7 +129,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
           .thenReturn(Future.successful(HttpResponse(200, "")))
 
         val request =
-          FakeRequest(POST, routes.RemoveAssetYesNoController.onSubmit(index).url)
+          FakeRequest(POST, routes.PropertyOrLandRemoveAssetYesNoController.onSubmit(index).url)
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
@@ -149,7 +149,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(bind[TrustsConnector].toInstance(mockConnector)).build()
 
       val request =
-        FakeRequest(POST, routes.RemoveAssetYesNoController.onSubmit(index).url)
+        FakeRequest(POST, routes.PropertyOrLandRemoveAssetYesNoController.onSubmit(index).url)
           .withFormUrlEncodedBody(("value", ""))
 
       val boundForm = form.bind(Map("value" -> ""))
@@ -172,7 +172,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, routes.RemoveAssetYesNoController.onPageLoad(index).url)
+      val request = FakeRequest(GET, routes.PropertyOrLandRemoveAssetYesNoController.onPageLoad(index).url)
 
       val result = route(application, request).value
 
@@ -190,7 +190,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, routes.RemoveAssetYesNoController.onSubmit(index).url)
+        FakeRequest(POST, routes.PropertyOrLandRemoveAssetYesNoController.onSubmit(index).url)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value

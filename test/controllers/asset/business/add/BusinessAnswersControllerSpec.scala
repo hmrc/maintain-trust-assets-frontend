@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers.asset.business
+package controllers.asset.business.add
 
 import base.SpecBase
 import controllers.routes._
@@ -23,7 +23,7 @@ import pages.asset.business._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.print.BusinessPrintHelper
-import views.html.asset.buisness.BusinessAnswersView
+import views.html.asset.business.add.BusinessAnswersView
 
 class BusinessAnswersControllerSpec extends SpecBase {
 

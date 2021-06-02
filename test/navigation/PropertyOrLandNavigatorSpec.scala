@@ -179,7 +179,7 @@ class PropertyOrLandNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
             val answers = userAnswers.set(page, 100L).success.value.set(IndexPage, index).success.value
 
             navigator.nextPage(page, CheckMode, answers)
-              .mustBe(controllers.asset.property_or_land.amend.routes.AnswersController.renderFromUserAnswers(index))
+              .mustBe(controllers.asset.property_or_land.amend.routes.PropertyOrLandAmendAnswersController.renderFromUserAnswers(index))
         }
       }
 
@@ -193,7 +193,7 @@ class PropertyOrLandNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
             val answers = userAnswers.set(page, true).success.value.set(IndexPage, index).success.value
 
             navigator.nextPage(page, CheckMode, answers)
-              .mustBe(controllers.asset.property_or_land.amend.routes.AnswersController.renderFromUserAnswers(index))
+              .mustBe(controllers.asset.property_or_land.amend.routes.PropertyOrLandAmendAnswersController.renderFromUserAnswers(index))
         }
       }
 
