@@ -17,16 +17,23 @@
 package controllers.asset.other.add
 
 import base.SpecBase
+import connectors.TrustsConnector
 import controllers.routes._
 import models.Status.Completed
 import models.WhatKindOfAsset.Other
+import org.mockito.Matchers.any
+import org.mockito.Mockito.when
 import pages.AssetStatus
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.other.{OtherAssetDescriptionPage, OtherAssetValuePage}
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.http.HttpResponse
 import utils.print.OtherPrintHelper
 import views.html.asset.other.add.OtherAssetAnswersView
+
+import scala.concurrent.Future
 
 class OtherAnswerControllerSpec extends SpecBase {
 
@@ -34,16 +41,16 @@ class OtherAnswerControllerSpec extends SpecBase {
 
   lazy val otherAnswerRoute: String = routes.OtherAnswerController.onPageLoad().url
 
+  val answers =
+    emptyUserAnswers
+      .set(WhatKindOfAssetPage, Other).success.value
+      .set(OtherAssetDescriptionPage, "Other asset").success.value
+      .set(OtherAssetValuePage, 4000L).success.value
+      .set(AssetStatus, Completed).success.value
+
   "OtherAnswer Controller" must {
 
     "return OK and the correct view for a GET" in {
-
-      val answers =
-        emptyUserAnswers
-          .set(WhatKindOfAssetPage, Other).success.value
-          .set(OtherAssetDescriptionPage, "Other asset").success.value
-          .set(OtherAssetValuePage, 4000L).success.value
-          .set(AssetStatus, Completed).success.value
 
       val application = applicationBuilder(userAnswers = Some(answers)).build()
 
@@ -59,6 +66,27 @@ class OtherAnswerControllerSpec extends SpecBase {
 
       contentAsString(result) mustEqual
         view(answerSection)(request, messages).toString
+
+      application.stop()
+    }
+
+    "redirect to the next page when valid data is submitted" in {
+
+      val mockTrustConnector = mock[TrustsConnector]
+
+      val application = applicationBuilder(userAnswers = Some(answers))
+        .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
+        .build()
+
+      when(mockTrustConnector.addOtherAsset(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+
+      val request = FakeRequest(POST, controllers.asset.other.add.routes.OtherAnswerController.onSubmit().url)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
 
       application.stop()
     }
