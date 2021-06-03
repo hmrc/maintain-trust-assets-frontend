@@ -73,7 +73,7 @@ class PartnershipAnswerControllerSpec extends SpecBase {
         application.stop()
       }
 
-      "redirect to Session Expired for a GET if no existing data is found" in {
+      "redirect to Session Expired if no existing data is found" in {
 
         val application = applicationBuilder(userAnswers = None).build()
 
@@ -109,6 +109,20 @@ class PartnershipAnswerControllerSpec extends SpecBase {
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+
+        application.stop()
+      }
+
+      "redirect to Session Expired if no existing data is found" in {
+
+        val application = applicationBuilder(userAnswers = None).build()
+
+        val request = FakeRequest(POST, routes.PartnershipAnswerController.onSubmit().url)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
 
         application.stop()
       }
