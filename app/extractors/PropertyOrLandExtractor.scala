@@ -53,5 +53,5 @@ class PropertyOrLandExtractor extends AssetExtractor[PropertyLandType] {
 
   override def indexPage: QuestionPage[Int] = IndexPage
 
-  override def basePath: JsPath = pages.asset.noneeabusiness.basePath
+  override def basePath: JsPath = pages.asset.property_or_land.basePath
 }
