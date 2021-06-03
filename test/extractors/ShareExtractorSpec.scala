@@ -23,16 +23,16 @@ import pages.asset.shares._
 import pages.asset.shares.amend.IndexPage
 import utils.Constants.{QUOTED, UNQUOTED}
 
-class SharesExtractorSpec extends SpecBase {
+class ShareExtractorSpec extends SpecBase {
 
   private val index = 0
   private val name: String = "OrgName"
   private val assetValue: Long = 300L
   private val quantity: Long = 20L
 
-  private val extractor = new SharesExtractor()
+  private val extractor = new ShareExtractor()
 
-  "SharesExtractor" must {
+  "ShareExtractor" must {
 
     "Populate user answers" when {
 

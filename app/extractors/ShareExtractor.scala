@@ -26,7 +26,7 @@ import utils.Constants.QUOTED
 
 import scala.util.Try
 
-class SharesExtractor extends AssetExtractor[SharesType] {
+class ShareExtractor extends AssetExtractor[SharesType] {
 
   override def apply(answers: UserAnswers,
                      assetType: SharesType,

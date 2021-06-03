@@ -17,15 +17,36 @@
 package controllers.asset.shares.add
 
 import base.SpecBase
+import connectors.TrustsConnector
+import models.{ShareClass, UserAnswers}
+import org.mockito.Matchers.any
+import org.mockito.Mockito.when
 import pages.asset.shares._
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.http.HttpResponse
 import utils.print.SharesPrintHelper
 import views.html.asset.shares.add.ShareAnswersView
+
+import scala.concurrent.Future
 
 class ShareAnswerControllerSpec extends SpecBase {
 
   private lazy val shareAnswerRoute: String = routes.ShareAnswerController.onPageLoad().url
+  val index = 0
+
+  val name: String = "OrgName"
+  val assetValue: Long = 300L
+  val quantity: Long = 20L
+
+  val answers: UserAnswers = emptyUserAnswers
+    .set(SharesInAPortfolioPage, true).success.value
+    .set(SharePortfolioNamePage, name).success.value
+    .set(SharePortfolioQuantityInTrustPage, quantity).success.value
+    .set(ShareClassPage, ShareClass.Other).success.value
+    .set(SharePortfolioOnStockExchangePage, false).success.value
+    .set(SharePortfolioValueInTrustPage, assetValue).success.value
 
   "ShareAnswer Controller" must {
 
@@ -107,8 +128,27 @@ class ShareAnswerControllerSpec extends SpecBase {
       }
     }
 
-    "redirect to Session Expired for a GET if no existing data is found" in {
+    "redirect to the next page when valid data is submitted" in {
+      val mockTrustConnector = mock[TrustsConnector]
 
+      val application = applicationBuilder(userAnswers = Some(answers))
+        .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
+        .build()
+
+      when(mockTrustConnector.addSharesAsset(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+
+      val request = FakeRequest(POST, routes.ShareAnswerController.onSubmit().url)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+
+      application.stop()
+    }
+
+    "redirect to Session Expired for a GET if no existing data is found" in {
       val application = applicationBuilder(userAnswers = None).build()
 
       val request = FakeRequest(GET, shareAnswerRoute)
