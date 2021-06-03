@@ -32,24 +32,40 @@ class SharesExtractor extends AssetExtractor[SharesType] {
                      assetType: SharesType,
                      index: Int): Try[UserAnswers] = {
 
-    super.apply(answers, assetType, index)
-      assetType.isPortfolio match {
-        case Some(true) =>
-          answers.set(SharePortfolioQuantityInTrustPage, assetType.numberOfShares.toLong)
-            .flatMap(_.set(SharePortfolioNamePage, assetType.orgName))
-            .flatMap(_.set(ShareClassPage, ShareClass.fromDES(assetType.shareClass)))
-            .flatMap(_.set(SharePortfolioOnStockExchangePage, assetType.typeOfShare == QUOTED))
-            .flatMap(_.set(SharePortfolioValueInTrustPage, assetType.value))
+    super.apply(answers, assetType, index).flatMap(
+      updatedAnswers =>
+        assetType.isPortfolio match {
+          case Some(false) =>
+            populatePages(updatedAnswers, assetType,
+              ShareQuantityInTrustPage,
+              ShareCompanyNamePage,
+              SharesOnStockExchangePage,
+              ShareValueInTrustPage
+            )
+            
+          case _ =>
+            populatePages(updatedAnswers, assetType,
+              SharePortfolioQuantityInTrustPage,
+              SharePortfolioNamePage,
+              SharePortfolioOnStockExchangePage,
+              SharePortfolioValueInTrustPage
+            )
+        }
+    )
+  }
 
-        case Some(false) =>
-          answers.set(SharePortfolioQuantityInTrustPage, assetType.numberOfShares.toLong)
-            .flatMap(_.set(SharePortfolioNamePage, assetType.orgName))
-            .flatMap(_.set(ShareClassPage, ShareClass.fromDES(assetType.shareClass)))
-            .flatMap(_.set(SharesOnStockExchangePage, assetType.typeOfShare == QUOTED))
-            .flatMap(_.set(ShareValueInTrustPage, assetType.value))
+  private def populatePages(answers: UserAnswers,
+                    assetType: SharesType,
+                    quantityPage: QuestionPage[Long],
+                    namePage: QuestionPage[String],
+                    stockExchangePage: QuestionPage[Boolean],
+                    valuePage: QuestionPage[Long]): Try[UserAnswers] = {
 
-        case None => Try(answers)
-      }
+    answers.set(quantityPage, assetType.numberOfShares.toLong)
+      .flatMap(_.set(namePage, assetType.orgName))
+      .flatMap(_.set(ShareClassPage, ShareClass.fromDES(assetType.shareClass)))
+      .flatMap(_.set(stockExchangePage, assetType.typeOfShare == QUOTED))
+      .flatMap(_.set(valuePage, assetType.value))
   }
 
   override def indexPage: QuestionPage[Int] = IndexPage

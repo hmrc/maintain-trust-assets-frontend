@@ -16,12 +16,8 @@
 
 package models
 
-import java.time.LocalDate
-
-import models.ShareClass.{Capital, Deferred, Dividend, Growth, Management, NonVoting, Ordinary, Other, OtherClasses, Preference, Redeemable, Voting}
-import models.assets._
+import models.ShareClass._
 import org.scalatest.{MustMatchers, WordSpec}
-import play.api.libs.json.Json
 
 class ShareClassSpec extends WordSpec with MustMatchers{
 
@@ -52,6 +48,10 @@ class ShareClassSpec extends WordSpec with MustMatchers{
       ShareClass.fromDES("Voting shares") mustBe Voting
       ShareClass.fromDES("Dividend shares") mustBe Dividend
       ShareClass.fromDES("Capital share") mustBe Capital
+      ShareClass.fromDES("Other") mustBe Other
+    }
+
+    "return the correct value when converting toDES then fromDES " in {
       ShareClass.fromDES(ShareClass.toDES(Growth)) mustBe Other
       ShareClass.fromDES(ShareClass.toDES(Other)) mustBe Other
     }
