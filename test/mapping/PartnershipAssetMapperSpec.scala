@@ -18,9 +18,15 @@ package mapping
 
 import base.SpecBase
 import generators.Generators
+import models.Status.Completed
 import models.WhatKindOfAsset
+import models.assets.PartnershipType
 import org.scalatest.{MustMatchers, OptionValues}
+import pages.AssetStatus
 import pages.asset.WhatKindOfAssetPage
+import pages.asset.partnership._
+
+import java.time.LocalDate
 
 class PartnershipAssetMapperSpec extends SpecBase with MustMatchers
   with OptionValues with Generators {
@@ -38,19 +44,18 @@ class PartnershipAssetMapperSpec extends SpecBase with MustMatchers
       partnershipAssetMapper(userAnswers) mustNot be(defined)
     }
 
-    // TODO
+    "must able to create a Partnership Asset" in {
 
-//    "must able to create a Partnership Asset" in {
-//
-//      val userAnswers =
-//        emptyUserAnswers
-//          .set(WhatKindOfAssetPage, WhatKindOfAsset.Partnership).success.value
-//          .set(PartnershipDescriptionPage, "Partnership Description").success.value
-//          .set(PartnershipStartDatePage, LocalDate.now).success.value
-//          .set(AssetStatus, Completed).success.value
-//
-//      partnershipAssetMapper.build(userAnswers).value mustBe List(PartnershipType("Partnership Description", LocalDate.now))
-//    }
+      val userAnswers =
+        emptyUserAnswers
+          .set(WhatKindOfAssetPage, WhatKindOfAsset.Partnership).success.value
+          .set(PartnershipDescriptionPage, "Partnership Description").success.value
+          .set(PartnershipStartDatePage, LocalDate.now).success.value
+          .set(AssetStatus, Completed).success.value
+
+      partnershipAssetMapper(userAnswers).value mustBe PartnershipType("Partnership Description", LocalDate.now)
+
+    }
 
 //    "must able to create multiple Partnership Assets" in {
 //
