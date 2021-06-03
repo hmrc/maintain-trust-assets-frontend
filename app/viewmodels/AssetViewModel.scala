@@ -39,9 +39,7 @@ object AssetViewModel {
   implicit def convertToSupertype[A, B >: A](a: Reads[A]): Reads[B] =
     a.map(identity)
 
-  implicit lazy val reads : Reads[AssetViewModel] = {
-    println("???????????????????????????")
-
+  implicit lazy val reads: Reads[AssetViewModel] =
     MoneyAssetViewModel.reads or
       PropertyOrLandAssetViewModel.reads or
       ShareAssetViewModel.reads or
@@ -49,6 +47,5 @@ object AssetViewModel {
       PartnershipAssetViewModel.reads or
       OtherAssetViewModel.reads or
       NonEeaBusinessAssetViewModel.reads
-  }
 
 }

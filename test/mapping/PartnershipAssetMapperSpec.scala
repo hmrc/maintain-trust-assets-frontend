@@ -35,7 +35,7 @@ class PartnershipAssetMapperSpec extends SpecBase with MustMatchers
         emptyUserAnswers
           .set(WhatKindOfAssetPage, WhatKindOfAsset.Partnership).success.value
 
-      partnershipAssetMapper.build(userAnswers) mustNot be(defined)
+      partnershipAssetMapper(userAnswers) mustNot be(defined)
     }
 
     // TODO
