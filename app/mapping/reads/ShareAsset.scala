@@ -16,12 +16,14 @@
 
 package mapping.reads
 
+import utils.Constants.{QUOTED, UNQUOTED}
+
 trait ShareAsset extends Asset {
   val listedOnTheStockExchange: Boolean
   val name: String
   val quantityInTheTrust: Long
 
-  def quoted: String = if (listedOnTheStockExchange) "Quoted" else "Unquoted"
+  def quoted: String = if (listedOnTheStockExchange) QUOTED else UNQUOTED
 
   override val arg: String = name
 

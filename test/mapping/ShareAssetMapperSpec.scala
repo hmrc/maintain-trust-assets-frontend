@@ -68,7 +68,8 @@ class ShareAssetMapperSpec extends SpecBase with MustMatchers
             orgName = "Non-Portfolio",
             shareClass = "Deferred ordinary shares",
             typeOfShare = "Quoted",
-            value = assetValue
+            value = assetValue,
+            isPortfolio = Some(false)
           )
       }
     }
@@ -93,7 +94,8 @@ class ShareAssetMapperSpec extends SpecBase with MustMatchers
             orgName = "Portfolio",
             shareClass = "Other",
             typeOfShare = "Unquoted",
-            value = assetValue
+            value = assetValue,
+            isPortfolio = Some(true)
           )
       }
     }

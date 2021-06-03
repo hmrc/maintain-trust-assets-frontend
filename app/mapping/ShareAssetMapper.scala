@@ -22,6 +22,7 @@ import pages.QuestionPage
 import pages.asset.shares._
 import play.api.libs.json.{JsSuccess, Reads}
 import play.api.libs.functional.syntax._
+import utils.Constants.{QUOTED, UNQUOTED}
 
 class ShareAssetMapper extends Mapper[SharesType] {
 
@@ -41,7 +42,8 @@ class ShareAssetMapper extends Mapper[SharesType] {
         SharePortfolioNamePage.path.read[String] and
         Reads(_ => JsSuccess(ShareClass.toDES(ShareClass.Other))) and
         onStockExchange(SharePortfolioOnStockExchangePage) and
-        SharePortfolioValueInTrustPage.path.read[Long]
+        SharePortfolioValueInTrustPage.path.read[Long] and
+        Reads(_ => JsSuccess(Some(true)))
     ) (SharesType.apply _)
   }
 
@@ -53,20 +55,21 @@ class ShareAssetMapper extends Mapper[SharesType] {
           case shareClassValue => Reads(_ => JsSuccess(ShareClass.toDES(shareClassValue)))
         } and
         onStockExchange(SharesOnStockExchangePage) and
-        ShareValueInTrustPage.path.read[Long]
+        ShareValueInTrustPage.path.read[Long] and
+        Reads(_ => JsSuccess(Some(false)))
     ) (SharesType.apply _)
   }
 
   private def readStringToLong(page: QuestionPage[Long]): Reads[String] = {
     page.path.read[Long].flatMap {
-      case value =>  Reads(_ => JsSuccess(value.toString))
+      case value => Reads(_ => JsSuccess(value.toString))
     }
   }
 
   private def onStockExchange(page: QuestionPage[Boolean]): Reads[String] = {
     page.path.read[Boolean].flatMap {
-      case true => Reads(_ => JsSuccess("Quoted"))
-      case false => Reads(_ => JsSuccess("Unquoted"))
+      case true => Reads(_ => JsSuccess(QUOTED))
+      case false => Reads(_ => JsSuccess(UNQUOTED))
     }
   }
 }
