@@ -23,6 +23,7 @@ import models.{NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.asset.shares._
+import pages.asset.shares.add.ShareAnswerPage
 
 class SharesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -74,7 +75,7 @@ class SharesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
           navigator.nextPage(SharePortfolioValueInTrustPage, NormalMode, userAnswers)
-            .mustBe(ShareAnswerController.onPageLoad())
+            .mustBe(controllers.asset.shares.add.routes.ShareAnswerController.onPageLoad())
       }
     }
 
@@ -136,7 +137,7 @@ class SharesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
         userAnswers =>
 
           navigator.nextPage(ShareValueInTrustPage, NormalMode, userAnswers)
-            .mustBe(ShareAnswerController.onPageLoad())
+            .mustBe(controllers.asset.shares.add.routes.ShareAnswerController.onPageLoad())
       }
     }
 

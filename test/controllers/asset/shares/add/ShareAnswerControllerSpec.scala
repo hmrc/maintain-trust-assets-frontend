@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package controllers.asset.shares
+package controllers.asset.shares.add
 
 import base.SpecBase
 import pages.asset.shares._
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import utils.print.SharesPrintHelper
-import views.html.asset.shares.ShareAnswersView
+import views.html.asset.shares.add.ShareAnswersView
 
 class ShareAnswerControllerSpec extends SpecBase {
 

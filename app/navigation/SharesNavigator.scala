@@ -18,11 +18,12 @@ package navigation
 
 import controllers.asset.shares.routes._
 import models.assets.Assets
-
 import javax.inject.Inject
 import models.{Mode, NormalMode, UserAnswers}
 import pages.Page
+import pages.asset.shares.amend.IndexPage
 import pages.asset.shares._
+import pages.asset.shares.add.ShareAnswerPage
 import play.api.mvc.Call
 
 class SharesNavigator @Inject()() extends Navigator() {
@@ -41,7 +42,7 @@ class SharesNavigator @Inject()() extends Navigator() {
     case SharePortfolioNamePage  => _ => SharePortfolioOnStockExchangeController.onPageLoad(mode)
     case SharePortfolioOnStockExchangePage => _ => SharePortfolioQuantityInTrustController.onPageLoad(mode)
     case SharePortfolioQuantityInTrustPage => _ => SharePortfolioValueInTrustController.onPageLoad(mode)
-    case SharePortfolioValueInTrustPage => _ => ShareAnswerController.onPageLoad()
+    case SharePortfolioValueInTrustPage => ua => navigateToCheckAnswers(ua, mode)
   }
 
   private def nonPortfolioRoutes(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
@@ -49,7 +50,7 @@ class SharesNavigator @Inject()() extends Navigator() {
     case SharesOnStockExchangePage => _ => ShareClassController.onPageLoad(mode)
     case ShareClassPage => _ => ShareQuantityInTrustController.onPageLoad(mode)
     case ShareQuantityInTrustPage  => _ => ShareValueInTrustController.onPageLoad(mode)
-    case ShareValueInTrustPage => _ => ShareAnswerController.onPageLoad()
+    case ShareValueInTrustPage => ua => navigateToCheckAnswers(ua, mode)
   }
 
   private def yesNoNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
@@ -67,4 +68,17 @@ class SharesNavigator @Inject()() extends Navigator() {
     nonPortfolioRoutes(mode) orElse
       yesNoNavigation(mode)
 
+  private def navigateToCheckAnswers(ua: UserAnswers, mode: Mode): Call = {
+    controllers.asset.shares.add.routes.ShareAnswerController.onPageLoad()
+    /**
+    if (mode == NormalMode) {
+      controllers.asset.shares.add.routes.ShareAnswerController.onPageLoad()
+    } else {
+      ua.get(IndexPage) match {
+        case Some(index) => controllers.asset.business.amend.routes.BusinessAmendAnswersController.renderFromUserAnswers(index)
+        case None => controllers.routes.SessionExpiredController.onPageLoad()
+      }
+    }
+    */
+  }
 }

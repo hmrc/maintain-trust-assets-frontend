@@ -49,8 +49,6 @@ class SharesExtractor extends AssetExtractor[SharesType] {
               SharesOnStockExchangePage,
               ShareValueInTrustPage
             )
-
-
         }
     )
   }
