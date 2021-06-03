@@ -22,23 +22,33 @@ import models.{Mode, NormalMode, UserAnswers}
 import pages.Page
 import pages.asset.other._
 import play.api.mvc.Call
-
 import javax.inject.Inject
+import pages.asset.other.amend.IndexPage
 
 class OtherNavigator @Inject()() extends Navigator() {
 
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
-    routes(mode)(page)(userAnswers)
+    routes(userAnswers, mode)(page)(userAnswers)
 
   override def nextPage(page: Page, userAnswers: UserAnswers, assets: Assets = Assets()): Call =
     nextPage(page, NormalMode, userAnswers)
 
-  def simpleNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
+  def simpleNavigation(ua: UserAnswers, mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
     case OtherAssetDescriptionPage => _ => OtherAssetValueController.onPageLoad(mode)
-    case OtherAssetValuePage => _ => controllers.asset.other.add.routes.OtherAnswerController.onPageLoad()
+    case OtherAssetValuePage => _ => navigateToCheckAnswers(ua, mode)
   }
 
-  def routes(mode: Mode): PartialFunction[Page, UserAnswers => Call] =
-    simpleNavigation(mode)
+  def routes(ua: UserAnswers, mode: Mode): PartialFunction[Page, UserAnswers => Call] =
+    simpleNavigation(ua, mode)
 
+  private def navigateToCheckAnswers(ua: UserAnswers, mode: Mode): Call = {
+    if (mode == NormalMode) {
+      controllers.asset.other.add.routes.OtherAnswerController.onPageLoad()
+    } else {
+      ua.get(IndexPage) match {
+        case Some(index) => controllers.asset.other.amend.routes.AnswersController.renderFromUserAnswers(index)
+        case None => controllers.routes.SessionExpiredController.onPageLoad()
+      }
+    }
+  }
 }
