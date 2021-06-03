@@ -35,21 +35,22 @@ class SharesExtractor extends AssetExtractor[SharesType] {
     super.apply(answers, assetType, index).flatMap(
       updatedAnswers =>
         assetType.isPortfolio match {
-          case Some(false) =>
-            populatePages(updatedAnswers, assetType,
-              ShareQuantityInTrustPage,
-              ShareCompanyNamePage,
-              SharesOnStockExchangePage,
-              ShareValueInTrustPage
-            )
-            
-          case _ =>
+          case Some(true) =>
             populatePages(updatedAnswers, assetType,
               SharePortfolioQuantityInTrustPage,
               SharePortfolioNamePage,
               SharePortfolioOnStockExchangePage,
               SharePortfolioValueInTrustPage
             )
+          case _ =>
+            populatePages(updatedAnswers, assetType,
+              ShareQuantityInTrustPage,
+              ShareCompanyNamePage,
+              SharesOnStockExchangePage,
+              ShareValueInTrustPage
+            )
+
+
         }
     )
   }
