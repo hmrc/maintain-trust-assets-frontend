@@ -50,7 +50,7 @@ class OtherNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
           val answers = userAnswers.set(OtherAssetValuePage, 4000L).success.value
 
           navigator.nextPage(OtherAssetValuePage, NormalMode, answers)
-            .mustBe(OtherAssetAnswersController.onPageLoad())
+            .mustBe(controllers.asset.other.add.routes.OtherAnswerController.onPageLoad())
       }
     }
   }
