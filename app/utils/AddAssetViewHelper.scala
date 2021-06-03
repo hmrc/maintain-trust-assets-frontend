@@ -33,6 +33,7 @@ class AddAssetViewHelper @Inject()(assets: Assets)
     val complete = assets.nonEEABusiness.zipWithIndex.map(x => renderNonEEABusiness(x._1, x._2)) ++
                    assets.monetary.zipWithIndex.map(x => renderMoney(x._1)) ++
                    assets.propertyOrLand.zipWithIndex.map(x => renderPropertyOrLand(x._1, x._2)) ++
+                   assets.partnerShip.zipWithIndex.map(x => renderPartnership(x._1, x._2)) ++
                    assets.business.zipWithIndex.map(x => renderBusiness(x._1, x._2))
     AddToRows(complete)
   }
@@ -70,6 +71,15 @@ class AddAssetViewHelper @Inject()(assets: Assets)
       typeLabel = messages(s"entities.asset.nonEeaBusiness"),
       changeUrl = noneeabusiness.amend.routes.AnswersController.extractAndRender(index).url,
       removeUrl = noneeabusiness.remove.routes.RemoveAssetYesNoController.onPageLoad(index).url
+    )
+  }
+
+  private def renderPartnership(asset: PartnershipType, index: Int): AddRow = {
+    AddRow(
+      name = asset.description,
+      typeLabel = messages(s"entities.asset.partnership"),
+      changeUrl = "",
+      removeUrl = ""
     )
   }
 }

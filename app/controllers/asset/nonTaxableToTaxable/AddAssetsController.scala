@@ -78,6 +78,18 @@ class AddAssetsController @Inject()(
         _ <- repository.set(updatedAnswers)
       } yield {
 
+        println(">>>>>>>>>>>" + assets)
+
+        //>>>>>>>>>>>Assets(
+        // List(),
+        // List(),
+        // List(),
+        // List(BusinessAssetType(Wha,12,UkAddress(5 Derwent Close,Add2,Some(Add2),Some(Seaham),SR77BS),12)),
+        // List(PartnershipType(12,1990-01-01),
+        // PartnershipType(12,1990-01-01)),
+        // List(),
+        // List(NonEeaBusinessType(Some(1),1234567890 QwErTyUiOp ,.(/)&'- name,UkAddress(1234567890 QwErTyUiOp ,.(/)&'- name,1234567890 QwErTyUiOp ,.(/)&'- name,None,None,Z99 2YY),DE,2020-09-02,None,false)))
+
         val assetRows = new AddAssetViewHelper(assets).rows
 
         val maxLimit: Int = if(userAnswers.isMigratingToTaxable) {
