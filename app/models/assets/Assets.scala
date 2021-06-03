@@ -50,7 +50,6 @@ case class Assets(monetary: List[AssetMonetaryAmount] = Nil,
 
 object Assets {
   implicit val reads: Reads[Assets] =
-    {
       ((__ \ "assets" \ "monetary").readWithDefault[List[AssetMonetaryAmount]](Nil)
         and (__ \ "assets" \ "propertyOrLand").readWithDefault[List[PropertyLandType]](Nil)
         and (__ \ "assets" \ "shares").readWithDefault[List[SharesType]](Nil)
@@ -59,5 +58,4 @@ object Assets {
         and (__ \ "assets" \ "other").readWithDefault[List[OtherAssetType]](Nil)
         and (__ \ "assets" \ "nonEEABusiness").readWithDefault[List[NonEeaBusinessType]](Nil)
         ).apply(Assets.apply _)
-    }
 }
