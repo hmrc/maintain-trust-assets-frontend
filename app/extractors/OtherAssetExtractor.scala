@@ -14,24 +14,29 @@
  * limitations under the License.
  */
 
-package mapping
+package extractors
 
 import models.UserAnswers
 import models.assets.OtherAssetType
+import pages.QuestionPage
+import pages.asset.other.amend.IndexPage
 import pages.asset.other.{OtherAssetDescriptionPage, OtherAssetValuePage}
-import play.api.Logging
-import play.api.libs.json.Reads
-import play.api.libs.functional.syntax._
+import play.api.libs.json.JsPath
 
-class OtherAssetMapper extends Mapper[OtherAssetType] with Logging {
+import scala.util.Try
 
-  def apply(answers: UserAnswers): Option[OtherAssetType] = {
-    val readFromUserAnswers: Reads[OtherAssetType] =
-      (
-        OtherAssetDescriptionPage.path.read[String] and
-          OtherAssetValuePage.path.read[Long]
-        ) (OtherAssetType.apply _)
+class OtherAssetExtractor extends AssetExtractor[OtherAssetType] {
 
-    mapAnswersWithExplicitReads(answers, readFromUserAnswers)
+  override def apply(answers: UserAnswers,
+                     otherAssetType: OtherAssetType,
+                     index: Int): Try[UserAnswers] = {
+
+    super.apply(answers, otherAssetType, index)
+      .flatMap(_.set(OtherAssetDescriptionPage, otherAssetType.description))
+      .flatMap(_.set(OtherAssetValuePage, otherAssetType.value))
   }
+
+  override def indexPage: QuestionPage[Int] = IndexPage
+
+  override def basePath: JsPath = pages.asset.other.basePath
 }

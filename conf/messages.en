@@ -123,10 +123,6 @@ answerPage.section.businessAsset.subheading = Business {0}
 answerPage.section.otherAsset.subheading = Other {0}
 answerPage.section.nonEeaBusinessAsset.subheading = Non-EEA Company {0}
 
-
-
-
-
 addNonEeaBusinessAssetYesNo.title = Do you want to add a non-EEA company?
 addNonEeaBusinessAssetYesNo.heading = Do you want to add a non-EEA company?
 addNonEeaBusinessAssetYesNo.error.required = Select yes if you want to add a non-EEA company
@@ -452,9 +448,12 @@ other.value.error.zero = Current value of the asset must be 1 or more
 other.value.error.length = Current value of the asset must be less than 1,000,000,000,000
 other.value.error.wholeNumber = Current value of the asset must be a whole number
 
+other.removeYesNo.title = Are you sure you want to remove the asset?
+other.removeYesNo.heading = Are you sure you want to remove {0}?
+other.removeYesNo.error.required = Select yes if you want to remove the asset
+
 other.answers.title = Check asset details
 other.answers.heading = Check asset details
-
 
 nonEeaBusiness.name.title = What is the company’s name?
 nonEeaBusiness.name.heading = What is the company’s name?

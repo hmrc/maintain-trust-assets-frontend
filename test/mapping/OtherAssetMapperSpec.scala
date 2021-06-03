@@ -18,17 +18,20 @@ package mapping
 
 import base.SpecBase
 import generators.Generators
-import models.WhatKindOfAsset
+import models.Status.Completed
+import models.WhatKindOfAsset.Other
+import models.assets.OtherAssetType
 import org.scalatest.{MustMatchers, OptionValues}
+import pages.AssetStatus
 import pages.asset.WhatKindOfAssetPage
+import pages.asset.other.{OtherAssetDescriptionPage, OtherAssetValuePage}
 
 class OtherAssetMapperSpec extends SpecBase with MustMatchers
   with OptionValues with Generators {
 
   val otherAssetMapper: OtherAssetMapper = injector.instanceOf[OtherAssetMapper]
 
-  //private val assetValue1: Long = 4000L
-  //private val assetValue2: Long = 6000L
+  private val assetValue1: Long = 4000L
 
   "OtherAssetMapper" must {
 
@@ -36,44 +39,24 @@ class OtherAssetMapperSpec extends SpecBase with MustMatchers
 
       val userAnswers =
         emptyUserAnswers
-          .set(WhatKindOfAssetPage, WhatKindOfAsset.Other).success.value
+          .set(WhatKindOfAssetPage, Other).success.value
 
-      otherAssetMapper.build(userAnswers) mustNot be(defined)
+      otherAssetMapper(userAnswers).isDefined mustBe false
     }
 
-    // TODO
+    "must able to create an Other Asset" in {
 
-//    "must able to create an Other Asset" in {
-//
-//      val userAnswers =
-//        emptyUserAnswers
-//          .set(WhatKindOfAssetPage, WhatKindOfAsset.Other).success.value
-//          .set(OtherAssetDescriptionPage, "Description").success.value
-//          .set(OtherAssetValuePage, assetValue1).success.value
-//          .set(AssetStatus, Completed).success.value
-//
-//      otherAssetMapper.build(userAnswers).value mustBe List(OtherAssetType("Description", assetValue1))
-//    }
+      val userAnswers =
+        emptyUserAnswers
+          .set(WhatKindOfAssetPage, Other).success.value
+          .set(OtherAssetDescriptionPage, "Description").success.value
+          .set(OtherAssetValuePage, assetValue1).success.value
+          .set(AssetStatus, Completed).success.value
 
-//    "must able to create multiple Other Assets" in {
-//
-//      val userAnswers =
-//        emptyUserAnswers
-//          .set(WhatKindOfAssetPage, WhatKindOfAsset.Other).success.value
-//          .set(OtherAssetDescriptionPage, "Description 1").success.value
-//          .set(OtherAssetValuePage, assetValue1).success.value
-//          .set(AssetStatus, Completed).success.value
-//          .set(WhatKindOfAssetPage, WhatKindOfAsset.Other).success.value
-//          .set(OtherAssetDescriptionPage, "Description 2").success.value
-//          .set(OtherAssetValuePage, assetValue2).success.value
-//          .set(AssetStatus, Completed).success.value
-//
-//      otherAssetMapper.build(userAnswers).value mustBe List(
-//        OtherAssetType("Description 1", assetValue1),
-//        OtherAssetType("Description 2", assetValue2)
-//      )
-//
-//      otherAssetMapper.build(userAnswers).value.length mustBe 2
-//    }
+      val result = otherAssetMapper(userAnswers).get
+
+      result mustBe
+        OtherAssetType("Description", assetValue1)
+    }
   }
 }

@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package views.asset.other
+package views.asset.other.add
 
 import play.twirl.api.HtmlFormat
 import viewmodels.AnswerSection
 import views.behaviours.ViewBehaviours
-import views.html.asset.other.OtherAssetAnswersView
+import views.html.asset.other.add.OtherAssetAnswersView
 
-class OtherAssetAnswersViewSpec extends ViewBehaviours {
+class OtherAnswerViewSpec extends ViewBehaviours {
 
   private val messageKeyPrefix: String = "other.answers"
 
-  "OtherAssetAnswers view" must {
+  "OtherAnswer view" must {
 
     val view = viewFor[OtherAssetAnswersView](Some(emptyUserAnswers))
 
