@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import controllers.asset.other.routes._
+@import controllers.asset.other.add.routes._
 @import viewmodels.{AnswerSection, RepeaterAnswerSection, Section}
 
 @this(
@@ -34,7 +34,7 @@
 
     @components.answer_section(answerSections)
 
-    @formHelper(action = OtherAssetAnswersController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = OtherAnswerController.onSubmit(), 'autoComplete -> "off") {
 
         @components.submit_button()
 
