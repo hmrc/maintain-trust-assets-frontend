@@ -20,7 +20,7 @@ import play.api.libs.json.{Format, Json}
 
 case class TaxableMigrationFlag(value: Option[Boolean]) {
 
-  def migratingFromNonTaxableToTaxable: Boolean = value.contains(true)
+  def migratingFromNonTaxableToTaxable: Boolean = true
 }
 
 object TaxableMigrationFlag {

@@ -16,12 +16,23 @@
 
 package mapping
 
-import mapping.reads.PartnershipAsset
+import models.UserAnswers
 import models.assets.PartnershipType
+import pages.asset.partnership._
+import play.api.libs.json.Reads
+import play.api.libs.functional.syntax._
 
-class PartnershipAssetMapper extends Mapping[PartnershipType, PartnershipAsset] {
+import java.time.LocalDate
 
-  override def mapAssets(assets: List[PartnershipAsset]): List[PartnershipType] = {
-    assets.map(x => PartnershipType(x.description, x.partnershipStartDate))
+class PartnershipAssetMapper extends Mapper[PartnershipType] {
+
+  def apply(answers: UserAnswers): Option[PartnershipType] = {
+    val readFromUserAnswers: Reads[PartnershipType] =
+      (
+        PartnershipDescriptionPage.path.read[String] and
+          PartnershipStartDatePage.path.read[LocalDate]
+        ) (PartnershipType.apply _)
+
+    mapAnswersWithExplicitReads(answers, readFromUserAnswers)
   }
 }

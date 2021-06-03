@@ -40,6 +40,8 @@ object AssetViewModel {
     a.map(identity)
 
   implicit lazy val reads : Reads[AssetViewModel] = {
+    println("???????????????????????????")
+
     MoneyAssetViewModel.reads or
       PropertyOrLandAssetViewModel.reads or
       ShareAssetViewModel.reads or
