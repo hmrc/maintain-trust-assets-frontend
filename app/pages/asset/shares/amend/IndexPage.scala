@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package utils
+package pages.asset.shares.amend
 
-object Constants {
-  final val GB = "GB"
-  final val ES = "ES"
-  final val UNITED_KINGDOM = "United Kingdom"
-  final val SPAIN = "Spain"
+import pages.QuestionPage
+import pages.asset.shares.basePath
+import play.api.libs.json.JsPath
 
-  final val QUOTED = "Quoted"
-  final val UNQUOTED = "Unquoted"
+case object IndexPage extends QuestionPage[Int] {
+
+  override def path: JsPath = basePath \ toString
+
+  override def toString: String = "index"
 }

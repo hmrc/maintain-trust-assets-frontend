@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,10 +12,29 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package pages.asset.shares
+@import controllers.asset.shares.add.routes._
+@import viewmodels.{AnswerSection, RepeaterAnswerSection, Section}
 
-import pages.Page
+@this(
+main_template: MainTemplate,
+formHelper: FormWithCSRF
+)
 
-case object ShareAnswerPage extends Page
+@(answerSections: AnswerSection)(implicit request: Request[_], messages: Messages)
+
+@main_template(
+    title = messages("shares.answers.title")
+) {
+
+    @components.back_link()
+
+    @components.heading("shares.answers.heading")
+
+    @components.answer_section(answerSections)
+
+    @formHelper(action = ShareAnswerController.onSubmit(), 'autoComplete -> "off") {
+        @components.submit_button()
+    }
+}

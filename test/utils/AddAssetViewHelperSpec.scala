@@ -18,11 +18,14 @@ package utils
 
 import base.SpecBase
 import controllers.asset._
+import models.ShareClass
+import models.assets.{AssetMonetaryAmount, Assets, BusinessAssetType, NonEeaBusinessType, OtherAssetType, PropertyLandType, SharesType}
 import models.assets.{AssetMonetaryAmount, Assets, BusinessAssetType, NonEeaBusinessType, OtherAssetType, PartnershipType, PropertyLandType}
 import models.{CheckMode, NonUkAddress}
 import viewmodels.AddRow
 
 import java.time.LocalDate
+import utils.Constants.QUOTED
 
 class AddAssetViewHelperSpec extends SpecBase {
 
@@ -41,8 +44,11 @@ class AddAssetViewHelperSpec extends SpecBase {
       val partnershipAsset2 = PartnershipType("Partnership Name2", LocalDate.now())
       val businessAsset1 = BusinessAssetType("Business Name1", "", NonUkAddress("", "", None, ""), 12L)
       val businessAsset2 = BusinessAssetType("Business Name2", "", NonUkAddress("", "", None, ""), 12L)
+      val shares1 = SharesType("5", "Shares Name1", ShareClass.Other.toString, QUOTED, 12L)
+      val shares2 = SharesType("7", "Shares Name2", ShareClass.Other.toString, QUOTED, 12L)
       val other1 = OtherAssetType("Other Asset1", 4000)
       val other2 = OtherAssetType("Other Asset2", 4000)
+
 
       "generate Nil for no user answers" in {
         val rows = new AddAssetViewHelper(Assets(Nil, Nil, Nil, Nil, Nil, Nil, Nil)).rows
@@ -99,6 +105,17 @@ class AddAssetViewHelperSpec extends SpecBase {
         )
       }
 
+
+      "generate rows from user answers for shares" in {
+        val assets = Assets(Nil, Nil, List(shares1, shares2), Nil, Nil, Nil, Nil)
+
+        val rows = new AddAssetViewHelper(assets).rows
+        rows.complete mustBe List(
+          AddRow("Shares Name1", typeLabel = "Share", changeSharesAssetRoute(0), removeSharesAssetRoute(0)),
+          AddRow("Shares Name2", typeLabel = "Share", changeSharesAssetRoute(1), removeSharesAssetRoute(1))
+        )
+      }
+
       "generate rows from user answers for other assets" in {
         val assets = Assets(Nil, Nil, Nil, Nil, Nil, List(other1, other2), Nil)
 
@@ -113,26 +130,27 @@ class AddAssetViewHelperSpec extends SpecBase {
         val assets = Assets(
           List(moneyAsset),
           List(propertyOrLandAsset1, propertyOrLandAsset2),
-          Nil,
+          List(shares1, shares2),
           List(businessAsset1, businessAsset2),
           List(partnershipAsset1, partnershipAsset2),
           List(other1, other2),
           List(nonEeaAsset1, nonEeaAsset2))
 
         val rows = new AddAssetViewHelper(assets).rows
-        rows.complete mustBe List(
-          AddRow("Non-EEA Business Name1", typeLabel = "Non-EEA Company", changeNonEeaBusinessAssetRoute(0), removeNonEeaBusinessAssetRoute(0)),
-          AddRow("Non-EEA Business Name2", typeLabel = "Non-EEA Company", changeNonEeaBusinessAssetRoute(1), removeNonEeaBusinessAssetRoute(1)),
-          AddRow("£4000", typeLabel = "Money", changeMoneyAssetRoute(0), removeMoneyAssetRoute(0)),
-          AddRow("PropertyOrLand Name1", typeLabel = "Property or land", changePropertyLandAssetRoute(0), removePropertyLandAssetRoute(0)),
-          AddRow("PropertyOrLand Name2", typeLabel = "Property or land", changePropertyLandAssetRoute(1), removePropertyLandAssetRoute(1)),
-          AddRow("Other Asset1", typeLabel = "Other", changeOtherAssetRoute(0), removeOtherAssetRoute(0)),
-          AddRow("Other Asset2", typeLabel = "Other", changeOtherAssetRoute(1), removeOtherAssetRoute(1)),
-          AddRow("Partnership Name1", typeLabel = "Partnership", "", ""),
-          AddRow("Partnership Name2", typeLabel = "Partnership", "", ""),
-          AddRow("Business Name1", typeLabel = "Business", changeBusinessAssetRoute(0), removeBusinessAssetRoute(0)),
-          AddRow("Business Name2", typeLabel = "Business", changeBusinessAssetRoute(1), removeBusinessAssetRoute(1)),
-        )
+
+        rows.complete must contain(AddRow("Non-EEA Business Name1", typeLabel = "Non-EEA Company", changeNonEeaBusinessAssetRoute(0), removeNonEeaBusinessAssetRoute(0)))
+        rows.complete must contain(AddRow("Non-EEA Business Name2", typeLabel = "Non-EEA Company", changeNonEeaBusinessAssetRoute(1), removeNonEeaBusinessAssetRoute(1)))
+        rows.complete must contain(AddRow("£4000", typeLabel = "Money", changeMoneyAssetRoute(0), removeMoneyAssetRoute(0)))
+        rows.complete must contain(AddRow("PropertyOrLand Name1", typeLabel = "Property or land", changePropertyLandAssetRoute(0), removePropertyLandAssetRoute(0)))
+        rows.complete must contain(AddRow("PropertyOrLand Name2", typeLabel = "Property or land", changePropertyLandAssetRoute(1), removePropertyLandAssetRoute(1)))
+        rows.complete must contain(AddRow("Other Asset1", typeLabel = "Other", changeOtherAssetRoute(0), removeOtherAssetRoute(0)))
+        rows.complete must contain(AddRow("Other Asset2", typeLabel = "Other", changeOtherAssetRoute(1), removeOtherAssetRoute(1)))
+        rows.complete must contain(AddRow("Partnership Name1", typeLabel = "Partnership", "", ""))
+        rows.complete must contain(AddRow("Partnership Name2", typeLabel = "Partnership", "", ""))
+        rows.complete must contain(AddRow("Business Name1", typeLabel = "Business", changeBusinessAssetRoute(0), removeBusinessAssetRoute(0)))
+        rows.complete must contain(AddRow("Business Name2", typeLabel = "Business", changeBusinessAssetRoute(1), removeBusinessAssetRoute(1)))
+        rows.complete must contain(AddRow("Shares Name1", typeLabel = "Share", changeSharesAssetRoute(0), removeSharesAssetRoute(0)))
+        rows.complete must contain(AddRow("Shares Name2", typeLabel = "Share", changeSharesAssetRoute(1), removeSharesAssetRoute(1)))
 
       }
     }
@@ -161,6 +179,12 @@ class AddAssetViewHelperSpec extends SpecBase {
 
   def removeBusinessAssetRoute(index: Int): String =
     business.remove.routes.RemoveBusinessAssetYesNoController.onPageLoad(index).url
+
+  def changeSharesAssetRoute(index: Int): String = ""
+    //ToDo Replace once Controller created - shares.amend.routes.ShareAmendAnswersController.extractAndRender(index).url
+
+  def removeSharesAssetRoute(index: Int): String = ""
+    //ToDo Replace once Controller created - shares.remove.routes.RemoveShareAssetYesNoController.onPageLoad(index).url
 
   def changeOtherAssetRoute(index: Int): String =
     other.amend.routes.AnswersController.extractAndRender(index).url

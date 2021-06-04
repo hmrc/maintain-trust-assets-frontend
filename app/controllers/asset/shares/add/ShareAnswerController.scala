@@ -14,43 +14,39 @@
  * limitations under the License.
  */
 
-package controllers.asset.shares
+package controllers.asset.shares.add
 
 import config.annotations.Shares
+import connectors.TrustsConnector
 import controllers.actions._
-import models.Status.Completed
+import handlers.ErrorHandler
+import javax.inject.Inject
+import mapping.ShareAssetMapper
+import models.NormalMode
 import navigation.Navigator
-import pages.AssetStatus
-import pages.asset.shares.{ShareAnswerPage, ShareCompanyNamePage, SharePortfolioNamePage}
+import pages.asset.shares.add.ShareAnswerPage
+import pages.asset.shares.{ShareCompanyNamePage, SharePortfolioNamePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import queries.Gettable
-import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.SharesPrintHelper
-import views.html.asset.shares.ShareAnswersView
-import javax.inject.Inject
-import models.NormalMode
 import viewmodels.AnswerSection
+import views.html.asset.shares.add.ShareAnswersView
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class ShareAnswerController @Inject()(
                                        override val messagesApi: MessagesApi,
                                        standardActionSets: StandardActionSets,
-                                       repository: PlaybackRepository,
                                        @Shares navigator: Navigator,
                                        view: ShareAnswersView,
                                        val controllerComponents: MessagesControllerComponents,
-                                       printHelper: SharesPrintHelper
+                                       printHelper: SharesPrintHelper,
+                                       connector: TrustsConnector,
+                                       mapper: ShareAssetMapper,
+                                       errorHandler: ErrorHandler
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
-
-//  private def actions(index: Int): ActionBuilder[RegistrationDataRequest, AnyContent] =
-//    identify andThen
-//      getData() andThen
-//      requireData andThen
-//      requiredAnswer(RequiredAnswer(SharesInAPortfolioPage, routes.SharesInAPortfolioController.onPageLoad(index)))
-// TODO
 
   private val provisional: Boolean = true
 
@@ -74,13 +70,13 @@ class ShareAnswerController @Inject()(
 
   def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-
-      val answers = request.userAnswers.set(AssetStatus, Completed)
-
-      for {
-        updatedAnswers <- Future.fromTry(answers)
-        _ <- repository.set(updatedAnswers)
-      } yield Redirect(navigator.nextPage(ShareAnswerPage, NormalMode, request.userAnswers))
-
+      mapper(request.userAnswers) match {
+        case None =>
+          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+        case Some(asset) =>
+          connector.addSharesAsset(request.userAnswers.identifier, asset).map(_ =>
+            Redirect(navigator.nextPage(ShareAnswerPage, NormalMode, request.userAnswers))
+          )
+      }
   }
 }
