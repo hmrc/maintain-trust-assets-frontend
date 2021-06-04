@@ -90,7 +90,7 @@ class AddAssetViewHelper @Inject()(assets: Assets)
     AddRow(
       name = asset.description,
       typeLabel = messages(s"entities.asset.partnership"),
-      changeUrl = "",
+      changeUrl = partnership.amend.routes.PartnershipAmendAnswersController.extractAndRender(index).url,
       removeUrl = ""
     )
   }

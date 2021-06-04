@@ -90,8 +90,8 @@ class AddAssetViewHelperSpec extends SpecBase {
 
         val rows = new AddAssetViewHelper(assets).rows
         rows.complete mustBe List(
-          AddRow("Partnership Name1", typeLabel = "Partnership", "", ""),
-          AddRow("Partnership Name2", typeLabel = "Partnership", "", "")
+          AddRow("Partnership Name1", typeLabel = "Partnership", changePartnershipAssetRoute(0), ""),
+          AddRow("Partnership Name2", typeLabel = "Partnership", changePartnershipAssetRoute(1), "")
         )
       }
 
@@ -145,8 +145,8 @@ class AddAssetViewHelperSpec extends SpecBase {
         rows.complete must contain(AddRow("PropertyOrLand Name2", typeLabel = "Property or land", changePropertyLandAssetRoute(1), removePropertyLandAssetRoute(1)))
         rows.complete must contain(AddRow("Other Asset1", typeLabel = "Other", changeOtherAssetRoute(0), removeOtherAssetRoute(0)))
         rows.complete must contain(AddRow("Other Asset2", typeLabel = "Other", changeOtherAssetRoute(1), removeOtherAssetRoute(1)))
-        rows.complete must contain(AddRow("Partnership Name1", typeLabel = "Partnership", "", ""))
-        rows.complete must contain(AddRow("Partnership Name2", typeLabel = "Partnership", "", ""))
+        rows.complete must contain(AddRow("Partnership Name1", typeLabel = "Partnership", changePartnershipAssetRoute(0), ""))
+        rows.complete must contain(AddRow("Partnership Name2", typeLabel = "Partnership", changePartnershipAssetRoute(1), ""))
         rows.complete must contain(AddRow("Business Name1", typeLabel = "Business", changeBusinessAssetRoute(0), removeBusinessAssetRoute(0)))
         rows.complete must contain(AddRow("Business Name2", typeLabel = "Business", changeBusinessAssetRoute(1), removeBusinessAssetRoute(1)))
         rows.complete must contain(AddRow("Shares Name1", typeLabel = "Share", changeSharesAssetRoute(0), removeSharesAssetRoute(0)))
@@ -173,6 +173,9 @@ class AddAssetViewHelperSpec extends SpecBase {
 
   def removePropertyLandAssetRoute(index: Int): String =
     property_or_land.remove.routes.PropertyOrLandRemoveAssetYesNoController.onPageLoad(index).url
+
+  def changePartnershipAssetRoute(index: Int): String =
+    partnership.amend.routes.PartnershipAmendAnswersController.extractAndRender(index).url
 
   def changeBusinessAssetRoute(index: Int): String =
     business.amend.routes.BusinessAmendAnswersController.extractAndRender(index).url

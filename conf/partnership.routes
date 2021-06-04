@@ -10,3 +10,7 @@ POST       /change-start-date                                     controllers.as
 
 GET        /check-partnership-answers                             controllers.asset.partnership.add.PartnershipAnswerController.onPageLoad()
 POST       /check-partnership-answers                             controllers.asset.partnership.add.PartnershipAnswerController.onSubmit()
+
+GET        /:index/check-answers                                  controllers.asset.partnership.amend.PartnershipAmendAnswersController.extractAndRender(index: Int)
+GET        /:index/updated-answers                                controllers.asset.partnership.amend.PartnershipAmendAnswersController.renderFromUserAnswers(index: Int)
+POST       /:index/check-answers                                  controllers.asset.partnership.amend.PartnershipAmendAnswersController.onSubmit(index: Int)
