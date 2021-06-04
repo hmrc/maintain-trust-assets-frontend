@@ -19,15 +19,16 @@ package controllers.asset.shares.amend
 import config.FrontendAppConfig
 import connectors.TrustsConnector
 import controllers.actions._
-import controllers.actions.business.NameRequiredAction
 import extractors.ShareExtractor
 import handlers.ErrorHandler
 import javax.inject.Inject
 import mapping.ShareAssetMapper
 import models.UserAnswers
+import pages.asset.shares.{ShareCompanyNamePage, SharePortfolioNamePage}
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
+import queries.Gettable
 import repositories.PlaybackRepository
 import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -48,7 +49,6 @@ class ShareAmendAnswersController @Inject()(
                                    playbackRepository: PlaybackRepository,
                                    printHelper: SharesPrintHelper,
                                    mapper: ShareAssetMapper,
-                                   nameAction: NameRequiredAction,
                                    extractor: ShareExtractor,
                                    errorHandler: ErrorHandler
                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
@@ -85,9 +85,18 @@ class ShareAmendAnswersController @Inject()(
       }
   }
 
-  def renderFromUserAnswers(index: Int) : Action[AnyContent] = standardActionSets.verifiedForIdentifier.andThen(nameAction) {
+  def renderFromUserAnswers(index: Int) : Action[AnyContent] = standardActionSets.verifiedForIdentifier {
     implicit request =>
-      render(request.userAnswers, index, request.Name)
+      def getPage(page: Gettable[String]): Option[String] = {
+        request.userAnswers.get(page)
+      }
+      val name: String = (getPage(ShareCompanyNamePage), getPage(SharePortfolioNamePage)) match {
+        case (Some(name), None) => name
+        case (None, Some(name)) => name
+        case _ => request.messages(messagesApi)("assets.defaultText")
+      }
+
+      render(request.userAnswers, index, name)
   }
 
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
@@ -100,7 +109,7 @@ class ShareAmendAnswersController @Inject()(
           )
       }.getOrElse {
         logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
-          s" error mapping user answers to Business Asset $index")
+          s" error mapping user answers to Share Asset $index")
 
         Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
       }
