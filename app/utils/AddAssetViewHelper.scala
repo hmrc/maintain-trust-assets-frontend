@@ -89,8 +89,8 @@ class AddAssetViewHelper @Inject()(assets: Assets)
     AddRow(
       name = asset.orgName,
       typeLabel = messages(s"entities.asset.shares"),
-      changeUrl = "", //ToDo Replace once Controller created - shares.amend.routes.ShareAmendAnswersController.extractAndRender(index).url,
-      removeUrl = "" //ToDo Replace once Controller created - shares.remove.routes.RemoveShareAssetYesNoController.onPageLoad(index).url
+      changeUrl = shares.amend.routes.ShareAmendAnswersController.extractAndRender(index).url,
+      removeUrl = shares.remove.routes.RemoveShareAssetYesNoController.onPageLoad(index).url
     )
   }
 }

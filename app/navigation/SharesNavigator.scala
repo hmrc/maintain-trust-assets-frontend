@@ -69,16 +69,13 @@ class SharesNavigator @Inject()() extends Navigator() {
       yesNoNavigation(mode)
 
   private def navigateToCheckAnswers(ua: UserAnswers, mode: Mode): Call = {
-    controllers.asset.shares.add.routes.ShareAnswerController.onPageLoad()
-    /**
     if (mode == NormalMode) {
       controllers.asset.shares.add.routes.ShareAnswerController.onPageLoad()
     } else {
       ua.get(IndexPage) match {
-        case Some(index) => controllers.asset.business.amend.routes.BusinessAmendAnswersController.renderFromUserAnswers(index)
+        case Some(index) => controllers.asset.shares.amend.routes.ShareAmendAnswersController.renderFromUserAnswers(index)
         case None => controllers.routes.SessionExpiredController.onPageLoad()
       }
     }
-    */
   }
 }

@@ -19,9 +19,10 @@ package controllers.actions.shares
 import controllers.actions.NameRequest
 import javax.inject.Inject
 import models.requests.DataRequest
-import pages.asset.shares.ShareCompanyNamePage
+import pages.asset.shares.{ShareCompanyNamePage, SharePortfolioNamePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.ActionTransformer
+import queries.Gettable
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -34,10 +35,14 @@ class CompanyNameRequiredAction @Inject()(val executionContext: ExecutionContext
     ))
   }
 
+
   private def getName[A](request: DataRequest[A]): String = {
-    request.userAnswers.get(ShareCompanyNamePage) match {
-      case Some(name) => name
-      case _ => request.messages(messagesApi)("nonPortfolioSharesName.name.default")
+    def getPage(page: Gettable[String]): Option[String] = request.userAnswers.get(page)
+
+    (getPage(ShareCompanyNamePage), getPage(SharePortfolioNamePage)) match {
+      case (Some(name), None) => name
+      case (None, Some(name)) => name
+      case _ => request.messages(messagesApi)("shares.name.default")
     }
   }
 }

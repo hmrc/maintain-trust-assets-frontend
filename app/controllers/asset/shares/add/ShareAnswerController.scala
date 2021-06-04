@@ -19,16 +19,15 @@ package controllers.asset.shares.add
 import config.annotations.Shares
 import connectors.TrustsConnector
 import controllers.actions._
+import controllers.actions.shares.CompanyNameRequiredAction
 import handlers.ErrorHandler
 import javax.inject.Inject
 import mapping.ShareAssetMapper
 import models.NormalMode
 import navigation.Navigator
 import pages.asset.shares.add.ShareAnswerPage
-import pages.asset.shares.{ShareCompanyNamePage, SharePortfolioNamePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import queries.Gettable
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.SharesPrintHelper
 import viewmodels.AnswerSection
@@ -42,6 +41,7 @@ class ShareAnswerController @Inject()(
                                        @Shares navigator: Navigator,
                                        view: ShareAnswersView,
                                        val controllerComponents: MessagesControllerComponents,
+                                       nameAction: CompanyNameRequiredAction,
                                        printHelper: SharesPrintHelper,
                                        connector: TrustsConnector,
                                        mapper: ShareAssetMapper,
@@ -50,20 +50,10 @@ class ShareAnswerController @Inject()(
 
   private val provisional: Boolean = true
 
-  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
+  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
 
-      def getPage(page: Gettable[String]): Option[String] = {
-        request.userAnswers.get(page)
-      }
-
-      val name: String = (getPage(ShareCompanyNamePage), getPage(SharePortfolioNamePage)) match {
-        case (Some(name), None) => name
-        case (None, Some(name)) => name
-        case _ => request.messages(messagesApi)("assets.defaultText")
-      }
-
-      val section: AnswerSection = printHelper(userAnswers = request.userAnswers, provisional, name)
+      val section: AnswerSection = printHelper(userAnswers = request.userAnswers, provisional, request.Name)
 
       Ok(view(section))
   }
