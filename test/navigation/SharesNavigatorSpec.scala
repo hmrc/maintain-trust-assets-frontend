@@ -19,9 +19,10 @@ package navigation
 import base.SpecBase
 import controllers.asset.shares.routes._
 import generators.Generators
-import models.{NormalMode, UserAnswers}
+import models.{CheckMode, NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import pages.asset.shares.amend.IndexPage
 import pages.asset.shares._
 import pages.asset.shares.add.ShareAnswerPage
 
@@ -131,13 +132,15 @@ class SharesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
       }
     }
 
-    "go to ShareAnswers from ShareValueInTrust" in {
+    "navigate to Answers Page for add" when {
+      "go to ShareAnswers from ShareValueInTrust" in {
 
-      forAll(arbitrary[UserAnswers]) {
-        userAnswers =>
+        forAll(arbitrary[UserAnswers]) {
+          userAnswers =>
 
-          navigator.nextPage(ShareValueInTrustPage, NormalMode, userAnswers)
-            .mustBe(controllers.asset.shares.add.routes.ShareAnswerController.onPageLoad())
+            navigator.nextPage(ShareValueInTrustPage, NormalMode, userAnswers)
+              .mustBe(controllers.asset.shares.add.routes.ShareAnswerController.onPageLoad())
+        }
       }
     }
 
@@ -147,6 +150,21 @@ class SharesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
           navigator.nextPage(ShareAnswerPage, NormalMode, userAnswers)
             .mustBe(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
+      }
+    }
+
+    "navigate to amend Answers Page" when {
+      "go to ShareAnswers from ShareValueInTrust" in {
+        val page = ShareValueInTrustPage
+        val index = 0
+
+        forAll(arbitrary[UserAnswers]) {
+          userAnswers =>
+            val answers = userAnswers.set(page, 100L).success.value.set(IndexPage, index).success.value
+
+            navigator.nextPage(page, CheckMode, answers)
+              .mustBe(controllers.asset.shares.amend.routes.ShareAmendAnswersController.renderFromUserAnswers(index))
+        }
       }
     }
   }
