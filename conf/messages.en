@@ -360,6 +360,9 @@ shares.valueInTrust.error.wholeNumber = Total value of shares in the trust must 
 shares.answers.title = Check share details
 shares.answers.heading = Check share details
 
+shares.removeYesNo.title = Are you sure you want to remove the asset?
+shares.removeYesNo.heading = Are you sure you want to remove {0}?
+shares.removeYesNo.error.required = Select yes if you want to remove the asset
 
 business.name.title = What is the business’s name?
 business.name.heading = What is the business’s name?

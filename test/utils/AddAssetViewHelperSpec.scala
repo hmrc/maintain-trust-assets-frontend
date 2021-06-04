@@ -164,11 +164,11 @@ class AddAssetViewHelperSpec extends SpecBase {
   def removeBusinessAssetRoute(index: Int): String =
     business.remove.routes.RemoveBusinessAssetYesNoController.onPageLoad(index).url
 
-  def changeSharesAssetRoute(index: Int): String = ""
-    //ToDo Replace once Controller created - shares.amend.routes.ShareAmendAnswersController.extractAndRender(index).url
+  def changeSharesAssetRoute(index: Int): String =
+    shares.amend.routes.ShareAmendAnswersController.extractAndRender(index).url
 
-  def removeSharesAssetRoute(index: Int): String = ""
-    //ToDo Replace once Controller created - shares.remove.routes.RemoveShareAssetYesNoController.onPageLoad(index).url
+  def removeSharesAssetRoute(index: Int): String =
+    shares.remove.routes.RemoveShareAssetYesNoController.onPageLoad(index).url
 
   def changeOtherAssetRoute(index: Int): String =
     other.amend.routes.AnswersController.extractAndRender(index).url

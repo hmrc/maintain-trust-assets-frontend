@@ -62,6 +62,7 @@ class ShareExtractor extends AssetExtractor[SharesType] {
 
     answers.set(quantityPage, assetType.numberOfShares.toLong)
       .flatMap(_.set(namePage, assetType.orgName))
+      .flatMap(_.set(SharesInAPortfolioPage, assetType.isPortfolio.getOrElse(false)))
       .flatMap(_.set(ShareClassPage, ShareClass.fromDES(assetType.shareClass)))
       .flatMap(_.set(stockExchangePage, assetType.typeOfShare == QUOTED))
       .flatMap(_.set(valuePage, assetType.value))
