@@ -19,16 +19,15 @@ package controllers.asset.shares.amend
 import config.FrontendAppConfig
 import connectors.TrustsConnector
 import controllers.actions._
+import controllers.actions.shares.CompanyNameRequiredAction
 import extractors.ShareExtractor
 import handlers.ErrorHandler
 import javax.inject.Inject
 import mapping.ShareAssetMapper
 import models.UserAnswers
-import pages.asset.shares.{ShareCompanyNamePage, SharePortfolioNamePage}
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
-import queries.Gettable
 import repositories.PlaybackRepository
 import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -42,6 +41,7 @@ class ShareAmendAnswersController @Inject()(
                                    override val messagesApi: MessagesApi,
                                    standardActionSets: StandardActionSets,
                                    val controllerComponents: MessagesControllerComponents,
+                                   nameAction: CompanyNameRequiredAction,
                                    view: ShareAmendAnswersView,
                                    service: TrustService,
                                    connector: TrustsConnector,
@@ -85,18 +85,9 @@ class ShareAmendAnswersController @Inject()(
       }
   }
 
-  def renderFromUserAnswers(index: Int) : Action[AnyContent] = standardActionSets.verifiedForIdentifier {
+  def renderFromUserAnswers(index: Int) : Action[AnyContent] = standardActionSets.verifiedForIdentifier.andThen(nameAction) {
     implicit request =>
-      def getPage(page: Gettable[String]): Option[String] = {
-        request.userAnswers.get(page)
-      }
-      val name: String = (getPage(ShareCompanyNamePage), getPage(SharePortfolioNamePage)) match {
-        case (Some(name), None) => name
-        case (None, Some(name)) => name
-        case _ => request.messages(messagesApi)("assets.defaultText")
-      }
-
-      render(request.userAnswers, index, name)
+      render(request.userAnswers, index, request.Name)
   }
 
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {

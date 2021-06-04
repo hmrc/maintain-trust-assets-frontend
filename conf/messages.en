@@ -53,6 +53,13 @@ site.error = Error:
 site.sign_out = Sign out
 site.sign_in = Sign in
 
+propertyOrLandDescription.name.default = the asset
+business.name.default = the business
+otherDescription.name.default = the asset
+noneeabusiness.name.default = the business
+partnership.name.default = the partnership
+shares.name.default = the company
+
 symbolText.asSterling = As pounds sterling.
 
 site.address.uk.title = What is the address?
@@ -214,7 +221,6 @@ money.value.link = Return to registration progress
 money.removeYesNo.title = Are you sure you want to remove the asset?
 money.removeYesNo.heading = Are you sure you want to remove {0}?
 money.removeYesNo.error.required = Select yes if you want to remove the asset
-
 
 propertyOrLand.addressYesNo.title = Does the property or land have an address?
 propertyOrLand.addressYesNo.heading = Does the property or land have an address?
