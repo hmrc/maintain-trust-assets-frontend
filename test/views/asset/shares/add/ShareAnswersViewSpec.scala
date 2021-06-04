@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package views.asset.shares
+package views.asset.shares.add
 
 import play.twirl.api.HtmlFormat
 import viewmodels.AnswerSection
 import views.behaviours.ViewBehaviours
-import views.html.asset.shares.ShareAnswersView
+import views.html.asset.shares.add.ShareAnswersView
 
 class ShareAnswersViewSpec extends ViewBehaviours {
 

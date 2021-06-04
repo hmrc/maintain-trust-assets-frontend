@@ -48,5 +48,5 @@ POST       /shares-on-stock-exchange                                          co
 GET        /change-shares-on-stock-exchange                                   controllers.asset.shares.SharesOnStockExchangeController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-shares-on-stock-exchange                                   controllers.asset.shares.SharesOnStockExchangeController.onSubmit(mode: Mode = CheckMode)
 
-GET        /check-share-answers                                               controllers.asset.shares.ShareAnswerController.onPageLoad()
-POST       /check-share-answers                                               controllers.asset.shares.ShareAnswerController.onSubmit()
+GET        /check-share-answers                                               controllers.asset.shares.add.ShareAnswerController.onPageLoad()
+POST       /check-share-answers                                               controllers.asset.shares.add.ShareAnswerController.onSubmit()

@@ -22,7 +22,9 @@ final case class SharesType(numberOfShares: String,
                             orgName: String,
                             shareClass: String,
                             typeOfShare: String,
-                            value: Long) extends AssetType
+                            value: Long,
+                            isPortfolio: Option[Boolean] = None
+                           ) extends AssetType
 
 object SharesType {
   implicit val sharesTypeFormat: Format[SharesType] = Json.format[SharesType]

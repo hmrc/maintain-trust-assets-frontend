@@ -20,7 +20,6 @@ import models.WhatKindOfAsset._
 import models.{UserAnswers, WhatKindOfAsset}
 import pages.asset.business._
 import pages.asset.money._
-import pages.asset.noneeabusiness.add
 import pages.asset.partnership._
 import pages.asset.property_or_land._
 import pages.asset.shares._
@@ -132,7 +131,7 @@ case object WhatKindOfAssetPage extends QuestionPage[WhatKindOfAsset] {
     userAnswers.remove(noneeabusiness.NamePage)
       .flatMap(_.remove(noneeabusiness.NonUkAddressPage))
       .flatMap(_.remove(noneeabusiness.GoverningCountryPage))
-      .flatMap(_.remove(add.StartDatePage))
+      .flatMap(_.remove(noneeabusiness.add.StartDatePage))
       .flatMap(removeStatus)
   }
 
