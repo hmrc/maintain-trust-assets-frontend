@@ -14,30 +14,26 @@
  * limitations under the License.
  */
 
-package controllers.asset.partnership
+package controllers.asset.partnership.add
 
 import config.annotations.Partnership
 import connectors.TrustsConnector
 import controllers.actions._
 import controllers.actions.partnership.NameRequiredAction
 import handlers.ErrorHandler
-import mapping.{PartnershipAssetMapper, PropertyOrLandMapper}
-import models.Status.Completed
+import mapping.PartnershipAssetMapper
+import models.NormalMode
 import navigation.Navigator
-import pages.AssetStatus
 import pages.asset.partnership._
+import pages.asset.partnership.add.PartnershipAnswerPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.PartnershipPrintHelper
+import viewmodels.AnswerSection
 import views.html.asset.partnership.PartnershipAnswersView
 
 import javax.inject.Inject
-import models.NormalMode
-import pages.asset.property_or_land.add.PropertyOrLandAnswerPage
-import viewmodels.AnswerSection
-
 import scala.concurrent.{ExecutionContext, Future}
 
 class PartnershipAnswerController @Inject()(

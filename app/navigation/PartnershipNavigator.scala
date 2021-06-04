@@ -17,12 +17,14 @@
 package navigation
 
 import controllers.asset.partnership.routes._
+import controllers.asset.partnership.add.routes._
 import models.assets.Assets
 
 import javax.inject.{Inject, Singleton}
 import models.{Mode, NormalMode, UserAnswers}
 import pages.Page
 import pages.asset.partnership._
+import pages.asset.partnership.add.PartnershipAnswerPage
 import play.api.mvc.Call
 
 @Singleton

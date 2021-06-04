@@ -18,11 +18,14 @@ package navigation
 
 import base.SpecBase
 import controllers.asset.partnership.routes._
+import controllers.asset.partnership.add.routes._
 import generators.Generators
 import models.{NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.asset.partnership._
+import pages.asset.partnership.add.PartnershipAnswerPage
+
 import java.time.{LocalDate, ZoneOffset}
 
 class PartnershipNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {

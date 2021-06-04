@@ -8,5 +8,5 @@ POST       /start-date                                            controllers.as
 GET        /change-start-date                                     controllers.asset.partnership.PartnershipStartDateController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-start-date                                     controllers.asset.partnership.PartnershipStartDateController.onSubmit(mode: Mode = CheckMode)
 
-GET        /check-partnership-answers                             controllers.asset.partnership.PartnershipAnswerController.onPageLoad()
-POST       /check-partnership-answers                             controllers.asset.partnership.PartnershipAnswerController.onSubmit()
+GET        /check-partnership-answers                             controllers.asset.partnership.add.PartnershipAnswerController.onPageLoad()
+POST       /check-partnership-answers                             controllers.asset.partnership.add.PartnershipAnswerController.onSubmit()

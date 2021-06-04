@@ -40,7 +40,7 @@ class PartnershipAnswerControllerSpec extends SpecBase {
   val validDate: LocalDate = LocalDate.now(ZoneOffset.UTC)
   val name: String = "Description"
 
-  lazy val partnershipAnswerRoute: String = routes.PartnershipAnswerController.onPageLoad().url
+  lazy val partnershipAnswerRoute: String = add.routes.PartnershipAnswerController.onPageLoad().url
 
   "PartnershipAnswer Controller" must {
 
@@ -102,7 +102,7 @@ class PartnershipAnswerControllerSpec extends SpecBase {
         when(mockTrustConnector.addPartnershipAsset(any(), any())(any(), any()))
           .thenReturn(Future.successful(HttpResponse(OK, "")))
 
-        val request = FakeRequest(POST, routes.PartnershipAnswerController.onSubmit().url)
+        val request = FakeRequest(POST, add.routes.PartnershipAnswerController.onSubmit().url)
 
         val result = route(application, request).value
 
@@ -117,7 +117,7 @@ class PartnershipAnswerControllerSpec extends SpecBase {
 
         val application = applicationBuilder(userAnswers = None).build()
 
-        val request = FakeRequest(POST, routes.PartnershipAnswerController.onSubmit().url)
+        val request = FakeRequest(POST, add.routes.PartnershipAnswerController.onSubmit().url)
 
         val result = route(application, request).value
 
