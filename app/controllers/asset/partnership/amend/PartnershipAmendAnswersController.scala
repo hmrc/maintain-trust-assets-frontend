@@ -32,7 +32,7 @@ import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.PartnershipPrintHelper
 import viewmodels.AnswerSection
-import views.html.asset.business.amend.BusinessAmendAnswersView
+import views.html.asset.partnership.PartnershipAmendAnswersView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -41,7 +41,7 @@ class PartnershipAmendAnswersController @Inject()(
                                                    override val messagesApi: MessagesApi,
                                                    standardActionSets: StandardActionSets,
                                                    val controllerComponents: MessagesControllerComponents,
-                                                   view: BusinessAmendAnswersView,
+                                                   view: PartnershipAmendAnswersView,
                                                    service: TrustService,
                                                    connector: TrustsConnector,
                                                    val appConfig: FrontendAppConfig,
