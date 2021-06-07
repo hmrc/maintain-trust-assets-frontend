@@ -28,7 +28,7 @@ class ShareExtractorSpec extends SpecBase {
   private val index = 0
   private val name: String = "OrgName"
   private val assetValue: Long = 300L
-  private val quantity: Long = 20L
+  private val quantity: Long = 20
 
   private val extractor = new ShareExtractor()
 
@@ -51,6 +51,7 @@ class ShareExtractorSpec extends SpecBase {
         val result = extractor(baseAnswers, sharesAsset, index).get
 
         result.get(IndexPage) mustBe Some(index)
+        result.get(SharesInAPortfolioPage) mustBe Some(true)
         result.get(SharePortfolioQuantityInTrustPage) mustBe Some(quantity)
         result.get(SharePortfolioNamePage) mustBe Some(name)
         result.get(ShareClassPage) mustBe Some(ShareClass.Other)
@@ -71,6 +72,7 @@ class ShareExtractorSpec extends SpecBase {
         val result = extractor(baseAnswers, sharesAsset, index).get
 
         result.get(IndexPage) mustBe Some(index)
+        result.get(SharesInAPortfolioPage) mustBe Some(true)
         result.get(SharePortfolioQuantityInTrustPage) mustBe Some(quantity)
         result.get(SharePortfolioNamePage) mustBe Some(name)
         result.get(ShareClassPage) mustBe Some(ShareClass.Other)
@@ -91,6 +93,7 @@ class ShareExtractorSpec extends SpecBase {
         val result = extractor(baseAnswers, sharesAsset, index).get
 
         result.get(IndexPage) mustBe Some(index)
+        result.get(SharesInAPortfolioPage) mustBe Some(false)
         result.get(ShareQuantityInTrustPage) mustBe Some(quantity)
         result.get(ShareCompanyNamePage) mustBe Some(name)
         result.get(ShareClassPage) mustBe Some(ShareClass.Deferred)
@@ -105,12 +108,13 @@ class ShareExtractorSpec extends SpecBase {
           shareClass = "Deferred ordinary shares",
           typeOfShare = QUOTED,
           value = assetValue,
-          isPortfolio = Some(false)
+          isPortfolio = None
         )
 
         val result = extractor(baseAnswers, sharesAsset, index).get
 
         result.get(IndexPage) mustBe Some(index)
+        result.get(SharesInAPortfolioPage) mustBe Some(false)
         result.get(ShareQuantityInTrustPage) mustBe Some(quantity)
         result.get(ShareCompanyNamePage) mustBe Some(name)
         result.get(ShareClassPage) mustBe Some(ShareClass.Deferred)
