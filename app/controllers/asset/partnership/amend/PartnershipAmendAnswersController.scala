@@ -95,7 +95,7 @@ class PartnershipAmendAnswersController @Inject()(
           connector.amendPartnershipAsset(request.userAnswers.identifier, index, asset).map(_ =>
             Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
           )
-      }.getOrElse {
+      } getOrElse {
         logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
           s" error mapping user answers to Partnership Asset $index")
 

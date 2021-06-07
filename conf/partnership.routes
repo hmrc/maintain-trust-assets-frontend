@@ -14,3 +14,6 @@ POST       /check-partnership-answers                             controllers.as
 GET        /:index/check-answers                                  controllers.asset.partnership.amend.PartnershipAmendAnswersController.extractAndRender(index: Int)
 GET        /:index/updated-answers                                controllers.asset.partnership.amend.PartnershipAmendAnswersController.renderFromUserAnswers(index: Int)
 POST       /:index/check-answers                                  controllers.asset.partnership.amend.PartnershipAmendAnswersController.onSubmit(index: Int)
+
+GET        /:index/remove                                         controllers.asset.partnership.remove.RemovePartnershipAssetYesNoController.onPageLoad(index: Int)
+POST       /:index/remove                                         controllers.asset.partnership.remove.RemovePartnershipAssetYesNoController.onSubmit(index: Int)
