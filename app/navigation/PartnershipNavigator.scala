@@ -17,12 +17,12 @@
 package navigation
 
 import controllers.asset.partnership.routes._
-import controllers.asset.partnership.add.routes._
 import models.assets.Assets
 
 import javax.inject.{Inject, Singleton}
 import models.{Mode, NormalMode, UserAnswers}
 import pages.Page
+import pages.asset.partnership.amend.IndexPage
 import pages.asset.partnership._
 import pages.asset.partnership.add.PartnershipAnswerPage
 import play.api.mvc.Call
@@ -38,11 +38,22 @@ class PartnershipNavigator @Inject()() extends Navigator {
 
   def simpleNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
     case PartnershipDescriptionPage  => _ => PartnershipStartDateController.onPageLoad(mode)
-    case PartnershipStartDatePage => _ => PartnershipAnswerController.onPageLoad()
+    case PartnershipStartDatePage => ua => navigateToCheckAnswers(ua, mode)
     case PartnershipAnswerPage => _ => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
   }
 
   def routes(mode: Mode): PartialFunction[Page, UserAnswers => Call] =
     simpleNavigation(mode)
+
+  private def navigateToCheckAnswers(ua: UserAnswers, mode: Mode): Call = {
+    if (mode == NormalMode) {
+      controllers.asset.partnership.add.routes.PartnershipAnswerController.onPageLoad()
+    } else {
+      ua.get(IndexPage) match {
+        case Some(index) => controllers.asset.partnership.amend.routes.PartnershipAmendAnswersController.renderFromUserAnswers(index)
+        case None => controllers.routes.SessionExpiredController.onPageLoad()
+      }
+    }
+  }
 
 }

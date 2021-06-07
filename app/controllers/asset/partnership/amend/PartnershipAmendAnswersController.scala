@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import connectors.TrustsConnector
 import controllers.actions._
 import controllers.actions.partnership.NameRequiredAction
-import extractors.{BusinessExtractor, PartnershipAssetExtractor}
+import extractors.PartnershipAssetExtractor
 import handlers.ErrorHandler
 import mapping.PartnershipAssetMapper
 import models.UserAnswers

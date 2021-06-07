@@ -19,12 +19,14 @@ package navigation
 import base.SpecBase
 import controllers.asset.partnership.routes._
 import controllers.asset.partnership.add.routes._
+import controllers.asset.partnership.amend.routes._
 import generators.Generators
-import models.{NormalMode, UserAnswers}
+import models.{CheckMode, NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.asset.partnership._
 import pages.asset.partnership.add.PartnershipAnswerPage
+import pages.asset.partnership.amend.IndexPage
 
 import java.time.{LocalDate, ZoneOffset}
 
@@ -47,16 +49,33 @@ class PartnershipNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks wi
       }
     }
 
-    "navigate from PartnershipStartDatePage to PartnershipAnswersPage" in {
+    "navigate from PartnershipStartDatePage to PartnershipAnswersPage" when {
 
-      val page = PartnershipStartDatePage
+      "normal mode" in {
 
-      forAll(arbitrary[UserAnswers]) {
-        userAnswers =>
-          val answers = userAnswers
-            .set(PartnershipStartDatePage, validDate).success.value
-          navigator.nextPage(page, NormalMode, answers)
-            .mustBe(PartnershipAnswerController.onPageLoad())
+        val page = PartnershipStartDatePage
+
+        forAll(arbitrary[UserAnswers]) {
+          userAnswers =>
+            val answers = userAnswers
+              .set(PartnershipStartDatePage, validDate).success.value
+            navigator.nextPage(page, NormalMode, answers)
+              .mustBe(PartnershipAnswerController.onPageLoad())
+        }
+      }
+
+      "check mode" in {
+
+        val page = PartnershipStartDatePage
+
+        forAll(arbitrary[UserAnswers]) {
+          userAnswers =>
+            val answers = userAnswers
+              .set(PartnershipStartDatePage, validDate).success.value
+              .set(IndexPage, 1).success.value
+            navigator.nextPage(page, CheckMode, answers)
+              .mustBe(PartnershipAmendAnswersController.renderFromUserAnswers(1))
+        }
       }
     }
 
