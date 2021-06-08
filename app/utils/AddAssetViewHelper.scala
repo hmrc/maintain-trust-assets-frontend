@@ -91,7 +91,7 @@ class AddAssetViewHelper @Inject()(assets: Assets)
       name = asset.description,
       typeLabel = messages(s"entities.asset.partnership"),
       changeUrl = partnership.amend.routes.PartnershipAmendAnswersController.extractAndRender(index).url,
-      removeUrl = ""
+      removeUrl = partnership.remove.routes.RemovePartnershipAssetYesNoController.onPageLoad(index).url
     )
   }
 
