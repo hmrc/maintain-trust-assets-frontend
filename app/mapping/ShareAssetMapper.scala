@@ -43,7 +43,8 @@ class ShareAssetMapper extends Mapper[SharesType] {
         Reads(_ => JsSuccess(ShareClass.toDES(ShareClass.Other))) and
         onStockExchange(SharePortfolioOnStockExchangePage) and
         SharePortfolioValueInTrustPage.path.read[Long] and
-        Reads(_ => JsSuccess(Some(true)))
+        Reads(_ => JsSuccess(Some(true))) and
+        Reads(_ => JsSuccess(Some(ShareClass.Other)))
     ) (SharesType.apply _)
   }
 
@@ -56,8 +57,11 @@ class ShareAssetMapper extends Mapper[SharesType] {
         } and
         onStockExchange(SharesOnStockExchangePage) and
         ShareValueInTrustPage.path.read[Long] and
-        Reads(_ => JsSuccess(Some(false)))
-    ) (SharesType.apply _)
+        Reads(_ => JsSuccess(Some(false))) and
+        ShareClassPage.path.read[ShareClass].flatMap {
+          case shareClassValue => Reads(_ => JsSuccess(Some(shareClassValue)))
+        }
+      ) (SharesType.apply _)
   }
 
   private def readStringToLong(page: QuestionPage[Long]): Reads[String] = {

@@ -87,7 +87,8 @@ class ShareExtractorSpec extends SpecBase {
           shareClass = "Deferred ordinary shares",
           typeOfShare = UNQUOTED,
           value = assetValue,
-          isPortfolio = Some(false)
+          isPortfolio = Some(false),
+          shareClassDisplay = None
         )
 
         val result = extractor(baseAnswers, sharesAsset, index).get
@@ -108,7 +109,8 @@ class ShareExtractorSpec extends SpecBase {
           shareClass = "Deferred ordinary shares",
           typeOfShare = QUOTED,
           value = assetValue,
-          isPortfolio = None
+          isPortfolio = None,
+          shareClassDisplay = Some(ShareClass.Deferred)
         )
 
         val result = extractor(baseAnswers, sharesAsset, index).get

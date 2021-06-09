@@ -69,7 +69,8 @@ class ShareAssetMapperSpec extends SpecBase with MustMatchers
             shareClass = "Deferred ordinary shares",
             typeOfShare = "Quoted",
             value = assetValue,
-            isPortfolio = Some(false)
+            isPortfolio = Some(false),
+            shareClassDisplay = Some(ShareClass.Deferred)
           )
       }
     }
@@ -95,7 +96,8 @@ class ShareAssetMapperSpec extends SpecBase with MustMatchers
             shareClass = "Other",
             typeOfShare = "Unquoted",
             value = assetValue,
-            isPortfolio = Some(true)
+            isPortfolio = Some(true),
+            shareClassDisplay = Some(ShareClass.Other)
           )
       }
     }
