@@ -14,8 +14,15 @@
  * limitations under the License.
  */
 
-package pages.asset.partnership
+package pages.asset.partnership.amend
 
-import pages.Page
+import pages.QuestionPage
+import pages.asset.other.basePath
+import play.api.libs.json.JsPath
 
-case object PartnershipAnswerPage extends Page
+case object IndexPage extends QuestionPage[Int] {
+
+  override def path: JsPath = basePath \ toString
+
+  override def toString: String = "index"
+}

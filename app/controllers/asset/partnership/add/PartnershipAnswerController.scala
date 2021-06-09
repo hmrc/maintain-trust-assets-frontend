@@ -14,45 +14,40 @@
  * limitations under the License.
  */
 
-package controllers.asset.partnership
+package controllers.asset.partnership.add
 
 import config.annotations.Partnership
+import connectors.TrustsConnector
 import controllers.actions._
 import controllers.actions.partnership.NameRequiredAction
-import models.Status.Completed
+import handlers.ErrorHandler
+import mapping.PartnershipAssetMapper
+import models.NormalMode
 import navigation.Navigator
-import pages.AssetStatus
 import pages.asset.partnership._
+import pages.asset.partnership.add.PartnershipAnswerPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.PartnershipPrintHelper
-import views.html.asset.partnership.PartnershipAnswersView
-import javax.inject.Inject
-import models.NormalMode
 import viewmodels.AnswerSection
+import views.html.asset.partnership.PartnershipAnswersView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class PartnershipAnswerController @Inject()(
                                              override val messagesApi: MessagesApi,
                                              standardActionSets: StandardActionSets,
                                              nameAction: NameRequiredAction,
-                                             repository: PlaybackRepository,
+                                             connector: TrustsConnector,
                                              @Partnership navigator: Navigator,
                                              view: PartnershipAnswersView,
                                              val controllerComponents: MessagesControllerComponents,
+                                             errorHandler: ErrorHandler,
+                                             mapper: PartnershipAssetMapper,
                                              printHelper: PartnershipPrintHelper
                                            )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
-
-//  private def actions(index: Int): ActionBuilder[RegistrationDataRequest, AnyContent] =
-//    identify andThen
-//      getData() andThen
-//      requireData andThen
-//      requiredAnswer(RequiredAnswer(PartnershipDescriptionPage(index), routes.PartnershipDescriptionController.onPageLoad(index))) andThen
-//      requiredAnswer(RequiredAnswer(PartnershipStartDatePage(index), routes.PartnershipStartDateController.onPageLoad(index)))
-// TODO
 
   private val provisional: Boolean = true
 
@@ -64,15 +59,16 @@ class PartnershipAnswerController @Inject()(
       Ok(view(section))
   }
 
-  def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
+  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
 
-      val answers = request.userAnswers.set(AssetStatus, Completed)
-
-      for {
-        updatedAnswers <- Future.fromTry(answers)
-        _ <- repository.set(updatedAnswers)
-      } yield Redirect(navigator.nextPage(PartnershipAnswerPage, NormalMode, request.userAnswers))
-
+      mapper(request.userAnswers) match {
+        case None =>
+          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+        case Some(asset) =>
+          connector.addPartnershipAsset(request.userAnswers.identifier, asset).map(_ =>
+            Redirect(navigator.nextPage(PartnershipAnswerPage, NormalMode, request.userAnswers))
+          )
+      }
   }
 }

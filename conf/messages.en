@@ -438,6 +438,9 @@ partnership.startDate.error.tooEarly = The date the partnership started must be 
 partnership.answers.title = Check asset details
 partnership.answers.heading = Check asset details
 
+partnership.removeYesNo.title = Are you sure you want to remove the asset?
+partnership.removeYesNo.heading = Are you sure you want to remove {0}?
+partnership.removeYesNo.error.required = Select yes if you want to remove the asset
 
 other.description.title = What is the description of the asset?
 other.description.heading = What is the description of the asset?

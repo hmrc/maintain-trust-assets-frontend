@@ -30,14 +30,15 @@ class AddAssetViewHelper @Inject()(assets: Assets)
 
   def rows: AddToRows = {
 
-    val complete = assets.nonEEABusiness.zipWithIndex.map(x => renderNonEEABusiness(x._1, x._2)) ++
-                   assets.monetary.zipWithIndex.map(x => renderMoney(x._1)) ++
-                   assets.propertyOrLand.zipWithIndex.map(x => renderPropertyOrLand(x._1, x._2)) ++
-                   assets.other.zipWithIndex.map(x => renderOther(x._1, x._2)) ++
-                   assets.business.zipWithIndex.map(x => renderBusiness(x._1, x._2)) ++
-                   assets.shares.zipWithIndex.map(x => renderShares(x._1, x._2))
-
-    AddToRows(complete)
+    AddToRows(
+      assets.nonEEABusiness.zipWithIndex.map(x => renderNonEEABusiness(x._1, x._2)) ++
+      assets.monetary.zipWithIndex.map(x => renderMoney(x._1)) ++
+      assets.propertyOrLand.zipWithIndex.map(x => renderPropertyOrLand(x._1, x._2)) ++
+      assets.other.zipWithIndex.map(x => renderOther(x._1, x._2)) ++
+      assets.business.zipWithIndex.map(x => renderBusiness(x._1, x._2)) ++
+      assets.partnerShip.zipWithIndex.map(x => renderPartnership(x._1, x._2)) ++
+      assets.shares.zipWithIndex.map(x => renderShares(x._1, x._2))
+    )
   }
 
   private def renderMoney(asset: AssetMonetaryAmount): AddRow = {
@@ -82,6 +83,15 @@ class AddAssetViewHelper @Inject()(assets: Assets)
       typeLabel = messages(s"entities.asset.nonEeaBusiness"),
       changeUrl = noneeabusiness.amend.routes.AnswersController.extractAndRender(index).url,
       removeUrl = noneeabusiness.remove.routes.RemoveAssetYesNoController.onPageLoad(index).url
+    )
+  }
+
+  private def renderPartnership(asset: PartnershipType, index: Int): AddRow = {
+    AddRow(
+      name = asset.description,
+      typeLabel = messages(s"entities.asset.partnership"),
+      changeUrl = partnership.amend.routes.PartnershipAmendAnswersController.extractAndRender(index).url,
+      removeUrl = partnership.remove.routes.RemovePartnershipAssetYesNoController.onPageLoad(index).url
     )
   }
 

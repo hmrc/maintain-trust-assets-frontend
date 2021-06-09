@@ -17,35 +17,43 @@
 package controllers.asset.partnership
 
 import java.time.{LocalDate, ZoneOffset}
-
 import base.SpecBase
+import connectors.TrustsConnector
 import models.Status.Completed
 import models.WhatKindOfAsset.Partnership
+import org.mockito.Matchers.any
+import org.mockito.Mockito.when
 import pages.AssetStatus
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.partnership._
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.http.HttpResponse
 import utils.print.PartnershipPrintHelper
 import views.html.asset.partnership.PartnershipAnswersView
+
+import scala.concurrent.Future
 
 class PartnershipAnswerControllerSpec extends SpecBase {
 
   val validDate: LocalDate = LocalDate.now(ZoneOffset.UTC)
   val name: String = "Description"
 
-  lazy val partnershipAnswerRoute: String = routes.PartnershipAnswerController.onPageLoad().url
+  lazy val partnershipAnswerRoute: String = add.routes.PartnershipAnswerController.onPageLoad().url
 
   "PartnershipAnswer Controller" must {
 
-      "return OK and the correct view for a GET" in {
+    val answers =
+      emptyUserAnswers
+        .set(WhatKindOfAssetPage, Partnership).success.value
+        .set(PartnershipDescriptionPage, "Partnership Description").success.value
+        .set(PartnershipStartDatePage, validDate).success.value
+        .set(AssetStatus, Completed).success.value
 
-        val answers =
-          emptyUserAnswers
-            .set(WhatKindOfAssetPage, Partnership).success.value
-            .set(PartnershipDescriptionPage, "Partnership Description").success.value
-            .set(PartnershipStartDatePage, validDate).success.value
-            .set(AssetStatus, Completed).success.value
+    "on GET" must {
+
+      "return OK and the correct view for a GET" in {
 
         val application = applicationBuilder(userAnswers = Some(answers)).build()
 
@@ -65,20 +73,60 @@ class PartnershipAnswerControllerSpec extends SpecBase {
         application.stop()
       }
 
+      "redirect to Session Expired if no existing data is found" in {
 
-    "redirect to Session Expired for a GET if no existing data is found" in {
+        val application = applicationBuilder(userAnswers = None).build()
 
-      val application = applicationBuilder(userAnswers = None).build()
+        val request = FakeRequest(GET, partnershipAnswerRoute)
 
-      val request = FakeRequest(GET, partnershipAnswerRoute)
+        val result = route(application, request).value
 
-      val result = route(application, request).value
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
 
-      status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+        application.stop()
+      }
 
-      application.stop()
     }
 
+    "on POST" must {
+
+      "redirect to the next page when valid data is submitted" in {
+
+        val mockTrustConnector = mock[TrustsConnector]
+
+        val application = applicationBuilder(userAnswers = Some(answers))
+          .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
+          .build()
+
+        when(mockTrustConnector.addPartnershipAsset(any(), any())(any(), any()))
+          .thenReturn(Future.successful(HttpResponse(OK, "")))
+
+        val request = FakeRequest(POST, add.routes.PartnershipAnswerController.onSubmit().url)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+
+        application.stop()
+      }
+
+      "redirect to Session Expired if no existing data is found" in {
+
+        val application = applicationBuilder(userAnswers = None).build()
+
+        val request = FakeRequest(POST, add.routes.PartnershipAnswerController.onSubmit().url)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+
+        application.stop()
+      }
+
+    }
   }
 }

@@ -50,12 +50,12 @@ case class Assets(monetary: List[AssetMonetaryAmount] = Nil,
 
 object Assets {
   implicit val reads: Reads[Assets] =
-    ((__ \ "assets" \ "monetary").readWithDefault[List[AssetMonetaryAmount]](Nil)
-      and (__ \ "assets" \ "propertyOrLand").readWithDefault[List[PropertyLandType]](Nil)
-      and (__ \ "assets" \ "shares").readWithDefault[List[SharesType]](Nil)
-      and (__ \ "assets" \ "business").readWithDefault[List[BusinessAssetType]](Nil)
-      and (__ \ "assets" \ "partnerShip").readWithDefault[List[PartnershipType]](Nil)
-      and (__ \ "assets" \ "other").readWithDefault[List[OtherAssetType]](Nil)
-      and (__ \ "assets" \ "nonEEABusiness").readWithDefault[List[NonEeaBusinessType]](Nil)
-      ).apply(Assets.apply _)
+      ((__ \ "assets" \ "monetary").readWithDefault[List[AssetMonetaryAmount]](Nil)
+        and (__ \ "assets" \ "propertyOrLand").readWithDefault[List[PropertyLandType]](Nil)
+        and (__ \ "assets" \ "shares").readWithDefault[List[SharesType]](Nil)
+        and (__ \ "assets" \ "business").readWithDefault[List[BusinessAssetType]](Nil)
+        and (__ \ "assets" \ "partnerShip").readWithDefault[List[PartnershipType]](Nil)
+        and (__ \ "assets" \ "other").readWithDefault[List[OtherAssetType]](Nil)
+        and (__ \ "assets" \ "nonEEABusiness").readWithDefault[List[NonEeaBusinessType]](Nil)
+        ).apply(Assets.apply _)
 }

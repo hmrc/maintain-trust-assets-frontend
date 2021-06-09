@@ -14,25 +14,29 @@
  * limitations under the License.
  */
 
-package mapping
+package extractors
 
 import models.UserAnswers
 import models.assets.PartnershipType
+import pages.QuestionPage
 import pages.asset.partnership._
-import play.api.libs.json.Reads
-import play.api.libs.functional.syntax._
+import pages.asset.partnership.amend.IndexPage
+import play.api.libs.json.JsPath
 
-import java.time.LocalDate
+import scala.util.Try
 
-class PartnershipAssetMapper extends Mapper[PartnershipType] {
+class PartnershipAssetExtractor extends AssetExtractor[PartnershipType] {
 
-  def apply(answers: UserAnswers): Option[PartnershipType] = {
-    val readFromUserAnswers: Reads[PartnershipType] =
-      (
-        PartnershipDescriptionPage.path.read[String] and
-          PartnershipStartDatePage.path.read[LocalDate]
-        ) (PartnershipType.apply _)
+  override def apply(answers: UserAnswers,
+                     partnershipType: PartnershipType,
+                     index: Int): Try[UserAnswers] = {
 
-    mapAnswersWithExplicitReads(answers, readFromUserAnswers)
+    super.apply(answers, partnershipType, index)
+      .flatMap(_.set(PartnershipDescriptionPage, partnershipType.description))
+      .flatMap(_.set(PartnershipStartDatePage, partnershipType.partnershipStart))
   }
+
+  override def indexPage: QuestionPage[Int] = IndexPage
+
+  override def basePath: JsPath = pages.asset.partnership.basePath
 }

@@ -14,15 +14,15 @@
  * limitations under the License.
  *@
 
-@import controllers.asset.partnership.add.routes._
-@import viewmodels.{AnswerSection, RepeaterAnswerSection, Section}
+@import controllers.asset.partnership.amend.routes._
+@import viewmodels._
 
 @this(
-main_template: MainTemplate,
-formHelper: FormWithCSRF
+    main_template: MainTemplate,
+    formHelper: FormWithCSRF
 )
 
-@(answerSections: AnswerSection)(implicit request: Request[_], messages: Messages)
+@(answerSections: AnswerSection, index: Int)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("partnership.answers.title")
@@ -34,7 +34,7 @@ formHelper: FormWithCSRF
 
     @components.answer_section(answerSections)
 
-    @formHelper(action = PartnershipAnswerController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = PartnershipAmendAnswersController.onSubmit(index), 'autoComplete -> "off") {
         @components.submit_button()
     }
 }
