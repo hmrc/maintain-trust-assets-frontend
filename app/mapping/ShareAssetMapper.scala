@@ -58,9 +58,7 @@ class ShareAssetMapper extends Mapper[SharesType] {
         onStockExchange(SharesOnStockExchangePage) and
         ShareValueInTrustPage.path.read[Long] and
         Reads(_ => JsSuccess(Some(false))) and
-        ShareClassPage.path.read[ShareClass].flatMap {
-          case shareClassValue => Reads(_ => JsSuccess(Some(shareClassValue)))
-        }
+        ShareClassPage.path.read[ShareClass].map(Some(_))
       ) (SharesType.apply _)
   }
 
