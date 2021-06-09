@@ -8,8 +8,8 @@ POST       /start-date                                            controllers.as
 GET        /change-start-date                                     controllers.asset.partnership.PartnershipStartDateController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-start-date                                     controllers.asset.partnership.PartnershipStartDateController.onSubmit(mode: Mode = CheckMode)
 
-GET        /check-partnership-answers                             controllers.asset.partnership.add.PartnershipAnswerController.onPageLoad()
-POST       /check-partnership-answers                             controllers.asset.partnership.add.PartnershipAnswerController.onSubmit()
+GET        /check-answers                                         controllers.asset.partnership.add.PartnershipAnswerController.onPageLoad()
+POST       /check-answers                                         controllers.asset.partnership.add.PartnershipAnswerController.onSubmit()
 
 GET        /:index/check-answers                                  controllers.asset.partnership.amend.PartnershipAmendAnswersController.extractAndRender(index: Int)
 GET        /:index/updated-answers                                controllers.asset.partnership.amend.PartnershipAmendAnswersController.renderFromUserAnswers(index: Int)
