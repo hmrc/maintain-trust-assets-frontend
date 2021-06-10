@@ -65,7 +65,7 @@ class IndexController @Inject()(
           )
           _ <- cacheRepository.set(ua)
         } yield {
-          Navigator.redirectToAddToPage(ua.isMigratingToTaxable)
+          Navigator.redirectToAddAssetPage(ua.isMigratingToTaxable)
         }
     }
 

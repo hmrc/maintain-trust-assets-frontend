@@ -57,7 +57,7 @@ class RemoveAssetEndDateController @Inject()(
           logger.warn(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
             s" user cannot remove asset as asset was not found ${iobe.getMessage}: IndexOutOfBoundsException")
 
-          Future.successful(Navigator.redirectToAddToPage(request.userAnswers.isMigratingToTaxable))
+          Future.successful(Navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable))
         case _ =>
           logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
             s" user cannot remove asset as asset was not found")
@@ -76,7 +76,7 @@ class RemoveAssetEndDateController @Inject()(
               Future.successful(BadRequest(view(formWithErrors, index, asset.orgName))),
             endDate => {
               trustService.removeAsset(request.userAnswers.identifier, RemoveAsset(AssetNameType.NonEeaBusinessAssetNameType, index, endDate)).map(_ =>
-                Navigator.redirectToAddToPage(request.userAnswers.isMigratingToTaxable)
+                Navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable)
               )
             }
           )

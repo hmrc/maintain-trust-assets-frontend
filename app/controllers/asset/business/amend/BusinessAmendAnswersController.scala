@@ -38,28 +38,27 @@ import views.html.asset.business.amend.BusinessAmendAnswersView
 import scala.concurrent.{ExecutionContext, Future}
 
 class BusinessAmendAnswersController @Inject()(
-                                   override val messagesApi: MessagesApi,
-                                   standardActionSets: StandardActionSets,
-                                   val controllerComponents: MessagesControllerComponents,
-                                   view: BusinessAmendAnswersView,
-                                   service: TrustService,
-                                   connector: TrustsConnector,
-                                   val appConfig: FrontendAppConfig,
-                                   playbackRepository: PlaybackRepository,
-                                   printHelper: BusinessPrintHelper,
-                                   mapper: BusinessAssetMapper,
-                                   nameAction: NameRequiredAction,
-                                   extractor: BusinessExtractor,
-                                   errorHandler: ErrorHandler
-                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+                                                override val messagesApi: MessagesApi,
+                                                standardActionSets: StandardActionSets,
+                                                val controllerComponents: MessagesControllerComponents,
+                                                view: BusinessAmendAnswersView,
+                                                service: TrustService,
+                                                connector: TrustsConnector,
+                                                val appConfig: FrontendAppConfig,
+                                                playbackRepository: PlaybackRepository,
+                                                printHelper: BusinessPrintHelper,
+                                                mapper: BusinessAssetMapper,
+                                                nameAction: NameRequiredAction,
+                                                extractor: BusinessExtractor,
+                                                errorHandler: ErrorHandler
+                                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   private val provisional: Boolean = false
 
   private def render(userAnswers: UserAnswers,
                      index: Int,
                      name: String)
-                    (implicit request: Request[AnyContent]): Result=
-  {
+                    (implicit request: Request[AnyContent]): Result = {
     val section: AnswerSection = printHelper(userAnswers, provisional, name)
     Ok(view(section, index))
   }

@@ -38,7 +38,7 @@ trait Navigator {
 
 object Navigator {
 
-  def redirectToAddToPage(isMigratingToTaxable: Boolean): Result = Redirect {
+  def redirectToAddAssetPage(isMigratingToTaxable: Boolean): Result = Redirect {
     if (isMigratingToTaxable) {
       controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
     } else {

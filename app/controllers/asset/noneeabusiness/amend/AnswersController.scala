@@ -96,7 +96,7 @@ class AnswersController @Inject()(
       mapper(request.userAnswers).map {
         asset =>
           connector.amendNonEeaBusinessAsset(request.userAnswers.identifier, index, asset).map(_ =>
-            Navigator.redirectToAddToPage(request.userAnswers.isMigratingToTaxable)
+            Navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable)
           )
       }.getOrElse {
         logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
