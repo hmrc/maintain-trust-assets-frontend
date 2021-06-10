@@ -38,28 +38,27 @@ import views.html.asset.shares.amend.ShareAmendAnswersView
 import scala.concurrent.{ExecutionContext, Future}
 
 class ShareAmendAnswersController @Inject()(
-                                   override val messagesApi: MessagesApi,
-                                   standardActionSets: StandardActionSets,
-                                   val controllerComponents: MessagesControllerComponents,
-                                   nameAction: CompanyNameRequiredAction,
-                                   view: ShareAmendAnswersView,
-                                   service: TrustService,
-                                   connector: TrustsConnector,
-                                   val appConfig: FrontendAppConfig,
-                                   playbackRepository: PlaybackRepository,
-                                   printHelper: SharesPrintHelper,
-                                   mapper: ShareAssetMapper,
-                                   extractor: ShareExtractor,
-                                   errorHandler: ErrorHandler
-                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+                                             override val messagesApi: MessagesApi,
+                                             standardActionSets: StandardActionSets,
+                                             val controllerComponents: MessagesControllerComponents,
+                                             nameAction: CompanyNameRequiredAction,
+                                             view: ShareAmendAnswersView,
+                                             service: TrustService,
+                                             connector: TrustsConnector,
+                                             val appConfig: FrontendAppConfig,
+                                             playbackRepository: PlaybackRepository,
+                                             printHelper: SharesPrintHelper,
+                                             mapper: ShareAssetMapper,
+                                             extractor: ShareExtractor,
+                                             errorHandler: ErrorHandler
+                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   private val provisional: Boolean = false
 
   private def render(userAnswers: UserAnswers,
                      index: Int,
                      name: String)
-                    (implicit request: Request[AnyContent]): Result=
-  {
+                    (implicit request: Request[AnyContent]): Result = {
     val section: AnswerSection = printHelper(userAnswers, provisional, name)
     Ok(view(section, index))
   }

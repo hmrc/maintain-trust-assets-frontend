@@ -24,7 +24,6 @@ import handlers.ErrorHandler
 import mapping.PartnershipAssetMapper
 import models.NormalMode
 import navigation.Navigator
-import pages.asset.partnership._
 import pages.asset.partnership.add.PartnershipAnswerPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

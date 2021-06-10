@@ -20,8 +20,8 @@ import connectors.TrustsConnector
 import controllers.actions._
 import controllers.actions.noneeabusiness.NameRequiredAction
 import handlers.ErrorHandler
-import javax.inject.Inject
 import mapping.NonEeaBusinessAssetMapper
+import navigation.Navigator
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -29,6 +29,7 @@ import utils.print.NonEeaBusinessPrintHelper
 import viewmodels.AnswerSection
 import views.html.asset.noneeabusiness.add.AnswersView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AnswersController @Inject()(
@@ -61,11 +62,7 @@ class AnswersController @Inject()(
           Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
         case Some(asset) =>
           connector.addNonEeaBusinessAsset(request.userAnswers.identifier, asset).map(_ =>
-            if (request.userAnswers.isMigratingToTaxable) {
-              Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
-            } else {
-              Redirect(controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad())
-            }
+            Navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable)
           )
       }
   }

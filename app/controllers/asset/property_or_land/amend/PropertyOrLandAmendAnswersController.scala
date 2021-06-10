@@ -38,28 +38,27 @@ import views.html.asset.property_or_land.amend.AnswersView
 import scala.concurrent.{ExecutionContext, Future}
 
 class PropertyOrLandAmendAnswersController @Inject()(
-                                   override val messagesApi: MessagesApi,
-                                   standardActionSets: StandardActionSets,
-                                   val controllerComponents: MessagesControllerComponents,
-                                   view: AnswersView,
-                                   service: TrustService,
-                                   connector: TrustsConnector,
-                                   val appConfig: FrontendAppConfig,
-                                   playbackRepository: PlaybackRepository,
-                                   printHelper: PropertyOrLandPrintHelper,
-                                   mapper: PropertyOrLandMapper,
-                                   nameAction: NameRequiredAction,
-                                   extractor: PropertyOrLandExtractor,
-                                   errorHandler: ErrorHandler
-                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+                                                      override val messagesApi: MessagesApi,
+                                                      standardActionSets: StandardActionSets,
+                                                      val controllerComponents: MessagesControllerComponents,
+                                                      view: AnswersView,
+                                                      service: TrustService,
+                                                      connector: TrustsConnector,
+                                                      val appConfig: FrontendAppConfig,
+                                                      playbackRepository: PlaybackRepository,
+                                                      printHelper: PropertyOrLandPrintHelper,
+                                                      mapper: PropertyOrLandMapper,
+                                                      nameAction: NameRequiredAction,
+                                                      extractor: PropertyOrLandExtractor,
+                                                      errorHandler: ErrorHandler
+                                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   private val provisional: Boolean = false
 
   private def render(userAnswers: UserAnswers,
                      index: Int,
                      name: String)
-                    (implicit request: Request[AnyContent]): Result=
-  {
+                    (implicit request: Request[AnyContent]): Result = {
     val section: AnswerSection = printHelper(userAnswers, provisional, name)
     Ok(view(section, index))
   }

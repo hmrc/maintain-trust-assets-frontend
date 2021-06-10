@@ -78,7 +78,7 @@ class AssetsNavigator @Inject()(config: FrontendAppConfig) extends Navigator wit
     controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.submitComplete()
 
   private def routeToAssetIndex(answers: UserAnswers, assets: Assets): Call = {
-    (answers.isMigratingToTaxable,  assets)  match {
+    (answers.isMigratingToTaxable, assets)  match {
       case (true, x) if x.isEmpty => controllers.asset.routes.WhatKindOfAssetController.onPageLoad()
       case (true, _)  => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
       case (false, _) => controllers.asset.noneeabusiness.routes.NameController.onPageLoad(NormalMode)

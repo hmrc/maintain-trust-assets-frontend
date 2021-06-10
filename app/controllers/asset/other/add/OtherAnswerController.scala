@@ -42,7 +42,7 @@ class OtherAnswerController @Inject()(
                                        connector: TrustsConnector,
                                        mapper: OtherAssetMapper,
                                        errorHandler: ErrorHandler
-                                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val provisional: Boolean = true
 

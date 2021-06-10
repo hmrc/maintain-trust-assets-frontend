@@ -19,9 +19,9 @@ package controllers.asset.noneeabusiness.remove
 import controllers.actions.StandardActionSets
 import forms.EndDateFormProvider
 import handlers.ErrorHandler
-import javax.inject.Inject
 import models.RemoveAsset
 import models.assets.AssetNameType
+import navigation.Navigator
 import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -30,6 +30,7 @@ import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.asset.noneeabusiness.remove.RemoveAssetEndDateView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class RemoveAssetEndDateController @Inject()(
@@ -56,11 +57,7 @@ class RemoveAssetEndDateController @Inject()(
           logger.warn(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
             s" user cannot remove asset as asset was not found ${iobe.getMessage}: IndexOutOfBoundsException")
 
-          if (request.userAnswers.isMigratingToTaxable) {
-            Future.successful(Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()))
-          } else {
-            Future.successful(Redirect(controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad()))
-          }
+          Future.successful(Navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable))
         case _ =>
           logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
             s" user cannot remove asset as asset was not found")
@@ -79,11 +76,7 @@ class RemoveAssetEndDateController @Inject()(
               Future.successful(BadRequest(view(formWithErrors, index, asset.orgName))),
             endDate => {
               trustService.removeAsset(request.userAnswers.identifier, RemoveAsset(AssetNameType.NonEeaBusinessAssetNameType, index, endDate)).map(_ =>
-                if (request.userAnswers.isMigratingToTaxable) {
-                  Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
-                } else {
-                  Redirect(controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad())
-                }
+                Navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable)
               )
             }
           )

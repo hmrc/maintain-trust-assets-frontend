@@ -52,9 +52,7 @@ class ShareAssetMapper extends Mapper[SharesType] {
     (
       readStringToLong(ShareQuantityInTrustPage) and
         ShareCompanyNamePage.path.read[String] and
-        ShareClassPage.path.read[ShareClass].flatMap {
-          case shareClassValue => Reads(_ => JsSuccess(ShareClass.toDES(shareClassValue)))
-        } and
+        ShareClassPage.path.read[ShareClass].map(ShareClass.toDES) and
         onStockExchange(SharesOnStockExchangePage) and
         ShareValueInTrustPage.path.read[Long] and
         Reads(_ => JsSuccess(Some(false))) and
@@ -63,9 +61,7 @@ class ShareAssetMapper extends Mapper[SharesType] {
   }
 
   private def readStringToLong(page: QuestionPage[Long]): Reads[String] = {
-    page.path.read[Long].flatMap {
-      case value => Reads(_ => JsSuccess(value.toString))
-    }
+    page.path.read[Long].map(_.toString)
   }
 
   private def onStockExchange(page: QuestionPage[Boolean]): Reads[String] = {

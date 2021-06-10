@@ -19,8 +19,6 @@ package controllers.asset.money.remove
 import controllers.actions.StandardActionSets
 import forms.RemoveIndexFormProvider
 import handlers.ErrorHandler
-
-import javax.inject.Inject
 import models.RemoveAsset
 import models.assets.AssetNameType
 import play.api.Logging
@@ -33,6 +31,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.CheckAnswersFormatters.currencyFormat
 import views.html.asset.money.remove.RemoveAssetYesNoView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class RemoveAssetYesNoController @Inject()(
