@@ -33,14 +33,14 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class RemovePartnershipAssetYesNoController @Inject()(
-                                            override val messagesApi: MessagesApi,
-                                            standardActionSets: StandardActionSets,
-                                            formProvider: RemoveIndexFormProvider,
-                                            trustService: TrustService,
-                                            val controllerComponents: MessagesControllerComponents,
-                                            view: RemovePartnershipAssetYesNoView,
-                                            errorHandler: ErrorHandler
-                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+                                                       override val messagesApi: MessagesApi,
+                                                       standardActionSets: StandardActionSets,
+                                                       formProvider: RemoveIndexFormProvider,
+                                                       trustService: TrustService,
+                                                       val controllerComponents: MessagesControllerComponents,
+                                                       view: RemovePartnershipAssetYesNoView,
+                                                       errorHandler: ErrorHandler
+                                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   private val messagesPrefix: String = "partnership.removeYesNo"
   private val form = formProvider.apply(messagesPrefix)

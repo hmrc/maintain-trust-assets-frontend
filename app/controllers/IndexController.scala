@@ -18,16 +18,17 @@ package controllers
 
 import connectors.TrustsConnector
 import controllers.actions.StandardActionSets
-import javax.inject.Inject
 import models.UserAnswers
+import navigation.Navigator
 import play.api.Logging
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import services.FeatureFlagService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Session
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class IndexController @Inject()(
@@ -40,40 +41,32 @@ class IndexController @Inject()(
 
   def onPageLoad(identifier: String): Action[AnyContent] =
     (actions.auth andThen actions.saveSession(identifier) andThen actions.getData).async {
-    implicit request =>
+      implicit request =>
 
-      def redirect(userAnswers: UserAnswers): Result = {
-          if (userAnswers.isMigratingToTaxable) {
-            Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
-          } else {
-            Redirect(controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad())
-          }
+        logger.info(s"[Session ID: ${Session.id(hc)}][UTR/URN: $identifier]" +
+          s" user has started to maintain assets")
+        for {
+          details <- connector.getTrustDetails(identifier)
+          is5mldEnabled <- featureFlagService.is5mldEnabled()
+          isMigrating <- connector.getTrustMigrationFlag(identifier)
+          isUnderlyingData5mld <- connector.isTrust5mld(identifier)
+          ua <- Future.successful(
+            request.userAnswers.getOrElse {
+              UserAnswers(
+                internalId = request.user.internalId,
+                identifier = identifier,
+                whenTrustSetup = details.startDate,
+                is5mldEnabled = is5mldEnabled,
+                isTaxable = details.trustTaxable.getOrElse(true),
+                isMigratingToTaxable = isMigrating.migratingFromNonTaxableToTaxable,
+                isUnderlyingData5mld = isUnderlyingData5mld
+              )
+            }
+          )
+          _ <- cacheRepository.set(ua)
+        } yield {
+          Navigator.redirectToAddToPage(ua.isMigratingToTaxable)
         }
-
-      logger.info(s"[Session ID: ${Session.id(hc)}][UTR/URN: $identifier]" +
-        s" user has started to maintain assets")
-      for {
-        details <- connector.getTrustDetails(identifier)
-        is5mldEnabled <- featureFlagService.is5mldEnabled()
-        isMigrating <- connector.getTrustMigrationFlag(identifier)
-        isUnderlyingData5mld <- connector.isTrust5mld(identifier)
-        ua <- Future.successful(
-          request.userAnswers.getOrElse {
-            UserAnswers(
-              internalId = request.user.internalId,
-              identifier = identifier,
-              whenTrustSetup = details.startDate,
-              is5mldEnabled = is5mldEnabled,
-              isTaxable = details.trustTaxable.getOrElse(true),
-              isMigratingToTaxable = isMigrating.migratingFromNonTaxableToTaxable,
-              isUnderlyingData5mld = isUnderlyingData5mld
-            )
-          }
-        )
-        _ <- cacheRepository.set(ua)
-      } yield {
-        redirect(ua)
-      }
-  }
+    }
 
 }

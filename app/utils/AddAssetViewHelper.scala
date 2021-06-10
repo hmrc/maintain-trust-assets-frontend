@@ -32,7 +32,7 @@ class AddAssetViewHelper @Inject()(assets: Assets)
 
     AddToRows(
       assets.nonEEABusiness.zipWithIndex.map(x => renderNonEEABusiness(x._1, x._2)) ++
-      assets.monetary.zipWithIndex.map(x => renderMoney(x._1)) ++
+      assets.monetary.map(renderMoney) ++
       assets.propertyOrLand.zipWithIndex.map(x => renderPropertyOrLand(x._1, x._2)) ++
       assets.other.zipWithIndex.map(x => renderOther(x._1, x._2)) ++
       assets.business.zipWithIndex.map(x => renderBusiness(x._1, x._2)) ++

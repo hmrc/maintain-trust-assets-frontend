@@ -49,15 +49,14 @@ class AnswersController @Inject()(
                                    mapper: OtherAssetMapper,
                                    extractor: OtherAssetExtractor,
                                    errorHandler: ErrorHandler
-                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   private val provisional: Boolean = false
 
   private def render(userAnswers: UserAnswers,
                      index: Int,
                      name: String)
-                    (implicit request: Request[AnyContent]): Result=
-  {
+                    (implicit request: Request[AnyContent]): Result = {
     val section: AnswerSection = printHelper(userAnswers,provisional, name)
     Ok(view(section, index))
   }
@@ -72,7 +71,7 @@ class AnswersController @Inject()(
             extractedF <- Future.fromTry(extractedAnswers)
             _ <- playbackRepository.set(extractedF)
           } yield {
-              render(extractedF, index, otherAsset.description)
+            render(extractedF, index, otherAsset.description)
           }
       } recoverWith {
         case e =>
@@ -94,7 +93,7 @@ class AnswersController @Inject()(
       mapper(request.userAnswers).map {
         asset =>
           connector.amendOtherAsset(request.userAnswers.identifier, index, asset).map(_ =>
-              Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
+            Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
           )
       }.getOrElse {
         logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +

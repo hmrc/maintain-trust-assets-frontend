@@ -16,10 +16,11 @@
 
 package navigation
 
+import controllers.Assets.Redirect
 import models.assets.Assets
 import models.{Mode, UserAnswers}
 import pages.{Page, QuestionPage}
-import play.api.mvc.Call
+import play.api.mvc.{Call, Result}
 
 trait Navigator {
 
@@ -31,6 +32,18 @@ trait Navigator {
     ua.get(fromPage)
       .map(if (_) yesCall else noCall)
       .getOrElse(controllers.routes.SessionExpiredController.onPageLoad())
+  }
+
+}
+
+object Navigator {
+
+  def redirectToAddToPage(isMigratingToTaxable: Boolean): Result = Redirect {
+    if (isMigratingToTaxable) {
+      controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
+    } else {
+      controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad()
+    }
   }
 
 }
