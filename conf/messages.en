@@ -363,8 +363,8 @@ shares.valueInTrust.error.invalid = Total value of shares in the trust must be a
 shares.valueInTrust.error.zero = Total value of shares in the trust must be 1 or more
 shares.valueInTrust.error.wholeNumber = Total value of shares in the trust must be a whole number
 
-shares.answers.title = Check share details
-shares.answers.heading = Check share details
+shares.answers.title = Check asset details
+shares.answers.heading = Check asset details
 
 shares.removeYesNo.title = Are you sure you want to remove the asset?
 shares.removeYesNo.heading = Are you sure you want to remove {0}?
