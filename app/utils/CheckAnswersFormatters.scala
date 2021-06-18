@@ -31,8 +31,7 @@ class CheckAnswersFormatters @Inject()(languageUtils: LanguageUtils,
                                        countryOptions: CountryOptions) {
 
   def formatDate(date: JavaDate)(implicit messages: Messages): Html = {
-    val convertedDate: JodaDate = new JodaDate(date.getYear, date.getMonthValue, date.getDayOfMonth)
-    val formattedDate: String = languageUtils.Dates.formatDate(convertedDate)
+    val formattedDate: String = languageUtils.Dates.formatDate(date)
     escape(formattedDate)
   }
 
