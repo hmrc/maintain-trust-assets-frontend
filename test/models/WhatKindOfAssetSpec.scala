@@ -143,7 +143,7 @@ class WhatKindOfAssetSpec extends SpecBase with ScalaCheckPropertyChecks {
         val messages: MessagesImpl = MessagesImpl(Lang("cy"), messagesApi)
         val result = asset.label(messages)
 
-        result mustBe "whatKindOfAsset.NonEeaBusiness" // TODO - update unit test when Welsh keys added
+        result mustBe "Cwmni nad yw’n rhan o’r AEE"
       }
     }
   }
