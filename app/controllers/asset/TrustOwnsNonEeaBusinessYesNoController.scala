@@ -16,12 +16,10 @@
 
 package controllers.asset
 
-import config.annotations.Assets
 import controllers.actions.StandardActionSets
 import forms.YesNoFormProvider
-import javax.inject.Inject
 import models.Mode
-import navigation.Navigator
+import navigation.AssetsNavigator
 import pages.asset.TrustOwnsNonEeaBusinessYesNoPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -30,13 +28,14 @@ import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.asset.noneeabusiness.TrustOwnsNonEeaBusinessYesNoView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class TrustOwnsNonEeaBusinessYesNoController @Inject()(
                                                         override val messagesApi: MessagesApi,
                                                         standardActionSets: StandardActionSets,
                                                         repository: PlaybackRepository,
-                                                        @Assets navigator: Navigator,
+                                                        navigator: AssetsNavigator,
                                                         yesNoFormProvider: YesNoFormProvider,
                                                         val controllerComponents: MessagesControllerComponents,
                                                         view: TrustOwnsNonEeaBusinessYesNoView
@@ -66,7 +65,7 @@ class TrustOwnsNonEeaBusinessYesNoController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(TrustOwnsNonEeaBusinessYesNoPage, value))
             _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(TrustOwnsNonEeaBusinessYesNoPage, mode, updatedAnswers))
+          } yield Redirect(navigator.redirectFromEntryQuestion(value, updatedAnswers.isMigratingToTaxable))
         }
       )
   }

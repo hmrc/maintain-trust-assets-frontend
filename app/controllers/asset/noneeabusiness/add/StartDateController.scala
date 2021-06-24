@@ -20,7 +20,7 @@ import config.annotations.NonEeaBusiness
 import controllers.actions._
 import controllers.actions.noneeabusiness.NameRequiredAction
 import forms.StartDateFormProvider
-import javax.inject.Inject
+import models.NormalMode
 import navigation.Navigator
 import pages.asset.noneeabusiness.add.StartDatePage
 import play.api.data.Form
@@ -30,6 +30,7 @@ import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.asset.noneeabusiness.add.StartDateView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class StartDateController @Inject()(
@@ -69,7 +70,7 @@ class StartDateController @Inject()(
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(StartDatePage, value))
             _ <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(StartDatePage, updatedAnswers))
+          } yield Redirect(navigator.nextPage(StartDatePage, NormalMode, updatedAnswers))
         }
       )
   }

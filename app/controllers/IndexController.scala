@@ -19,7 +19,7 @@ package controllers
 import connectors.TrustsConnector
 import controllers.actions.StandardActionSets
 import models.UserAnswers
-import navigation.Navigator
+import navigation.AssetsNavigator
 import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -36,7 +36,8 @@ class IndexController @Inject()(
                                  actions: StandardActionSets,
                                  cacheRepository : PlaybackRepository,
                                  connector: TrustsConnector,
-                                 featureFlagService: FeatureFlagService
+                                 featureFlagService: FeatureFlagService,
+                                 navigator: AssetsNavigator
                                )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   def onPageLoad(identifier: String): Action[AnyContent] =
@@ -65,7 +66,7 @@ class IndexController @Inject()(
           )
           _ <- cacheRepository.set(ua)
         } yield {
-          Navigator.redirectToAddAssetPage(ua.isMigratingToTaxable)
+          navigator.redirectToAddAssetPage(ua.isMigratingToTaxable)
         }
     }
 

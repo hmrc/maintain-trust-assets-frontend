@@ -24,7 +24,7 @@ import extractors.NonEeaBusinessExtractor
 import handlers.ErrorHandler
 import mapping.NonEeaBusinessAssetMapper
 import models.UserAnswers
-import navigation.Navigator
+import navigation.AssetsNavigator
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
@@ -51,7 +51,8 @@ class AnswersController @Inject()(
                                    mapper: NonEeaBusinessAssetMapper,
                                    nameAction: NameRequiredAction,
                                    extractor: NonEeaBusinessExtractor,
-                                   errorHandler: ErrorHandler
+                                   errorHandler: ErrorHandler,
+                                   navigator: AssetsNavigator
                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   private val provisional: Boolean = false
@@ -96,7 +97,7 @@ class AnswersController @Inject()(
       mapper(request.userAnswers).map {
         asset =>
           connector.amendNonEeaBusinessAsset(request.userAnswers.identifier, index, asset).map(_ =>
-            Navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable)
+            navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable)
           )
       }.getOrElse {
         logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +

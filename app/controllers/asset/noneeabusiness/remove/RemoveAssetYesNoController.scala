@@ -22,7 +22,7 @@ import handlers.ErrorHandler
 import models.RemoveAsset
 import models.assets.AssetNameType
 import models.requests.DataRequest
-import navigation.Navigator
+import navigation.AssetsNavigator
 import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -41,7 +41,8 @@ class RemoveAssetYesNoController @Inject()(
                                             trustService: TrustService,
                                             val controllerComponents: MessagesControllerComponents,
                                             view: RemoveAssetYesNoView,
-                                            errorHandler: ErrorHandler
+                                            errorHandler: ErrorHandler,
+                                            navigator: AssetsNavigator
                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   private val messagesPrefix: String = "nonEeaBusiness.removeYesNo"
@@ -58,7 +59,7 @@ class RemoveAssetYesNoController @Inject()(
           logger.warn(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
             s" user cannot remove asset as asset was not found ${iobe.getMessage}: IndexOutOfBoundsException")
 
-          Future.successful(Navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable))
+          Future.successful(navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable))
         case _ =>
           logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
             s" user cannot remove asset as asset was not found")
@@ -87,7 +88,7 @@ class RemoveAssetYesNoController @Inject()(
                 }
             }
           } else {
-            Future.successful(Navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable))
+            Future.successful(navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable))
           }
         }
       )
@@ -95,7 +96,7 @@ class RemoveAssetYesNoController @Inject()(
 
   private def removeAsset(identifier: String, index: Int)(implicit request: DataRequest[AnyContent]): Future[Result] = {
     trustService.removeAsset(identifier, RemoveAsset(AssetNameType.NonEeaBusinessAssetNameType, index)).map(_ =>
-      Navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable)
+      navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable)
     )
   }
 }

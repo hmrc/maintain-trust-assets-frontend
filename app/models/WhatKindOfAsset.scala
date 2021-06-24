@@ -48,11 +48,11 @@ object WhatKindOfAsset extends Enumerable.Implicits {
 
   private val maximumDataSet : Set[OptionAndLimit] = Set(
     OptionAndLimit(Money, MAX_MONEY_ASSETS),
-    OptionAndLimit(PropertyOrLand, MAX_LIMIT_FOR_MOST_ASSET_TYPES),
-    OptionAndLimit(Shares, MAX_LIMIT_FOR_MOST_ASSET_TYPES),
-    OptionAndLimit(Business, MAX_LIMIT_FOR_MOST_ASSET_TYPES),
-    OptionAndLimit(Partnership, MAX_LIMIT_FOR_MOST_ASSET_TYPES),
-    OptionAndLimit(Other, MAX_LIMIT_FOR_MOST_ASSET_TYPES),
+    OptionAndLimit(PropertyOrLand, MAX_PROPERTY_OR_LAND_ASSETS),
+    OptionAndLimit(Shares, MAX_SHARES_ASSETS),
+    OptionAndLimit(Business, MAX_BUSINESS_ASSETS),
+    OptionAndLimit(Partnership, MAX_PARTNERSHIP_ASSETS),
+    OptionAndLimit(Other, MAX_OTHER_ASSETS),
     OptionAndLimit(NonEeaBusiness, MAX_NON_EEA_BUSINESS_ASSETS)
   )
 

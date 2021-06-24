@@ -36,7 +36,6 @@ class Module extends AbstractModule {
     bind(classOf[IdentifierAction]).to(classOf[AuthenticatedIdentifierAction]).asEagerSingleton()
     bind(classOf[AuthenticationService]).to(classOf[AuthenticationServiceImpl]).asEagerSingleton()
 
-    bind(classOf[Navigator]).annotatedWith(classOf[Assets]).to(classOf[AssetsNavigator]).asEagerSingleton()
     bind(classOf[Navigator]).annotatedWith(classOf[Money]).to(classOf[MoneyNavigator]).asEagerSingleton()
     bind(classOf[Navigator]).annotatedWith(classOf[PropertyOrLand]).to(classOf[PropertyOrLandNavigator]).asEagerSingleton()
     bind(classOf[Navigator]).annotatedWith(classOf[Shares]).to(classOf[SharesNavigator]).asEagerSingleton()

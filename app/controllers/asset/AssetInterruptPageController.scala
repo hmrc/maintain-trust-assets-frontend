@@ -16,10 +16,8 @@
 
 package controllers.asset
 
-import config.annotations.Assets
 import controllers.actions.StandardActionSets
-import navigation.Navigator
-import pages.asset.AssetInterruptPage
+import navigation.AssetsNavigator
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
@@ -36,7 +34,7 @@ class AssetInterruptPageController @Inject()(
                                               standardActionSets: StandardActionSets,
                                               repository: PlaybackRepository,
                                               trustService: TrustService,
-                                              @Assets navigator: Navigator,
+                                              navigator: AssetsNavigator,
                                               val controllerComponents: MessagesControllerComponents,
                                               assetInterruptView: AssetInterruptView,
                                               migrationAssetInterruptView: MigrationInteruptPage
@@ -59,7 +57,7 @@ class AssetInterruptPageController @Inject()(
         _ <- repository.set(request.userAnswers)
         assets <- trustService.getAssets(updatedAnswers.identifier)
       } yield {
-        Redirect(navigator.nextPage(AssetInterruptPage, updatedAnswers, assets))
+        navigator.redirectFromInterruptPage(updatedAnswers.isMigratingToTaxable, assets.isEmpty)
       }
   }
 

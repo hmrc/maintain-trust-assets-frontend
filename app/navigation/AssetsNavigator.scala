@@ -17,108 +17,105 @@
 package navigation
 
 import config.FrontendAppConfig
+import controllers.Assets.Redirect
 import controllers.asset.routes.AssetInterruptPageController
-import controllers.routes.SessionExpiredController
-
-import javax.inject.Inject
+import models.Constants._
 import models.WhatKindOfAsset.{Business, Money, NonEeaBusiness, Other, Partnership, PropertyOrLand, Shares}
 import models.assets.Assets
-import models.{AddAssets, Mode, NormalMode, UserAnswers}
-import pages.Page
-import pages.asset.nontaxabletotaxable.AddAssetsYesNoPage
-import pages.asset.{AddAnAssetYesNoPage, AddAssetsPage, AssetInterruptPage, TrustOwnsNonEeaBusinessYesNoPage, WhatKindOfAssetPage}
-import play.api.Logging
-import play.api.mvc.Call
+import models.{NormalMode, WhatKindOfAsset}
+import play.api.mvc.{Call, Result}
+import uk.gov.hmrc.http.HttpVerbs.GET
 
-class AssetsNavigator @Inject()(config: FrontendAppConfig) extends Navigator with Logging {
+import javax.inject.Inject
 
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
-    routes(mode, Assets())(page)(userAnswers)
+class AssetsNavigator @Inject()(config: FrontendAppConfig) {
 
-  override def nextPage(page: Page, userAnswers: UserAnswers, assets: Assets = Assets()): Call =
-    routes(NormalMode, assets)(page)(userAnswers)
-
-  def simpleNavigation(mode: Mode, assets: Assets): PartialFunction[Page, UserAnswers => Call] = {
-    case AssetInterruptPage => ua => routeToAssetIndex(ua, assets)
-    case WhatKindOfAssetPage => ua => whatKindOfAssetRoute(ua)
-    case AddAssetsPage => ua => addAssetsRoute()(ua, assets)
-  }
-
-  private def whatKindOfAssetRoute(answers: UserAnswers): Call =
-    answers.get(WhatKindOfAssetPage) match {
-      case Some(Money) =>
-        controllers.asset.money.routes.AssetMoneyValueController.onPageLoad(NormalMode)
-      case Some(PropertyOrLand) =>
-        controllers.asset.property_or_land.routes.PropertyOrLandAddressYesNoController.onPageLoad(NormalMode)
-      case Some(Shares) =>
-        controllers.asset.shares.routes.SharesInAPortfolioController.onPageLoad(NormalMode)
-      case Some(Business) =>
-        controllers.asset.business.routes.BusinessNameController.onPageLoad(NormalMode)
-      case Some(Partnership) =>
-        controllers.asset.partnership.routes.PartnershipDescriptionController.onPageLoad(NormalMode)
-      case Some(Other) =>
-        controllers.asset.other.routes.OtherAssetDescriptionController.onPageLoad(NormalMode)
-      case Some(NonEeaBusiness) =>
-        controllers.asset.noneeabusiness.routes.NameController.onPageLoad(NormalMode)
-      case _ =>
-        SessionExpiredController.onPageLoad()
-    }
-
-  private def addAssetsRoute()(answers: UserAnswers, assets: Assets): Call = {
-    answers.get(AddAssetsPage) match {
-      case Some(AddAssets.YesNow) =>
-        routeToAssetIndex(answers, assets)
-      case Some(AddAssets.NoComplete) =>
-        nonEEAAssetCompletedRoute()
-      case _ => SessionExpiredController.onPageLoad()
+  def redirectToAddAssetPage(isMigratingToTaxable: Boolean): Result = Redirect {
+    if (isMigratingToTaxable) {
+      controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
+    } else {
+      controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad()
     }
   }
 
-  def nonEEAAssetCompletedRoute() : Call =
-    controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.submitComplete()
-
-  private def routeToAssetIndex(answers: UserAnswers, assets: Assets): Call = {
-    (answers.isMigratingToTaxable, assets)  match {
-      case (true, x) if x.isEmpty => controllers.asset.routes.WhatKindOfAssetController.onPageLoad()
-      case (true, _)  => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
+  def redirectFromInterruptPage(isMigratingToTaxable: Boolean, noAssets: Boolean): Result = Redirect {
+    (isMigratingToTaxable, noAssets)  match {
+      case (true, true) => controllers.asset.routes.WhatKindOfAssetController.onPageLoad()
+      case (true, false)  => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
       case (false, _) => controllers.asset.noneeabusiness.routes.NameController.onPageLoad(NormalMode)
     }
   }
 
-  private def yesNoNavigation(mode: Mode, assets: Assets): PartialFunction[Page, UserAnswers => Call] = {
-    case AddAssetsYesNoPage => ua => yesNoNav(
-      ua = ua,
-      fromPage = AddAssetsYesNoPage,
-      yesCall = AssetInterruptPageController.onPageLoad(),
-      noCall = noRouteToMaintenance(assets)
-    )
-    case AddAnAssetYesNoPage => ua => yesNoNav(
-      ua = ua,
-      fromPage = AddAnAssetYesNoPage,
-      yesCall = routeToAssetIndex(ua, assets),
-      noCall = nonEEAAssetCompletedRoute()
-    )
-    case TrustOwnsNonEeaBusinessYesNoPage => ua => yesNoNav(
-      ua = ua,
-      fromPage = TrustOwnsNonEeaBusinessYesNoPage,
-      yesCall = AssetInterruptPageController.onPageLoad(),
-      noCall = nonEEAAssetCompletedRoute()
-    )
-  }
-
-  private def noRouteToMaintenance(assets: Assets): Call =
-    if (assets.isEmpty) {
-      assetsInProgressHubRoute()
+  def redirectFromAddAssetYesNoPage(value: Boolean, isMigratingToTaxable: Boolean, noAssets: Boolean): Call = {
+    if (isMigratingToTaxable) {
+      if (value) {
+        AssetInterruptPageController.onPageLoad()
+      } else {
+        if (noAssets) {
+          maintainATrustOverview
+        } else {
+          controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
+        }
+      }
     } else {
-      controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
+      if (value) {
+        controllers.asset.noneeabusiness.routes.NameController.onPageLoad(NormalMode)
+      } else {
+        submitTaskComplete(isMigratingToTaxable)
+      }
     }
-
-  def assetsInProgressHubRoute() : Call = {
-    Call("GET", config.maintainATrustOverview)
   }
 
-  def routes(mode: Mode, assets: Assets): PartialFunction[Page, UserAnswers => Call] =
-    simpleNavigation(mode, assets) orElse
-      yesNoNavigation(mode, assets)
+  def redirectFromEntryQuestion(value: Boolean, isMigratingToTaxable: Boolean): Call = {
+    if (value) {
+      AssetInterruptPageController.onPageLoad()
+    } else {
+      submitTaskComplete(isMigratingToTaxable)
+    }
+  }
+
+  def addAssetRoute(assets: Assets): Call = {
+
+    case class AssetRoute(size: Int, maxSize: Int, route: Call)
+
+    val routes: List[AssetRoute] = List(
+      AssetRoute(assets.monetary.size, MAX_MONEY_ASSETS, addAssetNowRoute(Money)),
+      AssetRoute(assets.propertyOrLand.size, MAX_PROPERTY_OR_LAND_ASSETS, addAssetNowRoute(PropertyOrLand)),
+      AssetRoute(assets.shares.size, MAX_SHARES_ASSETS, addAssetNowRoute(Shares)),
+      AssetRoute(assets.business.size, MAX_BUSINESS_ASSETS, addAssetNowRoute(Business)),
+      AssetRoute(assets.partnerShip.size, MAX_PARTNERSHIP_ASSETS, addAssetNowRoute(Partnership)),
+      AssetRoute(assets.other.size, MAX_OTHER_ASSETS, addAssetNowRoute(Other)),
+      AssetRoute(assets.nonEEABusiness.size, MAX_NON_EEA_BUSINESS_ASSETS, addAssetNowRoute(NonEeaBusiness))
+    )
+
+    routes.filter(x => x.size < x.maxSize) match {
+      case x :: Nil => x.route
+      case _ => controllers.asset.routes.WhatKindOfAssetController.onPageLoad()
+    }
+  }
+
+  def addAssetNowRoute(`type`: WhatKindOfAsset): Call = {
+    `type` match {
+      case Money => controllers.asset.money.routes.AssetMoneyValueController.onPageLoad(NormalMode)
+      case PropertyOrLand => controllers.asset.property_or_land.routes.PropertyOrLandAddressYesNoController.onPageLoad(NormalMode)
+      case Shares => controllers.asset.shares.routes.SharesInAPortfolioController.onPageLoad(NormalMode)
+      case Business => controllers.asset.business.routes.BusinessNameController.onPageLoad(NormalMode)
+      case Partnership => controllers.asset.partnership.routes.PartnershipDescriptionController.onPageLoad(NormalMode)
+      case Other => controllers.asset.other.routes.OtherAssetDescriptionController.onPageLoad(NormalMode)
+      case NonEeaBusiness => controllers.asset.noneeabusiness.routes.NameController.onPageLoad(NormalMode)
+    }
+  }
+
+  private def submitTaskComplete(isMigratingToTaxable: Boolean): Call = {
+    if (isMigratingToTaxable) {
+      controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.submitComplete()
+    } else {
+      controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.submitComplete()
+    }
+  }
+
+  private def maintainATrustOverview: Call = {
+    Call(GET, config.maintainATrustOverview)
+  }
 
 }

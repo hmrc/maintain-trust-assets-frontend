@@ -17,16 +17,14 @@
 package controllers.asset.nonTaxableToTaxable
 
 import config.FrontendAppConfig
-import config.annotations.Assets
 import connectors.TrustsStoreConnector
 import controllers.actions.StandardActionSets
 import forms.{AddAssetsFormProvider, YesNoFormProvider}
 import handlers.ErrorHandler
-import javax.inject.Inject
 import models.Constants._
-import models.{AddAssets, NormalMode, UserAnswers}
-import navigation.Navigator
-import pages.asset.{AddAnAssetYesNoPage, AddAssetsPage}
+import models.{AddAssets, UserAnswers}
+import navigation.AssetsNavigator
+import pages.asset.AddAnAssetYesNoPage
 import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi, MessagesProvider}
@@ -37,24 +35,26 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AddAssetViewHelper
 import views.html.asset.nonTaxableToTaxable.{AddAssetYesNoView, AddAssetsView, MaxedOutView}
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AddAssetsController @Inject()(
-                                                  override val messagesApi: MessagesApi,
-                                                  standardActionSets: StandardActionSets,
-                                                  repository: PlaybackRepository,
-                                                  val appConfig: FrontendAppConfig,
-                                                  trustService: TrustService,
-                                                  trustsStoreConnector: TrustsStoreConnector,
-                                                  @Assets navigator: Navigator,
-                                                  addAnotherFormProvider: AddAssetsFormProvider,
-                                                  yesNoFormProvider: YesNoFormProvider,
-                                                  val controllerComponents: MessagesControllerComponents,
-                                                  addAssetsView: AddAssetsView,
-                                                  yesNoView: AddAssetYesNoView,
-                                                  maxedOutView: MaxedOutView,
-                                                  errorHandler: ErrorHandler
-                                                )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+                                     override val messagesApi: MessagesApi,
+                                     standardActionSets: StandardActionSets,
+                                     repository: PlaybackRepository,
+                                     val appConfig: FrontendAppConfig,
+                                     trustService: TrustService,
+                                     trustsStoreConnector: TrustsStoreConnector,
+                                     navigator: AssetsNavigator,
+                                     addAnotherFormProvider: AddAssetsFormProvider,
+                                     yesNoFormProvider: YesNoFormProvider,
+                                     val controllerComponents: MessagesControllerComponents,
+                                     addAssetsView: AddAssetsView,
+                                     yesNoView: AddAssetYesNoView,
+                                     maxedOutView: MaxedOutView,
+                                     errorHandler: ErrorHandler,
+                                     viewHelper: AddAssetViewHelper
+                                   )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   private val prefix = "nonTaxableToTaxable.addAssets"
   private val addAnotherForm: Form[AddAssets] = addAnotherFormProvider.withPrefix(prefix)
@@ -78,13 +78,9 @@ class AddAssetsController @Inject()(
         _ <- repository.set(updatedAnswers)
       } yield {
 
-        val assetRows = new AddAssetViewHelper(assets).rows
+        val assetRows = viewHelper.rows(assets)
 
-        val maxLimit: Int = if(userAnswers.isMigratingToTaxable) {
-          MAX_ALL_ASSETS
-        } else {
-          MAX_NON_EEA_BUSINESS_ASSETS
-        }
+        val maxLimit: Int = MAX_ALL_ASSETS
 
         assetRows.count match {
           case 0 =>
@@ -105,11 +101,15 @@ class AddAssetsController @Inject()(
           Future.successful(BadRequest(yesNoView(formWithErrors)))
         },
         value => {
-          for {
-            cleanedAnswers <- Future.fromTry(request.userAnswers.cleanup)
-            updatedAnswers <- Future.fromTry(cleanedAnswers.set(AddAnAssetYesNoPage, value))
-            _ <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(AddAnAssetYesNoPage, NormalMode, updatedAnswers))
+          if (value) {
+            for {
+              cleanedAnswers <- Future.fromTry(request.userAnswers.cleanup)
+              updatedAnswers <- Future.fromTry(cleanedAnswers.set(AddAnAssetYesNoPage, value))
+              _ <- repository.set(updatedAnswers)
+            } yield Redirect(controllers.asset.routes.WhatKindOfAssetController.onPageLoad())
+          } else {
+            submitComplete()(request)
+          }
         }
       )
   }
@@ -121,20 +121,19 @@ class AddAssetsController @Inject()(
         addAnotherForm.bindFromRequest().fold(
           (formWithErrors: Form[_]) => {
 
-            val assetRows = new AddAssetViewHelper(assets).rows
+            val assetRows = viewHelper.rows(assets)
 
             Future.successful(BadRequest(addAssetsView(formWithErrors, assetRows.complete, heading(assetRows.count))))
           },
           {
-            value => {
+            case AddAssets.YesNow =>
               for {
-                cleanedAnswers <- Future.fromTry(request.userAnswers.cleanup)
-                updatedAnswers <- Future.fromTry(cleanedAnswers.set(AddAssetsPage, value))
+                updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
                 _ <- repository.set(updatedAnswers)
-              } yield {
-                Redirect(navigator.nextPage(AddAssetsPage, NormalMode, updatedAnswers))
-              }
-            }
+              } yield Redirect(navigator.addAssetRoute(assets))
+
+            case AddAssets.NoComplete =>
+              submitComplete()(request)
           }
         )
       } recoverWith {

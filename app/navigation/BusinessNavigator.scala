@@ -17,22 +17,23 @@
 package navigation
 
 import controllers.asset.business.routes._
-import models.assets.Assets
 import models.{Mode, NormalMode, UserAnswers}
 import pages.Page
 import pages.asset.business._
-import play.api.mvc.Call
-import javax.inject.Inject
 import pages.asset.business.add.BusinessAnswerPage
 import pages.asset.business.amend.IndexPage
+import play.api.mvc.Call
+
+import javax.inject.Inject
 
 class BusinessNavigator @Inject()() extends Navigator {
 
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
     routes(mode)(page)(userAnswers)
 
-  override def nextPage(page: Page, userAnswers: UserAnswers, assets: Assets = Assets()): Call =
-    nextPage(page, NormalMode, userAnswers)
+  def routes(mode: Mode): PartialFunction[Page, UserAnswers => Call] =
+    simpleNavigation(mode) orElse
+      yesNoNavigation(mode)
 
   def simpleNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
     case BusinessNamePage => _ => BusinessDescriptionController.onPageLoad(mode)
@@ -51,11 +52,6 @@ class BusinessNavigator @Inject()() extends Navigator {
       noCall = BusinessInternationalAddressController.onPageLoad(mode)
     )
   }
-
-  def routes(mode: Mode): PartialFunction[Page, UserAnswers => Call] =
-  simpleNavigation(mode) orElse
-    yesNoNavigation(mode)
-
 
   private def navigateToCheckAnswers(ua: UserAnswers, mode: Mode): Call = {
     if (mode == NormalMode) {

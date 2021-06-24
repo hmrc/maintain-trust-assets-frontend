@@ -21,7 +21,7 @@ import forms.EndDateFormProvider
 import handlers.ErrorHandler
 import models.RemoveAsset
 import models.assets.AssetNameType
-import navigation.Navigator
+import navigation.AssetsNavigator
 import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -34,14 +34,15 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class RemoveAssetEndDateController @Inject()(
-                                            override val messagesApi: MessagesApi,
-                                            standardActionSets: StandardActionSets,
-                                            formProvider: EndDateFormProvider,
-                                            trustService: TrustService,
-                                            val controllerComponents: MessagesControllerComponents,
-                                            view: RemoveAssetEndDateView,
-                                            errorHandler: ErrorHandler
-                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+                                              override val messagesApi: MessagesApi,
+                                              standardActionSets: StandardActionSets,
+                                              formProvider: EndDateFormProvider,
+                                              trustService: TrustService,
+                                              val controllerComponents: MessagesControllerComponents,
+                                              view: RemoveAssetEndDateView,
+                                              errorHandler: ErrorHandler,
+                                              navigator: AssetsNavigator
+                                            )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   private val messagePrefix: String = "nonEeaBusiness.endDate"
 
@@ -57,7 +58,7 @@ class RemoveAssetEndDateController @Inject()(
           logger.warn(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
             s" user cannot remove asset as asset was not found ${iobe.getMessage}: IndexOutOfBoundsException")
 
-          Future.successful(Navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable))
+          Future.successful(navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable))
         case _ =>
           logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
             s" user cannot remove asset as asset was not found")
@@ -76,7 +77,7 @@ class RemoveAssetEndDateController @Inject()(
               Future.successful(BadRequest(view(formWithErrors, index, asset.orgName))),
             endDate => {
               trustService.removeAsset(request.userAnswers.identifier, RemoveAsset(AssetNameType.NonEeaBusinessAssetNameType, index, endDate)).map(_ =>
-                Navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable)
+                navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable)
               )
             }
           )

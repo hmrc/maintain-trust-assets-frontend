@@ -21,7 +21,7 @@ import controllers.actions._
 import controllers.actions.noneeabusiness.NameRequiredAction
 import handlers.ErrorHandler
 import mapping.NonEeaBusinessAssetMapper
-import navigation.Navigator
+import navigation.AssetsNavigator
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -41,7 +41,8 @@ class AnswersController @Inject()(
                                    val controllerComponents: MessagesControllerComponents,
                                    printHelper: NonEeaBusinessPrintHelper,
                                    mapper: NonEeaBusinessAssetMapper,
-                                   errorHandler: ErrorHandler
+                                   errorHandler: ErrorHandler,
+                                   navigator: AssetsNavigator
                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val provisional: Boolean = true
@@ -62,7 +63,7 @@ class AnswersController @Inject()(
           Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
         case Some(asset) =>
           connector.addNonEeaBusinessAsset(request.userAnswers.identifier, asset).map(_ =>
-            Navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable)
+            navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable)
           )
       }
   }

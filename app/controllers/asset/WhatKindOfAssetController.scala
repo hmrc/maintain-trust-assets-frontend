@@ -16,11 +16,10 @@
 
 package controllers.asset
 
-import config.annotations.Assets
 import controllers.actions.StandardActionSets
 import forms.WhatKindOfAssetFormProvider
-import models.{Enumerable, NormalMode, WhatKindOfAsset}
-import navigation.Navigator
+import models.{Enumerable, WhatKindOfAsset}
+import navigation.AssetsNavigator
 import pages.asset.WhatKindOfAssetPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -38,7 +37,7 @@ class WhatKindOfAssetController @Inject()(
                                            override val messagesApi: MessagesApi,
                                            standardActionSets: StandardActionSets,
                                            repository: PlaybackRepository,
-                                           @Assets navigator: Navigator,
+                                           navigator: AssetsNavigator,
                                            formProvider: WhatKindOfAssetFormProvider,
                                            val controllerComponents: MessagesControllerComponents,
                                            view: WhatKindOfAssetView,
@@ -77,7 +76,7 @@ class WhatKindOfAssetController @Inject()(
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(WhatKindOfAssetPage, value))
               _ <- repository.set(updatedAnswers)
-            } yield Redirect(navigator.nextPage(WhatKindOfAssetPage, NormalMode, updatedAnswers))
+            } yield Redirect(navigator.addAssetNowRoute(value))
           }
         )
       }
