@@ -46,22 +46,12 @@ class AssetsNavigator @Inject()(config: FrontendAppConfig) {
   }
 
   def redirectFromAddAssetYesNoPage(value: Boolean, isMigratingToTaxable: Boolean, noAssets: Boolean): Call = {
-    if (isMigratingToTaxable) {
-      if (value) {
-        AssetInterruptPageController.onPageLoad()
-      } else {
-        if (noAssets) {
-          maintainATrustOverview
-        } else {
-          controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
-        }
-      }
-    } else {
-      if (value) {
-        controllers.asset.noneeabusiness.routes.NameController.onPageLoad(NormalMode)
-      } else {
-        submitTaskComplete(isMigratingToTaxable)
-      }
+    (value, isMigratingToTaxable, noAssets) match {
+      case (true, true, _) => AssetInterruptPageController.onPageLoad()
+      case (true, false, _) => controllers.asset.noneeabusiness.routes.NameController.onPageLoad(NormalMode)
+      case (false, true, true) => maintainATrustOverview
+      case (false, true, false) => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
+      case (false, false, _) => submitTaskComplete(isMigratingToTaxable)
     }
   }
 
