@@ -63,7 +63,7 @@ class AnswersController @Inject()(
           Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
         case Some(asset) =>
           connector.addNonEeaBusinessAsset(request.userAnswers.identifier, asset).map(_ =>
-            navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable)
+            Redirect(navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable))
           )
       }
   }

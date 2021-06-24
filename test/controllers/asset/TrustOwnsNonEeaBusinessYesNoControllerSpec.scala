@@ -17,12 +17,13 @@
 package controllers.asset
 
 import base.SpecBase
-import config.annotations.Assets
 import controllers.asset.routes._
 import controllers.routes._
 import forms.YesNoFormProvider
 import models.NormalMode
-import navigation.Navigator
+import navigation.AssetsNavigator
+import org.mockito.Matchers.any
+import org.mockito.Mockito.when
 import pages.asset.TrustOwnsNonEeaBusinessYesNoPage
 import play.api.data.Form
 import play.api.inject.bind
@@ -79,8 +80,11 @@ class TrustOwnsNonEeaBusinessYesNoControllerSpec extends SpecBase {
 
     "redirect to the next page when valid data is submitted" in {
 
+      val mockNavigator: AssetsNavigator = mock[AssetsNavigator]
+      when(mockNavigator.redirectFromEntryQuestion(any(), any())).thenReturn(fakeNavigator.desiredRoute)
+
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-        .overrides(bind[Navigator].qualifiedWith(classOf[Assets]).toInstance(fakeNavigator))
+        .overrides(bind[AssetsNavigator].toInstance(mockNavigator))
         .build()
 
       val request = FakeRequest(POST, onPageLoadRoute)

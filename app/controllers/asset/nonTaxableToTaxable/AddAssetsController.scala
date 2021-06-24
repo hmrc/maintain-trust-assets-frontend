@@ -22,7 +22,7 @@ import controllers.actions.StandardActionSets
 import forms.{AddAssetsFormProvider, YesNoFormProvider}
 import handlers.ErrorHandler
 import models.Constants._
-import models.{AddAssets, UserAnswers}
+import models.{AddAssets, UserAnswers, WhatKindOfAsset}
 import navigation.AssetsNavigator
 import pages.asset.AddAnAssetYesNoPage
 import play.api.Logging
@@ -77,18 +77,22 @@ class AddAssetsController @Inject()(
         updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
         _ <- repository.set(updatedAnswers)
       } yield {
-
-        val assetRows = viewHelper.rows(assets)
-
-        val maxLimit: Int = MAX_ALL_ASSETS
-
-        assetRows.count match {
-          case 0 =>
+        assets match {
+          case _ if assets.isEmpty =>
             Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetYesNoController.onPageLoad())
-          case c if c >= maxLimit =>
-            Ok(maxedOutView(assetRows.complete, heading(c), maxLimit, prefix))
-          case c =>
-            Ok(addAssetsView(addAnotherForm, assetRows.complete, heading(c)))
+          case _ =>
+            val assetRows = viewHelper.rows(assets)
+
+            if (WhatKindOfAsset.nonMaxedOutOptions(assets).isEmpty) {
+              Ok(maxedOutView(assetRows.complete, heading(assetRows.count), MAX_ALL_ASSETS, prefix))
+            } else {
+              Ok(addAssetsView(
+                form = addAnotherForm,
+                completeAssets = assetRows.complete,
+                heading = heading(assetRows.count),
+                maxedOut = WhatKindOfAsset.maxedOutOptions(assets)
+              ))
+            }
         }
       }
   }
@@ -123,7 +127,12 @@ class AddAssetsController @Inject()(
 
             val assetRows = viewHelper.rows(assets)
 
-            Future.successful(BadRequest(addAssetsView(formWithErrors, assetRows.complete, heading(assetRows.count))))
+            Future.successful(BadRequest(addAssetsView(
+              form = formWithErrors,
+              completeAssets = assetRows.complete,
+              heading = heading(assetRows.count),
+              maxedOut = WhatKindOfAsset.maxedOutOptions(assets)
+            )))
           },
           {
             case AddAssets.YesNow =>

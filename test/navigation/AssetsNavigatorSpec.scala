@@ -21,7 +21,7 @@ import controllers.asset.nonTaxableToTaxable.{routes => nonTaxToTaxRts}
 import controllers.asset.{routes => rts}
 import generators.Generators
 import models.Constants._
-import models.WhatKindOfAsset.Money
+import models.WhatKindOfAsset._
 import models.assets._
 import models.{NormalMode, ShareClass, UkAddress}
 import org.scalacheck.Arbitrary.arbitrary
@@ -162,7 +162,7 @@ class AssetsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
         "not migrating from non-taxable to taxable" must {
           "redirect to submit-complete route" in {
-            navigator.redirectFromEntryQuestion(value = false, isMigratingToTaxable = true)
+            navigator.redirectFromEntryQuestion(value = false, isMigratingToTaxable = false)
               .mustBe(controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.submitComplete())
           }
         }
@@ -409,42 +409,42 @@ class AssetsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
       "property or land" must {
         "redirect to property or land journey" in {
-          navigator.addAssetNowRoute(Money).url mustBe
+          navigator.addAssetNowRoute(PropertyOrLand).url mustBe
             controllers.asset.property_or_land.routes.PropertyOrLandAddressYesNoController.onPageLoad(NormalMode).url
         }
       }
 
       "shares" must {
         "redirect to shares journey" in {
-          navigator.addAssetNowRoute(Money).url mustBe
+          navigator.addAssetNowRoute(Shares).url mustBe
             controllers.asset.shares.routes.SharesInAPortfolioController.onPageLoad(NormalMode).url
         }
       }
 
       "business" must {
         "redirect to business journey" in {
-          navigator.addAssetNowRoute(Money).url mustBe
+          navigator.addAssetNowRoute(Business).url mustBe
             controllers.asset.business.routes.BusinessNameController.onPageLoad(NormalMode).url
         }
       }
 
       "partnership" must {
         "redirect to partnership journey" in {
-          navigator.addAssetNowRoute(Money).url mustBe
+          navigator.addAssetNowRoute(Partnership).url mustBe
             controllers.asset.partnership.routes.PartnershipDescriptionController.onPageLoad(NormalMode).url
         }
       }
 
       "other" must {
         "redirect to other journey" in {
-          navigator.addAssetNowRoute(Money).url mustBe
+          navigator.addAssetNowRoute(Other).url mustBe
             controllers.asset.other.routes.OtherAssetDescriptionController.onPageLoad(NormalMode).url
         }
       }
 
       "non-EEA business" must {
         "redirect to non-EEA business journey" in {
-          navigator.addAssetNowRoute(Money).url mustBe
+          navigator.addAssetNowRoute(NonEeaBusiness).url mustBe
             controllers.asset.noneeabusiness.routes.NameController.onPageLoad(NormalMode).url
         }
       }

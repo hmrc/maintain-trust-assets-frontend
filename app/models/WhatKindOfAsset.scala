@@ -44,18 +44,6 @@ object WhatKindOfAsset extends Enumerable.Implicits {
 
   val prefix: String = "whatKindOfAsset"
 
-  case class OptionAndLimit(kind: WhatKindOfAsset, limit: Int)
-
-  private val maximumDataSet : Set[OptionAndLimit] = Set(
-    OptionAndLimit(Money, MAX_MONEY_ASSETS),
-    OptionAndLimit(PropertyOrLand, MAX_PROPERTY_OR_LAND_ASSETS),
-    OptionAndLimit(Shares, MAX_SHARES_ASSETS),
-    OptionAndLimit(Business, MAX_BUSINESS_ASSETS),
-    OptionAndLimit(Partnership, MAX_PARTNERSHIP_ASSETS),
-    OptionAndLimit(Other, MAX_OTHER_ASSETS),
-    OptionAndLimit(NonEeaBusiness, MAX_NON_EEA_BUSINESS_ASSETS)
-  )
-
   def options(kindsOfAsset: List[WhatKindOfAsset] = values): List[RadioOption] = kindsOfAsset.map {
     value =>
       RadioOption(prefix, value.toString)
@@ -64,15 +52,27 @@ object WhatKindOfAsset extends Enumerable.Implicits {
   implicit val enumerable: Enumerable[WhatKindOfAsset] =
     Enumerable(values.map(v => v.toString -> v): _*)
 
-  def nonMaxedOutOptions(assets: Assets): List[RadioOption] = {
+  case class AssetSize(kindOfAsset: WhatKindOfAsset, size: Int, maxSize: Int)
 
-    def isMaxed(option: WhatKindOfAsset, size: Int) : Boolean = {
-      val definedLimit = maximumDataSet.filter(_.kind == option).head
-      size >= definedLimit.limit
-    }
-
-    val filtered = values.filterNot(x => isMaxed(x, assets.sizeForKind(x)))
-
-    options(filtered)
+  def nonMaxedOutOptions(assets: Assets): List[AssetSize] = {
+    assetSizes(assets)
+      .filterNot(x => x.size >= x.maxSize)
   }
+
+  def maxedOutOptions(assets: Assets): List[(String, Int)] = {
+    assetSizes(assets)
+      .filter(x => x.size >= x.maxSize)
+      .map(x => (s"$prefix.${x.kindOfAsset}", x.size))
+  }
+
+  private def assetSizes(assets: Assets) = List(
+    AssetSize(Money, assets.monetary.size, MAX_MONEY_ASSETS),
+    AssetSize(PropertyOrLand, assets.propertyOrLand.size, MAX_PROPERTY_OR_LAND_ASSETS),
+    AssetSize(Shares, assets.shares.size, MAX_SHARES_ASSETS),
+    AssetSize(Business, assets.business.size, MAX_BUSINESS_ASSETS),
+    AssetSize(NonEeaBusiness, assets.nonEEABusiness.size, MAX_NON_EEA_BUSINESS_ASSETS),
+    AssetSize(Partnership, assets.partnerShip.size, MAX_PARTNERSHIP_ASSETS),
+    AssetSize(Other, assets.other.size, MAX_OTHER_ASSETS)
+  )
+
 }

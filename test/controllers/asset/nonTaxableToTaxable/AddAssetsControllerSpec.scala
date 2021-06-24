@@ -156,12 +156,9 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
 
       "redirect to AddAssetsYesNoController for a GET" in {
 
-        when(mockViewHelper.rows(any())(any())).thenReturn(AddToRows(Nil))
-
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
-            bind(classOf[TrustService]).toInstance(fakeService),
-            bind(classOf[AddAssetViewHelper]).toInstance(mockViewHelper)
+            bind(classOf[TrustService]).toInstance(fakeService)
           ).build()
 
         val request = FakeRequest(GET, addAssetsRoute)
@@ -170,8 +167,6 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetYesNoController.onPageLoad().url
-
-        verify(mockViewHelper).rows(eqTo(assets))(any())
 
         application.stop()
       }
@@ -263,7 +258,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(addAssetForm, fakeAddRows, "Add assets")(request, messages).toString
+          view(addAssetForm, fakeAddRows, "Add assets", Nil)(request, messages).toString
 
         verify(mockViewHelper).rows(eqTo(assets))(any())
 
@@ -272,7 +267,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
       }
     }
 
-    "there are existing assets" when {
+    "there are existing assets" must {
 
       val numberOfAssets = 3
       val assets: Assets = Assets(Nil, Nil, Nil, Nil, Nil, Nil, List.fill(numberOfAssets)(nonEeaBusiness))
@@ -299,7 +294,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(addAssetForm, fakeAddRows, s"You have added $numberOfAssets assets")(request, messages).toString
+          view(addAssetForm, fakeAddRows, s"You have added $numberOfAssets assets", Nil)(request, messages).toString
 
         verify(mockViewHelper).rows(eqTo(assets))(any())
 
@@ -369,7 +364,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
 
         status(result) mustEqual BAD_REQUEST
 
-        contentAsString(result) mustEqual view(boundForm, fakeAddRows, s"You have added $numberOfAssets assets")(request, messages).toString
+        contentAsString(result) mustEqual view(boundForm, fakeAddRows, s"You have added $numberOfAssets assets", Nil)(request, messages).toString
 
         verify(mockViewHelper).rows(eqTo(assets))(any())
 
@@ -410,7 +405,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
 
           status(result) mustEqual OK
 
-          contentAsString(result) must include("You cannot add another Non-EEA Company as you have entered a maximum of 25.")
+          contentAsString(result) must include("You cannot add another Non-EEA Company asset as you have entered a maximum of 25.")
           contentAsString(result) must include("If you have further assets to add within this type, write to HMRC with their details.")
 
           verify(mockViewHelper).rows(eqTo(assets))(any())
@@ -488,9 +483,9 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
 
           val content = contentAsString(result)
 
-          content mustEqual view(fakeAddRows, "The trust has 76 assets", 76, prefix)(request, messages).toString
-          content must include("You cannot enter another asset as you have entered a maximum of 76.")
-          content must include("If you have further assets to add, write to HMRC with their details.")
+          content mustEqual view(fakeAddRows, "You have added 76 assets", 76, prefix)(request, messages).toString
+          content must include("You cannot add another asset as you have entered a maximum of 76.")
+          content must include("You can add another asset by removing an existing one, or write to HMRC with details of any additional assets.")
 
           verify(mockViewHelper).rows(eqTo(assets))(any())
 

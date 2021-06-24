@@ -69,13 +69,13 @@ class AnswersController @Inject()(
     implicit request =>
 
       service.getNonEeaBusinessAsset(request.userAnswers.identifier, index) flatMap {
-        noneeabusiness =>
-          val extractedAnswers = extractor(request.userAnswers, noneeabusiness, index)
+        nonEeaBusiness =>
+          val extractedAnswers = extractor(request.userAnswers, nonEeaBusiness, index)
           for {
             extractedF <- Future.fromTry(extractedAnswers)
             _ <- playbackRepository.set(extractedF)
           } yield {
-            render(extractedF, index, noneeabusiness.orgName)
+            render(extractedF, index, nonEeaBusiness.orgName)
           }
       } recoverWith {
         case e =>
@@ -86,7 +86,7 @@ class AnswersController @Inject()(
       }
   }
 
-  def renderFromUserAnswers(index: Int) : Action[AnyContent] = standardActionSets.verifiedForIdentifier.andThen(nameAction) {
+  def renderFromUserAnswers(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.andThen(nameAction) {
     implicit request =>
       render(request.userAnswers, index, request.Name)
   }
@@ -97,7 +97,7 @@ class AnswersController @Inject()(
       mapper(request.userAnswers).map {
         asset =>
           connector.amendNonEeaBusinessAsset(request.userAnswers.identifier, index, asset).map(_ =>
-            navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable)
+            Redirect(navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable))
           )
       }.getOrElse {
         logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +

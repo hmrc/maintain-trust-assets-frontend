@@ -46,8 +46,10 @@ class WhatKindOfAssetController @Inject()(
 
   val form: Form[WhatKindOfAsset] = formProvider()
 
-  private def options(assets: models.assets.Assets): List[RadioOption] =
-    WhatKindOfAsset.nonMaxedOutOptions(assets)
+  private def options(assets: models.assets.Assets): List[RadioOption] = {
+    val kindsOfAsset = WhatKindOfAsset.nonMaxedOutOptions(assets).map(_.kindOfAsset)
+    WhatKindOfAsset.options(kindsOfAsset)
+  }
 
   def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>

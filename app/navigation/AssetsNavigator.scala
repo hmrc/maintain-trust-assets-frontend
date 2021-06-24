@@ -17,20 +17,19 @@
 package navigation
 
 import config.FrontendAppConfig
-import controllers.Assets.Redirect
 import controllers.asset.routes.AssetInterruptPageController
 import models.Constants._
 import models.WhatKindOfAsset.{Business, Money, NonEeaBusiness, Other, Partnership, PropertyOrLand, Shares}
 import models.assets.Assets
 import models.{NormalMode, WhatKindOfAsset}
-import play.api.mvc.{Call, Result}
+import play.api.mvc.Call
 import uk.gov.hmrc.http.HttpVerbs.GET
 
 import javax.inject.Inject
 
 class AssetsNavigator @Inject()(config: FrontendAppConfig) {
 
-  def redirectToAddAssetPage(isMigratingToTaxable: Boolean): Result = Redirect {
+  def redirectToAddAssetPage(isMigratingToTaxable: Boolean): Call = {
     if (isMigratingToTaxable) {
       controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
     } else {
@@ -38,7 +37,7 @@ class AssetsNavigator @Inject()(config: FrontendAppConfig) {
     }
   }
 
-  def redirectFromInterruptPage(isMigratingToTaxable: Boolean, noAssets: Boolean): Result = Redirect {
+  def redirectFromInterruptPage(isMigratingToTaxable: Boolean, noAssets: Boolean): Call = {
     (isMigratingToTaxable, noAssets)  match {
       case (true, true) => controllers.asset.routes.WhatKindOfAssetController.onPageLoad()
       case (true, false)  => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()

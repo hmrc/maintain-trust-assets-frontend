@@ -59,7 +59,7 @@ class RemoveAssetYesNoController @Inject()(
           logger.warn(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
             s" user cannot remove asset as asset was not found ${iobe.getMessage}: IndexOutOfBoundsException")
 
-          Future.successful(navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable))
+          Future.successful(Redirect(navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable)))
         case _ =>
           logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
             s" user cannot remove asset as asset was not found")
@@ -88,7 +88,7 @@ class RemoveAssetYesNoController @Inject()(
                 }
             }
           } else {
-            Future.successful(navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable))
+            Future.successful(Redirect(navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable)))
           }
         }
       )
@@ -96,7 +96,7 @@ class RemoveAssetYesNoController @Inject()(
 
   private def removeAsset(identifier: String, index: Int)(implicit request: DataRequest[AnyContent]): Future[Result] = {
     trustService.removeAsset(identifier, RemoveAsset(AssetNameType.NonEeaBusinessAssetNameType, index)).map(_ =>
-      navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable)
+      Redirect(navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable))
     )
   }
 }

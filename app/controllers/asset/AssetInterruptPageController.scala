@@ -57,7 +57,7 @@ class AssetInterruptPageController @Inject()(
         _ <- repository.set(request.userAnswers)
         assets <- trustService.getAssets(updatedAnswers.identifier)
       } yield {
-        navigator.redirectFromInterruptPage(updatedAnswers.isMigratingToTaxable, assets.isEmpty)
+        Redirect(navigator.redirectFromInterruptPage(updatedAnswers.isMigratingToTaxable, assets.isEmpty))
       }
   }
 

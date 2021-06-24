@@ -17,8 +17,7 @@
 package controllers.asset
 
 import base.SpecBase
-import config.annotations.Assets
-import navigation.Navigator
+import navigation.AssetsNavigator
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import play.api.inject.bind
@@ -89,10 +88,13 @@ class AssetInterruptPageControllerSpec extends SpecBase {
 
         "not set value in WhatKindOfAssetPage" in {
 
+          val mockNavigator: AssetsNavigator = mock[AssetsNavigator]
+          when(mockNavigator.redirectFromInterruptPage(any(), any())).thenReturn(fakeNavigator.desiredRoute)
+
           val mockTrustService: TrustService = mock[TrustService]
 
           val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(isTaxable = isTaxable)))
-            .overrides(bind[Navigator].qualifiedWith(classOf[Assets]).toInstance(fakeNavigator))
+            .overrides(bind[AssetsNavigator].toInstance(mockNavigator))
             .overrides(bind[TrustService].toInstance(mockTrustService))
             .build()
 
