@@ -405,7 +405,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
 
           status(result) mustEqual OK
 
-          contentAsString(result) must include("You cannot add another Non-EEA Company asset as you have entered a maximum of 25.")
+          contentAsString(result) must include("You cannot add another non-EEA company asset as you have entered a maximum of 25.")
           contentAsString(result) must include("If you have further assets to add within this type, write to HMRC with their details.")
 
           verify(mockViewHelper).rows(eqTo(assets))(any())
