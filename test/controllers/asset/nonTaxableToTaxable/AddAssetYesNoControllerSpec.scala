@@ -17,18 +17,19 @@
 package controllers.asset.nonTaxableToTaxable
 
 import base.SpecBase
-import config.annotations.Assets
 import connectors.TrustsStoreConnector
 import controllers.IndexValidation
 import controllers.routes._
 import forms.YesNoFormProvider
-import models.UkAddress
 import models.assets.NonEeaBusinessType
-import navigation.Navigator
+import models.{UkAddress, UserAnswers}
+import navigation.AssetsNavigator
 import org.mockito.Matchers.any
-import org.mockito.Mockito.{atLeastOnce, never, verify, when}
+import org.mockito.Mockito._
+import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import pages.asset.nontaxabletotaxable.AddAssetsYesNoPage
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -39,15 +40,24 @@ import views.html.asset.nonTaxableToTaxable.AddAssetYesNoView
 import java.time.LocalDate
 import scala.concurrent.Future
 
-class AddAssetYesNoControllerSpec extends SpecBase with IndexValidation with ScalaFutures {
+class AddAssetYesNoControllerSpec extends SpecBase with IndexValidation with ScalaFutures with BeforeAndAfterEach {
 
-  val form = new YesNoFormProvider().withPrefix("nonTaxableToTaxable.addAssetYesNo")
+  private val form: Form[Boolean] = new YesNoFormProvider().withPrefix("nonTaxableToTaxable.addAssetYesNo")
 
-  lazy val addAssetYesNoRoute =
+  lazy val addAssetYesNoRoute: String =
     controllers.asset.nonTaxableToTaxable.routes.AddAssetYesNoController.onPageLoad().url
 
-  lazy val addAssetYesNoPostRoute =
+  lazy val addAssetYesNoPostRoute: String =
     controllers.asset.nonTaxableToTaxable.routes.AddAssetYesNoController.onSubmit().url
+
+  private val mockNavigator: AssetsNavigator = mock[AssetsNavigator]
+
+  override def emptyUserAnswers: UserAnswers = super.emptyUserAnswers.copy(isMigratingToTaxable = true)
+
+  override def beforeEach(): Unit = {
+    reset(mockNavigator)
+    when(mockNavigator.redirectFromAddAssetYesNoPage(any(), any(), any())).thenReturn(fakeNavigator.desiredRoute)
+  }
 
   "AddAssetYesNo Controller" must {
 
@@ -94,12 +104,11 @@ class AddAssetYesNoControllerSpec extends SpecBase with IndexValidation with Sca
       val mockTrustService: TrustService = mock[TrustService]
       val mockTrustStoreConnector: TrustsStoreConnector = mock[TrustsStoreConnector]
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(bind[Navigator].qualifiedWith(classOf[Assets]).toInstance(fakeNavigator))
-          .overrides(bind[TrustService].toInstance(mockTrustService))
-          .overrides(bind[TrustsStoreConnector].toInstance(mockTrustStoreConnector))
-          .build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[AssetsNavigator].toInstance(mockNavigator))
+        .overrides(bind[TrustService].toInstance(mockTrustService))
+        .overrides(bind[TrustsStoreConnector].toInstance(mockTrustStoreConnector))
+        .build()
 
       when(mockTrustService.getAssets(any())(any(), any()))
         .thenReturn(Future.successful(models.assets.Assets()))
@@ -107,9 +116,8 @@ class AddAssetYesNoControllerSpec extends SpecBase with IndexValidation with Sca
       when(mockTrustStoreConnector.setTaskInProgress(any())(any(), any()))
         .thenReturn(Future.successful(HttpResponse(OK, "")))
 
-      val request =
-        FakeRequest(POST, addAssetYesNoPostRoute)
-          .withFormUrlEncodedBody(("value", "false"))
+      val request = FakeRequest(POST, addAssetYesNoPostRoute)
+        .withFormUrlEncodedBody(("value", "false"))
 
       val result = route(application, request).value
 
@@ -119,6 +127,8 @@ class AddAssetYesNoControllerSpec extends SpecBase with IndexValidation with Sca
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
+
+        verify(mockNavigator).redirectFromAddAssetYesNoPage(value = false, isMigratingToTaxable = true, noAssets = true)
       }
 
       application.stop()
@@ -129,19 +139,17 @@ class AddAssetYesNoControllerSpec extends SpecBase with IndexValidation with Sca
       val mockTrustService: TrustService = mock[TrustService]
       val mockTrustStoreConnector: TrustsStoreConnector = mock[TrustsStoreConnector]
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(bind[Navigator].qualifiedWith(classOf[Assets]).toInstance(fakeNavigator))
-          .overrides(bind[TrustService].toInstance(mockTrustService))
-          .overrides(bind[TrustsStoreConnector].toInstance(mockTrustStoreConnector))
-          .build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[AssetsNavigator].toInstance(mockNavigator))
+        .overrides(bind[TrustService].toInstance(mockTrustService))
+        .overrides(bind[TrustsStoreConnector].toInstance(mockTrustStoreConnector))
+        .build()
 
       when(mockTrustService.getAssets(any())(any(), any()))
         .thenReturn(Future.successful(models.assets.Assets()))
 
-      val request =
-        FakeRequest(POST, addAssetYesNoPostRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+      val request = FakeRequest(POST, addAssetYesNoPostRoute)
+        .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value
 
@@ -151,6 +159,8 @@ class AddAssetYesNoControllerSpec extends SpecBase with IndexValidation with Sca
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
+
+        verify(mockNavigator).redirectFromAddAssetYesNoPage(value = true, isMigratingToTaxable = true, noAssets = true)
       }
 
       application.stop()
@@ -161,12 +171,11 @@ class AddAssetYesNoControllerSpec extends SpecBase with IndexValidation with Sca
       val mockTrustService: TrustService = mock[TrustService]
       val mockTrustStoreConnector: TrustsStoreConnector = mock[TrustsStoreConnector]
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(bind[Navigator].qualifiedWith(classOf[Assets]).toInstance(fakeNavigator))
-          .overrides(bind[TrustService].toInstance(mockTrustService))
-          .overrides(bind[TrustsStoreConnector].toInstance(mockTrustStoreConnector))
-          .build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[AssetsNavigator].toInstance(mockNavigator))
+        .overrides(bind[TrustService].toInstance(mockTrustService))
+        .overrides(bind[TrustsStoreConnector].toInstance(mockTrustStoreConnector))
+        .build()
 
       val nonEEACompanies = List(
         NonEeaBusinessType(None, "Non-eea Business", address = UkAddress("line 1", "line 2", None, None, "ne981zz"), "GB", LocalDate.now, None, provisional = false)
@@ -178,9 +187,8 @@ class AddAssetYesNoControllerSpec extends SpecBase with IndexValidation with Sca
       when(mockTrustStoreConnector.setTaskComplete(any())(any(), any()))
         .thenReturn(Future.successful(HttpResponse(OK, "")))
 
-      val request =
-        FakeRequest(POST, addAssetYesNoPostRoute)
-          .withFormUrlEncodedBody(("value", "false"))
+      val request = FakeRequest(POST, addAssetYesNoPostRoute)
+        .withFormUrlEncodedBody(("value", "false"))
 
       val result = route(application, request).value
 
@@ -190,6 +198,8 @@ class AddAssetYesNoControllerSpec extends SpecBase with IndexValidation with Sca
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
+
+        verify(mockNavigator).redirectFromAddAssetYesNoPage(value = false, isMigratingToTaxable = true, noAssets = false)
       }
 
       application.stop()
@@ -205,9 +215,8 @@ class AddAssetYesNoControllerSpec extends SpecBase with IndexValidation with Sca
 
       when(mockTrustService.getAssets(any())(any(), any())).thenReturn(Future.successful(models.assets.Assets()))
 
-      val request =
-        FakeRequest(POST, addAssetYesNoPostRoute)
-          .withFormUrlEncodedBody(("value", ""))
+      val request = FakeRequest(POST, addAssetYesNoPostRoute)
+        .withFormUrlEncodedBody(("value", ""))
 
       val boundForm = form.bind(Map("value" -> ""))
 
@@ -242,9 +251,8 @@ class AddAssetYesNoControllerSpec extends SpecBase with IndexValidation with Sca
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request =
-        FakeRequest(POST, addAssetYesNoPostRoute)
-          .withFormUrlEncodedBody(("value", "true"))
+      val request = FakeRequest(POST, addAssetYesNoPostRoute)
+        .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value
 

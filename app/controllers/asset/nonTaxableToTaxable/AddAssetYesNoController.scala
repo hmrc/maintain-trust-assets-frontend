@@ -16,13 +16,10 @@
 
 package controllers.asset.nonTaxableToTaxable
 
-import config.annotations.Assets
 import connectors.TrustsStoreConnector
 import controllers.actions.StandardActionSets
 import forms.YesNoFormProvider
-
-import javax.inject.Inject
-import navigation.Navigator
+import navigation.AssetsNavigator
 import pages.asset.nontaxabletotaxable.AddAssetsYesNoPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -32,23 +29,24 @@ import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.asset.nonTaxableToTaxable.AddAssetYesNoView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AddAssetYesNoController @Inject()(
-                                          override val messagesApi: MessagesApi,
-                                          standardActionSets: StandardActionSets,
-                                          repository: PlaybackRepository,
-                                          @Assets navigator: Navigator,
-                                          yesNoFormProvider: YesNoFormProvider,
-                                          trustService: TrustService,
-                                          val controllerComponents: MessagesControllerComponents,
-                                          view: AddAssetYesNoView,
-                                          trustStoreConnector: TrustsStoreConnector
+                                         override val messagesApi: MessagesApi,
+                                         standardActionSets: StandardActionSets,
+                                         repository: PlaybackRepository,
+                                         navigator: AssetsNavigator,
+                                         yesNoFormProvider: YesNoFormProvider,
+                                         trustService: TrustService,
+                                         val controllerComponents: MessagesControllerComponents,
+                                         view: AddAssetYesNoView,
+                                         trustStoreConnector: TrustsStoreConnector
                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form: Form[Boolean] = yesNoFormProvider.withPrefix("nonTaxableToTaxable.addAssetYesNo")
+  private val form: Form[Boolean] = yesNoFormProvider.withPrefix("nonTaxableToTaxable.addAssetYesNo")
 
-  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier) {
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
     implicit request =>
 
       val preparedForm = request.userAnswers.get(AddAssetsYesNoPage) match {
@@ -85,7 +83,7 @@ class AddAssetYesNoController @Inject()(
               // Do nothing and continue in the journey if adding an asset, status is decided later
               Future.successful(())
             }
-          } yield Redirect(navigator.nextPage(AddAssetsYesNoPage, updatedAnswers, assets))
+          } yield Redirect(navigator.redirectFromAddAssetYesNoPage(value, updatedAnswers.isMigratingToTaxable, assets.isEmpty))
         }
       )
   }

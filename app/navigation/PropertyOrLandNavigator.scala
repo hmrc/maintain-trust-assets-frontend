@@ -17,14 +17,14 @@
 package navigation
 
 import controllers.asset.property_or_land.routes._
-import models.assets.Assets
-import javax.inject.{Inject, Singleton}
 import models.{Mode, NormalMode, UserAnswers}
 import pages.Page
-import pages.asset.property_or_land.amend.IndexPage
 import pages.asset.property_or_land._
 import pages.asset.property_or_land.add.PropertyOrLandAnswerPage
+import pages.asset.property_or_land.amend.IndexPage
 import play.api.mvc.Call
+
+import javax.inject.{Inject, Singleton}
 
 @Singleton
 class PropertyOrLandNavigator @Inject()() extends Navigator {
@@ -32,8 +32,9 @@ class PropertyOrLandNavigator @Inject()() extends Navigator {
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
     routes(mode)(page)(userAnswers)
 
-  override def nextPage(page: Page, userAnswers: UserAnswers, assets: Assets = Assets()): Call =
-    nextPage(page, NormalMode, userAnswers)
+  def routes(mode: Mode): PartialFunction[Page, UserAnswers => Call] =
+    simpleNavigation(mode) orElse
+      yesNoNavigation(mode)
 
   def simpleNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
     case PropertyOrLandDescriptionPage => _ => PropertyOrLandTotalValueController.onPageLoad(mode)
@@ -64,10 +65,6 @@ class PropertyOrLandNavigator @Inject()() extends Navigator {
       noCall = PropertyLandValueTrustController.onPageLoad(mode)
     )
   }
-
-  def routes(mode: Mode): PartialFunction[Page, UserAnswers => Call] =
-    simpleNavigation(mode) orElse
-      yesNoNavigation(mode)
 
   private def navigateToCheckAnswers(ua: UserAnswers, mode: Mode): Call = {
     if (mode == NormalMode) {

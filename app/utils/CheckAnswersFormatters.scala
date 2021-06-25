@@ -17,20 +17,19 @@
 package utils
 
 import models.{Address, NonUkAddress, UkAddress}
-import org.joda.time.{LocalDate => JodaDate}
 import play.api.i18n.Messages
 import play.twirl.api.Html
 import play.twirl.api.HtmlFormat.escape
 import uk.gov.hmrc.play.language.LanguageUtils
 import utils.countryOptions.CountryOptions
-import java.time.{LocalDate => JavaDate}
 
+import java.time.LocalDate
 import javax.inject.Inject
 
 class CheckAnswersFormatters @Inject()(languageUtils: LanguageUtils,
                                        countryOptions: CountryOptions) {
 
-  def formatDate(date: JavaDate)(implicit messages: Messages): Html = {
+  def formatDate(date: LocalDate)(implicit messages: Messages): Html = {
     val formattedDate: String = languageUtils.Dates.formatDate(date)
     escape(formattedDate)
   }

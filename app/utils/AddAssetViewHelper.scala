@@ -17,18 +17,15 @@
 package utils
 
 import controllers.asset._
-
-import javax.inject.Inject
 import models.CheckMode
 import models.assets._
 import play.api.i18n.Messages
 import utils.CheckAnswersFormatters.currencyFormat
 import viewmodels.{AddRow, AddToRows}
 
-class AddAssetViewHelper @Inject()(assets: Assets)
-                                  (implicit messages: Messages) {
+class AddAssetViewHelper {
 
-  def rows: AddToRows = {
+  def rows(assets: Assets)(implicit messages: Messages): AddToRows = {
 
     AddToRows(
       assets.nonEEABusiness.zipWithIndex.map(x => renderNonEEABusiness(x._1, x._2)) ++
@@ -41,64 +38,64 @@ class AddAssetViewHelper @Inject()(assets: Assets)
     )
   }
 
-  private def renderMoney(asset: AssetMonetaryAmount): AddRow = {
+  private def renderMoney(asset: AssetMonetaryAmount)(implicit messages: Messages): AddRow = {
     AddRow(
       name = currencyFormat(asset.assetMonetaryAmount.toString),
-      typeLabel = messages(s"entities.asset.monetary"),
+      typeLabel = messages("entities.asset.monetary"),
       changeUrl = money.routes.AssetMoneyValueController.onPageLoad(mode = CheckMode).url,
       removeUrl = money.remove.routes.RemoveAssetYesNoController.onPageLoad().url
     )
   }
 
-  private def renderOther(asset: OtherAssetType, index: Int): AddRow = {
+  private def renderOther(asset: OtherAssetType, index: Int)(implicit messages: Messages): AddRow = {
     AddRow(
       name = asset.description,
-      typeLabel = messages(s"entities.asset.other"),
+      typeLabel = messages("entities.asset.other"),
       changeUrl = other.amend.routes.AnswersController.extractAndRender(index).url,
       removeUrl = other.remove.routes.RemoveAssetYesNoController.onPageLoad(index).url
     )
   }
 
-  private def renderPropertyOrLand(asset: PropertyLandType, index: Int): AddRow = {
+  private def renderPropertyOrLand(asset: PropertyLandType, index: Int)(implicit messages: Messages): AddRow = {
     AddRow(
       name = asset.name,
-      typeLabel = messages(s"entities.asset.propertyOrLand"),
+      typeLabel = messages("entities.asset.propertyOrLand"),
       changeUrl = property_or_land.amend.routes.PropertyOrLandAmendAnswersController.extractAndRender(index).url,
       removeUrl = property_or_land.remove.routes.PropertyOrLandRemoveAssetYesNoController.onPageLoad(index).url
     )
   }
 
-  private def renderBusiness(asset: BusinessAssetType, index: Int): AddRow = {
+  private def renderBusiness(asset: BusinessAssetType, index: Int)(implicit messages: Messages): AddRow = {
     AddRow(
       name = asset.orgName,
-      typeLabel = messages(s"entities.asset.business"),
+      typeLabel = messages("entities.asset.business"),
       changeUrl = business.amend.routes.BusinessAmendAnswersController.extractAndRender(index).url,
       removeUrl = business.remove.routes.RemoveBusinessAssetYesNoController.onPageLoad(index).url
     )
   }
 
-  private def renderNonEEABusiness(asset: NonEeaBusinessType, index: Int): AddRow = {
+  private def renderNonEEABusiness(asset: NonEeaBusinessType, index: Int)(implicit messages: Messages): AddRow = {
     AddRow(
       name = asset.orgName,
-      typeLabel = messages(s"entities.asset.nonEeaBusiness"),
+      typeLabel = messages("entities.asset.nonEeaBusiness"),
       changeUrl = noneeabusiness.amend.routes.AnswersController.extractAndRender(index).url,
       removeUrl = noneeabusiness.remove.routes.RemoveAssetYesNoController.onPageLoad(index).url
     )
   }
 
-  private def renderPartnership(asset: PartnershipType, index: Int): AddRow = {
+  private def renderPartnership(asset: PartnershipType, index: Int)(implicit messages: Messages): AddRow = {
     AddRow(
       name = asset.description,
-      typeLabel = messages(s"entities.asset.partnership"),
+      typeLabel = messages("entities.asset.partnership"),
       changeUrl = partnership.amend.routes.PartnershipAmendAnswersController.extractAndRender(index).url,
       removeUrl = partnership.remove.routes.RemovePartnershipAssetYesNoController.onPageLoad(index).url
     )
   }
 
-  private def renderShares(asset: SharesType, index: Int): AddRow = {
+  private def renderShares(asset: SharesType, index: Int)(implicit messages: Messages): AddRow = {
     AddRow(
       name = asset.orgName,
-      typeLabel = messages(s"entities.asset.shares"),
+      typeLabel = messages("entities.asset.shares"),
       changeUrl = shares.amend.routes.ShareAmendAnswersController.extractAndRender(index).url,
       removeUrl = shares.remove.routes.RemoveShareAssetYesNoController.onPageLoad(index).url
     )

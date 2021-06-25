@@ -17,15 +17,14 @@
 package navigation
 
 import controllers.asset.partnership.routes._
-import models.assets.Assets
-
-import javax.inject.{Inject, Singleton}
 import models.{Mode, NormalMode, UserAnswers}
 import pages.Page
-import pages.asset.partnership.amend.IndexPage
 import pages.asset.partnership._
 import pages.asset.partnership.add.PartnershipAnswerPage
+import pages.asset.partnership.amend.IndexPage
 import play.api.mvc.Call
+
+import javax.inject.{Inject, Singleton}
 
 @Singleton
 class PartnershipNavigator @Inject()() extends Navigator {
@@ -33,17 +32,14 @@ class PartnershipNavigator @Inject()() extends Navigator {
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
     routes(mode)(page)(userAnswers)
 
-  override def nextPage(page: Page, userAnswers: UserAnswers, assets: Assets = Assets()): Call =
-    nextPage(page, NormalMode, userAnswers)
+  def routes(mode: Mode): PartialFunction[Page, UserAnswers => Call] =
+    simpleNavigation(mode)
 
   def simpleNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
     case PartnershipDescriptionPage  => _ => PartnershipStartDateController.onPageLoad(mode)
     case PartnershipStartDatePage => ua => navigateToCheckAnswers(ua, mode)
     case PartnershipAnswerPage => _ => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
   }
-
-  def routes(mode: Mode): PartialFunction[Page, UserAnswers => Call] =
-    simpleNavigation(mode)
 
   private def navigateToCheckAnswers(ua: UserAnswers, mode: Mode): Call = {
     if (mode == NormalMode) {

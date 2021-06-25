@@ -17,29 +17,26 @@
 package navigation
 
 import controllers.asset.other.routes._
-import models.assets.Assets
 import models.{Mode, NormalMode, UserAnswers}
 import pages.Page
 import pages.asset.other._
-import play.api.mvc.Call
-import javax.inject.Inject
 import pages.asset.other.amend.IndexPage
+import play.api.mvc.Call
+
+import javax.inject.Inject
 
 class OtherNavigator @Inject()() extends Navigator() {
 
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
     routes(userAnswers, mode)(page)(userAnswers)
 
-  override def nextPage(page: Page, userAnswers: UserAnswers, assets: Assets = Assets()): Call =
-    nextPage(page, NormalMode, userAnswers)
+  def routes(ua: UserAnswers, mode: Mode): PartialFunction[Page, UserAnswers => Call] =
+    simpleNavigation(ua, mode)
 
   def simpleNavigation(ua: UserAnswers, mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
     case OtherAssetDescriptionPage => _ => OtherAssetValueController.onPageLoad(mode)
     case OtherAssetValuePage => _ => navigateToCheckAnswers(ua, mode)
   }
-
-  def routes(ua: UserAnswers, mode: Mode): PartialFunction[Page, UserAnswers => Call] =
-    simpleNavigation(ua, mode)
 
   private def navigateToCheckAnswers(ua: UserAnswers, mode: Mode): Call = {
     if (mode == NormalMode) {

@@ -16,28 +16,23 @@
 
 package navigation
 
-import models.assets.Assets
-
-import javax.inject.Inject
-import models.{Mode, NormalMode, UserAnswers}
+import models.{Mode, UserAnswers}
 import pages.Page
 import pages.asset.money._
 import play.api.mvc.Call
 
+import javax.inject.Inject
+
 class MoneyNavigator @Inject()() extends Navigator {
 
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
-    routes(mode)(page)(userAnswers)
+    routes(page)(userAnswers)
 
-  override def nextPage(page: Page, userAnswers: UserAnswers, assets: Assets = Assets()): Call =
-    nextPage(page, NormalMode, userAnswers)
+  def routes: PartialFunction[Page, UserAnswers => Call] =
+    simpleNavigation
 
-  def simpleNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
+  def simpleNavigation: PartialFunction[Page, UserAnswers => Call] = {
     case AssetMoneyValuePage => _ => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
   }
-
-  def routes(mode: Mode): PartialFunction[Page, UserAnswers => Call] =
-    simpleNavigation(mode)
-
 
 }

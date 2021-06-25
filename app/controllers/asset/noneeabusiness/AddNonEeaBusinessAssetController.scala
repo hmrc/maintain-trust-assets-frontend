@@ -17,16 +17,13 @@
 package controllers.asset.noneeabusiness
 
 import config.FrontendAppConfig
-import config.annotations.Assets
 import connectors.TrustsStoreConnector
 import controllers.actions.StandardActionSets
 import forms.{AddAssetsFormProvider, YesNoFormProvider}
 import handlers.ErrorHandler
-import javax.inject.Inject
 import models.Constants._
 import models.{AddAssets, NormalMode, UserAnswers}
-import navigation.Navigator
-import pages.asset.{AddAnAssetYesNoPage, AddAssetsPage}
+import pages.asset.AddAnAssetYesNoPage
 import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi, MessagesProvider}
@@ -37,24 +34,25 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AddAssetViewHelper
 import views.html.asset.noneeabusiness.{AddAnAssetYesNoView, AddNonEeaBusinessAssetView, MaxedOutView}
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AddNonEeaBusinessAssetController @Inject()(
-                                     override val messagesApi: MessagesApi,
-                                     standardActionSets: StandardActionSets,
-                                     repository: PlaybackRepository,
-                                     val appConfig: FrontendAppConfig,
-                                     trustService: TrustService,
-                                     trustsStoreConnector: TrustsStoreConnector,
-                                     @Assets navigator: Navigator,
-                                     addAnotherFormProvider: AddAssetsFormProvider,
-                                     yesNoFormProvider: YesNoFormProvider,
-                                     val controllerComponents: MessagesControllerComponents,
-                                     addAssetsView: AddNonEeaBusinessAssetView,
-                                     yesNoView: AddAnAssetYesNoView,
-                                     maxedOutView: MaxedOutView,
-                                     errorHandler: ErrorHandler
-                                   )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+                                                  override val messagesApi: MessagesApi,
+                                                  standardActionSets: StandardActionSets,
+                                                  repository: PlaybackRepository,
+                                                  val appConfig: FrontendAppConfig,
+                                                  trustService: TrustService,
+                                                  trustsStoreConnector: TrustsStoreConnector,
+                                                  addAnotherFormProvider: AddAssetsFormProvider,
+                                                  yesNoFormProvider: YesNoFormProvider,
+                                                  val controllerComponents: MessagesControllerComponents,
+                                                  addAssetsView: AddNonEeaBusinessAssetView,
+                                                  yesNoView: AddAnAssetYesNoView,
+                                                  maxedOutView: MaxedOutView,
+                                                  errorHandler: ErrorHandler,
+                                                  viewHelper: AddAssetViewHelper
+                                                )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   private val prefix = "addNonEeaBusinessAsset"
   private val addAnotherForm: Form[AddAssets] = addAnotherFormProvider.withPrefix(prefix)
@@ -77,7 +75,7 @@ class AddNonEeaBusinessAssetController @Inject()(
         updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
         _ <- repository.set(updatedAnswers)
       } yield {
-        val assetRows = new AddAssetViewHelper(assets).rows //Currently only Shows NonEeaBusinessAssets
+        val assetRows = viewHelper.rows(assets)
 
         val maxLimit: Int = MAX_NON_EEA_BUSINESS_ASSETS
 
@@ -100,11 +98,15 @@ class AddNonEeaBusinessAssetController @Inject()(
           Future.successful(BadRequest(yesNoView(formWithErrors)))
         },
         value => {
-          for {
-            cleanedAnswers <- Future.fromTry(request.userAnswers.cleanup)
-            updatedAnswers <- Future.fromTry(cleanedAnswers.set(AddAnAssetYesNoPage, value))
-            _ <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(AddAnAssetYesNoPage, NormalMode, updatedAnswers))
+          if (value) {
+            for {
+              cleanedAnswers <- Future.fromTry(request.userAnswers.cleanup)
+              updatedAnswers <- Future.fromTry(cleanedAnswers.set(AddAnAssetYesNoPage, value))
+              _ <- repository.set(updatedAnswers)
+            } yield Redirect(controllers.asset.noneeabusiness.routes.NameController.onPageLoad(NormalMode))
+          } else {
+            submitComplete()(request)
+          }
         }
       )
   }
@@ -116,20 +118,19 @@ class AddNonEeaBusinessAssetController @Inject()(
         addAnotherForm.bindFromRequest().fold(
           (formWithErrors: Form[_]) => {
 
-            val assetRows = new AddAssetViewHelper(assets).rows
+            val assetRows = viewHelper.rows(assets)
 
             Future.successful(BadRequest(addAssetsView(formWithErrors, assetRows.complete, heading(assetRows.count))))
           },
           {
-            value => {
+            case AddAssets.YesNow =>
               for {
-                cleanedAnswers <- Future.fromTry(request.userAnswers.cleanup)
-                updatedAnswers <- Future.fromTry(cleanedAnswers.set(AddAssetsPage, value))
+                updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
                 _ <- repository.set(updatedAnswers)
-              } yield {
-                Redirect(navigator.nextPage(AddAssetsPage, NormalMode, updatedAnswers))
-              }
-            }
+              } yield Redirect(controllers.asset.noneeabusiness.routes.NameController.onPageLoad(NormalMode))
+
+            case AddAssets.NoComplete =>
+              submitComplete()(request)
           }
         )
       } recoverWith {

@@ -30,9 +30,6 @@ POST       /change-trust-owns-non-eea-company   controllers.asset.TrustOwnsNonEe
 GET        /information-you-need         controllers.asset.AssetInterruptPageController.onPageLoad()
 POST       /information-you-need         controllers.asset.AssetInterruptPageController.onSubmit()
 
-GET        /what-kind                                   controllers.asset.AddNowController.onPageLoad()
-POST       /what-kind                                   controllers.asset.AddNowController.onSubmit()
-
 GET        /feature-not-available                       controllers.FeatureNotAvailableController.onPageLoad()
 
 GET        /keep-alive                                  controllers.SessionTimeoutController.keepAlive

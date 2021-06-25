@@ -14,8 +14,18 @@
  * limitations under the License.
  */
 
-package pages.asset
+package implicits
 
-import pages.Page
+object Implicits {
 
-case object AssetInterruptPage extends Page
+  implicit class StringImplicits(str: String) {
+    def uncapitalize: String = str.split(' ').foldLeft("")((acc, word) => {
+      def uncapitalizeWord = s"${word.head.toLower}${word.tail}"
+      if (acc.isEmpty) {
+        uncapitalizeWord
+      } else {
+        s"$acc $uncapitalizeWord"
+      }
+    })
+  }
+}

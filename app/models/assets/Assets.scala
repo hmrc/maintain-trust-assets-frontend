@@ -17,7 +17,6 @@
 package models.assets
 
 
-import models.WhatKindOfAsset
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
@@ -30,16 +29,6 @@ case class Assets(monetary: List[AssetMonetaryAmount] = Nil,
                   partnerShip: List[PartnershipType] = Nil,
                   other: List[OtherAssetType] = Nil,
                   nonEEABusiness: List[NonEeaBusinessType] = Nil) {
-
-  def sizeForKind(kind: WhatKindOfAsset): Int = kind match {
-    case WhatKindOfAsset.Money => monetary.size
-    case WhatKindOfAsset.PropertyOrLand => propertyOrLand.size
-    case WhatKindOfAsset.Shares => shares.size
-    case WhatKindOfAsset.Business => business.size
-    case WhatKindOfAsset.Partnership => partnerShip.size
-    case WhatKindOfAsset.Other => other.size
-    case WhatKindOfAsset.NonEeaBusiness => nonEEABusiness.size
-  }
 
   def isEmpty: Boolean = this match {
     case Assets(Nil, Nil, Nil, Nil, Nil, Nil, Nil) => true

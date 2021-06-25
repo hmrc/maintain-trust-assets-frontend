@@ -15,6 +15,7 @@
  *@
 
 @import controllers.asset.nonTaxableToTaxable.routes._
+@import implicits.Implicits._
 @import models.AddAssets
 @import viewmodels.AddRow
 
@@ -24,7 +25,12 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], completeAssets: Seq[AddRow], heading: String)(implicit request: Request[_], messages: Messages)
+@(
+    form: Form[_],
+    completeAssets: Seq[AddRow],
+    heading: String,
+    maxedOut: List[(String, Int)]
+)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = s"${errorPrefix(form)} $heading"
@@ -39,6 +45,25 @@
         @components.heading(heading)
 
         @components.data_list(completeAssets, "complete", "asset")
+
+        @if(maxedOut.size == 1) {
+            <ul>
+                <li class="panel-indent"><p>@messages("nonTaxableToTaxable.addAssets.maxedOut.just1", messages(maxedOut.head._1).uncapitalize, maxedOut.head._2.toString)</p></li>
+                <li class="panel-indent"><p>@messages("nonTaxableToTaxable.addAssets.maxedOut.just1.paragraph")</p></li>
+            </ul>
+        } else if(maxedOut.size > 1) {
+            <ul>
+                <li class="panel-indent">
+                    <p>@messages("nonTaxableToTaxable.addAssets.maxedOut.moreThan1")</p>
+                    <ul class="govuk-list">
+                        @for(option <- maxedOut) {
+                            <li>@messages(option._1)</li>
+                        }
+                    </ul>
+                </li>
+                <li class="panel-indent"><p>@messages("nonTaxableToTaxable.addAssets.maxedOut.moreThan1.paragraph")</p></li>
+            </ul>
+        }
 
         @components.input_radio(
             field = form("value"),
