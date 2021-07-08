@@ -17,7 +17,6 @@
 @import config.FrontendAppConfig
 
 @this(
-    govuk_wrapper: GovukWrapper,
     appConfig: FrontendAppConfig
 )
 
@@ -31,4 +30,3 @@
   <p>@message</p>
 }
 
-@govuk_wrapper(appConfig = appConfig, title = pageTitle, contentHeader = Some(contentHeader), mainContent = mainContent)

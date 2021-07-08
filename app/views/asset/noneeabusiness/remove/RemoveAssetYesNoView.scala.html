@@ -17,19 +17,18 @@
 @import controllers.asset.noneeabusiness.remove.routes._
 
 @this(
-    main_template: MainTemplate,
+    mainTemplate: MainTemplate,
     formHelper: FormWithCSRF
 )
 
 @(form: Form[_], index: Int, name: String)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = s"${errorPrefix(form)} ${messages(s"nonEeaBusiness.removeYesNo.title")}"
+@mainTemplate(
+    title = s"${errorPrefix(form)} ${messages(s"nonEeaBusiness.removeYesNo.title")}",
+    showBackLink = true
 ) {
 
     @formHelper(action = RemoveAssetYesNoController.onSubmit(index), 'autoComplete -> "off") {
-
-        @components.back_link()
 
         @components.error_summary(form.errors)
 

@@ -19,19 +19,18 @@
 @import viewmodels.RadioOption
 
 @this(
-    main_template: MainTemplate,
+    mainTemplate: MainTemplate,
     formHelper: FormWithCSRF
 )
 
 @(form: Form[_], options: List[RadioOption])(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = s"${errorPrefix(form)}${messages("whatKindOfAsset.title")}"
+@mainTemplate(
+    title = s"${errorPrefix(form)}${messages("whatKindOfAsset.title")}",
+    showBackLink = true
     ) {
 
     @formHelper(action = WhatKindOfAssetController.onSubmit(), 'autoComplete -> "off") {
-
-        @components.back_link()
 
         @components.error_summary(form.errors)
 

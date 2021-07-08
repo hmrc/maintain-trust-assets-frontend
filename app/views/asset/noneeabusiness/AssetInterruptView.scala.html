@@ -17,19 +17,18 @@
 @import controllers.asset.routes._
 
 @this(
-    main_template: MainTemplate,
+    mainTemplate: MainTemplate,
     formHelper: FormWithCSRF
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("assetInterruptPage.title")
+@mainTemplate(
+    title = messages("assetInterruptPage.title"),
+    showBackLink = true
 ) {
 
     @formHelper(action = AssetInterruptPageController.onSubmit(), 'autoComplete -> "off") {
-
-        @components.back_link()
 
         @components.heading_with_caption("assetInterruptPage")
 

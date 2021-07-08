@@ -17,17 +17,16 @@
 @import config.FrontendAppConfig
 
 @this(
-    main_template: MainTemplate,
+    mainTemplate: MainTemplate,
     config: FrontendAppConfig
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("featureNotAvailable.title")
+@mainTemplate(
+    title = messages("featureNotAvailable.title"),
+    showBackLink = true
 ) {
-
-    @components.back_link()
 
     @components.heading("featureNotAvailable.heading")
 

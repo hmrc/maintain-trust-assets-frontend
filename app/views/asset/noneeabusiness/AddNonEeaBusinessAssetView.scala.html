@@ -20,19 +20,18 @@
 
 
 @this(
-    main_template: MainTemplate,
+    mainTemplate: MainTemplate,
     formHelper: FormWithCSRF
 )
 
 @(form: Form[_], completeAssets: Seq[AddRow], heading: String)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = s"${errorPrefix(form)} $heading"
+@mainTemplate(
+    title = s"${errorPrefix(form)} $heading",
+    showBackLink = true
 ) {
 
     @formHelper(action = AddNonEeaBusinessAssetController.submitAnother(), 'autoComplete -> "off") {
-
-        @components.back_link()
 
         @components.error_summary(form.errors)
 

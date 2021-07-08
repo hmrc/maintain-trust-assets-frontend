@@ -17,13 +17,13 @@
 @import config.FrontendAppConfig
 
 @this(
-    main_template: MainTemplate,
+    mainTemplate: MainTemplate,
     appConfig: FrontendAppConfig
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
-@main_template(
+@mainTemplate(
     title = messages("session_expired.title"),
     canSignOut = false
     ) {
@@ -34,7 +34,7 @@
     <p>@messages("session_expired.guidance.2")</p>
 
     @components.button_link(
-                            messageKey = messages("site.sign_in"),
-                            href = appConfig.loginUrl
-                            )
+        messageKey = messages("site.sign_in"),
+        href = appConfig.loginUrl
+    )
 }

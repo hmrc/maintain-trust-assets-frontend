@@ -17,7 +17,7 @@
 @import controllers.asset.money.routes._
 
 @this(
-    main_template: MainTemplate,
+    mainTemplate: MainTemplate,
     formHelper: FormWithCSRF
 )
 
@@ -25,13 +25,12 @@
 
 @optionalHtmlContent = {<p>@messages("money.value.paragraph1")</p>}
 
-@main_template(
-    title = s"${errorPrefix(form)} ${messages("money.value.title")}"
+@mainTemplate(
+    title = s"${errorPrefix(form)} ${messages("money.value.title")}",
+    showBackLink = true
 ) {
 
     @formHelper(action = AssetMoneyValueController.onSubmit(mode), 'autoComplete -> "off") {
-
-        @components.back_link()
 
         @components.error_summary(form.errors)
 

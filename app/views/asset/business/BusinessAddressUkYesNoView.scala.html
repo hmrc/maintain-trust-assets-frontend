@@ -17,19 +17,18 @@
 @import controllers.asset.business.routes._
 
 @this(
-    main_template: MainTemplate,
+    mainTemplate: MainTemplate,
     formHelper: FormWithCSRF
 )
 
 @(form: Form[_], mode: Mode, businessName: String)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = s"${errorPrefix(form)} ${messages("business.addressUkYesNo.title")}"
+@mainTemplate(
+    title = s"${errorPrefix(form)} ${messages("business.addressUkYesNo.title")}",
+    showBackLink = true
 ) {
 
     @formHelper(action = BusinessAddressUkYesNoController.onSubmit(mode), 'autoComplete -> "off") {
-
-        @components.back_link()
 
         @components.error_summary(form.errors)
 

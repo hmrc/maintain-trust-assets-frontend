@@ -19,19 +19,18 @@
 @import viewmodels.AddRow
 
 @this(
-    main_template: MainTemplate,
+    mainTemplate: MainTemplate,
     formHelper: FormWithCSRF
 )
 
 @(completeAssets: Seq[AddRow], heading: String, maxLimit: Int, prefix: String)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = heading
+@mainTemplate(
+    title = heading,
+    showBackLink = true
 ) {
 
     @formHelper(action = AddAssetsController.submitComplete(), 'autoComplete -> "off") {
-
-        @components.back_link()
 
         @components.heading(heading)
 
