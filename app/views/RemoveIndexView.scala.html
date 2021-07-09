@@ -14,13 +14,15 @@
  * limitations under the License.
  *@
 
-@import controllers.routes._
-@import models.Mode
 @import play.api.mvc.Call
+@import views.html.components.{SubmitButton, ErrorSummary, InputYesNo}
 
 @this(
     mainTemplate: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper  : FormWithCSRF,
+    submitButton: SubmitButton,
+    errorSummary: ErrorSummary,
+    inputYesNo  : InputYesNo
 )
 
 @(prefix : String, form: Form[_], index: Int, nameOrDescription : String, route : Call)(implicit request: Request[_], messages: Messages)
@@ -32,15 +34,15 @@
 
     @formHelper(action = route, 'autoComplete -> "off") {
 
-        @components.error_summary(form.errors)
+        @errorSummary(form.errors)
 
-        @components.input_yes_no(
+        @inputYesNo(
             field = form("value"),
             label = messages(s"$prefix.heading", nameOrDescription),
             legendClass = Some("govuk-heading-l"),
             legendAsHeading = true
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

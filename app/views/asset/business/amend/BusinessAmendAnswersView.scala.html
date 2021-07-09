@@ -16,10 +16,14 @@
 
 @import controllers.asset.business.amend.routes._
 @import viewmodels._
+@import views.html.components.{SubmitButton, Heading}
 
 @this(
-    mainTemplate: MainTemplate,
-    formHelper: FormWithCSRF
+    mainTemplate    : MainTemplate,
+    formHelper      : FormWithCSRF,
+    submitButton    : SubmitButton,
+    heading         : Heading,
+    govukSummaryList: GovukSummaryList
 )
 
 @(answerSections: AnswerSection, index: Int)(implicit request: Request[_], messages: Messages)
@@ -29,11 +33,12 @@
     showBackLink = true
 ) {
 
-    @components.heading("business.answers.heading")
-
-    @components.answer_section(answerSections)
-
     @formHelper(action = BusinessAmendAnswersController.onSubmit(index), 'autoComplete -> "off") {
-        @components.submit_button()
+
+        @heading("business.answers.heading")
+
+        @govukSummaryList(SummaryList(rows = formatSections(answerSections)))
+
+        @submitButton()
     }
 }

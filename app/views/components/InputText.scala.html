@@ -30,7 +30,8 @@
     prefix: Option[String] = None,
     suffix: Option[String] = None,
     autocomplete: Option[String] = None,
-    inputMode: Option[String] = None
+    inputMode: Option[String] = None,
+    pattern: Option[String] = None
 )(implicit messages: Messages)
 
 @govukInput(
@@ -50,6 +51,7 @@
         inputmode = inputMode,
         prefix = prefix.map(prefix => PrefixOrSuffix(content = Text(prefix))),
         suffix = suffix.map(suffix => PrefixOrSuffix(content = Text(suffix))),
-        classes = if(inputClass.isDefined) inputClass.get else ""
+        classes = inputClass.getOrElse(""),
+        pattern = pattern
     ).withFormField(field)
 )

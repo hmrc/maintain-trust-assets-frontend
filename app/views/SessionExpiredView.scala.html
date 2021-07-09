@@ -19,16 +19,16 @@
 @import controllers.routes._
 
 @this(
-        main_template: MainTemplate,
-        appConfig: FrontendAppConfig,
-        heading: Heading,
-        formHelper: FormWithCSRF,
-        submitButton: SubmitButton
+    mainTemplate: MainTemplate,
+    formHelper  : FormWithCSRF,
+    appConfig   : FrontendAppConfig,
+    heading     : Heading,
+    submitButton: SubmitButton
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
-    @main_template(
+    @mainTemplate(
         title = messages("session_expired.title"),
         timeoutEnabled = false,
         canSignOut = false

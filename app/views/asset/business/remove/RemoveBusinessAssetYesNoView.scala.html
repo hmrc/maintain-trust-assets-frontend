@@ -15,10 +15,14 @@
  *@
 
 @import controllers.asset.business.remove.routes._
+@import views.html.components.{SubmitButton, ErrorSummary, InputYesNo}
 
 @this(
     mainTemplate: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper  : FormWithCSRF,
+    submitButton: SubmitButton,
+    errorSummary: ErrorSummary,
+    inputYesNo  : InputYesNo
 )
 
 @(form: Form[_], index: Int, name: String)(implicit request: Request[_], messages: Messages)
@@ -30,15 +34,15 @@
 
     @formHelper(action = RemoveBusinessAssetYesNoController.onSubmit(index), 'autoComplete -> "off") {
 
-        @components.error_summary(form.errors)
+        @errorSummary(form.errors)
 
-        @components.input_yes_no(
+        @inputYesNo(
             field = form("value"),
             label = messages(s"business.removeYesNo.heading", name),
             legendClass = Some("govuk-heading-l"),
             legendAsHeading = true
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

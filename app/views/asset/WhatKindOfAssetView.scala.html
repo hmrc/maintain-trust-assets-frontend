@@ -15,12 +15,16 @@
  *@
 
 @import controllers.asset.routes._
-@import models.WhatKindOfAsset
 @import viewmodels.RadioOption
+@import views.html.components.{SubmitButton, ErrorSummary, InputRadio}
 
 @this(
     mainTemplate: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper  : FormWithCSRF,
+    errorSummary: ErrorSummary,
+    inputRadio  : InputRadio,
+    submitButton: SubmitButton
+
 )
 
 @(form: Form[_], options: List[RadioOption])(implicit request: Request[_], messages: Messages)
@@ -32,9 +36,9 @@
 
     @formHelper(action = WhatKindOfAssetController.onSubmit(), 'autoComplete -> "off") {
 
-        @components.error_summary(form.errors)
+        @errorSummary(form.errors)
 
-        @components.input_radio(
+        @inputRadio(
             field = form("value"),
             legend = messages("whatKindOfAsset.heading"),
             legendClass = Some("govuk-heading-l"),
@@ -42,6 +46,6 @@
             legendAsHeading = true
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

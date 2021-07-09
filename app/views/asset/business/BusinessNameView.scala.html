@@ -15,10 +15,14 @@
  *@
 
 @import controllers.asset.business.routes._
+@import views.html.components.{ErrorSummary, InputText, SubmitButton}
 
 @this(
     mainTemplate: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper: FormWithCSRF,
+    errorSummary: ErrorSummary,
+    inputText: InputText,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
@@ -30,16 +34,16 @@
 
     @formHelper(action = BusinessNameController.onSubmit(mode), 'autoComplete -> "off") {
 
-        @components.error_summary(form.errors)
+        @errorSummary(form.errors)
 
-        @components.input_text(
+        @inputText(
           field = form("value"),
           label = messages("business.name.heading"),
-          inputClass = Some("form-control-3-4"),
+          inputClass = Some("govuk-!-width-three-quarters"),
           labelAsHeading = true,
           labelClass=Some("govuk-heading-l")
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }
