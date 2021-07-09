@@ -21,30 +21,26 @@ import controllers.routes
 import play.api.Configuration
 import play.api.i18n.{Lang, Messages}
 import play.api.mvc.Call
-
 import java.time.LocalDate
+import uk.gov.hmrc.hmrcfrontend.config.ContactFrontendConfig
 
 @Singleton
-class FrontendAppConfig @Inject() (val configuration: Configuration) {
+class FrontendAppConfig @Inject()(val configuration: Configuration,
+                                  contactFrontendConfig: ContactFrontendConfig) {
 
   final val ENGLISH = "en"
   final val WELSH = "cy"
   final val UK_COUNTRY_CODE = "GB"
 
-  private val contactHost = configuration.get[String]("contact-frontend.host")
-  private val contactFormServiceIdentifier = "trusts"
-
   val repositoryKey: String = "assets"
 
   val appName: String = configuration.get[String]("appName")
   val analyticsToken: String = configuration.get[String](s"google-analytics.token")
-  val reportAProblemPartialUrl = s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
-  val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
-  lazy val betaFeedbackUrl: String = s"$contactHost/contact/beta-feedback?service=$contactFormServiceIdentifier"
-  lazy val betaFeedbackUnauthenticatedUrl: String = s"$contactHost/contact/beta-feedback-unauthenticated?service=$contactFormServiceIdentifier"
 
-  lazy val countdownLength: String = configuration.get[String]("timeout.countdown")
-  lazy val timeoutLength: String = configuration.get[String]("timeout.length")
+  val betaFeedbackUrl = s"${contactFrontendConfig.baseUrl.get}/contact/beta-feedback?service=${contactFrontendConfig.serviceId.get}"
+
+  lazy val countdownLength: Int = configuration.get[Int]("timeout.countdown")
+  lazy val timeoutLength: Int = configuration.get[Int]("timeout.length")
 
   lazy val authUrl: String = configuration.get[Service]("auth").baseUrl
   lazy val loginUrl: String = configuration.get[String]("urls.login")
