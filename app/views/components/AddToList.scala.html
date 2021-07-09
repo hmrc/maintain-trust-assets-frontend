@@ -14,11 +14,24 @@
  * limitations under the License.
  *@
 
-@(messagePrefix: String, optionalParam: Option[String] = None, headingParam: Option[String] = None)(implicit messages: Messages)
+@import viewmodels.AddRow
 
-<header class="hmrc-page-heading">
- <h1 class="govuk-heading-xl">
-  @components.sub_heading(messagePrefix, headingParam.getOrElse(""))
-  @messages(s"$messagePrefix.heading", optionalParam.getOrElse(""))
- </h1>
-</header>
+@import views.html.components.AddToRow
+
+@this(
+    addToRow: AddToRow
+)
+
+@(data: Seq[AddRow], id: String, entity : String)(implicit messages: Messages)
+
+@if(data.nonEmpty){
+ <h2 class="govuk-heading-m" id="data-list-heading--@id">@messages(s"site.$id")</h2>
+
+ <div class="govuk-form-group">
+  <dl id="data-list--@id" class="hmrc-add-to-a-list hmrc-add-to-a-list--short">
+  @for(item <- data) {
+      @addToRow(item)
+  }
+ </dl>
+</div>
+}

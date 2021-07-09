@@ -14,12 +14,18 @@
  * limitations under the License.
  *@
 
-@(messageKeyPrefix: String)(implicit messages: Messages)
+@this(
+    button: GovukButton,
+)
 
-<div class="govuk-warning-text">
-    <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-    <strong class="govuk-warning-text__text">
-        <span class="govuk-warning-text__assistive">@messages("site.warning")</span>
-        @messages(s"$messageKeyPrefix.warning")
-    </strong>
-</div>
+@(overrideMessage: Option[String] = None, submitClass: Option[String] = None)(implicit messages: Messages)
+
+@button(Button(
+    attributes = Map("id"->"submit"),
+    classes = s"button ${submitClass.getOrElse("")}",
+    content = if(overrideMessage.isEmpty) {
+        Text(messages("site.save.continue"))
+    } else {
+        Text(messages(overrideMessage.get))
+    }
+))

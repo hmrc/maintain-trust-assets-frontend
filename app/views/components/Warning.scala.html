@@ -14,18 +14,13 @@
  * limitations under the License.
  *@
 
-@import viewmodels.Link
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
-@(
-hint: Option[String] = None,
-readerHint: Option[String] = None,
-link: Option[Link] = None
-)(implicit messages: Messages)
+@this(govukWarningText : GovukWarningText)
 
-@if(hint.nonEmpty) {
-  <span id="form-hint" class="form-hint form-field" @if(readerHint.nonEmpty){aria-label="@readerHint"}>@hint
-  @link.map { l =>
-    <a id="link" href="@l.url" target="_blank">@l.text</a>
-  }
-  </span>
-}
+@(messageKeyPrefix: String)(implicit messages: Messages)
+
+@govukWarningText(WarningText(
+    iconFallbackText = messages("site.warning"),
+    content = Text(messages(s"$messageKeyPrefix.warning"))
+))

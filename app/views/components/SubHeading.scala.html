@@ -14,11 +14,8 @@
  * limitations under the License.
  *@
 
-@(
-messageKey: String = "",
-inputType: String = "button"
-)(implicit messages: Messages)
+@this()
 
-<div class="section">
-    <input type="@inputType" class="button" value="@messages(messageKey)" />
-</div>
+@(key: String, param: String)(implicit messages: Messages)
+
+<span class="govuk-caption-l">@messages(key, param)</span>

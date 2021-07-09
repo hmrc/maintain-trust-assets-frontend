@@ -14,23 +14,17 @@
  * limitations under the License.
  *@
 
-@import viewmodels.AnswerSection
-@import views.html._
 
-@(answerSection: AnswerSection)(implicit messages: Messages)
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
-@if(answerSection.sectionKey.isDefined){
-    <h2 class="heading-large">@messages(answerSection.sectionKey.get)</h2>
-}
+@this(govukButton : GovukButton)
 
-@if(answerSection.headingKey.isDefined){
-    <h3 class="heading-medium">@messages(answerSection.headingKey.get)</h3>
-}
+@(
+    messageKey: String = "site.continue",
+    isStartButton:Boolean = false
+)(implicit messages: Messages)
 
-@if(answerSection.rows) {
-    <ul role="list" class="govuk-check-your-answers cya-questions-long section">
-        @for(row <- answerSection.rows){
-            @components.answer_row(row)
-        }
-    </ul>
-}
+@govukButton(Button(
+    isStartButton = isStartButton,
+    content = Text(messages(messageKey))
+))

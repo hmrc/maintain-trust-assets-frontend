@@ -14,11 +14,8 @@
  * limitations under the License.
  *@
 
-@(messagePrefix: String, param: String, hiddenText: Boolean = true)(implicit messages: Messages)
+@this()
 
-<span class="govuk-caption-xl">
- @if(hiddenText){
-  <span class="visually-hidden">@messages(s"$messagePrefix.caption.hidden") </span>
- }
- @messages(s"$messagePrefix.caption", param)
-</span>
+@(href : String, id : String = "", key : String, openInNewWindow: Boolean = false)(implicit messages: Messages)
+
+<a class="govuk-link" id="@id" href="@href" @if(openInNewWindow) {target="_blank"}>@messages(key)</a>
