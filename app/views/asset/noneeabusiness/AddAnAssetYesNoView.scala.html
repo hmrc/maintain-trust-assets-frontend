@@ -15,10 +15,14 @@
  *@
 
 @import controllers.asset.noneeabusiness.routes._
+@import views.html.components.{SubmitButton, ErrorSummary, InputYesNo}
 
 @this(
     mainTemplate: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper: FormWithCSRF,
+    submitButton: SubmitButton,
+    inputYesNo: InputYesNo,
+    errorSummary: ErrorSummary
 )
 
 @(form: Form[_])(implicit request: Request[_], messages: Messages)
@@ -30,15 +34,15 @@
 
 @formHelper(action = AddNonEeaBusinessAssetController.submitOne(), 'autoComplete -> "off") {
 
-    @components.error_summary(form.errors)
+    @errorSummary(form.errors)
 
-    @components.input_yes_no(
+    @inputYesNo(
       field = form("value"),
       label = messages("addNonEeaBusinessAssetYesNo.heading"),
       legendClass = Some("govuk-heading-l"),
       legendAsHeading = true
     )
 
-    @components.submit_button()
+    @submitButton()
   }
 }

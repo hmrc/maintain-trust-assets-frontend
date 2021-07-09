@@ -15,10 +15,15 @@
  *@
 
 @import controllers.asset.money.routes._
+@import views.html.components.{InputText, ErrorSummary, SubmitButton, Heading}
 
 @this(
     mainTemplate: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper: FormWithCSRF,
+    errorSummary: ErrorSummary,
+    inputText: InputText,
+    submitButton: SubmitButton,
+    heading: Heading
 )
 
 @(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
@@ -32,20 +37,24 @@
 
     @formHelper(action = AssetMoneyValueController.onSubmit(mode), 'autoComplete -> "off") {
 
-        @components.error_summary(form.errors)
+        @errorSummary(form.errors)
 
-        @components.input_text(
+        @heading("money.value.heading")
+
+        @optionalHtmlContent
+
+        @inputText(
             field = form("value"),
             label = messages("money.value.heading"),
-            labelClass = Some("govuk-heading-l"),
-            symbol = Some("currency"),
-            symbolText = Some(messages(s"symbolText.asSterling")),
-            hint = Some(messages(s"money.value.hint")),
-            optionalHtmlContent = Some(optionalHtmlContent),
-            labelAsHeading = true,
-            inputMode = Some("numeric")
+            labelClass = Some("govuk-visually-hidden"),
+            prefix = Some(messages("symbolText.asSterling")),
+            hint = Some(messages("money.value.hint")),
+            labelAsHeading = false,
+            inputMode = Some("numeric"),
+            pattern = Some("[0-9]*"),
+            inputClass = Some("govuk-input--width-10")
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

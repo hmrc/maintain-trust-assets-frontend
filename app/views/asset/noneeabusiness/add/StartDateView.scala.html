@@ -14,11 +14,14 @@
  * limitations under the License.
  *@
 
-@import controllers.asset.noneeabusiness.add.routes._
+@import views.html.components.{ErrorSummary, InputDate, SubmitButton}
 
 @this(
     mainTemplate: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper  : FormWithCSRF,
+    errorSummary: ErrorSummary,
+    inputDate   : InputDate,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], name: String)(implicit request: Request[_], messages: Messages)
@@ -30,16 +33,16 @@
 
     @formHelper(action = StartDateController.onSubmit(), 'autoComplete -> "off") {
 
-        @components.error_summary(form.errors)
+        @errorSummary(form.errors)
 
-        @components.input_date(
-            field = form("value"),
-            legend = messages("nonEeaBusiness.startDate.heading", name),
-            legendClass = "govuk-heading-l",
+        @inputDate(
+            field           = form("value"),
+            legend          = messages("nonEeaBusiness.startDate.heading", name),
+            legendClass     = "govuk-heading-l",
             legendAsHeading = true,
-            hint = Some(messages("nonEeaBusiness.startDate.hint"))
+            hint            = Some(messages("nonEeaBusiness.startDate.hint"))
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

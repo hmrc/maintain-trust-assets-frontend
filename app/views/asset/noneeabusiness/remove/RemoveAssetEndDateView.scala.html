@@ -15,10 +15,14 @@
  *@
 
 @import controllers.asset.noneeabusiness.remove.routes._
+@import views.html.components.{ErrorSummary, InputDate, SubmitButton}
 
 @this(
     mainTemplate: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper  : FormWithCSRF,
+    errorSummary: ErrorSummary,
+    inputDate   : InputDate,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], index: Int, name: String)(implicit request: Request[_], messages: Messages)
@@ -30,9 +34,9 @@
 
     @formHelper(action = RemoveAssetEndDateController.onSubmit(index), 'autoComplete -> "off") {
 
-        @components.error_summary(form.errors)
+        @errorSummary(form.errors)
 
-        @components.input_date(
+        @inputDate(
             field = form("value"),
             legend = messages("nonEeaBusiness.endDate.heading", name),
             legendClass = "govuk-heading-l",
@@ -40,6 +44,6 @@
             hint = Some(messages("nonEeaBusiness.endDate.hint"))
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }
