@@ -15,10 +15,14 @@
  *@
 
 @import controllers.asset.property_or_land.routes._
+@import views.html.components.{ErrorSummary, UkAddress, SubmitButton}
 
 @this(
     mainTemplate: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper  : FormWithCSRF,
+    errorSummary: ErrorSummary,
+    ukAddress   : UkAddress,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
@@ -30,18 +34,14 @@
 
     @formHelper(action = PropertyOrLandUKAddressController.onSubmit(mode), 'autoComplete -> "off") {
 
-        @components.error_summary(form.errors)
+        @errorSummary(form.errors)
 
-        <fieldset>
+        @ukAddress(
+            form = form,
+            legend = messages("propertyOrLand.ukAddress.heading"),
+            legendAsHeading = true
+        )
 
-            <legend>
-                @components.heading("propertyOrLand.ukAddress.heading")
-            </legend>
-
-            @components.uk_address(form)
-
-        </fieldset>
-
-        @components.submit_button()
+        @submitButton()
     }
 }
