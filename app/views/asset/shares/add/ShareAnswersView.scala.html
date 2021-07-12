@@ -17,7 +17,7 @@
 @import controllers.asset.shares.add.routes._
 @import viewmodels.AnswerSection
 @import views.html.components.{SubmitButton, Heading}
-@import utils.SectionFormatter.formatSections
+@import views.SectionFormatter.formatAnswerSection
 
 @this(
     mainTemplate    : MainTemplate,
@@ -37,7 +37,7 @@
     @formHelper(action = ShareAnswerController.onSubmit(), 'autoComplete -> "off") {
         @heading("shares.answers.heading")
 
-        @govukSummaryList(SummaryList(rows = formatSections(answerSections)))
+        @govukSummaryList(SummaryList(rows = formatAnswerSection(answerSections)))
 
         @submitButton()
     }

@@ -16,7 +16,7 @@
 
 @import viewmodels.AnswerSection
 @import views.html.components.{SubmitButton, Heading}
-@import utils.SectionFormatter.formatSections
+@import views.SectionFormatter.formatAnswerSection
 
 @this(
     mainTemplate: MainTemplate,
@@ -37,7 +37,7 @@
     @formHelper(action = AnswersController.onSubmit(index), 'autoComplete -> "off") {
         @heading("nonEeaBusiness.answers.heading")
 
-    @summaryList(SummaryList(rows = formatSections(answerSections)))
+    @summaryList(SummaryList(rows = formatAnswerSection(answerSections)))
 
         @submitButton()
     }

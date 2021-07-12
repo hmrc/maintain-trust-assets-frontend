@@ -17,7 +17,7 @@
 @import controllers.asset.partnership.amend.routes._
 @import viewmodels._
 @import views.html.components.{SubmitButton, Heading}
-@import utils.SectionFormatter.formatSections
+@import views.SectionFormatter.formatAnswerSection
 
 @this(
     mainTemplate    : MainTemplate,
@@ -38,7 +38,7 @@
     @formHelper(action = PartnershipAmendAnswersController.onSubmit(index), 'autoComplete -> "off") {
         @heading("partnership.answers.heading")
 
-        @govukSummaryList(SummaryList(rows = formatSections(answerSections)))
+        @govukSummaryList(SummaryList(rows = formatAnswerSection(answerSections)))
 
         @submitButton()
     }

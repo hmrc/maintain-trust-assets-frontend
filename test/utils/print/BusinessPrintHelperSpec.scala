@@ -51,21 +51,21 @@ class BusinessPrintHelperSpec extends SpecBase {
     .set(BusinessInternationalAddressPage, nonUkAddress).success.value
 
   private val ukAddressRows: Seq[AnswerRow] = Seq(
-    AnswerRow(label = Html(messages("whatKindOfAsset.checkYourAnswersLabel")), Html("Business"), WhatKindOfAssetController.onPageLoad().url),
-    AnswerRow(label = Html(messages("business.name.checkYourAnswersLabel")), Html(name), BusinessNameController.onPageLoad(NormalMode).url),
-    AnswerRow(label = Html(messages("business.description.checkYourAnswersLabel", name)), Html(description), BusinessDescriptionController.onPageLoad(NormalMode).url),
-    AnswerRow(label = Html(messages("business.addressUkYesNo.checkYourAnswersLabel", name)), Html("Yes"), BusinessAddressUkYesNoController.onPageLoad(NormalMode).url),
-    AnswerRow(label = Html(messages("business.ukAddress.checkYourAnswersLabel", name)), Html("Line 1<br />Line 2<br />AB1 1AB"), BusinessUkAddressController.onPageLoad(NormalMode).url),
-    AnswerRow(label = Html(messages("business.currentValue.checkYourAnswersLabel", name)), Html("£100"), BusinessValueController.onPageLoad(NormalMode).url)
+    AnswerRow(label = messages("whatKindOfAsset.checkYourAnswersLabel"), Html("Business"), WhatKindOfAssetController.onPageLoad().url),
+    AnswerRow(label = messages("business.name.checkYourAnswersLabel"), Html(name), BusinessNameController.onPageLoad(NormalMode).url),
+    AnswerRow(label = messages("business.description.checkYourAnswersLabel", name), Html(description), BusinessDescriptionController.onPageLoad(NormalMode).url),
+    AnswerRow(label = messages("business.addressUkYesNo.checkYourAnswersLabel", name), Html("Yes"), BusinessAddressUkYesNoController.onPageLoad(NormalMode).url),
+    AnswerRow(label = messages("business.ukAddress.checkYourAnswersLabel", name), Html("Line 1<br />Line 2<br />AB1 1AB"), BusinessUkAddressController.onPageLoad(NormalMode).url),
+    AnswerRow(label = messages("business.currentValue.checkYourAnswersLabel", name), Html("£100"), BusinessValueController.onPageLoad(NormalMode).url)
   )
 
   private val nonUkAddressRows: Seq[AnswerRow] = Seq(
-    AnswerRow(label = Html(messages("whatKindOfAsset.checkYourAnswersLabel")), Html("Business"), WhatKindOfAssetController.onPageLoad().url),
-    AnswerRow(label = Html(messages("business.name.checkYourAnswersLabel")), Html(name), BusinessNameController.onPageLoad(NormalMode).url),
-    AnswerRow(label = Html(messages("business.description.checkYourAnswersLabel", name)), Html(description), BusinessDescriptionController.onPageLoad(NormalMode).url),
-    AnswerRow(label = Html(messages("business.addressUkYesNo.checkYourAnswersLabel", name)), Html("No"), BusinessAddressUkYesNoController.onPageLoad(NormalMode).url),
-    AnswerRow(label = Html(messages("business.internationalAddress.checkYourAnswersLabel", name)), Html("Line 1<br />Line 2<br />France"), BusinessInternationalAddressController.onPageLoad(NormalMode).url),
-    AnswerRow(label = Html(messages("business.currentValue.checkYourAnswersLabel", name)), Html("£100"), BusinessValueController.onPageLoad(NormalMode).url)
+    AnswerRow(label = messages("whatKindOfAsset.checkYourAnswersLabel"), Html("Business"), WhatKindOfAssetController.onPageLoad().url),
+    AnswerRow(label = messages("business.name.checkYourAnswersLabel"), Html(name), BusinessNameController.onPageLoad(NormalMode).url),
+    AnswerRow(label = messages("business.description.checkYourAnswersLabel", name), Html(description), BusinessDescriptionController.onPageLoad(NormalMode).url),
+    AnswerRow(label = messages("business.addressUkYesNo.checkYourAnswersLabel", name), Html("No"), BusinessAddressUkYesNoController.onPageLoad(NormalMode).url),
+    AnswerRow(label = messages("business.internationalAddress.checkYourAnswersLabel", name), Html("Line 1<br />Line 2<br />France"), BusinessInternationalAddressController.onPageLoad(NormalMode).url),
+    AnswerRow(label = messages("business.currentValue.checkYourAnswersLabel", name), Html("£100"), BusinessValueController.onPageLoad(NormalMode).url)
   )
 
   "BusinessPrintHelper" when {
