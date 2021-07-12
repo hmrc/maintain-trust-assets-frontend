@@ -15,10 +15,14 @@
  *@
 
 @import controllers.asset.partnership.routes._
+@import views.html.components.{ErrorSummary, InputDate, SubmitButton}
 
 @this(
     mainTemplate: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper  : FormWithCSRF,
+    errorSummary: ErrorSummary,
+    inputDate   : InputDate,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
@@ -30,9 +34,9 @@
 
     @formHelper(action = PartnershipStartDateController.onSubmit(mode), 'autoComplete -> "off") {
 
-        @components.error_summary(form.errors)
+        @errorSummary(form.errors)
 
-        @components.input_date(
+        @inputDate(
             field = form("value"),
             legend = messages("partnership.startDate.heading"),
             legendClass = "govuk-heading-l",
@@ -40,6 +44,6 @@
             hint = Some(messages("partnership.startDate.hint"))
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

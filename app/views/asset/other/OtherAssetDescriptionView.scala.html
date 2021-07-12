@@ -15,10 +15,14 @@
  *@
 
 @import controllers.asset.other.routes._
+@import views.html.components.{ErrorSummary, InputText, SubmitButton}
 
 @this(
     mainTemplate: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper  : FormWithCSRF,
+    errorSummary: ErrorSummary,
+    inputText   : InputText,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
@@ -30,9 +34,9 @@
 
     @formHelper(action = OtherAssetDescriptionController.onSubmit(mode), 'autoComplete -> "off") {
 
-        @components.error_summary(form.errors)
+        @errorSummary(form.errors)
 
-        @components.input_text(
+        @inputText(
           field = form("value"),
           label = messages("other.description.heading"),
           labelAsHeading = true,
@@ -40,6 +44,6 @@
           labelClass = Some("govuk-heading-l")
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

@@ -16,11 +16,17 @@
 
 @import controllers.asset.partnership.amend.routes._
 @import viewmodels._
+@import views.html.components.{SubmitButton, Heading}
+@import utils.SectionFormatter.formatSections
 
 @this(
-    mainTemplate: MainTemplate,
-    formHelper: FormWithCSRF
+    mainTemplate    : MainTemplate,
+    formHelper      : FormWithCSRF,
+    submitButton    : SubmitButton,
+    heading         : Heading,
+    govukSummaryList: GovukSummaryList
 )
+
 
 @(answerSections: AnswerSection, index: Int)(implicit request: Request[_], messages: Messages)
 
@@ -29,11 +35,11 @@
     showBackLink = true
 ) {
 
-    @components.heading("partnership.answers.heading")
-
-    @components.answer_section(answerSections)
-
     @formHelper(action = PartnershipAmendAnswersController.onSubmit(index), 'autoComplete -> "off") {
-        @components.submit_button()
+        @heading("partnership.answers.heading")
+
+        @govukSummaryList(SummaryList(rows = formatSections(answerSections)))
+
+        @submitButton()
     }
 }

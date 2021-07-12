@@ -15,11 +15,16 @@
  *@
 
 @import controllers.asset.other.routes._
+@import views.html.components.{ErrorSummary, InputText, SubmitButton}
 
 @this(
-    mainTemplate: MainTemplate,
-    formHelper: FormWithCSRF
+        mainTemplate: MainTemplate,
+        formHelper  : FormWithCSRF,
+        errorSummary: ErrorSummary,
+        inputText   : InputText,
+        submitButton: SubmitButton
 )
+
 
 @(form: Form[_], mode: Mode, description: String)(implicit request: Request[_], messages: Messages)
 
@@ -30,19 +35,20 @@
 
     @formHelper(action = OtherAssetValueController.onSubmit(mode), 'autoComplete -> "off") {
 
-        @components.error_summary(form.errors)
+        @errorSummary(form.errors)
 
-        @components.input_text(
+        @inputText(
             field = form("value"),
             label = messages("other.value.heading", description),
             labelClass=Some("govuk-heading-l"),
-            symbol = Some("currency"),
-            symbolText = Some(messages(s"symbolText.asSterling")),
+            prefix = Some(messages(s"symbolText.asSterling")),
             hint = Some(messages(s"other.value.hint")),
             labelAsHeading = true,
-            inputMode = Some("numeric")
+            inputMode = Some("numeric"),
+            pattern = Some("[0-9]*"),
+            inputClass = Some("govuk-input--width-10")
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }
