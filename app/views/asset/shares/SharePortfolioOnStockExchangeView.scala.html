@@ -15,10 +15,14 @@
  *@
 
 @import controllers.asset.shares.routes._
+@import views.html.components.{SubmitButton, ErrorSummary, InputYesNo}
 
 @this(
     mainTemplate: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper  : FormWithCSRF,
+    submitButton: SubmitButton,
+    inputYesNo  : InputYesNo,
+    errorSummary: ErrorSummary
 )
 
 @(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
@@ -30,9 +34,9 @@
 
     @formHelper(action = SharePortfolioOnStockExchangeController.onSubmit(mode), 'autoComplete -> "off") {
 
-        @components.error_summary(form.errors)
+        @errorSummary(form.errors)
 
-        @components.input_yes_no(
+        @inputYesNo(
             field = form("value"),
             label = messages("shares.portfolioOnStockExchangeYesNo.heading"),
             legendClass = Some("govuk-heading-l"),
@@ -40,6 +44,6 @@
             legendAsHeading = true
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

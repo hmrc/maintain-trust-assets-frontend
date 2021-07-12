@@ -16,10 +16,14 @@
 
 @import controllers.asset.shares.routes._
 @import models.ShareClass
+@import views.html.components.{SubmitButton, ErrorSummary, InputRadio}
 
 @this(
     mainTemplate: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper  : FormWithCSRF,
+    submitButton: SubmitButton,
+    inputRadio  : InputRadio,
+    errorSummary: ErrorSummary
 )
 
 @(form: Form[_], mode: Mode, companyName: String)(implicit request: Request[_], messages: Messages)
@@ -31,16 +35,16 @@
 
     @formHelper(action = ShareClassController.onSubmit(mode), 'autoComplete -> "off") {
 
-        @components.error_summary(form.errors)
+        @errorSummary(form.errors)
 
-        @components.input_radio(
+        @inputRadio(
             field = form("value"),
             legend = messages("shares.class.heading", companyName),
             legendClass = Some("govuk-heading-l"),
-            inputs = ShareClass.allOptions,
+            inputs = mapRadioOptionsToRadioItems(form("value"), trackGa = false, ShareClass.allOptions),
             legendAsHeading = true
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

@@ -15,10 +15,14 @@
  *@
 
 @import controllers.asset.shares.routes._
+@import views.html.components.{ErrorSummary, InputText, SubmitButton}
 
 @this(
     mainTemplate: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper  : FormWithCSRF,
+    errorSummary: ErrorSummary,
+    inputText   : InputText,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], mode: Mode, companyName: String)(implicit request: Request[_], messages: Messages)
@@ -30,19 +34,20 @@
 
     @formHelper(action = ShareValueInTrustController.onSubmit(mode), 'autoComplete -> "off") {
 
-        @components.error_summary(form.errors)
+        @errorSummary(form.errors)
 
-        @components.input_text(
+        @inputText(
             field = form("value"),
             label = messages("shares.valueInTrust.heading", companyName),
-            symbolText = Some(messages(s"symbolText.asSterling")),
-            symbol = Some("currency"),
+            prefix = Some(messages(s"symbolText.asSterling")),
             labelClass = Some("govuk-heading-l"),
             labelAsHeading = true,
             hint = Some(messages("shares.valueInTrust.hint")),
-            inputMode = Some("numeric")
+            inputMode = Some("numeric"),
+            pattern = Some("[0-9]*"),
+            inputClass = Some("govuk-input--width-10")
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }
