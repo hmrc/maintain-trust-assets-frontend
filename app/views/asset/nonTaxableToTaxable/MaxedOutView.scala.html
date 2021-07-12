@@ -17,10 +17,14 @@
 @import controllers.asset.nonTaxableToTaxable.routes._
 @import models.AddAssets
 @import viewmodels.AddRow
+@import views.html.components.{SubmitButton, Heading, AddToList}
 
 @this(
     mainTemplate: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper: FormWithCSRF,
+    submitButton: SubmitButton,
+    headingComp : Heading,
+    addToList   : AddToList
 )
 
 @(completeAssets: Seq[AddRow], heading: String, maxLimit: Int, prefix: String)(implicit request: Request[_], messages: Messages)
@@ -32,15 +36,17 @@
 
     @formHelper(action = AddAssetsController.submitComplete(), 'autoComplete -> "off") {
 
-        @components.heading(heading)
+        @headingComp(heading)
 
-        @components.AddToList(completeAssets, "complete", "asset")
+        @addToList(completeAssets, "complete", "asset")
 
-        <ul>
-            <li class="panel-indent"><p>@messages(s"$prefix.maxedOut.p1", maxLimit)</p></li>
-            <li class="panel-indent"><p>@messages(s"$prefix.maxedOut.p2")</p></li>
-        </ul>
+        <div class="govuk-inset-text">
+            <ul class="govuk-list">
+                <li><p>@messages(s"$prefix.maxedOut.p1", maxLimit)</p></li>
+                <li><p>@messages(s"$prefix.maxedOut.p2")</p></li>
+            </ul>
+        </div>
 
-        @components.submit_button()
+        @submitButton()
     }
 }

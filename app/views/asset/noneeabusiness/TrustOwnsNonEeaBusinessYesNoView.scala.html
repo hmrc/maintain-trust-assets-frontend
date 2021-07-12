@@ -15,10 +15,14 @@
  *@
 
 @import controllers.asset.routes._
+@import views.html.components.{SubmitButton, ErrorSummary, InputYesNo}
 
 @this(
     mainTemplate: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper  : FormWithCSRF,
+    submitButton: SubmitButton,
+    inputYesNo  : InputYesNo,
+    errorSummary: ErrorSummary
 )
 
 @(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
@@ -30,15 +34,15 @@
 
 @formHelper(action = TrustOwnsNonEeaBusinessYesNoController.onSubmit(mode), 'autoComplete -> "off") {
 
-    @components.error_summary(form.errors)
+    @errorSummary(form.errors)
 
-    @components.input_yes_no(
-        field = form("value"),
-        label = messages("trustOwnsNonEeaBusinessYesNo.heading"),
-        legendClass = Some("govuk-heading-l"),
+    @inputYesNo(
+        field           = form("value"),
+        label           = messages("trustOwnsNonEeaBusinessYesNo.heading"),
+        legendClass     = Some("govuk-heading-l"),
         legendAsHeading = true
     )
 
-    @components.submit_button()
+    @submitButton()
   }
 }

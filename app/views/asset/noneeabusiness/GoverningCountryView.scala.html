@@ -16,10 +16,14 @@
 
 @import controllers.asset.noneeabusiness.routes._
 @import utils.InputOption
+@import views.html.components.{ErrorSummary, InputSelect, SubmitButton}
 
 @this(
     mainTemplate: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper  : FormWithCSRF,
+    errorSummary: ErrorSummary,
+    inputSelect : InputSelect,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], countryOptions: Seq[InputOption], mode: Mode, name: String)(implicit request: Request[_], messages: Messages)
@@ -31,18 +35,18 @@
 
     @formHelper(action = GoverningCountryController.onSubmit(mode), 'autoComplete -> "off") {
 
-        @components.error_summary(form.errors)
+        @errorSummary(form.errors)
 
-        @components.select(field = form("value"),
-            label = messages("nonEeaBusiness.governingCountry.heading", name),
-            labelClasses = Set("govuk-heading-l"),
-            labelAsHeading = true,
-            options = countryOptions,
-            placeholder = Some(messages("site.address.country.select")),
+        @inputSelect(field   = form("value"),
+            label            = messages("nonEeaBusiness.governingCountry.heading", name),
+            labelClasses     = Set("govuk-heading-l"),
+            labelAsHeading   = true,
+            options          = countryOptions,
+            placeholder      = Some(messages("site.address.country.select")),
             formGroupClasses = Set("autocomplete-wrapper form-control-3-4"),
-            selectAttribute = Set("data-all-countries")
+            selectAttribute  = Map("data-all-countries" -> "")
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

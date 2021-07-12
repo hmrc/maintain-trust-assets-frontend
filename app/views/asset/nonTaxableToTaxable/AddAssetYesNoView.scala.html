@@ -15,10 +15,15 @@
  *@
 
 @import controllers.asset.nonTaxableToTaxable.routes._
+@import views.html.components.{SubmitButton, ErrorSummary, InputYesNo, BulletList}
 
 @this(
     mainTemplate: MainTemplate,
-    formHelper: FormWithCSRF
+    formHelper  : FormWithCSRF,
+    submitButton: SubmitButton,
+    inputYesNo  : InputYesNo,
+    errorSummary: ErrorSummary,
+    bulletList  : BulletList
 )
 
 @(form: Form[_])(implicit request: Request[_], messages: Messages)
@@ -30,7 +35,7 @@
 
     @formHelper(action = AddAssetYesNoController.onSubmit(), 'autoComplete -> "off") {
 
-        @components.error_summary(form.errors)
+        @errorSummary(form.errors)
 
         <h1>@messages("nonTaxableToTaxable.addAssetYesNo.heading")</h1>
 
@@ -38,26 +43,17 @@
 
         <p>@messages("nonTaxableToTaxable.addAssetYesNo.paragraph2")</p>
 
-        @components.BulletList(
-        "nonTaxableToTaxable.addAssetYesNo",
-        List(
-            "bullet1",
-            "bullet2",
-            "bullet3",
-            "bullet4",
-            "bullet5",
-            "bullet6",
-            "bullet7"
-            )
+        @bulletList("nonTaxableToTaxable.addAssetYesNo",
+            List("bullet1", "bullet2", "bullet3", "bullet4", "bullet5", "bullet6", "bullet7")
         )
 
-        @components.input_yes_no(
+        @inputYesNo(
             field = form("value"),
             label = messages("nonTaxableToTaxable.addAssetYesNo.heading"),
             legendClass = Some("visually-hidden"),
             legendAsHeading = false
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }
