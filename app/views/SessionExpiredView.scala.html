@@ -16,7 +16,6 @@
 
 @import config.FrontendAppConfig
 @import views.html.components.{Heading, SubmitButton}
-@import controllers.routes._
 
 @this(
     mainTemplate: MainTemplate,
@@ -39,7 +38,7 @@
         <p>@messages("session_expired.guidance")</p>
         <p>@messages("session_expired.guidance.2")</p>
 
-    @formHelper(action = SessionExpiredController.onSubmit, 'autoComplete -> "off") {
+    @formHelper(action = SessionExpiredController.onSubmit(), 'autoComplete -> "off") {
         @submitButton(Some(messages("site.sign_in")))
     }
 
