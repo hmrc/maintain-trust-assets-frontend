@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package implicits
+package extensions
 
-object Implicits {
+object Enhancers {
 
-  implicit class StringImplicits(str: String) {
+  implicit class StringEnhancer(str: String) {
     def uncapitalize: String = str.split(' ').foldLeft("")((acc, word) => {
       def uncapitalizeWord = s"${word.head.toLower}${word.tail}"
       if (acc.isEmpty) {

@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package implicits
+package extensions
 
 import base.SpecBase
-import implicits.Implicits._
+import extensions.Enhancers._
 import models.WhatKindOfAsset
 import models.WhatKindOfAsset.prefix
 
-class ImplicitsSpec extends SpecBase {
+class EnhancersSpec extends SpecBase {
 
-  "Implicits" when {
+  "Enhancers" when {
 
-    "StringImplicits" when {
+    "StringEnhancer" when {
 
       "uncapitalize" must {
 

@@ -16,6 +16,7 @@
 
 @import controllers.asset.business.amend.routes._
 @import viewmodels._
+@import views.SectionFormatter.formatAnswerSection
 @import views.html.components.{SubmitButton, Heading}
 
 @this(
@@ -37,7 +38,7 @@
 
         @heading("business.answers.heading")
 
-        @govukSummaryList(SummaryList(rows = formatSections(answerSections)))
+        @govukSummaryList(SummaryList(rows = formatAnswerSection(answerSections)))
 
         @submitButton()
     }

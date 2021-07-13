@@ -14,9 +14,9 @@
  * limitations under the License.
  *@
 
-@import viewmodels.Section
+@import viewmodels.AnswerSection
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
-@import views.SectionFormatter.formatSections
+@import views.SectionFormatter.formatAnswerSection
 @import views.html.components.{SubmitButton, Heading}
 
 @this(
@@ -27,18 +27,18 @@
     govukSummaryList: GovukSummaryList
 )
 
-@(index: Int, draftId: String, answerSections: Seq[Section])(implicit request: Request[_], messages: Messages)
+@(answerSections: AnswerSection)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("business.answers.title"),
     showBackLink = true
 ) {
 
-    @formHelper(action = BusinessAnswersController.onSubmit(index, draftId), 'autoComplete -> "off") {
+    @formHelper(action = BusinessAnswersController.onSubmit(), 'autoComplete -> "off") {
 
         @heading("business.answers.heading")
 
-        @govukSummaryList(SummaryList(rows = formatSections(answerSections)))
+        @govukSummaryList(SummaryList(rows = formatAnswerSection(answerSections)))
 
         @submitButton()
     }

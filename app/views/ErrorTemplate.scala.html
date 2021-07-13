@@ -19,13 +19,13 @@
 
 @this(
     appConfig: FrontendAppConfig,
-    heading: Heading
+    headingComp: Heading
 )
 
 @(pageTitle: String, heading: String, message: String)(implicit request: Request[_], messages: Messages)
 
 @contentHeader = {
-  @heading(heading)
+  @headingComp(heading)
 }
 
 @mainContent = {

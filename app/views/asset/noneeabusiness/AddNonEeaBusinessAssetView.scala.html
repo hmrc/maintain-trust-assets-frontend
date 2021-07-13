@@ -24,7 +24,7 @@
     mainTemplate: MainTemplate,
     formHelper  : FormWithCSRF,
     errorSummary: ErrorSummary,
-    heading     : Heading,
+    headingComp : Heading,
     addToList   : AddToList,
     inputRadio  : InputRadio,
     submitButton: SubmitButton
@@ -41,7 +41,7 @@
 
         @errorSummary(form.errors)
 
-        @heading(heading)
+        @headingComp(heading)
 
         @addToList(completeAssets, "complete", "asset")
 

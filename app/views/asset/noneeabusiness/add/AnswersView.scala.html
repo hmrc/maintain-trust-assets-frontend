@@ -14,10 +14,10 @@
  * limitations under the License.
  *@
 
-@import controllers.asset.noneeabusiness.routes._
-@import viewmodels.Section
+@import controllers.asset.noneeabusiness.add.routes._
+@import viewmodels._
 @import views.html.components.{SubmitButton, Heading}
-@import views.SectionFormatter.formatSections
+@import views.SectionFormatter.formatAnswerSection
 
 @this(
     mainTemplate    : MainTemplate,
@@ -27,17 +27,17 @@
     govukSummaryList: GovukSummaryList
 )
 
-@(index: Int, draftId: String, answerSections: Seq[Section])(implicit request: Request[_], messages: Messages)
+@(answerSections: AnswerSection)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("nonEeaBusiness.answers.title"),
     showBackLink = true
 ) {
 
-    @formHelper(action = AnswersController.onSubmit(index, draftId), 'autoComplete -> "off") {
+    @formHelper(action = AnswersController.onSubmit(), 'autoComplete -> "off") {
         @heading("nonEeaBusiness.answers.heading")
 
-        @govukSummaryList(SummaryList(rows = formatSections(answerSections)))
+        @govukSummaryList(SummaryList(rows = formatAnswerSection(answerSections)))
 
         @submitButton()
     }

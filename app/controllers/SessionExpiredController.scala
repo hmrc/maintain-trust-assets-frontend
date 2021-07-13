@@ -16,6 +16,8 @@
 
 package controllers
 
+import config.FrontendAppConfig
+
 import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -24,10 +26,16 @@ import views.html.SessionExpiredView
 
 class SessionExpiredController @Inject()(
                                           val controllerComponents: MessagesControllerComponents,
+                                          appConfig: FrontendAppConfig,
                                           view: SessionExpiredView
                                         ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = Action { implicit request =>
     Ok(view())
   }
+
+  def onSubmit: Action[AnyContent] = Action {
+    Redirect(appConfig.loginUrl)
+  }
+
 }

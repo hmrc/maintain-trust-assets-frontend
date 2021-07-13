@@ -14,8 +14,12 @@
  * limitations under the License.
  *@
 
+@import views.html.components.Heading
+
 @this(
-    mainTemplate: MainTemplate
+    mainTemplate: MainTemplate,
+    heading: Heading
+
 )
 
 @()(implicit request: Request[_], messages: Messages)
@@ -24,5 +28,5 @@
     title = messages("unauthorised.title")
     ) {
 
-    @components.heading("unauthorised.heading")
+    @heading("unauthorised.heading")
 }
