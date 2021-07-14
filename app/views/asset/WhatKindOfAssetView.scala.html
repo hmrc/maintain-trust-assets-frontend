@@ -43,7 +43,8 @@
             legend = messages("whatKindOfAsset.heading"),
             legendClass = Some("govuk-heading-l"),
             inputs = mapRadioOptionsToRadioItems(form("value"), trackGa = false, options),
-            legendAsHeading = true
+            legendAsHeading = true,
+            inline = false
         )
 
         @submitButton()
