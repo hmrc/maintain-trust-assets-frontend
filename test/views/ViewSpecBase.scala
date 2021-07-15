@@ -69,7 +69,8 @@ trait ViewSpecBase extends SpecBase {
     val headers = doc.getElementsByTag("h1")
     headers.size mustBe 1
 
-    val expectedCaption = s"${messages(s"$expectedMessageKey.caption.hidden")} ${messages(s"$expectedMessageKey.caption")}"
+//    val expectedCaption = s"${messages(s"$expectedMessageKey.caption.hidden")} ${messages(s"$expectedMessageKey.caption")}"
+    val expectedCaption = s"${messages(s"$expectedMessageKey.caption")}"
 
     val expectedHeading = messages(s"$expectedMessageKey.heading", args:_*)
 
@@ -135,10 +136,9 @@ trait ViewSpecBase extends SpecBase {
     val radio = doc.getElementById(id)
     assert(radio.attr("name") == name, s"\n\nElement $id does not have name $name")
     assert(radio.attr("value") == value, s"\n\nElement $id does not have value $value")
-    if (isChecked) {
-      assert(radio.attr("checked") == "checked", s"\n\nElement $id is not checked")
-    } else {
-      assert(!radio.hasAttr("checked") && radio.attr("checked") != "checked", s"\n\nElement $id is checked")
+    isChecked match {
+      case true => assert(radio.hasAttr("checked"), s"\n\nElement $id is not checked")
+      case _ => assert(!radio.hasAttr("checked"), s"\n\nElement $id is checked")
     }
   }
 }
