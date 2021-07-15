@@ -42,7 +42,8 @@
             legend = messages("shares.class.heading", companyName),
             legendClass = Some("govuk-heading-l"),
             inputs = mapRadioOptionsToRadioItems(form("value"), trackGa = false, ShareClass.allOptions),
-            legendAsHeading = true
+            legendAsHeading = true,
+            inline = false
         )
 
         @submitButton()

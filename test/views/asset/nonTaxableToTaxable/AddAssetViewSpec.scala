@@ -54,7 +54,7 @@ class AddAssetViewSpec extends OptionsViewBehaviours with TabularDataViewBehavio
 
       behave like pageWithBackLink(applyView(form))
 
-      behave like pageWithOptions(form, applyView, AddAssets.options(messageKeyPrefix).toSet)
+      behave like pageWithOptions(form, applyView, AddAssets.options(messageKeyPrefix))
     }
 
     "there are assets" must {
@@ -65,7 +65,7 @@ class AddAssetViewSpec extends OptionsViewBehaviours with TabularDataViewBehavio
 
       behave like pageWithBackLink(viewWithData)
 
-      behave like pageWithOptions(form, applyView, AddAssets.options(messageKeyPrefix).toSet)
+      behave like pageWithOptions(form, applyView, AddAssets.options(messageKeyPrefix))
     }
 
   }

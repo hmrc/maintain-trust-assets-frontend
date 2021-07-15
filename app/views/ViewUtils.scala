@@ -28,7 +28,7 @@ object ViewUtils {
   }
 
   def breadcrumbTitle(title: String)(implicit messages: Messages): String = {
-    s"$title - ${messages("entities.assets")} - ${messages("site.service_name")} - GOV.UK"
+    s"$title - ${messages("entities.assets")} - ${messages("service.name")} - GOV.UK"
   }
 
   def mapRadioOptionsToRadioItems(field: Field, trackGa: Boolean,

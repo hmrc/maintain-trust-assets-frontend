@@ -1,4 +1,4 @@
-service_name = Register and Maintain a Trust
+service.name = Register and Maintain a Trust
 
 date.day = Day
 date.month = Month

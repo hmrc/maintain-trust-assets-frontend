@@ -1,4 +1,4 @@
-service_name=Cofrestru Ymddiriedolaeth a’i Chynnal
+service.name=Cofrestru Ymddiriedolaeth a’i Chynnal
 
 error.browser.title.prefix=Gwall:
 error.boolean=Rhowch ateb
