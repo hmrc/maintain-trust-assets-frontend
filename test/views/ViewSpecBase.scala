@@ -63,29 +63,23 @@ trait ViewSpecBase extends SpecBase {
     actual mustBe expected
   }
 
-  def assertPageTitleWithCaptionEqualsMessage(doc: Document,
-                                              expectedMessageKey: String,
-                                              args: Any*): Assertion = {
+  def assertPageTitleWithSectionSubheading(doc: Document,
+                                           expectedMessageKey: String,
+                                           captionParam: String,
+                                           args: Any*): Assertion = {
     val headers = doc.getElementsByTag("h1")
     headers.size mustBe 1
 
-//    val expectedCaption = s"${messages(s"$expectedMessageKey.caption.hidden")} ${messages(s"$expectedMessageKey.caption")}"
-    val expectedCaption = s"${messages(s"$expectedMessageKey.caption")}"
-
+    val expectedCaption = s"${messages(s"$expectedMessageKey.caption.hidden")} ${messages(s"$expectedMessageKey.caption", captionParam)}"
     val expectedHeading = messages(s"$expectedMessageKey.heading", args:_*)
+    val expected = s"$expectedCaption $expectedHeading".replaceAll("&nbsp;", " ")
 
-    val expected = s"$expectedCaption $expectedHeading"
-      .replaceAll("&nbsp;", " ")
-
-    val actual = headers
-      .first
-      .text
-      .replaceAll("\u00a0", " ")
+    val actual = headers.first.text.replaceAll("\u00a0", " ")
 
     actual mustBe expected
   }
 
-  def assertContainsText(doc:Document, text: String): Assertion = assert(doc.toString.contains(text), "\n\ntext " + text + " was not rendered on the page.\n")
+  def assertContainsText(doc: Document, text: String): Assertion = assert(doc.toString.contains(text), "\n\ntext " + text + " was not rendered on the page.\n")
 
   def assertContainsMessages(doc: Document, expectedMessageKeys: String*): Unit = {
     for (key <- expectedMessageKeys) assertContainsText(doc, messages(key))
