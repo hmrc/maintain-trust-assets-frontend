@@ -75,7 +75,7 @@ trait ViewBehaviours extends ViewSpecBase {
     "display the correct page title with section" in {
 
       val doc = asDocument(view)
-      assertPageTitleWithSectionSubheading(doc, messageKeyPrefix, captionParam = "")
+      assertPageTitleWithSectionSubheading(doc, messageKeyPrefix)
     }
   }
 
