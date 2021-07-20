@@ -16,25 +16,29 @@
 
 @import controllers.asset.noneeabusiness.add.routes._
 @import viewmodels._
+@import views.html.components.{SubmitButton, Heading}
+@import views.SectionFormatter.formatAnswerSection
 
 @this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    mainTemplate    : MainTemplate,
+    formHelper      : FormWithCSRF,
+    submitButton    : SubmitButton,
+    heading         : Heading,
+    govukSummaryList: GovukSummaryList
 )
 
 @(answerSections: AnswerSection)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("nonEeaBusiness.answers.title")
+@mainTemplate(
+    title = messages("nonEeaBusiness.answers.title"),
+    showBackLink = true
 ) {
 
-    @components.back_link()
-
-    @components.heading("nonEeaBusiness.answers.heading")
-
-    @components.answer_section(answerSections)
-
     @formHelper(action = AnswersController.onSubmit(), 'autoComplete -> "off") {
-        @components.submit_button()
+        @heading("nonEeaBusiness.answers.heading")
+
+        @govukSummaryList(SummaryList(rows = formatAnswerSection(answerSections)))
+
+        @submitButton()
     }
 }

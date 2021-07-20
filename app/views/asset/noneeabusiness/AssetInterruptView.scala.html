@@ -15,28 +15,30 @@
  *@
 
 @import controllers.asset.routes._
+@import views.html.components.{SubmitButton, HeadingWithCaption, BulletList}
 
 @this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    mainTemplate      : MainTemplate,
+    formHelper        : FormWithCSRF,
+    headingWithCaption: HeadingWithCaption,
+    bulletList        : BulletList,
+    submitButton      : SubmitButton
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("assetInterruptPage.title")
+@mainTemplate(
+    title = messages("assetInterruptPage.title"),
+    showBackLink = true
 ) {
 
     @formHelper(action = AssetInterruptPageController.onSubmit(), 'autoComplete -> "off") {
 
-        @components.back_link()
-
-        @components.heading_with_caption("assetInterruptPage")
+        @headingWithCaption("assetInterruptPage")
 
         <h2>@messages("assetInterruptPage.subheading7")</h2>
         <p>@messages("assetInterruptPage.paragraph10")</p>
-        @components.bullet_list(
-            "assetInterruptPage",
+        @bulletList("assetInterruptPage",
             List(
                 "bullet11",
                 "bullet12",
@@ -45,6 +47,6 @@
             )
         )
 
-        @components.submit_button(Some("site.onlyContinue"))
+        @submitButton(Some("site.onlyContinue"))
     }
 }

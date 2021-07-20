@@ -15,35 +15,39 @@
  *@
 
 @import controllers.asset.shares.routes._
+@import views.html.components.{ErrorSummary, InputText, SubmitButton}
 
 @this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    mainTemplate: MainTemplate,
+    formHelper  : FormWithCSRF,
+    errorSummary: ErrorSummary,
+    inputText   : InputText,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = s"${errorPrefix(form)} ${messages("shares.portfolioValueInTrust.title")}"
+@mainTemplate(
+    title = s"${errorPrefix(form)} ${messages("shares.portfolioValueInTrust.title")}",
+    showBackLink = true
 ) {
 
     @formHelper(action = SharePortfolioValueInTrustController.onSubmit(mode), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
-
-        @components.input_text(
+        @inputText(
             field = form("value"),
             label = messages("shares.portfolioValueInTrust.heading"),
-            symbolText = Some(messages(s"symbolText.asSterling")),
-            symbol = Some("currency"),
-            labelClass = Some("heading-large"),
+            prefix = Some(messages(s"symbolText.asSterling")),
+            labelClass = Some("govuk-heading-l"),
             labelAsHeading = true,
             hint = Some(messages("shares.portfolioValueInTrust.hint")),
-            inputMode = Some("numeric")
+            inputMode = Some("numeric"),
+            pattern = Some("[0-9]*"),
+            inputClass = Some("govuk-input--width-10")
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

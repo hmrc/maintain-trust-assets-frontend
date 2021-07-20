@@ -15,30 +15,33 @@
  *@
 
 @import controllers.asset.routes._
+@import views.html.components.{SubmitButton, HeadingWithCaption, BulletList}
 
 @this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    mainTemplate      : MainTemplate,
+    formHelper        : FormWithCSRF,
+    headingWithCaption: HeadingWithCaption,
+    bulletList        : BulletList,
+    submitButton      : SubmitButton
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("nonTaxableToTaxable.assetInterruptPage.title")
+@mainTemplate(
+    title = messages("nonTaxableToTaxable.assetInterruptPage.title"),
+    showBackLink = true
 ) {
 
     @formHelper(action = AssetInterruptPageController.onSubmit(), 'autoComplete -> "off") {
 
-        @components.back_link()
-
-        @components.heading_with_caption("nonTaxableToTaxable.assetInterruptPage")
+        @headingWithCaption("nonTaxableToTaxable.assetInterruptPage")
 
         <h2>@messages("nonTaxableToTaxable.assetInterruptPage.subheading1")</h2>
         <p>@messages("nonTaxableToTaxable.assetInterruptPage.paragraph1")</p>
 
         <h2>@messages("nonTaxableToTaxable.assetInterruptPage.subheading2")</h2>
         <p>@messages("nonTaxableToTaxable.assetInterruptPage.paragraph2")</p>
-            @components.bullet_list(
+            @bulletList(
             "nonTaxableToTaxable.assetInterruptPage",
             List(
                 "bullet1",
@@ -51,7 +54,7 @@
         <h2>@messages("nonTaxableToTaxable.assetInterruptPage.subheading3")</h2>
 
         <p>@messages("nonTaxableToTaxable.assetInterruptPage.tellus")</p>
-            @components.bullet_list(
+            @bulletList(
             "nonTaxableToTaxable.assetInterruptPage",
             List(
             "bullet4",
@@ -66,7 +69,7 @@
         <h2>@messages("nonTaxableToTaxable.assetInterruptPage.subheading4")</h2>
 
         <p>@messages("nonTaxableToTaxable.assetInterruptPage.tellus")</p>
-            @components.bullet_list(
+            @bulletList(
             "nonTaxableToTaxable.assetInterruptPage",
             List(
             "bullet7",
@@ -79,7 +82,7 @@
         <h2>@messages("nonTaxableToTaxable.assetInterruptPage.subheading5")</h2>
 
         <p>@messages("nonTaxableToTaxable.assetInterruptPage.tellus")</p>
-            @components.bullet_list(
+            @bulletList(
             "nonTaxableToTaxable.assetInterruptPage",
             List(
             "bullet11",
@@ -95,6 +98,6 @@
         <h2>@messages("nonTaxableToTaxable.assetInterruptPage.subheading7")</h2>
         <p>@messages("nonTaxableToTaxable.assetInterruptPage.paragraph9")</p>
 
-        @components.submit_button(Some("site.onlyContinue"))
+        @submitButton(Some("site.onlyContinue"))
     }
 }

@@ -15,31 +15,34 @@
  *@
 
 @import controllers.asset.money.remove.routes._
+@import views.html.components.{SubmitButton, ErrorSummary, InputYesNo}
 
 @this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    mainTemplate: MainTemplate,
+    formHelper: FormWithCSRF,
+    submitButton: SubmitButton,
+    errorSummary: ErrorSummary,
+    inputYesNo  : InputYesNo
 )
 
 @(form: Form[_], amount: String)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = s"${errorPrefix(form)} ${messages(s"money.removeYesNo.title")}"
+@mainTemplate(
+    title = s"${errorPrefix(form)} ${messages(s"money.removeYesNo.title")}",
+    showBackLink = true
 ) {
 
     @formHelper(action = RemoveAssetYesNoController.onSubmit(), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
-
-        @components.input_yes_no(
+        @inputYesNo(
             field = form("value"),
             label = messages(s"money.removeYesNo.heading", amount),
-            legendClass = Some("heading-large"),
+            legendClass = Some("govuk-heading-l"),
             legendAsHeading = true
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

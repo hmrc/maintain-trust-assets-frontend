@@ -15,32 +15,35 @@
  *@
 
 @import controllers.asset.partnership.routes._
+@import views.html.components.{ErrorSummary, InputDate, SubmitButton}
 
 @this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    mainTemplate: MainTemplate,
+    formHelper  : FormWithCSRF,
+    errorSummary: ErrorSummary,
+    inputDate   : InputDate,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = s"${errorPrefix(form)} ${messages("partnership.startDate.title")}"
+@mainTemplate(
+    title = s"${errorPrefix(form)} ${messages("partnership.startDate.title")}",
+    showBackLink = true
 ) {
 
     @formHelper(action = PartnershipStartDateController.onSubmit(mode), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
-
-        @components.input_date(
+        @inputDate(
             field = form("value"),
             legend = messages("partnership.startDate.heading"),
-            legendClass = "heading-large",
+            legendClass = "govuk-heading-l",
             legendAsHeading = true,
             hint = Some(messages("partnership.startDate.hint"))
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

@@ -15,36 +15,40 @@
  *@
 
 @import controllers.asset.business.routes._
+@import views.html.components.{ErrorSummary, InputText, SubmitButton}
 
 @this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    mainTemplate: MainTemplate,
+    formHelper  : FormWithCSRF,
+    errorSummary: ErrorSummary,
+    inputText   : InputText,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], mode: Mode, businessName: String)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = s"${errorPrefix(form)} ${messages("business.currentValue.title")}"
+@mainTemplate(
+    title = s"${errorPrefix(form)} ${messages("business.currentValue.title")}",
+    showBackLink = true
 ) {
 
     @formHelper(action = BusinessValueController.onSubmit(mode), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
-
-        @components.input_text(
+        @inputText(
             field = form("value"),
             label = messages("business.currentValue.heading", businessName),
-            labelClass=Some("heading-large"),
-            symbol = Some("currency"),
-            symbolText = Some(messages(s"symbolText.asSterling")),
+            labelClass = Some("govuk-heading-l"),
+            prefix = Some(messages(s"symbolText.asSterling")),
             hint = Some(messages(s"business.currentValue.hint")),
             labelAsHeading = true,
-            inputMode = Some("numeric")
+            inputMode = Some("numeric"),
+            pattern = Some("[0-9]*"),
+            inputClass = Some("govuk-input--width-10")
         )
 
-        @components.submit_button()
+        @submitButton()
 
     }
 }

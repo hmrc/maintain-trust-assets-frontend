@@ -16,34 +16,35 @@
 
 @import controllers.asset.noneeabusiness.routes._
 @import utils.InputOption
+@import views.html.components.{ErrorSummary, InternationalAddress, SubmitButton}
 
 @this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    mainTemplate        : MainTemplate,
+    formHelper          : FormWithCSRF,
+    errorSummary        : ErrorSummary,
+    internationalAddress: InternationalAddress,
+    submitButton        : SubmitButton
 )
 
 @(form: Form[_], countryOptions: Seq[InputOption], mode: Mode, name: String)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = s"${errorPrefix(form)} ${messages("nonEeaBusiness.internationalAddress.title")}"
+@mainTemplate(
+    title = s"${errorPrefix(form)} ${messages("nonEeaBusiness.internationalAddress.title")}",
+    showBackLink = true
 ) {
 
     @formHelper(action = InternationalAddressController.onSubmit(mode), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
+        @internationalAddress(
+            form            = form,
+            legend          = messages("nonEeaBusiness.internationalAddress.heading", name),
+            legendAsHeading = true,
+            countryOptions  = countryOptions
+        )
 
-        <fieldset>
-
-            <legend>
-                @components.heading("nonEeaBusiness.internationalAddress.heading", Some(name))
-            </legend>
-
-            @components.international_address(form, countryOptions)
-
-        </fieldset>
-
-        @components.submit_button(submitClass = Some("countryLookupHelper"))
+        @submitButton()
     }
+
 }

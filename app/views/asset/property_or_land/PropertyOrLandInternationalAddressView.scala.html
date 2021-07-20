@@ -16,34 +16,34 @@
 
 @import controllers.asset.property_or_land.routes._
 @import utils.InputOption
+@import views.html.components.{ErrorSummary, InternationalAddress, SubmitButton}
 
 @this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    mainTemplate        : MainTemplate,
+    formHelper          : FormWithCSRF,
+    errorSummary        : ErrorSummary,
+    internationalAddress: InternationalAddress,
+    submitButton        : SubmitButton
 )
 
 @(form: Form[_], countryOptions: Seq[InputOption], mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = s"${errorPrefix(form)} ${messages("propertyOrLand.internationalAddress.title")}"
+@mainTemplate(
+    title = s"${errorPrefix(form)} ${messages("propertyOrLand.internationalAddress.title")}",
+    showBackLink = true
 ) {
 
     @formHelper(action = PropertyOrLandInternationalAddressController.onSubmit(mode), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
+        @internationalAddress(
+            form = form,
+            legend = messages("propertyOrLand.internationalAddress.heading"),
+            legendAsHeading = true,
+            countryOptions = countryOptions
+        )
 
-        <fieldset>
-
-            <legend>
-                @components.heading("propertyOrLand.internationalAddress.heading")
-            </legend>
-
-            @components.international_address(form, countryOptions)
-
-        </fieldset>
-
-        @components.submit_button(submitClass = Some("countryLookupHelper"))
+        @submitButton()
     }
 }

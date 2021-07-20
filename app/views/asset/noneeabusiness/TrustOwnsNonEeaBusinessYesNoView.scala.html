@@ -15,31 +15,34 @@
  *@
 
 @import controllers.asset.routes._
+@import views.html.components.{SubmitButton, ErrorSummary, InputYesNo}
 
 @this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    mainTemplate: MainTemplate,
+    formHelper  : FormWithCSRF,
+    submitButton: SubmitButton,
+    inputYesNo  : InputYesNo,
+    errorSummary: ErrorSummary
 )
 
 @(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = s"${errorPrefix(form)} ${messages("trustOwnsNonEeaBusinessYesNo.title")}"
+@mainTemplate(
+    title = s"${errorPrefix(form)} ${messages("trustOwnsNonEeaBusinessYesNo.title")}",
+    showBackLink = true
 ) {
 
 @formHelper(action = TrustOwnsNonEeaBusinessYesNoController.onSubmit(mode), 'autoComplete -> "off") {
 
-    @components.back_link()
+    @errorSummary(form.errors)
 
-    @components.error_summary(form.errors)
-
-    @components.input_yes_no(
-        field = form("value"),
-        label = messages("trustOwnsNonEeaBusinessYesNo.heading"),
-        legendClass = Some("heading-large"),
+    @inputYesNo(
+        field           = form("value"),
+        label           = messages("trustOwnsNonEeaBusinessYesNo.heading"),
+        legendClass     = Some("govuk-heading-l"),
         legendAsHeading = true
     )
 
-    @components.submit_button()
+    @submitButton()
   }
 }

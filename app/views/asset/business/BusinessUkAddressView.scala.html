@@ -15,34 +15,33 @@
  *@
 
 @import controllers.asset.business.routes._
+@import views.html.components.{ErrorSummary, UkAddress, SubmitButton}
 
 @this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    mainTemplate: MainTemplate,
+    formHelper  : FormWithCSRF,
+    errorSummary: ErrorSummary,
+    ukAddress   : UkAddress,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], mode: Mode, businessName: String)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = s"${errorPrefix(form)} ${messages("business.ukAddress.title")}"
+@mainTemplate(
+    title = s"${errorPrefix(form)} ${messages("business.ukAddress.title")}",
+    showBackLink = true
 ) {
 
     @formHelper(action = BusinessUkAddressController.onSubmit(mode), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
+        @ukAddress(
+            form = form,
+            legend = messages("business.ukAddress.heading", businessName),
+            legendAsHeading = true
+        )
 
-        <fieldset>
-
-            <legend>
-                @components.heading("business.ukAddress.heading", optionalParam = Some(businessName))
-            </legend>
-
-            @components.uk_address(form)
-
-        </fieldset>
-
-        @components.submit_button()
+        @submitButton()
     }
 }

@@ -1,3 +1,5 @@
+service.name=Cofrestru Ymddiriedolaeth a’i Chynnal
+
 error.browser.title.prefix=Gwall:
 error.boolean=Rhowch ateb
 error.invalid_date=Rhowch ddyddiad cywir
@@ -35,7 +37,6 @@ site.yes=Iawn
 site.continue=Yn eich blaen
 site.save.continue=Cadw ac yn eich blaen
 site.onlyContinue=Yn eich blaen
-site.service_name=Cofrestru Ymddiriedolaeth a’i Chynnal
 site.address=Cyfeiriad
 site.inprogress=Ar y gweill
 site.complete=Wedi’i gwblhau

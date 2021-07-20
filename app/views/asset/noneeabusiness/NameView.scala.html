@@ -15,32 +15,35 @@
  *@
 
 @import controllers.asset.noneeabusiness.routes._
+@import views.html.components.{ErrorSummary, InputText, SubmitButton}
 
 @this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    mainTemplate: MainTemplate,
+    formHelper  : FormWithCSRF,
+    errorSummary: ErrorSummary,
+    inputText   : InputText,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = s"${errorPrefix(form)} ${messages("nonEeaBusiness.name.title")}"
+@mainTemplate(
+    title = s"${errorPrefix(form)} ${messages("nonEeaBusiness.name.title")}",
+    showBackLink = true
 ) {
 
     @formHelper(action = NameController.onSubmit(mode), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
-
-        @components.input_text(
-          field = form("value"),
-          label = messages("nonEeaBusiness.name.heading"),
-          inputClass = Some("form-control-3-4"),
-          labelAsHeading = true,
-          labelClass=Some("heading-large")
+        @inputText(
+            field          = form("value"),
+            label          = messages("nonEeaBusiness.name.heading"),
+            inputClass     = Some("govuk-!-width-three-quarters"),
+            labelAsHeading = true,
+            labelClass     =Some("govuk-heading-l")
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

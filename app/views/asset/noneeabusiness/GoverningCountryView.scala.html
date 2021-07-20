@@ -16,34 +16,37 @@
 
 @import controllers.asset.noneeabusiness.routes._
 @import utils.InputOption
+@import views.html.components.{ErrorSummary, InputSelect, SubmitButton}
 
 @this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    mainTemplate: MainTemplate,
+    formHelper  : FormWithCSRF,
+    errorSummary: ErrorSummary,
+    inputSelect : InputSelect,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], countryOptions: Seq[InputOption], mode: Mode, name: String)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = s"${errorPrefix(form)} ${messages("nonEeaBusiness.governingCountry.title")}"
+@mainTemplate(
+    title = s"${errorPrefix(form)} ${messages("nonEeaBusiness.governingCountry.title")}",
+    showBackLink = true
 ) {
 
     @formHelper(action = GoverningCountryController.onSubmit(mode), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
-
-        @components.select(field = form("value"),
-            label = messages("nonEeaBusiness.governingCountry.heading", name),
-            labelClasses = Set("heading-large"),
-            labelAsHeading = true,
-            options = countryOptions,
-            placeholder = Some(messages("site.address.country.select")),
+        @inputSelect(field   = form("value"),
+            label            = messages("nonEeaBusiness.governingCountry.heading", name),
+            labelClasses     = Set("govuk-heading-l"),
+            labelAsHeading   = true,
+            options          = countryOptions,
+            placeholder      = Some(messages("site.address.country.select")),
             formGroupClasses = Set("autocomplete-wrapper form-control-3-4"),
-            selectAttribute = Set("data-all-countries")
+            selectAttribute  = Map("data-all-countries" -> "")
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

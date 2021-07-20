@@ -17,37 +17,42 @@
 @import controllers.asset.noneeabusiness.routes._
 @import models.AddAssets
 @import viewmodels.AddRow
+@import views.html.components.{SubmitButton, ErrorSummary, InputRadio, Heading, AddToList}
 
 
 @this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    mainTemplate: MainTemplate,
+    formHelper  : FormWithCSRF,
+    errorSummary: ErrorSummary,
+    headingComp : Heading,
+    addToList   : AddToList,
+    inputRadio  : InputRadio,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], completeAssets: Seq[AddRow], heading: String)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = s"${errorPrefix(form)} $heading"
+@mainTemplate(
+    title = s"${errorPrefix(form)} $heading",
+    showBackLink = true
 ) {
 
     @formHelper(action = AddNonEeaBusinessAssetController.submitAnother(), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
+        @headingComp(heading)
 
-        @components.heading(heading)
+        @addToList(completeAssets, "complete", "asset")
 
-        @components.data_list(completeAssets, "complete", "asset")
-
-        @components.input_radio(
+        @inputRadio(
             field = form("value"),
             legend = messages("addNonEeaBusinessAsset.additional-content"),
-            legendClass = Some("heading-medium"),
-            inputs = AddAssets.options("addNonEeaBusinessAsset"),
-            legendAsH2Heading = true
+            legendClass = Some("govuk-heading-m"),
+            inputs = mapRadioOptionsToRadioItems(form("value"), AddAssets.options("addNonEeaBusinessAsset")),
+            legendAsHeading = false,
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

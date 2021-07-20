@@ -17,31 +17,36 @@
 @import controllers.asset.nonTaxableToTaxable.routes._
 @import models.AddAssets
 @import viewmodels.AddRow
+@import views.html.components.{SubmitButton, Heading, AddToList}
 
 @this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    mainTemplate: MainTemplate,
+    formHelper: FormWithCSRF,
+    submitButton: SubmitButton,
+    headingComp : Heading,
+    addToList   : AddToList
 )
 
 @(completeAssets: Seq[AddRow], heading: String, maxLimit: Int, prefix: String)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = heading
+@mainTemplate(
+    title = heading,
+    showBackLink = true
 ) {
 
     @formHelper(action = AddAssetsController.submitComplete(), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @headingComp(heading)
 
-        @components.heading(heading)
+        @addToList(completeAssets, "complete", "asset")
 
-        @components.data_list(completeAssets, "complete", "asset")
+        <div class="govuk-inset-text">
+            <ul class="govuk-list">
+                <li><p>@messages(s"$prefix.maxedOut.p1", maxLimit)</p></li>
+                <li><p>@messages(s"$prefix.maxedOut.p2")</p></li>
+            </ul>
+        </div>
 
-        <ul>
-            <li class="panel-indent"><p>@messages(s"$prefix.maxedOut.p1", maxLimit)</p></li>
-            <li class="panel-indent"><p>@messages(s"$prefix.maxedOut.p2")</p></li>
-        </ul>
-
-        @components.submit_button()
+        @submitButton()
     }
 }

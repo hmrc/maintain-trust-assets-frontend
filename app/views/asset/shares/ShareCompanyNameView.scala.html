@@ -15,31 +15,35 @@
  *@
 
 @import controllers.asset.shares.routes._
+@import views.html.components.{ErrorSummary, InputText, SubmitButton}
 
 @this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    mainTemplate: MainTemplate,
+    formHelper  : FormWithCSRF,
+    errorSummary: ErrorSummary,
+    inputText   : InputText,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = s"${errorPrefix(form)} ${messages("shares.companyName.title")}"
+@mainTemplate(
+    title = s"${errorPrefix(form)} ${messages("shares.companyName.title")}",
+    showBackLink = true
 ) {
 
     @formHelper(action = ShareCompanyNameController.onSubmit(mode), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
-
-        @components.input_text(
+        @inputText(
             field = form("value"),
             label = messages("shares.companyName.heading"),
-            labelClass=Some("heading-large"),
+            labelClass=Some("govuk-heading-l"),
+            inputClass = Some("govuk-!-width-three-quarters"),
             labelAsHeading = true
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

@@ -15,23 +15,27 @@
  *@
 
 @import controllers.asset.nonTaxableToTaxable.routes._
+@import views.html.components.{SubmitButton, ErrorSummary, InputYesNo, BulletList}
 
 @this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    mainTemplate: MainTemplate,
+    formHelper  : FormWithCSRF,
+    submitButton: SubmitButton,
+    inputYesNo  : InputYesNo,
+    errorSummary: ErrorSummary,
+    bulletList  : BulletList
 )
 
 @(form: Form[_])(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = s"${errorPrefix(form)} ${messages("nonTaxableToTaxable.addAssetYesNo.title")}"
+@mainTemplate(
+    title = s"${errorPrefix(form)} ${messages("nonTaxableToTaxable.addAssetYesNo.title")}",
+    showBackLink = true
 ) {
 
     @formHelper(action = AddAssetYesNoController.onSubmit(), 'autoComplete -> "off") {
 
-        @components.back_link()
-
-        @components.error_summary(form.errors)
+        @errorSummary(form.errors)
 
         <h1>@messages("nonTaxableToTaxable.addAssetYesNo.heading")</h1>
 
@@ -39,26 +43,17 @@
 
         <p>@messages("nonTaxableToTaxable.addAssetYesNo.paragraph2")</p>
 
-        @components.bullet_list(
-        "nonTaxableToTaxable.addAssetYesNo",
-        List(
-            "bullet1",
-            "bullet2",
-            "bullet3",
-            "bullet4",
-            "bullet5",
-            "bullet6",
-            "bullet7"
-            )
+        @bulletList("nonTaxableToTaxable.addAssetYesNo",
+            List("bullet1", "bullet2", "bullet3", "bullet4", "bullet5", "bullet6", "bullet7")
         )
 
-        @components.input_yes_no(
+        @inputYesNo(
             field = form("value"),
             label = messages("nonTaxableToTaxable.addAssetYesNo.heading"),
             legendClass = Some("visually-hidden"),
             legendAsHeading = false
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

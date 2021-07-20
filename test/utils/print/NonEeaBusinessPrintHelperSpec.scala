@@ -44,10 +44,10 @@ class NonEeaBusinessPrintHelperSpec extends SpecBase {
     .set(StartDatePage, date).success.value
 
   private val assetRows: Seq[AnswerRow] = Seq(
-    AnswerRow(label = Html(messages("nonEeaBusiness.name.checkYourAnswersLabel")), Html(name), NameController.onPageLoad(NormalMode).url),
-    AnswerRow(label = Html(messages("nonEeaBusiness.internationalAddress.checkYourAnswersLabel", name)), Html("Line 1<br />Line 2<br />France"), InternationalAddressController.onPageLoad(NormalMode).url),
-    AnswerRow(label = Html(messages("nonEeaBusiness.governingCountry.checkYourAnswersLabel", name)), Html("France"), GoverningCountryController.onPageLoad(NormalMode).url),
-    AnswerRow(label = Html(messages("nonEeaBusiness.startDate.checkYourAnswersLabel", name)), Html("3 February 1996"), StartDateController.onPageLoad().url)
+    AnswerRow(label = messages("nonEeaBusiness.name.checkYourAnswersLabel"), Html(name), NameController.onPageLoad(NormalMode).url),
+    AnswerRow(label = messages("nonEeaBusiness.internationalAddress.checkYourAnswersLabel", name), Html("Line 1<br />Line 2<br />France"), InternationalAddressController.onPageLoad(NormalMode).url),
+    AnswerRow(label = messages("nonEeaBusiness.governingCountry.checkYourAnswersLabel", name), Html("France"), GoverningCountryController.onPageLoad(NormalMode).url),
+    AnswerRow(label = messages("nonEeaBusiness.startDate.checkYourAnswersLabel", name), Html("3 February 1996"), StartDateController.onPageLoad().url)
   )
 
   "NonEeaBusinessPrintHelper" when {

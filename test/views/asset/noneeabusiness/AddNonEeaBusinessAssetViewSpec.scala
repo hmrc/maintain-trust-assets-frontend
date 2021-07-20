@@ -54,7 +54,7 @@ class AddNonEeaBusinessAssetViewSpec extends OptionsViewBehaviours with TabularD
 
       behave like pageWithBackLink(applyView(form))
 
-      behave like pageWithOptions(form, applyView, AddAssets.options(messageKeyPrefix).toSet)
+      behave like pageWithOptions(form, applyView, AddAssets.options(messageKeyPrefix))
     }
 
     "there are assets" must {
@@ -67,7 +67,7 @@ class AddNonEeaBusinessAssetViewSpec extends OptionsViewBehaviours with TabularD
 
       behave like pageWithCompleteTabularData(viewWithData, completeAssets)
 
-      behave like pageWithOptions(form, applyView, AddAssets.options(messageKeyPrefix).toSet)
+      behave like pageWithOptions(form, applyView, AddAssets.options(messageKeyPrefix))
     }
 
   }

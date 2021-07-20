@@ -15,28 +15,32 @@
  *@
 
 @import controllers.asset.other.add.routes._
-@import viewmodels.{AnswerSection, RepeaterAnswerSection, Section}
+@import viewmodels.AnswerSection
+@import views.html.components.{SubmitButton, Heading}
+@import views.SectionFormatter.formatAnswerSection
 
 @this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    mainTemplate    : MainTemplate,
+    formHelper      : FormWithCSRF,
+    submitButton    : SubmitButton,
+    heading         : Heading,
+    govukSummaryList: GovukSummaryList
 )
 
 @(answerSections: AnswerSection)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("other.answers.title")
+@mainTemplate(
+    title = messages("other.answers.title"),
+    showBackLink = true
 ) {
-
-    @components.back_link()
-
-    @components.heading("other.answers.heading")
-
-    @components.answer_section(answerSections)
 
     @formHelper(action = OtherAnswerController.onSubmit(), 'autoComplete -> "off") {
 
-        @components.submit_button()
+        @heading("other.answers.heading")
+
+        @govukSummaryList(SummaryList(rows = formatAnswerSection(answerSections)))
+
+        @submitButton()
 
     }
 }

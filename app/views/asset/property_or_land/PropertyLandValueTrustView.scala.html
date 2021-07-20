@@ -15,35 +15,39 @@
  *@
 
 @import controllers.asset.property_or_land.routes._
+@import views.html.components.{ErrorSummary, InputText, SubmitButton}
 
 @this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    mainTemplate: MainTemplate,
+    formHelper  : FormWithCSRF,
+    errorSummary: ErrorSummary,
+    inputText   : InputText,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = s"${errorPrefix(form)} ${messages("propertyOrLand.valueInTrust.title")}"
+@mainTemplate(
+    title = s"${errorPrefix(form)} ${messages("propertyOrLand.valueInTrust.title")}",
+    showBackLink = true
 ) {
 
     @formHelper(action = PropertyLandValueTrustController.onSubmit(mode), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
-
-        @components.input_text(
+        @inputText(
             field = form("value"),
             label = messages("propertyOrLand.valueInTrust.heading"),
-            labelClass = Some("heading-large"),
+            labelClass = Some("govuk-heading-l"),
             labelAsHeading = true,
+            prefix = Some(messages(s"symbolText.asSterling")),
             hint = Some(messages("propertyOrLand.valueInTrust.hint")),
-            symbolText = Some(messages(s"symbolText.asSterling")),
-            symbol = Some("currency"),
-            inputMode = Some("numeric")
+            inputMode = Some("numeric"),
+            pattern = Some("[0-9]*"),
+            inputClass = Some("govuk-input--width-10")
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

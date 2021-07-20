@@ -15,34 +15,38 @@
  *@
 
 @import controllers.asset.shares.routes._
+@import views.html.components.{ErrorSummary, InputText, SubmitButton}
 
 @this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    mainTemplate: MainTemplate,
+    formHelper  : FormWithCSRF,
+    errorSummary: ErrorSummary,
+    inputText   : InputText,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = s"${errorPrefix(form)} ${messages("shares.portfolioQuantityInTrust.title")}"
+@mainTemplate(
+    title = s"${errorPrefix(form)} ${messages("shares.portfolioQuantityInTrust.title")}",
+    showBackLink = true
 ) {
 
     @formHelper(action = SharePortfolioQuantityInTrustController.onSubmit(mode), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
-
-        @components.input_text(
+        @inputText(
             field = form("value"),
             label = messages("shares.portfolioQuantityInTrust.heading"),
-            labelClass = Some("heading-large"),
+            labelClass = Some("govuk-heading-l"),
             labelAsHeading = true,
             hint = Some(messages("shares.portfolioQuantityInTrust.hint")),
             inputMode = Some("numeric"),
-            pattern = Some("[0-9]*")
+            pattern = Some("[0-9]*"),
+            inputClass = Some("govuk-input--width-10")
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

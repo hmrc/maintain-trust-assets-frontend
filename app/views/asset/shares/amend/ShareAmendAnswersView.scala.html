@@ -16,25 +16,29 @@
 
 @import controllers.asset.shares.amend.routes._
 @import viewmodels._
+@import views.html.components.{SubmitButton, Heading}
+@import views.SectionFormatter.formatAnswerSection
 
 @this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    mainTemplate    : MainTemplate,
+    formHelper      : FormWithCSRF,
+    submitButton    : SubmitButton,
+    heading         : Heading,
+    govukSummaryList: GovukSummaryList
 )
 
 @(answerSections: AnswerSection, index: Int)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("shares.answers.title")
+@mainTemplate(
+    title = messages("shares.answers.title"),
+    showBackLink = true
 ) {
 
-    @components.back_link()
-
-    @components.heading("shares.answers.heading")
-
-    @components.answer_section(answerSections)
-
     @formHelper(action = ShareAmendAnswersController.onSubmit(index), 'autoComplete -> "off") {
-        @components.submit_button()
+        @heading("shares.answers.heading")
+
+        @govukSummaryList(SummaryList(rows = formatAnswerSection(answerSections)))
+
+        @submitButton()
     }
 }

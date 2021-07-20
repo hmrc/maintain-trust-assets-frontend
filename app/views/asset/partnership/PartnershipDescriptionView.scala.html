@@ -15,32 +15,35 @@
  *@
 
 @import controllers.asset.partnership.routes._
+@import views.html.components.{ErrorSummary, InputText, SubmitButton}
 
 @this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    mainTemplate: MainTemplate,
+    formHelper  : FormWithCSRF,
+    errorSummary: ErrorSummary,
+    inputText   : InputText,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = s"${errorPrefix(form)} ${messages("partnership.description.title")}"
+@mainTemplate(
+    title = s"${errorPrefix(form)} ${messages("partnership.description.title")}",
+    showBackLink = true
 ) {
 
     @formHelper(action = PartnershipDescriptionController.onSubmit(mode), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
-
-        @components.input_text(
+        @inputText(
             field = form("value"),
             label = messages("partnership.description.heading"),
-            labelClass = Some("heading-large"),
+            labelClass = Some("govuk-heading-l"),
             labelAsHeading = true,
             hint = Some(messages("partnership.description.hint"))
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

@@ -15,33 +15,36 @@
  *@
 
 @import controllers.asset.business.routes._
+@import views.html.components.{ErrorSummary, InputText, SubmitButton}
 
 @this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    mainTemplate: MainTemplate,
+    formHelper  : FormWithCSRF,
+    errorSummary: ErrorSummary,
+    inputText   : InputText,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], mode: Mode, businessName: String)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = s"${errorPrefix(form)} ${messages("business.description.title")}"
+@mainTemplate(
+    title = s"${errorPrefix(form)} ${messages("business.description.title")}",
+    showBackLink = true
 ) {
 
     @formHelper(action = BusinessDescriptionController.onSubmit(mode), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
-
-        @components.input_text(
+        @inputText(
           field = form("value"),
           label = messages("business.description.heading", businessName),
           labelAsHeading = true,
-          labelClass=Some("heading-large"),
-          inputClass = Some("form-control-3-4"),
+          labelClass=Some("govuk-heading-l"),
+          inputClass = Some("govuk-!-width-three-quarters"),
           hint = Some(messages("business.description.hint"))
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }
