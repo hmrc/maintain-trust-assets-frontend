@@ -61,7 +61,7 @@ noneeabusiness.name.default = the business
 partnership.name.default = the partnership
 shares.name.default = the company
 
-symbolText.asSterling = As pounds sterling.
+symbolText.asSterling = £
 
 site.address.uk.title = What is the address?
 site.address.uk.heading = What is {0}’s address?
