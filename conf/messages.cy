@@ -53,6 +53,9 @@ site.address.uk.line4=Cyfeiriad – llinell 4 (dewisol)
 site.address.uk.postcode=Cod post
 site.address.uk.postcode.hint=Er enghraifft, AB1 1AB.
 site.address.uk.checkYourAnswersLabel=Beth yw cyfeiriad {0}?
+
+symbolText.asSterling = £
+
 address.country=Gwlad
 site.address.country.select=Dewiswch wlad
 ukAddress.error.line1.required=Nodwch gyfeiriad – llinell 1
@@ -102,20 +105,9 @@ answerPage.section.partnershipAsset.subheading=Partneriaeth {0}
 answerPage.section.businessAsset.subheading=Busnes {0}
 answerPage.section.otherAsset.subheading=Arall {0}
 answerPage.section.nonEeaBusinessAsset.subheading=Cwmni nad yw’n rhan o’r AEE {0}
-addAnAssetYesNo.title=A ydych am ychwanegu cwmni nad yw’n rhan o’r AEE?
-addAnAssetYesNo.heading=A ydych am ychwanegu cwmni nad yw’n rhan o’r AEE?
-addAnAssetYesNo.error.required=Dewiswch ‘Iawn’ os ydych am ychwanegu cwmni nad yw’n rhan o’r AEE
-addAssets.title=Ychwanegu cwmni nad yw’n rhan o’r AEE
-addAssets.heading=Ychwanegu cwmni nad yw’n rhan o’r AEE
-addAssets.additional-content=A ydych am ychwanegu cwmni arall nad yw’n rhan o’r AEE?
-addAssets.add-them-now=Ydw, ychwanegwch un nawr
-addAssets.no-complete=Nac ydw, rwyf wedi ychwanegu pob cwmni nad yw’n rhan o’r AEE
-addAssets.error.required=Dewiswch ‘Iawn’ os ydych am ychwanegu cwmni nad yw’n rhan o’r AEE
-addAssets.count.title=Rydych wedi ychwanegu {0} o gwmnïau nad ydynt yn rhan o’r AEE
-addAssets.count.heading=Rydych wedi ychwanegu {0} o gwmnïau nad ydynt yn rhan o’r AEE
-addAssets.maxedOut.p1=Ni allwch ychwanegu cwmni arall nad yw’n rhan o’r AEE gan eich bod wedi nodi uchafswm o {0}.
-addAssets.maxedOut.p2=Gallwch ychwanegu cwmni arall nad yw’n rhan o’r AEE drwy gael gwared ar un sy’n bodoli eisoes, neu ysgrifennu at CThEM gyda manylion unrhyw gwmnïau ychwanegol nad ydynt yn aelodau o’r AEE.
+
 assets.defaultText=y cwmni hwn nad yw’n AEE
+
 trustOwnsNonEeaBusinessYesNo.title=A yw’r ymddiriedolaeth yn berchen ar gwmni nad yw’n rhan o’r AEE neu a oes ganddi gyfran reolaethol ynddo?
 trustOwnsNonEeaBusinessYesNo.heading=A yw’r ymddiriedolaeth yn berchen ar gwmni nad yw’n rhan o’r AEE neu a oes ganddi gyfran reolaethol ynddo?
 trustOwnsNonEeaBusinessYesNo.error.required=Dewiswch ‘Iawn’ os yw’r ymddiriedolaeth yn berchen ar gwmni nad yw’n rhan o’r AEE neu a oes ganddi gyfran reolaethol ynddo
@@ -416,4 +408,16 @@ date.month=Mis
 date.year=Blwyddyn
 addNonEeaBusinessAsset.maxedOut.p1=Ni allwch ychwanegu ased arall gan eich bod wedi nodi uchafswm o {0}.
 addNonEeaBusinessAsset.maxedOut.p2=Gallwch ychwanegu ased arall drwy dynnu un presennol, neu drwy ysgrifennu i CThEM gyda manylion unrhyw asedion ychwanegol.
+
+nonTaxableToTaxable.addAssets.title=Ychwanegu asedion
+nonTaxableToTaxable.addAssets.heading=Ychwanegu asedion
+nonTaxableToTaxable.addAssets.additional-content=A ydych am ychwanegu ased arall?
+nonTaxableToTaxable.addAssets.add-them-now=Iawn, rwyf am ei ychwanegu nawr
+nonTaxableToTaxable.addAssets.add-them-later=Iawn, rwyf am ei ychwanegu yn nes ymlaen
+nonTaxableToTaxable.addAssets.no-complete=Na, rwyf wedi ychwanegu’r holl asedion
+nonTaxableToTaxable.addAssets.error.required=Dewiswch ‘Iawn’ os ydych am ychwanegu ased arall
+nonTaxableToTaxable.addAssets.count.title=Rydych wedi ychwanegu {0} o asedion
+nonTaxableToTaxable.addAssets.count.heading=Rydych wedi ychwanegu {0} o asedion
+nonTaxableToTaxable.addAssets.maxedOut.p1=Ni allwch ychwanegu ased arall gan eich bod wedi nodi uchafswm o {0}.
+nonTaxableToTaxable.addAssets.maxedOut.p2=Gallwch ychwanegu ased arall drwy dynnu un presennol
 
