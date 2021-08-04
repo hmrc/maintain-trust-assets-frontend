@@ -16,6 +16,7 @@
 
 package views.asset.property_or_land
 
+import controllers.asset.property_or_land.routes
 import forms.DescriptionFormProvider
 import models.NormalMode
 import play.api.data.Form
@@ -26,7 +27,6 @@ import views.html.asset.property_or_land.PropertyOrLandDescriptionView
 class PropertyOrLandDescriptionViewSpec extends StringViewBehaviours {
 
   private val messageKeyPrefix: String = "propertyOrLand.description"
-  private val hintKey: String = s"$messageKeyPrefix.hint"
 
   override val form: Form[String] = new DescriptionFormProvider().withConfig(56, messageKeyPrefix)
 
@@ -41,7 +41,16 @@ class PropertyOrLandDescriptionViewSpec extends StringViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like stringPage(form, applyView, messageKeyPrefix, Some(hintKey))
+    behave like pageWithHint(form, applyView, messageKeyPrefix + ".hint")
+
+    behave like pageWithTextFields(
+      form,
+      applyView,
+      messageKeyPrefix,
+      None,
+      routes.PropertyOrLandDescriptionController.onSubmit(NormalMode).url,
+      "value"
+    )
 
     behave like pageWithASubmitButton(applyView(form))
   }

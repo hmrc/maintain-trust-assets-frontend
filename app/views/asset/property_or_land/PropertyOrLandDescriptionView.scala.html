@@ -15,13 +15,13 @@
  *@
 
 @import controllers.asset.property_or_land.routes._
-@import views.html.components.{ErrorSummary, InputText, SubmitButton}
+@import views.html.components.{ErrorSummary, InputCharacterCount, SubmitButton}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper  : FormWithCSRF,
     errorSummary: ErrorSummary,
-    inputText   : InputText,
+    characterCount : InputCharacterCount,
     submitButton: SubmitButton
 )
 
@@ -36,12 +36,14 @@
 
         @errorSummary(form.errors)
 
-        @inputText(
-          field = form("value"),
-          label = messages("propertyOrLand.description.heading"),
-          labelClass = Some("govuk-heading-l"),
-          labelAsHeading = true,
-          hint = Some(messages("propertyOrLand.description.hint"))
+        @characterCount(
+            field = form("value"),
+            id = "value",
+            name = "value",
+            label = messages("propertyOrLand.description.heading"),
+            isPageHeading = true,
+            hint = Some(messages("propertyOrLand.description.hint")),
+            maxLength = Some(56)
         )
 
         @submitButton()

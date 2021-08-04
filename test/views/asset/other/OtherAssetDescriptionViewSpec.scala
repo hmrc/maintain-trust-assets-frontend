@@ -16,6 +16,7 @@
 
 package views.asset.other
 
+import controllers.asset.other.routes
 import forms.DescriptionFormProvider
 import models.NormalMode
 import play.api.data.Form
@@ -26,7 +27,6 @@ import views.html.asset.other.OtherAssetDescriptionView
 class OtherAssetDescriptionViewSpec extends StringViewBehaviours {
 
   private val prefix: String = "other.description"
-  private val hintKey: String = s"$prefix.hint"
 
   override val form: Form[String] = new DescriptionFormProvider().withConfig(56, prefix)
 
@@ -41,7 +41,16 @@ class OtherAssetDescriptionViewSpec extends StringViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like stringPage(form, applyView, prefix, Some(hintKey))
+    behave like pageWithHint(form, applyView, prefix + ".hint")
+
+    behave like pageWithTextFields(
+      form,
+      applyView,
+      prefix,
+      None,
+      routes.OtherAssetDescriptionController.onSubmit(NormalMode).url,
+      "value"
+    )
 
     behave like pageWithASubmitButton(applyView(form))
 
