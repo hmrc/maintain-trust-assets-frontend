@@ -16,7 +16,6 @@
 
 package views.asset.partnership
 
-import controllers.asset.partnership.routes
 import forms.DescriptionFormProvider
 import models.NormalMode
 import play.api.data.Form
@@ -27,6 +26,7 @@ import views.html.asset.partnership.PartnershipDescriptionView
 class PartnershipDescriptionViewSpec extends StringViewBehaviours {
 
   private val messageKeyPrefix: String = "partnership.description"
+  private val hintKey: String = s"$messageKeyPrefix.hint"
 
   override val form: Form[String] = new DescriptionFormProvider().withConfig(56, messageKeyPrefix)
 
@@ -41,16 +41,9 @@ class PartnershipDescriptionViewSpec extends StringViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like pageWithHint(form, applyView, messageKeyPrefix + ".hint")
+    behave like pageWithHint(form, applyView, hintKey)
 
-    behave like pageWithTextFields(
-      form,
-      applyView,
-      messageKeyPrefix,
-      None,
-      routes.PartnershipDescriptionController.onSubmit(NormalMode).url,
-      "value"
-    )
+    behave like stringPage(form, applyView, messageKeyPrefix, Some(hintKey))
 
     behave like pageWithASubmitButton(applyView(form))
   }

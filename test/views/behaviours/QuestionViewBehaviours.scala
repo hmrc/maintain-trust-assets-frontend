@@ -32,7 +32,6 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
   def pageWithTextFields(form: Form[A],
                          createView: Form[A] => HtmlFormat.Appendable,
                          messageKeyPrefix: String,
-                         messageKeyParam: Option[String],
                          expectedFormAction: String,
                          fields: String*): Unit = {
 
@@ -60,7 +59,7 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
         "show an error prefix in the browser title" in {
 
           val doc = asDocument(createView(form.withError(error)))
-          assertEqualsValue(doc, "title", ViewUtils.breadcrumbTitle(s"""${messages("error.browser.title.prefix")} ${messages(s"$messageKeyPrefix.title", messageKeyParam.getOrElse(""))}"""))
+          assertEqualsValue(doc, "title", ViewUtils.breadcrumbTitle(s"""${messages("error.browser.title.prefix")} ${messages(s"$messageKeyPrefix.title")}"""))
         }
       }
 
@@ -77,13 +76,9 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
           s"show an error associated with the field '$field'" in {
 
             val doc = asDocument(createView(form.withError(FormError(field, "error"))))
-            val inputField = doc.getElementById(field)
-            inputField.attr("aria-describedby").split(" ").foreach { idOfDescribedByTarget =>
-              doc.getElementById(idOfDescribedByTarget) mustNot be(null)
-            }
-
-
-            doc.select(s"label[for='$field']").size() mustBe 1
+            val errorSpan = doc.getElementsByClass("govuk-error-message").first
+            doc.getElementById(field).attr("aria-describedby") contains errorSpan.attr("id")
+            errorSpan.parent.attr("for") mustBe field
           }
         }
 
@@ -101,7 +96,7 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
 
           // error id is that of the input field
           errorSpan.attr("id") must include(field)
-          errorSpan.getElementsByClass("govuk-visually-hidden").first().text() must include("Error:")
+          errorSpan.getElementsByClass("visually-hidden").first().text() must include("Error:")
 
           // input is described by error to screen readers
           doc.getElementById(field).attr("aria-describedby") must include(errorSpan.attr("id"))

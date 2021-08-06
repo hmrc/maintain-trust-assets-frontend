@@ -16,7 +16,6 @@
 
 package views.asset.business
 
-import controllers.asset.business.routes
 import forms.DescriptionFormProvider
 import models.NormalMode
 import play.api.data.Form
@@ -43,14 +42,7 @@ class BusinessDescriptionViewSpec extends StringViewBehaviours {
 
     behave like pageWithHint(form, applyView, messageKeyPrefix + ".hint")
 
-    behave like pageWithTextFields(
-      form,
-      applyView,
-      messageKeyPrefix,
-      Some(businessName),
-      routes.BusinessDescriptionController.onSubmit(NormalMode).url,
-      "value"
-    )
+    behave like stringPageWithDynamicTitle(form, applyView, messageKeyPrefix, businessName)
 
     behave like pageWithASubmitButton(applyView(form))
   }
