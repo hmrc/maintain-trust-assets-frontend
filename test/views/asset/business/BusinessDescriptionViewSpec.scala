@@ -40,9 +40,7 @@ class BusinessDescriptionViewSpec extends StringViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like pageWithHint(form, applyView, messageKeyPrefix + ".hint")
-
-    behave like stringPageWithDynamicTitle(form, applyView, messageKeyPrefix, businessName)
+    behave like stringPageWithDynamicTitle(form, applyView, messageKeyPrefix, businessName, None)
 
     behave like pageWithASubmitButton(applyView(form))
   }

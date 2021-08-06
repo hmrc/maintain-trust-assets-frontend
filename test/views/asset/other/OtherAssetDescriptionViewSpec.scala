@@ -26,7 +26,6 @@ import views.html.asset.other.OtherAssetDescriptionView
 class OtherAssetDescriptionViewSpec extends StringViewBehaviours {
 
   private val prefix: String = "other.description"
-  private val hintKey: String = s"$prefix.hint"
 
   override val form: Form[String] = new DescriptionFormProvider().withConfig(56, prefix)
 
@@ -41,9 +40,7 @@ class OtherAssetDescriptionViewSpec extends StringViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like pageWithHint(form, applyView, hintKey)
-
-    behave like stringPage(form, applyView, prefix, Some(hintKey))
+    behave like stringPage(form, applyView, prefix, None)
 
     behave like pageWithASubmitButton(applyView(form))
 
