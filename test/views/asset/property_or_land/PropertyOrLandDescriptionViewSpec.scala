@@ -26,7 +26,6 @@ import views.html.asset.property_or_land.PropertyOrLandDescriptionView
 class PropertyOrLandDescriptionViewSpec extends StringViewBehaviours {
 
   private val messageKeyPrefix: String = "propertyOrLand.description"
-  private val hintKey: String = s"$messageKeyPrefix.hint"
 
   override val form: Form[String] = new DescriptionFormProvider().withConfig(56, messageKeyPrefix)
 
@@ -41,7 +40,7 @@ class PropertyOrLandDescriptionViewSpec extends StringViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like stringPage(form, applyView, messageKeyPrefix, Some(hintKey))
+    behave like stringPage(form, applyView, messageKeyPrefix, None)
 
     behave like pageWithASubmitButton(applyView(form))
   }
