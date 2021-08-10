@@ -27,18 +27,16 @@ class AddAssetViewHelper {
 
   def rows(assets: Assets, isNonTaxable: Boolean)(implicit messages: Messages): AddToRows = {
 
+    val rows = assets.nonEEABusiness.zipWithIndex.map(x => renderNonEEABusiness(x._1, x._2)) ++
+      assets.monetary.map(renderMoney) ++
+      assets.propertyOrLand.zipWithIndex.map(x => renderPropertyOrLand(x._1, x._2)) ++
+      assets.other.zipWithIndex.map(x => renderOther(x._1, x._2)) ++
+      assets.business.zipWithIndex.map(x => renderBusiness(x._1, x._2)) ++
+      assets.partnerShip.zipWithIndex.map(x => renderPartnership(x._1, x._2)) ++
+      assets.shares.zipWithIndex.map(x => renderShares(x._1, x._2))
+
     AddToRows(
-      if (isNonTaxable) {
-        assets.nonEEABusiness.zipWithIndex.map(x => renderNonEEABusiness(x._1, x._2))
-      } else {
-        assets.nonEEABusiness.zipWithIndex.map(x => renderNonEEABusiness(x._1, x._2)) ++
-          assets.monetary.map(renderMoney) ++
-          assets.propertyOrLand.zipWithIndex.map(x => renderPropertyOrLand(x._1, x._2)) ++
-          assets.other.zipWithIndex.map(x => renderOther(x._1, x._2)) ++
-          assets.business.zipWithIndex.map(x => renderBusiness(x._1, x._2)) ++
-          assets.partnerShip.zipWithIndex.map(x => renderPartnership(x._1, x._2)) ++
-          assets.shares.zipWithIndex.map(x => renderShares(x._1, x._2))
-      }
+      rows.filterNot(x => x.typeLabel != nonEeaBusinessLabel && isNonTaxable)
     )
   }
 
@@ -78,10 +76,12 @@ class AddAssetViewHelper {
     )
   }
 
+  private def nonEeaBusinessLabel(implicit messages: Messages): String = messages("entities.asset.nonEeaBusiness")
+
   private def renderNonEEABusiness(asset: NonEeaBusinessType, index: Int)(implicit messages: Messages): AddRow = {
     AddRow(
       name = asset.orgName,
-      typeLabel = messages("entities.asset.nonEeaBusiness"),
+      typeLabel = nonEeaBusinessLabel,
       changeUrl = noneeabusiness.amend.routes.AnswersController.extractAndRender(index).url,
       removeUrl = noneeabusiness.remove.routes.RemoveAssetYesNoController.onPageLoad(index).url
     )
