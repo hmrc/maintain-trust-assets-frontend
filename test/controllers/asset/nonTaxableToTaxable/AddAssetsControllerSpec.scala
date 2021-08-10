@@ -241,7 +241,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
 
       "return OK and the correct view for a GET" in {
 
-        when(mockViewHelper.rows(any())(any())).thenReturn(AddToRows(fakeAddRows))
+        when(mockViewHelper.rows(any(), any())(any())).thenReturn(AddToRows(fakeAddRows))
 
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(isMigratingToTaxable = true)))
           .overrides(
@@ -260,7 +260,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
         contentAsString(result) mustEqual
           view(addAssetForm, fakeAddRows, "Add assets", Nil)(request, messages).toString
 
-        verify(mockViewHelper).rows(eqTo(assets))(any())
+        verify(mockViewHelper).rows(eqTo(assets), eqTo(false))(any())
 
         application.stop()
 
@@ -276,7 +276,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
 
       "return OK and the correct view for a GET" in {
 
-        when(mockViewHelper.rows(any())(any())).thenReturn(AddToRows(fakeAddRows))
+        when(mockViewHelper.rows(any(), any())(any())).thenReturn(AddToRows(fakeAddRows))
 
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(isMigratingToTaxable = true)))
           .overrides(
@@ -296,7 +296,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
         contentAsString(result) mustEqual
           view(addAssetForm, fakeAddRows, s"You have added $numberOfAssets assets", Nil)(request, messages).toString
 
-        verify(mockViewHelper).rows(eqTo(assets))(any())
+        verify(mockViewHelper).rows(eqTo(assets), eqTo(false))(any())
 
         application.stop()
       }
@@ -345,7 +345,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
 
       "return a Bad Request and errors when invalid data is submitted" in {
 
-        when(mockViewHelper.rows(any())(any())).thenReturn(AddToRows(fakeAddRows))
+        when(mockViewHelper.rows(any(), any())(any())).thenReturn(AddToRows(fakeAddRows))
 
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
@@ -366,7 +366,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
 
         contentAsString(result) mustEqual view(boundForm, fakeAddRows, s"You have added $numberOfAssets assets", Nil)(request, messages).toString
 
-        verify(mockViewHelper).rows(eqTo(assets))(any())
+        verify(mockViewHelper).rows(eqTo(assets), eqTo(false))(any())
 
         application.stop()
       }
@@ -390,7 +390,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
           val fakeService: FakeService = new FakeService(assets)
           val fakeAddRows = List.fill(MAX_NON_EEA_BUSINESS_ASSETS)(fakeAddRow)
 
-          when(mockViewHelper.rows(any())(any())).thenReturn(AddToRows(fakeAddRows))
+          when(mockViewHelper.rows(any(), any())(any())).thenReturn(AddToRows(fakeAddRows))
 
           val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(isMigratingToTaxable = true)))
             .overrides(
@@ -408,7 +408,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
           contentAsString(result) must include("You cannot add another non-EEA company asset as you have entered a maximum of 25.")
           contentAsString(result) must include("If you have further assets to add within this type, write to HMRC with their details.")
 
-          verify(mockViewHelper).rows(eqTo(assets))(any())
+          verify(mockViewHelper).rows(eqTo(assets), eqTo(false))(any())
 
           application.stop()
         }
@@ -427,7 +427,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
           val fakeService: FakeService = new FakeService(assets)
           val fakeAddRows = List.fill(MAX_MONEY_ASSETS + MAX_NON_EEA_BUSINESS_ASSETS)(fakeAddRow)
 
-          when(mockViewHelper.rows(any())(any())).thenReturn(AddToRows(fakeAddRows))
+          when(mockViewHelper.rows(any(), any())(any())).thenReturn(AddToRows(fakeAddRows))
 
           val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(isMigratingToTaxable = true)))
             .overrides(
@@ -445,7 +445,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
           contentAsString(result) must include("You have entered the maximum number of assets for:")
           contentAsString(result) must include("If you have further assets to add within these types, write to HMRC with their details.")
 
-          verify(mockViewHelper).rows(eqTo(assets))(any())
+          verify(mockViewHelper).rows(eqTo(assets), eqTo(false))(any())
 
           application.stop()
         }
@@ -464,7 +464,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
           val fakeService: FakeService = new FakeService(assets)
           val fakeAddRows = List.fill(MAX_ALL_ASSETS)(fakeAddRow)
 
-          when(mockViewHelper.rows(any())(any())).thenReturn(AddToRows(fakeAddRows))
+          when(mockViewHelper.rows(any(), any())(any())).thenReturn(AddToRows(fakeAddRows))
 
           val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(isMigratingToTaxable = true)))
             .overrides(
@@ -487,7 +487,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
           content must include("You cannot add another asset as you have entered a maximum of 76.")
           content must include("You can add another asset by removing an existing one, or write to HMRC with details of any additional assets.")
 
-          verify(mockViewHelper).rows(eqTo(assets))(any())
+          verify(mockViewHelper).rows(eqTo(assets), eqTo(false))(any())
 
           application.stop()
         }

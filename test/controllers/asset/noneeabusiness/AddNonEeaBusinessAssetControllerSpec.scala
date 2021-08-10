@@ -200,7 +200,7 @@ class AddNonEeaBusinessAssetControllerSpec extends SpecBase with Generators with
 
       "return OK and the correct view for a GET" in {
 
-        when(mockViewHelper.rows(any())(any())).thenReturn(AddToRows(fakeAddRows))
+        when(mockViewHelper.rows(any(), any())(any())).thenReturn(AddToRows(fakeAddRows))
 
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(isTaxable = true)))
           .overrides(
@@ -219,7 +219,7 @@ class AddNonEeaBusinessAssetControllerSpec extends SpecBase with Generators with
         contentAsString(result) mustEqual
           view(AddNonEeaBusinessAssetForm, fakeAddRows, "Add a non-EEA company")(request, messages).toString
 
-        verify(mockViewHelper).rows(eqTo(assets))(any())
+        verify(mockViewHelper).rows(eqTo(assets), eqTo(true))(any())
 
         application.stop()
       }
@@ -234,7 +234,7 @@ class AddNonEeaBusinessAssetControllerSpec extends SpecBase with Generators with
 
       "return OK and the correct view for a GET" in {
 
-        when(mockViewHelper.rows(any())(any())).thenReturn(AddToRows(fakeAddRows))
+        when(mockViewHelper.rows(any(), any())(any())).thenReturn(AddToRows(fakeAddRows))
 
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(isTaxable = true)))
           .overrides(
@@ -253,7 +253,7 @@ class AddNonEeaBusinessAssetControllerSpec extends SpecBase with Generators with
         contentAsString(result) mustEqual
           view(AddNonEeaBusinessAssetForm, fakeAddRows, s"You have added $numberOfAssets non-EEA companies")(request, messages).toString
 
-        verify(mockViewHelper).rows(eqTo(assets))(any())
+        verify(mockViewHelper).rows(eqTo(assets), eqTo(true))(any())
 
         application.stop()
       }
@@ -301,7 +301,7 @@ class AddNonEeaBusinessAssetControllerSpec extends SpecBase with Generators with
 
       "return a Bad Request and errors when invalid data is submitted" in {
 
-        when(mockViewHelper.rows(any())(any())).thenReturn(AddToRows(fakeAddRows))
+        when(mockViewHelper.rows(any(), any())(any())).thenReturn(AddToRows(fakeAddRows))
 
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
@@ -322,7 +322,7 @@ class AddNonEeaBusinessAssetControllerSpec extends SpecBase with Generators with
 
         contentAsString(result) mustEqual view(boundForm, fakeAddRows, s"You have added $numberOfAssets non-EEA companies")(request, messages).toString
 
-        verify(mockViewHelper).rows(eqTo(assets))(any())
+        verify(mockViewHelper).rows(eqTo(assets), eqTo(true))(any())
 
         application.stop()
       }
@@ -344,7 +344,7 @@ class AddNonEeaBusinessAssetControllerSpec extends SpecBase with Generators with
         val fakeService: FakeService = new FakeService(assets)
         val fakeAddRows = List.fill(MAX_NON_EEA_BUSINESS_ASSETS)(fakeAddRow)
 
-        when(mockViewHelper.rows(any())(any())).thenReturn(AddToRows(fakeAddRows))
+        when(mockViewHelper.rows(any(), any())(any())).thenReturn(AddToRows(fakeAddRows))
 
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(isMigratingToTaxable = true)))
           .overrides(
@@ -367,7 +367,7 @@ class AddNonEeaBusinessAssetControllerSpec extends SpecBase with Generators with
         content must include("You cannot add another non-EEA company as you have entered a maximum of 25.")
         content must include("You can add another non-EEA company by removing an existing one, or write to HMRC with details of any additional non-EEA companies.")
 
-        verify(mockViewHelper).rows(eqTo(assets))(any())
+        verify(mockViewHelper).rows(eqTo(assets), eqTo(true))(any())
 
         application.stop()
       }
