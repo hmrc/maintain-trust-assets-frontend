@@ -75,7 +75,7 @@ class AddNonEeaBusinessAssetController @Inject()(
         updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
         _ <- repository.set(updatedAnswers)
       } yield {
-        val assetRows = viewHelper.rows(assets)
+        val assetRows = viewHelper.rows(assets, isNonTaxable = true)
 
         val maxLimit: Int = MAX_NON_EEA_BUSINESS_ASSETS
 
@@ -118,7 +118,7 @@ class AddNonEeaBusinessAssetController @Inject()(
         addAnotherForm.bindFromRequest().fold(
           (formWithErrors: Form[_]) => {
 
-            val assetRows = viewHelper.rows(assets)
+            val assetRows = viewHelper.rows(assets, isNonTaxable = true)
 
             Future.successful(BadRequest(addAssetsView(formWithErrors, assetRows.complete, heading(assetRows.count))))
           },

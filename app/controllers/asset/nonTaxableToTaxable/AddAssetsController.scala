@@ -81,7 +81,7 @@ class AddAssetsController @Inject()(
           case _ if assets.isEmpty =>
             Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetYesNoController.onPageLoad())
           case _ =>
-            val assetRows = viewHelper.rows(assets)
+            val assetRows = viewHelper.rows(assets, isNonTaxable = false)
 
             if (WhatKindOfAsset.nonMaxedOutOptions(assets).isEmpty) {
               Ok(maxedOutView(assetRows.complete, heading(assetRows.count), MAX_ALL_ASSETS, prefix))
@@ -125,7 +125,7 @@ class AddAssetsController @Inject()(
         addAnotherForm.bindFromRequest().fold(
           (formWithErrors: Form[_]) => {
 
-            val assetRows = viewHelper.rows(assets)
+            val assetRows = viewHelper.rows(assets, isNonTaxable = false)
 
             Future.successful(BadRequest(addAssetsView(
               form = formWithErrors,
