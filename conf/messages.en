@@ -29,8 +29,6 @@ entities.asset.propertyOrLand = Property or land
 entities.asset.shares = Share
 entities.asset.other = Other
 
-footer.links.accessibility.text = Accessibility
-
 session_expired.title = For your security, we signed you out
 session_expired.heading = For your security, we signed you out
 session_expired.guidance = This is because you have been inactive on the service for 15 minutes.
@@ -56,9 +54,9 @@ site.sign_in = Sign in
 
 propertyOrLandDescription.name.default = the asset
 business.name.default = the business
-otherDescription.name.default = the asset
+other.description.default = the asset
 noneeabusiness.name.default = the business
-partnership.name.default = the partnership
+partnership.description.default = the partnership
 shares.name.default = the company
 
 symbolText.asSterling = £
