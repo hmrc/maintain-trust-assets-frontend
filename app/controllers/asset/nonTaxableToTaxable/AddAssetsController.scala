@@ -22,6 +22,7 @@ import controllers.actions.StandardActionSets
 import forms.{AddAssetsFormProvider, YesNoFormProvider}
 import handlers.ErrorHandler
 import models.Constants._
+import models.TaskStatus.Completed
 import models.{AddAssets, UserAnswers, WhatKindOfAsset}
 import navigation.AssetsNavigator
 import pages.asset.AddAnAssetYesNoPage
@@ -158,7 +159,7 @@ class AddAssetsController @Inject()(
     implicit request =>
 
       for {
-        _ <- trustsStoreConnector.setTaskComplete(request.userAnswers.identifier)
+        _ <- trustsStoreConnector.updateTaskStatus(request.userAnswers.identifier, Completed)
       } yield {
         Redirect(appConfig.maintainATrustOverview)
       }

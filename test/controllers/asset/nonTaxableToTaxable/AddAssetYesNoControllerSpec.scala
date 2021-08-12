@@ -21,10 +21,11 @@ import connectors.TrustsStoreConnector
 import controllers.IndexValidation
 import controllers.routes._
 import forms.YesNoFormProvider
+import models.TaskStatus._
 import models.assets.NonEeaBusinessType
 import models.{UkAddress, UserAnswers}
 import navigation.AssetsNavigator
-import org.mockito.Matchers.any
+import org.mockito.Matchers.{any, eq => eqTo}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
@@ -50,13 +51,19 @@ class AddAssetYesNoControllerSpec extends SpecBase with IndexValidation with Sca
   lazy val addAssetYesNoPostRoute: String =
     controllers.asset.nonTaxableToTaxable.routes.AddAssetYesNoController.onSubmit().url
 
+  private val mockTrustService: TrustService = mock[TrustService]
+  private val mockTrustStoreConnector: TrustsStoreConnector = mock[TrustsStoreConnector]
   private val mockNavigator: AssetsNavigator = mock[AssetsNavigator]
 
   override def emptyUserAnswers: UserAnswers = super.emptyUserAnswers.copy(isMigratingToTaxable = true)
 
   override def beforeEach(): Unit = {
-    reset(mockNavigator)
+    reset(mockNavigator, mockTrustService, mockTrustStoreConnector)
+
     when(mockNavigator.redirectFromAddAssetYesNoPage(any(), any(), any())).thenReturn(fakeNavigator.desiredRoute)
+
+    when(mockTrustStoreConnector.updateTaskStatus(any(), any())(any(), any()))
+      .thenReturn(Future.successful(HttpResponse(OK, "")))
   }
 
   "AddAssetYesNo Controller" must {
@@ -101,9 +108,6 @@ class AddAssetYesNoControllerSpec extends SpecBase with IndexValidation with Sca
 
     "redirect to the next page when valid data is submitted, when no assets and not adding any more" in {
 
-      val mockTrustService: TrustService = mock[TrustService]
-      val mockTrustStoreConnector: TrustsStoreConnector = mock[TrustsStoreConnector]
-
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[AssetsNavigator].toInstance(mockNavigator))
         .overrides(bind[TrustService].toInstance(mockTrustService))
@@ -113,31 +117,26 @@ class AddAssetYesNoControllerSpec extends SpecBase with IndexValidation with Sca
       when(mockTrustService.getAssets(any())(any(), any()))
         .thenReturn(Future.successful(models.assets.Assets()))
 
-      when(mockTrustStoreConnector.setTaskInProgress(any())(any(), any()))
-        .thenReturn(Future.successful(HttpResponse(OK, "")))
-
       val request = FakeRequest(POST, addAssetYesNoPostRoute)
         .withFormUrlEncodedBody(("value", "false"))
 
       val result = route(application, request).value
 
       whenReady(result) { _ =>
-        verify(mockTrustStoreConnector, atLeastOnce()).setTaskInProgress(any())(any(), any())
 
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
 
         verify(mockNavigator).redirectFromAddAssetYesNoPage(value = false, isMigratingToTaxable = true, noAssets = true)
+
+        verify(mockTrustStoreConnector).updateTaskStatus(any(), eqTo(InProgress))(any(), any())
       }
 
       application.stop()
     }
 
     "redirect to the next page when valid data is submitted, when no assets and adding more" in {
-
-      val mockTrustService: TrustService = mock[TrustService]
-      val mockTrustStoreConnector: TrustsStoreConnector = mock[TrustsStoreConnector]
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[AssetsNavigator].toInstance(mockNavigator))
@@ -154,22 +153,20 @@ class AddAssetYesNoControllerSpec extends SpecBase with IndexValidation with Sca
       val result = route(application, request).value
 
       whenReady(result) { _ =>
-        verify(mockTrustStoreConnector, never()).setTaskInProgress(any())(any(), any())
 
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
 
         verify(mockNavigator).redirectFromAddAssetYesNoPage(value = true, isMigratingToTaxable = true, noAssets = true)
+
+        verify(mockTrustStoreConnector, never()).updateTaskStatus(any(), any())(any(), any())
       }
 
       application.stop()
     }
 
     "redirect to the next page when valid data is submitted, when has non-eea asset and adding no more" in {
-
-      val mockTrustService: TrustService = mock[TrustService]
-      val mockTrustStoreConnector: TrustsStoreConnector = mock[TrustsStoreConnector]
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[AssetsNavigator].toInstance(mockNavigator))
@@ -184,22 +181,20 @@ class AddAssetYesNoControllerSpec extends SpecBase with IndexValidation with Sca
       when(mockTrustService.getAssets(any())(any(), any()))
         .thenReturn(Future.successful(models.assets.Assets(nonEEABusiness = nonEEACompanies)))
 
-      when(mockTrustStoreConnector.setTaskComplete(any())(any(), any()))
-        .thenReturn(Future.successful(HttpResponse(OK, "")))
-
       val request = FakeRequest(POST, addAssetYesNoPostRoute)
         .withFormUrlEncodedBody(("value", "false"))
 
       val result = route(application, request).value
 
       whenReady(result) { _ =>
-        verify(mockTrustStoreConnector, atLeastOnce()).setTaskComplete(any())(any(), any())
 
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
 
         verify(mockNavigator).redirectFromAddAssetYesNoPage(value = false, isMigratingToTaxable = true, noAssets = false)
+
+        verify(mockTrustStoreConnector).updateTaskStatus(any(), eqTo(Completed))(any(), any())
       }
 
       application.stop()
