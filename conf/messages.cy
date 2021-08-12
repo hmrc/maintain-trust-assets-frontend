@@ -14,7 +14,9 @@ error.non_numeric=Rhowch werth gan ddefnyddio rhifau yn unig
 error.number=Nodwch rif dilys
 error.required=Nodwch werth
 error.summary.title=Mae problem wedi codi
+
 entities.assets=Asedion
+entity.asset=Asedion
 entities.asset.business=Busnes
 entities.asset.monetary=Arian
 entities.asset.nonEeaBusiness=Cwmni nad yw’n rhan o’r AEE
@@ -22,11 +24,12 @@ entities.asset.partnership=Partneriaeth
 entities.asset.propertyOrLand=Eiddo neu dir
 entities.asset.shares=Rhannu
 entities.asset.other=Arall
-footer.links.accessibility.text=Hygyrchedd
+
 session_expired.title=Er eich diogelwch, gwnaethom eich allgofnodi
 session_expired.heading=Er eich diogelwch, gwnaethom eich allgofnodi
 session_expired.guidance=Mae hyn oherwydd eich bod wedi bod yn segur yn y gwasanaeth ers 15 munud.
 session_expired.guidance.2=Bydd angen i chi fewngofnodi er mwyn mynd yn eich blaen i gofrestru’r ymddiriedolaeth.
+
 site.back=Yn ôl
 site.delete=Dileu
 site.edit=Newid
@@ -53,11 +56,12 @@ site.address.uk.line4=Cyfeiriad – llinell 4 (dewisol)
 site.address.uk.postcode=Cod post
 site.address.uk.postcode.hint=Er enghraifft, AB1 1AB.
 site.address.uk.checkYourAnswersLabel=Beth yw cyfeiriad {0}?
+site.address.country.select=Dewiswch wlad
 
 symbolText.asSterling = £
 
 address.country=Gwlad
-site.address.country.select=Dewiswch wlad
+
 ukAddress.error.line1.required=Nodwch gyfeiriad – llinell 1
 ukAddress.error.line2.required=Nodwch gyfeiriad – llinell 2
 ukAddress.error.postcode.required=Nodwch god post
@@ -70,6 +74,7 @@ ukAddress.error.line2.invalidCharacters=Mae’n rhaid i gyfeiriad – llinell 2 
 ukAddress.error.line3.invalidCharacters=Mae’n rhaid i gyfeiriad – llinell 3 gynnwys y llythrennau a i z, rhifau, ampersandau (&), collnodau, comas, blaenslaesau, atalnodau llawn, cysylltnodau, cromfachau crwn a bylchau yn unig
 ukAddress.error.line4.invalidCharacters=Mae’n rhaid i gyfeiriad – llinell 4 gynnwys y llythrennau a i z, rhifau, ampersandau (&), collnodau, comas, blaenslaesau, atalnodau llawn, cysylltnodau, cromfachau crwn a bylchau yn unig
 ukAddress.error.postcode.invalidCharacters=Nodwch god post go iawn
+
 site.address.international.title=Beth yw’r cyfeiriad?
 site.address.international.heading=Beth yw cyfeiriad {0}?
 site.address.international.checkYourAnswersLabel=Beth yw cyfeiriad {0}?
@@ -77,6 +82,7 @@ site.address.international.line1=Cyfeiriad – llinell 1
 site.address.international.line2=Cyfeiriad – llinell 2
 site.address.international.line3=Cyfeiriad – llinell 3 (dewisol)
 site.address.international.country=Gwlad
+
 internationalAddress.error.line1.required=Nodwch gyfeiriad – llinell 1
 internationalAddress.error.line2.required=Nodwch gyfeiriad – llinell 2
 internationalAddress.error.country.required=Dewiswch wlad
@@ -86,16 +92,20 @@ internationalAddress.error.line3.length=Mae’n rhaid i gyfeiriad – llinell 3 
 internationalAddress.error.line1.invalidCharacters=Mae’n rhaid i gyfeiriad – llinell 1 gynnwys y llythrennau a i z, rhifau, ampersandau (&), collnodau, comas, blaenslaesau, atalnodau llawn, cysylltnodau, cromfachau crwn a bylchau yn unig
 internationalAddress.error.line2.invalidCharacters=Mae’n rhaid i gyfeiriad – llinell 2 gynnwys y llythrennau a i z, rhifau, ampersandau (&), collnodau, comas, blaenslaesau, atalnodau llawn, cysylltnodau, cromfachau crwn a bylchau yn unig
 internationalAddress.error.line3.invalidCharacters=Mae’n rhaid i gyfeiriad – llinell 3 gynnwys y llythrennau a i z, rhifau, ampersandau (&), collnodau, comas, blaenslaesau, atalnodau llawn, cysylltnodau, cromfachau crwn a bylchau yn unig
+
 timeout.title=Bydd eich cais yn dod i ben cyn hir
 timeout.message=Byddwn yn eich allgofnodi os na fyddwch yn ymateb ymhen
 timeout.keep-alive-button=Yn eich blaen â’r cais
+
 unauthorised.title=Ni allwch ddefnyddio’r gwasanaeth hwn gyda’r cyfrif hwn
 unauthorised.heading=Ni allwch ddefnyddio’r gwasanaeth hwn gyda’r cyfrif hwn
+
 featureNotAvailable.title=Nid yw’r rhan hon o’r gwasanaeth ar-lein ar gael eto
 featureNotAvailable.heading=Nid yw’r rhan hon o’r gwasanaeth ar-lein ar gael eto
 featureNotAvailable.p1=Os oes angen i chi wneud unrhyw newidiadau i’r ymddiriedolaeth, gallwch
 featureNotAvailable.link=gysylltu â Gwasanaeth Cwsmeriaid Cymraeg CThEM (yn agor ffenestr neu dab newydd)
 featureNotAvailable.p2=Byddwch yn gallu diweddaru’r manylion hyn ar-lein yn y dyfodol.
+
 answerPage.section.assets.heading=Asedion
 answerPage.section.companyOwnershipOrControllingInterest.heading=Perchnogaeth y cwmni neu gyfran reolaethol
 answerPage.section.moneyAsset.subheading=Arian
@@ -111,6 +121,7 @@ assets.defaultText=y cwmni hwn nad yw’n AEE
 trustOwnsNonEeaBusinessYesNo.title=A yw’r ymddiriedolaeth yn berchen ar gwmni nad yw’n rhan o’r AEE neu a oes ganddi gyfran reolaethol ynddo?
 trustOwnsNonEeaBusinessYesNo.heading=A yw’r ymddiriedolaeth yn berchen ar gwmni nad yw’n rhan o’r AEE neu a oes ganddi gyfran reolaethol ynddo?
 trustOwnsNonEeaBusinessYesNo.error.required=Dewiswch ‘Iawn’ os yw’r ymddiriedolaeth yn berchen ar gwmni nad yw’n rhan o’r AEE neu a oes ganddi gyfran reolaethol ynddo
+
 assetInterruptPage.title=Gwybodaeth y mae angen i chi ei gwybod er mwyn ychwanegu cwmni nad yw’n rhan o’r AEE
 assetInterruptPage.heading=Gwybodaeth y mae angen i chi ei gwybod er mwyn ychwanegu cwmni nad yw’n rhan o’r AEE
 assetInterruptPage.caption=Cwmni nad yw’n rhan o’r AEE
@@ -146,10 +157,10 @@ assetInterruptPage.bullet11=enw’r cwmni
 assetInterruptPage.bullet12=cyfeiriad y cwmni
 assetInterruptPage.bullet13=cyfreithiau pa wlad sy’n llywodraethu’r cwmni
 assetInterruptPage.bullet14=y dyddiad y dechreuodd yr ymddiriedolaeth ei pherchnogaeth neu gyfran reolaethol yn y cwmni
-whatKindOfAsset.first.title=Pa fath o ased y mae angen i chi ei ychwanegu gyntaf?
-whatKindOfAsset.next.title=Pa fath o ased y mae angen i chi ei ychwanegu nesaf?
-whatKindOfAsset.first.heading=Pa fath o ased y mae angen i chi ei ychwanegu gyntaf?
-whatKindOfAsset.next.heading=Pa fath o ased y mae angen i chi ei ychwanegu nesaf?
+
+whatKindOfAsset.checkYourAnswersLabel=Math o ased wedi’i ychwanegu
+whatKindOfAsset.heading=Pa fath o ased y mae angen i chi ei ychwanegu?
+whatKindOfAsset.title=Pa fath o ased y mae angen i chi ei ychwanegu?
 whatKindOfAsset.Money=Arian
 whatKindOfAsset.PropertyOrLand=Eiddo neu dir
 whatKindOfAsset.Shares=Cyfranddaliadau
@@ -157,9 +168,8 @@ whatKindOfAsset.Business=Busnes
 whatKindOfAsset.Partnership=Partneriaeth
 whatKindOfAsset.Other=Arall
 whatKindOfAsset.NonEeaBusiness=Cwmni nad yw’n rhan o’r AEE
-whatKindOfAsset.first.checkYourAnswersLabel=Pa fath o ased y mae angen i chi ei ychwanegu gyntaf?
-whatKindOfAsset.next.checkYourAnswersLabel=Pa fath o ased y mae angen i chi ei ychwanegu nesaf?
 whatKindOfAsset.error.required=Dewiswch y math o ased y mae angen i chi ei ychwanegu
+
 money.value.title=Beth yw cyfanswm yr arian yn yr ymddiriedolaeth?
 money.value.heading=Beth yw cyfanswm yr arian yn yr ymddiriedolaeth?
 money.value.checkYourAnswersLabel=Beth yw cyfanswm yr arian yn yr ymddiriedolaeth?
@@ -171,6 +181,11 @@ money.value.error.invalid=Mae’n rhaid i gyfanswm gwerth yr asedion fod yn rhif
 money.value.error.wholeNumber=Mae’n rhaid i gyfanswm gwerth yr asedion fod yn rhif cyfan
 money.value.error.zero=Mae’n rhaid i gyfanswm yr arian yn yr ymddiriedolaeth fod yn 1 neu fwy
 money.value.link=Yn ôl i gynnydd cofrestru
+
+money.removeYesNo.error.required=Dewiswch ‘Iawn’ os ydych am dynnu’r ased
+money.removeYesNo.heading=A ydych yn siŵr eich bod am dynnu {0}?
+money.removeYesNo.title=A ydych yn siŵr eich bod am dynnu’r ased?
+
 propertyOrLand.addressYesNo.title=A oes gan yr eiddo neu dir gyfeiriad?
 propertyOrLand.addressYesNo.heading=A oes gan yr eiddo neu dir gyfeiriad?
 propertyOrLand.addressYesNo.checkYourAnswersLabel=A oes gan yr eiddo neu dir gyfeiriad?
@@ -179,18 +194,22 @@ propertyOrLand.addressUkYesNo.title=A yw cyfeiriad yr eiddo neu dir yn y DU?
 propertyOrLand.addressUkYesNo.heading=A yw cyfeiriad yr eiddo neu dir yn y DU?
 propertyOrLand.addressUkYesNo.checkYourAnswersLabel=A yw cyfeiriad yr eiddo neu dir yn y DU?
 propertyOrLand.addressUkYesNo.error.required=Dewiswch ‘Iawn’ os oes gan yr eiddo neu dir gyfeiriad yn y DU
+
 propertyOrLand.ukAddress.title=Beth yw cyfeiriad yr eiddo neu dir?
 propertyOrLand.ukAddress.heading=Beth yw cyfeiriad yr eiddo neu dir?
 propertyOrLand.ukAddress.checkYourAnswersLabel=Beth yw cyfeiriad yr eiddo neu dir?
+
 propertyOrLand.internationalAddress.title=Beth yw cyfeiriad yr eiddo neu dir?
 propertyOrLand.internationalAddress.heading=Beth yw cyfeiriad yr eiddo neu dir?
 propertyOrLand.internationalAddress.checkYourAnswersLabel=Beth yw cyfeiriad yr eiddo neu dir?
+
 propertyOrLand.description.title=Beth yw’r disgrifiad o’r eiddo neu dir?
 propertyOrLand.description.heading=Beth yw’r disgrifiad o’r eiddo neu dir?
 propertyOrLand.description.checkYourAnswersLabel=Beth yw’r disgrifiad o’r eiddo neu dir?
 propertyOrLand.description.error.required=Nodwch ddisgrifiad o’r eiddo neu dir
 propertyOrLand.description.error.length=Mae’n rhaid i’r disgrifiad o’r eiddo neu dir fod yn 56 o gymeriadau neu lai
 propertyOrLand.description.error.invalid=Mae’n rhaid i’r disgrifiad o’r eiddo neu dir gynnwys y llythrennau a i z, rhifau, ampersandau (&), collnodau, cysylltnodau a bylchau yn unig
+
 propertyOrLand.totalValue.title=Beth yw cyfanswm gwerth presennol yr eiddo neu dir?
 propertyOrLand.totalValue.heading=Beth yw cyfanswm gwerth presennol yr eiddo neu dir?
 propertyOrLand.totalValue.checkYourAnswersLabel=Beth yw cyfanswm gwerth presennol yr eiddo neu dir?
@@ -201,10 +220,12 @@ propertyOrLand.totalValue.error.invalid=Mae’n rhaid i gyfanswm gwerth presenno
 propertyOrLand.totalValue.error.zero=Mae’n rhaid i gyfanswm gwerth presennol yr eiddo neu dir fod yn 1 neu fwy
 propertyOrLand.totalValue.error.wholeNumber=Mae’n rhaid i gyfanswm gwerth presennol yr eiddo neu dir fod yn rhif cyfan
 propertyOrLand.totalValue.error.lessThanValueInTrust=Mae’n rhaid i gyfanswm gwerth presennol yr eiddo neu dir fod yn fwy na gwerth presennol yr eiddo neu dir y mae’r ymddiriedolaeth yn berchen arno
+
 propertyOrLand.trustOwnAllYesNo.title=A yw’r ymddiriedolaeth yn berchen ar yr holl eiddo neu dir?
 propertyOrLand.trustOwnAllYesNo.heading=A yw’r ymddiriedolaeth yn berchen ar yr holl eiddo neu dir?
 propertyOrLand.trustOwnAllYesNo.checkYourAnswersLabel=A yw’r ymddiriedolaeth yn berchen ar yr holl eiddo neu dir?
 propertyOrLand.trustOwnAllYesNo.error.required=Dewiswch ‘Iawn’ os yw’r ymddiriedolaeth yn berchen ar yr holl eiddo neu dir
+
 propertyOrLand.valueInTrust.title=Beth yw gwerth yr eiddo neu dir y mae’r ymddiriedolaeth yn berchen arno?
 propertyOrLand.valueInTrust.heading=Beth yw gwerth yr eiddo neu dir y mae’r ymddiriedolaeth yn berchen arno?
 propertyOrLand.valueInTrust.hint=Gall hyn fod yn amcangyfrif. Wedi’i dalgrynnu i lawr i’r bunt agosaf. Er enghraifft, 4000.
@@ -215,8 +236,15 @@ propertyOrLand.valueInTrust.error.wholeNumber=Mae’n rhaid i werth presennol yr
 propertyOrLand.valueInTrust.error.zero=Mae’n rhaid i werth presennol yr eiddo neu dir y mae’r ymddiriedolaeth yn berchen arno fod yn 1 neu fwy
 propertyOrLand.valueInTrust.error.length=Mae’n rhaid i werth presennol yr eiddo neu dir y mae’r ymddiriedolaeth yn berchen arno fod yn llai na 1,000,000,000,000
 propertyOrLand.valueInTrust.error.moreThanTotal=Mae’n rhaid i werth presennol yr eiddo neu dir y mae’r ymddiriedolaeth yn berchen arno fod yn llai na chyfanswm gwerth presennol yr eiddo neu dir
+
+propertyOrLand.removeYesNo.error.required=Dewiswch ‘Iawn’ os ydych am dynnu’r ased
+propertyOrLand.removeYesNo.heading=A ydych yn siŵr eich bod am dynnu {0}?
+propertyOrLand.removeYesNo.title=A ydych yn siŵr eich bod am dynnu’r ased?
+propertyOrLandDescription.name.default=yr ased
+
 propertyOrLand.answers.title=Gwirio manylion yr eiddo neu dir
 propertyOrLand.answers.heading=Gwirio manylion yr eiddo neu dir
+
 shares.class.title=Pa ddosbarth yw’r cyfranddaliadau?
 shares.class.heading=Pa ddosbarth yw cyfranddaliadau {0}?
 shares.class.ordinary=Cyffredin
@@ -226,23 +254,29 @@ shares.class.growth=Tyfiant
 shares.class.other=Arall
 shares.class.checkYourAnswersLabel=Pa ddosbarth yw cyfranddaliadau {0}?
 shares.class.error.required=Dewiswch ddosbarth y cyfranddaliadau
+
 shares.companyName.title=Beth yw enw’r cwmni cyfranddaliadau?
 shares.companyName.heading=Beth yw enw’r cwmni cyfranddaliadau?
 shares.companyName.checkYourAnswersLabel=Beth yw enw’r cwmni cyfranddaliadau?
 shares.companyName.error.required=Nodwch enw’r cwmni cyfranddaliadau
 shares.companyName.error.length=Mae’n rhaid i enw’r cwmni cyfranddaliadau fod yn 53 o gymeriadau neu lai
 shares.companyName.error.invalid=Mae’n rhaid i enw’r cwmni cyfranddaliadau gynnwys y llythrennau a i z, rhifau, ampersandau (&), collnodau, comas, blaenslaesau, atalnodau llawn, cysylltnodau, cromfachau crwn a bylchau yn unig
+
 shares.portfolioName.title=Beth yw enw’r portffolio o gyfranddaliadau?
 shares.portfolioName.heading=Beth yw enw’r portffolio o gyfranddaliadau?
 shares.portfolioName.checkYourAnswersLabel=Beth yw enw’r portffolio o gyfranddaliadau?
 shares.portfolioName.error.required=Nodwch enw’r portffolio o gyfranddaliadau
 shares.portfolioName.error.length=Ni all enw’r portffolio o gyfranddaliadau fod yn fwy na 53 o gymeriadau
 shares.portfolioName.error.invalid=Mae’n rhaid i enw’r portffolio o gyfranddaliadau gynnwys y llythrennau a i z, rhifau, ampersandau (&), collnodau, comas, blaenslaesau, atalnodau llawn, cysylltnodau, cromfachau crwn a bylchau yn unig
+
+shares.name.default=y cwmni
+
 shares.portfolioOnStockExchangeYesNo.title=A yw’r rhan fwyaf o’r cyfranddaliadau yn y portffolio wedi’u rhestru ar gyfnewidfa stoc?
 shares.portfolioOnStockExchangeYesNo.heading=A yw’r rhan fwyaf o’r cyfranddaliadau yn y portffolio wedi’u rhestru ar gyfnewidfa stoc?
 shares.portfolioOnStockExchangeYesNo.checkYourAnswersLabel=A yw’r rhan fwyaf o’r cyfranddaliadau yn y portffolio wedi’u rhestru ar gyfnewidfa stoc?
 shares.portfolioOnStockExchangeYesNo.error.required=Dewiswch ‘Iawn’ os yw’r rhan fwyaf o’r cyfranddaliadau wedi’u rhestru ar gyfnewidfa stoc
 shares.portfolioOnStockExchangeYesNo.hint=Mae cyfranddaliad a restrwyd yn gyfranddaliad sydd wedi’i restru ar gyfnewidfa stoc.
+
 shares.portfolioQuantityInTrust.title=Faint o gyfranddaliadau unigol sydd yn y portffolio?
 shares.portfolioQuantityInTrust.heading=Faint o gyfranddaliadau unigol sydd yn y portffolio?
 shares.portfolioQuantityInTrust.checkYourAnswersLabel=Faint o gyfranddaliadau unigol sydd yn y portffolio?
@@ -252,6 +286,7 @@ shares.portfolioQuantityInTrust.error.length=Mae’n rhaid i gyfanswm y cyfrandd
 shares.portfolioQuantityInTrust.error.invalid=Mae’n rhaid i gyfanswm y cyfranddaliadau unigol yn y portffolio fod yn rhif
 shares.portfolioQuantityInTrust.error.zero=Mae’n rhaid i gyfanswm y cyfranddaliadau unigol yn y portffolio fod yn 1 neu fwy
 shares.portfolioQuantityInTrust.error.wholeNumber=Mae’n rhaid i gyfanswm y cyfranddaliadau unigol yn y portffolio fod yn rhif cyfan
+
 shares.portfolioValueInTrust.title=Beth yw gwerth presennol y portffolio?
 shares.portfolioValueInTrust.heading=Beth yw gwerth presennol y portffolio?
 shares.portfolioValueInTrust.checkYourAnswersLabel=Beth yw gwerth presennol y portffolio?
@@ -261,6 +296,7 @@ shares.portfolioValueInTrust.error.length=Mae’n rhaid i gyfanswm gwerth presen
 shares.portfolioValueInTrust.error.invalid=Mae’n rhaid i gyfanswm gwerth presennol y portffolio fod yn rhif
 shares.portfolioValueInTrust.error.zero=Mae’n rhaid i gyfanswm gwerth presennol y portffolio fod yn 1 neu fwy
 shares.portfolioValueInTrust.error.wholeNumber=Mae’n rhaid i gyfanswm gwerth presennol y portffolio fod yn rhif cyfan
+
 shares.quantityInTrust.title=Faint o gyfranddaliadau sydd yn yr ymddiriedolaeth?
 shares.quantityInTrust.heading=Faint o gyfranddaliadau {0} sydd yn yr ymddiriedolaeth?
 shares.quantityInTrust.checkYourAnswersLabel=Faint o gyfranddaliadau {0} sydd yn yr ymddiriedolaeth?
@@ -270,15 +306,18 @@ shares.quantityInTrust.error.length=Mae’n rhaid i gyfanswm y cyfranddaliadau y
 shares.quantityInTrust.error.required=Nodwch nifer presennol y cyfranddaliadau yn yr ymddiriedolaeth
 shares.quantityInTrust.error.zero=Mae’n rhaid i gyfanswm y cyfranddaliadau yn yr ymddiriedolaeth fod yn 1 neu fwy
 shares.quantityInTrust.error.wholeNumber=Mae’n rhaid i gyfanswm y cyfranddaliadau yn yr ymddiriedolaeth fod yn rhif cyfan
+
 shares.inAPortfolioYesNo.title=A yw’r cyfranddaliadau mewn portffolio?
 shares.inAPortfolioYesNo.heading=A yw’r cyfranddaliadau mewn portffolio?
 shares.inAPortfolioYesNo.checkYourAnswersLabel=A yw’r cyfranddaliadau mewn portffolio?
 shares.inAPortfolioYesNo.error.required=Dewiswch ‘Iawn’ os yw’r cyfranddaliadau mewn portffolio
+
 shares.onStockExchangeYesNo.title=A yw’r cyfranddaliadau wedi’u rhestru ar gyfnewidfa stoc?
 shares.onStockExchangeYesNo.heading=A yw cyfranddaliadau {0} wedi’u rhestru ar gyfnewidfa stoc?
 shares.onStockExchangeYesNo.checkYourAnswersLabel=A yw cyfranddaliadau {0} wedi’u rhestru ar gyfnewidfa stoc?
 shares.onStockExchangeYesNo.error.required=Dewiswch ‘Iawn’ os yw’r cyfranddaliadau wedi’u rhestru ar gyfnewidfa stoc
 shares.onStockExchangeYesNo.hint=Mae cyfranddaliad a restrwyd yn gyfranddaliad sydd wedi’i restru ar gyfnewidfa stoc.
+
 shares.valueInTrust.title=Beth yw gwerth presennol y cyfranddaliadau yn yr ymddiriedolaeth?
 shares.valueInTrust.heading=Beth yw gwerth presennol cyfranddaliadau {0} yn yr ymddiriedolaeth?
 shares.valueInTrust.checkYourAnswersLabel=Beth yw gwerth presennol cyfranddaliadau {0} yn yr ymddiriedolaeth?
@@ -288,30 +327,42 @@ shares.valueInTrust.error.length=Mae’n rhaid i gyfanswm gwerth y cyfranddaliad
 shares.valueInTrust.error.invalid=Mae’n rhaid i gyfanswm gwerth y cyfranddaliadau yn yr ymddiriedolaeth fod yn rhif
 shares.valueInTrust.error.zero=Mae’n rhaid i gyfanswm gwerth y cyfranddaliadau yn yr ymddiriedolaeth fod yn 1 neu fwy
 shares.valueInTrust.error.wholeNumber=Mae’n rhaid i gyfanswm gwerth y cyfranddaliadau yn yr ymddiriedolaeth fod yn rhif cyfan
+
+shares.removeYesNo.error.required=Dewiswch ‘Iawn’ os ydych am dynnu’r ased
+shares.removeYesNo.heading=A ydych yn siŵr eich bod am dynnu {0}?
+shares.removeYesNo.title=A ydych yn siŵr eich bod am dynnu’r ased?
+
 shares.answers.title=Gwirio manylion y cyfranddaliadau
 shares.answers.heading=Gwirio manylion y cyfranddaliadau
+
 business.name.title=Beth yw enw’r busnes?
 business.name.heading=Beth yw enw’r busnes?
 business.name.checkYourAnswersLabel=Beth yw enw’r busnes?
 business.name.error.required=Nodwch enw’r busnes
 business.name.error.length=Ni all enw’r busnes fod yn fwy na 105 o gymeriadau
 business.name.error.invalid=Mae’n rhaid i enw’r busnes gynnwys y llythrennau a i z, y rhifau 0 i 9, ampersandau (&), collnodau, comas, blaenslaesau, atalnodau llawn, cysylltnodau, cromfachau crwn a bylchau yn unig
+business.name.default=y busnes
+
 business.description.title=Beth yw’r disgrifiad ar gyfer yr ased busnes?
 business.description.heading=Beth yw’r disgrifiad ar gyfer {0}?
 business.description.checkYourAnswersLabel=Beth yw’r disgrifiad ar gyfer {0}?
 business.description.error.required=Nodwch ddisgrifiad o’r busnes
 business.description.error.invalid=Mae’n rhaid i’r disgrifiad o’r ased busnes gynnwys y llythrennau a i z, rhifau, ampersandau (&), collnodau, cysylltnodau a bylchau yn unig
 business.description.error.length=Mae’n rhaid i’r disgrifiad o’r ased busnes fod yn 56 o gymeriadau neu lai
+
 business.addressUkYesNo.title=A yw cyfeiriad yr ased busnes yn y DU?
 business.addressUkYesNo.heading=A yw cyfeiriad {0} yn y DU?
 business.addressUkYesNo.checkYourAnswersLabel=A yw cyfeiriad {0} yn y DU?
 business.addressUkYesNo.error.required=Dewiswch ‘Iawn’ os yw cyfeiriad yr ased busnes yn y DU
+
 business.ukAddress.title=Beth yw cyfeiriad yr ased busnes?
 business.ukAddress.heading=Beth yw cyfeiriad {0}?
 business.ukAddress.checkYourAnswersLabel=Beth yw cyfeiriad {0}?
+
 business.internationalAddress.title=Beth yw cyfeiriad yr ased busnes?
 business.internationalAddress.heading=Beth yw cyfeiriad {0}?
 business.internationalAddress.checkYourAnswersLabel=Beth yw cyfeiriad {0}?
+
 business.currentValue.title=Beth yw gwerth presennol y busnes?
 business.currentValue.heading=Beth yw gwerth presennol y busnes?
 business.currentValue.checkYourAnswersLabel=Beth yw gwerth presennol y busnes?
@@ -322,14 +373,22 @@ business.currentValue.error.zero=Mae’n rhaid i werth presennol yr ased fod yn 
 business.currentValue.error.invalid=Mae’n rhaid i werth presennol yr ased fod yn rhif
 business.currentValue.error.wholeNumber=Mae’n rhaid i werth presennol yr ased fod yn rhif cyfan
 business.currentValue.link=Yn ôl i gynnydd cofrestru
+
+business.removeYesNo.error.required=Dewiswch ‘Iawn’ os ydych am dynnu’r ased
+business.removeYesNo.heading=A ydych yn siŵr eich bod am dynnu {0}?
+business.removeYesNo.title=A ydych yn siŵr eich bod am dynnu’r ased?
+
 business.answers.title=Gwirio manylion yr ased
 business.answers.heading=Gwirio manylion yr ased
+
 partnership.description.title=Beth yw’r disgrifiad ar gyfer y bartneriaeth?
 partnership.description.heading=Beth yw’r disgrifiad ar gyfer y bartneriaeth?
 partnership.description.checkYourAnswersLabel=Beth yw’r disgrifiad ar gyfer y bartneriaeth?
 partnership.description.error.required=Nodwch ddisgrifiad o’r bartneriaeth
 partnership.description.error.length=Mae’n rhaid i’r disgrifiad o’r bartneriaeth fod yn 56 o gymeriadau neu lai
 partnership.description.error.invalid=Mae’n rhaid i’r disgrifiad o’r bartneriaeth gynnwys y llythrennau a i z, rhifau, ampersandau (&), collnodau, cysylltnodau a bylchau yn unig
+partnership.description.default=y bartneriaeth
+
 partnership.startDate.title=Pryd dechreuodd y bartneriaeth?
 partnership.startDate.heading=Pryd dechreuodd y bartneriaeth?
 partnership.startDate.checkYourAnswersLabel=Pryd dechreuodd y bartneriaeth?
@@ -340,14 +399,22 @@ partnership.startDate.error.required=Mae’n rhaid i ddyddiad dechrau’r bartne
 partnership.startDate.error.invalid=Nodwch ddyddiad go iawn ar gyfer dyddiad dechrau’r bartneriaeth
 partnership.startDate.error.future=Mae’n rhaid i ddyddiad dechrau’r bartneriaeth fod heddiw neu yn y gorffennol
 partnership.startDate.error.tooEarly=Mae’n rhaid i ddyddiad dechrau’r bartneriaeth fod ar ôl 31 Rhagfyr 1499
+
+partnership.removeYesNo.error.required=Dewiswch ‘Iawn’ os ydych am dynnu’r ased
+partnership.removeYesNo.heading=A ydych yn siŵr eich bod am dynnu {0}?
+partnership.removeYesNo.title=A ydych yn siŵr eich bod am dynnu’r ased?
+
 partnership.answers.title=Gwirio manylion yr ased
 partnership.answers.heading=Gwirio manylion yr ased
+
 other.description.title=Beth yw’r disgrifiad o’r ased?
 other.description.heading=Beth yw’r disgrifiad o’r ased?
 other.description.checkYourAnswersLabel=Beth yw’r disgrifiad o’r ased?
 other.description.error.required=Nodwch ddisgrifiad o’r ased
 other.description.error.length=Mae’n rhaid i’r disgrifiad o’r ased fod yn 56 o gymeriadau neu lai
 other.description.error.invalid=Mae’n rhaid i’r disgrifiad o’r ased gynnwys y llythrennau a i z, rhifau, ampersandau (&), collnodau, cysylltnodau a bylchau yn unig
+other.description.default=yr ased
+
 other.value.title=Beth yw gwerth presennol yr ased?
 other.value.heading=Beth yw gwerth presennol {0}?
 other.value.checkYourAnswersLabel=Beth yw gwerth presennol {0}?
@@ -357,23 +424,33 @@ other.value.error.invalid=Mae’n rhaid i werth presennol yr ased fod yn rhif
 other.value.error.zero=Mae’n rhaid i werth presennol yr ased fod yn 1 neu fwy
 other.value.error.length=Mae’n rhaid i werth presennol yr ased fod yn llai na 1,000,000,000,000
 other.value.error.wholeNumber=Mae’n rhaid i werth presennol yr ased fod yn rhif cyfan
+
+other.removeYesNo.error.required=Dewiswch ‘Iawn’ os ydych am dynnu’r ased
+other.removeYesNo.heading=A ydych yn siŵr eich bod am dynnu {0}?
+other.removeYesNo.title=A ydych yn siŵr eich bod am dynnu’r ased?
+
 other.answers.title=Gwirio manylion yr ased
 other.answers.heading=Gwirio manylion yr ased
+
 nonEeaBusiness.name.title=Beth yw enw’r cwmni?
 nonEeaBusiness.name.heading=Beth yw enw’r cwmni?
 nonEeaBusiness.name.checkYourAnswersLabel=Beth yw enw’r cwmni?
 nonEeaBusiness.name.error.required=Nodwch enw’r cwmni
 nonEeaBusiness.name.error.length=Ni all enw’r cwmni fod yn fwy na 105 o gymeriadau
 nonEeaBusiness.name.error.invalid=Mae’n rhaid i enw’r cwmni gynnwys y llythrennau a i z, rhifau, ampersandau (&), collnodau, blaenslaesau, atalnodau llawn, cysylltnodau, cromfachau crwn a bylchau yn unig
+noneeabusiness.name.default=y busnes
+
 nonEeaBusiness.internationalAddress.title=Beth yw cyfeiriad y cwmni?
 nonEeaBusiness.internationalAddress.heading=Beth yw cyfeiriad {0}?
 nonEeaBusiness.internationalAddress.checkYourAnswersLabel=Beth yw cyfeiriad {0}?
+
 nonEeaBusiness.governingCountry.title=Cyfreithiau pa wlad sy’n llywodraethu’r cwmni?
 nonEeaBusiness.governingCountry.heading=Cyfreithiau pa wlad sy’n llywodraethu {0}?
 nonEeaBusiness.governingCountry.checkYourAnswersLabel=Cyfreithiau pa wlad sy’n llywodraethu {0}?
 nonEeaBusiness.governingCountry.error.required=Nodwch wlad
 nonEeaBusiness.governingCountry.error.length=Mae’n rhaid i’r wlad fod yn 100 o gymeriadau neu lai
 nonEeaBusiness.governingCountry.error.invalidCharacters=Mae’n rhaid i’r wlad gynnwys y llythrennau a i z, collnodau, comas, atalnodau llawn, cysylltnodau, cromfachau crwn a bylchau yn unig
+
 nonEeaBusiness.startDate.title=Pryd y gwnaeth yr ymddiriedolaeth ddechrau ei pherchnogaeth neu gyfran reolaethol yn y cwmni?
 nonEeaBusiness.startDate.heading=Pryd y gwnaeth yr ymddiriedolaeth ddechrau ei pherchnogaeth neu gyfran reolaethol yn {0}?
 nonEeaBusiness.startDate.checkYourAnswersLabel=Pryd y gwnaeth yr ymddiriedolaeth ddechrau ei pherchnogaeth neu gyfran reolaethol yn {0}?
@@ -384,9 +461,11 @@ nonEeaBusiness.startDate.error.required=Mae’n rhaid i’r dyddiad y dechreuodd
 nonEeaBusiness.startDate.error.invalid=Nodwch ddyddiad go iawn ar gyfer y dyddiad y dechreuodd yr ymddiriedolaeth ei pherchnogaeth neu gyfran reolaethol yn y cwmni
 nonEeaBusiness.startDate.error.future=Mae’n rhaid i’r dyddiad y dechreuodd yr ymddiriedolaeth ei pherchnogaeth neu gyfran reolaethol yn y cwmni fod heddiw neu yn y gorffennol
 nonEeaBusiness.startDate.error.tooEarly=Ni all y dyddiad y dechreuodd yr ymddiriedolaeth eu perchnogaeth neu gyfran reolaethol yn y cwmni fod cyn dyddiad dechrau’r ymddiriedolaeth
+
 nonEeaBusiness.removeYesNo.title=A ydych yn siŵr eich bod am dynnu’r ased?
 nonEeaBusiness.removeYesNo.heading=A ydych yn siŵr eich bod am dynnu {0}?
 nonEeaBusiness.removeYesNo.error.required=Dewiswch ‘Iawn’ os ydych am dynnu’r ased
+
 nonEeaBusiness.endDate.title=Pryd wnaeth perchnogaeth neu gyfran reolaethol yn y cwmni nad yw’n rhan o’r AEE ddod i ben?
 nonEeaBusiness.endDate.heading=Pryd wnaeth perchnogaeth neu gyfran reolaethol yn {0} ddod i ben?
 nonEeaBusiness.endDate.checkYourAnswersLabel=Pryd wnaeth perchnogaeth neu gyfran reolaethol yn {0} ddod i ben?
@@ -397,23 +476,90 @@ nonEeaBusiness.endDate.error.required=Mae’n rhaid i’r dyddiad y daeth yr ymd
 nonEeaBusiness.endDate.error.invalid=Nodwch ddyddiad go iawn ar gyfer y dyddiad y daeth yr ymddiriedolaeth ei pherchnogaeth neu gyfran reolaethol yn y cwmni i ben
 nonEeaBusiness.endDate.error.future=Mae’n rhaid i’r dyddiad y daeth yr ymddiriedolaeth ei pherchnogaeth neu gyfran reolaethol yn y cwmni i ben fod heddiw neu yn y gorffennol
 nonEeaBusiness.endDate.error.beforeAssetStartDate=Mae’n rhaid i’r dyddiad y daeth yr ymddiriedolaeth ei pherchnogaeth neu gyfran reolaethol yn y cwmni i ben fod ar ôl iddi ddechrau
+
 nonEeaBusiness.answers.title=Gwiriwch fanylion y cwmni nad yw’n rhan o’r AEE
 nonEeaBusiness.answers.heading=Gwiriwch fanylion y cwmni nad yw’n rhan o’r AEE
+
 date.day=Diwrnod
 date.month=Mis
 date.year=Blwyddyn
+
+addNonEeaBusinessAsset.add-them-now=Ydw, ychwanegwch un nawr
+addNonEeaBusinessAsset.additional-content=A ydych am ychwanegu cwmni arall nad yw’n rhan o’r AEE?
+addNonEeaBusinessAsset.count.heading=Rydych wedi ychwanegu {0} o gwmnïau nad ydynt yn rhan o’r AEE
+addNonEeaBusinessAsset.count.title=Rydych wedi ychwanegu {0} o gwmnïau nad ydynt yn rhan o’r AEE
+addNonEeaBusinessAsset.error.required=Dewiswch ‘Iawn’ os ydych am ychwanegu cwmni nad yw’n rhan o’r AEE
+addNonEeaBusinessAsset.heading=Ychwanegu cwmni nad yw’n rhan o’r AEE
+addNonEeaBusinessAsset.no-complete=Nac ydw, rwyf wedi ychwanegu pob cwmni nad yw’n rhan o’r AEE
+addNonEeaBusinessAsset.title=Ychwanegu cwmni nad yw’n rhan o’r AEE
 addNonEeaBusinessAsset.maxedOut.p1=Ni allwch ychwanegu ased arall gan eich bod wedi nodi uchafswm o {0}.
 addNonEeaBusinessAsset.maxedOut.p2=Gallwch ychwanegu ased arall drwy dynnu un presennol, neu drwy ysgrifennu i CThEM gyda manylion unrhyw asedion ychwanegol.
 
-nonTaxableToTaxable.addAssets.title=Ychwanegu asedion
-nonTaxableToTaxable.addAssets.heading=Ychwanegu asedion
-nonTaxableToTaxable.addAssets.additional-content=A ydych am ychwanegu ased arall?
-nonTaxableToTaxable.addAssets.add-them-now=Iawn, rwyf am ei ychwanegu nawr
-nonTaxableToTaxable.addAssets.add-them-later=Iawn, rwyf am ei ychwanegu yn nes ymlaen
-nonTaxableToTaxable.addAssets.no-complete=Na, rwyf wedi ychwanegu’r holl asedion
-nonTaxableToTaxable.addAssets.error.required=Dewiswch ‘Iawn’ os ydych am ychwanegu ased arall
-nonTaxableToTaxable.addAssets.count.title=Rydych wedi ychwanegu {0} o asedion
-nonTaxableToTaxable.addAssets.count.heading=Rydych wedi ychwanegu {0} o asedion
-nonTaxableToTaxable.addAssets.maxedOut.p1=Ni allwch ychwanegu ased arall gan eich bod wedi nodi uchafswm o {0}.
-nonTaxableToTaxable.addAssets.maxedOut.p2=Gallwch ychwanegu ased arall drwy dynnu un presennol
+addNonEeaBusinessAssetYesNo.error.required=Dewiswch ‘Iawn’ os ydych am ychwanegu cwmni nad yw’n rhan o’r AEE
+addNonEeaBusinessAssetYesNo.heading=A ydych am ychwanegu cwmni nad yw’n rhan o’r AEE?
+addNonEeaBusinessAssetYesNo.title=A ydych am ychwanegu cwmni nad yw’n rhan o’r AEE?
 
+nonTaxableToTaxable.addAssets.add-them-later=Ydw, rwyf am ei ychwanegu yn nes ymlaen
+nonTaxableToTaxable.addAssets.add-them-now=Ydw, rwyf am ei ychwanegu nawr
+nonTaxableToTaxable.addAssets.additional-content=A ydych am ychwanegu ased arall?
+nonTaxableToTaxable.addAssets.count.heading=Rydych wedi ychwanegu {0} o asedion
+nonTaxableToTaxable.addAssets.count.title=Rydych wedi ychwanegu {0} o asedion
+nonTaxableToTaxable.addAssets.error.required=Dewiswch ‘Iawn’ os ydych am ychwanegu ased arall
+nonTaxableToTaxable.addAssets.heading=Ychwanegu asedion
+nonTaxableToTaxable.addAssets.maxedOut.just1=Ni allwch ychwanegu ased arall gan eich bod wedi nodi uchafswm o {1}.
+nonTaxableToTaxable.addAssets.maxedOut.just1.paragraph=Gwiriwch yr asedion yr ydych wedi’u hychwanegu. Os oes gennych ragor o asedion i’w hychwanegu o dan y math hwn, ysgrifennwch at CThEM gyda’r manylion.
+nonTaxableToTaxable.addAssets.maxedOut.moreThan1=Rydych wedi nodi uchafswm yr asedion ar gyfer:
+nonTaxableToTaxable.addAssets.maxedOut.moreThan1.paragraph=Gwiriwch yr asedion yr ydych wedi’u hychwanegu. Os oes gennych ragor o asedion i’w hychwanegu o dan y mathau hyn, ysgrifennwch at CThEM gyda’r manylion.
+nonTaxableToTaxable.addAssets.maxedOut.p1=Ni allwch ychwanegu ased arall gan eich bod wedi nodi uchafswm o {0}.
+nonTaxableToTaxable.addAssets.maxedOut.p2=Gallwch ychwanegu ased arall drwy dynnu un presennol, neu drwy ysgrifennu at CThEM gyda manylion unrhyw asedion ychwanegol.
+nonTaxableToTaxable.addAssets.no-complete=Nac ydw, rwyf wedi ychwanegu’r holl asedion
+nonTaxableToTaxable.addAssets.title=Ychwanegu asedion
+
+nonTaxableToTaxable.addAssetYesNo.bullet1=busnesau
+nonTaxableToTaxable.addAssetYesNo.bullet2=tir neu eiddo
+nonTaxableToTaxable.addAssetYesNo.bullet3=arian
+nonTaxableToTaxable.addAssetYesNo.bullet4=perchnogaeth neu gyfrannau rheolaethol mewn cwmnïau nad ydynt yn rhan o’r Ardal Economaidd Ewropeaidd
+nonTaxableToTaxable.addAssetYesNo.bullet5=partneriaethau
+nonTaxableToTaxable.addAssetYesNo.bullet6=cyfranddaliadau
+nonTaxableToTaxable.addAssetYesNo.bullet7=asedion eraill
+nonTaxableToTaxable.addAssetYesNo.checkYourAnswersLabel=A oes angen i chi ychwanegu unrhyw asedion newydd at yr ymddiriedolaeth?
+nonTaxableToTaxable.addAssetYesNo.error.required=Dewiswch ‘Iawn’ os oes angen i chi ychwanegu unrhyw asedion newydd.
+nonTaxableToTaxable.addAssetYesNo.heading=A oes angen i chi ychwanegu unrhyw asedion newydd at yr ymddiriedolaeth?
+nonTaxableToTaxable.addAssetYesNo.paragraph1=Mae angen i chi ychwanegu o leiaf un ased er mwyn cofrestru’r ymddiriedolaeth fel un drethadwy.
+nonTaxableToTaxable.addAssetYesNo.paragraph2=Gall asedion gynnwys:
+nonTaxableToTaxable.addAssetYesNo.title=A oes angen i chi ychwanegu unrhyw asedion newydd at yr ymddiriedolaeth?
+
+nonTaxableToTaxable.assetInterruptPage.bullet1=disgrifiad o’r eiddo neu’r tir, neu’r cyfeiriad os ydych yn gwybod beth ydyw
+nonTaxableToTaxable.assetInterruptPage.bullet10=y gwerth amcangyfrifedig presennol
+nonTaxableToTaxable.assetInterruptPage.bullet11=enw’r cwmni
+nonTaxableToTaxable.assetInterruptPage.bullet12=cyfeiriad y cwmni
+nonTaxableToTaxable.assetInterruptPage.bullet13=cyfreithiau pa wlad sy’n llywodraethu’r cwmni
+nonTaxableToTaxable.assetInterruptPage.bullet14=y dyddiad y dechreuodd yr ymddiriedolaeth ei pherchnogaeth neu ei chyfran reolaethol yn y cwmni
+nonTaxableToTaxable.assetInterruptPage.bullet2=cyfanswm gwerth amcangyfrifedig yr eiddo neu’r tir
+nonTaxableToTaxable.assetInterruptPage.bullet3=gwerth amcangyfrifedig y gyfran o’r eiddo neu’r tir y mae’r ymddiriedolaeth yn berchen arni
+nonTaxableToTaxable.assetInterruptPage.bullet4=enw’r cwmni cyfrannau neu enw’r portffolio cyfrannau
+nonTaxableToTaxable.assetInterruptPage.bullet5=nifer y cyfrannau (ar gyfer portffolio cyfrannau, bydd angen i chi amcangyfrif cyfanswm nifer y cyfrannau ar draws pob cyfranddaliad)
+nonTaxableToTaxable.assetInterruptPage.bullet6=cyfanswm y gwerth presennol
+nonTaxableToTaxable.assetInterruptPage.bullet7=enw’r busnes
+nonTaxableToTaxable.assetInterruptPage.bullet8=disgrifiad o’r busnes
+nonTaxableToTaxable.assetInterruptPage.bullet9=cyfeiriad y busnes
+nonTaxableToTaxable.assetInterruptPage.caption=Asedion
+nonTaxableToTaxable.assetInterruptPage.caption.hidden=Teitl yr adran hon yw
+nonTaxableToTaxable.assetInterruptPage.heading=Gwybodaeth y mae angen i chi ei gwybod er mwyn ychwanegu asedion
+nonTaxableToTaxable.assetInterruptPage.paragraph1=Nodwch gyfanswm yr arian yn yr ymddiriedolaeth. Os oes mwy nag un swm wedi’i ychwanegu at yr ymddiriedolaeth, adiwch nhw at ei gilydd.
+nonTaxableToTaxable.assetInterruptPage.paragraph2=Ar gyfer eiddo neu dir yn y weithred ymddiriedolaeth, mae angen i chi roi’r canlynol:
+nonTaxableToTaxable.assetInterruptPage.paragraph3=Mae’n rhaid i chi roi gwerth presennol yr eiddo neu’r tir, ac nid y gwerth pan ddaeth yn rhan o’r ymddiriedolaeth am y tro cyntaf. Gall hwn fod yn amcangyfrif.
+nonTaxableToTaxable.assetInterruptPage.paragraph5=Mae hefyd angen i chi roi gwybod i ni a yw’r cyfranddaliadau wedi’u rhestru ar gyfnewidfa stoc (cyfranddaliadau a restrwyd) ai peidio.
+nonTaxableToTaxable.assetInterruptPage.paragraph6=Ar gyfer cyfranddaliadau unigol, bydd angen i chi roi gwybod i ni beth yw’r dosbarthiad.
+nonTaxableToTaxable.assetInterruptPage.paragraph7=Rhowch y canlynol i ni:
+nonTaxableToTaxable.assetInterruptPage.paragraph8=Rhowch enw’r bartneriaeth, disgrifiad o’r bartneriaeth a’r dyddiad dechrau i ni.
+nonTaxableToTaxable.assetInterruptPage.paragraph9=Mae angen i chi roi disgrifiad o’r ased ac amcangyfrif o’i werth presennol.
+nonTaxableToTaxable.assetInterruptPage.subheading1=Arian
+nonTaxableToTaxable.assetInterruptPage.subheading2=Eiddo neu dir
+nonTaxableToTaxable.assetInterruptPage.subheading3=Cyfranddaliadau
+nonTaxableToTaxable.assetInterruptPage.subheading4=Busnes
+nonTaxableToTaxable.assetInterruptPage.subheading5=Cwmni nad yw’n rhan o’r Ardal Economaidd Ewropeaidd (AEE)
+nonTaxableToTaxable.assetInterruptPage.subheading6=Partneriaethau
+nonTaxableToTaxable.assetInterruptPage.subheading7=Asedion eraill
+nonTaxableToTaxable.assetInterruptPage.tellus=Rhowch y canlynol i ni:
+nonTaxableToTaxable.assetInterruptPage.title=Gwybodaeth y mae angen i chi ei gwybod er mwyn ychwanegu asedion
