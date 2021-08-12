@@ -15,13 +15,13 @@
  *@
 
 @import controllers.asset.business.routes._
-@import views.html.components.{ErrorSummary, InputCharacterCount, SubmitButton}
+@import views.html.components.{ErrorSummary, InputTextCharacterCount, SubmitButton}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper  : FormWithCSRF,
     errorSummary: ErrorSummary,
-    characterCount : InputCharacterCount,
+    characterCount: InputTextCharacterCount,
     submitButton: SubmitButton
 )
 
@@ -41,8 +41,10 @@
             id = "value",
             name = "value",
             label = messages("business.description.heading", businessName),
+            isLabelHidden = true,
             isPageHeading = true,
             hint = Some(messages("business.description.hint")),
+            inputClass = Some("govuk-!-width-three-quarters"),
             maxLength = Some(56)
         )
 
