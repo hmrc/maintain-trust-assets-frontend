@@ -19,6 +19,7 @@ package controllers.asset.nonTaxableToTaxable
 import connectors.TrustsStoreConnector
 import controllers.actions.StandardActionSets
 import forms.YesNoFormProvider
+import models.TaskStatus._
 import navigation.AssetsNavigator
 import pages.asset.nontaxabletotaxable.AddAssetsYesNoPage
 import play.api.data.Form
@@ -57,7 +58,7 @@ class AddAssetYesNoController @Inject()(
       Ok(view(preparedForm))
   }
 
-  def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier).async {
+  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
 
       form.bindFromRequest().fold(
@@ -68,16 +69,15 @@ class AddAssetYesNoController @Inject()(
 
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAssetsYesNoPage, value))
-            _              <- repository.set(updatedAnswers)
+            _ <- repository.set(updatedAnswers)
             assets <- trustService.getAssets(request.userAnswers.identifier)
             _ <- if (!value) { // If answered no don't want to add
-              assets match {
-                case x if x.isEmpty =>
-                  // If no assets, set task list to in progress
-                  trustStoreConnector.setTaskInProgress(request.userAnswers.identifier).map(_ => ())
-                case _ =>
-                  // Has a taxable asset or Non-EEA company
-                  trustStoreConnector.setTaskComplete(request.userAnswers.identifier).map(_ => ())
+              if (assets.isEmpty) {
+                // If no assets, set task to in progress
+                trustStoreConnector.updateTaskStatus(request.userAnswers.identifier, InProgress).map(_ => ())
+              } else {
+                // Has a taxable asset or Non-EEA company therefore can set task to completed
+                trustStoreConnector.updateTaskStatus(request.userAnswers.identifier, Completed).map(_ => ())
               }
             } else {
               // Do nothing and continue in the journey if adding an asset, status is decided later

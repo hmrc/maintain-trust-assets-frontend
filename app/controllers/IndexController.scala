@@ -18,13 +18,14 @@ package controllers
 
 import connectors.TrustsConnector
 import controllers.actions.StandardActionSets
+import models.TaskStatus.InProgress
 import models.UserAnswers
 import navigation.AssetsNavigator
 import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
-import services.FeatureFlagService
+import services.TrustsStoreService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Session
 
@@ -34,9 +35,9 @@ import scala.concurrent.{ExecutionContext, Future}
 class IndexController @Inject()(
                                  val controllerComponents: MessagesControllerComponents,
                                  actions: StandardActionSets,
-                                 cacheRepository : PlaybackRepository,
+                                 cacheRepository: PlaybackRepository,
                                  connector: TrustsConnector,
-                                 featureFlagService: FeatureFlagService,
+                                 trustsStoreService: TrustsStoreService,
                                  navigator: AssetsNavigator
                                )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
@@ -48,7 +49,7 @@ class IndexController @Inject()(
           s" user has started to maintain assets")
         for {
           details <- connector.getTrustDetails(identifier)
-          is5mldEnabled <- featureFlagService.is5mldEnabled()
+          is5mldEnabled <- trustsStoreService.is5mldEnabled()
           isMigrating <- connector.getTrustMigrationFlag(identifier)
           isUnderlyingData5mld <- connector.isTrust5mld(identifier)
           ua <- Future.successful(
@@ -65,6 +66,7 @@ class IndexController @Inject()(
             }
           )
           _ <- cacheRepository.set(ua)
+          _ <- trustsStoreService.updateTaskStatus(identifier, InProgress)
         } yield {
           Redirect(navigator.redirectToAddAssetPage(ua.isMigratingToTaxable))
         }

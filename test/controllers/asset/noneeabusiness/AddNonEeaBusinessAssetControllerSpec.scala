@@ -22,6 +22,7 @@ import connectors.TrustsStoreConnector
 import forms.{AddAssetsFormProvider, YesNoFormProvider}
 import generators.Generators
 import models.Constants.MAX_NON_EEA_BUSINESS_ASSETS
+import models.TaskStatus.Completed
 import models.assets._
 import models.{AddAssets, NormalMode, RemoveAsset, UkAddress}
 import navigation.Navigator
@@ -69,7 +70,8 @@ class AddNonEeaBusinessAssetControllerSpec extends SpecBase with Generators with
 
   override def beforeEach(): Unit = {
     reset(mockStoreConnector, mockViewHelper)
-    when(mockStoreConnector.setTaskComplete(any())(any(), any())).thenReturn(Future.successful(HttpResponse(200, "")))
+    when(mockStoreConnector.updateTaskStatus(any(), any())(any(), any()))
+      .thenReturn(Future.successful(HttpResponse(OK, "")))
   }
 
   "AddNonEeaBusinessAssetController Controller" when {
@@ -163,7 +165,7 @@ class AddNonEeaBusinessAssetControllerSpec extends SpecBase with Generators with
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual frontendAppConfig.maintainATrustOverview
 
-        verify(mockStoreConnector).setTaskComplete(any())(any(), any())
+        verify(mockStoreConnector).updateTaskStatus(any(), eqTo(Completed))(any(), any())
 
         application.stop()
       }
@@ -294,7 +296,7 @@ class AddNonEeaBusinessAssetControllerSpec extends SpecBase with Generators with
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual frontendAppConfig.maintainATrustOverview
 
-        verify(mockStoreConnector).setTaskComplete(any())(any(), any())
+        verify(mockStoreConnector).updateTaskStatus(any(), eqTo(Completed))(any(), any())
 
         application.stop()
       }

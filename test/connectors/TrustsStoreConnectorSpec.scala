@@ -17,8 +17,9 @@
 package connectors
 
 import base.SpecBase
-import com.github.tomakehurst.wiremock.client.WireMock.{okJson, urlEqualTo, _}
+import com.github.tomakehurst.wiremock.client.WireMock.{urlEqualTo, _}
 import models.FeatureResponse
+import models.TaskStatus.Completed
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import play.api.http.Status
 import play.api.libs.json.Json
@@ -37,9 +38,9 @@ class TrustsStoreConnectorSpec extends SpecBase
 
   "trusts store connector" when {
 
-    ".setTasksComplete" must {
+    ".updateTaskStatus" must {
 
-      val url = s"/trusts-store/maintain/tasks/assets/$identifier"
+      val url = s"/trusts-store/maintain/tasks/update-assets/$identifier"
 
       "return OK with the current task status" in {
         val application = applicationBuilder()
@@ -52,23 +53,12 @@ class TrustsStoreConnectorSpec extends SpecBase
 
         val connector = application.injector.instanceOf[TrustsStoreConnector]
 
-        val json = Json.parse(
-          """
-            |{
-            |  "trustees": true,
-            |  "beneficiaries": false,
-            |  "settlors": false,
-            |  "protectors": false,
-            |  "other": false
-            |}
-            |""".stripMargin)
-
         server.stubFor(
           post(urlEqualTo(url))
-            .willReturn(okJson(json.toString))
+            .willReturn(ok())
         )
 
-        val futureResult = connector.setTaskComplete(identifier)
+        val futureResult = connector.updateTaskStatus(identifier, Completed)
 
         whenReady(futureResult) {
           r =>
@@ -94,75 +84,7 @@ class TrustsStoreConnectorSpec extends SpecBase
             .willReturn(serverError())
         )
 
-        val futureResult = connector.setTaskComplete(identifier)
-
-        whenReady(futureResult) {
-          r =>
-            r.status mustBe INTERNAL_SERVER_ERROR
-        }
-
-        application.stop()
-      }
-    }
-
-    ".setTaskInProgress" must {
-
-      val url = s"/trusts-store/maintain/tasks/reset/assets/$identifier"
-
-      "return OK with the current task status" in {
-        val application = applicationBuilder()
-          .configure(
-            Seq(
-              "microservice.services.trusts-store.port" -> server.port(),
-              "auditing.enabled" -> false
-            ): _*
-          ).build()
-
-        val connector = application.injector.instanceOf[TrustsStoreConnector]
-
-        val json = Json.parse(
-          """
-            |{
-            |  "trustees": true,
-            |  "beneficiaries": false,
-            |  "settlors": false,
-            |  "protectors": false,
-            |  "other": false
-            |}
-            |""".stripMargin)
-
-        server.stubFor(
-          post(urlEqualTo(url))
-            .willReturn(okJson(json.toString))
-        )
-
-        val futureResult = connector.setTaskInProgress(identifier)
-
-        whenReady(futureResult) {
-          r =>
-            r.status mustBe OK
-        }
-
-        application.stop()
-      }
-
-      "return default tasks when a failure occurs" in {
-        val application = applicationBuilder()
-          .configure(
-            Seq(
-              "microservice.services.trusts-store.port" -> server.port(),
-              "auditing.enabled" -> false
-            ): _*
-          ).build()
-
-        val connector = application.injector.instanceOf[TrustsStoreConnector]
-
-        server.stubFor(
-          post(urlEqualTo(url))
-            .willReturn(serverError())
-        )
-
-        val futureResult = connector.setTaskInProgress(identifier)
+        val futureResult = connector.updateTaskStatus(identifier, Completed)
 
         whenReady(futureResult) {
           r =>

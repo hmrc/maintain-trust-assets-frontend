@@ -22,6 +22,7 @@ import connectors.TrustsStoreConnector
 import forms.{AddAssetsFormProvider, YesNoFormProvider}
 import generators.Generators
 import models.Constants._
+import models.TaskStatus.Completed
 import models.assets._
 import models.{AddAssets, RemoveAsset, ShareClass, UkAddress}
 import navigation.{AssetsNavigator, Navigator}
@@ -110,7 +111,8 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
     reset(mockNavigator, mockStoreConnector, mockViewHelper)
 
     when(mockNavigator.addAssetRoute(any())).thenReturn(fakeNavigator.desiredRoute)
-    when(mockStoreConnector.setTaskComplete(any())(any(), any())).thenReturn(Future.successful(HttpResponse(200, "")))
+    when(mockStoreConnector.updateTaskStatus(any(), any())(any(), any()))
+      .thenReturn(Future.successful(HttpResponse(OK, "")))
   }
 
   "AddAssets Controller" when {
@@ -204,7 +206,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual frontendAppConfig.maintainATrustOverview
 
-        verify(mockStoreConnector).setTaskComplete(any())(any(), any())
+        verify(mockStoreConnector).updateTaskStatus(any(), eqTo(Completed))(any(), any())
 
         application.stop()
       }
@@ -338,7 +340,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual frontendAppConfig.maintainATrustOverview
 
-        verify(mockStoreConnector).setTaskComplete(any())(any(), any())
+        verify(mockStoreConnector).updateTaskStatus(any(), eqTo(Completed))(any(), any())
 
         application.stop()
       }
@@ -508,7 +510,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual frontendAppConfig.maintainATrustOverview
 
-        verify(mockStoreConnector).setTaskComplete(any())(any(), any())
+        verify(mockStoreConnector).updateTaskStatus(any(), eqTo(Completed))(any(), any())
 
         application.stop()
       }
