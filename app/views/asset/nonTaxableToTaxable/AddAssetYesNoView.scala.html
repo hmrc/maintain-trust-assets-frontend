@@ -15,7 +15,7 @@
  *@
 
 @import controllers.asset.nonTaxableToTaxable.routes._
-@import views.html.components.{SubmitButton, ErrorSummary, InputYesNo, BulletList}
+@import views.html.components.{SubmitButton, ErrorSummary, InputYesNo, BulletList, Heading}
 
 @this(
     mainTemplate: MainTemplate,
@@ -23,7 +23,8 @@
     submitButton: SubmitButton,
     inputYesNo  : InputYesNo,
     errorSummary: ErrorSummary,
-    bulletList  : BulletList
+    bulletList  : BulletList,
+    heading     : Heading
 )
 
 @(form: Form[_])(implicit request: Request[_], messages: Messages)
@@ -37,7 +38,7 @@
 
         @errorSummary(form.errors)
 
-        <h1>@messages("nonTaxableToTaxable.addAssetYesNo.heading")</h1>
+        @heading("nonTaxableToTaxable.addAssetYesNo.heading")
 
         <h2>@messages("nonTaxableToTaxable.addAssetYesNo.paragraph1")</h2>
 
