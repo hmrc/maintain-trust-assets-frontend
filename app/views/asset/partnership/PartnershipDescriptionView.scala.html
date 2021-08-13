@@ -15,13 +15,13 @@
  *@
 
 @import controllers.asset.partnership.routes._
-@import views.html.components.{ErrorSummary, InputCharacterCount, SubmitButton}
+@import views.html.components.{ErrorSummary, InputTextCharacterCount, SubmitButton}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper  : FormWithCSRF,
     errorSummary: ErrorSummary,
-    characterCount : InputCharacterCount,
+    characterCount: InputTextCharacterCount,
     submitButton: SubmitButton
 )
 
@@ -41,6 +41,7 @@
             id = "value",
             name = "value",
             label = messages("partnership.description.heading"),
+            isLabelHidden = true,
             isPageHeading = true,
             maxLength = Some(56)
         )
