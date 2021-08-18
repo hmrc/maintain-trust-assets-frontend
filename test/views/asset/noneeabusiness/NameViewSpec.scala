@@ -32,7 +32,7 @@ class NameViewSpec extends StringViewBehaviours {
   "NameView" must {
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, NormalMode)(fakeRequest, messages)
+      view.apply(form, NormalMode, isTaxable = true)(fakeRequest, messages)
 
     behave like normalPage(applyView(form), messageKeyPrefix)
 

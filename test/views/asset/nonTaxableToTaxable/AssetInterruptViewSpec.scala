@@ -25,7 +25,7 @@ class AssetInterruptViewSpec extends ViewBehaviours {
 
       val view = viewFor[AssetInterruptView](Some(emptyUserAnswers))
 
-      val applyView = view.apply()(fakeRequest, messages)
+      val applyView = view.apply(isTaxable = true)(fakeRequest, messages)
 
       behave like normalPage(applyView, "nonTaxableToTaxable.assetInterruptPage", ignoreTitle = true)
 

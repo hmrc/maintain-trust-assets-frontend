@@ -95,7 +95,7 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(answerSection, index)(request, messages).toString
+        view(answerSection, index, isTaxable = true)(request, messages).toString
     }
 
     "redirect to the 'add non-eea asset' page when submitted and not migrating" in {

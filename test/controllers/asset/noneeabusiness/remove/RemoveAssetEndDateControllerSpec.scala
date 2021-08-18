@@ -82,7 +82,7 @@ class RemoveAssetEndDateControllerSpec extends SpecBase with ScalaCheckPropertyC
 
       status(result) mustEqual OK
 
-      contentAsString(result) mustEqual view(form, index, s"OrgName $index")(request, messages).toString
+      contentAsString(result) mustEqual view(form, index, s"OrgName $index", isTaxable = true)(request, messages).toString
 
       application.stop()
     }
@@ -255,7 +255,7 @@ class RemoveAssetEndDateControllerSpec extends SpecBase with ScalaCheckPropertyC
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, index, s"OrgName $index")(request, messages).toString
+        view(boundForm, index, s"OrgName $index", isTaxable = true)(request, messages).toString
 
       application.stop()
     }
@@ -279,7 +279,7 @@ class RemoveAssetEndDateControllerSpec extends SpecBase with ScalaCheckPropertyC
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, index, s"OrgName $index")(request, messages).toString
+        view(boundForm, index, s"OrgName $index", isTaxable = true)(request, messages).toString
 
       application.stop()
     }
