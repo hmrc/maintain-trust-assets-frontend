@@ -50,9 +50,11 @@ class AnswersController @Inject()(
   def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
 
+      val isTaxable = request.userAnswers.isTaxable
+
       val section: AnswerSection = printHelper(userAnswers = request.userAnswers, provisional, request.Name)
 
-      Ok(view(section))
+      Ok(view(section, isTaxable))
   }
 
   def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {

@@ -26,10 +26,11 @@
     submitButton: SubmitButton
 )
 
-@(form: Form[_], countryOptions: Seq[InputOption], mode: Mode, name: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], countryOptions: Seq[InputOption], mode: Mode, name: String, isTaxable: Boolean)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = s"${errorPrefix(form)} ${messages("nonEeaBusiness.governingCountry.title")}",
+    isTaxable = isTaxable,
     showBackLink = true
 ) {
 

@@ -41,11 +41,15 @@ class AssetInterruptPageController @Inject()(
                                             )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
-    implicit request => Ok(
+    implicit request =>
+
+      val isTaxable = request.userAnswers.isTaxable
+
+      Ok(
       if (request.userAnswers.isMigratingToTaxable) {
-        migrationAssetInterruptView()
+        migrationAssetInterruptView(isTaxable)
       } else {
-        assetInterruptView()
+        assetInterruptView(isTaxable)
       }
     )
   }

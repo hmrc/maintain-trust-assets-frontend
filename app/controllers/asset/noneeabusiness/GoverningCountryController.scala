@@ -51,20 +51,24 @@ class GoverningCountryController @Inject()(
   def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
 
+      val isTaxable = request.userAnswers.isTaxable
+
       val preparedForm = request.userAnswers.get(GoverningCountryPage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, countryOptions.options(), mode, request.Name))
+      Ok(view(preparedForm, countryOptions.options(), mode, request.Name, isTaxable))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
     implicit request =>
 
+      val isTaxable = request.userAnswers.isTaxable
+
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, countryOptions.options(), mode, request.Name))),
+          Future.successful(BadRequest(view(formWithErrors, countryOptions.options(), mode, request.Name, isTaxable))),
 
         value => {
           for {

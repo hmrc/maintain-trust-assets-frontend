@@ -25,10 +25,11 @@
     errorSummary: ErrorSummary
 )
 
-@(form: Form[_])(implicit request: Request[_], messages: Messages)
+@(form: Form[_], isTaxable: Boolean)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = s"${errorPrefix(form)} ${messages("addNonEeaBusinessAssetYesNo.title")}",
+    isTaxable = isTaxable,
     showBackLink = true
 ) {
 

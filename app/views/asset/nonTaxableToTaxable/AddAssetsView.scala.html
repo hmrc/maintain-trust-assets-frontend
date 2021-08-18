@@ -33,11 +33,13 @@
     form: Form[_],
     completeAssets: Seq[AddRow],
     heading: String,
-    maxedOut: List[(String, Int)]
+    maxedOut: List[(String, Int)],
+    isTaxable: Boolean
 )(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = s"${errorPrefix(form)} $heading",
+    isTaxable = isTaxable,
     showBackLink = true
 ) {
 

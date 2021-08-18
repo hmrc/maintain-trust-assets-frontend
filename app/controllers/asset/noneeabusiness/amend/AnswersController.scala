@@ -62,7 +62,10 @@ class AnswersController @Inject()(
                      name: String)
                     (implicit request: Request[AnyContent]): Result = {
     val section: AnswerSection = printHelper(userAnswers, provisional, name)
-    Ok(view(section, index))
+
+    val isTaxable = userAnswers.isTaxable
+
+    Ok(view(section, index, isTaxable))
   }
 
   def extractAndRender(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
