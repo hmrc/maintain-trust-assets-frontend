@@ -20,6 +20,7 @@ error.required = Please enter a value
 error.summary.title = There is a problem
 
 entity.asset = Assets
+entities.nonTaxable = Non-EEA
 entities.assets = Assets
 entities.asset.business = Business
 entities.asset.monetary = Money

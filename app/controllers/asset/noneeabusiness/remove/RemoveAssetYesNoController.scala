@@ -51,9 +51,11 @@ class RemoveAssetYesNoController @Inject()(
   def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
 
+      val isTaxable = request.userAnswers.isTaxable
+
       trustService.getNonEeaBusinessAsset(request.userAnswers.identifier, index).map {
         asset =>
-          Ok(view(form, index, asset.orgName))
+          Ok(view(form, index, asset.orgName, isTaxable))
       } recoverWith {
         case iobe: IndexOutOfBoundsException =>
           logger.warn(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
@@ -70,11 +72,13 @@ class RemoveAssetYesNoController @Inject()(
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
 
+      val isTaxable = request.userAnswers.isTaxable
+
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) => {
           trustService.getNonEeaBusinessAsset(request.userAnswers.identifier, index).map {
             asset =>
-              BadRequest(view(formWithErrors, index, asset.orgName))
+              BadRequest(view(formWithErrors, index, asset.orgName, isTaxable))
           }
         },
         value => {

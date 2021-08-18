@@ -27,8 +27,9 @@ object ViewUtils {
     if (form.hasErrors || form.hasGlobalErrors) messages("error.browser.title.prefix") else ""
   }
 
-  def breadcrumbTitle(title: String)(implicit messages: Messages): String = {
-    s"$title - ${messages("entities.assets")} - ${messages("service.name")} - GOV.UK"
+  def breadcrumbTitle(title: String, isTaxable: Boolean = true)(implicit messages: Messages): String = {
+    val section = if (isTaxable) "entities.assets" else "entities.nonTaxable"
+    s"$title - ${messages(section)} - ${messages("service.name")} - GOV.UK"
   }
 
   def mapRadioOptionsToRadioItems(field: Field, inputs: Seq[RadioOption])(implicit messages: Messages): Seq[RadioItem] =

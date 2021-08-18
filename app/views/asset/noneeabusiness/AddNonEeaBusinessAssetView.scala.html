@@ -30,10 +30,11 @@
     submitButton: SubmitButton
 )
 
-@(form: Form[_], completeAssets: Seq[AddRow], heading: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], completeAssets: Seq[AddRow], heading: String, isTaxable: Boolean)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = s"${errorPrefix(form)} $heading",
+    isTaxable = isTaxable,
     showBackLink = true
 ) {
 

@@ -70,6 +70,7 @@ class AddNonEeaBusinessAssetController @Inject()(
     implicit request =>
 
       val userAnswers: UserAnswers = request.userAnswers
+      val isTaxable = userAnswers.isTaxable
 
       for {
         assets <- trustService.getAssets(userAnswers.identifier)
@@ -84,9 +85,9 @@ class AddNonEeaBusinessAssetController @Inject()(
           case 0 =>
             Redirect(controllers.asset.routes.TrustOwnsNonEeaBusinessYesNoController.onPageLoad(NormalMode))
           case c if c >= maxLimit =>
-            Ok(maxedOutView(assetRows.complete, heading(c), maxLimit, prefix))
+            Ok(maxedOutView(assetRows.complete, heading(c), maxLimit, prefix, isTaxable))
           case c =>
-            Ok(addAssetsView(addAnotherForm, assetRows.complete, heading(c)))
+            Ok(addAssetsView(addAnotherForm, assetRows.complete, heading(c), isTaxable))
         }
       }
   }
@@ -94,9 +95,11 @@ class AddNonEeaBusinessAssetController @Inject()(
   def submitOne(): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
 
+      val isTaxable = request.userAnswers.isTaxable
+
       yesNoForm.bindFromRequest().fold(
         (formWithErrors: Form[_]) => {
-          Future.successful(BadRequest(yesNoView(formWithErrors)))
+          Future.successful(BadRequest(yesNoView(formWithErrors, isTaxable)))
         },
         value => {
           if (value) {
@@ -115,13 +118,15 @@ class AddNonEeaBusinessAssetController @Inject()(
   def submitAnother(): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
 
+      val isTaxable = request.userAnswers.isTaxable
+
       trustService.getAssets(request.userAnswers.identifier).flatMap { assets =>
         addAnotherForm.bindFromRequest().fold(
           (formWithErrors: Form[_]) => {
 
             val assetRows = viewHelper.rows(assets, isNonTaxable = true)
 
-            Future.successful(BadRequest(addAssetsView(formWithErrors, assetRows.complete, heading(assetRows.count))))
+            Future.successful(BadRequest(addAssetsView(formWithErrors, assetRows.complete, heading(assetRows.count), isTaxable)))
           },
           {
             case AddAssets.YesNow =>

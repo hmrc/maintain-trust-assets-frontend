@@ -28,10 +28,11 @@
 
 )
 
-@(answerSections: AnswerSection, index: Int)(implicit request: Request[_], messages: Messages)
+@(answerSections: AnswerSection, index: Int, isTaxable: Boolean)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("nonEeaBusiness.answers.title"),
+    isTaxable = isTaxable,
     showBackLink = true
 ) {
 

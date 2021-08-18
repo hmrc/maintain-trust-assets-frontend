@@ -53,7 +53,7 @@ class TrustOwnsNonEeaBusinessYesNoControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode)(request, messages).toString
+        view(form, NormalMode, isTaxable = true)(request, messages).toString
 
       application.stop()
     }
@@ -73,7 +73,7 @@ class TrustOwnsNonEeaBusinessYesNoControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), NormalMode)(request, messages).toString
+        view(form.fill(validAnswer), NormalMode, isTaxable = true)(request, messages).toString
 
       application.stop()
     }
@@ -115,7 +115,7 @@ class TrustOwnsNonEeaBusinessYesNoControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode)(request, messages).toString
+        view(boundForm, NormalMode, isTaxable = true)(request, messages).toString
 
       application.stop()
     }

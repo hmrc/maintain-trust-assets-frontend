@@ -69,7 +69,7 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(answerSection)(request, messages).toString
+        view(answerSection, isTaxable = true)(request, messages).toString
 
       application.stop()
     }

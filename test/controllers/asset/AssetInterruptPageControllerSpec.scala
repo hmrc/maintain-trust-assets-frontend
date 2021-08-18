@@ -52,7 +52,7 @@ class AssetInterruptPageControllerSpec extends SpecBase {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view()(request, messages).toString
+          view(isTaxable = isTaxable)(request, messages).toString
 
         application.stop()
       }
@@ -74,7 +74,7 @@ class AssetInterruptPageControllerSpec extends SpecBase {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view()(request, messages).toString
+          view(isTaxable = isTaxable)(request, messages).toString
 
         application.stop()
       }
