@@ -54,7 +54,7 @@ class BusinessUkAddressController @Inject()(
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, request.Name))
+      Ok(view(preparedForm, mode, request.name))
   }
 
 
@@ -63,7 +63,7 @@ class BusinessUkAddressController @Inject()(
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode, request.Name))),
+          Future.successful(BadRequest(view(formWithErrors, mode, request.name))),
 
         value => {
           for {

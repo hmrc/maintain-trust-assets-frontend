@@ -34,7 +34,7 @@ class TrustOwnsNonEeaBusinessYesNoViewSpec extends YesNoViewBehaviours {
     val view = viewFor[TrustOwnsNonEeaBusinessYesNoView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, NormalMode, isTaxable = true)(fakeRequest, messages)
+      view.apply(form, NormalMode)(fakeRequest, messages)
 
     behave like normalPage(applyView(form), messageKeyPrefix)
 

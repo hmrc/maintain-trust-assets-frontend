@@ -19,6 +19,7 @@ package controllers.asset.noneeabusiness
 import config.annotations.NonEeaBusiness
 import controllers.actions.StandardActionSets
 import forms.NameFormProvider
+import models.Mode
 import navigation.Navigator
 import pages.asset.noneeabusiness.NamePage
 import play.api.data.Form
@@ -27,9 +28,8 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.asset.noneeabusiness.NameView
-import javax.inject.Inject
-import models.Mode
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class NameController @Inject()(
@@ -44,29 +44,24 @@ class NameController @Inject()(
 
   private val form: Form[String] = formProvider.withConfig(105, "nonEeaBusiness.name")
 
-
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
     implicit request =>
-
-      val isTaxable = request.userAnswers.isTaxable
 
       val preparedForm = request.userAnswers.get(NamePage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, isTaxable))
+      Ok(view(preparedForm, mode))
 
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
 
-      val isTaxable = request.userAnswers.isTaxable
-
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode, isTaxable))),
+          Future.successful(BadRequest(view(formWithErrors, mode))),
 
         value => {
           for {

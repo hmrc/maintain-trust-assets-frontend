@@ -84,7 +84,7 @@ class PartnershipAmendAnswersController @Inject()(
 
   def renderFromUserAnswers(index: Int) : Action[AnyContent] = standardActionSets.verifiedForIdentifier.andThen(nameAction) {
     implicit request =>
-      render(request.userAnswers, index, request.Name)
+      render(request.userAnswers, index, request.name)
   }
 
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {

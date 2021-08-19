@@ -16,10 +16,17 @@
 
 package views
 
+import controllers.actions.NameRequest
+import models.requests.DataRequest
 import play.api.data.{Field, Form, FormError}
 import play.api.i18n.Messages
-import viewmodels.RadioOption
+import play.api.mvc.Request
 import uk.gov.hmrc.govukfrontend.views.html.components.{RadioItem, Text}
+import viewmodels.RadioOption
+
+class ViewUtils {
+
+}
 
 object ViewUtils {
 
@@ -27,9 +34,17 @@ object ViewUtils {
     if (form.hasErrors || form.hasGlobalErrors) messages("error.browser.title.prefix") else ""
   }
 
-  def breadcrumbTitle(title: String, isTaxable: Boolean = true)(implicit messages: Messages): String = {
-    val section = if (isTaxable) "entities.assets" else "entities.nonTaxable"
-    s"$title - ${messages(section)} - ${messages("service.name")} - GOV.UK"
+  def breadcrumbTitle[T <: Request[_]](title: String)(implicit request: T, messages: Messages): String = {
+    val section = request match {
+      case x: NameRequest[_] => Some(if (x.userAnswers.isMigratingToTaxable) "entities.assets" else "entities.nonTaxable")
+      case x: DataRequest[_] => Some(if (x.userAnswers.isMigratingToTaxable) "entities.assets" else "entities.nonTaxable")
+      case _ => None
+    }
+
+    section match {
+      case Some(entityKey) => s"$title - ${messages(entityKey)} - ${messages("service.name")} - GOV.UK"
+      case None => s"$title - ${messages("service.name")} - GOV.UK"
+    }
   }
 
   def mapRadioOptionsToRadioItems(field: Field, inputs: Seq[RadioOption])(implicit messages: Messages): Seq[RadioItem] =

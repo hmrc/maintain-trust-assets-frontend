@@ -20,6 +20,6 @@ import models.UserAnswers
 import models.requests.DataRequest
 import play.api.mvc.WrappedRequest
 
-case class NameRequest[T](request: DataRequest[T], Name: String) extends WrappedRequest[T](request){
+case class NameRequest[T](request: DataRequest[T], name: String) extends WrappedRequest[T](request){
   val userAnswers:UserAnswers = request.userAnswers
 }

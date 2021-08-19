@@ -72,7 +72,6 @@ class AddAssetsController @Inject()(
     implicit request =>
 
       val userAnswers: UserAnswers = request.userAnswers
-      val isTaxable = userAnswers.isTaxable
 
       for {
         assets <- trustService.getAssets(userAnswers.identifier)
@@ -86,14 +85,13 @@ class AddAssetsController @Inject()(
             val assetRows = viewHelper.rows(assets, isNonTaxable = false)
 
             if (WhatKindOfAsset.nonMaxedOutOptions(assets).isEmpty) {
-              Ok(maxedOutView(assetRows.complete, heading(assetRows.count), MAX_ALL_ASSETS, prefix, isTaxable))
+              Ok(maxedOutView(assetRows.complete, heading(assetRows.count), MAX_ALL_ASSETS, prefix))
             } else {
               Ok(addAssetsView(
                 form = addAnotherForm,
                 completeAssets = assetRows.complete,
                 heading = heading(assetRows.count),
-                maxedOut = WhatKindOfAsset.maxedOutOptions(assets),
-                isTaxable = isTaxable
+                maxedOut = WhatKindOfAsset.maxedOutOptions(assets)
               ))
             }
         }
@@ -103,11 +101,9 @@ class AddAssetsController @Inject()(
   def submitOne(): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
 
-      val isTaxable = request.userAnswers.isTaxable
-
       yesNoForm.bindFromRequest().fold(
         (formWithErrors: Form[_]) => {
-          Future.successful(BadRequest(yesNoView(formWithErrors, isTaxable)))
+          Future.successful(BadRequest(yesNoView(formWithErrors)))
         },
         value => {
           if (value) {
@@ -126,8 +122,6 @@ class AddAssetsController @Inject()(
   def submitAnother(): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
 
-      val isTaxable = request.userAnswers.isTaxable
-
       trustService.getAssets(request.userAnswers.identifier).flatMap { assets =>
         addAnotherForm.bindFromRequest().fold(
           (formWithErrors: Form[_]) => {
@@ -138,8 +132,7 @@ class AddAssetsController @Inject()(
               form = formWithErrors,
               completeAssets = assetRows.complete,
               heading = heading(assetRows.count),
-              maxedOut = WhatKindOfAsset.maxedOutOptions(assets),
-              isTaxable = isTaxable
+              maxedOut = WhatKindOfAsset.maxedOutOptions(assets)
             )))
           },
           {

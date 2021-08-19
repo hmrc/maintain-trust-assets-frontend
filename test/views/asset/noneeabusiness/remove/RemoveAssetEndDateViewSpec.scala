@@ -36,7 +36,7 @@ class RemoveAssetEndDateViewSpec extends QuestionViewBehaviours[LocalDate] {
     val view = viewFor[RemoveAssetEndDateView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, index, name, isTaxable = true)(fakeRequest, messages)
+      view.apply(form, index, name)(fakeRequest, messages)
 
     val applyViewF = (form : Form[_]) => applyView(form)
 

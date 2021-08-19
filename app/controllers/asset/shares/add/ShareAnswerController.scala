@@ -53,7 +53,7 @@ class ShareAnswerController @Inject()(
   def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
 
-      val section: AnswerSection = printHelper(userAnswers = request.userAnswers, provisional, request.Name)
+      val section: AnswerSection = printHelper(userAnswers = request.userAnswers, provisional, request.name)
 
       Ok(view(section))
   }

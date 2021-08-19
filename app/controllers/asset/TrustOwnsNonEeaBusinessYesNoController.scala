@@ -46,24 +46,20 @@ class TrustOwnsNonEeaBusinessYesNoController @Inject()(
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
     implicit request =>
 
-      val isTaxable = request.userAnswers.isTaxable
-
       val preparedForm = request.userAnswers.get(TrustOwnsNonEeaBusinessYesNoPage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, isTaxable))
+      Ok(view(preparedForm, mode))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
 
-      val isTaxable = request.userAnswers.isTaxable
-
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode, isTaxable))),
+          Future.successful(BadRequest(view(formWithErrors, mode))),
 
         value => {
           for {

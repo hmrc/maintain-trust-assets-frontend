@@ -27,11 +27,10 @@
     heading     : Heading
 )
 
-@(form: Form[_], isTaxable: Boolean)(implicit request: Request[_], messages: Messages)
+@(form: Form[_])(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = s"${errorPrefix(form)} ${messages("nonTaxableToTaxable.addAssetYesNo.title")}",
-    isTaxable = isTaxable,
     showBackLink = true
 ) {
 

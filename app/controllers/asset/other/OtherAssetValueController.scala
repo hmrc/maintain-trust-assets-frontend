@@ -20,6 +20,7 @@ import config.annotations.Other
 import controllers.actions._
 import controllers.actions.other.NameRequiredAction
 import forms.ValueFormProvider
+import models.Mode
 import navigation.Navigator
 import pages.asset.other.{OtherAssetDescriptionPage, OtherAssetValuePage}
 import play.api.data.Form
@@ -28,9 +29,8 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.asset.other.OtherAssetValueView
-import javax.inject.Inject
-import models.Mode
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class OtherAssetValueController @Inject()(

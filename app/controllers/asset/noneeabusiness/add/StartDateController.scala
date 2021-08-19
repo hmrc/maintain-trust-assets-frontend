@@ -49,26 +49,22 @@ class StartDateController @Inject()(
   def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
 
-      val isTaxable = request.userAnswers.isTaxable
-
       val form = formProvider.withConfig(messagePrefix, request.userAnswers.whenTrustSetup)
       val preparedForm = request.userAnswers.get(StartDatePage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, request.Name, isTaxable))
+      Ok(view(preparedForm, request.name))
   }
 
   def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
     implicit request =>
 
-      val isTaxable = request.userAnswers.isTaxable
-
       val form = formProvider.withConfig(messagePrefix, request.userAnswers.whenTrustSetup)
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, request.Name, isTaxable))),
+          Future.successful(BadRequest(view(formWithErrors, request.name))),
 
         value => {
           for {

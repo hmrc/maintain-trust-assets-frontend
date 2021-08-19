@@ -26,11 +26,10 @@
     addToList   : AddToList
 )
 
-@(completeAssets: Seq[AddRow], heading: String, maxLimit: Int, prefix: String, isTaxable: Boolean)(implicit request: Request[_], messages: Messages)
+@(completeAssets: Seq[AddRow], heading: String, maxLimit: Int, prefix: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = heading,
-    isTaxable = isTaxable,
     showBackLink = true
 ) {
 

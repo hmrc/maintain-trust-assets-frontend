@@ -50,24 +50,20 @@ class AddAssetYesNoController @Inject()(
   def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
     implicit request =>
 
-      val isTaxable = request.userAnswers.isTaxable
-
       val preparedForm = request.userAnswers.get(AddAssetsYesNoPage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, isTaxable))
+      Ok(view(preparedForm))
   }
 
   def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
 
-      val isTaxable = request.userAnswers.isTaxable
-
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, isTaxable))),
+          Future.successful(BadRequest(view(formWithErrors))),
 
         value => {
 
