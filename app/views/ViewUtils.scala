@@ -36,7 +36,7 @@ class ViewUtils {
   private def section[T <: Request[_]](implicit request: T): Option[String] = {
     request match {
       case x: NameRequest[_] => section(x.request)
-      case x: DataRequest[_] => Some(if (x.userAnswers.isMigratingToTaxable) "entities.assets" else "entities.nonTaxable")
+      case x: DataRequest[_] => Some(s"entities.${if (x.userAnswers.isMigratingToTaxable) "assets" else "nonTaxable"}")
       case _ => None
     }
   }
