@@ -18,7 +18,6 @@ package views.behaviours
 
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
-import views.ViewUtils
 
 trait IntViewBehaviours extends QuestionViewBehaviours[Int] {
 
@@ -73,7 +72,7 @@ trait IntViewBehaviours extends QuestionViewBehaviours[Int] {
         "show an error prefix in the browser title" in {
 
           val doc = asDocument(createView(form.withError(error)))
-          assertEqualsValue(doc, "title", ViewUtils.breadcrumbTitle(s"""${messages("error.browser.title.prefix")} ${messages(s"$messageKeyPrefix.title")}""")(fakeRequest, messages))
+          assertEqualsValue(doc, "title", mockViewUtils.breadcrumbTitle(s"""${messages("error.browser.title.prefix")} ${messages(s"$messageKeyPrefix.title")}""")(fakeRequest, messages))
         }
       }
     }

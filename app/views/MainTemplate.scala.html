@@ -18,6 +18,7 @@
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
 @import uk.gov.hmrc.hmrcfrontend.views.config.StandardBetaBanner
 @import resources._
+@import views.ViewUtils
 
 @this(
     appConfig: FrontendAppConfig,
@@ -31,7 +32,8 @@
     hmrcScripts: HmrcScripts,
     stylesheets: Stylesheets,
     govukBackLink: GovukBackLink,
-    hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper
+    hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
+    viewUtils: ViewUtils
 )
 
 @(
@@ -77,7 +79,7 @@
 }
 
 @govukLayout(
-    pageTitle = Some(breadcrumbTitle(title)),
+    pageTitle = Some(viewUtils.breadcrumbTitle(title)),
     headBlock = Some(hmrcHead(
         headBlock = Some(headScripts),
     )),

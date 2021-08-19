@@ -26,6 +26,8 @@ class ViewUtilsSpec extends SpecBase {
 
   "ViewUtils" when {
 
+    lazy val viewUtils = injector.instanceOf[ViewUtils]
+
     ".breadcrumbTitle" must {
 
       lazy val fakeTitle = "Title"
@@ -38,19 +40,19 @@ class ViewUtilsSpec extends SpecBase {
 
           "Request" in {
             implicit val request: Request[_] = fakeRequest
-            val result = ViewUtils.breadcrumbTitle(fakeTitle)(request, messages)
+            val result = viewUtils.breadcrumbTitle(fakeTitle)(request, messages)
             result mustBe s"$fakeTitle - Register and Maintain a Trust - GOV.UK"
           }
 
           "DataRequest" in {
             implicit val request: DataRequest[_] = dataRequest
-            val result = ViewUtils.breadcrumbTitle(fakeTitle)(request, messages)
+            val result = viewUtils.breadcrumbTitle(fakeTitle)(request, messages)
             result mustBe s"$fakeTitle - Assets - Register and Maintain a Trust - GOV.UK"
           }
 
           "NameRequest" in {
             implicit val request: NameRequest[_] = NameRequest(dataRequest, "Name")
-            val result = ViewUtils.breadcrumbTitle(fakeTitle)(request, messages)
+            val result = viewUtils.breadcrumbTitle(fakeTitle)(request, messages)
             result mustBe s"$fakeTitle - Assets - Register and Maintain a Trust - GOV.UK"
           }
         }
@@ -64,19 +66,19 @@ class ViewUtilsSpec extends SpecBase {
 
           "Request" in {
             implicit val request: Request[_] = fakeRequest
-            val result = ViewUtils.breadcrumbTitle(fakeTitle)(request, messages)
+            val result = viewUtils.breadcrumbTitle(fakeTitle)(request, messages)
             result mustBe s"$fakeTitle - Register and Maintain a Trust - GOV.UK"
           }
 
           "DataRequest" in {
             implicit val request: DataRequest[_] = dataRequest
-            val result = ViewUtils.breadcrumbTitle(fakeTitle)(request, messages)
+            val result = viewUtils.breadcrumbTitle(fakeTitle)(request, messages)
             result mustBe s"$fakeTitle - Non-EEA - Register and Maintain a Trust - GOV.UK"
           }
 
           "NameRequest" in {
             implicit val request: NameRequest[_] = NameRequest(dataRequest, "Name")
-            val result = ViewUtils.breadcrumbTitle(fakeTitle)(request, messages)
+            val result = viewUtils.breadcrumbTitle(fakeTitle)(request, messages)
             result mustBe s"$fakeTitle - Non-EEA - Register and Maintain a Trust - GOV.UK"
           }
         }
@@ -87,19 +89,19 @@ class ViewUtilsSpec extends SpecBase {
 
           "Request" in {
             implicit val request: Request[_] = fakeRequest
-            val result = ViewUtils.breadcrumbTitle(fakeTitle)(request, messages)
+            val result = viewUtils.breadcrumbTitle(fakeTitle)(request, messages)
             result mustBe s"$fakeTitle - Register and Maintain a Trust - GOV.UK"
           }
 
           "DataRequest" in {
             implicit val request: DataRequest[_] = dataRequest
-            val result = ViewUtils.breadcrumbTitle(fakeTitle)(request, messages)
+            val result = viewUtils.breadcrumbTitle(fakeTitle)(request, messages)
             result mustBe s"$fakeTitle - Non-EEA - Register and Maintain a Trust - GOV.UK"
           }
 
           "NameRequest" in {
             implicit val request: NameRequest[_] = NameRequest(dataRequest, "Name")
-            val result = ViewUtils.breadcrumbTitle(fakeTitle)(request, messages)
+            val result = viewUtils.breadcrumbTitle(fakeTitle)(request, messages)
             result mustBe s"$fakeTitle - Non-EEA - Register and Maintain a Trust - GOV.UK"
           }
         }

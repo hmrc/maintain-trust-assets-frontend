@@ -26,14 +26,6 @@ import viewmodels.RadioOption
 
 class ViewUtils {
 
-}
-
-object ViewUtils {
-
-  def errorPrefix(form: Form[_])(implicit messages: Messages): String = {
-    if (form.hasErrors || form.hasGlobalErrors) messages("error.browser.title.prefix") else ""
-  }
-
   def breadcrumbTitle[T <: Request[_]](title: String)(implicit request: T, messages: Messages): String = {
     val section = request match {
       case x: NameRequest[_] => Some(if (x.userAnswers.isMigratingToTaxable) "entities.assets" else "entities.nonTaxable")
@@ -45,6 +37,14 @@ object ViewUtils {
       case Some(entityKey) => s"$title - ${messages(entityKey)} - ${messages("service.name")} - GOV.UK"
       case None => s"$title - ${messages("service.name")} - GOV.UK"
     }
+  }
+
+}
+
+object ViewUtils {
+
+  def errorPrefix(form: Form[_])(implicit messages: Messages): String = {
+    if (form.hasErrors || form.hasGlobalErrors) messages("error.browser.title.prefix") else ""
   }
 
   def mapRadioOptionsToRadioItems(field: Field, inputs: Seq[RadioOption])(implicit messages: Messages): Seq[RadioItem] =
