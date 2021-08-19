@@ -24,18 +24,20 @@ import play.api.mvc.Request
 import uk.gov.hmrc.govukfrontend.views.html.components.{RadioItem, Text}
 import viewmodels.RadioOption
 
+import scala.annotation.tailrec
+
 class ViewUtils {
 
   def breadcrumbTitle[T <: Request[_]](title: String)(implicit request: T, messages: Messages): String = {
-    val section = request match {
-      case x: NameRequest[_] => Some(if (x.userAnswers.isMigratingToTaxable) "entities.assets" else "entities.nonTaxable")
+    s"$title ${section.fold("")(x => s"- ${messages(x)} ")}- ${messages("service.name")} - GOV.UK"
+  }
+
+  @tailrec
+  private def section[T <: Request[_]](implicit request: T): Option[String] = {
+    request match {
+      case x: NameRequest[_] => section(x.request)
       case x: DataRequest[_] => Some(if (x.userAnswers.isMigratingToTaxable) "entities.assets" else "entities.nonTaxable")
       case _ => None
-    }
-
-    section match {
-      case Some(entityKey) => s"$title - ${messages(entityKey)} - ${messages("service.name")} - GOV.UK"
-      case None => s"$title - ${messages("service.name")} - GOV.UK"
     }
   }
 
