@@ -16,20 +16,37 @@
 
 package views
 
+import controllers.actions.NameRequest
+import models.requests.DataRequest
 import play.api.data.{Field, Form, FormError}
 import play.api.i18n.Messages
-import viewmodels.RadioOption
+import play.api.mvc.Request
 import uk.gov.hmrc.govukfrontend.views.html.components.{RadioItem, Text}
+import viewmodels.RadioOption
+
+import scala.annotation.tailrec
+
+class ViewUtils {
+
+  def breadcrumbTitle[T <: Request[_]](title: String)(implicit request: T, messages: Messages): String = {
+    s"$title ${section.fold("")(x => s"- ${messages(x)} ")}- ${messages("service.name")} - GOV.UK"
+  }
+
+  @tailrec
+  private def section[T <: Request[_]](implicit request: T): Option[String] = {
+    request match {
+      case x: NameRequest[_] => section(x.request)
+      case x: DataRequest[_] => Some(s"entities.${if (x.userAnswers.isMigratingToTaxable) "assets" else "nonTaxable"}")
+      case _ => None
+    }
+  }
+
+}
 
 object ViewUtils {
 
   def errorPrefix(form: Form[_])(implicit messages: Messages): String = {
     if (form.hasErrors || form.hasGlobalErrors) messages("error.browser.title.prefix") else ""
-  }
-
-  def breadcrumbTitle(title: String, isTaxable: Boolean = true)(implicit messages: Messages): String = {
-    val section = if (isTaxable) "entities.assets" else "entities.nonTaxable"
-    s"$title - ${messages(section)} - ${messages("service.name")} - GOV.UK"
   }
 
   def mapRadioOptionsToRadioItems(field: Field, inputs: Seq[RadioOption])(implicit messages: Messages): Seq[RadioItem] =

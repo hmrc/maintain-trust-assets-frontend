@@ -42,7 +42,7 @@ class OtherAssetDescriptionController @Inject()(
                                                  view: OtherAssetDescriptionView
                                                )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  val form: Form[String] = formProvider.withConfig(length = 56, prefix = "other.description")
+  private val form: Form[String] = formProvider.withConfig(length = 56, prefix = "other.description")
 
   def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
     implicit request =>

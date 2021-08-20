@@ -229,7 +229,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
         status(result) mustEqual BAD_REQUEST
 
         contentAsString(result) mustEqual
-          view(boundForm, isTaxable = true)(request, messages).toString
+          view(boundForm)(request, messages).toString
 
         application.stop()
       }
@@ -260,7 +260,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(addAssetForm, fakeAddRows, "Add assets", Nil, isTaxable = true)(request, messages).toString
+          view(addAssetForm, fakeAddRows, "Add assets", Nil)(request, messages).toString
 
         verify(mockViewHelper).rows(eqTo(assets), eqTo(false))(any())
 
@@ -296,7 +296,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(addAssetForm, fakeAddRows, s"You have added $numberOfAssets assets", Nil, isTaxable = true)(request, messages).toString
+          view(addAssetForm, fakeAddRows, s"You have added $numberOfAssets assets", Nil)(request, messages).toString
 
         verify(mockViewHelper).rows(eqTo(assets), eqTo(false))(any())
 
@@ -366,7 +366,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
 
         status(result) mustEqual BAD_REQUEST
 
-        contentAsString(result) mustEqual view(boundForm, fakeAddRows, s"You have added $numberOfAssets assets", Nil, isTaxable = true)(request, messages).toString
+        contentAsString(result) mustEqual view(boundForm, fakeAddRows, s"You have added $numberOfAssets assets", Nil)(request, messages).toString
 
         verify(mockViewHelper).rows(eqTo(assets), eqTo(false))(any())
 
@@ -485,7 +485,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
 
           val content = contentAsString(result)
 
-          content mustEqual view(fakeAddRows, "You have added 76 assets", 76, prefix, isTaxable = true)(request, messages).toString
+          content mustEqual view(fakeAddRows, "You have added 76 assets", 76, prefix)(request, messages).toString
           content must include("You cannot add another asset as you have entered a maximum of 76.")
           content must include("You can add another asset by removing an existing one, or write to HMRC with details of any additional assets.")
 

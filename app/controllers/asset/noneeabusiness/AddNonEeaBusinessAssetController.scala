@@ -23,7 +23,7 @@ import forms.{AddAssetsFormProvider, YesNoFormProvider}
 import handlers.ErrorHandler
 import models.Constants._
 import models.TaskStatus._
-import models.{AddAssets, NormalMode, UserAnswers}
+import models.{AddAssets, NormalMode}
 import pages.asset.AddAnAssetYesNoPage
 import play.api.Logging
 import play.api.data.Form
@@ -69,11 +69,8 @@ class AddNonEeaBusinessAssetController @Inject()(
   def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
 
-      val userAnswers: UserAnswers = request.userAnswers
-      val isTaxable = userAnswers.isTaxable
-
       for {
-        assets <- trustService.getAssets(userAnswers.identifier)
+        assets <- trustService.getAssets(request.userAnswers.identifier)
         updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
         _ <- repository.set(updatedAnswers)
       } yield {
@@ -85,9 +82,9 @@ class AddNonEeaBusinessAssetController @Inject()(
           case 0 =>
             Redirect(controllers.asset.routes.TrustOwnsNonEeaBusinessYesNoController.onPageLoad(NormalMode))
           case c if c >= maxLimit =>
-            Ok(maxedOutView(assetRows.complete, heading(c), maxLimit, prefix, isTaxable))
+            Ok(maxedOutView(assetRows.complete, heading(c), maxLimit, prefix))
           case c =>
-            Ok(addAssetsView(addAnotherForm, assetRows.complete, heading(c), isTaxable))
+            Ok(addAssetsView(addAnotherForm, assetRows.complete, heading(c)))
         }
       }
   }
@@ -95,11 +92,9 @@ class AddNonEeaBusinessAssetController @Inject()(
   def submitOne(): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
 
-      val isTaxable = request.userAnswers.isTaxable
-
       yesNoForm.bindFromRequest().fold(
         (formWithErrors: Form[_]) => {
-          Future.successful(BadRequest(yesNoView(formWithErrors, isTaxable)))
+          Future.successful(BadRequest(yesNoView(formWithErrors)))
         },
         value => {
           if (value) {
@@ -118,15 +113,13 @@ class AddNonEeaBusinessAssetController @Inject()(
   def submitAnother(): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
 
-      val isTaxable = request.userAnswers.isTaxable
-
       trustService.getAssets(request.userAnswers.identifier).flatMap { assets =>
         addAnotherForm.bindFromRequest().fold(
           (formWithErrors: Form[_]) => {
 
             val assetRows = viewHelper.rows(assets, isNonTaxable = true)
 
-            Future.successful(BadRequest(addAssetsView(formWithErrors, assetRows.complete, heading(assetRows.count), isTaxable)))
+            Future.successful(BadRequest(addAssetsView(formWithErrors, assetRows.complete, heading(assetRows.count))))
           },
           {
             case AddAssets.YesNow =>

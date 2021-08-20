@@ -30,8 +30,8 @@ import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.countryOptions.CountryOptionsNonUK
 import views.html.asset.noneeabusiness.InternationalAddressView
-import javax.inject.Inject
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class InternationalAddressController @Inject()(
@@ -51,24 +51,20 @@ class InternationalAddressController @Inject()(
   def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
 
-      val isTaxable = request.userAnswers.isTaxable
-
       val preparedForm = request.userAnswers.get(NonUkAddressPage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, countryOptions.options, mode, request.Name, isTaxable))
+      Ok(view(preparedForm, countryOptions.options, mode, request.name))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
     implicit request =>
 
-      val isTaxable = request.userAnswers.isTaxable
-
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, countryOptions.options, mode, request.Name, isTaxable))),
+          Future.successful(BadRequest(view(formWithErrors, countryOptions.options, mode, request.name))),
 
         value => {
           for {

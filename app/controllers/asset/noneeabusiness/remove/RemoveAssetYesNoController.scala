@@ -51,34 +51,30 @@ class RemoveAssetYesNoController @Inject()(
   def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
 
-      val isTaxable = request.userAnswers.isTaxable
-
       trustService.getNonEeaBusinessAsset(request.userAnswers.identifier, index).map {
         asset =>
-          Ok(view(form, index, asset.orgName, isTaxable))
-      } recoverWith {
+          Ok(view(form, index, asset.orgName))
+      } recover {
         case iobe: IndexOutOfBoundsException =>
           logger.warn(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
             s" user cannot remove asset as asset was not found ${iobe.getMessage}: IndexOutOfBoundsException")
 
-          Future.successful(Redirect(navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable)))
+          Redirect(navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable))
         case _ =>
           logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
             s" user cannot remove asset as asset was not found")
-          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+          InternalServerError(errorHandler.internalServerErrorTemplate)
       }
   }
 
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
 
-      val isTaxable = request.userAnswers.isTaxable
-
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) => {
           trustService.getNonEeaBusinessAsset(request.userAnswers.identifier, index).map {
             asset =>
-              BadRequest(view(formWithErrors, index, asset.orgName, isTaxable))
+              BadRequest(view(formWithErrors, index, asset.orgName))
           }
         },
         value => {

@@ -64,7 +64,7 @@ class StartDateControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, name, isTaxable = true)(request, messages).toString
+        view(form, name)(request, messages).toString
 
       application.stop()
     }
@@ -85,7 +85,7 @@ class StartDateControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), name, isTaxable = true)(request, messages).toString
+        view(form.fill(validAnswer), name)(request, messages).toString
 
       application.stop()
     }
@@ -138,7 +138,7 @@ class StartDateControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, name, isTaxable = true)(request, messages).toString
+        view(boundForm, name)(request, messages).toString
 
       application.stop()
     }
@@ -160,7 +160,7 @@ class StartDateControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, name, isTaxable = true)(request, messages).toString
+        view(boundForm, name)(request, messages).toString
 
       application.stop()
     }

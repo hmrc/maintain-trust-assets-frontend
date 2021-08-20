@@ -27,11 +27,10 @@
     govukSummaryList: GovukSummaryList
 )
 
-@(answerSections: AnswerSection, isTaxable: Boolean)(implicit request: Request[_], messages: Messages)
+@(answerSections: AnswerSection)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("nonEeaBusiness.answers.title"),
-    isTaxable = isTaxable,
     showBackLink = true
 ) {
 

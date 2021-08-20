@@ -16,8 +16,6 @@
 
 package base
 
-import java.time.LocalDate
-
 import controllers.actions._
 import navigation.{FakeNavigator, Navigator}
 import org.scalatest.{BeforeAndAfter, TestSuite, TryValues}
@@ -28,6 +26,9 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.BodyParsers
 import repositories.{ActiveSessionRepository, PlaybackRepository}
 import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolment, Enrolments}
+import views.ViewUtils
+
+import java.time.LocalDate
 
 trait SpecBaseHelpers extends GuiceOneAppPerSuite with TryValues with Mocked with BeforeAndAfter with FakeTrustsApp {
   this: TestSuite =>
@@ -55,7 +56,8 @@ trait SpecBaseHelpers extends GuiceOneAppPerSuite with TryValues with Mocked wit
         bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers)),
         bind[DataRequiredAction].to[DataRequiredActionImpl],
         bind[PlaybackRepository].toInstance(playbackRepository),
-        bind[ActiveSessionRepository].toInstance(mockSessionRepository)
+        bind[ActiveSessionRepository].toInstance(mockSessionRepository),
+        bind[ViewUtils].toInstance(mockViewUtils)
       )
 }
 

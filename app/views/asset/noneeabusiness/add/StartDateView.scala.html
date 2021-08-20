@@ -25,11 +25,10 @@
     submitButton: SubmitButton
 )
 
-@(form: Form[_], name: String, isTaxable: Boolean)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], name: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = s"${errorPrefix(form)} ${messages("nonEeaBusiness.startDate.title")}",
-    isTaxable = isTaxable,
     showBackLink = true
 ) {
 

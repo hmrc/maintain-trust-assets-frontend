@@ -43,13 +43,11 @@ class AssetInterruptPageController @Inject()(
   def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
     implicit request =>
 
-      val isTaxable = request.userAnswers.isTaxable
-
       Ok(
       if (request.userAnswers.isMigratingToTaxable) {
-        migrationAssetInterruptView(isTaxable)
+        migrationAssetInterruptView()
       } else {
-        assetInterruptView(isTaxable)
+        assetInterruptView()
       }
     )
   }

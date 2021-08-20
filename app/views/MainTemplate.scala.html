@@ -18,6 +18,7 @@
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers._
 @import uk.gov.hmrc.hmrcfrontend.views.config.StandardBetaBanner
 @import resources._
+@import views.ViewUtils
 
 @this(
     appConfig: FrontendAppConfig,
@@ -31,11 +32,12 @@
     hmrcScripts: HmrcScripts,
     stylesheets: Stylesheets,
     govukBackLink: GovukBackLink,
-    hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper
+    hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
+    viewUtils: ViewUtils
 )
 
-@(title: String,
-    isTaxable: Boolean = true,
+@(
+    title: String,
     sidebarLinks: Option[Html] = None,
     contentHeader: Option[Html] = None,
     bodyClasses: Option[String] = None,
@@ -44,8 +46,7 @@
     timeoutEnabled: Boolean = true,
     canSignOut: Boolean = true,
     showBackLink: Boolean = false
-)(mainContent: Html)(implicit request : Request[_], messages: Messages)
-
+)(mainContent: Html)(implicit request: Request[_], messages: Messages)
 
 @headScripts = {
     @if(timeoutEnabled) {
@@ -77,17 +78,17 @@
     @hmrcReportTechnicalIssueHelper()
 }
 
-    @govukLayout(
-        pageTitle = Some(breadcrumbTitle(title, isTaxable)),
-        headBlock = Some(hmrcHead(
-            headBlock = Some(headScripts),
-        )),
-        headerBlock = Some(hmrcStandardHeader(
-            serviceUrl = Some(appConfig.loginContinueUrl),
-            signOutUrl = if(canSignOut) Some(LogoutController.logout().url) else None,
-            phaseBanner = Some(standardBetaBanner(url = appConfig.betaFeedbackUrl))
-        )),
-        beforeContentBlock = Some(beforeContentBlock),
-        scriptsBlock = Some(hmrcScripts()),
-        footerBlock = Some(hmrcStandardFooter())
-    )(mainContentWithGetHelp)
+@govukLayout(
+    pageTitle = Some(viewUtils.breadcrumbTitle(title)),
+    headBlock = Some(hmrcHead(
+        headBlock = Some(headScripts),
+    )),
+    headerBlock = Some(hmrcStandardHeader(
+        serviceUrl = Some(appConfig.loginContinueUrl),
+        signOutUrl = if(canSignOut) Some(LogoutController.logout().url) else None,
+        phaseBanner = Some(standardBetaBanner(url = appConfig.betaFeedbackUrl))
+    )),
+    beforeContentBlock = Some(beforeContentBlock),
+    scriptsBlock = Some(hmrcScripts()),
+    footerBlock = Some(hmrcStandardFooter())
+)(mainContentWithGetHelp)

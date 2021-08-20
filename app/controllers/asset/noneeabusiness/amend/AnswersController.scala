@@ -32,7 +32,6 @@ import repositories.PlaybackRepository
 import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.NonEeaBusinessPrintHelper
-import viewmodels.AnswerSection
 import views.html.asset.noneeabusiness.amend.AnswersView
 
 import javax.inject.Inject
@@ -61,11 +60,11 @@ class AnswersController @Inject()(
                      index: Int,
                      name: String)
                     (implicit request: Request[AnyContent]): Result = {
-    val section: AnswerSection = printHelper(userAnswers, provisional, name)
 
-    val isTaxable = userAnswers.isTaxable
-
-    Ok(view(section, index, isTaxable))
+    Ok(view(
+      answerSections = printHelper(userAnswers, provisional, name),
+      index = index
+    ))
   }
 
   def extractAndRender(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
@@ -91,7 +90,7 @@ class AnswersController @Inject()(
 
   def renderFromUserAnswers(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.andThen(nameAction) {
     implicit request =>
-      render(request.userAnswers, index, request.Name)
+      render(request.userAnswers, index, request.name)
   }
 
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {

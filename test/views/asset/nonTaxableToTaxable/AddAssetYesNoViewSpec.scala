@@ -31,7 +31,7 @@ class AddAssetYesNoViewSpec extends YesNoViewBehaviours {
   val view = viewFor[AddAssetYesNoView](Some(emptyUserAnswers))
 
   def applyView(form: Form[_]): HtmlFormat.Appendable =
-    view.apply(form, isTaxable = true)(fakeRequest, messages)
+    view.apply(form)(fakeRequest, messages)
 
   "AddAssetYesNo view" must {
 

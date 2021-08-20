@@ -26,7 +26,6 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.NonEeaBusinessPrintHelper
-import viewmodels.AnswerSection
 import views.html.asset.noneeabusiness.add.AnswersView
 
 import javax.inject.Inject
@@ -50,11 +49,7 @@ class AnswersController @Inject()(
   def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
 
-      val isTaxable = request.userAnswers.isTaxable
-
-      val section: AnswerSection = printHelper(userAnswers = request.userAnswers, provisional, request.Name)
-
-      Ok(view(section, isTaxable))
+      Ok(view(printHelper(userAnswers = request.userAnswers, provisional, request.name)))
   }
 
   def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {

@@ -25,11 +25,10 @@
     submitButton      : SubmitButton
 )
 
-@(isTaxable: Boolean)(implicit request: Request[_], messages: Messages)
+@()(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("nonTaxableToTaxable.assetInterruptPage.title"),
-    isTaxable = isTaxable,
     showBackLink = true
 ) {
 

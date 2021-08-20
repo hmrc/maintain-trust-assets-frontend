@@ -49,12 +49,10 @@ class RemoveAssetEndDateController @Inject()(
   def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
 
-      val isTaxable = request.userAnswers.isTaxable
-
       trustService.getNonEeaBusinessAsset(request.userAnswers.identifier, index).map {
         asset =>
           val form = formProvider.withConfig(messagePrefix, asset.startDate)
-          Ok(view(form, index, asset.orgName, isTaxable))
+          Ok(view(form, index, asset.orgName))
       } recoverWith {
         case iobe: IndexOutOfBoundsException =>
           logger.warn(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
@@ -71,14 +69,12 @@ class RemoveAssetEndDateController @Inject()(
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
 
-      val isTaxable = request.userAnswers.isTaxable
-
       trustService.getNonEeaBusinessAsset(request.userAnswers.identifier, index).flatMap{
         asset => {
           val form = formProvider.withConfig(messagePrefix, asset.startDate)
           form.bindFromRequest().fold(
             (formWithErrors: Form[_]) =>
-              Future.successful(BadRequest(view(formWithErrors, index, asset.orgName, isTaxable))),
+              Future.successful(BadRequest(view(formWithErrors, index, asset.orgName))),
             endDate => {
               trustService.removeAsset(request.userAnswers.identifier, RemoveAsset(AssetNameType.NonEeaBusinessAssetNameType, index, endDate)).map(_ =>
                 Redirect(navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable))
