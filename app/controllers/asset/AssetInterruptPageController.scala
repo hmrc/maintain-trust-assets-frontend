@@ -44,12 +44,12 @@ class AssetInterruptPageController @Inject()(
     implicit request =>
 
       Ok(
-      if (request.userAnswers.isMigratingToTaxable) {
-        migrationAssetInterruptView()
-      } else {
-        assetInterruptView()
-      }
-    )
+        if (request.userAnswers.isMigratingToTaxable) {
+          migrationAssetInterruptView()
+        } else {
+          assetInterruptView()
+        }
+      )
   }
 
   def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
