@@ -18,7 +18,6 @@ package controllers.asset.money.remove
 
 import base.SpecBase
 import connectors.TrustsConnector
-import controllers.Assets.OK
 import forms.RemoveIndexFormProvider
 import models.assets._
 import org.mockito.Matchers.any

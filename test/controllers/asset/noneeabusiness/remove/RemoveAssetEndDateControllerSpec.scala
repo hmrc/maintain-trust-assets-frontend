@@ -19,7 +19,6 @@ package controllers.asset.noneeabusiness.remove
 import java.time.LocalDate
 import base.SpecBase
 import connectors.TrustsConnector
-import controllers.Assets.OK
 import forms.EndDateFormProvider
 import models.{NonUkAddress, UserAnswers}
 import models.assets._
