@@ -20,7 +20,6 @@ import java.time.LocalDate
 
 import base.SpecBase
 import connectors.TrustsConnector
-import controllers.Assets.OK
 import forms.RemoveIndexFormProvider
 import models.UserAnswers
 import models.assets._
