@@ -24,6 +24,7 @@ entities.asset.partnership=Partneriaeth
 entities.asset.propertyOrLand=Eiddo neu dir
 entities.asset.shares=Rhannu
 entities.asset.other=Arall
+entities.nonTaxable=Nad yw’n rhan o’r AEE
 
 session_expired.title=Er eich diogelwch, gwnaethom eich allgofnodi
 session_expired.heading=Er eich diogelwch, gwnaethom eich allgofnodi
