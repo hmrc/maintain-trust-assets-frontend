@@ -53,7 +53,11 @@
             <div class="govuk-inset-text">
                 <ul class="govuk-list">
                     <li class="panel-indent">
-                        <p>@messages("nonTaxableToTaxable.addAssets.maxedOut.just1", messages(maxedOut.head._1).uncapitalize, maxedOut.head._2.toString)</p>
+                        @if(maxedOut.head._1 == "whatKindOfAsset.Other") {
+                            <p>@messages("nonTaxableToTaxable.addAssets.other.maxedOut.just1", maxedOut.head._2.toString)</p>
+                        } else {
+                            <p>@messages("nonTaxableToTaxable.addAssets.maxedOut.just1", messages(maxedOut.head._1).uncapitalize, maxedOut.head._2.toString)</p>
+                        }
                     </li>
                     <li class="panel-indent"><p>@messages("nonTaxableToTaxable.addAssets.maxedOut.just1.paragraph")</p></li>
                 </ul>

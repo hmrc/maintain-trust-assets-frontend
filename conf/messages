@@ -569,6 +569,7 @@ nonTaxableToTaxable.addAssets.error.required = Select yes if you want to add ano
 nonTaxableToTaxable.addAssets.count.title = You have added {0} assets
 nonTaxableToTaxable.addAssets.count.heading = You have added {0} assets
 nonTaxableToTaxable.addAssets.maxedOut.just1 = You cannot add another {0} asset as you have entered a maximum of {1}.
+nonTaxableToTaxable.addAssets.other.maxedOut.just1 = You cannot add any more ’other’ assets as you have entered a maximum of {0}.
 nonTaxableToTaxable.addAssets.maxedOut.just1.paragraph = Check the assets you have added. If you have further assets to add within this type, write to HMRC with their details.
 nonTaxableToTaxable.addAssets.maxedOut.moreThan1 = You have entered the maximum number of assets for:
 nonTaxableToTaxable.addAssets.maxedOut.moreThan1.paragraph = Check the assets you have added. If you have further assets to add within these types, write to HMRC with their details.
