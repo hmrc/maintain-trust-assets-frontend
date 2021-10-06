@@ -31,6 +31,13 @@ session_expired.heading=Er eich diogelwch, gwnaethom eich allgofnodi
 session_expired.guidance=Mae hyn oherwydd eich bod wedi bod yn segur yn y gwasanaeth ers 15 munud.
 session_expired.guidance.2=Bydd angen i chi fewngofnodi er mwyn mynd yn eich blaen i gofrestru’r ymddiriedolaeth.
 
+pageNotFound.title = Heb ddod o hyd i’r dudalen
+pageNotFound.heading = Heb ddod o hyd i’r dudalen
+pageNotFound.p1 = Os gwnaethoch deipio’r cyfeiriad gwe, gwiriwch ei fod yn gywir.
+pageNotFound.p2 = Os gwnaethoch ludo’r cyfeiriad gwe, gwiriwch eich bod wedi copïo’r cyfeiriad yn llawn.
+pageNotFound.p3 = Os yw’r cyfeiriad gwe yn gywir, neu eich bod wedi dewis cysylltiad neu fotwm, {0}.
+pageNotFound.link = cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEM i siarad â rhywun ynghylch ymddiriedolaeth (yn agor tab newydd)
+
 site.back=Yn ôl
 site.delete=Dileu
 site.edit=Newid
