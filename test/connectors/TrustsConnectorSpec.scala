@@ -61,7 +61,7 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
   private val trustsUrl: String = "/trusts"
   private val assetsUrl: String = s"$trustsUrl/assets"
 
-  private def getTrustDetailsUrl(identifier: String) = s"$trustsUrl/$identifier/trust-details"
+  private def getTrustDetailsUrl(identifier: String) = s"$trustsUrl/trust-details/$identifier/transformed"
   private def isTrust5mldUrl(identifier: String) = s"$trustsUrl/$identifier/is-trust-5mld"
   private def getAssetsUrl(identifier: String) = s"$assetsUrl/$identifier/transformed"
 
