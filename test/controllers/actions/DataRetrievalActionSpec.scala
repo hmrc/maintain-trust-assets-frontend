@@ -24,6 +24,8 @@ import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import repositories.PlaybackRepository
 import uk.gov.hmrc.auth.core.Enrolments
+import uk.gov.hmrc.http.HeaderCarrier
+import utils.Session
 
 import scala.concurrent.Future
 
@@ -32,6 +34,8 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
   class Harness(playbackRepository: PlaybackRepository) extends DataRetrievalActionImpl(mockSessionRepository, playbackRepository) {
     def callTransform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] = transform(request)
   }
+
+  implicit val hc: HeaderCarrier = HeaderCarrier()
 
   "Data Retrieval Action" when {
 
@@ -61,7 +65,7 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
         val playbackRepository = mock[PlaybackRepository]
 
         when(mockSessionRepository.get("id")).thenReturn(Future.successful(Some(UtrSession("id", "utr"))))
-        when(playbackRepository.get("id", "utr")) thenReturn Future(None)
+        when(playbackRepository.get("id", "utr", Session.id(hc))) thenReturn Future(None)
 
         val action = new Harness(playbackRepository)
 
@@ -80,7 +84,7 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
         val playbackRepository = mock[PlaybackRepository]
 
         when(mockSessionRepository.get("id")).thenReturn(Future.successful(Some(UtrSession("id", "utr"))))
-        when(playbackRepository.get("id", "utr")) thenReturn Future(Some(emptyUserAnswers))
+        when(playbackRepository.get("id", "utr", Session.id(hc))) thenReturn Future(Some(emptyUserAnswers))
 
         val action = new Harness(playbackRepository)
 

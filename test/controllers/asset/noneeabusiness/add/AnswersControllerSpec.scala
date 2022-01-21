@@ -41,7 +41,7 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
 
   private val name: String = "Noneeabusiness"
 
-  def userAnswers(migrating: Boolean): UserAnswers = UserAnswers("internalId", "identifier", LocalDate.now, isMigratingToTaxable = migrating)
+  def userAnswers(migrating: Boolean): UserAnswers = UserAnswers("internalId", "identifier", "sessionId", LocalDate.now, isMigratingToTaxable = migrating)
     .set(NamePage, name).success.value
     .set(NonUkAddressPage, NonUkAddress("Line 1", "Line 2", Some("Line 3"), "FR")).success.value
     .set(GoverningCountryPage, "FR").success.value

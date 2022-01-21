@@ -67,7 +67,7 @@ class RemoveShareAssetYesNoControllerSpec extends SpecBase with ScalaCheckProper
     createAsset(2)
   )
 
-  def userAnswers(migrating: Boolean) = UserAnswers("internalId", "identifier", LocalDate.now, isMigratingToTaxable = migrating)
+  def userAnswers(migrating: Boolean) = UserAnswers("internalId", "identifier", "sessionId", LocalDate.now, isMigratingToTaxable = migrating)
 
   "RemoveShareAssetYesNoController" when {
 

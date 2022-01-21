@@ -57,7 +57,7 @@ class BusinessAmendAnswersControllerSpec extends SpecBase with MockitoSugar with
     businessValue = valueFull
   )
 
-  def userAnswers = UserAnswers("internalId", "identifier", LocalDate.now, isMigratingToTaxable = true)
+  def userAnswers = UserAnswers("internalId", "identifier", "sessionId", LocalDate.now, isMigratingToTaxable = true)
     .set(IndexPage, index).success.value
     .set(BusinessAddressUkYesNoPage, false).success.value
     .set(BusinessInternationalAddressPage, internationalAddress).success.value

@@ -58,7 +58,7 @@ class RemoveAssetEndDateControllerSpec extends SpecBase with ScalaCheckPropertyC
     createAsset(2, provisional = true)
   )
 
-  def userAnswers(migrating: Boolean) = UserAnswers("internalId", "identifier", LocalDate.now, isMigratingToTaxable = migrating)
+  def userAnswers(migrating: Boolean) = UserAnswers("internalId", "identifier", "sessionId", LocalDate.now, isMigratingToTaxable = migrating)
 
   "RemoveAssetEndDateController" when {
 

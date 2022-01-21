@@ -54,7 +54,7 @@ class RemovePartnershipAssetYesNoControllerSpec extends SpecBase with ScalaCheck
     createAsset(2, provisional = true)
   )
 
-  def userAnswers(migrating: Boolean) = UserAnswers("internalId", "identifier", LocalDate.now, isMigratingToTaxable = migrating)
+  def userAnswers(migrating: Boolean) = UserAnswers("internalId", "identifier", "sessionId", LocalDate.now, isMigratingToTaxable = migrating)
 
   "Other RemovePartnershipAssetYesNo Controller" when {
 

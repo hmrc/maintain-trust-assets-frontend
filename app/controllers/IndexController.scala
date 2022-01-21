@@ -57,6 +57,7 @@ class IndexController @Inject()(
               UserAnswers(
                 internalId = request.user.internalId,
                 identifier = identifier,
+                sessionId = Session.id(hc),
                 whenTrustSetup = details.startDate,
                 is5mldEnabled = is5mldEnabled,
                 isTaxable = details.trustTaxable.getOrElse(true),

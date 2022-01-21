@@ -55,7 +55,7 @@ class PropertyOrLandAmendAnswersControllerSpec extends SpecBase with MockitoSuga
     valuePrevious = None
   )
 
-  def userAnswers = UserAnswers("internalId", "identifier", LocalDate.now, isMigratingToTaxable = true)
+  def userAnswers = UserAnswers("internalId", "identifier", "sessionId", LocalDate.now, isMigratingToTaxable = true)
     .set(IndexPage, index).success.value
     .set(PropertyOrLandAddressYesNoPage, false).success.value
     .set(PropertyOrLandDescriptionPage, name).success.value

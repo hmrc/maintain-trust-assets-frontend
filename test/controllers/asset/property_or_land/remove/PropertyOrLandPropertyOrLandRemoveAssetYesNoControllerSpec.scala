@@ -55,7 +55,7 @@ class PropertyOrLandPropertyOrLandRemoveAssetYesNoControllerSpec extends SpecBas
     createAsset(2, provisional = true)
   )
 
-  def userAnswers(migrating: Boolean) = UserAnswers("internalId", "identifier", LocalDate.now, isMigratingToTaxable = migrating)
+  def userAnswers(migrating: Boolean) = UserAnswers("internalId", "identifier", "sessionId", LocalDate.now, isMigratingToTaxable = migrating)
 
   "PropertyOrLandPropertyOrLandRemoveAssetYesNoController" when {
 
