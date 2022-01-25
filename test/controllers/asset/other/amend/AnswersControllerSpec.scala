@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,7 +52,7 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
     value = 4000
   )
 
-  def userAnswers = UserAnswers("internalId", "identifier", LocalDate.now, isMigratingToTaxable = true)
+  def userAnswers = UserAnswers("internalId", "identifier", "sessionId", LocalDate.now, isMigratingToTaxable = true)
     .set(IndexPage, index).success.value
     .set(OtherAssetDescriptionPage, "Other Asset").success.value
     .set(OtherAssetValuePage, 4000L).success.value

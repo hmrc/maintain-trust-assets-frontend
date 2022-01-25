@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,7 +57,7 @@ class BusinessAmendAnswersControllerSpec extends SpecBase with MockitoSugar with
     businessValue = valueFull
   )
 
-  def userAnswers = UserAnswers("internalId", "identifier", LocalDate.now, isMigratingToTaxable = true)
+  def userAnswers = UserAnswers("internalId", "identifier", "sessionId", LocalDate.now, isMigratingToTaxable = true)
     .set(IndexPage, index).success.value
     .set(BusinessAddressUkYesNoPage, false).success.value
     .set(BusinessInternationalAddressPage, internationalAddress).success.value

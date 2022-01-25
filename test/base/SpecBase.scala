@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@ trait SpecBaseHelpers extends GuiceOneAppPerSuite with TryValues with Mocked wit
 
   lazy val userInternalId = "internalId"
 
-  def emptyUserAnswers = models.UserAnswers(userInternalId, "UTRUTRUTR", LocalDate.now())
+  def emptyUserAnswers = models.UserAnswers(userInternalId, "UTRUTRUTR", "sessionId", LocalDate.now())
 
   val bodyParsers = injector.instanceOf[BodyParsers.Default]
 

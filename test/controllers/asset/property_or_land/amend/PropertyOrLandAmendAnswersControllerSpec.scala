@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,7 +55,7 @@ class PropertyOrLandAmendAnswersControllerSpec extends SpecBase with MockitoSuga
     valuePrevious = None
   )
 
-  def userAnswers = UserAnswers("internalId", "identifier", LocalDate.now, isMigratingToTaxable = true)
+  def userAnswers = UserAnswers("internalId", "identifier", "sessionId", LocalDate.now, isMigratingToTaxable = true)
     .set(IndexPage, index).success.value
     .set(PropertyOrLandAddressYesNoPage, false).success.value
     .set(PropertyOrLandDescriptionPage, name).success.value
