@@ -22,12 +22,13 @@ import models.Status.{Completed, InProgress}
 import models.assets.SharesType
 import models.ShareClass
 import models.WhatKindOfAsset.Shares
-import org.scalatest.{MustMatchers, OptionValues}
+import org.scalatest.OptionValues
 import pages.AssetStatus
 import pages.asset._
+import org.scalatest.matchers.must.Matchers
 import pages.asset.shares._
 
-class ShareAssetMapperSpec extends SpecBase with MustMatchers
+class ShareAssetMapperSpec extends SpecBase with Matchers
   with OptionValues with Generators {
 
   val shareAssetMapper: ShareAssetMapper = injector.instanceOf[ShareAssetMapper]

@@ -59,7 +59,7 @@ class BusinessNavigator @Inject()() extends Navigator {
     } else {
       ua.get(IndexPage) match {
         case Some(index) => controllers.asset.business.amend.routes.BusinessAmendAnswersController.renderFromUserAnswers(index)
-        case None => controllers.routes.SessionExpiredController.onPageLoad()
+        case None => controllers.routes.SessionExpiredController.onPageLoad
       }
     }
   }

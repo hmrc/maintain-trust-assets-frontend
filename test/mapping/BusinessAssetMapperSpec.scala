@@ -20,11 +20,12 @@ import base.SpecBase
 import generators.Generators
 import models.assets.BusinessAssetType
 import models.{NonUkAddress, UkAddress, WhatKindOfAsset}
-import org.scalatest.{MustMatchers, OptionValues}
+import org.scalatest.OptionValues
+import org.scalatest.matchers.must.Matchers
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.business._
 
-class BusinessAssetMapperSpec extends SpecBase with MustMatchers
+class BusinessAssetMapperSpec extends SpecBase with Matchers
   with OptionValues with Generators {
 
   val mapper: BusinessAssetMapper = injector.instanceOf[BusinessAssetMapper]

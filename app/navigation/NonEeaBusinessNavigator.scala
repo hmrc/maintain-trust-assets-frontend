@@ -50,7 +50,7 @@ class NonEeaBusinessNavigator @Inject()() extends Navigator {
     } else {
       ua.get(IndexPage) match {
         case Some(index) => amendRts.AnswersController.renderFromUserAnswers(index)
-        case None => controllers.routes.SessionExpiredController.onPageLoad()
+        case None => controllers.routes.SessionExpiredController.onPageLoad
       }
     }
   }

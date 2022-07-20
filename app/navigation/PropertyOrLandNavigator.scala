@@ -72,7 +72,7 @@ class PropertyOrLandNavigator @Inject()() extends Navigator {
     } else {
       ua.get(IndexPage) match {
         case Some(index) => controllers.asset.property_or_land.amend.routes.PropertyOrLandAmendAnswersController.renderFromUserAnswers(index)
-        case None => controllers.routes.SessionExpiredController.onPageLoad()
+        case None => controllers.routes.SessionExpiredController.onPageLoad
       }
     }
   }
