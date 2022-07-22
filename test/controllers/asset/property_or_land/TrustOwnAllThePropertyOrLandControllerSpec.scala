@@ -127,7 +127,7 @@ class TrustOwnAllThePropertyOrLandControllerSpec extends SpecBase with IndexVali
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad.url
 
       application.stop()
     }
@@ -144,7 +144,7 @@ class TrustOwnAllThePropertyOrLandControllerSpec extends SpecBase with IndexVali
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad.url
 
       application.stop()
     }

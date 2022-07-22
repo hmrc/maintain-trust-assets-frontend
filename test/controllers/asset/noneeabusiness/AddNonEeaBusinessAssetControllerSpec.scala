@@ -87,7 +87,7 @@ class AddNonEeaBusinessAssetControllerSpec extends SpecBase with Generators with
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad.url
 
         application.stop()
       }
@@ -104,7 +104,7 @@ class AddNonEeaBusinessAssetControllerSpec extends SpecBase with Generators with
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad.url
 
         application.stop()
       }

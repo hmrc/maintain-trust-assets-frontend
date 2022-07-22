@@ -16,13 +16,14 @@
 
 package models
 
-import java.time.LocalDate
-
-import models.assets.{AssetMonetaryAmount, Assets, BusinessAssetType, NonEeaBusinessType, OtherAssetType, PartnershipType, PropertyLandType, SharesType}
-import org.scalatest.{MustMatchers, WordSpec}
+import models.assets._
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import play.api.libs.json.Json
 
-class AssetsSpec extends WordSpec with MustMatchers{
+import java.time.LocalDate
+
+class AssetsSpec extends AnyWordSpec with Matchers{
 
   "Assets" must {
     "deserialise from backend JSON" when {

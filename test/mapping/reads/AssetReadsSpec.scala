@@ -16,14 +16,15 @@
 
 package mapping.reads
 
-import java.time.LocalDate
-
 import models.WhatKindOfAsset.Money
 import models.{NonUkAddress, ShareClass, UkAddress, WhatKindOfAsset}
-import org.scalatest.{FreeSpec, MustMatchers}
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.must.Matchers
 import play.api.libs.json.{JsError, JsSuccess, Json}
 
-class AssetReadsSpec extends FreeSpec with MustMatchers {
+import java.time.LocalDate
+
+class AssetReadsSpec extends AnyFreeSpec with Matchers {
 
   private val date: LocalDate = LocalDate.parse("1996-02-03")
 

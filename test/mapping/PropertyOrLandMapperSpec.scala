@@ -21,11 +21,12 @@ import generators.Generators
 import models.WhatKindOfAsset.PropertyOrLand
 import models._
 import models.assets.PropertyLandType
-import org.scalatest.{MustMatchers, OptionValues}
+import org.scalatest.OptionValues
+import org.scalatest.matchers.must.Matchers
 import pages.asset._
 import pages.asset.property_or_land._
 
-class PropertyOrLandMapperSpec extends SpecBase with MustMatchers
+class PropertyOrLandMapperSpec extends SpecBase with Matchers
   with OptionValues with Generators {
 
   private val mapper: PropertyOrLandMapper = injector.instanceOf[PropertyOrLandMapper]

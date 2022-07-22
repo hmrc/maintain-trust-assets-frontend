@@ -204,7 +204,7 @@ class PropertyOrLandNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>
             val answers = userAnswers.set(page, true).success.value
-            navigator.nextPage(page, CheckMode, answers).mustBe(controllers.routes.SessionExpiredController.onPageLoad())
+            navigator.nextPage(page, CheckMode, answers).mustBe(controllers.routes.SessionExpiredController.onPageLoad)
         }
       }
     }

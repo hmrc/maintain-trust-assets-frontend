@@ -130,7 +130,7 @@ class PropertyOrLandUKAddressControllerSpec extends SpecBase with ModelGenerator
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad.url
 
       application.stop()
     }
@@ -147,7 +147,7 @@ class PropertyOrLandUKAddressControllerSpec extends SpecBase with ModelGenerator
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad.url
 
       application.stop()
     }

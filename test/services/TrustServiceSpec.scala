@@ -16,22 +16,24 @@
 
 package services
 
-import java.time.LocalDate
 import connectors.TrustsConnector
 import models._
 import models.assets._
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
+import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.{FreeSpec, MustMatchers, OptionValues}
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status.OK
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
+import java.time.LocalDate
 import scala.concurrent.ExecutionContext.Implicits._
 import scala.concurrent.Future
 
-class TrustServiceSpec() extends FreeSpec with MockitoSugar with MustMatchers with ScalaFutures with OptionValues {
+class TrustServiceSpec() extends AnyFreeSpec with MockitoSugar with Matchers with ScalaFutures with OptionValues {
 
   val mockConnector: TrustsConnector = mock[TrustsConnector]
   val date: LocalDate = LocalDate.parse("2019-02-03")

@@ -19,11 +19,12 @@ package viewmodels
 import generators.{Generators, ModelGenerators}
 import models.Status.{Completed, InProgress}
 import models.WhatKindOfAsset._
-import org.scalatest.{FreeSpec, MustMatchers}
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{JsSuccess, Json}
 
-class AssetViewModelSpec extends FreeSpec with MustMatchers with ScalaCheckPropertyChecks with Generators with ModelGenerators {
+class AssetViewModelSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with Generators with ModelGenerators {
 
   "Asset" - {
 

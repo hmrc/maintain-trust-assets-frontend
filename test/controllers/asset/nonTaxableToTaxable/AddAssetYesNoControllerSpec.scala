@@ -237,7 +237,7 @@ class AddAssetYesNoControllerSpec extends SpecBase with IndexValidation with Sca
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad.url
 
       application.stop()
     }
@@ -253,7 +253,7 @@ class AddAssetYesNoControllerSpec extends SpecBase with IndexValidation with Sca
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad().url
+      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad.url
 
       application.stop()
     }

@@ -17,9 +17,10 @@
 package models
 
 import models.ShareClass._
-import org.scalatest.{MustMatchers, WordSpec}
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class ShareClassSpec extends WordSpec with MustMatchers{
+class ShareClassSpec extends AnyWordSpec with Matchers{
 
   "ShareClass" must {
     "return the correct value for toDES " in {
