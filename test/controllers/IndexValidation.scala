@@ -47,14 +47,14 @@ import views.html.ErrorTemplate
 trait IndexValidation extends SpecBase with ScalaCheckPropertyChecks with MockitoSugar with Generators {
 
   def validateIndex[A, B](
-                                generator: Gen[A],
-                                createPage: Int => QuestionPage[A],
-                                requestForIndex: Int => Request[B]
-                              )(implicit writes: Writes[A], writeable: Writeable[B]): Unit = {
+                           generator: Gen[A],
+                           createPage: Int => QuestionPage[A],
+                           requestForIndex: Int => Request[B]
+                         )(implicit writes: Writes[A], writeable: Writeable[B]): Unit = {
 
     "return not found if a given index is out of bounds" in {
       implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfiguration(
-        minSuccessful=2
+        minSuccessful = 2
       )
 
       val gen = for {

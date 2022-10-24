@@ -24,6 +24,7 @@ import generators.ModelGenerators
 import models.{NormalMode, ShareClass}
 import navigation.Navigator
 import pages.asset.shares.{ShareClassPage, ShareCompanyNamePage}
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{route, _}
@@ -32,10 +33,10 @@ import views.html.asset.shares.ShareClassView
 class ShareClassControllerSpec extends SpecBase with ModelGenerators with IndexValidation {
 
   val formProvider = new ShareClassFormProvider()
-  val form = formProvider()
+  val form: Form[ShareClass] = formProvider()
   val companyName = "Company"
 
-  lazy val shareClassRoute = routes.ShareClassController.onPageLoad(NormalMode).url
+  lazy val shareClassRoute: String = routes.ShareClassController.onPageLoad(NormalMode).url
 
   "ShareClass Controller" must {
 

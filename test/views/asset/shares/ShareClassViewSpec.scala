@@ -17,8 +17,8 @@
 package views.asset.shares
 
 import forms.shares.ShareClassFormProvider
-import models.{NormalMode, ShareClass}
 import models.ShareClass._
+import models.{NormalMode, ShareClass}
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.ViewBehaviours

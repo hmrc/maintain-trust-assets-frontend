@@ -24,7 +24,7 @@ import pages.behaviours.PageBehaviours
 class SharesInAPortfolioPageSpec extends PageBehaviours {
 
   private val assetValue: Long = 2000L
-  val page = SharesInAPortfolioPage
+  val page: SharesInAPortfolioPage.type = SharesInAPortfolioPage
 
   "SharesInAPortfolioPage" must {
 

@@ -24,7 +24,9 @@ import play.api.libs.json._
 object EnumerableSpec {
 
   sealed trait Foo
+
   case object Bar extends Foo
+
   case object Baz extends Foo
 
   object Foo {
@@ -49,7 +51,7 @@ class EnumerableSpec extends AnyWordSpec with Matchers with EitherValues with Op
     Foo.values.foreach {
       value =>
         s"bind correctly for: $value" in {
-          Json.fromJson[Foo](JsString(value.toString)).asEither.right.value mustEqual value
+          Json.fromJson[Foo](JsString(value.toString)).asEither.value mustEqual value
         }
     }
 

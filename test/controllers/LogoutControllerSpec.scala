@@ -17,7 +17,7 @@
 package controllers
 
 import base.SpecBase
-import org.mockito.Matchers.{eq => eqTo, _}
+import org.mockito.ArgumentMatchers.{eq => eqTo, _}
 import org.mockito.Mockito._
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
@@ -32,8 +32,8 @@ class LogoutControllerSpec extends SpecBase with MockitoSugar {
     val mockAuditConnector = mock[AuditConnector]
 
     val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-    .overrides(bind[AuditConnector].toInstance(mockAuditConnector))
-    .build()
+      .overrides(bind[AuditConnector].toInstance(mockAuditConnector))
+      .build()
 
     val request = FakeRequest(GET, routes.LogoutController.logout().url)
 

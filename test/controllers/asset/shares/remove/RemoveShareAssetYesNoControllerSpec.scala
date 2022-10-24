@@ -16,18 +16,18 @@
 
 package controllers.asset.shares.remove
 
-import java.time.LocalDate
-
 import base.SpecBase
 import connectors.TrustsConnector
 import forms.RemoveIndexFormProvider
-import models.assets._
 import models.UserAnswers
-import org.mockito.Matchers.any
+import models.assets._
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import play.api.data.Form
 import play.api.inject.bind
+import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpResponse
@@ -41,9 +41,9 @@ class RemoveShareAssetYesNoControllerSpec extends SpecBase with ScalaCheckProper
   val messagesPrefix = "shares.removeYesNo"
 
   lazy val formProvider = new RemoveIndexFormProvider()
-  lazy val form = formProvider(messagesPrefix)
+  lazy val form: Form[Boolean] = formProvider(messagesPrefix)
 
-  lazy val formRoute = routes.RemoveShareAssetYesNoController.onSubmit(0)
+  lazy val formRoute: Call = routes.RemoveShareAssetYesNoController.onSubmit(0)
 
   val mockConnector: TrustsConnector = mock[TrustsConnector]
 
@@ -51,7 +51,7 @@ class RemoveShareAssetYesNoControllerSpec extends SpecBase with ScalaCheckProper
   private val quantity: Int = 5
   private val assetValue: Long = 790L
 
-  def createAsset(id: Int) =
+  def createAsset(id: Int): SharesType =
     SharesType(
       numberOfShares = quantity.toString,
       orgName = s"$name $id",
@@ -61,13 +61,13 @@ class RemoveShareAssetYesNoControllerSpec extends SpecBase with ScalaCheckProper
       isPortfolio = Some(true)
     )
 
-  val shareAssets = List(
+  val shareAssets: List[SharesType] = List(
     createAsset(0),
     createAsset(1),
     createAsset(2)
   )
 
-  def userAnswers(migrating: Boolean) = UserAnswers("internalId", "identifier", "sessionId", LocalDate.now, isMigratingToTaxable = migrating)
+  def userAnswers(migrating: Boolean): UserAnswers = emptyUserAnswers.copy(isMigratingToTaxable = migrating)
 
   "RemoveShareAssetYesNoController" when {
 
@@ -76,7 +76,7 @@ class RemoveShareAssetYesNoControllerSpec extends SpecBase with ScalaCheckProper
       val index = 0
 
       when(mockConnector.getAssets(any())(any(), any()))
-        .thenReturn(Future.successful(Assets(Nil, Nil, shareAssets, Nil,  Nil, Nil, Nil)))
+        .thenReturn(Future.successful(Assets(Nil, Nil, shareAssets, Nil, Nil, Nil, Nil)))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[TrustsConnector].toInstance(mockConnector))

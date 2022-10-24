@@ -24,6 +24,7 @@ import generators.ModelGenerators
 import models.NormalMode
 import navigation.Navigator
 import pages.asset.shares.ShareCompanyNamePage
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{route, _}
@@ -32,9 +33,9 @@ import views.html.asset.shares.ShareCompanyNameView
 class ShareCompanyNameControllerSpec extends SpecBase with ModelGenerators with IndexValidation {
 
   val formProvider = new NameFormProvider()
-  val form = formProvider.withConfig(53, "shares.companyName")
+  val form: Form[String] = formProvider.withConfig(53, "shares.companyName")
 
-  lazy val shareCompanyNameRoute = routes.ShareCompanyNameController.onPageLoad(NormalMode).url
+  lazy val shareCompanyNameRoute: String = routes.ShareCompanyNameController.onPageLoad(NormalMode).url
 
   "ShareCompanyName Controller" must {
 

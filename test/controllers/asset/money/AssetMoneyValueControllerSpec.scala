@@ -24,7 +24,7 @@ import forms.ValueFormProvider
 import models.NormalMode
 import models.assets.AssetMonetaryAmount
 import navigation.Navigator
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.asset.money.AssetMoneyValuePage
 import play.api.data.Form
@@ -42,8 +42,8 @@ class AssetMoneyValueControllerSpec extends SpecBase {
   val formProvider = new ValueFormProvider(frontendAppConfig)
   val form: Form[Long] = formProvider.withConfig(prefix = "money.value")
 
-  val mockTrustService = mock[TrustService]
-  val mockConnector = mock[TrustsConnector]
+  val mockTrustService: TrustService = mock[TrustService]
+  val mockConnector: TrustsConnector = mock[TrustsConnector]
 
   val validAnswer: Long = 4000L
 

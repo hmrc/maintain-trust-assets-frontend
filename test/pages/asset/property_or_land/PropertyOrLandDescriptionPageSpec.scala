@@ -21,7 +21,7 @@ import pages.behaviours.PageBehaviours
 
 class PropertyOrLandDescriptionPageSpec extends PageBehaviours {
 
-  val page = PropertyOrLandDescriptionPage
+  val page: PropertyOrLandDescriptionPage.type = PropertyOrLandDescriptionPage
 
   "PropertyOrLandDescriptionPage" must {
 

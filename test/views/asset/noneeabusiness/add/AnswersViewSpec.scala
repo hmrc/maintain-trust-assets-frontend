@@ -32,8 +32,8 @@ class AnswersViewSpec extends ViewBehaviours {
     def applyView(): HtmlFormat.Appendable =
       view.apply(AnswerSection(None, Seq()))(fakeRequest, messages)
 
-    behave like normalPage(applyView, prefix)
+    behave like normalPage(applyView(), prefix)
 
-    behave like pageWithBackLink(applyView)
+    behave like pageWithBackLink(applyView())
   }
 }

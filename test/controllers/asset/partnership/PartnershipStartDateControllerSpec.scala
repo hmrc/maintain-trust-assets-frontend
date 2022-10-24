@@ -16,8 +16,6 @@
 
 package controllers.asset.partnership
 
-import java.time.{LocalDate, ZoneOffset}
-
 import base.SpecBase
 import config.annotations.Partnership
 import controllers.IndexValidation
@@ -29,6 +27,8 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{route, _}
 import views.html.asset.partnership.PartnershipStartDateView
+
+import java.time.{LocalDate, ZoneOffset}
 
 class PartnershipStartDateControllerSpec extends SpecBase with IndexValidation {
 
@@ -90,9 +90,9 @@ class PartnershipStartDateControllerSpec extends SpecBase with IndexValidation {
       val request =
         FakeRequest(POST, partnershipStartDateRoute)
           .withFormUrlEncodedBody(
-            "value.day"   -> validAnswer.getDayOfMonth.toString,
+            "value.day" -> validAnswer.getDayOfMonth.toString,
             "value.month" -> validAnswer.getMonthValue.toString,
-            "value.year"  -> validAnswer.getYear.toString
+            "value.year" -> validAnswer.getYear.toString
           )
 
       val result = route(application, request).value
@@ -147,9 +147,9 @@ class PartnershipStartDateControllerSpec extends SpecBase with IndexValidation {
       val request =
         FakeRequest(POST, partnershipStartDateRoute)
           .withFormUrlEncodedBody(
-            "value.day"   -> validAnswer.getDayOfMonth.toString,
+            "value.day" -> validAnswer.getDayOfMonth.toString,
             "value.month" -> validAnswer.getMonthValue.toString,
-            "value.year"  -> validAnswer.getYear.toString
+            "value.year" -> validAnswer.getYear.toString
           )
 
       val result = route(application, request).value

@@ -19,8 +19,8 @@ package utils.print
 import base.SpecBase
 import controllers.asset.other.routes._
 import controllers.asset.routes.WhatKindOfAssetController
-import models.{NormalMode, UserAnswers}
 import models.WhatKindOfAsset.Other
+import models.{NormalMode, UserAnswers}
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.other._
 import play.twirl.api.Html

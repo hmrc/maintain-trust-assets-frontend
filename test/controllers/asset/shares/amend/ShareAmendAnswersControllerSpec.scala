@@ -20,12 +20,12 @@ import base.SpecBase
 import connectors.TrustsConnector
 import models.assets.SharesType
 import models.{ShareClass, UserAnswers}
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
-import pages.asset.shares.amend.IndexPage
 import pages.asset.shares._
+import pages.asset.shares.amend.IndexPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -70,7 +70,7 @@ class ShareAmendAnswersControllerSpec extends SpecBase with MockitoSugar with Sc
 
     "return OK and the correct view for a GET for a given index" in {
 
-      val mockService : TrustService = mock[TrustService]
+      val mockService: TrustService = mock[TrustService]
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(

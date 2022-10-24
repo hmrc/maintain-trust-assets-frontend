@@ -18,10 +18,9 @@ package controllers.actions
 
 import base.SpecBase
 import config.FrontendAppConfig
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito._
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.Application
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{Action, AnyContent, Results}
 import play.api.test.Helpers._
@@ -55,8 +54,7 @@ class IdentifierActionSpec extends SpecBase with MockitoSugar {
 
   private val agentEnrolment = Enrolments(Set(Enrolment("HMRC-AS-AGENT", List(EnrolmentIdentifier("AgentReferenceNumber", "SomeVal")), "Activated", None)))
 
-  private def actionToTest(application: Application,
-                           authService: AuthenticationService = new FakeAuthenticationService) = {
+  private def actionToTest(authService: AuthenticationService = new FakeAuthenticationService) = {
     new AuthenticatedIdentifierAction(appConfig, trustsAuth, bodyParsers, authService)
   }
 
@@ -72,9 +70,9 @@ class IdentifierActionSpec extends SpecBase with MockitoSugar {
           .thenReturn(authRetrievals(AffinityGroup.Agent, noEnrollment))
 
         val mockAuthService = mock[AuthenticationService]
-        when (mockAuthService.authenticateAgent()(any(), any())).thenReturn(Future.successful(Left(Redirect("test-redirect-url"))))
+        when(mockAuthService.authenticateAgent()(any(), any())).thenReturn(Future.successful(Left(Redirect("test-redirect-url"))))
 
-        val action = actionToTest(application, mockAuthService)
+        val action = actionToTest(mockAuthService)
 
         val controller = new Harness(action)
         val result = controller.onPageLoad()(fakeRequest)
@@ -93,7 +91,7 @@ class IdentifierActionSpec extends SpecBase with MockitoSugar {
         when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any()))
           .thenReturn(authRetrievals(AffinityGroup.Agent, agentEnrolment))
 
-        val action = actionToTest(application)
+        val action = actionToTest()
         val controller = new Harness(action)
         val result = controller.onPageLoad()(fakeRequest)
 
@@ -110,7 +108,7 @@ class IdentifierActionSpec extends SpecBase with MockitoSugar {
         when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any()))
           .thenReturn(authRetrievals(AffinityGroup.Organisation, agentEnrolment))
 
-        val action = actionToTest(application)
+        val action = actionToTest()
         val controller = new Harness(action)
         val result = controller.onPageLoad()(fakeRequest)
 
@@ -127,7 +125,7 @@ class IdentifierActionSpec extends SpecBase with MockitoSugar {
         when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any()))
           .thenReturn(authRetrievals(AffinityGroup.Individual, noEnrollment))
 
-        val action = actionToTest(application)
+        val action = actionToTest()
         val controller = new Harness(action)
         val result = controller.onPageLoad()(fakeRequest)
 
@@ -145,7 +143,7 @@ class IdentifierActionSpec extends SpecBase with MockitoSugar {
 
         when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any())) thenReturn (Future failed MissingBearerToken())
 
-        val action = actionToTest(application)
+        val action = actionToTest()
         val controller = new Harness(action)
         val result = controller.onPageLoad()(fakeRequest)
 
@@ -163,7 +161,7 @@ class IdentifierActionSpec extends SpecBase with MockitoSugar {
 
         when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any())) thenReturn (Future failed BearerTokenExpired())
 
-        val action = actionToTest(application)
+        val action = actionToTest()
         val controller = new Harness(action)
         val result = controller.onPageLoad()(fakeRequest)
 
@@ -181,7 +179,7 @@ class IdentifierActionSpec extends SpecBase with MockitoSugar {
 
         when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any())) thenReturn (Future failed InsufficientEnrolments())
 
-        val action = actionToTest(application)
+        val action = actionToTest()
         val controller = new Harness(action)
         val result = controller.onPageLoad()(fakeRequest)
 
@@ -199,7 +197,7 @@ class IdentifierActionSpec extends SpecBase with MockitoSugar {
 
         when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any())) thenReturn (Future failed InsufficientConfidenceLevel())
 
-        val action = actionToTest(application)
+        val action = actionToTest()
         val controller = new Harness(action)
         val result = controller.onPageLoad()(fakeRequest)
 
@@ -217,7 +215,7 @@ class IdentifierActionSpec extends SpecBase with MockitoSugar {
 
         when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any())) thenReturn (Future failed UnsupportedAuthProvider())
 
-        val action = actionToTest(application)
+        val action = actionToTest()
         val controller = new Harness(action)
         val result = controller.onPageLoad()(fakeRequest)
 
@@ -235,7 +233,7 @@ class IdentifierActionSpec extends SpecBase with MockitoSugar {
 
         when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any())) thenReturn (Future failed UnsupportedAffinityGroup())
 
-        val action = actionToTest(application)
+        val action = actionToTest()
         val controller = new Harness(action)
         val result = controller.onPageLoad()(fakeRequest)
 
@@ -253,7 +251,7 @@ class IdentifierActionSpec extends SpecBase with MockitoSugar {
 
         when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any())) thenReturn (Future failed UnsupportedCredentialRole())
 
-        val action = actionToTest(application)
+        val action = actionToTest()
         val controller = new Harness(action)
         val result = controller.onPageLoad()(fakeRequest)
 
@@ -273,7 +271,7 @@ class IdentifierActionSpec extends SpecBase with MockitoSugar {
       when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any()))
         .thenReturn(authRetrievals(AffinityGroup.Organisation, agentEnrolment))
 
-      val action = actionToTest(application)
+      val action = actionToTest()
       val controller = new ThrowingHarness(action)
       val result = controller.onPageLoad()(fakeRequest)
 

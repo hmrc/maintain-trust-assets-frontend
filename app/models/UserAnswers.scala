@@ -28,6 +28,7 @@ import scala.util.{Failure, Success, Try}
 final case class UserAnswers(internalId: String,
                              identifier: String,
                              sessionId: String,
+                             newId: String,
                              whenTrustSetup: LocalDate,
                              data: JsObject = Json.obj(),
                              updatedAt: LocalDateTime = LocalDateTime.now,
@@ -114,6 +115,7 @@ object UserAnswers {
     (__ \ "internalId").read[String] and
       ((__ \ "utr").read[String] or (__ \ "identifier").read[String]) and
       (__ \ "sessionId").read[String] and
+      (__ \ "newId").read[String] and
       (__ \ "whenTrustSetup").read[LocalDate] and
       (__ \ "data").read[JsObject] and
       (__ \ "updatedAt").read(MongoDateTimeFormats.localDateTimeRead) and
@@ -127,6 +129,7 @@ object UserAnswers {
     (__ \ "internalId").write[String] and
       (__ \ "utr").write[String] and
       (__ \ "sessionId").write[String] and
+      (__ \ "newId").write[String] and
       (__ \ "whenTrustSetup").write[LocalDate] and
       (__ \ "data").write[JsObject] and
       (__ \ "updatedAt").write(MongoDateTimeFormats.localDateTimeWrite) and

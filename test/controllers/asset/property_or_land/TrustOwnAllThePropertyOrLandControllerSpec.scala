@@ -24,6 +24,7 @@ import forms.YesNoFormProvider
 import models.NormalMode
 import navigation.Navigator
 import pages.asset.property_or_land.TrustOwnAllThePropertyOrLandPage
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -31,9 +32,9 @@ import views.html.asset.property_or_land.TrustOwnAllThePropertyOrLandView
 
 class TrustOwnAllThePropertyOrLandControllerSpec extends SpecBase with IndexValidation {
 
-  val form = new YesNoFormProvider().withPrefix("propertyOrLand.trustOwnAllYesNo")
+  val form: Form[Boolean] = new YesNoFormProvider().withPrefix("propertyOrLand.trustOwnAllYesNo")
 
-  lazy val trustOwnAllThePropertyOrLandRoute = routes.TrustOwnAllThePropertyOrLandController.onPageLoad(NormalMode).url
+  lazy val trustOwnAllThePropertyOrLandRoute: String = routes.TrustOwnAllThePropertyOrLandController.onPageLoad(NormalMode).url
 
   "TrustOwnAllThePropertyOrLand Controller" must {
 

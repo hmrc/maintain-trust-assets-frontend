@@ -16,12 +16,11 @@
 
 package controllers.asset.partnership
 
-import java.time.{LocalDate, ZoneOffset}
 import base.SpecBase
 import connectors.TrustsConnector
 import models.Status.Completed
 import models.WhatKindOfAsset.Partnership
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.AssetStatus
 import pages.asset.WhatKindOfAssetPage
@@ -33,6 +32,7 @@ import uk.gov.hmrc.http.HttpResponse
 import utils.print.PartnershipPrintHelper
 import views.html.asset.partnership.PartnershipAnswersView
 
+import java.time.{LocalDate, ZoneOffset}
 import scala.concurrent.Future
 
 class PartnershipAnswerControllerSpec extends SpecBase {

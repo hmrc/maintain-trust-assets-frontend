@@ -20,17 +20,13 @@ import com.google.inject.AbstractModule
 import config.annotations._
 import controllers.actions._
 import navigation._
-import repositories.{PlaybackRepository, PlaybackRepositoryImpl}
 import services.{AuthenticationService, AuthenticationServiceImpl}
 
 class Module extends AbstractModule {
 
   override def configure(): Unit = {
-
     bind(classOf[DataRetrievalAction]).to(classOf[DataRetrievalActionImpl]).asEagerSingleton()
     bind(classOf[DataRequiredAction]).to(classOf[DataRequiredActionImpl]).asEagerSingleton()
-
-    bind(classOf[PlaybackRepository]).to(classOf[PlaybackRepositoryImpl]).asEagerSingleton()
 
     // For session based storage instead of cred based, change to SessionIdentifierAction
     bind(classOf[IdentifierAction]).to(classOf[AuthenticatedIdentifierAction]).asEagerSingleton()

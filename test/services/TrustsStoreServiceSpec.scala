@@ -20,7 +20,7 @@ import base.SpecBase
 import connectors.TrustsStoreConnector
 import models.FeatureResponse
 import models.TaskStatus.Completed
-import org.mockito.Matchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{verify, when}
 import org.scalatest.concurrent.ScalaFutures.whenReady
 import play.api.http.Status.OK
@@ -44,9 +44,9 @@ class TrustsStoreServiceSpec extends SpecBase {
 
       val result = featureFlagService.is5mldEnabled()
 
-       whenReady(result) { res =>
-         res mustEqual true
-       }
+      whenReady(result) { res =>
+        res mustEqual true
+      }
     }
 
     "return false when 5mld is disabled" in {

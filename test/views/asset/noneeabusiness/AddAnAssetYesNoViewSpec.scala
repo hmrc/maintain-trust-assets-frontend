@@ -41,6 +41,6 @@ class AddAnAssetYesNoViewSpec extends YesNoViewBehaviours {
 
     behave like yesNoPage(form, applyView, messageKeyPrefix)
 
-    behave like pageWithASubmitButton(applyView((form)))
+    behave like pageWithASubmitButton(applyView(form))
   }
 }

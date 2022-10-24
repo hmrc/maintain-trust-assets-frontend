@@ -28,7 +28,7 @@ class AddAssetYesNoViewSpec extends YesNoViewBehaviours {
 
   override val form: Form[Boolean] = new YesNoFormProvider().withPrefix(messageKeyPrefix)
 
-  val view = viewFor[AddAssetYesNoView](Some(emptyUserAnswers))
+  val view: AddAssetYesNoView = viewFor[AddAssetYesNoView](Some(emptyUserAnswers))
 
   def applyView(form: Form[_]): HtmlFormat.Appendable =
     view.apply(form)(fakeRequest, messages)

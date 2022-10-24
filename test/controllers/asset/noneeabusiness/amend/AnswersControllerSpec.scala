@@ -16,12 +16,11 @@
 
 package controllers.asset.noneeabusiness.amend
 
-import java.time.LocalDate
 import base.SpecBase
 import connectors.TrustsConnector
 import models.{NonUkAddress, UserAnswers}
 import models.assets.NonEeaBusinessType
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
@@ -37,6 +36,7 @@ import uk.gov.hmrc.http.HttpResponse
 import utils.print.NonEeaBusinessPrintHelper
 import views.html.asset.noneeabusiness.amend.AnswersView
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures {
@@ -60,7 +60,7 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
     provisional = true
   )
 
-  def userAnswers(migrating: Boolean) = UserAnswers("internalId", "identifier", "sessionId", LocalDate.now, isMigratingToTaxable = migrating)
+  def userAnswers(migrating: Boolean): UserAnswers = emptyUserAnswers.copy(isMigratingToTaxable = migrating)
     .set(NamePage, name).success.value
     .set(IndexPage, index).success.value
     .set(NonUkAddressPage, nonUkAddress).success.value
@@ -71,7 +71,7 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
 
     "return OK and the correct view for a GET for a given index" in {
 
-      val mockService : TrustService = mock[TrustService]
+      val mockService: TrustService = mock[TrustService]
 
       val answers = userAnswers(migrating = false)
 

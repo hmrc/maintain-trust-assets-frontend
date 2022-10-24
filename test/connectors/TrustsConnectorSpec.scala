@@ -62,33 +62,50 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
   private val assetsUrl: String = s"$trustsUrl/assets"
 
   private def getTrustDetailsUrl(identifier: String) = s"$trustsUrl/trust-details/$identifier/transformed"
+
   private def isTrust5mldUrl(identifier: String) = s"$trustsUrl/$identifier/is-trust-5mld"
+
   private def getAssetsUrl(identifier: String) = s"$assetsUrl/$identifier/transformed"
 
   private def addMoneyAssetUrl(identifier: String) = s"$assetsUrl/add-money/$identifier"
+
   private def amendMoneyAssetUrl(identifier: String, index: Int) = s"$assetsUrl/amend-money/$identifier/$index"
+
   private def addPropertyOrLandAssetUrl(identifier: String) = s"$assetsUrl/add-property-or-land/$identifier"
+
   private def amendPropertyOrLandAssetUrl(identifier: String, index: Int) = s"$assetsUrl/amend-property-or-land/$identifier/$index"
+
   private def addSharesAssetUrl(identifier: String) = s"$assetsUrl/add-shares/$identifier"
+
   private def amendSharesAssetUrl(identifier: String, index: Int) = s"$assetsUrl/amend-shares/$identifier/$index"
+
   private def addBusinessAssetUrl(identifier: String) = s"$assetsUrl/add-business/$identifier"
+
   private def amendPartnershipAssetUrl(identifier: String, index: Int) = s"$assetsUrl/amend-partnership/$identifier/$index"
+
   private def addPartnershipAssetUrl(identifier: String) = s"$assetsUrl/add-partnership/$identifier"
+
   private def amendOtherAssetUrl(identifier: String, index: Int) = s"$assetsUrl/amend-other/$identifier/$index"
+
   private def addOtherAssetUrl(identifier: String) = s"$assetsUrl/add-other/$identifier"
+
   private def amendBusinessAssetUrl(identifier: String, index: Int) = s"$assetsUrl/amend-business/$identifier/$index"
+
   private def addNonEeaBusinessAssetUrl(identifier: String) = s"$assetsUrl/add-non-eea-business/$identifier"
+
   private def amendNonEeaBusinessAssetUrl(identifier: String, index: Int) = s"$assetsUrl/amend-non-eea-business/$identifier/$index"
+
   private def removeAssetUrl(identifier: String) = s"$assetsUrl/$identifier/remove"
+
   private def getTrustMigrationFlagUrl(identifier: String) = s"/trusts/$identifier/taxable-migration/migrating-to-taxable"
 
-  val moneyAsset = AssetMonetaryAmount(123)
-  val propertyOrLandAsset = PropertyLandType(None, None, 123, None)
-  val sharesAsset = SharesType("", "", "", "", 123)
-  val businessAsset = BusinessAssetType("", "", NonUkAddress("", "", None, ""), 123)
-  val partnershipAsset = PartnershipType("", LocalDate.now)
-  val otherAsset = OtherAssetType("", 123)
-  val nonEeaBusinessAsset = NonEeaBusinessType(None, "orgName", NonUkAddress("", "", None, ""), "", LocalDate.now, None, true)
+  val moneyAsset: AssetMonetaryAmount = AssetMonetaryAmount(123)
+  val propertyOrLandAsset: PropertyLandType = PropertyLandType(None, None, 123, None)
+  val sharesAsset: SharesType = SharesType("", "", "", "", 123)
+  val businessAsset: BusinessAssetType = BusinessAssetType("", "", NonUkAddress("", "", None, ""), 123)
+  val partnershipAsset: PartnershipType = PartnershipType("", LocalDate.now)
+  val otherAsset: OtherAssetType = OtherAssetType("", 123)
+  val nonEeaBusinessAsset: NonEeaBusinessType = NonEeaBusinessType(None, "orgName", NonUkAddress("", "", None, ""), "", LocalDate.now, None, provisional = true)
 
   "trust connector" when {
 

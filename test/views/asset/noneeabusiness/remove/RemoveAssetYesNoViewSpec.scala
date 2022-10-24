@@ -25,7 +25,7 @@ import views.html.asset.noneeabusiness.remove.RemoveAssetYesNoView
 class RemoveAssetYesNoViewSpec extends YesNoViewBehaviours {
 
   val messageKeyPrefix = "nonEeaBusiness.removeYesNo"
-  val form = (new YesNoFormProvider).withPrefix(messageKeyPrefix)
+  val form: Form[Boolean] = (new YesNoFormProvider).withPrefix(messageKeyPrefix)
   val name: String = "Name"
   val index = 0
 

@@ -23,50 +23,50 @@ class AssetInterruptViewSpec extends ViewBehaviours {
 
   "AddAssetInfoView" must {
 
-      val view = viewFor[AssetInterruptView](Some(emptyUserAnswers))
+    val view = viewFor[AssetInterruptView](Some(emptyUserAnswers))
 
-      val applyView = view.apply()(fakeRequest, messages)
+    val applyView = view.apply()(fakeRequest, messages)
 
-      behave like normalPage(applyView, "nonTaxableToTaxable.assetInterruptPage", ignoreTitle = true)
+    behave like normalPage(applyView, "nonTaxableToTaxable.assetInterruptPage", ignoreTitle = true)
 
-      behave like pageWithTitleAndCaption(applyView, "nonTaxableToTaxable.assetInterruptPage")
+    behave like pageWithTitleAndCaption(applyView, "nonTaxableToTaxable.assetInterruptPage")
 
-      behave like pageWithGuidance(applyView,
-        messageKeyPrefix = "nonTaxableToTaxable.assetInterruptPage",
-        expectedGuidanceKeys =
+    behave like pageWithGuidance(applyView,
+      messageKeyPrefix = "nonTaxableToTaxable.assetInterruptPage",
+      expectedGuidanceKeys =
         "subheading1",
-        "paragraph1",
-        "subheading2",
-        "paragraph2",
-        "bullet1",
-        "bullet2",
-        "bullet3",
-        "paragraph3",
-        "subheading3",
-        "tellus",
-        "bullet4",
-        "bullet5",
-        "bullet6",
-        "paragraph5",
-        "paragraph6",
-        "subheading4",
-        "tellus",
-        "bullet7",
-        "bullet8",
-        "bullet9",
-        "bullet10",
-        "subheading5",
-        "tellus",
-        "bullet11",
-        "bullet12",
-        "bullet13",
-        "bullet14",
-        "subheading6",
-        "paragraph8",
-        "subheading7",
-        "paragraph9"
-      )
+      "paragraph1",
+      "subheading2",
+      "paragraph2",
+      "bullet1",
+      "bullet2",
+      "bullet3",
+      "paragraph3",
+      "subheading3",
+      "tellus",
+      "bullet4",
+      "bullet5",
+      "bullet6",
+      "paragraph5",
+      "paragraph6",
+      "subheading4",
+      "tellus",
+      "bullet7",
+      "bullet8",
+      "bullet9",
+      "bullet10",
+      "subheading5",
+      "tellus",
+      "bullet11",
+      "bullet12",
+      "bullet13",
+      "bullet14",
+      "subheading6",
+      "paragraph8",
+      "subheading7",
+      "paragraph9"
+    )
 
-      behave like pageWithBackLink(applyView)
-    }
+    behave like pageWithBackLink(applyView)
+  }
 }

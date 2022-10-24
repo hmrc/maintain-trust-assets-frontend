@@ -24,6 +24,7 @@ import generators.ModelGenerators
 import models.NormalMode
 import navigation.Navigator
 import pages.asset.shares.SharesInAPortfolioPage
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{route, _}
@@ -31,9 +32,9 @@ import views.html.asset.shares.SharesInAPortfolioView
 
 class SharesInAPortfolioControllerSpec extends SpecBase with ModelGenerators with IndexValidation {
 
-  val form = new YesNoFormProvider().withPrefix("shares.inAPortfolioYesNo")
+  val form: Form[Boolean] = new YesNoFormProvider().withPrefix("shares.inAPortfolioYesNo")
 
-  lazy val sharesInAPortfolioRoute = routes.SharesInAPortfolioController.onPageLoad(NormalMode).url
+  lazy val sharesInAPortfolioRoute: String = routes.SharesInAPortfolioController.onPageLoad(NormalMode).url
 
   "SharesInAPortfolio Controller" must {
 

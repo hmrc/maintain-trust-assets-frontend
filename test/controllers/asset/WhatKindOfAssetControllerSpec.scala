@@ -24,7 +24,7 @@ import models.WhatKindOfAsset
 import models.WhatKindOfAsset._
 import models.assets.Assets
 import navigation.AssetsNavigator
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.asset.WhatKindOfAssetPage
 import play.api.inject.bind

@@ -19,7 +19,7 @@ package controllers.asset.shares.add
 import base.SpecBase
 import connectors.TrustsConnector
 import models.{ShareClass, UserAnswers}
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.asset.shares._
 import play.api.inject.bind

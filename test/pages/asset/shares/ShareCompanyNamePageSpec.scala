@@ -21,7 +21,7 @@ import pages.behaviours.PageBehaviours
 
 class ShareCompanyNamePageSpec extends PageBehaviours {
 
-  val page = ShareCompanyNamePage
+  val page: ShareCompanyNamePage.type = ShareCompanyNamePage
 
   "ShareCompanyNamePage" must {
 

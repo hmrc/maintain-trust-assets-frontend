@@ -123,7 +123,7 @@ class PropertyOrLandMapperSpec extends SpecBase with Matchers
           address = None,
           valueFull = assetTotalValue,
           valuePrevious = Some(assetTotalValue)
-      )
+        )
     }
   }
 }

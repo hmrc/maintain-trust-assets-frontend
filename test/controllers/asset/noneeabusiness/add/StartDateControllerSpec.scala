@@ -16,8 +16,6 @@
 
 package controllers.asset.noneeabusiness.add
 
-import java.time.LocalDate
-
 import base.SpecBase
 import config.annotations.NonEeaBusiness
 import controllers.IndexValidation
@@ -30,6 +28,8 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{route, _}
 import views.html.asset.noneeabusiness.add.StartDateView
+
+import java.time.LocalDate
 
 class StartDateControllerSpec extends SpecBase with IndexValidation {
 

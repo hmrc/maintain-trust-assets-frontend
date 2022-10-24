@@ -108,7 +108,7 @@ class PropertyOrLandNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
 
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>
-            val answers = userAnswers.set(page, UkAddress("line1", "line2",  None, None, "NE11NE")).success.value
+            val answers = userAnswers.set(page, UkAddress("line1", "line2", None, None, "NE11NE")).success.value
             navigator.nextPage(page, NormalMode, answers)
               .mustBe(PropertyOrLandTotalValueController.onPageLoad(NormalMode))
         }

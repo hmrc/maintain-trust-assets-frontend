@@ -18,14 +18,14 @@ package mapping
 
 import base.SpecBase
 import generators.Generators
-import models.Status.{Completed, InProgress}
-import models.assets.SharesType
 import models.ShareClass
+import models.Status.{Completed, InProgress}
 import models.WhatKindOfAsset.Shares
+import models.assets.SharesType
 import org.scalatest.OptionValues
+import org.scalatest.matchers.must.Matchers
 import pages.AssetStatus
 import pages.asset._
-import org.scalatest.matchers.must.Matchers
 import pages.asset.shares._
 
 class ShareAssetMapperSpec extends SpecBase with Matchers

@@ -22,7 +22,7 @@ import models.TaskStatus.InProgress
 import models.http.TaxableMigrationFlag
 import models.{TrustDetails, TypeOfTrust, UserAnswers}
 import org.mockito.ArgumentCaptor
-import org.mockito.Matchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import play.api.inject.bind

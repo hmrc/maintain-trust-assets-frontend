@@ -23,24 +23,24 @@ class AssetInterruptViewSpec extends ViewBehaviours {
 
   "AddAssetInfoView" must {
 
-      val view = viewFor[AssetInterruptView](Some(emptyUserAnswers))
+    val view = viewFor[AssetInterruptView](Some(emptyUserAnswers))
 
-      val applyView = view.apply()(fakeRequest, messages)
+    val applyView = view.apply()(fakeRequest, messages)
 
-      behave like normalPage(applyView, "assetInterruptPage", ignoreTitle = true)
+    behave like normalPage(applyView, "assetInterruptPage", ignoreTitle = true)
 
-      behave like pageWithTitleAndCaption(applyView, "assetInterruptPage")
+    behave like pageWithTitleAndCaption(applyView, "assetInterruptPage")
 
-      behave like pageWithGuidance(applyView,
-        messageKeyPrefix = "assetInterruptPage",
-        expectedGuidanceKeys = "subheading7",
-        "paragraph10",
-        "bullet11",
-        "bullet12",
-        "bullet13",
-        "bullet14"
-      )
+    behave like pageWithGuidance(applyView,
+      messageKeyPrefix = "assetInterruptPage",
+      expectedGuidanceKeys = "subheading7",
+      "paragraph10",
+      "bullet11",
+      "bullet12",
+      "bullet13",
+      "bullet14"
+    )
 
-      behave like pageWithBackLink(applyView)
-    }
+    behave like pageWithBackLink(applyView)
+  }
 }

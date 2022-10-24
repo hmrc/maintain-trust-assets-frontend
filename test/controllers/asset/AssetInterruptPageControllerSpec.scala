@@ -18,7 +18,7 @@ package controllers.asset
 
 import base.SpecBase
 import navigation.AssetsNavigator
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -41,7 +41,7 @@ class AssetInterruptPageControllerSpec extends SpecBase {
         val isTaxable: Boolean = true
         val migrating: Boolean = false
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(is5mldEnabled = is5mldEnabled, isTaxable = isTaxable, isMigratingToTaxable = migrating ))).build()
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(is5mldEnabled = is5mldEnabled, isTaxable = isTaxable, isMigratingToTaxable = migrating))).build()
 
         val request = FakeRequest(GET, routes.AssetInterruptPageController.onPageLoad().url)
 

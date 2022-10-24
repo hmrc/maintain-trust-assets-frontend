@@ -19,8 +19,8 @@ package extractors
 import base.SpecBase
 import models.assets.PropertyLandType
 import models.{NonUkAddress, UkAddress, UserAnswers}
-import pages.asset.property_or_land.amend.IndexPage
 import pages.asset.property_or_land._
+import pages.asset.property_or_land.amend.IndexPage
 
 class PropertyOrLandExtractorSpec extends SpecBase {
 

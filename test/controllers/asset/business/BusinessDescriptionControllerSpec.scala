@@ -30,7 +30,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.{route, _}
 import views.html.asset.business.BusinessDescriptionView
 
-class BusinessDescriptionControllerSpec extends SpecBase  with IndexValidation {
+class BusinessDescriptionControllerSpec extends SpecBase with IndexValidation {
 
   val formProvider = new DescriptionFormProvider()
   val prefix: String = "business.description"

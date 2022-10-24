@@ -20,7 +20,7 @@ import models.ShareClass._
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-class ShareClassSpec extends AnyWordSpec with Matchers{
+class ShareClassSpec extends AnyWordSpec with Matchers {
 
   "ShareClass" must {
     "return the correct value for toDES " in {

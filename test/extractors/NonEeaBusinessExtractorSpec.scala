@@ -16,14 +16,14 @@
 
 package extractors
 
-import java.time.LocalDate
-
 import base.SpecBase
 import models.assets.NonEeaBusinessType
 import models.{NonUkAddress, UserAnswers}
 import pages.asset.noneeabusiness.add.StartDatePage
 import pages.asset.noneeabusiness.amend.IndexPage
 import pages.asset.noneeabusiness.{GoverningCountryPage, NamePage, NonUkAddressPage}
+
+import java.time.LocalDate
 
 class NonEeaBusinessExtractorSpec extends SpecBase {
 

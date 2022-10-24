@@ -26,7 +26,7 @@ import models.TaskStatus.Completed
 import models.assets._
 import models.{AddAssets, RemoveAsset, ShareClass, UkAddress}
 import navigation.{AssetsNavigator, Navigator}
-import org.mockito.Matchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import play.api.data.Form
@@ -520,7 +520,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
 
   class FakeService(testAssets: Assets) extends TrustService {
 
-    override def getAssets(identifier: String)(implicit hc:HeaderCarrier, ec:ExecutionContext): Future[Assets] =
+    override def getAssets(identifier: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Assets] =
       Future.successful(testAssets)
 
     override def getMonetaryAsset(identifier: String)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[Option[AssetMonetaryAmount]] =

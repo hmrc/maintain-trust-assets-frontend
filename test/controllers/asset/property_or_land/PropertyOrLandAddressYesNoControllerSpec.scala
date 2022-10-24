@@ -24,6 +24,7 @@ import forms.YesNoFormProvider
 import models.NormalMode
 import navigation.Navigator
 import pages.asset.property_or_land.PropertyOrLandAddressYesNoPage
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -31,9 +32,9 @@ import views.html.asset.property_or_land.PropertyOrLandAddressYesNoView
 
 class PropertyOrLandAddressYesNoControllerSpec extends SpecBase with IndexValidation {
 
-  val form = new YesNoFormProvider().withPrefix("propertyOrLand.addressYesNo")
+  val form: Form[Boolean] = new YesNoFormProvider().withPrefix("propertyOrLand.addressYesNo")
 
-  lazy val propertyOrLandAddressYesNoRoute = routes.PropertyOrLandAddressYesNoController.onPageLoad(NormalMode).url
+  lazy val propertyOrLandAddressYesNoRoute: String = routes.PropertyOrLandAddressYesNoController.onPageLoad(NormalMode).url
 
   "PropertyOrLandAddressYesNo Controller" must {
 

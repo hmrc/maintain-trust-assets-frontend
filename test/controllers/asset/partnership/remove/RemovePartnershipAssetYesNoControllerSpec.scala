@@ -21,11 +21,13 @@ import connectors.TrustsConnector
 import forms.RemoveIndexFormProvider
 import models.UserAnswers
 import models.assets._
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import play.api.data.Form
 import play.api.inject.bind
+import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpResponse
@@ -39,22 +41,22 @@ class RemovePartnershipAssetYesNoControllerSpec extends SpecBase with ScalaCheck
   val messagesPrefix = "partnership.removeYesNo"
 
   lazy val formProvider = new RemoveIndexFormProvider()
-  lazy val form = formProvider(messagesPrefix)
+  lazy val form: Form[Boolean] = formProvider(messagesPrefix)
 
-  lazy val formRoute = controllers.asset.partnership.remove.routes.RemovePartnershipAssetYesNoController.onSubmit(0)
+  lazy val formRoute: Call = controllers.asset.partnership.remove.routes.RemovePartnershipAssetYesNoController.onSubmit(0)
 
   val mockConnector: TrustsConnector = mock[TrustsConnector]
 
-  def createAsset(id: Int, provisional : Boolean) =
+  def createAsset(id: Int, provisional: Boolean): PartnershipType =
     PartnershipType(s"Partnership Asset $id", LocalDate.now())
 
-  val assets = List(
+  val assets: List[PartnershipType] = List(
     createAsset(0, provisional = false),
     createAsset(1, provisional = true),
     createAsset(2, provisional = true)
   )
 
-  def userAnswers(migrating: Boolean) = UserAnswers("internalId", "identifier", "sessionId", LocalDate.now, isMigratingToTaxable = migrating)
+  def userAnswers(migrating: Boolean): UserAnswers = emptyUserAnswers.copy(isMigratingToTaxable = migrating)
 
   "Other RemovePartnershipAssetYesNo Controller" when {
 

@@ -25,7 +25,9 @@ import play.api.data.{Form, FormError}
 object MappingsSpec {
 
   sealed trait Foo
+
   case object Bar extends Foo
+
   case object Baz extends Foo
 
   object Foo {

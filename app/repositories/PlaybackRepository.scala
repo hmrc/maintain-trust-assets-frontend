@@ -16,115 +16,16 @@
 
 package repositories
 
-import models.{MongoDateTimeFormats, UserAnswers}
-import play.api.Configuration
-import play.api.libs.json._
-import play.modules.reactivemongo.ReactiveMongoApi
-import reactivemongo.api.WriteConcern
-import reactivemongo.api.indexes.IndexType
-import reactivemongo.play.json.collection.JSONCollection
+import com.google.inject.ImplementedBy
+import models.UserAnswers
 
-import java.time.LocalDateTime
-import javax.inject.{Inject, Singleton}
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
-@Singleton
-class PlaybackRepositoryImpl @Inject()(override val mongo: ReactiveMongoApi,
-                                       override val config: Configuration
-                                      )(override implicit val ec: ExecutionContext)
-  extends PlaybackRepository
-    with IndexManager {
-
-  override val collectionName: String = "user-answers"
-
-  private val cacheTtl = config.get[Int]("mongodb.playback.ttlSeconds")
-
-  private def collection: Future[JSONCollection] =
-    for {
-      _ <- ensureIndexes
-      res <- mongo.database.map(_.collection[JSONCollection](collectionName))
-    } yield res
-
-  private val lastUpdatedIndex = MongoIndex(
-    key = Seq("updatedAt" -> IndexType.Ascending),
-    name = "user-answers-updated-at-index",
-    expireAfterSeconds = Some(cacheTtl)
-  )
-
-  private val internalIdAndUtrIndex = MongoIndex(
-    key = Seq("newId" -> IndexType.Ascending),
-    name = "internal-id-and-utr-and-sessionId-compound-index"
-  )
-
-  private lazy val ensureIndexes = {
-    logger.info("Ensuring collection indexes")
-    for {
-      collection              <- mongo.database.map(_.collection[JSONCollection](collectionName))
-      createdLastUpdatedIndex <- collection.indexesManager.ensure(lastUpdatedIndex)
-      createdIdIndex          <- collection.indexesManager.ensure(internalIdAndUtrIndex)
-    } yield createdLastUpdatedIndex && createdIdIndex
-  }
-
-  private def selector(internalId: String, utr: String, sessionId: String): JsObject = Json.obj(
-    "newId" -> s"$internalId-$utr-$sessionId"
-  )
-
-  override def get(internalId: String, utr: String, sessionId: String): Future[Option[UserAnswers]] = {
-
-    logger.debug(s"PlaybackRepository getting user answers for $internalId")
-
-    val modifier = Json.obj(
-      "$set" -> Json.obj(
-        "updatedAt" -> MongoDateTimeFormats.localDateTimeWrite.writes(LocalDateTime.now)
-      )
-    )
-
-    for {
-      col <- collection
-      r <- col.findAndUpdate(
-        selector = selector(internalId, utr, sessionId),
-        update = modifier,
-        fetchNewObject = true,
-        upsert = false,
-        sort = None,
-        fields = None,
-        bypassDocumentValidation = false,
-        writeConcern = WriteConcern.Default,
-        maxTime = None,
-        collation = None,
-        arrayFilters = Nil)
-    } yield r.result[UserAnswers]
-  }
-
-  override def set(userAnswers: UserAnswers): Future[Boolean] = {
-
-    val modifier = Json.obj(
-      "$set" -> (userAnswers copy (updatedAt = LocalDateTime.now))
-    )
-
-    for {
-      col <- collection
-      r <- col.update(ordered = false)
-        .one(selector(userAnswers.internalId, userAnswers.identifier, userAnswers.sessionId), modifier, upsert = true, multi = false)
-    } yield r.ok
-  }
-
-  override def resetCache(internalId: String, utr: String, sessionId: String): Future[Option[JsObject]] = {
-
-    logger.debug(s"PlaybackRepository resetting cache for $internalId")
-
-    for {
-      col <- collection
-      r <- col.findAndRemove(selector(internalId, utr, sessionId), None, None, WriteConcern.Default, None, None, Seq.empty)
-    } yield r.value
-  }
-}
-
+@ImplementedBy(classOf[PlaybackRepositoryImpl])
 trait PlaybackRepository {
 
   def get(internalId: String, utr: String, sessionId: String): Future[Option[UserAnswers]]
 
   def set(userAnswers: UserAnswers): Future[Boolean]
 
-  def resetCache(internalId: String, utr: String, sessionId: String): Future[Option[JsObject]]
 }

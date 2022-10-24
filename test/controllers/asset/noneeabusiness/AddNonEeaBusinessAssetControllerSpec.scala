@@ -26,7 +26,7 @@ import models.TaskStatus.Completed
 import models.assets._
 import models.{AddAssets, NormalMode, RemoveAsset, UkAddress}
 import navigation.Navigator
-import org.mockito.Matchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.BeforeAndAfterEach
 import play.api.data.Form
@@ -53,7 +53,7 @@ class AddNonEeaBusinessAssetControllerSpec extends SpecBase with Generators with
   val AddNonEeaBusinessAssetForm: Form[AddAssets] = new AddAssetsFormProvider().withPrefix(prefix)
   val yesNoForm: Form[Boolean] = new YesNoFormProvider().withPrefix("addNonEeaBusinessAssetYesNo")
 
-  val mockStoreConnector : TrustsStoreConnector = mock[TrustsStoreConnector]
+  val mockStoreConnector: TrustsStoreConnector = mock[TrustsStoreConnector]
   val mockViewHelper: AddAssetViewHelper = mock[AddAssetViewHelper]
 
   val fakeAddRow: AddRow = AddRow("Name", "Type", "change-url", "remove-url")
@@ -378,7 +378,7 @@ class AddNonEeaBusinessAssetControllerSpec extends SpecBase with Generators with
 
   class FakeService(testAssets: Assets) extends TrustService {
 
-    override def getAssets(identifier: String)(implicit hc:HeaderCarrier, ec:ExecutionContext): Future[Assets] =
+    override def getAssets(identifier: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Assets] =
       Future.successful(testAssets)
 
     override def getMonetaryAsset(identifier: String)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[Option[AssetMonetaryAmount]] =
