@@ -25,7 +25,7 @@ import models.TaskStatus._
 import models.assets.NonEeaBusinessType
 import models.{UkAddress, UserAnswers}
 import navigation.AssetsNavigator
-import org.mockito.Matchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures

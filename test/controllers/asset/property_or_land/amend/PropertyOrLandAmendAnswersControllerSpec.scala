@@ -16,18 +16,16 @@
 
 package controllers.asset.property_or_land.amend
 
-import java.time.LocalDate
-
 import base.SpecBase
 import connectors.TrustsConnector
-import models.assets.PropertyLandType
 import models.UserAnswers
-import org.mockito.Matchers.any
+import models.assets.PropertyLandType
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
-import pages.asset.property_or_land.amend.IndexPage
 import pages.asset.property_or_land._
+import pages.asset.property_or_land.amend.IndexPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -55,7 +53,7 @@ class PropertyOrLandAmendAnswersControllerSpec extends SpecBase with MockitoSuga
     valuePrevious = None
   )
 
-  def userAnswers = UserAnswers("internalId", "identifier", "sessionId", LocalDate.now, isMigratingToTaxable = true)
+  def userAnswers: UserAnswers = emptyUserAnswers.copy(isMigratingToTaxable = true)
     .set(IndexPage, index).success.value
     .set(PropertyOrLandAddressYesNoPage, false).success.value
     .set(PropertyOrLandDescriptionPage, name).success.value
@@ -67,7 +65,7 @@ class PropertyOrLandAmendAnswersControllerSpec extends SpecBase with MockitoSuga
 
     "return OK and the correct view for a GET for a given index" in {
 
-      val mockService : TrustService = mock[TrustService]
+      val mockService: TrustService = mock[TrustService]
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(

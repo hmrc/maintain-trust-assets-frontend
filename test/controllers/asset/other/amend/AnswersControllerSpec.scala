@@ -16,13 +16,11 @@
 
 package controllers.asset.other.amend
 
-import java.time.LocalDate
-
 import base.SpecBase
 import connectors.TrustsConnector
 import models.UserAnswers
 import models.assets.OtherAssetType
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
@@ -52,18 +50,17 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
     value = 4000
   )
 
-  def userAnswers = UserAnswers("internalId", "identifier", "sessionId", LocalDate.now, isMigratingToTaxable = true)
+  def userAnswers: UserAnswers = emptyUserAnswers.copy(isMigratingToTaxable = true)
     .set(IndexPage, index).success.value
     .set(OtherAssetDescriptionPage, "Other Asset").success.value
     .set(OtherAssetValuePage, 4000L).success.value
-
 
 
   "Asset Answers Controller" must {
 
     "return OK and the correct view for a GET for a given index" in {
 
-      val mockService : TrustService = mock[TrustService]
+      val mockService: TrustService = mock[TrustService]
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(

@@ -16,18 +16,16 @@
 
 package controllers.asset.business.amend
 
-import java.time.LocalDate
-
 import base.SpecBase
 import connectors.TrustsConnector
 import models.assets.BusinessAssetType
 import models.{NonUkAddress, UserAnswers}
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
-import pages.asset.business.amend.IndexPage
 import pages.asset.business._
+import pages.asset.business.amend.IndexPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -37,6 +35,7 @@ import uk.gov.hmrc.http.HttpResponse
 import utils.print.BusinessPrintHelper
 import views.html.asset.business.amend.BusinessAmendAnswersView
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class BusinessAmendAnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures {
@@ -57,7 +56,12 @@ class BusinessAmendAnswersControllerSpec extends SpecBase with MockitoSugar with
     businessValue = valueFull
   )
 
-  def userAnswers = UserAnswers("internalId", "identifier", "sessionId", LocalDate.now, isMigratingToTaxable = true)
+  def userAnswers: UserAnswers = UserAnswers("internalId",
+    "identifier",
+    "sessionId",
+    "internalId-identifier-sessionId",
+    LocalDate.now,
+    isMigratingToTaxable = true)
     .set(IndexPage, index).success.value
     .set(BusinessAddressUkYesNoPage, false).success.value
     .set(BusinessInternationalAddressPage, internationalAddress).success.value
@@ -70,7 +74,7 @@ class BusinessAmendAnswersControllerSpec extends SpecBase with MockitoSugar with
 
     "return OK and the correct view for a GET for a given index" in {
 
-      val mockService : TrustService = mock[TrustService]
+      val mockService: TrustService = mock[TrustService]
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(

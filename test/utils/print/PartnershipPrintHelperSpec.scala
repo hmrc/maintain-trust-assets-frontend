@@ -19,12 +19,13 @@ package utils.print
 import base.SpecBase
 import controllers.asset.partnership.routes._
 import controllers.asset.routes.WhatKindOfAssetController
-import models.{NormalMode, UserAnswers}
 import models.WhatKindOfAsset.Partnership
+import models.{NormalMode, UserAnswers}
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.partnership._
 import play.twirl.api.Html
 import viewmodels.{AnswerRow, AnswerSection}
+
 import java.time.LocalDate
 
 class PartnershipPrintHelperSpec extends SpecBase {

@@ -22,7 +22,7 @@ import controllers.routes._
 import forms.YesNoFormProvider
 import models.NormalMode
 import navigation.AssetsNavigator
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.asset.TrustOwnsNonEeaBusinessYesNoPage
 import play.api.data.Form

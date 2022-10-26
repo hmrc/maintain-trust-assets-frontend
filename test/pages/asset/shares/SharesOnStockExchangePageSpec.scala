@@ -20,7 +20,7 @@ import pages.behaviours.PageBehaviours
 
 class SharesOnStockExchangePageSpec extends PageBehaviours {
 
-  val page = SharesOnStockExchangePage
+  val page: SharesOnStockExchangePage.type = SharesOnStockExchangePage
 
   "SharesOnStockExchangePage" must {
 

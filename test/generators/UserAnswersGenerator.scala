@@ -16,13 +16,13 @@
 
 package generators
 
-import java.time.LocalDate
-
 import models.UserAnswers
 import org.scalacheck.{Arbitrary, Gen}
 import org.scalatest.TryValues
 import pages.QuestionPage
 import play.api.libs.json.{JsValue, Json}
+
+import java.time.LocalDate
 
 trait UserAnswersGenerator extends TryValues {
   self: Generators =>
@@ -36,17 +36,18 @@ trait UserAnswersGenerator extends TryValues {
 
     Arbitrary {
       for {
-        id      <- nonEmptyString
-        utr     <- nonEmptyString
+        id <- nonEmptyString
+        utr <- nonEmptyString
         sessionId <- nonEmptyString
-        data    <- generators match {
+        data <- generators match {
           case Nil => Gen.const(Map[QuestionPage[_], JsValue]())
-          case _   => Gen.mapOf(oneOf(generators))
+          case _ => Gen.mapOf(oneOf(generators))
         }
-      } yield UserAnswers (
+      } yield UserAnswers(
         internalId = id,
         identifier = utr,
         sessionId = sessionId,
+        newId = s"$id-$utr-$sessionId",
         whenTrustSetup = LocalDate.now(),
         data = data.foldLeft(Json.obj()) {
           case (obj, (path, value)) =>

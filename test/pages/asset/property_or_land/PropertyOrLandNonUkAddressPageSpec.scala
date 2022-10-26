@@ -21,7 +21,7 @@ import pages.behaviours.PageBehaviours
 
 class PropertyOrLandNonUkAddressPageSpec extends PageBehaviours {
 
-  val page = PropertyOrLandInternationalAddressPage
+  val page: PropertyOrLandInternationalAddressPage.type = PropertyOrLandInternationalAddressPage
 
   "PropertyOrLandInternationalAddressPage" must {
 

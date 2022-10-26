@@ -18,8 +18,8 @@ package navigation
 
 import base.SpecBase
 import generators.Generators
-import models.{NormalMode, UserAnswers}
 import models.WhatKindOfAsset.Money
+import models.{NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.asset.WhatKindOfAssetPage

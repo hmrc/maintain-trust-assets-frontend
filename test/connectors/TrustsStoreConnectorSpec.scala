@@ -17,7 +17,7 @@
 package connectors
 
 import base.SpecBase
-import com.github.tomakehurst.wiremock.client.WireMock.{urlEqualTo, _}
+import com.github.tomakehurst.wiremock.client.WireMock._
 import models.FeatureResponse
 import models.TaskStatus.Completed
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}

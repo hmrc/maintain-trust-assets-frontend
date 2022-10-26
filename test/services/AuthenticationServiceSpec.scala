@@ -20,7 +20,7 @@ import base.SpecBase
 import connectors.TrustAuthConnector
 import models.requests.{AgentUser, DataRequest}
 import models.{TrustAuthAgentAllowed, TrustAuthAllowed, TrustAuthDenied, TrustAuthInternalServerError}
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{EitherValues, RecoverMethods}
@@ -65,7 +65,7 @@ class AuthenticationServiceSpec extends SpecBase with MockitoSugar with ScalaFut
 
         whenReady(service.authenticateForIdentifier[AnyContent](utr)) {
           result =>
-            result.right.value mustBe dataRequest
+            result.value mustBe dataRequest
         }
       }
     }
@@ -113,7 +113,7 @@ class AuthenticationServiceSpec extends SpecBase with MockitoSugar with ScalaFut
 
         whenReady(service.authenticateAgent()) {
           result =>
-            result.right.value mustBe "SomeARN"
+            result.value mustBe "SomeARN"
         }
       }
     }

@@ -16,13 +16,13 @@
 
 package views.asset.noneeabusiness.remove
 
-import java.time.LocalDate
-
 import forms.EndDateFormProvider
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.QuestionViewBehaviours
 import views.html.asset.noneeabusiness.remove.RemoveAssetEndDateView
+
+import java.time.LocalDate
 
 class RemoveAssetEndDateViewSpec extends QuestionViewBehaviours[LocalDate] {
 
@@ -38,7 +38,7 @@ class RemoveAssetEndDateViewSpec extends QuestionViewBehaviours[LocalDate] {
     def applyView(form: Form[_]): HtmlFormat.Appendable =
       view.apply(form, index, name)(fakeRequest, messages)
 
-    val applyViewF = (form : Form[_]) => applyView(form)
+    val applyViewF = (form: Form[_]) => applyView(form)
 
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name)
 

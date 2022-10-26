@@ -17,10 +17,10 @@
 package extractors
 
 import base.SpecBase
-import models.assets.PartnershipType
 import models.UserAnswers
-import pages.asset.partnership.amend.IndexPage
+import models.assets.PartnershipType
 import pages.asset.partnership._
+import pages.asset.partnership.amend.IndexPage
 
 import java.time.LocalDate
 

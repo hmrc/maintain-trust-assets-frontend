@@ -22,9 +22,9 @@ import generators.Generators
 import models.{CheckMode, NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import pages.asset.shares.amend.IndexPage
 import pages.asset.shares._
 import pages.asset.shares.add.ShareAnswerPage
+import pages.asset.shares.amend.IndexPage
 
 class SharesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 

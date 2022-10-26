@@ -21,6 +21,7 @@ import models.{NonUkAddress, UkAddress}
 import play.api.i18n.{Lang, MessagesImpl}
 import play.twirl.api.Html
 import utils.CheckAnswersFormatters._
+
 import java.time.LocalDate
 
 class CheckAnswersFormattersSpec extends SpecBase {

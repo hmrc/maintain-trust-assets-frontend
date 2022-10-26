@@ -17,16 +17,15 @@
 package utils.print
 
 import base.SpecBase
-import controllers.asset.noneeabusiness.routes._
 import controllers.asset.noneeabusiness.add.routes._
-
+import controllers.asset.noneeabusiness.routes._
 import models.{NonUkAddress, NormalMode, UserAnswers}
 import pages.asset.noneeabusiness._
+import pages.asset.noneeabusiness.add.StartDatePage
 import play.twirl.api.Html
 import viewmodels.{AnswerRow, AnswerSection}
-import java.time.LocalDate
 
-import pages.asset.noneeabusiness.add.StartDatePage
+import java.time.LocalDate
 
 class NonEeaBusinessPrintHelperSpec extends SpecBase {
 

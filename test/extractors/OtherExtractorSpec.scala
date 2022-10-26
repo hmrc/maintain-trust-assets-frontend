@@ -19,8 +19,8 @@ package extractors
 import base.SpecBase
 import models.UserAnswers
 import models.assets.OtherAssetType
-import pages.asset.other.{OtherAssetDescriptionPage, OtherAssetValuePage}
 import pages.asset.other.amend.IndexPage
+import pages.asset.other.{OtherAssetDescriptionPage, OtherAssetValuePage}
 
 class OtherExtractorSpec extends SpecBase {
 

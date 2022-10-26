@@ -24,6 +24,7 @@ import generators.ModelGenerators
 import models.NormalMode
 import navigation.Navigator
 import pages.asset.shares.{ShareCompanyNamePage, SharesOnStockExchangePage}
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{route, _}
@@ -31,10 +32,10 @@ import views.html.asset.shares.SharesOnStockExchangeView
 
 class SharesOnStockExchangeControllerSpec extends SpecBase with ModelGenerators with IndexValidation {
 
-  val form = new YesNoFormProvider().withPrefix("shares.onStockExchangeYesNo")
+  val form: Form[Boolean] = new YesNoFormProvider().withPrefix("shares.onStockExchangeYesNo")
   val companyName = "Company"
 
-  lazy val sharesOnStockExchangeRoute = routes.SharesOnStockExchangeController.onPageLoad(NormalMode).url
+  lazy val sharesOnStockExchangeRoute: String = routes.SharesOnStockExchangeController.onPageLoad(NormalMode).url
 
   "SharesOnStockExchange Controller" must {
 

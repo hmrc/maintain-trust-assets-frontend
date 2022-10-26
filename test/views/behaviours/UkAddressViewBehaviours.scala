@@ -35,9 +35,9 @@ trait UkAddressViewBehaviours extends ViewBehaviours {
 
     val prefix = messageKeyPrefix.getOrElse("site.address.uk")
 
-    val fields =  Seq(
-      ("line1",None),
-      ("line2",None),
+    val fields = Seq(
+      ("line1", None),
+      ("line2", None),
       ("line3", None),
       ("line4", None),
       ("postcode", Some("site.address.uk.postcode.hint"))

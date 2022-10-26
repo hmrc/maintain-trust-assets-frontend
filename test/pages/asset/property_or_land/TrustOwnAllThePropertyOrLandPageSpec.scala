@@ -22,7 +22,7 @@ import pages.behaviours.PageBehaviours
 
 class TrustOwnAllThePropertyOrLandPageSpec extends PageBehaviours {
 
-  val page = TrustOwnAllThePropertyOrLandPage
+  val page: TrustOwnAllThePropertyOrLandPage.type = TrustOwnAllThePropertyOrLandPage
 
   "TrustOwnAllThePropertyOrLandPage" must {
 

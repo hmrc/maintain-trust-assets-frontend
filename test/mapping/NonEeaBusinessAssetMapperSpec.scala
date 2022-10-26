@@ -16,8 +16,6 @@
 
 package mapping
 
-import java.time.LocalDate
-
 import base.SpecBase
 import models.NonUkAddress
 import models.Status.Completed
@@ -27,6 +25,8 @@ import pages.AssetStatus
 import pages.asset._
 import pages.asset.noneeabusiness._
 import pages.asset.noneeabusiness.add.StartDatePage
+
+import java.time.LocalDate
 
 class NonEeaBusinessAssetMapperSpec extends SpecBase {
 

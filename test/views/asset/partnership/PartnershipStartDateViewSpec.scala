@@ -17,13 +17,13 @@
 package views.asset.partnership
 
 import forms.StartDateFormProvider
+import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.QuestionViewBehaviours
 import views.html.asset.partnership.PartnershipStartDateView
-import java.time.LocalDate
 
-import models.NormalMode
+import java.time.LocalDate
 
 class PartnershipStartDateViewSpec extends QuestionViewBehaviours[LocalDate] {
 
@@ -37,7 +37,7 @@ class PartnershipStartDateViewSpec extends QuestionViewBehaviours[LocalDate] {
     def applyView(form: Form[_]): HtmlFormat.Appendable =
       view.apply(form, NormalMode)(fakeRequest, messages)
 
-    val applyViewF = (form : Form[_]) => applyView(form)
+    val applyViewF = (form: Form[_]) => applyView(form)
 
     behave like normalPage(applyView(form), messageKeyPrefix)
 

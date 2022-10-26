@@ -16,13 +16,11 @@
 
 package controllers.asset.noneeabusiness.add
 
-import java.time.LocalDate
-
 import base.SpecBase
 import connectors.TrustsConnector
 import controllers.routes._
 import models.{NonUkAddress, UserAnswers}
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
@@ -35,13 +33,14 @@ import uk.gov.hmrc.http.HttpResponse
 import utils.print.NonEeaBusinessPrintHelper
 import views.html.asset.noneeabusiness.add.AnswersView
 
+import java.time.LocalDate
 import scala.concurrent.Future
 
 class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures {
 
   private val name: String = "Noneeabusiness"
 
-  def userAnswers(migrating: Boolean): UserAnswers = UserAnswers("internalId", "identifier", "sessionId", LocalDate.now, isMigratingToTaxable = migrating)
+  def userAnswers(migrating: Boolean): UserAnswers = emptyUserAnswers.copy(isMigratingToTaxable = migrating)
     .set(NamePage, name).success.value
     .set(NonUkAddressPage, NonUkAddress("Line 1", "Line 2", Some("Line 3"), "FR")).success.value
     .set(GoverningCountryPage, "FR").success.value

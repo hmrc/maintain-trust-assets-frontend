@@ -16,18 +16,18 @@
 
 package controllers.asset.property_or_land.remove
 
-import java.time.LocalDate
-
 import base.SpecBase
 import connectors.TrustsConnector
 import forms.RemoveIndexFormProvider
 import models.{NonUkAddress, UserAnswers}
 import models.assets._
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
+import play.api.data.Form
 import play.api.inject.bind
+import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpResponse
@@ -40,22 +40,22 @@ class PropertyOrLandPropertyOrLandRemoveAssetYesNoControllerSpec extends SpecBas
   val messagesPrefix = "propertyOrLand.removeYesNo"
 
   lazy val formProvider = new RemoveIndexFormProvider()
-  lazy val form = formProvider(messagesPrefix)
+  lazy val form: Form[Boolean] = formProvider(messagesPrefix)
 
-  lazy val formRoute = routes.PropertyOrLandRemoveAssetYesNoController.onSubmit(0)
+  lazy val formRoute: Call = routes.PropertyOrLandRemoveAssetYesNoController.onSubmit(0)
 
   val mockConnector: TrustsConnector = mock[TrustsConnector]
 
-  def createAsset(id: Int, provisional : Boolean) =
+  def createAsset(id: Int, provisional: Boolean): PropertyLandType =
     PropertyLandType(Some(s"Business Name $id"), Some(NonUkAddress("", "", None, "")), 123L, None)
 
-  val propertyOrLandAssets = List(
+  val propertyOrLandAssets: List[PropertyLandType] = List(
     createAsset(0, provisional = false),
     createAsset(1, provisional = true),
     createAsset(2, provisional = true)
   )
 
-  def userAnswers(migrating: Boolean) = UserAnswers("internalId", "identifier", "sessionId", LocalDate.now, isMigratingToTaxable = migrating)
+  def userAnswers(migrating: Boolean): UserAnswers = emptyUserAnswers.copy(isMigratingToTaxable = migrating)
 
   "PropertyOrLandPropertyOrLandRemoveAssetYesNoController" when {
 

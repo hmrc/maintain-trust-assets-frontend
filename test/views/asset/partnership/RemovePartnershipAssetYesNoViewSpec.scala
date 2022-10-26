@@ -25,7 +25,7 @@ import views.html.asset.partnership.RemovePartnershipAssetYesNoView
 class RemovePartnershipAssetYesNoViewSpec extends YesNoViewBehaviours {
 
   val messageKeyPrefix = "partnership.removeYesNo"
-  val form = (new YesNoFormProvider).withPrefix(messageKeyPrefix)
+  val form: Form[Boolean] = (new YesNoFormProvider).withPrefix(messageKeyPrefix)
   val name: String = "Name"
   val index = 0
 

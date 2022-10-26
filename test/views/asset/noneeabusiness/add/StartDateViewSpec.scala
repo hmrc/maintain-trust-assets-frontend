@@ -16,13 +16,13 @@
 
 package views.asset.noneeabusiness.add
 
-import java.time.LocalDate
-
 import forms.StartDateFormProvider
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.QuestionViewBehaviours
 import views.html.asset.noneeabusiness.add.StartDateView
+
+import java.time.LocalDate
 
 class StartDateViewSpec extends QuestionViewBehaviours[LocalDate] {
 
@@ -37,7 +37,7 @@ class StartDateViewSpec extends QuestionViewBehaviours[LocalDate] {
     def applyView(form: Form[_]): HtmlFormat.Appendable =
       view.apply(form, name)(fakeRequest, messages)
 
-    val applyViewF = (form : Form[_]) => applyView(form)
+    val applyViewF = (form: Form[_]) => applyView(form)
 
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, name)
 

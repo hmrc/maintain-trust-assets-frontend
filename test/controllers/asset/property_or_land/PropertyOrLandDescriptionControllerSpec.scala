@@ -24,6 +24,7 @@ import forms.DescriptionFormProvider
 import models.NormalMode
 import navigation.Navigator
 import pages.asset.property_or_land.PropertyOrLandDescriptionPage
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{route, _}
@@ -32,9 +33,9 @@ import views.html.asset.property_or_land.PropertyOrLandDescriptionView
 class PropertyOrLandDescriptionControllerSpec extends SpecBase with IndexValidation {
 
   val formProvider = new DescriptionFormProvider()
-  val form = formProvider.withConfig(56, "propertyOrLand.description")
+  val form: Form[String] = formProvider.withConfig(56, "propertyOrLand.description")
 
-  lazy val propertyOrLandDescriptionRoute = routes.PropertyOrLandDescriptionController.onPageLoad(NormalMode).url
+  lazy val propertyOrLandDescriptionRoute: String = routes.PropertyOrLandDescriptionController.onPageLoad(NormalMode).url
 
   "PropertyOrLandDescription Controller" must {
 

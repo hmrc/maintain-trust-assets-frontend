@@ -19,7 +19,7 @@ package pages.asset
 import models.AddAssets
 import pages.behaviours.PageBehaviours
 
-class AddAssetsSpec extends PageBehaviours {
+class AddAssetsPageSpec extends PageBehaviours {
 
   "AddAssetsPage" must {
 

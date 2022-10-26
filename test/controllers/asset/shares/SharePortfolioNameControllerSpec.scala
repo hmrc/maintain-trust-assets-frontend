@@ -24,6 +24,7 @@ import generators.ModelGenerators
 import models.NormalMode
 import navigation.Navigator
 import pages.asset.shares.SharePortfolioNamePage
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{route, _}
@@ -32,9 +33,9 @@ import views.html.asset.shares.SharePortfolioNameView
 class SharePortfolioNameControllerSpec extends SpecBase with ModelGenerators with IndexValidation {
 
   val formProvider = new NameFormProvider()
-  val form = formProvider.withConfig(53, "shares.portfolioName")
+  val form: Form[String] = formProvider.withConfig(53, "shares.portfolioName")
 
-  lazy val sharePortfolioNameRoute = routes.SharePortfolioNameController.onPageLoad(NormalMode).url
+  lazy val sharePortfolioNameRoute: String = routes.SharePortfolioNameController.onPageLoad(NormalMode).url
 
   "SharePortfolioName Controller" must {
 

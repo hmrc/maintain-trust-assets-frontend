@@ -24,7 +24,7 @@ trait ViewBehaviours extends ViewSpecBase {
 
   def normalPage(view: HtmlFormat.Appendable,
                  messageKeyPrefix: String,
-                 ignoreTitle : Boolean = false): Unit = {
+                 ignoreTitle: Boolean = false): Unit = {
 
     "behave like a normal page" when {
 
@@ -33,14 +33,14 @@ trait ViewBehaviours extends ViewSpecBase {
         "have the correct banner title" in {
 
           val doc = asDocument(view)
-          val bannerTitle = doc.getElementsByClass("govuk-header__link govuk-header__link--service-name")
+          val bannerTitle = doc.getElementsByClass("hmrc-header__service-name hmrc-header__service-name--linked")
           bannerTitle.html() mustBe messages("service.name")
         }
 
         "display the correct browser title" in {
 
           val doc = asDocument(view)
-          assertEqualsMessage(doc,"title",s"$messageKeyPrefix.title")
+          assertEqualsMessage(doc, "title", s"$messageKeyPrefix.title")
         }
 
         if (!ignoreTitle) {
@@ -64,7 +64,7 @@ trait ViewBehaviours extends ViewSpecBase {
     }
   }
 
-  def pageWithTitle(view: HtmlFormat.Appendable, messageKeyPrefix: String, args: Any*) : Unit = {
+  def pageWithTitle(view: HtmlFormat.Appendable, messageKeyPrefix: String, args: Any*): Unit = {
     "display the correct page title" in {
 
       val doc = asDocument(view)
@@ -72,7 +72,7 @@ trait ViewBehaviours extends ViewSpecBase {
     }
   }
 
-  def pageWithTitleAndCaption(view: HtmlFormat.Appendable, messageKeyPrefix: String) : Unit = {
+  def pageWithTitleAndCaption(view: HtmlFormat.Appendable, messageKeyPrefix: String): Unit = {
     "display the correct page title with section" in {
 
       val doc = asDocument(view)
@@ -92,7 +92,7 @@ trait ViewBehaviours extends ViewSpecBase {
         "have the correct banner title" in {
 
           val doc = asDocument(view)
-          val bannerTitle = doc.getElementsByClass("govuk-header__link govuk-header__link--service-name")
+          val bannerTitle = doc.getElementsByClass("hmrc-header__service-name hmrc-header__service-name--linked")
           bannerTitle.html() mustBe messages("service.name")
         }
 

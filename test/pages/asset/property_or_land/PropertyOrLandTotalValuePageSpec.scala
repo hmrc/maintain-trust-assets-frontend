@@ -21,7 +21,7 @@ import pages.behaviours.PageBehaviours
 
 class PropertyOrLandTotalValuePageSpec extends PageBehaviours {
 
-  val page = PropertyOrLandTotalValuePage
+  val page: PropertyOrLandTotalValuePage.type = PropertyOrLandTotalValuePage
 
   "PropertyOrLandTotalValuePage" must {
 

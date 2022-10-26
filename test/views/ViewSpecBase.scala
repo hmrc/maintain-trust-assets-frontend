@@ -39,10 +39,10 @@ trait ViewSpecBase extends SpecBase {
   def assertEqualsMessage(doc: Document, cssSelector: String, expectedMessageKey: String, args: Any*): Assertion =
     assertEqualsValue(doc, cssSelector, mockViewUtils.breadcrumbTitle(messages(expectedMessageKey, args: _*))(fakeRequest, messages))
 
-  def assertEqualsValue(doc : Document, cssSelector : String, expectedValue: String): Assertion = {
+  def assertEqualsValue(doc: Document, cssSelector: String, expectedValue: String): Assertion = {
     val elements = doc.select(cssSelector)
 
-    if(elements.isEmpty) throw new IllegalArgumentException(s"CSS Selector $cssSelector wasn't rendered.")
+    if (elements.isEmpty) throw new IllegalArgumentException(s"CSS Selector $cssSelector wasn't rendered.")
 
     //<p> HTML elements are rendered out with a carriage return on some pages, so discount for comparison
     assert(elements.first().html().replace("\n", "") == expectedValue)
@@ -52,7 +52,7 @@ trait ViewSpecBase extends SpecBase {
     val headers = doc.getElementsByTag("h1")
     headers.size mustBe 1
 
-    val expected = messages(s"$expectedMessageKey.heading", args:_*)
+    val expected = messages(s"$expectedMessageKey.heading", args: _*)
       .replaceAll("&nbsp;", " ")
 
     val actual = headers
@@ -128,9 +128,10 @@ trait ViewSpecBase extends SpecBase {
     val radio = doc.getElementById(id)
     assert(radio.attr("name") == name, s"\n\nElement $id does not have name $name")
     assert(radio.attr("value") == value, s"\n\nElement $id does not have value $value")
-    isChecked match {
-      case true => assert(radio.hasAttr("checked"), s"\n\nElement $id is not checked")
-      case _ => assert(!radio.hasAttr("checked"), s"\n\nElement $id is checked")
+    if (isChecked) {
+      assert(radio.hasAttr("checked"), s"\n\nElement $id is not checked")
+    } else {
+      assert(!radio.hasAttr("checked"), s"\n\nElement $id is checked")
     }
   }
 }

@@ -19,7 +19,7 @@ package services
 import connectors.TrustsConnector
 import models._
 import models.assets._
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.OptionValues
 import org.scalatest.concurrent.ScalaFutures
@@ -38,15 +38,15 @@ class TrustServiceSpec() extends AnyFreeSpec with MockitoSugar with Matchers wit
   val mockConnector: TrustsConnector = mock[TrustsConnector]
   val date: LocalDate = LocalDate.parse("2019-02-03")
 
-  val moneyAsset = AssetMonetaryAmount(123)
-  val propertyOrLandAsset = PropertyLandType(None, None, 123, None)
-  val sharesAsset = SharesType("", "", "", "", 123)
-  val businessAsset = BusinessAssetType("", "", NonUkAddress("", "", None, ""), 123)
-  val partnershipAsset = PartnershipType("", LocalDate.now)
-  val otherAsset = OtherAssetType("", 123)
-  val nonEeaBusinessAsset = NonEeaBusinessType(None, "orgName", NonUkAddress("", "", None, ""), "", LocalDate.now, None, true)
+  val moneyAsset: AssetMonetaryAmount = AssetMonetaryAmount(123)
+  val propertyOrLandAsset: PropertyLandType = PropertyLandType(None, None, 123, None)
+  val sharesAsset: SharesType = SharesType("", "", "", "", 123)
+  val businessAsset: BusinessAssetType = BusinessAssetType("", "", NonUkAddress("", "", None, ""), 123)
+  val partnershipAsset: PartnershipType = PartnershipType("", LocalDate.now)
+  val otherAsset: OtherAssetType = OtherAssetType("", 123)
+  val nonEeaBusinessAsset: NonEeaBusinessType = NonEeaBusinessType(None, "orgName", NonUkAddress("", "", None, ""), "", LocalDate.now, None, provisional = true)
 
-  val assets = Assets(
+  val assets: Assets = Assets(
     monetary = List(moneyAsset),
     propertyOrLand = List(propertyOrLandAsset),
     shares = List(sharesAsset),
@@ -65,7 +65,7 @@ class TrustServiceSpec() extends AnyFreeSpec with MockitoSugar with Matchers wit
 
       val service = new TrustServiceImpl(mockConnector)
 
-      implicit val hc : HeaderCarrier = HeaderCarrier()
+      implicit val hc: HeaderCarrier = HeaderCarrier()
 
       whenReady(service.getAssets("1234567890")) {
         _ mustBe assets
@@ -81,7 +81,7 @@ class TrustServiceSpec() extends AnyFreeSpec with MockitoSugar with Matchers wit
 
       val service = new TrustServiceImpl(mockConnector)
 
-      implicit val hc : HeaderCarrier = HeaderCarrier()
+      implicit val hc: HeaderCarrier = HeaderCarrier()
 
       whenReady(service.getBusinessAsset("1234567890", index)) {
         _ mustBe businessAsset
@@ -114,18 +114,18 @@ class TrustServiceSpec() extends AnyFreeSpec with MockitoSugar with Matchers wit
 
     "remove asset" in {
 
-      when(mockConnector.removeAsset(any(),any())(any(), any()))
+      when(mockConnector.removeAsset(any(), any())(any(), any()))
         .thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val service = new TrustServiceImpl(mockConnector)
 
-      val asset : RemoveAsset =  RemoveAsset(
+      val asset: RemoveAsset = RemoveAsset(
         `type` = AssetNameType.NonEeaBusinessAssetNameType,
         index = 0,
         endDate = LocalDate.now()
       )
 
-      implicit val hc : HeaderCarrier = HeaderCarrier()
+      implicit val hc: HeaderCarrier = HeaderCarrier()
 
       whenReady(service.removeAsset("1234567890", asset)) { r =>
         r.status mustBe 200

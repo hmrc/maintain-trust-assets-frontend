@@ -39,7 +39,7 @@ trait PageBehaviours extends AnyWordSpec with Matchers with ScalaCheckPropertyCh
           "the question has not been answered" in {
 
             val gen = for {
-              page        <- genP
+              page <- genP
               userAnswers <- arbitrary[UserAnswers]
             } yield (page, userAnswers.remove(page).success.value)
 
@@ -59,8 +59,8 @@ trait PageBehaviours extends AnyWordSpec with Matchers with ScalaCheckPropertyCh
           "the question has been answered" in {
 
             val gen = for {
-              page        <- genP
-              savedValue  <- arbitrary[A]
+              page <- genP
+              savedValue <- arbitrary[A]
               userAnswers <- arbitrary[UserAnswers]
             } yield (page, savedValue, userAnswers.set(page, savedValue).success.value)
 
@@ -81,8 +81,8 @@ trait PageBehaviours extends AnyWordSpec with Matchers with ScalaCheckPropertyCh
       "be able to be set on UserAnswers" in {
 
         val gen = for {
-          page        <- genP
-          newValue    <- arbitrary[A]
+          page <- genP
+          newValue <- arbitrary[A]
           userAnswers <- arbitrary[UserAnswers]
         } yield (page, newValue, userAnswers)
 
@@ -102,8 +102,8 @@ trait PageBehaviours extends AnyWordSpec with Matchers with ScalaCheckPropertyCh
       "be able to be removed from UserAnswers" in {
 
         val gen = for {
-          page        <- genP
-          savedValue  <- arbitrary[A]
+          page <- genP
+          savedValue <- arbitrary[A]
           userAnswers <- arbitrary[UserAnswers]
         } yield (page, userAnswers.set(page, savedValue).success.value)
 

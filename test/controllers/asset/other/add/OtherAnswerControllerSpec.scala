@@ -20,8 +20,9 @@ import base.SpecBase
 import connectors.TrustsConnector
 import controllers.routes._
 import models.Status.Completed
+import models.UserAnswers
 import models.WhatKindOfAsset.Other
-import org.mockito.Matchers.any
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.AssetStatus
 import pages.asset.WhatKindOfAssetPage
@@ -41,7 +42,7 @@ class OtherAnswerControllerSpec extends SpecBase {
 
   lazy val otherAnswerRoute: String = routes.OtherAnswerController.onPageLoad().url
 
-  val answers =
+  val answers: UserAnswers =
     emptyUserAnswers
       .set(WhatKindOfAssetPage, Other).success.value
       .set(OtherAssetDescriptionPage, "Other asset").success.value

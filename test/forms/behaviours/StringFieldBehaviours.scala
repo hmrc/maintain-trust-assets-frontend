@@ -21,14 +21,14 @@ import play.api.data.{Form, FormError}
 
 trait StringFieldBehaviours extends FieldBehaviours with OptionalFieldBehaviours {
 
-  def fieldWithMinLength(form : Form[_],
-                         fieldName : String,
-                         minLength : Int,
-                         lengthError : FormError) : Unit = {
+  def fieldWithMinLength(form: Form[_],
+                         fieldName: String,
+                         minLength: Int,
+                         lengthError: FormError): Unit = {
 
     s"not bind strings shorter than $minLength characters" in {
 
-      val length = if (minLength > 0 && minLength < 2) minLength else minLength -1
+      val length = if (minLength > 0 && minLength < 2) minLength else minLength - 1
 
       forAll(stringsWithMaxLength(length) -> "shortString") {
         string =>

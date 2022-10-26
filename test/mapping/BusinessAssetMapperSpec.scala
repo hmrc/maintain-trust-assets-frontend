@@ -62,12 +62,12 @@ class BusinessAssetMapperSpec extends SpecBase with Matchers
             orgName = "businessName",
             businessDescription = "businessDesc",
             address = UkAddress(
-                line1 = "26",
-                line2 = "Grangetown",
-                line3 = Some("Tyne and Wear"),
-                line4 = Some("Newcastle"),
-                postcode = "Z99 2YY"
-              ),
+              line1 = "26",
+              line2 = "Grangetown",
+              line3 = Some("Tyne and Wear"),
+              line4 = Some("Newcastle"),
+              postcode = "Z99 2YY"
+            ),
             businessValue = assetValue
           )
       }
@@ -89,11 +89,11 @@ class BusinessAssetMapperSpec extends SpecBase with Matchers
             orgName = "businessName",
             businessDescription = "businessDesc",
             address = NonUkAddress(
-                line1 = "1",
-                line2 = "Broadway",
-                line3 = Some("New York"),
-                country = "US"
-              ),
+              line1 = "1",
+              line2 = "Broadway",
+              line3 = Some("New York"),
+              country = "US"
+            ),
             businessValue = assetValue
           )
       }

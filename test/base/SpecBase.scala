@@ -17,7 +17,8 @@
 package base
 
 import controllers.actions._
-import navigation.{FakeNavigator, Navigator}
+import models.UserAnswers
+import navigation.FakeNavigator
 import org.scalatest.{BeforeAndAfter, TestSuite, TryValues}
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice._
@@ -25,7 +26,7 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.mvc.BodyParsers
 import repositories.{ActiveSessionRepository, PlaybackRepository}
-import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolment, Enrolments}
+import uk.gov.hmrc.auth.core.AffinityGroup
 import views.ViewUtils
 
 import java.time.LocalDate
@@ -37,18 +38,18 @@ trait SpecBaseHelpers extends GuiceOneAppPerSuite with TryValues with Mocked wit
   final val WELSH = "cy"
 
   lazy val userInternalId = "internalId"
+  lazy val userUtr = "internalId"
+  lazy val userSessionId = "internalId"
+  lazy val newId = s"$userInternalId-$userUtr-$userSessionId"
 
-  def emptyUserAnswers = models.UserAnswers(userInternalId, "UTRUTRUTR", "sessionId", LocalDate.now())
+  def emptyUserAnswers: UserAnswers = models.UserAnswers(userInternalId, userUtr, userSessionId, newId, LocalDate.now())
 
-  val bodyParsers = injector.instanceOf[BodyParsers.Default]
+  val bodyParsers: BodyParsers.Default = injector.instanceOf[BodyParsers.Default]
 
   val fakeNavigator = new FakeNavigator()
 
-  protected def applicationBuilder(userAnswers: Option[models.UserAnswers] = None,
-                                   affinityGroup: AffinityGroup = AffinityGroup.Organisation,
-                                   enrolments: Enrolments = Enrolments(Set.empty[Enrolment]),
-                                   navigator: Navigator = fakeNavigator
-                                  ): GuiceApplicationBuilder =
+  protected def applicationBuilder(userAnswers: Option[UserAnswers] = None,
+                                   affinityGroup: AffinityGroup = AffinityGroup.Organisation): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
       .overrides(
         bind[IdentifierAction].toInstance(new FakeIdentifierAction(bodyParsers, affinityGroup)),

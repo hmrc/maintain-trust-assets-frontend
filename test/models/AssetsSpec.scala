@@ -23,7 +23,7 @@ import play.api.libs.json.Json
 
 import java.time.LocalDate
 
-class AssetsSpec extends AnyWordSpec with Matchers{
+class AssetsSpec extends AnyWordSpec with Matchers {
 
   "Assets" must {
     "deserialise from backend JSON" when {
@@ -102,7 +102,7 @@ class AssetsSpec extends AnyWordSpec with Matchers{
 
         assets mustBe Assets(monetary = Nil,
           propertyOrLand = Nil,
-          shares =  List(SharesType("999999999999", "Shares Ltd", "Other", "Unquoted", 999999999999L)),
+          shares = List(SharesType("999999999999", "Shares Ltd", "Other", "Unquoted", 999999999999L)),
           business = Nil,
           partnerShip = Nil,
           other = Nil,
@@ -130,7 +130,7 @@ class AssetsSpec extends AnyWordSpec with Matchers{
             |            "businessValue": 1000
             |          }
             |        ]
-             |      }
+            |      }
             | }
             |""".stripMargin)
 
@@ -241,13 +241,13 @@ class AssetsSpec extends AnyWordSpec with Matchers{
         val assets = json.as[Assets]
 
         val monEEAAsset1 = NonEeaBusinessType(
-            lineNo = Some("1"),
-            orgName = "Panda care Ltd",
-            address = NonUkAddress(
-              line1 = "1010 EASY ST",
-              line2 = "OTTAWA",
-              line3 = Some("ONTARIO"),
-              country = "CA"),
+          lineNo = Some("1"),
+          orgName = "Panda care Ltd",
+          address = NonUkAddress(
+            line1 = "1010 EASY ST",
+            line2 = "OTTAWA",
+            line3 = Some("ONTARIO"),
+            country = "CA"),
           govLawCountry = "CA",
           startDate = LocalDate.of(2020, 1, 5),
           endDate = None,

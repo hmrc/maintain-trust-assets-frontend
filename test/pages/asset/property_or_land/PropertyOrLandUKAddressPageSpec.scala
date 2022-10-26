@@ -22,7 +22,7 @@ import pages.behaviours.PageBehaviours
 
 class PropertyOrLandUKAddressPageSpec extends PageBehaviours {
 
-  val page = PropertyOrLandUKAddressPage
+  val page: PropertyOrLandUKAddressPage.type = PropertyOrLandUKAddressPage
 
   "PropertyOrLandUKAddressPage" must {
 

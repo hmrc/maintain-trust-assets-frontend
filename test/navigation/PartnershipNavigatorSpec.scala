@@ -17,9 +17,9 @@
 package navigation
 
 import base.SpecBase
-import controllers.asset.partnership.routes._
 import controllers.asset.partnership.add.routes._
 import controllers.asset.partnership.amend.routes._
+import controllers.asset.partnership.routes._
 import generators.Generators
 import models.{CheckMode, NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary

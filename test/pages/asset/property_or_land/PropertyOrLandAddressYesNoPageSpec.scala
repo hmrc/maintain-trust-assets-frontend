@@ -22,7 +22,7 @@ import pages.behaviours.PageBehaviours
 
 class PropertyOrLandAddressYesNoPageSpec extends PageBehaviours {
 
-  val page = PropertyOrLandAddressYesNoPage
+  val page: PropertyOrLandAddressYesNoPage.type = PropertyOrLandAddressYesNoPage
 
   "PropertyOrLandAddressYesNoPage" must {
 
@@ -39,8 +39,8 @@ class PropertyOrLandAddressYesNoPageSpec extends PageBehaviours {
           initial =>
             val answers: UserAnswers = initial.set(page, true).success.value
               .set(PropertyOrLandAddressUkYesNoPage, true).success.value
-              .set(PropertyOrLandInternationalAddressPage,  NonUkAddress("line 1", "line 2", None, "France")).success.value
-              .set(PropertyOrLandUKAddressPage,  UkAddress("line 1", "line2", None, None, "NE1 1NE")).success.value
+              .set(PropertyOrLandInternationalAddressPage, NonUkAddress("line 1", "line 2", None, "France")).success.value
+              .set(PropertyOrLandUKAddressPage, UkAddress("line 1", "line2", None, None, "NE1 1NE")).success.value
 
             val result = answers.set(page, false).success.value
 
