@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -149,7 +149,7 @@ class IdentifierActionSpec extends SpecBase with MockitoSugar {
 
         status(result) mustBe SEE_OTHER
 
-        redirectLocation(result).get must startWith(frontendAppConfig.loginUrl)
+        redirectLocation(result).get mustBe "http://localhost:9949/auth-login-stub/gg-sign-in?continue=http%3A%2F%2Flocalhost%3A9781%2Ftrusts-registration&origin=maintain-trust-assets-frontend"
         application.stop()
       }
     }
@@ -167,7 +167,7 @@ class IdentifierActionSpec extends SpecBase with MockitoSugar {
 
         status(result) mustBe SEE_OTHER
 
-        redirectLocation(result).get must startWith(frontendAppConfig.loginUrl)
+        redirectLocation(result).get mustBe "http://localhost:9949/auth-login-stub/gg-sign-in?continue=http%3A%2F%2Flocalhost%3A9781%2Ftrusts-registration&origin=maintain-trust-assets-frontend"
         application.stop()
       }
     }
