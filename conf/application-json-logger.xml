@@ -13,7 +13,7 @@
     <logger name="connectors" level="INFO"/>
     <logger name="mapping" level="INFO"/>
 
-    <root level="ERROR}">
+    <root level="ERROR">
         <appender-ref ref="STDOUT"/>
     </root>
 </configuration>
