@@ -6,14 +6,14 @@
     </appender>
 
     <logger name="uk.gov" level="WARN"/>
-    <logger name="controllers" level="${logger.application:-INFO}"/>
-    <logger name="services" level="${logger.application:-INFO}"/>
-    <logger name="models" level="${logger.application:-INFO}"/>
-    <logger name="repositories" level="${logger.application:-INFO}"/>
-    <logger name="connectors" level="${logger.application:-INFO}"/>
-    <logger name="mapping" level="${logger.application:-INFO}"/>
+    <logger name="controllers" level="INFO"/>
+    <logger name="services" level="INFO"/>
+    <logger name="models" level="INFO"/>
+    <logger name="repositories" level="INFO"/>
+    <logger name="connectors" level="INFO"/>
+    <logger name="mapping" level="INFO"/>
 
-    <root level="${logger.application:-ERROR}">
+    <root level="ERROR}">
         <appender-ref ref="STDOUT"/>
     </root>
 </configuration>
