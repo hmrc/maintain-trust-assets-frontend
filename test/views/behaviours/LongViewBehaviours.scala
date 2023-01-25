@@ -60,7 +60,7 @@ trait LongViewBehaviours extends QuestionViewBehaviours[Long] {
         "show an error summary" in {
 
           val doc = asDocument(createView(form.withError(error)))
-          assertRenderedById(doc, "error-summary-title")
+          assertRenderedByClass(doc, "govuk-error-summary")
         }
 
         "show an error associated to the value field" in {
@@ -117,7 +117,7 @@ trait LongViewBehaviours extends QuestionViewBehaviours[Long] {
         "show an error summary" in {
 
           val doc = asDocument(createView(form.withError(error)))
-          assertRenderedById(doc, "error-summary-title")
+          assertRenderedByClass(doc, "govuk-error-summary")
         }
 
         "show an error in the value field's label" in {
