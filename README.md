@@ -15,7 +15,7 @@ The service allows a user to update the following on a non-taxable to taxable mi
 To run locally using the micro-service provided by the service manager:
 
 ```
-sm --start TRUSTS_ALL -r
+sm2 --start TRUSTS_ALL -r
 ```
 
 If you want to run your local copy, then stop the frontend ran by the service manager and run your local code by using the following (port number is 9800 but is defaulted to that in build.sbt).
