@@ -34,7 +34,7 @@ class InternationalAddressViewSpec extends InternationalAddressViewBehaviours {
 
   private val view: InternationalAddressView = viewFor[InternationalAddressView](Some(emptyUserAnswers))
 
-  private val countryOptions: Seq[InputOption] = injector.instanceOf[CountryOptionsNonUK].options
+  private val countryOptions: Seq[InputOption] = injector.instanceOf[CountryOptionsNonUK].options()
 
   "InternationalAddressView" must {
 

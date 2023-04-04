@@ -32,7 +32,7 @@ class GoverningCountryViewSpec extends SelectCountryViewBehaviours {
 
   override val form: Form[String] = new CountryFormProvider().withPrefix(messageKeyPrefix)
 
-  private val countryOptions: Seq[InputOption] = injector.instanceOf[CountryOptions].options
+  private val countryOptions: Seq[InputOption] = injector.instanceOf[CountryOptions].options()
 
   "GoverningCountryView" must {
 
