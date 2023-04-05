@@ -32,7 +32,7 @@
     showBackLink = true
 ) {
 
-    @formHelper(action = AssetInterruptPageController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = AssetInterruptPageController.onSubmit(), Symbol("autoComplete") -> "off") {
 
         @headingWithCaption("nonTaxableToTaxable.assetInterruptPage")
 

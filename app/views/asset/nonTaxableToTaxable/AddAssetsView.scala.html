@@ -41,7 +41,7 @@
     showBackLink = true
 ) {
 
-    @formHelper(action = AddAssetsController.submitAnother(), 'autoComplete -> "off") {
+    @formHelper(action = AddAssetsController.submitAnother(), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors, AddAssets.options("nonTaxableToTaxable.addAssets"))
 

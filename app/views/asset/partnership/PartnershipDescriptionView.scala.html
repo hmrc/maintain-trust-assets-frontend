@@ -32,7 +32,7 @@
     showBackLink = true
 ) {
 
-    @formHelper(action = PartnershipDescriptionController.onSubmit(mode), 'autoComplete -> "off") {
+    @formHelper(action = PartnershipDescriptionController.onSubmit(mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

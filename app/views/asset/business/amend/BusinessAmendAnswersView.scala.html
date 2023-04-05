@@ -34,7 +34,7 @@
     showBackLink = true
 ) {
 
-    @formHelper(action = BusinessAmendAnswersController.onSubmit(index), 'autoComplete -> "off") {
+    @formHelper(action = BusinessAmendAnswersController.onSubmit(index), Symbol("autoComplete") -> "off") {
 
         @heading("business.answers.heading")
 

@@ -33,7 +33,7 @@
     showBackLink = true
 ) {
 
-    @formHelper(action = GoverningCountryController.onSubmit(mode), 'autoComplete -> "off") {
+    @formHelper(action = GoverningCountryController.onSubmit(mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

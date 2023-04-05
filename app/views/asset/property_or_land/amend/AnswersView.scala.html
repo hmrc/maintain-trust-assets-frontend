@@ -34,7 +34,7 @@
     showBackLink = true
 ) {
 
-    @formHelper(action = PropertyOrLandAmendAnswersController.onSubmit(index), 'autoComplete -> "off") {
+    @formHelper(action = PropertyOrLandAmendAnswersController.onSubmit(index), Symbol("autoComplete") -> "off") {
         @heading("propertyOrLand.answers.heading")
 
         @govukSummaryList(SummaryList(rows = formatAnswerSection(answerSections)))
