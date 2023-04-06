@@ -19,5 +19,5 @@ package pages.asset
 import play.api.libs.json.JsPath
 
 package object shares {
-  val basePath: JsPath = JsPath \ 'shares
+  val basePath: JsPath = JsPath \ Symbol("shares")
 }

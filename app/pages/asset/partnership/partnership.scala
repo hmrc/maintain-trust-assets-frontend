@@ -19,5 +19,5 @@ package pages.asset
 import play.api.libs.json.JsPath
 
 package object partnership {
-  val basePath: JsPath = JsPath \ 'partnership
+  val basePath: JsPath = JsPath \ Symbol("partnership")
 }

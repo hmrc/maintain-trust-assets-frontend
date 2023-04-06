@@ -19,5 +19,5 @@ package pages.asset
 import play.api.libs.json.JsPath
 
 package object noneeabusiness {
-  val basePath: JsPath = JsPath \ 'noneeabusiness
+  val basePath: JsPath = JsPath \ Symbol("noneeabusiness")
 }

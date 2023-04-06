@@ -34,7 +34,7 @@
     showBackLink = true
 ) {
 
-    @formHelper(action = PropertyOrLandAnswerController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = PropertyOrLandAnswerController.onSubmit(), Symbol("autoComplete") -> "off") {
 
         @heading("propertyOrLand.answers.heading")
 

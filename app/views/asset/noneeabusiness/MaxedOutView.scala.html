@@ -33,7 +33,7 @@
     showBackLink = true
 ) {
 
-    @formHelper(action = AddNonEeaBusinessAssetController.submitComplete(), 'autoComplete -> "off") {
+    @formHelper(action = AddNonEeaBusinessAssetController.submitComplete(), Symbol("autoComplete") -> "off") {
 
         @headingComp(heading)
 

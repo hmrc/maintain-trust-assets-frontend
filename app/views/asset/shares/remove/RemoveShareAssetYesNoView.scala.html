@@ -32,7 +32,7 @@
     showBackLink = true
 ) {
 
-    @formHelper(action = RemoveShareAssetYesNoController.onSubmit(index), 'autoComplete -> "off") {
+    @formHelper(action = RemoveShareAssetYesNoController.onSubmit(index), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

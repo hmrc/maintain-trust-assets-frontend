@@ -35,7 +35,7 @@
     showBackLink = true
 ) {
 
-    @formHelper(action = PartnershipAnswerController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = PartnershipAnswerController.onSubmit(), Symbol("autoComplete") -> "off") {
         @heading("partnership.answers.heading")
 
         @govukSummaryList(SummaryList(rows = formatAnswerSection(answerSections)))

@@ -37,7 +37,7 @@
     showBackLink = true
 ) {
 
-    @formHelper(action = AddNonEeaBusinessAssetController.submitAnother(), 'autoComplete -> "off") {
+    @formHelper(action = AddNonEeaBusinessAssetController.submitAnother(), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

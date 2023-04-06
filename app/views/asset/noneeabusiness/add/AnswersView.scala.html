@@ -34,7 +34,7 @@
     showBackLink = true
 ) {
 
-    @formHelper(action = AnswersController.onSubmit(), 'autoComplete -> "off") {
+    @formHelper(action = AnswersController.onSubmit(), Symbol("autoComplete") -> "off") {
         @heading("nonEeaBusiness.answers.heading")
 
         @govukSummaryList(SummaryList(rows = formatAnswerSection(answerSections)))

@@ -44,7 +44,7 @@ class InternationalAddressControllerSpec extends SpecBase with IndexValidation {
   private val baseAnswers: UserAnswers = emptyUserAnswers
     .set(NamePage, name).success.value
 
-  private val countryOptions: Seq[InputOption] = injector.instanceOf[CountryOptionsNonUK].options
+  private val countryOptions: Seq[InputOption] = injector.instanceOf[CountryOptionsNonUK].options()
 
   "InternationalAddressController" must {
 

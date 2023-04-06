@@ -45,7 +45,7 @@ class GoverningCountryControllerSpec extends SpecBase with IndexValidation {
   private val baseAnswers: UserAnswers = emptyUserAnswers
     .set(NamePage, name).success.value
 
-  private val countryOptions: Seq[InputOption] = injector.instanceOf[CountryOptions].options
+  private val countryOptions: Seq[InputOption] = injector.instanceOf[CountryOptions].options()
 
   "GoverningCountryAddressController" must {
 

@@ -19,5 +19,5 @@ package pages.asset
 import play.api.libs.json.JsPath
 
 package object property_or_land {
-  val basePath: JsPath = JsPath \ 'property_or_land
+  val basePath: JsPath = JsPath \ Symbol("property_or_land")
 }

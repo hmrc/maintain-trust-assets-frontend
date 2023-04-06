@@ -32,7 +32,7 @@
     showBackLink = true
 ) {
 
-    @formHelper(action = RemoveAssetEndDateController.onSubmit(index), 'autoComplete -> "off") {
+    @formHelper(action = RemoveAssetEndDateController.onSubmit(index), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

@@ -34,7 +34,7 @@ class BusinessInternationalAddressViewSpec extends InternationalAddressViewBehav
 
   private val view: BusinessInternationalAddressView = viewFor[BusinessInternationalAddressView](Some(emptyUserAnswers))
 
-  private val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptionsNonUK].options
+  private val countryOptions: Seq[InputOption] = app.injector.instanceOf[CountryOptionsNonUK].options()
 
   "AssetInternationalAddressView" must {
 

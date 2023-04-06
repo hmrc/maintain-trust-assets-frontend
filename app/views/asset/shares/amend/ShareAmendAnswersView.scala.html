@@ -34,7 +34,7 @@
     showBackLink = true
 ) {
 
-    @formHelper(action = ShareAmendAnswersController.onSubmit(index), 'autoComplete -> "off") {
+    @formHelper(action = ShareAmendAnswersController.onSubmit(index), Symbol("autoComplete") -> "off") {
         @heading("shares.answers.heading")
 
         @govukSummaryList(SummaryList(rows = formatAnswerSection(answerSections)))
