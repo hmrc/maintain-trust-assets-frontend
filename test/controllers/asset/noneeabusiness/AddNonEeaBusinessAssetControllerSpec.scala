@@ -69,7 +69,8 @@ class AddNonEeaBusinessAssetControllerSpec extends SpecBase with Generators with
   )
 
   override def beforeEach(): Unit = {
-    reset(mockStoreConnector, mockViewHelper)
+    reset(mockStoreConnector)
+    reset(mockViewHelper)
     when(mockStoreConnector.updateTaskStatus(any(), any())(any(), any()))
       .thenReturn(Future.successful(HttpResponse(OK, "")))
   }

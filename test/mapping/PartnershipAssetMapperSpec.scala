@@ -58,25 +58,5 @@ class PartnershipAssetMapperSpec extends SpecBase with Matchers
 
     }
 
-    "must able to create multiple Partnership Assets" ignore {
-
-      val userAnswers =
-        emptyUserAnswers
-          .set(WhatKindOfAssetPage, WhatKindOfAsset.Partnership).success.value
-          .set(PartnershipDescriptionPage, "Partnership Description 1").success.value
-          .set(PartnershipStartDatePage, LocalDate.now).success.value
-          .set(AssetStatus, Completed).success.value
-          .set(WhatKindOfAssetPage, WhatKindOfAsset.Partnership).success.value
-          .set(PartnershipDescriptionPage, "Partnership Description 2").success.value
-          .set(PartnershipStartDatePage, LocalDate.now).success.value
-          .set(AssetStatus, Completed).success.value
-
-      partnershipAssetMapper(userAnswers).value mustBe List(
-        PartnershipType("Partnership Description 1", LocalDate.now),
-        PartnershipType("Partnership Description 2", LocalDate.now)
-      )
-
-      partnershipAssetMapper(userAnswers).value mustBe 2
-    }
   }
 }

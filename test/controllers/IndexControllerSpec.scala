@@ -47,7 +47,9 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
   val isUnderlyingData5mld = false
 
   override def beforeEach(): Unit = {
-    reset(mockTrustsConnector, mockTrustsStoreService, playbackRepository)
+    reset(mockTrustsConnector)
+    reset(mockTrustsStoreService)
+    reset(playbackRepository)
 
     when(playbackRepository.set(any()))
       .thenReturn(Future.successful(true))
@@ -86,7 +88,7 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       redirectLocation(result) mustBe Some(controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad().url)
 
-      val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+      val uaCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(playbackRepository).set(uaCaptor.capture)
 
       uaCaptor.getValue.internalId mustBe "id"
@@ -123,7 +125,7 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       redirectLocation(result) mustBe Some(controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad().url)
 
-      val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+      val uaCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(playbackRepository).set(uaCaptor.capture)
 
       uaCaptor.getValue.isTaxable mustBe true
@@ -155,7 +157,7 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       redirectLocation(result) mustBe Some(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url)
 
-      val uaCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+      val uaCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(playbackRepository).set(uaCaptor.capture)
 
       uaCaptor.getValue.isMigratingToTaxable mustBe true

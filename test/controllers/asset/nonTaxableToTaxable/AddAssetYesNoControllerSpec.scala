@@ -58,7 +58,9 @@ class AddAssetYesNoControllerSpec extends SpecBase with IndexValidation with Sca
   override def emptyUserAnswers: UserAnswers = super.emptyUserAnswers.copy(isMigratingToTaxable = true)
 
   override def beforeEach(): Unit = {
-    reset(mockNavigator, mockTrustService, mockTrustStoreConnector)
+    reset(mockNavigator)
+    reset(mockTrustService)
+    reset(mockTrustStoreConnector)
 
     when(mockNavigator.redirectFromAddAssetYesNoPage(any(), any(), any())).thenReturn(fakeNavigator.desiredRoute)
 
@@ -122,16 +124,13 @@ class AddAssetYesNoControllerSpec extends SpecBase with IndexValidation with Sca
 
       val result = route(application, request).value
 
-      whenReady(result) { _ =>
+      status(result) mustEqual SEE_OTHER
 
-        status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
 
-        redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
+      verify(mockNavigator).redirectFromAddAssetYesNoPage(value = false, isMigratingToTaxable = true, noAssets = true)
 
-        verify(mockNavigator).redirectFromAddAssetYesNoPage(value = false, isMigratingToTaxable = true, noAssets = true)
-
-        verify(mockTrustStoreConnector).updateTaskStatus(any(), eqTo(InProgress))(any(), any())
-      }
+      verify(mockTrustStoreConnector).updateTaskStatus(any(), eqTo(InProgress))(any(), any())
 
       application.stop()
     }
@@ -152,16 +151,13 @@ class AddAssetYesNoControllerSpec extends SpecBase with IndexValidation with Sca
 
       val result = route(application, request).value
 
-      whenReady(result) { _ =>
+      status(result) mustEqual SEE_OTHER
 
-        status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
 
-        redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
+      verify(mockNavigator).redirectFromAddAssetYesNoPage(value = true, isMigratingToTaxable = true, noAssets = true)
 
-        verify(mockNavigator).redirectFromAddAssetYesNoPage(value = true, isMigratingToTaxable = true, noAssets = true)
-
-        verify(mockTrustStoreConnector, never()).updateTaskStatus(any(), any())(any(), any())
-      }
+      verify(mockTrustStoreConnector, never()).updateTaskStatus(any(), any())(any(), any())
 
       application.stop()
     }
@@ -186,16 +182,13 @@ class AddAssetYesNoControllerSpec extends SpecBase with IndexValidation with Sca
 
       val result = route(application, request).value
 
-      whenReady(result) { _ =>
+      status(result) mustEqual SEE_OTHER
 
-        status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
 
-        redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
+      verify(mockNavigator).redirectFromAddAssetYesNoPage(value = false, isMigratingToTaxable = true, noAssets = false)
 
-        verify(mockNavigator).redirectFromAddAssetYesNoPage(value = false, isMigratingToTaxable = true, noAssets = false)
-
-        verify(mockTrustStoreConnector).updateTaskStatus(any(), eqTo(Completed))(any(), any())
-      }
+      verify(mockTrustStoreConnector).updateTaskStatus(any(), eqTo(Completed))(any(), any())
 
       application.stop()
     }

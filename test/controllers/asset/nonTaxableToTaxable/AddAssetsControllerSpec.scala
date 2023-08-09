@@ -108,7 +108,9 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
   )
 
   override def beforeEach(): Unit = {
-    reset(mockNavigator, mockStoreConnector, mockViewHelper)
+    reset(mockNavigator)
+    reset(mockStoreConnector)
+    reset(mockViewHelper)
 
     when(mockNavigator.addAssetRoute(any())).thenReturn(fakeNavigator.desiredRoute)
     when(mockStoreConnector.updateTaskStatus(any(), any())(any(), any()))

@@ -38,18 +38,12 @@ class CheckAnswersFormattersSpec extends SpecBase {
       }
 
       val recentDate: LocalDate = LocalDate.parse("2015-01-25")
-      val oldDate: LocalDate = LocalDate.parse("1840-12-01")
 
       "in English mode" must {
         "format date in English" when {
           "recent date" in {
             val result: Html = checkAnswersFormatters.formatDate(recentDate)(messages("en"))
             result mustBe Html("25 January 2015")
-          }
-
-          "old date" ignore {
-            val result: Html = checkAnswersFormatters.formatDate(oldDate)(messages("en"))
-            result mustBe Html("1 December 1840")
           }
         }
       }
@@ -59,11 +53,6 @@ class CheckAnswersFormattersSpec extends SpecBase {
           "recent date" in {
             val result: Html = checkAnswersFormatters.formatDate(recentDate)(messages("cy"))
             result mustBe Html("25 Ionawr 2015")
-          }
-
-          "old date" ignore {
-            val result: Html = checkAnswersFormatters.formatDate(oldDate)(messages("cy"))
-            result mustBe Html("1 Rhagfyr 1840")
           }
         }
       }
