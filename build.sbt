@@ -31,8 +31,7 @@ lazy val root = (project in file("."))
       "controllers.routes._"
     ),
     PlayKeys.playDefaultPort := 9800,
-    ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*filters.*;.*handlers.*;.*components.*;" +
-      ".*BuildInfo.*;.*javascript.*;.*FrontendAuditConnector.*;.*Routes.*;.*GuiceInjector;",
+    ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*handlers.*;.*components.*;.*Mode.*;.*BuildInfo.*;.*Routes.*;.*package.*;",
     ScoverageKeys.coverageMinimumStmtTotal := 85,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true,
@@ -46,7 +45,6 @@ lazy val root = (project in file("."))
           "javascripts/iebacklink.js",
           "javascripts/maintaintrustassetsfrontend.js",
           "javascripts/autocomplete.js",
-          "javascripts/print.js",
           "javascripts/libraries/location-autocomplete.min.js"
         ))
     ),
