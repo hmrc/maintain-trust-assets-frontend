@@ -1,11 +1,11 @@
-import sbt._
+import sbt.*
 
 object AppDependencies {
 
   val bootstrapVersion = "7.21.0"
   val mongoVersion = "1.3.0"
 
-  private lazy val compile = Seq(
+  val compile: Seq[ModuleID] = Seq(
     play.sbt.PlayImport.ws,
     "uk.gov.hmrc.mongo"       %% "hmrc-mongo-play-28"             % mongoVersion,
     "uk.gov.hmrc"             %% "play-frontend-hmrc"             % "7.19.0-play-28",
@@ -14,7 +14,7 @@ object AppDependencies {
     "uk.gov.hmrc"             %% "bootstrap-frontend-play-28"     % bootstrapVersion
   )
 
-  private lazy val test: Seq[ModuleID] = Seq(
+  val test: Seq[ModuleID] = Seq(
     "uk.gov.hmrc"                 %% "bootstrap-test-play-28"   % bootstrapVersion,
     "uk.gov.hmrc.mongo"           %% "hmrc-mongo-test-play-28"  % mongoVersion,
     "org.jsoup"                   %  "jsoup"                    % "1.16.1",
@@ -27,5 +27,4 @@ object AppDependencies {
   ).map(_ % "it, test")
 
   def apply(): Seq[ModuleID] = compile ++ test
-
 }
