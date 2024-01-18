@@ -65,6 +65,11 @@ class MappingsSpec extends AnyWordSpec with Matchers with OptionValues with Mapp
       result.errors must contain(FormError("value", "error.required"))
     }
 
+    "filter out smart apostrophes on binding" in {
+      val boundValue = testForm bind Map("value" -> "We’re ‘aving fish ‘n’ chips for tea")
+      boundValue.get mustEqual "We're 'aving fish 'n' chips for tea"
+    }
+
     "return a custom error message" in {
       val form = Form("value" -> text("custom.error"))
       val result = form.bind(Map("value" -> ""))
