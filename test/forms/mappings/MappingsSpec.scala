@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,6 +63,11 @@ class MappingsSpec extends AnyWordSpec with Matchers with OptionValues with Mapp
     "not bind an empty map" in {
       val result = testForm.bind(Map.empty[String, String])
       result.errors must contain(FormError("value", "error.required"))
+    }
+
+    "filter out smart apostrophes on binding" in {
+      val boundValue = testForm bind Map("value" -> "We’re ‘aving fish ‘n’ chips for tea")
+      boundValue.get mustEqual "We're 'aving fish 'n' chips for tea"
     }
 
     "return a custom error message" in {
