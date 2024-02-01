@@ -123,6 +123,12 @@ class InternationalAddressFormProviderSpec extends StringFieldBehaviours {
       val result = form.bind(Map("line1" -> "line1", "line2" -> "line2", "line3" -> "", "country" -> "country"))
       result.value.value.line3 shouldBe None
     }
+
+    "filter out smart apostrophes and replace with straight ones" in {
+      val result = form bind Map("line1" -> "val1", "line2" -> "val2", "line3" -> "Besses o’ th‘Barn", "country" -> "England")
+      result.value.value.line3.get shouldBe "Besses o' th'Barn"
+    }
+
   }
 
   ".country" must {
