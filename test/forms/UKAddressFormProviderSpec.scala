@@ -126,6 +126,13 @@ class UKAddressFormProviderSpec extends StringFieldBehaviours {
       val result = form.bind(Map("line1" -> "line1", "line2" -> "line2", "line3" -> "", "line4" -> "line4", "postcode" -> "AB12CD"))
       result.value.value.line3 shouldBe None
     }
+
+    "filter out smart apostrophes and replace with straight ones" in {
+      val result = form bind Map("line1" -> "value1", "line2" -> "value2", "line3" -> "Besses o’ th‘Barn",
+        "line4" -> "Manchester", "postcode" -> "M5 6AG")
+      result.value.value.line3 shouldBe Some("Besses o' th'Barn")
+    }
+
   }
 
   ".line4" must {
@@ -161,6 +168,13 @@ class UKAddressFormProviderSpec extends StringFieldBehaviours {
       val result = form.bind(Map("line1" -> "line1", "line2" -> "line2", "line3" -> "line3", "line4" -> "", "postcode" -> "AB12CD"))
       result.value.value.line4 shouldBe None
     }
+
+    "filter out smart apostrophes and replace with straight ones" in {
+      val result = form bind Map("line1" -> "value1", "line2" -> "value2", "line3" -> "value3",
+        "line4" -> "Besses o’ th‘Barn", "postcode" -> "M5 6AG")
+      result.value.value.line4 shouldBe Some("Besses o' th'Barn")
+    }
+
   }
 
   ".postcode" must {
