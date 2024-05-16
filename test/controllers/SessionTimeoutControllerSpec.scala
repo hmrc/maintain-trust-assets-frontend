@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,17 +18,16 @@ package controllers
 
 import base.SpecBase
 import config.FrontendAppConfig
+import play.api.Configuration
 import play.api.mvc.{AnyContent, MessagesControllerComponents, Request}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.api.{Configuration, Environment}
 
 class SessionTimeoutControllerSpec extends SpecBase {
 
   object TestSessionTimeoutController extends SessionTimeoutController(
     app.injector.instanceOf[FrontendAppConfig],
     app.injector.instanceOf[Configuration],
-    app.injector.instanceOf[Environment],
     app.injector.instanceOf[MessagesControllerComponents])
 
   "timeout" should {
