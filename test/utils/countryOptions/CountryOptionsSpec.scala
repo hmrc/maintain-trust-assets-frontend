@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ class CountryOptionsSpec extends SpecBase with MockitoSugar {
     "build correctly the English InputOptions with all country list and country code" in {
 
       val application = new GuiceApplicationBuilder()
-        .configure(Map(
+        .configure(defaultAppConfigurations ++ Map(
           "location.canonical.list.all" -> "countries-canonical-list-test.json"
         ))
         .build()
@@ -47,7 +47,7 @@ class CountryOptionsSpec extends SpecBase with MockitoSugar {
     "build correctly the Welsh InputOptions with all country list and country code" in {
 
       val application = new GuiceApplicationBuilder()
-        .configure(Map(
+        .configure(defaultAppConfigurations ++ Map(
           "location.canonical.list.allCY" -> "countries-canonical-list-test-cy.json"
         ))
         .build()
@@ -64,7 +64,7 @@ class CountryOptionsSpec extends SpecBase with MockitoSugar {
     "throw the error if the country json does not exist" in {
 
       val application = new GuiceApplicationBuilder()
-        .configure(Map(
+        .configure(defaultAppConfigurations ++ Map(
           "location.canonical.list.all" -> "countries-canonical-test.json"
         ))
         .build()

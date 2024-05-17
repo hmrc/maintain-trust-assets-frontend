@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,8 @@ package base
 import controllers.actions._
 import models.UserAnswers
 import navigation.FakeNavigator
-import org.scalatest.{BeforeAndAfter, TestSuite, TryValues}
+import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
+import org.scalatest.{EitherValues, OptionValues, TryValues}
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice._
 import play.api.inject.bind
@@ -31,8 +32,21 @@ import views.ViewUtils
 
 import java.time.LocalDate
 
-trait SpecBaseHelpers extends GuiceOneAppPerSuite with TryValues with Mocked with BeforeAndAfter with FakeTrustsApp {
-  this: TestSuite =>
+trait SpecBase extends PlaySpec
+  with GuiceOneAppPerSuite
+  with TryValues
+  with ScalaFutures
+  with IntegrationPatience
+  with Mocked
+  with FakeTrustsApp
+  with OptionValues
+  with EitherValues {
+
+  val defaultAppConfigurations: Map[String, Any] = Map(
+    "auditing.enabled" -> false,
+    "metrics.enabled" -> false,
+    "play.filters.disabled" -> List("play.filters.csrf.CSRFFilter", "play.filters.csp.CSPFilter")
+  )
 
   final val ENGLISH = "en"
   final val WELSH = "cy"
@@ -44,7 +58,7 @@ trait SpecBaseHelpers extends GuiceOneAppPerSuite with TryValues with Mocked wit
 
   def emptyUserAnswers: UserAnswers = models.UserAnswers(userInternalId, userUtr, userSessionId, newId, LocalDate.now())
 
-  val bodyParsers: BodyParsers.Default = injector.instanceOf[BodyParsers.Default]
+  def bodyParsers: BodyParsers.Default = injector.instanceOf[BodyParsers.Default]
 
   val fakeNavigator = new FakeNavigator()
 
@@ -60,6 +74,5 @@ trait SpecBaseHelpers extends GuiceOneAppPerSuite with TryValues with Mocked wit
         bind[ActiveSessionRepository].toInstance(mockSessionRepository),
         bind[ViewUtils].toInstance(mockViewUtils)
       )
+      .configure(defaultAppConfigurations)
 }
-
-trait SpecBase extends PlaySpec with SpecBaseHelpers
