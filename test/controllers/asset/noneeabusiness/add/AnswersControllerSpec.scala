@@ -23,7 +23,6 @@ import mapping.NonEeaBusinessAssetMapper
 import models.{NonUkAddress, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import pages.asset.noneeabusiness._

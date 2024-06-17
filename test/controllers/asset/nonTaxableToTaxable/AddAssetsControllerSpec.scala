@@ -24,7 +24,7 @@ import generators.Generators
 import models.Constants._
 import models.TaskStatus.Completed
 import models.assets._
-import models.{AddAssets, RemoveAsset, ShareClass, UkAddress, UserAnswers}
+import models.{AddAssets, RemoveAsset, ShareClass, UkAddress}
 import navigation.{AssetsNavigator, Navigator}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, verify, when}
