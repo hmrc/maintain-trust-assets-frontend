@@ -19,9 +19,11 @@ package controllers.asset.noneeabusiness.add
 import base.SpecBase
 import connectors.TrustsConnector
 import controllers.routes._
+import mapping.NonEeaBusinessAssetMapper
 import models.{NonUkAddress, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalatest.BeforeAndAfterEach
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import pages.asset.noneeabusiness._
@@ -141,6 +143,25 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
 
       status(result) mustEqual SEE_OTHER
       redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad.url
+
+      application.stop()
+    }
+
+    "return an internal server error given None is returned from NonEeaBusinessAssetMapper" in {
+
+      val mockNonEeaBusinessAssetMapper = mock[NonEeaBusinessAssetMapper]
+
+      val application =
+        applicationBuilder(userAnswers = Some(userAnswers(migrating = true)))
+          .overrides(bind[NonEeaBusinessAssetMapper].toInstance(mockNonEeaBusinessAssetMapper))
+          .build()
+
+      when(mockNonEeaBusinessAssetMapper(any)).thenReturn(None)
+
+      val request = FakeRequest(POST, routes.AnswersController.onSubmit().url)
+
+      val result = route(application, request).value
+      status(result) mustEqual INTERNAL_SERVER_ERROR
 
       application.stop()
     }
