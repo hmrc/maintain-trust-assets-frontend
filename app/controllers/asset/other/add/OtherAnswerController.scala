@@ -20,9 +20,9 @@ import connectors.TrustsConnector
 import controllers.actions._
 import controllers.actions.property_or_land.NameRequiredAction
 import handlers.ErrorHandler
+
 import javax.inject.Inject
 import mapping.OtherAssetMapper
-import pages.asset.other.OtherAssetDescriptionPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -36,10 +36,10 @@ class OtherAnswerController @Inject()(
                                        override val messagesApi: MessagesApi,
                                        standardActionSets: StandardActionSets,
                                        nameAction: NameRequiredAction,
+                                       connector: TrustsConnector,
                                        view: OtherAssetAnswersView,
                                        val controllerComponents: MessagesControllerComponents,
                                        printHelper: OtherPrintHelper,
-                                       connector: TrustsConnector,
                                        mapper: OtherAssetMapper,
                                        errorHandler: ErrorHandler
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
@@ -49,9 +49,9 @@ class OtherAnswerController @Inject()(
   def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
 
-      val description = request.userAnswers.get(OtherAssetDescriptionPage).get
+//      val description = request.userAnswers.get(OtherAssetDescriptionPage).get
 
-      val section: AnswerSection = printHelper(userAnswers = request.userAnswers, provisional, description)
+      val section: AnswerSection = printHelper(userAnswers = request.userAnswers, provisional, request.name)
       Ok(view(section))
   }
 
@@ -64,6 +64,7 @@ class OtherAnswerController @Inject()(
         case Some(asset) =>
           connector.addOtherAsset(request.userAnswers.identifier, asset).map(_ =>
             Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
+//            Redirect(navigator.nextPage(OtherAssetDescriptionPage, NormalMode, request.userAnswers))
           )
       }
   }
