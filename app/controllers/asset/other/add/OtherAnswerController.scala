@@ -51,9 +51,7 @@ class OtherAnswerController @Inject()(
     implicit request =>
 
       val description = request.userAnswers.get(OtherAssetDescriptionPage).getOrElse("")
-
       val section: AnswerSection = printHelper(userAnswers = request.userAnswers, provisional, description)
-
       Ok(view(section))
   }
 
@@ -66,7 +64,6 @@ class OtherAnswerController @Inject()(
         case Some(asset) =>
           connector.addOtherAsset(request.userAnswers.identifier, asset).map(_ =>
             Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
-//            Redirect(navigator.nextPage(OtherAssetDescriptionPage, NormalMode, request.userAnswers))
           )
       }
   }
