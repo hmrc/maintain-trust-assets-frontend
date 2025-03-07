@@ -20,6 +20,7 @@ import connectors.TrustsConnector
 import controllers.actions._
 import controllers.actions.property_or_land.NameRequiredAction
 import handlers.ErrorHandler
+
 import javax.inject.Inject
 import mapping.OtherAssetMapper
 import pages.asset.other.OtherAssetDescriptionPage
@@ -36,10 +37,10 @@ class OtherAnswerController @Inject()(
                                        override val messagesApi: MessagesApi,
                                        standardActionSets: StandardActionSets,
                                        nameAction: NameRequiredAction,
+                                       connector: TrustsConnector,
                                        view: OtherAssetAnswersView,
                                        val controllerComponents: MessagesControllerComponents,
                                        printHelper: OtherPrintHelper,
-                                       connector: TrustsConnector,
                                        mapper: OtherAssetMapper,
                                        errorHandler: ErrorHandler
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
@@ -49,8 +50,7 @@ class OtherAnswerController @Inject()(
   def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
 
-      val description = request.userAnswers.get(OtherAssetDescriptionPage).get
-
+      val description = request.userAnswers.get(OtherAssetDescriptionPage).getOrElse("")
       val section: AnswerSection = printHelper(userAnswers = request.userAnswers, provisional, description)
       Ok(view(section))
   }
