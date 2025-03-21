@@ -48,8 +48,7 @@ class OtherAssetValueController @Inject()(
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
-
-      val description = request.userAnswers.get(OtherAssetDescriptionPage).get
+      val description = request.userAnswers.get(OtherAssetDescriptionPage).getOrElse("")
 
       val preparedForm = request.userAnswers.get(OtherAssetValuePage) match {
         case None => form
@@ -62,7 +61,7 @@ class OtherAssetValueController @Inject()(
   def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
     implicit request =>
 
-      val description = request.userAnswers.get(OtherAssetDescriptionPage).get
+      val description = request.userAnswers.get(OtherAssetDescriptionPage).getOrElse("")
 
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
