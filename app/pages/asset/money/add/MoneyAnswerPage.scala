@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,6 @@
 
 package pages.asset.money.add
 
-import pages.QuestionPage
-import play.api.libs.json.JsPath
+import pages.Page
 
-case class MoneyAnswerPage(index: Int) extends QuestionPage[Boolean] {
-  override def path: JsPath = JsPath \ "assets" \ "money" \ index \ "answersComplete"
-}
+case object MoneyAnswerPage extends Page

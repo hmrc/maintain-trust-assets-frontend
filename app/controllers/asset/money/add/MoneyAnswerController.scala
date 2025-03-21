@@ -16,14 +16,17 @@
 
 package controllers.asset.money.add
 
+import config.annotations.Money
 import connectors.TrustsConnector
 import controllers.actions._
 import controllers.actions.money.NameRequiredAction
 import handlers.ErrorHandler
 import mapping.MoneyAssetMapper
+import models.NormalMode
+import navigation.Navigator
+import pages.asset.money.add.MoneyAnswerPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.MoneyPrintHelper
 import viewmodels.AnswerSection
@@ -37,7 +40,7 @@ class MoneyAnswerController @Inject()(
                                        standardActionSets: StandardActionSets,
                                        nameAction: NameRequiredAction,
                                        connector: TrustsConnector,
-                                       service: TrustService,
+                                       @Money navigator: Navigator,
                                        view: MoneyAnswersView,
                                        val controllerComponents: MessagesControllerComponents,
                                        errorHandler: ErrorHandler,
@@ -47,45 +50,24 @@ class MoneyAnswerController @Inject()(
 
   private val provisional: Boolean = true
 
-  def onPageLoad(index: Int): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
+  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
-      val section: AnswerSection = printHelper(userAnswers = request.userAnswers, index = index, provisional = provisional, name = request.name)
 
-      Ok(view(index, section))
+      val section: AnswerSection = printHelper(userAnswers = request.userAnswers, provisional, request.name)
+
+      Ok(view(section))
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
+  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
+
       mapper(request.userAnswers) match {
         case None =>
-          errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
-
+          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
         case Some(asset) =>
-          connector.amendMoneyAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
-            response.status match {
-              case OK | NO_CONTENT =>
-                Future.successful(
-                  Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
-                )
-
-              case _ =>
-                connector.getAssets(request.userAnswers.identifier).flatMap { data =>
-                  val matchFound = data.monetary.exists(existing =>
-                    existing.assetMonetaryAmount == asset.assetMonetaryAmount
-                  )
-
-                  if (!matchFound) {
-                    connector.addMoneyAsset(request.userAnswers.identifier, asset).map { _ =>
-                      Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
-                    }
-                  } else {
-                    Future.successful(
-                      Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
-                    )
-                  }
-                }
-            }
-          }
+          connector.addMoneyAsset(request.userAnswers.identifier, asset).map(_ =>
+            Redirect(navigator.nextPage(MoneyAnswerPage, NormalMode, request.userAnswers))
+          )
       }
   }
 
