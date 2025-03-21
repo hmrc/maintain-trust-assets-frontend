@@ -5,3 +5,6 @@ POST       /change-value                   controllers.asset.money.AssetMoneyVal
 
 GET        /remove                  controllers.asset.money.remove.RemoveAssetYesNoController.onPageLoad()
 POST       /remove                  controllers.asset.money.remove.RemoveAssetYesNoController.onSubmit()
+
+POST   /check-answers   controllers.asset.money.add.MoneyAnswerController.onPageLoad()
+POST   /check-answers   controllers.asset.money.add.MoneyAnswerController.onSubmit()
