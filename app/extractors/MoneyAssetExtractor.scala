@@ -31,7 +31,7 @@ class MoneyAssetExtractor extends AssetExtractor[AssetMonetaryAmount] {
                      index: Int): Try[UserAnswers] = {
 
     super.apply(answers, assetMonetaryAmount, index)
-      .flatMap(_.set(AssetMoneyValuePage(0), assetMonetaryAmount.assetMonetaryAmount))
+      .flatMap(_.set(AssetMoneyValuePage, assetMonetaryAmount.assetMonetaryAmount))
   }
 
   override def indexPage: QuestionPage[Int] = IndexPage

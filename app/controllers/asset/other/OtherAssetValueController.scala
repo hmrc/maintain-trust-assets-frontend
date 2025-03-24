@@ -54,23 +54,18 @@ class OtherAssetValueController @Inject()(
         case None => form
         case Some(value) => form.fill(value)
       }
-
       Ok(view(preparedForm, mode, description))
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
     implicit request =>
-
       val description = request.userAnswers.get(OtherAssetDescriptionPage).getOrElse("")
-
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(view(formWithErrors, mode, description))),
 
         value => {
-
           val answers = request.userAnswers.set(OtherAssetValuePage, value)
-
           for {
             updatedAnswers <- Future.fromTry(answers)
             _              <- repository.set(updatedAnswers)

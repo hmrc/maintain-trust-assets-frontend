@@ -52,9 +52,7 @@ class MoneyAnswerController @Inject()(
 
   def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
-
       val section: AnswerSection = printHelper(userAnswers = request.userAnswers, provisional, request.name)
-
       Ok(view(section))
   }
 
@@ -72,3 +70,23 @@ class MoneyAnswerController @Inject()(
   }
 
 }
+
+//def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
+//  implicit request =>
+//    val preparedForm = request.userAnswers.get(AssetMoneyValuePage) match {
+//      case None => form
+//      case Some(value) => form.fill(value)
+//    }
+//    Ok(view(preparedForm, mode))
+//}
+//
+//def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
+//  implicit request =>
+//    mapper(request.userAnswers) match {
+//      case None =>
+//        Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+//      case Some(asset) =>
+//        connector.addMoneyAsset(request.userAnswers.identifier, asset).map(_ =>
+//          Redirect(navigator.nextPage(MoneyAnswerPage, NormalMode, request.userAnswers))
+//        )
+//    }
