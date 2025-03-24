@@ -16,10 +16,9 @@
 
 package navigation
 
-import models.{Mode, NormalMode, UserAnswers}
+import models.{Mode, UserAnswers}
 import pages.Page
 import pages.asset.money._
-import pages.asset.money.add.MoneyAnswerPage
 import play.api.mvc.Call
 
 import javax.inject.Inject
@@ -27,25 +26,13 @@ import javax.inject.Inject
 class MoneyNavigator @Inject()() extends Navigator {
 
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
-    routes(mode)(page)(userAnswers)
+    routes(page)(userAnswers)
 
-  def routes(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
-    case AssetMoneyValuePage(index) => ua => navigateToCheckAnswers(ua, mode, index)
-    case MoneyAnswerPage(index) => _ => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
+  def routes: PartialFunction[Page, UserAnswers => Call] =
+    simpleNavigation
+
+  def simpleNavigation: PartialFunction[Page, UserAnswers => Call] = {
+    case AssetMoneyValuePage => _ => controllers.asset.money.add.routes.MoneyAnswerController.onPageLoad()
   }
 
-  private def navigateToCheckAnswers(ua: UserAnswers, mode: Mode, index: Int): Call = {
-    if (mode == NormalMode) {
-      AssetNavigator.routeToIndex(
-        List.empty, // TODO: COME BACK TO
-        controllers.asset.money.add.routes.MoneyAnswerController.onPageLoad,
-        index = Some(index)
-      )
-    } else {
-      ua.get(AssetMoneyValuePage(index)) match {
-        case Some(moneyVlue) => controllers.asset.money.add.routes.MoneyAnswerController.onPageLoad(index)
-        case None => controllers.routes.SessionExpiredController.onPageLoad
-      }
-    }
-  }
 }
