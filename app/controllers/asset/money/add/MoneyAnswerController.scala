@@ -22,7 +22,8 @@ import controllers.actions._
 import controllers.actions.money.NameRequiredAction
 import handlers.ErrorHandler
 import mapping.MoneyAssetMapper
-import models.NormalMode
+import models.assets.AssetNameType
+import models.{NormalMode, RemoveAsset}
 import navigation.Navigator
 import pages.asset.money.add.MoneyAnswerPage
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -52,6 +53,7 @@ class MoneyAnswerController @Inject()(
 
   def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
+      println(request.userAnswers + "========================" + request.name)
       val section: AnswerSection = printHelper(userAnswers = request.userAnswers, provisional, request.name)
       Ok(view(section))
   }
@@ -63,30 +65,13 @@ class MoneyAnswerController @Inject()(
         case None =>
           Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
         case Some(asset) =>
+          connector.removeAsset(request.userAnswers.identifier, RemoveAsset(AssetNameType.MoneyAssetNameType, 0)).map(ele =>
+            println(ele)
+          )
           connector.addMoneyAsset(request.userAnswers.identifier, asset).map(_ =>
-            Redirect(navigator.nextPage(MoneyAnswerPage, NormalMode, request.userAnswers))
+//            Redirect(navigator.nextPage(MoneyAnswerPage, NormalMode, request.userAnswers))
+            Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
           )
       }
   }
-
 }
-
-//def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
-//  implicit request =>
-//    val preparedForm = request.userAnswers.get(AssetMoneyValuePage) match {
-//      case None => form
-//      case Some(value) => form.fill(value)
-//    }
-//    Ok(view(preparedForm, mode))
-//}
-//
-//def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
-//  implicit request =>
-//    mapper(request.userAnswers) match {
-//      case None =>
-//        Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
-//      case Some(asset) =>
-//        connector.addMoneyAsset(request.userAnswers.identifier, asset).map(_ =>
-//          Redirect(navigator.nextPage(MoneyAnswerPage, NormalMode, request.userAnswers))
-//        )
-//    }
