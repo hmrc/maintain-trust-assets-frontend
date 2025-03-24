@@ -19,6 +19,7 @@ package controllers.asset.money
 import config.annotations.Money
 import connectors.TrustsConnector
 import controllers.actions.StandardActionSets
+import controllers.actions.money.NameRequiredAction
 import forms.ValueFormProvider
 import models.assets.AssetMonetaryAmount
 import models.{CheckMode, Mode}
@@ -27,6 +28,7 @@ import pages.asset.money.AssetMoneyValuePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import repositories.PlaybackRepository
 import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.asset.money.AssetMoneyValueView
@@ -37,6 +39,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class AssetMoneyValueController @Inject()(
                                            override val messagesApi: MessagesApi,
                                            standardActionSets: StandardActionSets,
+                                           nameAction: NameRequiredAction,
+                                           repository: PlaybackRepository,
                                            @Money navigator: Navigator,
                                            formProvider: ValueFormProvider,
                                            val controllerComponents: MessagesControllerComponents,
@@ -47,35 +51,30 @@ class AssetMoneyValueController @Inject()(
 
   private val form: Form[Long] = formProvider.withConfig(prefix = "money.value")
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
-      trustService.getMonetaryAsset(request.userAnswers.identifier).map { money =>
-        val preparedForm = money match {
-          case Some(value) => form.fill(value = value.assetMonetaryAmount)
-          case None => form
-        }
-        Ok(view(preparedForm, mode))
+//      trustService.getMonetaryAsset(request.userAnswers.identifier).map { money =>
+      val preparedForm = request.userAnswers.get(AssetMoneyValuePage) match {
+        case None => form
+        case Some(value) => form.fill(value)
       }
+        Ok(view(preparedForm, mode))
+//      }
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
     implicit request =>
-
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(view(formWithErrors, mode))),
 
         value => {
-          val addOrAmendMoney = if(mode == CheckMode) {
-            connector.amendMoneyAsset(request.userAnswers.identifier, 0, AssetMonetaryAmount(value))
-          } else {
-            connector.addMoneyAsset(request.userAnswers.identifier, AssetMonetaryAmount(value))
-          }
-
+          val answers = request.userAnswers.set(AssetMoneyValuePage, value)
           for {
-            _ <- addOrAmendMoney
-          } yield Redirect(navigator.nextPage(AssetMoneyValuePage, mode, request.userAnswers))
-          }
+            updatedAnswers <- Future.fromTry(answers)
+            _              <- repository.set(updatedAnswers)
+          } yield Redirect(navigator.nextPage(AssetMoneyValuePage, mode, updatedAnswers))
+        }
       )
   }
 }
