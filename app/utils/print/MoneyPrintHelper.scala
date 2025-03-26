@@ -37,10 +37,6 @@ class MoneyPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) {
         bound.currencyQuestion(AssetMoneyValuePage, "money.value", AssetMoneyValueController.onPageLoad(mode).url)
       ).flatten
     }
-    println(answerRows + "==========================" + answerRows)
-
     AnswerSection(headingKey = None, rows = answerRows)
-
   }
-
 }

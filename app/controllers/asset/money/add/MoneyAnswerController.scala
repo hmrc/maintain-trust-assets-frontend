@@ -16,13 +16,11 @@
 
 package controllers.asset.money.add
 
-import config.annotations.Money
 import connectors.TrustsConnector
 import controllers.actions._
 import controllers.actions.money.NameRequiredAction
 import handlers.ErrorHandler
 import mapping.MoneyAssetMapper
-import navigation.Navigator
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.TrustService
