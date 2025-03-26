@@ -36,10 +36,10 @@ class OtherNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
 
-          val answers = userAnswers.set(OtherAssetDescriptionPage(index), "Description").success.value
+          val answers = userAnswers.set(OtherAssetDescriptionPage, "Description").success.value
 
-          navigator.nextPage(OtherAssetDescriptionPage(index), NormalMode, answers)
-            .mustBe(OtherAssetValueController.onPageLoad(index, NormalMode))
+          navigator.nextPage(OtherAssetDescriptionPage, NormalMode, answers)
+            .mustBe(OtherAssetValueController.onPageLoad(NormalMode))
       }
     }
 
@@ -48,10 +48,10 @@ class OtherNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
 
-          val answers = userAnswers.set(OtherAssetValuePage(index), 4000L).success.value
+          val answers = userAnswers.set(OtherAssetValuePage, 4000L).success.value
 
-          navigator.nextPage(OtherAssetValuePage(index), NormalMode, answers)
-            .mustBe(OtherAnswerController.onPageLoad(index))
+          navigator.nextPage(OtherAssetValuePage, NormalMode, answers)
+            .mustBe(OtherAnswerController.onPageLoad())
       }
     }
   }
