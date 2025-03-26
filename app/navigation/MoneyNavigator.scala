@@ -34,5 +34,4 @@ class MoneyNavigator @Inject()() extends Navigator {
   def simpleNavigation: PartialFunction[Page, UserAnswers => Call] = {
     case AssetMoneyValuePage => _ => controllers.asset.money.add.routes.MoneyAnswerController.onPageLoad()
   }
-
 }

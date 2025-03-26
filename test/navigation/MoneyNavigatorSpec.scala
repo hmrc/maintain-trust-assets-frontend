@@ -17,6 +17,8 @@
 package navigation
 
 import base.SpecBase
+import controllers.asset.money.add.routes._
+import controllers.asset.nonTaxableToTaxable.routes._
 import generators.Generators
 import models.WhatKindOfAsset.Money
 import models.{NormalMode, UserAnswers}
@@ -24,6 +26,7 @@ import org.scalacheck.Arbitrary.arbitrary
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.money.AssetMoneyValuePage
+
 
 class MoneyNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
@@ -39,10 +42,23 @@ class MoneyNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
           val answers = userAnswers.set(WhatKindOfAssetPage, Money).success.value
 
           navigator.nextPage(AssetMoneyValuePage, NormalMode, answers)
-            .mustBe(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
-
+            .mustBe(AddAssetsController.onPageLoad())
       }
     }
   }
 
+  "Money Navigator" must {
+
+    "go to check answers page from money asset value page" in {
+
+      forAll(arbitrary[UserAnswers]) {
+        userAnswers =>
+
+          val answers = userAnswers.set(AssetMoneyValuePage, 5000L).success.value
+
+          navigator.nextPage(AssetMoneyValuePage, NormalMode, answers)
+            .mustBe(MoneyAnswerController.onPageLoad())
+      }
+    }
+  }
 }
