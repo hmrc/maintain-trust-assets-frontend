@@ -39,7 +39,7 @@ class AssetMoneyValueController @Inject()(
                                            @Money navigator: Navigator,
                                            formProvider: ValueFormProvider,
                                            val controllerComponents: MessagesControllerComponents,
-                                           view: AssetMoneyValueView,
+                                           view: AssetMoneyValueView
                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form: Form[Long] = formProvider.withConfig(prefix = "money.value")
