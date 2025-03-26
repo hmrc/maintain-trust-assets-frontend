@@ -22,12 +22,10 @@ import controllers.actions._
 import controllers.actions.money.NameRequiredAction
 import handlers.ErrorHandler
 import mapping.MoneyAssetMapper
-import models.assets.AssetNameType
-import models.{NormalMode, RemoveAsset}
 import navigation.Navigator
-import pages.asset.money.add.MoneyAnswerPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.MoneyPrintHelper
 import viewmodels.AnswerSection
@@ -41,7 +39,7 @@ class MoneyAnswerController @Inject()(
                                        standardActionSets: StandardActionSets,
                                        nameAction: NameRequiredAction,
                                        connector: TrustsConnector,
-                                       @Money navigator: Navigator,
+                                       service: TrustService,
                                        view: MoneyAnswersView,
                                        val controllerComponents: MessagesControllerComponents,
                                        errorHandler: ErrorHandler,
@@ -53,25 +51,28 @@ class MoneyAnswerController @Inject()(
 
   def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
-//      println(request.userAnswers + "========================" + request.name)
       val section: AnswerSection = printHelper(userAnswers = request.userAnswers, provisional, request.name)
       Ok(view(section))
   }
 
   def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-
       mapper(request.userAnswers) match {
         case None =>
           Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+
         case Some(asset) =>
-          connector.removeAsset(request.userAnswers.identifier, RemoveAsset(AssetNameType.MoneyAssetNameType, 0)).map(ele =>
-            println(ele)
-          )
-          connector.addMoneyAsset(request.userAnswers.identifier, asset).map(_ =>
-//            Redirect(navigator.nextPage(MoneyAnswerPage, NormalMode, request.userAnswers))
-            Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
-          )
+          service.getMonetaryAsset(request.userAnswers.identifier).flatMap {
+            case Some(_) =>
+              connector.amendMoneyAsset(request.userAnswers.identifier, 0, asset).map(_ =>
+                Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
+              )
+
+            case None =>
+              connector.addMoneyAsset(request.userAnswers.identifier, asset).map(_ =>
+                Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
+              )
+          }
       }
   }
 }
