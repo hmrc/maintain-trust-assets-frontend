@@ -17,15 +17,18 @@
 package controllers.asset.money
 
 import config.annotations.Money
+import connectors.TrustsConnector
 import controllers.actions.StandardActionSets
 import forms.ValueFormProvider
-import models.Mode
+import models.assets.AssetMonetaryAmount
+import models.{CheckMode, Mode}
 import navigation.Navigator
 import pages.asset.money.AssetMoneyValuePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
+import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.asset.money.AssetMoneyValueView
 
@@ -39,19 +42,23 @@ class AssetMoneyValueController @Inject()(
                                            @Money navigator: Navigator,
                                            formProvider: ValueFormProvider,
                                            val controllerComponents: MessagesControllerComponents,
-                                           view: AssetMoneyValueView
+                                           view: AssetMoneyValueView,
+                                           connector: TrustsConnector,
+                                           trustService: TrustService
                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val form: Form[Long] = formProvider.withConfig(prefix = "money.value")
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
-        implicit request =>
-          val preparedForm = request.userAnswers.get(AssetMoneyValuePage) match {
-            case None => form
-            case Some(value) => form.fill(value)
-          }
-          Ok(view(preparedForm, mode))
+  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
+    implicit request =>
+      trustService.getMonetaryAsset(request.userAnswers.identifier).map { money =>
+        val preparedForm = money match {
+          case Some(value) => form.fill(value = value.assetMonetaryAmount)
+          case None => form
+        }
+        Ok(view(preparedForm, mode))
       }
+  }
 
   def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
