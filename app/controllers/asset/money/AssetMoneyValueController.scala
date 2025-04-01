@@ -20,8 +20,7 @@ import config.annotations.Money
 import connectors.TrustsConnector
 import controllers.actions.StandardActionSets
 import forms.ValueFormProvider
-import models.assets.AssetMonetaryAmount
-import models.{CheckMode, Mode}
+import models.Mode
 import navigation.Navigator
 import pages.asset.money.AssetMoneyValuePage
 import play.api.data.Form

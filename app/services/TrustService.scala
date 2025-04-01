@@ -27,11 +27,27 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class TrustServiceImpl @Inject()(connector: TrustsConnector) extends TrustService {
 
-  override def getAssets(identifier: String)(implicit hc:HeaderCarrier, ec:ExecutionContext): Future[Assets] =
-    connector.getAssets(identifier)
+  override def getAssets(identifier: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Assets] = {
+    connector.getAssets(identifier).map {
+      case null =>
+        Assets(List.empty, List.empty)
+      case assets => assets
+    }.recover {
+      case ex: Exception =>
+        Assets(List.empty, List.empty)
+    }
+  }
 
-  override def getMonetaryAsset(identifier: String)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[Option[AssetMonetaryAmount]] =
-    getAssets(identifier).map(_.monetary.headOption)
+  def getMonetaryAsset(identifier: String)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[Option[AssetMonetaryAmount]] = {
+    getAssets(identifier).map {
+      case Assets(Nil, _, _, _, _, _, _) => None
+      case Assets(monetary, _, _, _, _, _, _) if monetary.nonEmpty => monetary.headOption
+      case _ => None
+    }.recover {
+      case ex: Exception =>
+        None
+    }
+  }
 
   override def getPropertyOrLandAsset(identifier: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[PropertyLandType] =
     getAssets(identifier).map(_.propertyOrLand(index))
@@ -75,5 +91,4 @@ trait TrustService {
   def getNonEeaBusinessAsset(identifier: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[NonEeaBusinessType]
 
   def removeAsset(identifier: String, asset: RemoveAsset)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse]
-
 }
