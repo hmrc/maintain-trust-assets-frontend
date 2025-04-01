@@ -38,7 +38,7 @@ class MoneyAssetMapperSpec extends SpecBase with Matchers
 
       val userAnswers =
         emptyUserAnswers
-          .set(WhatKindOfAssetPage(index), Money).success.value
+          .set(WhatKindOfAssetPage, Money).success.value
 
       moneyAssetMapper(userAnswers).isDefined mustBe false
     }
@@ -47,8 +47,8 @@ class MoneyAssetMapperSpec extends SpecBase with Matchers
 
       val userAnswers =
         emptyUserAnswers
-          .set(WhatKindOfAssetPage(index), Money).success.value
-          .set(AssetMoneyValuePage(index), assetValue1).success.value
+          .set(WhatKindOfAssetPage, Money).success.value
+          .set(AssetMoneyValuePage, assetValue1).success.value
 
       val result = moneyAssetMapper(userAnswers).get
 

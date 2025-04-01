@@ -24,6 +24,8 @@ import pages.asset.other.amend.IndexPage
 
 class MoneyExtractorSpec extends SpecBase {
 
+  private val index = 0
+
   private val extractor = new MoneyAssetExtractor()
 
   "MoneyExtractor" must {
@@ -41,7 +43,7 @@ class MoneyExtractorSpec extends SpecBase {
         val result = extractor(baseAnswers, moneyAsset, index).get
 
         result.get(IndexPage) mustBe Some(index)
-        result.get(AssetMoneyValuePage(index)) mustBe Some(4000)
+        result.get(AssetMoneyValuePage) mustBe Some(4000)
       }
     }
   }

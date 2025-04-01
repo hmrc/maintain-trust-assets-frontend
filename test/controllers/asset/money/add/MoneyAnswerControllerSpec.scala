@@ -16,14 +16,18 @@
 
 package controllers.asset.money.add
 
+
+
 import base.SpecBase
 import connectors.TrustsConnector
 import controllers.routes._
+import models.Status.Completed
 import models.UserAnswers
 import models.WhatKindOfAsset.Money
 import models.assets.AssetMonetaryAmount
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import pages.AssetStatus
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.money.AssetMoneyValuePage
 import play.api.inject.bind
@@ -40,13 +44,13 @@ class MoneyAnswerControllerSpec extends SpecBase {
 
   val description: String = "Money asset"
 
-  lazy val moneyAnswerRoute: String = routes.MoneyAnswerController.onPageLoad(index).url
+  lazy val moneyAnswerRoute: String = routes.MoneyAnswerController.onPageLoad().url
 
   val answers: UserAnswers =
     emptyUserAnswers
-      .set(WhatKindOfAssetPage(index), Money).success.value
-      .set(AssetMoneyValuePage(index), 4000L).success.value
-
+      .set(WhatKindOfAssetPage, Money).success.value
+      .set(AssetMoneyValuePage, 4000L).success.value
+      .set(AssetStatus, Completed).success.value
 
   "MoneyAnswer Controller" must {
 
@@ -60,12 +64,12 @@ class MoneyAnswerControllerSpec extends SpecBase {
 
       val view = application.injector.instanceOf[MoneyAnswersView]
       val printHelper = application.injector.instanceOf[MoneyPrintHelper]
-      val answerSection = printHelper(answers, index, provisional = true, description)
+      val answerSection = printHelper(answers, provisional = true, description)
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(index, answerSection)(request, messages).toString
+        view(answerSection)(request, messages).toString
 
       application.stop()
     }
@@ -90,7 +94,7 @@ class MoneyAnswerControllerSpec extends SpecBase {
       // Mocking the amendMoneyAsset method to return a successful response (this is crucial!)
       when(mockTrustConnector.amendMoneyAsset(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
 
-      val request = FakeRequest(POST, controllers.asset.money.add.routes.MoneyAnswerController.onSubmit(index).url)
+      val request = FakeRequest(POST, controllers.asset.money.add.routes.MoneyAnswerController.onSubmit().url)
         .withFormUrlEncodedBody("value" -> "4000")
 
       val result = route(application, request).value
