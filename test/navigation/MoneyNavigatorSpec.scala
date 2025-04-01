@@ -18,7 +18,6 @@ package navigation
 
 import base.SpecBase
 import controllers.asset.money.add.routes._
-import controllers.asset.nonTaxableToTaxable.routes._
 import generators.Generators
 import models.WhatKindOfAsset.Money
 import models.{NormalMode, UserAnswers}
