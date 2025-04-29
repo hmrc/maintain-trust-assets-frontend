@@ -29,7 +29,7 @@ import utils.print.NonEeaBusinessPrintHelper
 import views.html.asset.noneeabusiness.add.AnswersView
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class AnswersController @Inject()(
                                    override val messagesApi: MessagesApi,
@@ -48,7 +48,8 @@ class AnswersController @Inject()(
 
   def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
-      Ok(view(printHelper(userAnswers = request.userAnswers, 0, provisional, request.name)))
+
+      Ok(view(printHelper(userAnswers = request.userAnswers, provisional, request.name)))
   }
 
   def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
@@ -65,6 +66,7 @@ class AnswersController @Inject()(
                   ele.govLawCountry.equalsIgnoreCase(asset.govLawCountry) &&
                   ele.startDate.equals(asset.startDate) &&
                   ele.endDate.equals(asset.endDate)
+
               )
 
               if (!matchFound) {

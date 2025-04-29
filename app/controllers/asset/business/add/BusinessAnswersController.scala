@@ -33,7 +33,7 @@ import utils.print.BusinessPrintHelper
 import viewmodels.AnswerSection
 import views.html.asset.business.add.BusinessAnswersView
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class BusinessAnswersController @Inject()(
                                            override val messagesApi: MessagesApi,
@@ -50,48 +50,35 @@ class BusinessAnswersController @Inject()(
 
   private val provisional: Boolean = true
 
-  def onPageLoad(index: Int): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
+  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
-      val section: AnswerSection = printHelper(request.userAnswers, index, provisional, request.name)
-      Ok(view(index, section))
+      val section: AnswerSection = printHelper(userAnswers = request.userAnswers, provisional, request.name)
+      Ok(view(section))
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
+  def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
     implicit request =>
-
       mapper(request.userAnswers) match {
         case None =>
           errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
-
         case Some(asset) =>
-          connector.amendBusinessAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
-            response.status match {
-              case OK | NO_CONTENT =>
-                Future.successful(
-                  Redirect(navigator.nextPage(BusinessAnswerPage(index), NormalMode, request.userAnswers))
+          connector.getAssets(request.userAnswers.identifier).map {
+            case data =>
+              val matchFound = data.business.exists(ele => {
+                val tes = ele.businessDescription.equalsIgnoreCase(asset.businessDescription) &&
+                  ele.businessValue == asset.businessValue &&
+                  ele.address.line1.equalsIgnoreCase(asset.address.line1) &&
+                  ele.orgName.equalsIgnoreCase(asset.orgName)
+                tes
+              }
+              )
+              if (!matchFound) {
+                connector.addBusinessAsset(request.userAnswers.identifier, asset).map(_ =>
+                  Redirect(navigator.nextPage(BusinessAnswerPage, NormalMode, request.userAnswers))
                 )
-
-              case _ =>
-                connector.getAssets(request.userAnswers.identifier).flatMap { data =>
-                  val matchFound = data.business.exists(existing =>
-                    existing.orgName.equalsIgnoreCase(asset.orgName) &&
-                      existing.businessDescription.equalsIgnoreCase(asset.businessDescription) &&
-                      existing.address == asset.address &&
-                      existing.businessValue == asset.businessValue
-                  )
-
-                  if (!matchFound) {
-                    connector.addBusinessAsset(request.userAnswers.identifier, asset).map { _ =>
-                      Redirect(navigator.nextPage(BusinessAnswerPage(index), NormalMode, request.userAnswers))
-                    }
-                  } else {
-                    Future.successful(
-                      Redirect(navigator.nextPage(BusinessAnswerPage(index), NormalMode, request.userAnswers))
-                    )
-                  }
-                }
-            }
+              }
           }
+          Future.successful(Redirect(navigator.nextPage(BusinessAnswerPage, NormalMode, request.userAnswers)))
       }
   }
 }

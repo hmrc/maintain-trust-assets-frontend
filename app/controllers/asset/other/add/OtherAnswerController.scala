@@ -16,7 +16,6 @@
 
 package controllers.asset.other.add
 
-import config.annotations.Other
 import connectors.TrustsConnector
 import controllers.actions._
 import controllers.actions.property_or_land.NameRequiredAction
@@ -24,10 +23,7 @@ import handlers.ErrorHandler
 
 import javax.inject.Inject
 import mapping.OtherAssetMapper
-import models.NormalMode
-import navigation.Navigator
 import pages.asset.other.OtherAssetDescriptionPage
-import pages.asset.other.add.OtherAnswerPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -35,14 +31,13 @@ import utils.print.OtherPrintHelper
 import viewmodels.AnswerSection
 import views.html.asset.other.add.OtherAssetAnswersView
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class OtherAnswerController @Inject()(
                                        override val messagesApi: MessagesApi,
                                        standardActionSets: StandardActionSets,
                                        nameAction: NameRequiredAction,
                                        connector: TrustsConnector,
-                                       @Other navigator: Navigator,
                                        view: OtherAssetAnswersView,
                                        val controllerComponents: MessagesControllerComponents,
                                        printHelper: OtherPrintHelper,
@@ -52,47 +47,34 @@ class OtherAnswerController @Inject()(
 
   private val provisional: Boolean = true
 
-  def onPageLoad(index: Int): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
+  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
-      val description = request.userAnswers.get(OtherAssetDescriptionPage(index)).getOrElse("")
-      val section: AnswerSection = printHelper(userAnswers = request.userAnswers, index, provisional, description)
-      Ok(view(index, section))
+
+      val description = request.userAnswers.get(OtherAssetDescriptionPage).getOrElse("")
+      val section: AnswerSection = printHelper(userAnswers = request.userAnswers, provisional, description)
+      Ok(view(section))
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
+  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
       mapper(request.userAnswers) match {
         case None =>
           errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
-
         case Some(asset) =>
-          connector.amendOtherAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
-            response.status match {
-              case OK | NO_CONTENT =>
-                Future.successful(
-                  Redirect(navigator.nextPage(OtherAnswerPage(index), NormalMode, request.userAnswers))
+          connector.getAssets(request.userAnswers.identifier).map {
+            case data =>
+              val matchFound = data.other.exists(ele =>
+                ele.description.equalsIgnoreCase(asset.description) &&
+                  ele.value == asset.value
+              )
+
+              if (!matchFound) {
+                connector.addOtherAsset(request.userAnswers.identifier, asset).map(_ =>
+                  Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
                 )
-
-              case _ =>
-                connector.getAssets(request.userAnswers.identifier).flatMap { data =>
-                  val matchFound = data.other.exists(existing =>
-                    existing.description.equalsIgnoreCase(asset.description) &&
-                      existing.value == asset.value
-                  )
-
-                  if (!matchFound) {
-                    connector.addOtherAsset(request.userAnswers.identifier, asset).map { _ =>
-                      Redirect(navigator.nextPage(OtherAnswerPage(index), NormalMode, request.userAnswers))
-                    }
-                  } else {
-                    Future.successful(
-                      Redirect(navigator.nextPage(OtherAnswerPage(index), NormalMode, request.userAnswers))
-                    )
-                  }
-                }
-            }
+              }
           }
+          Future.successful(Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()))
       }
   }
-
 }
