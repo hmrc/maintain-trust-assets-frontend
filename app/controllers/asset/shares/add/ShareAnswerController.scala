@@ -64,9 +64,24 @@ class ShareAnswerController @Inject()(
         case None =>
           Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
         case Some(asset) =>
-          connector.addSharesAsset(request.userAnswers.identifier, asset).map(_ =>
-            Redirect(navigator.nextPage(ShareAnswerPage, NormalMode, request.userAnswers))
-          )
+          connector.getAssets(request.userAnswers.identifier).map {
+            case data =>
+              val matchFound = data.shares.exists(ele =>
+                ele.orgName.equalsIgnoreCase(asset.orgName) &&
+                  ele.isPortfolio.equals(asset.isPortfolio) &&
+                  ele.shareClass.equalsIgnoreCase(asset.shareClass) &&
+                  ele.typeOfShare.equalsIgnoreCase(asset.typeOfShare) &&
+                  ele.numberOfShares.equalsIgnoreCase(asset.numberOfShares) &&
+                  ele.shareClassDisplay.equals(asset.shareClassDisplay) &&
+                  ele.value == asset.value
+              )
+              if (!matchFound) {
+                connector.addSharesAsset(request.userAnswers.identifier, asset).map(_ =>
+                  Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
+                )
+              }
+          }
+          Future.successful(Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()))
       }
   }
 }

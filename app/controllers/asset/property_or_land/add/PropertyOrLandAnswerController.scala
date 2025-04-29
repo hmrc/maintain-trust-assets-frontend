@@ -58,14 +58,28 @@ class PropertyOrLandAnswerController @Inject()(
 
   def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-
       mapper(request.userAnswers) match {
         case None =>
           Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
         case Some(asset) =>
-          connector.addPropertyOrLandAsset(request.userAnswers.identifier, asset).map(_ =>
-            Redirect(navigator.nextPage(PropertyOrLandAnswerPage, NormalMode, request.userAnswers))
-          )
+          connector.getAssets(request.userAnswers.identifier).map {
+            case data =>
+              val matchFound = data.propertyOrLand.exists(ele =>
+                ele.name.equalsIgnoreCase(asset.name) &&
+                  ele.address.equals(asset.address) &&
+                  ele.buildingLandName.equals(asset.buildingLandName) &&
+                  ele.descriptionOrAddress.equals(asset.descriptionOrAddress) &&
+                  ele.valueFull.equals(asset.valueFull) &&
+                  ele.valuePrevious.equals(asset.valuePrevious)
+              )
+
+              if (!matchFound) {
+                connector.addPropertyOrLandAsset(request.userAnswers.identifier, asset).map(_ =>
+                  Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
+                )
+              }
+          }
+          Future.successful(Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()))
       }
   }
 }

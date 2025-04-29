@@ -54,14 +54,28 @@ class AnswersController @Inject()(
 
   def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-
       mapper(request.userAnswers) match {
         case None =>
           Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
         case Some(asset) =>
-          connector.addNonEeaBusinessAsset(request.userAnswers.identifier, asset).map(_ =>
-            Redirect(navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable))
-          )
+          connector.getAssets(request.userAnswers.identifier).map {
+            case data =>
+              val matchFound = data.nonEEABusiness.exists(ele =>
+                ele.orgName.equalsIgnoreCase(asset.orgName) &&
+                  ele.address.line1.equalsIgnoreCase(asset.address.line1) &&
+                  ele.govLawCountry.equalsIgnoreCase(asset.govLawCountry) &&
+                  ele.startDate.equals(asset.startDate) &&
+                  ele.endDate.equals(asset.endDate)
+
+              )
+
+              if (!matchFound) {
+                connector.addNonEeaBusinessAsset(request.userAnswers.identifier, asset).map(_ =>
+                  Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
+                )
+              }
+          }
+          Future.successful(Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()))
       }
   }
 }

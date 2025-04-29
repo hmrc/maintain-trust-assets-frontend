@@ -57,14 +57,24 @@ class OtherAnswerController @Inject()(
 
   def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-
       mapper(request.userAnswers) match {
         case None =>
           Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
         case Some(asset) =>
-          connector.addOtherAsset(request.userAnswers.identifier, asset).map(_ =>
-            Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
-          )
+          connector.getAssets(request.userAnswers.identifier).map {
+            case data =>
+              val matchFound = data.other.exists(ele =>
+                ele.description.equalsIgnoreCase(asset.description) &&
+                  ele.value == asset.value
+              )
+
+              if (!matchFound) {
+                connector.addOtherAsset(request.userAnswers.identifier, asset).map(_ =>
+                  Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
+                )
+              }
+          }
+          Future.successful(Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()))
       }
   }
 }
