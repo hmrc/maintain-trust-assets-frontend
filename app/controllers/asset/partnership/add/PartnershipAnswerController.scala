@@ -62,9 +62,20 @@ class PartnershipAnswerController @Inject()(
         case None =>
           errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
         case Some(asset) =>
-          connector.addPartnershipAsset(request.userAnswers.identifier, asset).map(_ =>
-            Redirect(navigator.nextPage(PartnershipAnswerPage, NormalMode, request.userAnswers))
-          )
+          connector.getAssets(request.userAnswers.identifier).map {
+            case data =>
+              val matchFound = data.partnerShip.exists(ele =>
+                ele.description.equalsIgnoreCase(asset.description) &&
+                  ele.partnershipStart.equals(asset.partnershipStart)
+              )
+
+              if (!matchFound) {
+                connector.addPartnershipAsset(request.userAnswers.identifier, asset).map(_ =>
+                  Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
+                )
+              }
+          }
+          Future.successful(Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()))
       }
   }
 }
