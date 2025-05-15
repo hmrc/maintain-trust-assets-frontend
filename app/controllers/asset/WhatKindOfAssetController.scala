@@ -16,14 +16,16 @@
 
 package controllers.asset
 
-import controllers.actions.StandardActionSets
+import controllers.actions.{AuthenticatedIdentifierAction, DraftIdDataRetrievalAction, RegistrationDataRequiredAction, StandardActionSets}
+import controllers.filters.IndexActionFilterProvider
 import forms.WhatKindOfAssetFormProvider
+import models.requests.DataRequest
 import models.{Enumerable, WhatKindOfAsset}
 import navigation.AssetsNavigator
 import pages.asset.WhatKindOfAssetPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -37,8 +39,12 @@ class WhatKindOfAssetController @Inject()(
                                            override val messagesApi: MessagesApi,
                                            standardActionSets: StandardActionSets,
                                            repository: PlaybackRepository,
+                                           identify: AuthenticatedIdentifierAction,
+                                           getData: DraftIdDataRetrievalAction,
+                                           requireData: RegistrationDataRequiredAction,
                                            navigator: AssetsNavigator,
                                            formProvider: WhatKindOfAssetFormProvider,
+                                           validateIndex: IndexActionFilterProvider,
                                            val controllerComponents: MessagesControllerComponents,
                                            view: WhatKindOfAssetView,
                                            trustService: TrustService
@@ -51,36 +57,29 @@ class WhatKindOfAssetController @Inject()(
     WhatKindOfAsset.options(kindsOfAsset)
   }
 
-  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
-    implicit request =>
+  private def actions(index: Int, draftId: String): ActionBuilder[DataRequest, AnyContent] =
+    identify andThen getData(draftId) andThen requireData andThen validateIndex(index, sections.Assets)
 
-      for {
-        assets <- trustService.getAssets(request.userAnswers.identifier)
-      } yield {
-        val preparedForm = request.userAnswers.get(WhatKindOfAssetPage) match {
-          case None => form
-          case Some(value) => form.fill(value)
-        }
+  def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) { implicit request =>
+    val preparedForm = request.userAnswers.get(WhatKindOfAssetPage(index)) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-        Ok(view(preparedForm, options(assets)))
-      }
-
+    Ok(view(preparedForm, draftId, index, options(request.userAnswers, index)))
   }
 
-  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
-    implicit request =>
-      trustService.getAssets(request.userAnswers.identifier).flatMap{ assets =>
-
-        form.bindFromRequest().fold(
-          (formWithErrors: Form[_]) =>
-            Future.successful(BadRequest(view(formWithErrors, options(assets)))),
-          value => {
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(WhatKindOfAssetPage, value))
-              _ <- repository.set(updatedAnswers)
-            } yield Redirect(navigator.addAssetNowRoute(value))
-          }
-        )
-      }
+  def onSubmit(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[_]) =>
+          Future.successful(BadRequest(view(formWithErrors, draftId, index, options(request.userAnswers, index)))),
+        value =>
+          for {
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(WhatKindOfAssetPage(index), value))
+            _              <- repository.set(updatedAnswers)
+          } yield Redirect(navigator.nextPage(WhatKindOfAssetPage(index), draftId)(updatedAnswers))
+      )
   }
 }

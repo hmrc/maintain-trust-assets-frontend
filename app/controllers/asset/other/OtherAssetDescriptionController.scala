@@ -16,6 +16,7 @@
 
 package controllers.asset.other
 
+import com.ibm.icu.impl.ICUBinary.getData
 import config.annotations.Other
 import controllers.actions._
 import forms.DescriptionFormProvider
@@ -23,12 +24,13 @@ import navigation.Navigator
 import pages.asset.other.OtherAssetDescriptionPage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.asset.other.OtherAssetDescriptionView
 import javax.inject.Inject
-import models.Mode
+import models.requests.DataRequest
+import pages.asset.WhatKindOfAssetPage
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -36,40 +38,49 @@ class OtherAssetDescriptionController @Inject()(
                                                  override val messagesApi: MessagesApi,
                                                  standardActionSets: StandardActionSets,
                                                  repository: PlaybackRepository,
+                                                 identify: AuthenticatedIdentifierAction,
+                                                 getData: DraftIdDataRetrievalAction,
+                                                 requiredAnswer: RequiredAnswerActionProvider,
+                                                 requireData: RegistrationDataRequiredAction,
                                                  @Other navigator: Navigator,
                                                  formProvider: DescriptionFormProvider,
                                                  val controllerComponents: MessagesControllerComponents,
                                                  view: OtherAssetDescriptionView
                                                )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
+  private def actions(index: Int, draftId: String): ActionBuilder[DataRequest, AnyContent] =
+    identify andThen getData(draftId) andThen requireData andThen
+      requiredAnswer(
+        RequiredAnswer(
+          WhatKindOfAssetPage(index),
+          controllers.asset.routes.WhatKindOfAssetController.onPageLoad(index, draftId)
+        )
+      )
+
   private val form: Form[String] = formProvider.withConfig(length = 56, prefix = "other.description")
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
-    implicit request =>
+  def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) { implicit request =>
+    val preparedForm = request.userAnswers.get(OtherAssetDescriptionPage(index)) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      val preparedForm = request.userAnswers.get(OtherAssetDescriptionPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-
-      Ok(view(preparedForm, mode))
+    Ok(view(preparedForm, draftId, index))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
-    implicit request =>
-
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
-
+  def onSubmit(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[_]) => Future.successful(BadRequest(view(formWithErrors, draftId, index))),
         value => {
 
-          val answers = request.userAnswers.set(OtherAssetDescriptionPage, value)
+          val answers = request.userAnswers.set(OtherAssetDescriptionPage(index), value)
 
           for {
             updatedAnswers <- Future.fromTry(answers)
             _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(OtherAssetDescriptionPage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(OtherAssetDescriptionPage(index), draftId)(updatedAnswers))
         }
       )
   }

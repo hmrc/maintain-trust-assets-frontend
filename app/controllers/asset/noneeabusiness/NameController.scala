@@ -17,15 +17,18 @@
 package controllers.asset.noneeabusiness
 
 import config.annotations.NonEeaBusiness
-import controllers.actions.StandardActionSets
+import controllers.actions.{AuthenticatedIdentifierAction, DraftIdDataRetrievalAction, RegistrationDataRequiredAction, StandardActionSets}
+import controllers.filters.IndexActionFilterProvider
 import forms.NameFormProvider
 import models.Mode
+import models.requests.DataRequest
 import navigation.Navigator
 import pages.asset.noneeabusiness.NamePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
+import sections.Assets
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.asset.noneeabusiness.NameView
 
@@ -36,6 +39,11 @@ class NameController @Inject()(
                                 override val messagesApi: MessagesApi,
                                 standardActionSets: StandardActionSets,
                                 repository: PlaybackRepository,
+                                identify: AuthenticatedIdentifierAction,
+                                getData: DraftIdDataRetrievalAction,
+                                //                                        requiredAnswer: RequiredAnswerActionProvider,
+                                requireData: RegistrationDataRequiredAction,
+                                validateIndex: IndexActionFilterProvider,
                                 @NonEeaBusiness navigator: Navigator,
                                 formProvider: NameFormProvider,
                                 val controllerComponents: MessagesControllerComponents,
@@ -44,31 +52,30 @@ class NameController @Inject()(
 
   private val form: Form[String] = formProvider.withConfig(105, "nonEeaBusiness.name")
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
-    implicit request =>
+  private def actions(index: Int, draftId: String): ActionBuilder[DataRequest, AnyContent] =
+    identify andThen getData(draftId) andThen
+      requireData andThen
+      validateIndex(index, Assets)
 
-      val preparedForm = request.userAnswers.get(NamePage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
+  def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) { implicit request =>
+    val preparedForm = request.userAnswers.get(NamePage(index)) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      Ok(view(preparedForm, mode))
-
+    Ok(view(preparedForm, draftId, index))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
-    implicit request =>
-
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
-
-        value => {
+  def onSubmit(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[_]) => Future.successful(BadRequest(view(formWithErrors, draftId, index))),
+        value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(NamePage, value))
-            _ <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(NamePage, mode, updatedAnswers))
-        }
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(NamePage(index), value))
+            _              <- repository.set(updatedAnswers)
+          } yield Redirect(navigator.nextPage(NamePage(index), draftId)(updatedAnswers))
       )
   }
 }

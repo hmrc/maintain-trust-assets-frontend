@@ -16,15 +16,17 @@
 
 package navigation
 
-import models.{Mode, NormalMode, UserAnswers}
+import models.UserAnswers
 import pages.{Page, QuestionPage}
 import play.api.mvc.Call
+import uk.gov.hmrc.auth.core.AffinityGroup
 
 trait Navigator {
 
-  def nextPage(page: Page, userAnswers: UserAnswers): Call = nextPage(page, NormalMode, userAnswers)
+  def nextPage(page: Page, draftId: String, af: AffinityGroup = AffinityGroup.Organisation): UserAnswers => Call =
+    route(draftId)(page)(af)
 
-  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call
+//  def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call
 
   def yesNoNav(ua: UserAnswers, fromPage: QuestionPage[Boolean], yesCall: => Call, noCall: => Call): Call = {
     ua.get(fromPage)

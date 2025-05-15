@@ -68,7 +68,7 @@ class AddAssetsController @Inject()(
     }
   }
 
-  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
+  def onPageLoad(draftId: String): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
 
       val userAnswers: UserAnswers = request.userAnswers

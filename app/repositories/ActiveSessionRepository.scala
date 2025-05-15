@@ -17,14 +17,50 @@
 package repositories
 
 import com.google.inject.ImplementedBy
-import models.UtrSession
+import config.FrontendAppConfig
+import connectors.SubmissionDraftConnector
+import models.{UserAnswers, UtrSession}
+import play.api.http
+import play.api.i18n.Messages
+import uk.gov.hmrc.http.HeaderCarrier
 
-import scala.concurrent.Future
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
-@ImplementedBy(classOf[ActiveSessionRepositoryImpl])
+//@ImplementedBy(classOf[ActiveSessionRepositoryImpl])
+
+class DefaultRegistrationsRepository @Inject() (
+                                                 submissionDraftConnector: SubmissionDraftConnector,
+                                                 config: FrontendAppConfig,
+                                                 submissionSetFactory: SubmissionSetFactory
+                                               )(implicit ec: ExecutionContext)
+  extends ActiveSessionRepository {
+
+  private val userAnswersSection = config.repositoryKey
+
+  override def set(userAnswers: UserAnswers)(implicit hc: HeaderCarrier, messages: Messages): Future[Boolean] =
+    submissionDraftConnector
+      .setDraftSectionSet(
+        userAnswers.draftId,
+        userAnswersSection,
+        submissionSetFactory.createFrom(userAnswers)
+      )
+      .map { response =>
+        response.status == http.Status.OK
+      }
+
+  override def get(draftId: String)(implicit hc: HeaderCarrier): Future[Option[UserAnswers]] =
+    submissionDraftConnector.getDraftSection(draftId, userAnswersSection).map { response =>
+      response.data.validate[UserAnswers] match {
+        case JsSuccess(userAnswers, _) => Some(userAnswers)
+        case _                         => None
+      }
+    }
+}
+
 trait ActiveSessionRepository {
 
-  def get(internalId: String): Future[Option[UtrSession]]
+  def set(userAnswers: UserAnswers)(implicit hc: HeaderCarrier, messages: Messages): Future[Boolean]
 
-  def set(session: UtrSession): Future[Boolean]
+  def get(draftId: String)(implicit hc: HeaderCarrier): Future[Option[UserAnswers]]
 }

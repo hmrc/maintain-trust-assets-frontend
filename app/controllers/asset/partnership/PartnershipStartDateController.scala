@@ -18,7 +18,8 @@ package controllers.asset.partnership
 
 import config.annotations.Partnership
 import controllers.actions.partnership.NameRequiredAction
-import controllers.actions.StandardActionSets
+import controllers.actions.{AuthenticatedIdentifierAction, DraftIdDataRetrievalAction, RegistrationDataRequiredAction, StandardActionSets}
+import controllers.filters.IndexActionFilterProvider
 import forms.StartDateFormProvider
 import navigation.Navigator
 import pages.asset.partnership.PartnershipStartDatePage
@@ -28,6 +29,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.asset.partnership.PartnershipStartDateView
+
 import javax.inject.Inject
 import models.Mode
 
@@ -38,6 +40,10 @@ class PartnershipStartDateController @Inject()(
                                                 standardActionSets: StandardActionSets,
                                                 nameAction: NameRequiredAction,
                                                 repository: PlaybackRepository,
+                                                identify: AuthenticatedIdentifierAction,
+                                                getData: DraftIdDataRetrievalAction,
+                                                requireData: RegistrationDataRequiredAction,
+                                                validateIndex: IndexActionFilterProvider,
                                                 @Partnership navigator: Navigator,
                                                 formProvider: StartDateFormProvider,
                                                 val controllerComponents: MessagesControllerComponents,
@@ -46,29 +52,31 @@ class PartnershipStartDateController @Inject()(
 
   private val form = formProvider.withConfig("partnership.startDate")
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
-    implicit request =>
+  private def actions(index: Int, draftId: String) =
+    identify andThen
+      getData(draftId) andThen
+      requireData andThen
+      validateIndex(index, sections.Assets)
 
-      val preparedForm = request.userAnswers.get(PartnershipStartDatePage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
+  def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) { implicit request =>
+    val preparedForm = request.userAnswers.get(PartnershipStartDatePage(index)) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      Ok(view(preparedForm, mode))
+    Ok(view(preparedForm, index, draftId))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
-    implicit request =>
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
-
-        value => {
+  def onSubmit(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[_]) => Future.successful(BadRequest(view(formWithErrors, index, draftId))),
+        value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(PartnershipStartDatePage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(PartnershipStartDatePage(index), value))
             _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(PartnershipStartDatePage, mode, updatedAnswers))
-        }
+          } yield Redirect(navigator.nextPage(PartnershipStartDatePage(index), draftId)(updatedAnswers))
       )
   }
 }

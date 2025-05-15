@@ -61,7 +61,7 @@ class AnswersController @Inject()(
     Ok(view(section, index))
   }
 
-  def extractAndRender(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
+  def extractAndRender(index: Int, draftId: String): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
 
       service.getOtherAsset(request.userAnswers.identifier, index) flatMap {

@@ -19,14 +19,17 @@ package controllers.asset.noneeabusiness
 import config.annotations.NonEeaBusiness
 import controllers.actions._
 import controllers.actions.noneeabusiness.NameRequiredAction
+import controllers.filters.IndexActionFilterProvider
 import forms.InternationalAddressFormProvider
+import models.requests.DataRequest
 import models.{Mode, NonUkAddress}
 import navigation.Navigator
-import pages.asset.noneeabusiness.NonUkAddressPage
+import pages.asset.noneeabusiness.{NamePage, NonUkAddressPage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
+import sections.Assets
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.countryOptions.CountryOptionsNonUK
 import views.html.asset.noneeabusiness.InternationalAddressView
@@ -39,6 +42,11 @@ class InternationalAddressController @Inject()(
                                                 standardActionSets: StandardActionSets,
                                                 nameAction: NameRequiredAction,
                                                 repository: PlaybackRepository,
+                                                identify: AuthenticatedIdentifierAction,
+                                                getData: DraftIdDataRetrievalAction,
+                                                requiredAnswer: RequiredAnswerActionProvider,
+                                                requireData: RegistrationDataRequiredAction,
+                                                validateIndex: IndexActionFilterProvider,
                                                 @NonEeaBusiness navigator: Navigator,
                                                 formProvider: InternationalAddressFormProvider,
                                                 val controllerComponents: MessagesControllerComponents,
@@ -48,30 +56,37 @@ class InternationalAddressController @Inject()(
 
   private val form: Form[NonUkAddress] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
-    implicit request =>
+  private def actions(index: Int, draftId: String): ActionBuilder[DataRequest, AnyContent] =
+    identify andThen
+      getData(draftId) andThen
+      requireData andThen
+      validateIndex(index, Assets) andThen
+      requiredAnswer(RequiredAnswer(NamePage(index), routes.NameController.onPageLoad(index, draftId)))
 
-      val preparedForm = request.userAnswers.get(NonUkAddressPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
+  def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) { implicit request =>
+    val name = request.userAnswers.get(NamePage(index)).get
 
-      Ok(view(preparedForm, countryOptions.options(), mode, request.name))
+    val preparedForm = request.userAnswers.get(NonUkAddressPage(index)) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
+
+    Ok(view(preparedForm, countryOptions.options(), index, draftId, name))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
-    implicit request =>
+  def onSubmit(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async { implicit request =>
+    val name = request.userAnswers.get(NamePage(index)).get
 
-      form.bindFromRequest().fold(
+    form
+      .bindFromRequest()
+      .fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, countryOptions.options(), mode, request.name))),
-
-        value => {
+          Future.successful(BadRequest(view(formWithErrors, countryOptions.options(), index, draftId, name))),
+        value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(NonUkAddressPage, value))
-            _ <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(NonUkAddressPage, mode, updatedAnswers))
-        }
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(NonUkAddressPage(index), value))
+            _              <- repository.set(updatedAnswers)
+          } yield Redirect(navigator.nextPage(NonUkAddressPage(index), draftId)(updatedAnswers))
       )
   }
 }

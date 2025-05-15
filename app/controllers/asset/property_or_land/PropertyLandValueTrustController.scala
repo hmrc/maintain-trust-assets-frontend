@@ -17,7 +17,8 @@
 package controllers.asset.property_or_land
 
 import config.annotations.PropertyOrLand
-import controllers.actions.StandardActionSets
+import controllers.actions.{AuthenticatedIdentifierAction, DraftIdDataRetrievalAction, RegistrationDataRequiredAction, StandardActionSets}
+import controllers.filters.IndexActionFilterProvider
 import forms.ValueFormProvider
 import models.requests.DataRequest
 import navigation.Navigator
@@ -28,6 +29,7 @@ import play.api.mvc._
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.asset.property_or_land.PropertyLandValueTrustView
+
 import javax.inject.Inject
 import models.Mode
 
@@ -37,47 +39,50 @@ class PropertyLandValueTrustController @Inject()(
                                                   override val messagesApi: MessagesApi,
                                                   standardActionSets: StandardActionSets,
                                                   repository: PlaybackRepository,
+                                                  identify: AuthenticatedIdentifierAction,
+                                                  getData: DraftIdDataRetrievalAction,
+                                                  requireData: RegistrationDataRequiredAction,
+                                                  validateIndex: IndexActionFilterProvider,
                                                   @PropertyOrLand navigator: Navigator,
                                                   formProvider: ValueFormProvider,
                                                   val controllerComponents: MessagesControllerComponents,
                                                   view: PropertyLandValueTrustView
                                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
-    implicit request =>
+  private def actions(index: Int, draftId: String): ActionBuilder[DataRequest, AnyContent] =
+    identify andThen
+      getData(draftId) andThen
+      requireData andThen
+      validateIndex(index, sections.Assets)
 
-      val form: Form[Long] = configuredForm()
+  def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) { implicit request =>
+    val form: Form[Long] = configuredForm(index)
 
-      val preparedForm = request.userAnswers.get(PropertyLandValueTrustPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-
-      Ok(view(preparedForm, mode))
+    val preparedForm = request.userAnswers.get(PropertyLandValueTrustPage(index)) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
+    Ok(view(preparedForm, index, draftId))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
-    implicit request =>
+  def onSubmit(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async { implicit request =>
+    val form: Form[Long] = configuredForm(index)
 
-      val form: Form[Long] = configuredForm()
-
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
-
-        value => {
+    form
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[_]) => Future.successful(BadRequest(view(formWithErrors, index, draftId))),
+        value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(PropertyLandValueTrustPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(PropertyLandValueTrustPage(index), value))
             _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(PropertyLandValueTrustPage, mode, updatedAnswers))
-        }
+          } yield Redirect(navigator.nextPage(PropertyLandValueTrustPage(index), draftId)(updatedAnswers))
       )
   }
 
-  private def configuredForm()(implicit request: DataRequest[AnyContent]): Form[Long] = {
+  private def configuredForm(index: Int)(implicit request: DataRequest[AnyContent]): Form[Long] =
     formProvider.withConfig(
       prefix = "propertyOrLand.valueInTrust",
-      maxValue = request.userAnswers.get(PropertyOrLandTotalValuePage)
+      maxValue = request.userAnswers.get(PropertyOrLandTotalValuePage(index))
     )
-  }
 }

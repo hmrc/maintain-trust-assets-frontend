@@ -32,8 +32,8 @@ class PropertyOrLandExtractor extends AssetExtractor[PropertyLandType] {
                      index: Int): Try[UserAnswers] = {
 
     super.apply(answers, propertyLandType, index)
-      .flatMap(_.set(PropertyOrLandAddressYesNoPage, propertyLandType.address.isDefined))
-      .flatMap(_.set(PropertyOrLandDescriptionPage, propertyLandType.buildingLandName))
+      .flatMap(_.set(PropertyOrLandAddressYesNoPage(index), propertyLandType.address.isDefined))
+      .flatMap(_.set(PropertyOrLandDescriptionPage(index), propertyLandType.buildingLandName))
       .flatMap(answers => extractAddress(propertyLandType.address, answers))
       .flatMap(_.set(PropertyOrLandTotalValuePage, propertyLandType.valueFull))
       .flatMap(_.set(TrustOwnAllThePropertyOrLandPage, doesTrustOwnAllThePropertyOrLand(propertyLandType)))

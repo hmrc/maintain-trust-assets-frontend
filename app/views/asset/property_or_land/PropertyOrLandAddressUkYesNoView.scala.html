@@ -25,14 +25,14 @@
     submitButton: SubmitButton
 )
 
-@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], draftId: String, index : Int)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = s"${errorPrefix(form)} ${messages("propertyOrLand.addressUkYesNo.title")}",
     showBackLink = true
 ) {
 
-    @formHelper(action = PropertyOrLandAddressUkYesNoController.onSubmit(mode), Symbol("autoComplete") -> "off") {
+@formHelper(action = PropertyOrLandAddressUkYesNoController.onSubmit(index, draftId), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

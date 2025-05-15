@@ -21,11 +21,12 @@ import controllers.actions._
 import controllers.actions.other.NameRequiredAction
 import forms.ValueFormProvider
 import models.Mode
+import models.requests.{DataRequest, OptionalDataRequest}
 import navigation.Navigator
 import pages.asset.other.{OtherAssetDescriptionPage, OtherAssetValuePage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.asset.other.OtherAssetValueView
@@ -38,40 +39,54 @@ class OtherAssetValueController @Inject()(
                                            standardActionSets: StandardActionSets,
                                            nameAction: NameRequiredAction,
                                            repository: PlaybackRepository,
+                                           identify: AuthenticatedIdentifierAction,
+                                           getData: DraftIdDataRetrievalAction,
+                                           requiredAnswer: RequiredAnswerActionProvider,
+                                           requireData: RegistrationDataRequiredAction,
                                            @Other navigator: Navigator,
                                            formProvider: ValueFormProvider,
                                            val controllerComponents: MessagesControllerComponents,
                                            view: OtherAssetValueView
                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
+  private def actions(index: Int, draftId: String): ActionBuilder[DataRequest, AnyContent] =
+    identify andThen getData(draftId) andThen requireData andThen
+      requiredAnswer(
+        RequiredAnswer(
+          OtherAssetDescriptionPage(index),
+          routes.OtherAssetDescriptionController.onPageLoad(index, draftId)
+        )
+      )
+
   private val form: Form[Long] = formProvider.withConfig(prefix = "other.value")
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
-    implicit request =>
-      val description = request.userAnswers.get(OtherAssetDescriptionPage).getOrElse("")
+  def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) { implicit request =>
+    val preparedForm = request.userAnswers.get(OtherAssetValuePage(index)) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      val preparedForm = request.userAnswers.get(OtherAssetValuePage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-      Ok(view(preparedForm, mode, description))
+    Ok(view(preparedForm, draftId, index, description(index)))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
-    implicit request =>
-      val description = request.userAnswers.get(OtherAssetDescriptionPage).getOrElse("")
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode, description))),
-
+  def onSubmit(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[_]) => Future.successful(BadRequest(view(formWithErrors, draftId, index))),
         value => {
-          val answers = request.userAnswers.set(OtherAssetValuePage, value)
+
+          val answers = request.userAnswers.set(OtherAssetValuePage(index), value)
+
           for {
             updatedAnswers <- Future.fromTry(answers)
             _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(OtherAssetValuePage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(OtherAssetValuePage(index), draftId)(updatedAnswers))
         }
       )
   }
+
+  private def description(index: Int)(implicit request: DataRequest[AnyContent]) =
+    request.userAnswers.get(OtherAssetDescriptionPage(index)).get
 
 }

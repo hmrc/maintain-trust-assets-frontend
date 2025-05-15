@@ -27,14 +27,14 @@
     govukSummaryList: GovukSummaryList
 )
 
-@(answerSections: AnswerSection)(implicit request: Request[_], messages: Messages)
+@(index: Int, draftId: String, answerSections: Seq[Section])(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = messages("other.answers.title"),
     showBackLink = true
 ) {
 
-    @formHelper(action = OtherAnswerController.onSubmit(), Symbol("autoComplete") -> "off") {
+    @formHelper(action = OtherAnswerController.onSubmit(index, draftId), Symbol("autoComplete") -> "off") {
 
         @heading("other.answers.heading")
 

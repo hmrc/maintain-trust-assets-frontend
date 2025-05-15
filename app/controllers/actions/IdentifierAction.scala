@@ -41,7 +41,9 @@ class AuthenticatedIdentifierAction @Inject()(
                                                val parser: BodyParsers.Default,
                                                playbackAuthenticationService: AuthenticationService
                                              )
-                                             (implicit val executionContext: ExecutionContext) extends IdentifierAction with Logging {
+                                             (override implicit val executionContext: ExecutionContext)
+                                                extends ActionBuilder[IdentifierRequest, AnyContent]
+                                                with Logging {
 
   private def authoriseAgent[A](internalId: String,
                                 enrolments: Enrolments,

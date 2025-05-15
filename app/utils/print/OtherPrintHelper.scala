@@ -17,30 +17,36 @@
 package utils.print
 
 import controllers.asset.other.routes._
-import models.{CheckMode, Mode, NormalMode, UserAnswers}
+import models.UserAnswers
 import pages.asset.other._
 import play.api.i18n.Messages
-import utils.AnswerRowConverter
-import viewmodels.{AnswerRow, AnswerSection}
+import utils.{AnswerRowConverter, CheckAnswersFormatters}
+import viewmodels.AnswerRow
+
 import javax.inject.Inject
 
-class OtherPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) {
+class OtherPrintHelper @Inject() (checkAnswersFormatters: CheckAnswersFormatters) extends PrintHelper {
 
-  def apply(userAnswers: UserAnswers, provisional: Boolean, name: String)(implicit messages: Messages): AnswerSection = {
+  override val assetType: String = "otherAsset"
 
-    val bound: answerRowConverter.Bound = answerRowConverter.bind(userAnswers, name)
+  override def answerRows(userAnswers: UserAnswers, arg: String, index: Int, draftId: String)(implicit
+                                                                                              messages: Messages
+  ): Seq[AnswerRow] = {
 
-    def answerRows: Seq[AnswerRow] = {
-      val mode: Mode = if (provisional) NormalMode else CheckMode
-      Seq(
-        bound.assetTypeQuestion(0),
-        bound.stringQuestion(OtherAssetDescriptionPage, "other.description", OtherAssetDescriptionController.onPageLoad(mode).url),
-        bound.currencyQuestion(OtherAssetValuePage, "other.value", OtherAssetValueController.onPageLoad(mode).url)
-      ).flatten
-    }
+    val converter: AnswerRowConverter = new AnswerRowConverter(checkAnswersFormatters)(userAnswers, arg)
 
-    AnswerSection(headingKey = None, rows = answerRows)
-
+    Seq(
+      converter.assetTypeQuestion(index, draftId),
+      converter.stringQuestion(
+        OtherAssetDescriptionPage(index),
+        "other.description",
+        OtherAssetDescriptionController.onPageLoad(index, draftId).url
+      ),
+      converter.currencyQuestion(
+        OtherAssetValuePage(index),
+        "other.value",
+        OtherAssetValueController.onPageLoad(index, draftId).url
+      )
+    ).flatten
   }
-
 }

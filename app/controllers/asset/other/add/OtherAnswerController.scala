@@ -27,7 +27,7 @@ import pages.asset.other.OtherAssetDescriptionPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.print.OtherPrintHelper
+import utils.print.{OtherPrintHelper, PrintHelper}
 import viewmodels.AnswerSection
 import views.html.asset.other.add.OtherAssetAnswersView
 
@@ -40,22 +40,28 @@ class OtherAnswerController @Inject()(
                                        connector: TrustsConnector,
                                        view: OtherAssetAnswersView,
                                        val controllerComponents: MessagesControllerComponents,
-                                       printHelper: OtherPrintHelper,
+                                       printHelper: PrintHelper,
                                        mapper: OtherAssetMapper,
                                        errorHandler: ErrorHandler
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val provisional: Boolean = true
+//  private val provisional: Boolean = true
 
-  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
+  def onPageLoad(index: Int, draftId: String): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
 
-      val description = request.userAnswers.get(OtherAssetDescriptionPage).getOrElse("")
-      val section: AnswerSection = printHelper(userAnswers = request.userAnswers, provisional, description)
-      Ok(view(section))
+      val description = request.userAnswers.get(OtherAssetDescriptionPage(index)).getOrElse("")
+      val section = printHelper.checkDetailsSection(
+        userAnswers = request.userAnswers,
+        arg = description,
+        index = index,
+        draftId = draftId
+
+      )
+      Ok(view(index, draftId, section))
   }
 
-  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
+  def onSubmit(index: Int, draftId: String): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
       mapper(request.userAnswers) match {
         case None =>

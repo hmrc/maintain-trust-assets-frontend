@@ -17,11 +17,17 @@
 package pages.asset.other
 
 import pages.QuestionPage
+import pages.asset.other.OtherAssetDescriptionPage.key
 import play.api.libs.json.JsPath
+import sections.Assets
 
-case object OtherAssetDescriptionPage extends QuestionPage[String] {
+final case class OtherAssetDescriptionPage(index: Int) extends QuestionPage[String] {
 
-  override def path: JsPath = basePath \ toString
+  override def path: JsPath = Assets.path \ index \ toString
 
-  override def toString: String = "otherDescription"
+  override def toString: String = key
+}
+
+object OtherAssetDescriptionPage {
+  val key: String = "otherDescription"
 }

@@ -45,7 +45,7 @@ class RemoveAssetYesNoController @Inject()(
   private val messagesPrefix: String = "other.removeYesNo"
   private val form = formProvider.apply(messagesPrefix)
 
-  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
+  def onPageLoad(index: Int, draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
 
       trustService.getOtherAsset(request.userAnswers.identifier, index).map {
@@ -64,7 +64,7 @@ class RemoveAssetYesNoController @Inject()(
       }
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
+  def onSubmit(index: Int, draftId: String): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
 
       form.bindFromRequest().fold(

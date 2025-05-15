@@ -19,18 +19,20 @@ package pages.asset.property_or_land
 import models.UserAnswers
 import pages.QuestionPage
 import play.api.libs.json.JsPath
+import sections.Assets
 
 import scala.util.Try
 
-case object  TrustOwnAllThePropertyOrLandPage extends QuestionPage[Boolean] {
+final case class TrustOwnAllThePropertyOrLandPage(index: Int) extends QuestionPage[Boolean] {
 
-  override def path: JsPath = basePath \ toString
+  override def path: JsPath = Assets.path \ index \ toString
 
   override def toString: String = "propertyOrLandTrustOwnsAllYesNo"
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(true) => userAnswers.remove(PropertyLandValueTrustPage)
-      case _ => super.cleanup(value, userAnswers)
+      case Some(true) => userAnswers.remove(PropertyLandValueTrustPage(index))
+      case _          => super.cleanup(value, userAnswers)
     }
 }
+

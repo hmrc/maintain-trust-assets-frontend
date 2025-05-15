@@ -15,6 +15,7 @@
  *@
 
 @import controllers.asset.routes._
+@import models.WhatKindOfAsset
 @import viewmodels.RadioOption
 @import views.html.components.{SubmitButton, ErrorSummary, InputRadio}
 
@@ -27,20 +28,28 @@
 
 )
 
-@(form: Form[_], options: List[RadioOption])(implicit request: Request[_], messages: Messages)
+@(form: Form[_], draftId: String, index: Int, options: List[RadioOption])(implicit request: Request[_], messages: Messages)
+
+@title = {
+    @if(index == 0) {@messages("whatKindOfAsset.first.title")} else {@messages("whatKindOfAsset.next.title")}
+}
+
+@heading = {
+    @if(index == 0) {@messages("whatKindOfAsset.first.heading")} else {@messages("whatKindOfAsset.next.heading")}
+}
 
 @mainTemplate(
-    title = s"${errorPrefix(form)}${messages("whatKindOfAsset.title")}",
+    title = s"${errorPrefix(form)} $title",
     showBackLink = true
     ) {
 
-    @formHelper(action = WhatKindOfAssetController.onSubmit(), Symbol("autoComplete") -> "off") {
+    formHelper(action = WhatKindOfAssetController.onSubmit(index, draftId), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors, options)
 
         @inputRadio(
             field = form("value"),
-            legend = messages("whatKindOfAsset.heading"),
+            legend = heading.toString,
             legendClass = Some("govuk-heading-l"),
             inputs = mapRadioOptionsToRadioItems(form("value"), options),
             legendAsHeading = true,

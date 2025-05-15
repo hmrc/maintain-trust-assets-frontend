@@ -21,13 +21,19 @@ import connectors.TrustsConnector
 import controllers.actions._
 import controllers.actions.business.NameRequiredAction
 import handlers.ErrorHandler
+
 import javax.inject.Inject
 import mapping.BusinessAssetMapper
 import models.NormalMode
+import models.Status.Completed
+import models.requests.DataRequest
 import navigation.Navigator
+import pages.AssetStatus
+import pages.asset.business.BusinessNamePage
 import pages.asset.business.add.BusinessAnswerPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
+import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.BusinessPrintHelper
 import viewmodels.AnswerSection
@@ -40,6 +46,11 @@ class BusinessAnswersController @Inject()(
                                            @Business navigator: Navigator,
                                            standardActionSets: StandardActionSets,
                                            nameAction: NameRequiredAction,
+                                           repository: PlaybackRepository,
+                                           identify: AuthenticatedIdentifierAction,
+                                           getData: DraftIdDataRetrievalAction,
+                                           requiredAnswer: RequiredAnswerActionProvider,
+                                           requireData: RegistrationDataRequiredAction,
                                            view: BusinessAnswersView,
                                            val controllerComponents: MessagesControllerComponents,
                                            printHelper: BusinessPrintHelper,
@@ -48,37 +59,34 @@ class BusinessAnswersController @Inject()(
                                            errorHandler: ErrorHandler
                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  private val provisional: Boolean = true
+//  private val provisional: Boolean = true
 
-  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
-    implicit request =>
-      val section: AnswerSection = printHelper(userAnswers = request.userAnswers, provisional, request.name)
-      Ok(view(section))
+  private def actions(index: Int, draftId: String): ActionBuilder[DataRequest, AnyContent] =
+    identify andThen
+      getData(draftId) andThen
+      requireData andThen
+      requiredAnswer(RequiredAnswer(BusinessNamePage(index), routes.BusinessNameController.onPageLoad(index, draftId)))
+
+  def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) { implicit request =>
+    val name = request.userAnswers.get(BusinessNamePage(index)).get
+
+    val section = printHelper.checkDetailsSection(
+      userAnswers = request.userAnswers,
+      arg = name,
+      index = index,
+      draftId = draftId
+    )
+
+    Ok(view(index, draftId, section))
   }
 
-  def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
-    implicit request =>
-      mapper(request.userAnswers) match {
-        case None =>
-          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
-        case Some(asset) =>
-          connector.getAssets(request.userAnswers.identifier).map {
-            case data =>
-              val matchFound = data.business.exists(ele => {
-                val tes = ele.businessDescription.equalsIgnoreCase(asset.businessDescription) &&
-                  ele.businessValue == asset.businessValue &&
-                  ele.address.line1.equalsIgnoreCase(asset.address.line1) &&
-                  ele.orgName.equalsIgnoreCase(asset.orgName)
-                tes
-              }
-              )
-              if (!matchFound) {
-                connector.addBusinessAsset(request.userAnswers.identifier, asset).map(_ =>
-                  Redirect(navigator.nextPage(BusinessAnswerPage, NormalMode, request.userAnswers))
-                )
-              }
-          }
-          Future.successful(Redirect(navigator.nextPage(BusinessAnswerPage, NormalMode, request.userAnswers)))
-      }
+  def onSubmit(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async { implicit request =>
+    val answers = request.userAnswers.set(AssetStatus(index), Completed)
+
+    for {
+      updatedAnswers <- Future.fromTry(answers)
+      _              <- repository.set(updatedAnswers)
+    } yield Redirect(controllers.asset.routes.AddAssetsController.onPageLoad(draftId))
+
   }
 }

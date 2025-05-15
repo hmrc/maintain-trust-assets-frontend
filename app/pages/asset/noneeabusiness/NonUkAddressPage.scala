@@ -16,13 +16,19 @@
 
 package pages.asset.noneeabusiness
 
-import models.{NonUkAddress}
+import models.NonUkAddress
 import pages.QuestionPage
+import pages.asset.noneeabusiness.NonUkAddressPage.key
 import play.api.libs.json.JsPath
+import sections.Assets
 
-case object  NonUkAddressPage extends QuestionPage[NonUkAddress] {
+final case class NonUkAddressPage(index: Int) extends QuestionPage[NonUkAddress] {
 
-  override def path: JsPath = basePath \ toString
+  override def path: JsPath = JsPath \ Assets \ index \ toString
 
-  override def toString: String = "nonEeaBusinessInternationalAddress"
+  override def toString: String = key
+}
+
+object NonUkAddressPage {
+  val key: String = "nonEeaBusinessInternationalAddress"
 }

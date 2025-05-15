@@ -25,20 +25,20 @@
     errorSummary: ErrorSummary
 )
 
-@(form: Form[_], index: Int, name: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], draftId: String, index: Int, prefix: String, asset: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = s"${errorPrefix(form)} ${messages(s"other.removeYesNo.title")}",
     showBackLink = true
 ) {
 
-    @formHelper(action = RemoveAssetYesNoController.onSubmit(index), Symbol("autoComplete") -> "off") {
+    @formHelper(action = RemoveAssetYesNoController.onSubmit(index, draftId), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
         @inputYesNo(
             field = form("value"),
-            label = messages(s"other.removeYesNo.heading", name),
+            label = messages(s"other.removeYesNo.heading", asset),
             legendClass = Some("govuk-heading-l"),
             legendAsHeading = true
         )

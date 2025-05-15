@@ -17,18 +17,22 @@
 package controllers.asset.business
 
 import config.annotations.Business
-import controllers.actions.StandardActionSets
+import controllers.actions.{AuthenticatedIdentifierAction, DraftIdDataRetrievalAction, RegistrationDataRequiredAction, RequiredAnswerActionProvider, StandardActionSets}
+import controllers.filters.IndexActionFilterProvider
 import forms.NameFormProvider
 import navigation.Navigator
 import pages.asset.business.BusinessNamePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, ActionBuilder, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.asset.business.BusinessNameView
+
 import javax.inject.Inject
 import models.Mode
+import models.requests.DataRequest
+import sections.Assets
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -36,6 +40,11 @@ class BusinessNameController @Inject()(
                                         override val messagesApi: MessagesApi,
                                         standardActionSets: StandardActionSets,
                                         repository: PlaybackRepository,
+                                        identify: AuthenticatedIdentifierAction,
+                                        getData: DraftIdDataRetrievalAction,
+//                                        requiredAnswer: RequiredAnswerActionProvider,
+                                        requireData: RegistrationDataRequiredAction,
+                                        validateIndex: IndexActionFilterProvider,
                                         @Business navigator: Navigator,
                                         formProvider: NameFormProvider,
                                         val controllerComponents: MessagesControllerComponents,
@@ -44,31 +53,31 @@ class BusinessNameController @Inject()(
 
   val form: Form[String] = formProvider.withConfig(105, "business.name")
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
-    implicit request =>
+  private def actions(index: Int, draftId: String): ActionBuilder[DataRequest, AnyContent] =
+    identify andThen getData(draftId) andThen
+      requireData andThen
+      validateIndex(index, Assets)
 
-      val preparedForm = request.userAnswers.get(BusinessNamePage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
+  def onPageLoad(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId) { implicit request =>
+    val preparedForm = request.userAnswers.get(BusinessNamePage(index)) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      Ok(view(preparedForm, mode))
+    Ok(view(preparedForm, draftId, index))
 
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
-    implicit request =>
-
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
-
-        value => {
+  def onSubmit(index: Int, draftId: String): Action[AnyContent] = actions(index, draftId).async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[_]) => Future.successful(BadRequest(view(formWithErrors, draftId, index))),
+        value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(BusinessNamePage, value))
-            _ <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(BusinessNamePage, mode, updatedAnswers))
-        }
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(BusinessNamePage(index), value))
+            _              <- repository.set(updatedAnswers)
+          } yield Redirect(navigator.nextPage(BusinessNamePage(index), draftId)(updatedAnswers))
       )
   }
 }
