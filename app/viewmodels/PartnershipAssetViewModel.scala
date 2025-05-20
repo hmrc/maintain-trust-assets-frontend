@@ -34,9 +34,10 @@ final case class PartnershipAssetViewModel(`type`: WhatKindOfAsset,
 
 object PartnershipAssetViewModel {
 
+  // TODO: COME BACK TO...
   implicit lazy val reads: Reads[PartnershipAssetViewModel] = (
     (__ \ WhatKindOfAssetPage).read[WhatKindOfAsset].filter(_ == Partnership) and
-      (__ \ PartnershipDescriptionPage).readNullable[String] and
+      (__ \ PartnershipDescriptionPage(0)).readNullable[String] and
       (__ \ AssetStatus).readWithDefault[Status](InProgress)
     )(PartnershipAssetViewModel.apply _)
 

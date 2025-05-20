@@ -32,9 +32,10 @@ final case class PartnershipAsset(override val whatKindOfAsset: WhatKindOfAsset,
 
 object PartnershipAsset {
 
+  // TODO: COME BACK TO...
   implicit lazy val reads: Reads[PartnershipAsset] = (
     (__ \ WhatKindOfAssetPage).read[WhatKindOfAsset].filter(_ == Partnership) and
-      (__ \ PartnershipDescriptionPage).read[String] and
+      (__ \ PartnershipDescriptionPage(0)).read[String] and
       (__ \ PartnershipStartDatePage).read[LocalDate] and
       (__ \ StartDatePage).read[LocalDate]
     )(PartnershipAsset.apply _)

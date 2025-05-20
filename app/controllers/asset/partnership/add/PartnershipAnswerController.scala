@@ -50,22 +50,22 @@ class PartnershipAnswerController @Inject()(
 
   private val provisional: Boolean = true
 
-  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
+  def onPageLoad(index: Int): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
 
       val section: AnswerSection = printHelper(userAnswers = request.userAnswers, provisional, request.name)
 
-      Ok(view(section))
+      Ok(view(index, section))
   }
 
-  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
 
       mapper(request.userAnswers) match {
         case None =>
           Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
         case Some(asset) =>
-          connector.addPartnershipAsset(request.userAnswers.identifier, asset).map(_ =>
+          connector.addPartnershipAsset(index: Int, request.userAnswers.identifier, asset).map(_ =>
             Redirect(navigator.nextPage(PartnershipAnswerPage, NormalMode, request.userAnswers))
           )
       }

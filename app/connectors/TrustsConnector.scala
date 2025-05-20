@@ -28,6 +28,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
+// TODO: ADD FOLLOW UP TICKET TO SIMPLIFY THIS.... OR DO AS PART OF THIS WORK?
 class TrustsConnector @Inject()(http: HttpClient, config: FrontendAppConfig) extends Logging {
 
   private val trustsUrl: String = s"${config.trustsUrl}/trusts"
@@ -93,7 +94,7 @@ class TrustsConnector @Inject()(http: HttpClient, config: FrontendAppConfig) ext
     http.POST[JsValue, HttpResponse](url, Json.toJson(asset))
   }
 
-  def addPartnershipAsset(identifier: String, asset: PartnershipType)
+  def addPartnershipAsset(index: Int, identifier: String, asset: PartnershipType)
                       (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     val url: String = s"$assetsUrl/add-partnership/$identifier"
     http.POST[JsValue, HttpResponse](url, Json.toJson(asset))
