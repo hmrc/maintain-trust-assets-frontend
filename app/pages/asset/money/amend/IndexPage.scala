@@ -14,24 +14,15 @@
  * limitations under the License.
  */
 
-package navigation
+package pages.asset.money.amend
 
-import models.{Mode, UserAnswers}
-import pages.Page
-import pages.asset.money._
-import play.api.mvc.Call
+import pages.QuestionPage
+import pages.asset.other.basePath
+import play.api.libs.json.JsPath
 
-import javax.inject.Inject
+case object IndexPage extends QuestionPage[Int] {
 
-class MoneyNavigator @Inject()() extends Navigator {
+  override def path: JsPath = basePath \ toString
 
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
-    routes(page)(userAnswers)
-
-  def routes: PartialFunction[Page, UserAnswers => Call] =
-    simpleNavigation
-
-  def simpleNavigation: PartialFunction[Page, UserAnswers => Call] = {
-    case AssetMoneyValuePage => _ => controllers.asset.money.add.routes.MoneyAnswerController.onPageLoad()
-  }
+  override def toString: String = "index"
 }

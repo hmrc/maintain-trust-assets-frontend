@@ -62,9 +62,23 @@ class BusinessAnswersController @Inject()(
         case None =>
           Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
         case Some(asset) =>
-          connector.addBusinessAsset(request.userAnswers.identifier, asset).map(_ =>
-            Redirect(navigator.nextPage(BusinessAnswerPage, NormalMode, request.userAnswers))
-          )
+          connector.getAssets(request.userAnswers.identifier).map {
+            case data =>
+              val matchFound = data.business.exists(ele => {
+                val tes = ele.businessDescription.equalsIgnoreCase(asset.businessDescription) &&
+                  ele.businessValue == asset.businessValue &&
+                  ele.address.line1.equalsIgnoreCase(asset.address.line1) &&
+                  ele.orgName.equalsIgnoreCase(asset.orgName)
+                tes
+              }
+              )
+              if (!matchFound) {
+                connector.addBusinessAsset(request.userAnswers.identifier, asset).map(_ =>
+                  Redirect(navigator.nextPage(BusinessAnswerPage, NormalMode, request.userAnswers))
+                )
+              }
+          }
+          Future.successful(Redirect(navigator.nextPage(BusinessAnswerPage, NormalMode, request.userAnswers)))
       }
   }
 }

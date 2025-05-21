@@ -14,24 +14,8 @@
  * limitations under the License.
  */
 
-package navigation
+package pages.asset.money.add
 
-import models.{Mode, UserAnswers}
 import pages.Page
-import pages.asset.money._
-import play.api.mvc.Call
 
-import javax.inject.Inject
-
-class MoneyNavigator @Inject()() extends Navigator {
-
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
-    routes(page)(userAnswers)
-
-  def routes: PartialFunction[Page, UserAnswers => Call] =
-    simpleNavigation
-
-  def simpleNavigation: PartialFunction[Page, UserAnswers => Call] = {
-    case AssetMoneyValuePage => _ => controllers.asset.money.add.routes.MoneyAnswerController.onPageLoad()
-  }
-}
+case object MoneyAnswerPage extends Page

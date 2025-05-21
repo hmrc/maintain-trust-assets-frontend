@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,44 +14,42 @@
  * limitations under the License.
  */
 
-package controllers.asset.other.add
+package controllers.asset.money.add
 
 import connectors.TrustsConnector
 import controllers.actions._
-import controllers.actions.property_or_land.NameRequiredAction
+import controllers.actions.money.NameRequiredAction
 import handlers.ErrorHandler
-
-import javax.inject.Inject
-import mapping.OtherAssetMapper
-import pages.asset.other.OtherAssetDescriptionPage
+import mapping.MoneyAssetMapper
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.print.OtherPrintHelper
+import utils.print.MoneyPrintHelper
 import viewmodels.AnswerSection
-import views.html.asset.other.add.OtherAssetAnswersView
+import views.html.asset.money.MoneyAnswersView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class OtherAnswerController @Inject()(
+class MoneyAnswerController @Inject()(
                                        override val messagesApi: MessagesApi,
                                        standardActionSets: StandardActionSets,
                                        nameAction: NameRequiredAction,
                                        connector: TrustsConnector,
-                                       view: OtherAssetAnswersView,
+                                       service: TrustService,
+                                       view: MoneyAnswersView,
                                        val controllerComponents: MessagesControllerComponents,
-                                       printHelper: OtherPrintHelper,
-                                       mapper: OtherAssetMapper,
-                                       errorHandler: ErrorHandler
+                                       errorHandler: ErrorHandler,
+                                       mapper: MoneyAssetMapper,
+                                       printHelper: MoneyPrintHelper
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val provisional: Boolean = true
 
   def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
-
-      val description = request.userAnswers.get(OtherAssetDescriptionPage).getOrElse("")
-      val section: AnswerSection = printHelper(userAnswers = request.userAnswers, provisional, description)
+      val section: AnswerSection = printHelper(userAnswers = request.userAnswers, provisional, request.name)
       Ok(view(section))
   }
 
@@ -60,21 +58,19 @@ class OtherAnswerController @Inject()(
       mapper(request.userAnswers) match {
         case None =>
           Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+
         case Some(asset) =>
-          connector.getAssets(request.userAnswers.identifier).map {
-            case data =>
-              val matchFound = data.other.exists(ele =>
-                ele.description.equalsIgnoreCase(asset.description) &&
-                  ele.value == asset.value
+          service.getMonetaryAsset(request.userAnswers.identifier).flatMap {
+            case Some(_) =>
+              connector.amendMoneyAsset(request.userAnswers.identifier, 0, asset).map(_ =>
+                Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
               )
 
-              if (!matchFound) {
-                connector.addOtherAsset(request.userAnswers.identifier, asset).map(_ =>
-                  Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
-                )
-              }
+            case None =>
+              connector.addMoneyAsset(request.userAnswers.identifier, asset).map(_ =>
+                Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
+              )
           }
-          Future.successful(Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()))
       }
   }
 }
