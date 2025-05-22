@@ -62,7 +62,7 @@ class RemoveAssetYesNoController @Inject()(
           case _ =>
             logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
               s" user cannot remove asset as asset was not found")
-            errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
+            errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
         }
   }
 
