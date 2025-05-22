@@ -51,7 +51,7 @@ class PropertyOrLandAmendAnswersController @Inject()(
                                                       nameAction: NameRequiredAction,
                                                       extractor: PropertyOrLandExtractor,
                                                       errorHandler: ErrorHandler
-                                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+                                                    )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   private val provisional: Boolean = false
 
@@ -65,7 +65,6 @@ class PropertyOrLandAmendAnswersController @Inject()(
 
   def extractAndRender(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-
       service.getPropertyOrLandAsset(request.userAnswers.identifier, index) flatMap {
         propertyOrLand =>
           val extractedAnswers = extractor(request.userAnswers, propertyOrLand, index)
@@ -79,8 +78,7 @@ class PropertyOrLandAmendAnswersController @Inject()(
         case e =>
           logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
             s" error showing the user the check answers for PropertyOrLand Asset $index ${e.getMessage}")
-
-          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+          errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
       }
   }
 
@@ -91,7 +89,6 @@ class PropertyOrLandAmendAnswersController @Inject()(
 
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-
       mapper(request.userAnswers).map {
         asset =>
           connector.amendPropertyOrLandAsset(request.userAnswers.identifier, index, asset).map(_ =>
@@ -100,8 +97,7 @@ class PropertyOrLandAmendAnswersController @Inject()(
       }.getOrElse {
         logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
           s" error mapping user answers to PropertyOrLand Asset $index")
-
-        Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+        errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
       }
   }
 }

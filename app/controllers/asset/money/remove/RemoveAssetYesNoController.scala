@@ -42,7 +42,7 @@ class RemoveAssetYesNoController @Inject()(
                                             val controllerComponents: MessagesControllerComponents,
                                             view: RemoveAssetYesNoView,
                                             errorHandler: ErrorHandler
-                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+                                          )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   private val messagesPrefix: String = "money.removeYesNo"
   private val form = formProvider.apply(messagesPrefix)
@@ -63,12 +63,11 @@ class RemoveAssetYesNoController @Inject()(
         case iobe: IndexOutOfBoundsException =>
           logger.warn(s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
             s" user cannot remove asset as asset was not found ${iobe.getMessage}: IndexOutOfBoundsException")
-
           Future.successful(redirectToAddAssetsPage())
         case _ =>
           logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
             s" user cannot remove asset as asset was not found")
-          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+          errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
       }
   }
 

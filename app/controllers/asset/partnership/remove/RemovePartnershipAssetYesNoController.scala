@@ -40,14 +40,13 @@ class RemovePartnershipAssetYesNoController @Inject()(
                                                        val controllerComponents: MessagesControllerComponents,
                                                        view: RemovePartnershipAssetYesNoView,
                                                        errorHandler: ErrorHandler
-                                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+                                                     )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   private val messagesPrefix: String = "partnership.removeYesNo"
   private val form = formProvider.apply(messagesPrefix)
 
   def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
-
       trustService.getPartnershipAsset(request.userAnswers.identifier, index).map {
         asset =>
           Ok(view(form, index, asset.description))
@@ -55,18 +54,16 @@ class RemovePartnershipAssetYesNoController @Inject()(
         case iobe: IndexOutOfBoundsException =>
           logger.warn(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
             s" user cannot remove partnership asset as asset was not found ${iobe.getMessage}: IndexOutOfBoundsException")
-
           Future.successful(Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()))
         case _ =>
           logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
             s" user cannot remove partnership asset as asset was not found")
-          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+          errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
       }
   }
 
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
-
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) => {
           trustService.getPartnershipAsset(request.userAnswers.identifier, index) map {

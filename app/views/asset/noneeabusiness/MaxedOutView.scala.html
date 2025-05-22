@@ -26,7 +26,7 @@
     addToList   : AddToList
 )
 
-@(completeAssets: Seq[AddRow], heading: String, maxLimit: Int, prefix: String)(implicit request: Request[_], messages: Messages)
+@(completeAssets: Seq[AddRow], heading: String, maxLimit: Int, prefix: String)(implicit request: RequestHeader, messages: Messages)
 
 @mainTemplate(
     title = heading,

@@ -27,7 +27,7 @@
 
 )
 
-@(form: Form[_], options: List[RadioOption])(implicit request: Request[_], messages: Messages)
+@(form: Form[_], options: List[RadioOption])(implicit request: RequestHeader, messages: Messages)
 
 @mainTemplate(
     title = s"${errorPrefix(form)}${messages("whatKindOfAsset.title")}",

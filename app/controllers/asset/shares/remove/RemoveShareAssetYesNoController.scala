@@ -40,14 +40,13 @@ class RemoveShareAssetYesNoController @Inject()(
                                             val controllerComponents: MessagesControllerComponents,
                                             view: RemoveShareAssetYesNoView,
                                             errorHandler: ErrorHandler
-                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+                                          )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   private val messagesPrefix: String = "shares.removeYesNo"
   private val form = formProvider.apply(messagesPrefix)
 
   def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
-
       trustService.getSharesAsset(request.userAnswers.identifier, index).map {
         asset =>
           Ok(view(form, index, asset.orgName))
@@ -55,18 +54,16 @@ class RemoveShareAssetYesNoController @Inject()(
         case iobe: IndexOutOfBoundsException =>
           logger.warn(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
             s" user cannot remove asset as asset was not found ${iobe.getMessage}: IndexOutOfBoundsException")
-
           Future.successful(Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()))
         case _ =>
           logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
             s" user cannot remove asset as asset was not found")
-          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+          errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
       }
   }
 
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
-
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) => {
           trustService.getSharesAsset(request.userAnswers.identifier, index).map {

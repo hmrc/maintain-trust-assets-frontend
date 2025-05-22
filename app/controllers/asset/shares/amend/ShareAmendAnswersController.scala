@@ -51,7 +51,7 @@ class ShareAmendAnswersController @Inject()(
                                              mapper: ShareAssetMapper,
                                              extractor: ShareExtractor,
                                              errorHandler: ErrorHandler
-                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+                                           )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   private val provisional: Boolean = false
 
@@ -65,7 +65,6 @@ class ShareAmendAnswersController @Inject()(
 
   def extractAndRender(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-
       service.getSharesAsset(request.userAnswers.identifier, index) flatMap {
         shareType =>
           val extractedAnswers = extractor(request.userAnswers, shareType, index)
@@ -79,8 +78,7 @@ class ShareAmendAnswersController @Inject()(
         case e =>
           logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
             s" error showing the user the check answers for Share Asset $index ${e.getMessage}")
-
-          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+          errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
       }
   }
 
@@ -91,7 +89,6 @@ class ShareAmendAnswersController @Inject()(
 
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-
       mapper(request.userAnswers).map {
         asset =>
           connector.amendSharesAsset(request.userAnswers.identifier, index, asset).map(_ =>
@@ -100,8 +97,7 @@ class ShareAmendAnswersController @Inject()(
       }.getOrElse {
         logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
           s" error mapping user answers to Share Asset $index")
-
-        Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+        errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
       }
   }
 }

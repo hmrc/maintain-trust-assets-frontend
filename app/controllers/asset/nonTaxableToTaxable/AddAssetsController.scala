@@ -55,7 +55,7 @@ class AddAssetsController @Inject()(
                                      maxedOutView: MaxedOutView,
                                      errorHandler: ErrorHandler,
                                      viewHelper: AddAssetViewHelper
-                                   )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+                                   )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   private val prefix = "nonTaxableToTaxable.addAssets"
   private val addAnotherForm: Form[AddAssets] = addAnotherFormProvider.withPrefix(prefix)
@@ -150,8 +150,7 @@ class AddAssetsController @Inject()(
         case e =>
           logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
             s" unable add a new asset due to an error getting assets from trusts ${e.getMessage}")
-
-          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+          errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
       }
   }
 

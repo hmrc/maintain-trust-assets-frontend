@@ -25,7 +25,7 @@
     inputYesNo  : InputYesNo
 )
 
-@(prefix : String, form: Form[_], index: Int, nameOrDescription : String, route : Call)(implicit request: Request[_], messages: Messages)
+@(prefix : String, form: Form[_], index: Int, nameOrDescription : String, route : Call)(implicit request: RequestHeader, messages: Messages)
 
 @mainTemplate(
     title = s"${errorPrefix(form)} ${messages(s"$prefix.title", nameOrDescription)}",
