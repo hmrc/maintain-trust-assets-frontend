@@ -43,7 +43,7 @@ class RemoveAssetYesNoController @Inject()(
                                             view: RemoveAssetYesNoView,
                                             errorHandler: ErrorHandler,
                                             navigator: AssetsNavigator
-                                          )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   private val messagesPrefix: String = "nonEeaBusiness.removeYesNo"
   private val form = formProvider.apply(messagesPrefix)
@@ -51,18 +51,19 @@ class RemoveAssetYesNoController @Inject()(
   def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
       trustService.getNonEeaBusinessAsset(request.userAnswers.identifier, index).map {
-        asset =>
-          Ok(view(form, index, asset.orgName))
-      } recover {
-        case iobe: IndexOutOfBoundsException =>
-          logger.warn(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
-            s" user cannot remove asset as asset was not found ${iobe.getMessage}: IndexOutOfBoundsException")
-          Redirect(navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable))
-        case _ =>
-          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
-            s" user cannot remove asset as asset was not found")
-          errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
-      }
+          asset =>
+            Ok(view(form, index, asset.orgName))
+        }
+        .recoverWith {
+          case iobe: IndexOutOfBoundsException =>
+            logger.warn(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
+              s" user cannot remove asset as asset was not found ${iobe.getMessage}: IndexOutOfBoundsException")
+            Future.successful(Redirect(navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable)))
+          case _ =>
+            logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
+              s" user cannot remove asset as asset was not found")
+            errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
+        }
   }
 
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {

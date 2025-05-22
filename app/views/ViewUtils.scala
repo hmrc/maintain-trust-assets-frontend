@@ -20,7 +20,7 @@ import controllers.actions.NameRequest
 import models.requests.DataRequest
 import play.api.data.{Field, Form, FormError}
 import play.api.i18n.Messages
-import play.api.mvc.Request
+import play.api.mvc.RequestHeader
 import play.twirl.api.{Html, HtmlFormat}
 import uk.gov.hmrc.govukfrontend.views.html.components.{RadioItem, Text}
 import viewmodels.RadioOption
@@ -30,12 +30,12 @@ import scala.collection.immutable
 
 class ViewUtils {
 
-  def breadcrumbTitle[T <: Request[_]](title: String)(implicit request: T, messages: Messages): String = {
+  def breadcrumbTitle[T <: RequestHeader](title: String)(implicit request: T, messages: Messages): String = {
     s"$title ${section.fold("")(x => s"- ${messages(x)} ")}- ${messages("service.name")} - GOV.UK"
   }
 
   @tailrec
-  private def section[T <: Request[_]](implicit request: T): Option[String] = {
+  private def section[T <: RequestHeader](implicit request: T): Option[String] = {
     request match {
       case x: NameRequest[_] => section(x.request)
       case x: DataRequest[_] => Some(s"entities.${if (x.userAnswers.isMigratingToTaxable) "assets" else "nonTaxable"}")
