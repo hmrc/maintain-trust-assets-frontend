@@ -181,7 +181,7 @@ class TrustsConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig) e
                    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     val url: String = s"$assetsUrl/$identifier/remove"
     http
-      .post(url"$url")
+      .put(url"$url")
       .withBody(Json.toJson(asset))
       .execute[HttpResponse]
   }
