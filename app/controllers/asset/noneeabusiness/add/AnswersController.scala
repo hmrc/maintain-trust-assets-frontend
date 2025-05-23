@@ -29,7 +29,7 @@ import utils.print.NonEeaBusinessPrintHelper
 import views.html.asset.noneeabusiness.add.AnswersView
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class AnswersController @Inject()(
                                    override val messagesApi: MessagesApi,
@@ -57,7 +57,7 @@ class AnswersController @Inject()(
 
       mapper(request.userAnswers) match {
         case None =>
-          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+          errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
         case Some(asset) =>
           connector.addNonEeaBusinessAsset(request.userAnswers.identifier, asset).map(_ =>
             Redirect(navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable))

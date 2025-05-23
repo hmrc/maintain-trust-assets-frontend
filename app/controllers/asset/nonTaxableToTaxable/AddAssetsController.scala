@@ -150,8 +150,7 @@ class AddAssetsController @Inject()(
         case e =>
           logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
             s" unable add a new asset due to an error getting assets from trusts ${e.getMessage}")
-
-          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+          errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
       }
   }
 

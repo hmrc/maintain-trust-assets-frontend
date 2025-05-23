@@ -33,7 +33,7 @@ import utils.print.SharesPrintHelper
 import viewmodels.AnswerSection
 import views.html.asset.shares.add.ShareAnswersView
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class ShareAnswerController @Inject()(
                                        override val messagesApi: MessagesApi,
@@ -52,9 +52,7 @@ class ShareAnswerController @Inject()(
 
   def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
-
       val section: AnswerSection = printHelper(userAnswers = request.userAnswers, provisional, request.name)
-
       Ok(view(section))
   }
 
@@ -62,7 +60,7 @@ class ShareAnswerController @Inject()(
     implicit request =>
       mapper(request.userAnswers) match {
         case None =>
-          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+          errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
         case Some(asset) =>
           connector.addSharesAsset(request.userAnswers.identifier, asset).map(_ =>
             Redirect(navigator.nextPage(ShareAnswerPage, NormalMode, request.userAnswers))

@@ -31,7 +31,7 @@ import utils.print.OtherPrintHelper
 import viewmodels.AnswerSection
 import views.html.asset.other.add.OtherAssetAnswersView
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class OtherAnswerController @Inject()(
                                        override val messagesApi: MessagesApi,
@@ -60,7 +60,7 @@ class OtherAnswerController @Inject()(
 
       mapper(request.userAnswers) match {
         case None =>
-          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+          errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
         case Some(asset) =>
           connector.addOtherAsset(request.userAnswers.identifier, asset).map(_ =>
             Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())

@@ -83,8 +83,7 @@ class AnswersController @Inject()(
         case e =>
           logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
             s" error showing the user the check answers for NonEeaBusiness Asset $index ${e.getMessage}")
-
-          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+          errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
       }
   }
 
@@ -104,8 +103,7 @@ class AnswersController @Inject()(
       }.getOrElse {
         logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
           s" error mapping user answers to NonEeaBusiness Asset $index, isNew: $provisional")
-
-        Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+        errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
       }
   }
 }

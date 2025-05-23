@@ -33,7 +33,7 @@ import utils.print.BusinessPrintHelper
 import viewmodels.AnswerSection
 import views.html.asset.business.add.BusinessAnswersView
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class BusinessAnswersController @Inject()(
                                            override val messagesApi: MessagesApi,
@@ -60,7 +60,7 @@ class BusinessAnswersController @Inject()(
     implicit request =>
       mapper(request.userAnswers) match {
         case None =>
-          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+          errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
         case Some(asset) =>
           connector.addBusinessAsset(request.userAnswers.identifier, asset).map(_ =>
             Redirect(navigator.nextPage(BusinessAnswerPage, NormalMode, request.userAnswers))
