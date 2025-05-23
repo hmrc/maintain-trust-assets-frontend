@@ -40,7 +40,7 @@ class RemoveBusinessAssetYesNoController @Inject()(
                                             val controllerComponents: MessagesControllerComponents,
                                             view: RemoveBusinessAssetYesNoView,
                                             errorHandler: ErrorHandler
-                                          )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   private val messagesPrefix: String = "business.removeYesNo"
   private val form = formProvider.apply(messagesPrefix)

@@ -36,7 +36,7 @@ class LogoutController @Inject()(appConfig: FrontendAppConfig,
                                  getData: DataRetrievalAction,
                                  requireData: DataRequiredAction,
                                  auditConnector: AuditConnector
-                                )(implicit val ec: ExecutionContext) extends FrontendBaseController with Logging {
+                                )(implicit ec: ExecutionContext) extends FrontendBaseController with Logging {
 
   def logout: Action[AnyContent] = (identify andThen getData andThen requireData)  { request =>
 

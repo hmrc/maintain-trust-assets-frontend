@@ -40,7 +40,7 @@ class RemoveShareAssetYesNoController @Inject()(
                                             val controllerComponents: MessagesControllerComponents,
                                             view: RemoveShareAssetYesNoView,
                                             errorHandler: ErrorHandler
-                                          )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   private val messagesPrefix: String = "shares.removeYesNo"
   private val form = formProvider.apply(messagesPrefix)

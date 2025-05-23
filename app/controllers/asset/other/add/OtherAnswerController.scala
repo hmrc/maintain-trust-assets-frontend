@@ -43,7 +43,7 @@ class OtherAnswerController @Inject()(
                                        printHelper: OtherPrintHelper,
                                        mapper: OtherAssetMapper,
                                        errorHandler: ErrorHandler
-                                     )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val provisional: Boolean = true
 

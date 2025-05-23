@@ -42,7 +42,7 @@ class AnswersController @Inject()(
                                    mapper: NonEeaBusinessAssetMapper,
                                    errorHandler: ErrorHandler,
                                    navigator: AssetsNavigator
-                                 )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val provisional: Boolean = true
 

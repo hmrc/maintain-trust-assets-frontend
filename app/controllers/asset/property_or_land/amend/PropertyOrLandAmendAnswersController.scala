@@ -51,7 +51,7 @@ class PropertyOrLandAmendAnswersController @Inject()(
                                                       nameAction: NameRequiredAction,
                                                       extractor: PropertyOrLandExtractor,
                                                       errorHandler: ErrorHandler
-                                                    )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+                                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   private val provisional: Boolean = false
 

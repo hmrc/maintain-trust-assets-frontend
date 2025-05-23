@@ -42,7 +42,7 @@ class RemoveAssetYesNoController @Inject()(
                                             val controllerComponents: MessagesControllerComponents,
                                             view: RemoveAssetYesNoView,
                                             errorHandler: ErrorHandler
-                                          )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   private val messagesPrefix: String = "money.removeYesNo"
   private val form = formProvider.apply(messagesPrefix)

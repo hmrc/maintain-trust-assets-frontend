@@ -49,7 +49,7 @@ class AnswersController @Inject()(
                                    mapper: OtherAssetMapper,
                                    extractor: OtherAssetExtractor,
                                    errorHandler: ErrorHandler
-                                 )(implicit val ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   private val provisional: Boolean = false
 
