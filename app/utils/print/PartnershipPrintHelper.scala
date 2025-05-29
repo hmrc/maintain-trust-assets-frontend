@@ -18,10 +18,12 @@ package utils.print
 
 import controllers.asset.partnership.routes._
 import models.{CheckMode, Mode, NormalMode, UserAnswers}
+import navigation.AssetNavigator
 import pages.asset.partnership._
 import play.api.i18n.Messages
 import utils.AnswerRowConverter
 import viewmodels.{AnswerRow, AnswerSection}
+
 import javax.inject.Inject
 
 class PartnershipPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) {
@@ -34,8 +36,8 @@ class PartnershipPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) {
       val mode: Mode = if (provisional) NormalMode else CheckMode
       Seq(
         bound.assetTypeQuestion(0),
-        bound.stringQuestion(PartnershipDescriptionPage, "partnership.description", PartnershipDescriptionController.onPageLoad(mode).url),
-        bound.dateQuestion(PartnershipStartDatePage, "partnership.startDate", PartnershipStartDateController.onPageLoad(mode).url)
+        bound.stringQuestion(PartnershipDescriptionPage(0), "partnership.description", PartnershipDescriptionController.onPageLoad(0, mode).url), // TODO: HARDCODED
+        bound.dateQuestion(PartnershipStartDatePage, "partnership.startDate", PartnershipStartDateController.onPageLoad(0, mode).url) // TODO: HARDCODED
       ).flatten
     }
 

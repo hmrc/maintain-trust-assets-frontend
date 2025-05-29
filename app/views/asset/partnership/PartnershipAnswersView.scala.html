@@ -20,26 +20,26 @@
 @import views.SectionFormatter.formatAnswerSection
 
 @this(
-    mainTemplate    : MainTemplate,
-    formHelper      : FormWithCSRF,
-    submitButton    : SubmitButton,
-    heading         : Heading,
-    govukSummaryList: GovukSummaryList
+mainTemplate    : MainTemplate,
+formHelper      : FormWithCSRF,
+submitButton    : SubmitButton,
+heading         : Heading,
+govukSummaryList: GovukSummaryList
 )
 
 
-@(answerSections: AnswerSection)(implicit request: Request[_], messages: Messages)
+@(index: Int, answerSections: AnswerSection)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = messages("partnership.answers.title"),
-    showBackLink = true
+title = messages("partnership.answers.title"),
+showBackLink = true
 ) {
 
-    @formHelper(action = PartnershipAnswerController.onSubmit(), Symbol("autoComplete") -> "off") {
-        @heading("partnership.answers.heading")
+@formHelper(action = PartnershipAnswerController.onSubmit(index), Symbol("autoComplete") -> "off") {
+@heading("partnership.answers.heading")
 
-        @govukSummaryList(SummaryList(rows = formatAnswerSection(answerSections)))
+@govukSummaryList(SummaryList(rows = formatAnswerSection(answerSections)))
 
-        @submitButton()
-    }
+@submitButton()
+}
 }

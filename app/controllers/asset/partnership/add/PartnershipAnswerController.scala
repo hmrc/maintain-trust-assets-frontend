@@ -50,32 +50,24 @@ class PartnershipAnswerController @Inject()(
 
   private val provisional: Boolean = true
 
-  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
+  def onPageLoad(index: Int): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
+
       val section: AnswerSection = printHelper(userAnswers = request.userAnswers, provisional, request.name)
-      Ok(view(section))
+
+      Ok(view(index, section))
   }
 
-  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
+
       mapper(request.userAnswers) match {
         case None =>
           Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
         case Some(asset) =>
-          connector.getAssets(request.userAnswers.identifier).map {
-            case data =>
-              val matchFound = data.partnerShip.exists(ele =>
-                ele.description.equalsIgnoreCase(asset.description) &&
-                  ele.partnershipStart.equals(asset.partnershipStart)
-              )
-
-              if (!matchFound) {
-                connector.addPartnershipAsset(request.userAnswers.identifier, asset).map(_ =>
-                  Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
-                )
-              }
-          }
-          Future.successful(Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()))
+          connector.addPartnershipAsset(index: Int, request.userAnswers.identifier, asset).map(_ =>
+            Redirect(navigator.nextPage(PartnershipAnswerPage, NormalMode, request.userAnswers))
+          )
       }
   }
 }

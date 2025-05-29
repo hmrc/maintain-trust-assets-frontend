@@ -25,14 +25,14 @@
     submitButton: SubmitButton
 )
 
-@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], index: Int, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
     title = s"${errorPrefix(form)} ${messages("partnership.startDate.title")}",
     showBackLink = true
 ) {
 
-    @formHelper(action = PartnershipStartDateController.onSubmit(mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = PartnershipStartDateController.onSubmit(index, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

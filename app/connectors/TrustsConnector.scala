@@ -93,8 +93,8 @@ class TrustsConnector @Inject()(http: HttpClient, config: FrontendAppConfig) ext
     http.POST[JsValue, HttpResponse](url, Json.toJson(asset))
   }
 
-  def addPartnershipAsset(identifier: String, asset: PartnershipType)
-                      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+  def addPartnershipAsset(index: Int, identifier: String, asset: PartnershipType)
+                         (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     val url: String = s"$assetsUrl/add-partnership/$identifier"
     http.POST[JsValue, HttpResponse](url, Json.toJson(asset))
   }
