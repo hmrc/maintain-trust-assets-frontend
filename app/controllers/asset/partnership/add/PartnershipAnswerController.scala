@@ -60,14 +60,24 @@ class PartnershipAnswerController @Inject()(
 
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-
       mapper(request.userAnswers) match {
         case None =>
           Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
         case Some(asset) =>
-          connector.addPartnershipAsset(index: Int, request.userAnswers.identifier, asset).map(_ =>
-            Redirect(navigator.nextPage(PartnershipAnswerPage, NormalMode, request.userAnswers))
-          )
+          connector.getAssets(request.userAnswers.identifier).map {
+            case data =>
+              val matchFound = data.partnerShip.exists(ele =>
+                ele.description.equalsIgnoreCase(asset.description) &&
+                  ele.partnershipStart.equals(asset.partnershipStart)
+              )
+
+              if (!matchFound) {
+                connector.addPartnershipAsset(index, request.userAnswers.identifier, asset).map(_ =>
+                  Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
+                )
+              }
+          }
+          Future.successful(Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()))
       }
   }
 }
