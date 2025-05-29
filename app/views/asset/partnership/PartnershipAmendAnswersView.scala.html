@@ -28,7 +28,7 @@
 )
 
 
-@(answerSections: AnswerSection, index: Int)(implicit request: Request[_], messages: Messages)
+@(answerSections: AnswerSection, index: Int)(implicit request: RequestHeader, messages: Messages)
 
 @mainTemplate(
     title = messages("partnership.answers.title"),

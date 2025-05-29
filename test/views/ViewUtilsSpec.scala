@@ -19,7 +19,7 @@ package views
 import base.SpecBase
 import controllers.actions.NameRequest
 import models.requests.{DataRequest, OrganisationUser}
-import play.api.mvc.Request
+import play.api.mvc.RequestHeader
 import uk.gov.hmrc.auth.core.Enrolments
 
 class ViewUtilsSpec extends SpecBase {
@@ -39,7 +39,7 @@ class ViewUtilsSpec extends SpecBase {
           lazy val dataRequest = DataRequest(fakeRequest, emptyUserAnswers.copy(isMigratingToTaxable = true), fakeUser)
 
           "Request" in {
-            implicit val request: Request[_] = fakeRequest
+            implicit val request: RequestHeader = fakeRequest
             val result = viewUtils.breadcrumbTitle(fakeTitle)(request, messages)
             result mustBe s"$fakeTitle - Register and Maintain a Trust - GOV.UK"
           }
@@ -65,7 +65,7 @@ class ViewUtilsSpec extends SpecBase {
           lazy val dataRequest = DataRequest(fakeRequest, emptyUserAnswers.copy(isTaxable = true), fakeUser)
 
           "Request" in {
-            implicit val request: Request[_] = fakeRequest
+            implicit val request: RequestHeader = fakeRequest
             val result = viewUtils.breadcrumbTitle(fakeTitle)(request, messages)
             result mustBe s"$fakeTitle - Register and Maintain a Trust - GOV.UK"
           }
@@ -88,7 +88,7 @@ class ViewUtilsSpec extends SpecBase {
           lazy val dataRequest = DataRequest(fakeRequest, emptyUserAnswers.copy(isTaxable = false), fakeUser)
 
           "Request" in {
-            implicit val request: Request[_] = fakeRequest
+            implicit val request: RequestHeader = fakeRequest
             val result = viewUtils.breadcrumbTitle(fakeTitle)(request, messages)
             result mustBe s"$fakeTitle - Register and Maintain a Trust - GOV.UK"
           }

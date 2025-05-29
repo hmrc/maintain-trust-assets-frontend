@@ -26,7 +26,7 @@
     errorSummary: ErrorSummary
 )
 
-@(form: Form[_], mode: Mode, companyName: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, companyName: String)(implicit request: RequestHeader, messages: Messages)
 
 @mainTemplate(
     title = s"${errorPrefix(form)} ${messages("shares.class.title")}",

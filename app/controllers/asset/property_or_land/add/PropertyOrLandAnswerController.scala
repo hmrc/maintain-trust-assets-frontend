@@ -33,7 +33,7 @@ import utils.print.PropertyOrLandPrintHelper
 import viewmodels.AnswerSection
 import views.html.asset.property_or_land.add.PropertyOrLandAnswersView
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class PropertyOrLandAnswerController @Inject()(
                                                 override val messagesApi: MessagesApi,
@@ -60,7 +60,7 @@ class PropertyOrLandAnswerController @Inject()(
     implicit request =>
       mapper(request.userAnswers) match {
         case None =>
-          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+          errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
         case Some(asset) =>
           connector.getAssets(request.userAnswers.identifier).map {
             case data =>

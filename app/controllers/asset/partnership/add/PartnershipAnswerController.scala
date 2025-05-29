@@ -33,7 +33,7 @@ import viewmodels.AnswerSection
 import views.html.asset.partnership.PartnershipAnswersView
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 class PartnershipAnswerController @Inject()(
                                              override val messagesApi: MessagesApi,
@@ -52,18 +52,17 @@ class PartnershipAnswerController @Inject()(
 
   def onPageLoad(index: Int): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
-
       val section: AnswerSection = printHelper(userAnswers = request.userAnswers, provisional, request.name)
 
       Ok(view(index, section))
+      Ok(view(section))
   }
 
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-
       mapper(request.userAnswers) match {
         case None =>
-          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+          errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
         case Some(asset) =>
           connector.addPartnershipAsset(index: Int, request.userAnswers.identifier, asset).map(_ =>
             Redirect(navigator.nextPage(PartnershipAnswerPage, NormalMode, request.userAnswers))

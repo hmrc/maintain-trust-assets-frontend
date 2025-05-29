@@ -79,8 +79,7 @@ class BusinessAmendAnswersController @Inject()(
         case e =>
           logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
             s" error showing the user the check answers for Business Asset $index ${e.getMessage}")
-
-          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+          errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
       }
   }
 
@@ -100,8 +99,7 @@ class BusinessAmendAnswersController @Inject()(
       }.getOrElse {
         logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
           s" error mapping user answers to Business Asset $index")
-
-        Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+        errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
       }
   }
 }
