@@ -21,8 +21,8 @@ GET        /unauthorised                                controllers.Unauthorised
 
 GET        /logout                                      controllers.LogoutController.logout()
 
-GET        /assets-type                                 controllers.asset.WhatKindOfAssetController.onPageLoad()
-POST       /assets-type                                 controllers.asset.WhatKindOfAssetController.onSubmit()
+GET        /:index/assets-type                                 controllers.asset.WhatKindOfAssetController.onPageLoad(index: Int)
+POST       /:index/assets-type                                 controllers.asset.WhatKindOfAssetController.onSubmit(index: Int)
 
 GET        /trust-owns-non-eea-company          controllers.asset.TrustOwnsNonEeaBusinessYesNoController.onPageLoad(mode: Mode = NormalMode)
 POST       /trust-owns-non-eea-company          controllers.asset.TrustOwnsNonEeaBusinessYesNoController.onSubmit(mode: Mode = NormalMode)

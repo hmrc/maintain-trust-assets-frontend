@@ -23,9 +23,10 @@ import forms.{AddAssetsFormProvider, YesNoFormProvider}
 import handlers.ErrorHandler
 import models.Constants._
 import models.TaskStatus.Completed
+import models.assets.Assets
 import models.{AddAssets, UserAnswers, WhatKindOfAsset}
-import navigation.AssetsNavigator
-import pages.asset.AddAnAssetYesNoPage
+import navigation.{AssetNavigator, AssetsNavigator}
+import pages.asset.{AddAnAssetYesNoPage, AddAssetsPage}
 import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi, MessagesProvider}
@@ -75,6 +76,8 @@ class AddAssetsController @Inject()(
 
       for {
         assets <- trustService.getAssets(userAnswers.identifier)
+        updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
+        _ <- repository.set(updatedAnswers)
       } yield {
         assets match {
           case _ if assets.isEmpty =>
@@ -98,7 +101,7 @@ class AddAssetsController @Inject()(
 
   def submitOne(): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
-
+      logger.info("~~~~~~~~~ IN submitOne ~~~~~~~~~")
       yesNoForm.bindFromRequest().fold(
         (formWithErrors: Form[_]) => {
           Future.successful(BadRequest(yesNoView(formWithErrors)))
@@ -109,7 +112,7 @@ class AddAssetsController @Inject()(
               cleanedAnswers <- Future.fromTry(request.userAnswers.cleanup)
               updatedAnswers <- Future.fromTry(cleanedAnswers.set(AddAnAssetYesNoPage, value))
               _ <- repository.set(updatedAnswers)
-            } yield Redirect(controllers.asset.routes.WhatKindOfAssetController.onPageLoad())
+            } yield Redirect(navigator.addAssetRoute(Assets())) // TODO: COME BACK TO
           } else {
             submitComplete()(request)
           }
@@ -119,8 +122,9 @@ class AddAssetsController @Inject()(
 
   def submitAnother(): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
+      logger.info("~~~~~~~~~ IN submitAnother ~~~~~~~~~")
 
-      trustService.getAssets(request.userAnswers.identifier).flatMap { assets =>
+      trustService.getAssets(request.userAnswers.identifier).flatMap { assets: Assets =>
         addAnotherForm.bindFromRequest().fold(
           (formWithErrors: Form[_]) => {
 

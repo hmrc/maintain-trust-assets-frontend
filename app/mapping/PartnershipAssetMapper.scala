@@ -29,7 +29,7 @@ class PartnershipAssetMapper extends Mapper[PartnershipType] {
   def apply(answers: UserAnswers): Option[PartnershipType] = {
     val readFromUserAnswers: Reads[PartnershipType] =
       (
-        PartnershipDescriptionPage.path.read[String] and
+        PartnershipDescriptionPage(0).path.read[String] and // TODO: COME BACK TO...
           PartnershipStartDatePage.path.read[LocalDate]
         ) (PartnershipType.apply _)
 
