@@ -21,7 +21,7 @@ import controllers.asset.routes.AssetInterruptPageController
 import models.Constants._
 import models.WhatKindOfAsset.{Business, Money, NonEeaBusiness, Other, Partnership, PropertyOrLand, Shares}
 import models.assets.{AssetType, Assets}
-import models.{Mode, NormalMode, WhatKindOfAsset}
+import models.{Mode, NormalMode, UserAnswers, WhatKindOfAsset}
 import play.api.mvc.Call
 import uk.gov.hmrc.http.HttpVerbs.GET
 
@@ -29,15 +29,15 @@ import javax.inject.Inject
 
 class AssetsNavigator @Inject()(config: FrontendAppConfig) {
 
-  def redirectToAddAssetPage(isMigratingToTaxable: Boolean, index: Option[Int] = None): Call = {
+  def redirectToAddAssetPage(isMigratingToTaxable: Boolean): Call = {
     if (isMigratingToTaxable) {
       controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
     } else {
-      controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad(if(index.isDefined)  index.get else 0)
+      controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad()
     }
   }
 
-  def   redirectFromInterruptPage(isMigratingToTaxable: Boolean, noAssets: Boolean): Call = {
+  def redirectFromInterruptPage(userAnswers: UserAnswers, isMigratingToTaxable: Boolean, noAssets: Boolean): Call = {
     (isMigratingToTaxable, noAssets) match {
       case (true, true) =>
         AssetNavigator.routeToIndex(
@@ -45,14 +45,14 @@ class AssetsNavigator @Inject()(config: FrontendAppConfig) {
           controllers.asset.routes.WhatKindOfAssetController.onPageLoad
         )
       case (true, false) => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
-      case (false, _) => controllers.asset.noneeabusiness.routes.NameController.onPageLoad(0,NormalMode)
+      case (false, _) => controllers.asset.noneeabusiness.routes.NameController.onPageLoad(NormalMode)
     }
   }
 
   def redirectFromAddAssetYesNoPage(value: Boolean, isMigratingToTaxable: Boolean, noAssets: Boolean): Call = {
     (value, isMigratingToTaxable, noAssets) match {
       case (true, true, _) => AssetInterruptPageController.onPageLoad()
-      case (true, false, _) => controllers.asset.noneeabusiness.routes.NameController.onPageLoad(0,NormalMode)
+      case (true, false, _) => controllers.asset.noneeabusiness.routes.NameController.onPageLoad(NormalMode)
       case (false, true, true) => maintainATrustOverview
       case (false, true, false) => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
       case (false, false, _) => submitTaskComplete(isMigratingToTaxable)
@@ -67,7 +67,7 @@ class AssetsNavigator @Inject()(config: FrontendAppConfig) {
     }
   }
 
-  def addAssetRoute(assets: Assets, index: Int): Call = {
+  def addAssetRoute(assets: Assets): Call = {
     case class AssetRoute(size: Int, maxSize: Int, route: Call)
 
     val routes: List[AssetRoute] = List(
@@ -85,8 +85,7 @@ class AssetsNavigator @Inject()(config: FrontendAppConfig) {
       case assetsRoutes: Seq[AssetRoute] =>
         AssetNavigator.routeToIndex(
           List.empty,
-          controllers.asset.routes.WhatKindOfAssetController.onPageLoad,
-          Some(index)
+          controllers.asset.routes.WhatKindOfAssetController.onPageLoad
         )
     }
   }
@@ -95,13 +94,13 @@ class AssetsNavigator @Inject()(config: FrontendAppConfig) {
                        assets: List[AssetType],
                        index: Option[Int] = None): Call = {
     `type` match {
-      case Money => routeToMoneyIndex(assets, index)
-      case PropertyOrLand => routeToPropertyOrLandIndex(assets, index)
-      case Shares => routeToSharesIndex(assets, index)
-      case Business => routeToBusinessIndex(assets, index)
+      case Money => controllers.asset.money.routes.AssetMoneyValueController.onPageLoad(NormalMode)
+      case PropertyOrLand => controllers.asset.property_or_land.routes.PropertyOrLandAddressYesNoController.onPageLoad(NormalMode)
+      case Shares => controllers.asset.shares.routes.SharesInAPortfolioController.onPageLoad(NormalMode)
+      case Business => controllers.asset.business.routes.BusinessNameController.onPageLoad(NormalMode)
       case Partnership => routeToPartnershipIndex(assets, index)
-      case Other => routeToOtherIndex(assets, index)
-      case NonEeaBusiness => controllers.asset.noneeabusiness.routes.NameController.onPageLoad(0,NormalMode)
+      case Other => controllers.asset.other.routes.OtherAssetDescriptionController.onPageLoad(NormalMode)
+      case NonEeaBusiness => controllers.asset.noneeabusiness.routes.NameController.onPageLoad(NormalMode)
     }
   }
 
@@ -117,38 +116,6 @@ class AssetsNavigator @Inject()(config: FrontendAppConfig) {
     Call(GET, config.maintainATrustOverview)
   }
 
-  private def routeToMoneyIndex(assets: List[AssetType], index: Option[Int]): Call = {
-    AssetNavigator.routeToIndexUsingModeCall(
-      assets,
-      controllers.asset.money.routes.AssetMoneyValueController.onPageLoad,
-      index
-    )
-  }
-
-  private def routeToPropertyOrLandIndex(assets: List[AssetType], index: Option[Int]): Call = {
-    AssetNavigator.routeToIndexUsingModeCall(
-      assets,
-      controllers.asset.property_or_land.routes.PropertyOrLandAddressYesNoController.onPageLoad,
-      index
-    )
-  }
-
-  private def routeToSharesIndex(assets: List[AssetType], index: Option[Int]): Call = {
-    AssetNavigator.routeToIndexUsingModeCall(
-      assets,
-      controllers.asset.shares.routes.SharesInAPortfolioController.onPageLoad,
-      index
-    )
-  }
-
-  private def routeToBusinessIndex(assets: List[AssetType], index: Option[Int]): Call = {
-    AssetNavigator.routeToIndexUsingModeCall(
-      assets,
-      controllers.asset.business.routes.BusinessNameController.onPageLoad,
-      index
-    )
-  }
-
   private def routeToPartnershipIndex(assets: List[AssetType], index: Option[Int]): Call = {
     AssetNavigator.routeToIndexUsingModeCall(
       assets,
@@ -157,15 +124,7 @@ class AssetsNavigator @Inject()(config: FrontendAppConfig) {
     )
   }
 
-  private def routeToOtherIndex(assets: List[AssetType], index: Option[Int]): Call = {
-    AssetNavigator.routeToIndexUsingModeCall(
-      assets,
-      controllers.asset.other.routes.OtherAssetDescriptionController.onPageLoad,
-      index
-    )
-  }
 }
-
 object AssetNavigator {
 
   // taken from 'register-trust-asset-frontend' and modified slighyly

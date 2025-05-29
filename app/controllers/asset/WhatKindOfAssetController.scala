@@ -18,7 +18,6 @@ package controllers.asset
 
 import controllers.actions.StandardActionSets
 import forms.WhatKindOfAssetFormProvider
-import models.WhatKindOfAsset.{Business, Money, NonEeaBusiness, Other, Partnership, PropertyOrLand, Shares}
 import models.assets.Assets
 import models.{Enumerable, Mode, NormalMode, WhatKindOfAsset}
 import navigation.AssetsNavigator
@@ -59,7 +58,7 @@ class WhatKindOfAssetController @Inject()(
       for {
         assets: Assets <- trustService.getAssets(request.userAnswers.identifier)
       } yield {
-        val preparedForm = request.userAnswers.get(WhatKindOfAssetPage(index)) match {
+        val preparedForm = request.userAnswers.get(WhatKindOfAssetPage) match {
           case None => form
           case Some(value) => form.fill(value)
         }
@@ -72,23 +71,15 @@ class WhatKindOfAssetController @Inject()(
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
       trustService.getAssets(request.userAnswers.identifier).flatMap{ assets: Assets =>
+
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
             Future.successful(BadRequest(view(formWithErrors, index, options(assets)))),
           value => {
-            val correctIndex = value match {
-              case Money => assets.monetary.size
-              case PropertyOrLand => assets.propertyOrLand.size
-              case Shares => assets.shares.size
-              case Business =>assets.business.size
-              case Partnership => assets.partnerShip.size
-              case Other => assets.other.size
-              case NonEeaBusiness =>assets.nonEEABusiness.size
-            }
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(WhatKindOfAssetPage(correctIndex), value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(WhatKindOfAssetPage, value))
               _ <- repository.set(updatedAnswers)
-            } yield Redirect(navigator.addAssetNowRoute(value, assets.partnerShip, Some(correctIndex)))
+            } yield Redirect(navigator.addAssetNowRoute(value, assets.partnerShip))
           }
         )
       }

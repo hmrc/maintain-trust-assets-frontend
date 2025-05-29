@@ -46,18 +46,22 @@ class PartnershipDescriptionController @Inject()(
 
   def onPageLoad(index: Int, mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
     implicit request =>
+
       val preparedForm = request.userAnswers.get(PartnershipDescriptionPage(index)) match {
         case None => form
         case Some(value) => form.fill(value)
       }
+
       Ok(view(preparedForm, index, mode))
   }
 
   def onSubmit(index: Int, mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
+
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
           Future.successful(BadRequest(view(formWithErrors, index, mode))),
+
         value => {
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(PartnershipDescriptionPage(index), value))

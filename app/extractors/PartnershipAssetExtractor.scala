@@ -32,8 +32,8 @@ class PartnershipAssetExtractor extends AssetExtractor[PartnershipType] {
                      index: Int): Try[UserAnswers] = {
 
     super.apply(answers, partnershipType, index)
-      .flatMap(_.set(PartnershipDescriptionPage(0), partnershipType.description))
-      .flatMap(_.set(PartnershipStartDatePage(0), partnershipType.partnershipStart))
+      .flatMap(_.set(PartnershipDescriptionPage(0), partnershipType.description)) // TODO: COME BACK TO...
+      .flatMap(_.set(PartnershipStartDatePage, partnershipType.partnershipStart))
   }
 
   override def indexPage: QuestionPage[Int] = IndexPage
