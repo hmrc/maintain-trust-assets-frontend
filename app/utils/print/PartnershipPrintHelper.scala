@@ -28,21 +28,17 @@ import javax.inject.Inject
 
 class PartnershipPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) {
 
-  def apply(userAnswers: UserAnswers, provisional: Boolean, name: String)(implicit messages: Messages): AnswerSection = {
+  def apply(userAnswers: UserAnswers, index: Int, provisional: Boolean, name: String)(implicit messages: Messages): AnswerSection = {
 
     val bound: answerRowConverter.Bound = answerRowConverter.bind(userAnswers, name)
+    val mode: Mode = if (provisional) NormalMode else CheckMode
 
-    def answerRows: Seq[AnswerRow] = {
-      val mode: Mode = if (provisional) NormalMode else CheckMode
-      Seq(
-        bound.assetTypeQuestion(0),
-        bound.stringQuestion(PartnershipDescriptionPage(0), "partnership.description", PartnershipDescriptionController.onPageLoad(0, mode).url), // TODO: HARDCODED
-        bound.dateQuestion(PartnershipStartDatePage, "partnership.startDate", PartnershipStartDateController.onPageLoad(0, mode).url) // TODO: HARDCODED
-      ).flatten
-    }
+    def answerRows: Seq[AnswerRow] = Seq(
+      bound.assetTypeQuestion(index),
+      bound.stringQuestion(PartnershipDescriptionPage(index), "partnership.description", PartnershipDescriptionController.onPageLoad(index, mode).url),
+      bound.dateQuestion(PartnershipStartDatePage, "partnership.startDate", PartnershipStartDateController.onPageLoad(index, mode).url)
+    ).flatten
 
     AnswerSection(headingKey = None, rows = answerRows)
-
   }
-
 }

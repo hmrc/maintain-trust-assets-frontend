@@ -76,8 +76,6 @@ class AddAssetsController @Inject()(
 
       for {
         assets <- trustService.getAssets(userAnswers.identifier)
-        updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
-        _ <- repository.set(updatedAnswers)
       } yield {
         assets match {
           case _ if assets.isEmpty =>
