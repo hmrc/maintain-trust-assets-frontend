@@ -32,13 +32,10 @@ class PartnershipNavigator @Inject()() extends Navigator {
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
     routes(mode)(page)(userAnswers)
 
-  def routes(mode: Mode): PartialFunction[Page, UserAnswers => Call] =
-    simpleNavigation(mode)
-
-  def simpleNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
+  def routes(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
     case PartnershipDescriptionPage(index)  => _ => PartnershipStartDateController.onPageLoad(index, mode)
-    case PartnershipStartDatePage => ua => navigateToCheckAnswers(ua, mode)
-    case PartnershipAnswerPage => _ => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
+    case PartnershipStartDatePage           => ua => navigateToCheckAnswers(ua, mode)
+    case p: PartnershipAnswerPage           => _ => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
   }
 
   private def navigateToCheckAnswers(ua: UserAnswers, mode: Mode): Call = {
@@ -56,3 +53,4 @@ class PartnershipNavigator @Inject()() extends Navigator {
   }
 
 }
+

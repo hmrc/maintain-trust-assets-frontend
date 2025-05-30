@@ -33,7 +33,7 @@ import viewmodels.AnswerSection
 import views.html.asset.partnership.PartnershipAnswersView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class PartnershipAnswerController @Inject()(
                                              override val messagesApi: MessagesApi,
@@ -52,9 +52,7 @@ class PartnershipAnswerController @Inject()(
 
   def onPageLoad(index: Int): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
-
-      val section: AnswerSection = printHelper(userAnswers = request.userAnswers, provisional, request.name)
-
+      val section: AnswerSection = printHelper(request.userAnswers, index, provisional, request.name)
       Ok(view(index, section))
   }
 
@@ -63,11 +61,23 @@ class PartnershipAnswerController @Inject()(
 
       mapper(request.userAnswers) match {
         case None =>
-          errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
+          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+
         case Some(asset) =>
-          connector.addPartnershipAsset(index: Int, request.userAnswers.identifier, asset).map(_ =>
-            Redirect(navigator.nextPage(PartnershipAnswerPage, NormalMode, request.userAnswers))
-          )
+
+          // Always try to amend first
+          connector.amendPartnershipAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
+            response.status match {
+              case OK | NO_CONTENT =>
+                Future.successful(Redirect(navigator.nextPage(PartnershipAnswerPage(index), NormalMode, request.userAnswers)))
+
+              case _ =>
+                // If amend failed (e.g., not found), fall back to add
+                connector.addPartnershipAsset(index, request.userAnswers.identifier, asset).map { _ =>
+                  Redirect(navigator.nextPage(PartnershipAnswerPage(index), NormalMode, request.userAnswers))
+                }
+            }
+          }
       }
   }
 }
