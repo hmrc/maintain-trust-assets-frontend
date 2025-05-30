@@ -16,13 +16,16 @@
 
 package navigation
 
+import controllers.asset.partnership.routes
 import models.{Mode, NormalMode, UserAnswers}
 import pages.{Page, QuestionPage}
+import pages.asset.partnership.PartnershipDescriptionPage
 import play.api.mvc.Call
 
 trait Navigator {
 
-  def nextPage(page: Page, userAnswers: UserAnswers): Call = nextPage(page, NormalMode, userAnswers)
+  def nextPage(page: Page, userAnswers: UserAnswers): Call =
+    nextPage(page, NormalMode, userAnswers)
 
   def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call
 
@@ -31,5 +34,4 @@ trait Navigator {
       .map(if (_) yesCall else noCall)
       .getOrElse(controllers.routes.SessionExpiredController.onPageLoad)
   }
-
 }
