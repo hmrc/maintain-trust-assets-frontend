@@ -34,7 +34,7 @@
     completeAssets: Seq[AddRow],
     heading: String,
     maxedOut: List[(String, Int)]
-)(implicit request: Request[_], messages: Messages)
+)(implicit request: RequestHeader, messages: Messages)
 
 @mainTemplate(
     title = s"${errorPrefix(form)} $heading",

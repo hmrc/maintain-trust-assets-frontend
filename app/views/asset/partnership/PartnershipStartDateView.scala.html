@@ -26,6 +26,7 @@
 )
 
 @(form: Form[_], index: Int, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode)(implicit request: RequestHeader, messages: Messages)
 
 @mainTemplate(
     title = s"${errorPrefix(form)} ${messages("partnership.startDate.title")}",
