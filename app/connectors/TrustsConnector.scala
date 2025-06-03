@@ -126,6 +126,8 @@ class TrustsConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig) e
   def addPartnershipAsset(index: Int, identifier: String, asset: PartnershipType)
                          (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     val url: String = s"$assetsUrl/add-partnership/$identifier"
+
+    println("url -==== addPartnershipAsset ============== "+ url)
     http
       .post(url"$url")
       .withBody(Json.toJson(asset))
@@ -135,6 +137,7 @@ class TrustsConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig) e
   def amendPartnershipAsset(identifier: String, index: Int, asset: PartnershipType)
                         (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     val url: String = s"$assetsUrl/amend-partnership/$identifier/$index"
+    println("url ============== "+ url)
     http
       .post(url"$url")
       .withBody(Json.toJson(asset))
