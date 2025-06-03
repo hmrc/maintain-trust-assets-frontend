@@ -3,9 +3,11 @@ GET        /has-taxable-asset                                      controllers.a
 POST       /has-taxable-asset                                      controllers.asset.nonTaxableToTaxable.AddAssetYesNoController.onSubmit()
 
 GET        /add                                              controllers.asset.nonTaxableToTaxable.AddAssetsController.onPageLoad()
-GET        /add-index                                              controllers.asset.nonTaxableToTaxable.AddAssetsController.onPageLoadWithIndex(index: Int)
+GET        /add-index/:index                                 controllers.asset.nonTaxableToTaxable.AddAssetsController.onPageLoadWithIndex(index: Int)
+
 POST       /add                                              controllers.asset.nonTaxableToTaxable.AddAssetsController.submitOne()
 GET        /add-another                                      controllers.asset.nonTaxableToTaxable.AddAssetsController.onPageLoad()
-POST       /add-another                                      controllers.asset.nonTaxableToTaxable.AddAssetsController.submitAnother(index: Int)
+POST       /add-another/:index                               controllers.asset.nonTaxableToTaxable.AddAssetsController.submitAnother(index: Int)
+
 GET        /complete                                         controllers.asset.nonTaxableToTaxable.AddAssetsController.submitComplete()
 POST       /complete                                         controllers.asset.nonTaxableToTaxable.AddAssetsController.submitComplete()
