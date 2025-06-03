@@ -30,7 +30,7 @@ class PartnershipAssetMapper extends Mapper[PartnershipType] {
     val readFromUserAnswers: Reads[PartnershipType] =
       (
         PartnershipDescriptionPage(0).path.read[String] and // TODO: COME BACK TO...
-          PartnershipStartDatePage.path.read[LocalDate]
+          PartnershipStartDatePage(0).path.read[LocalDate]
         ) (PartnershipType.apply _)
 
     mapAnswersWithExplicitReads(answers, readFromUserAnswers)

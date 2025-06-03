@@ -57,7 +57,7 @@ class MoneyAnswerController @Inject()(
     implicit request =>
       mapper(request.userAnswers) match {
         case None =>
-          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+          errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
 
         case Some(asset) =>
           service.getMonetaryAsset(request.userAnswers.identifier).flatMap {

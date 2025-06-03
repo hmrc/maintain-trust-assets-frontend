@@ -36,7 +36,7 @@ class PartnershipPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) {
     def answerRows: Seq[AnswerRow] = Seq(
       bound.assetTypeQuestion(index),
       bound.stringQuestion(PartnershipDescriptionPage(index), "partnership.description", PartnershipDescriptionController.onPageLoad(index, mode).url),
-      bound.dateQuestion(PartnershipStartDatePage, "partnership.startDate", PartnershipStartDateController.onPageLoad(index, mode).url)
+      bound.dateQuestion(PartnershipStartDatePage(index), "partnership.startDate", PartnershipStartDateController.onPageLoad(index, mode).url)
     ).flatten
 
     AnswerSection(headingKey = None, rows = answerRows)
