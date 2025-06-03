@@ -21,6 +21,7 @@ import connectors.TrustsConnector
 import controllers.actions._
 import controllers.actions.shares.CompanyNameRequiredAction
 import handlers.ErrorHandler
+
 import javax.inject.Inject
 import mapping.ShareAssetMapper
 import models.NormalMode
@@ -33,7 +34,7 @@ import utils.print.SharesPrintHelper
 import viewmodels.AnswerSection
 import views.html.asset.shares.add.ShareAnswersView
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class ShareAnswerController @Inject()(
                                        override val messagesApi: MessagesApi,

@@ -31,7 +31,7 @@ import utils.print.OtherPrintHelper
 import viewmodels.AnswerSection
 import views.html.asset.other.add.OtherAssetAnswersView
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class OtherAnswerController @Inject()(
                                        override val messagesApi: MessagesApi,

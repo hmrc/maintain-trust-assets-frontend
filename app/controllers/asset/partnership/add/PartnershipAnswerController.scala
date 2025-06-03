@@ -61,7 +61,7 @@ class PartnershipAnswerController @Inject()(
 
       mapper(request.userAnswers) match {
         case None =>
-          Future.successful(InternalServerError(errorHandler.internalServerErrorTemplate))
+          errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
 
         case Some(asset) =>
 
@@ -69,12 +69,12 @@ class PartnershipAnswerController @Inject()(
           connector.amendPartnershipAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
             response.status match {
               case OK | NO_CONTENT =>
-                Future.successful(Redirect(navigator.nextPage(PartnershipAnswerPage(index), NormalMode, request.userAnswers)))
+                Future.successful(Redirect(navigator.nextPage(PartnershipAnswerPage(index + 1), NormalMode, request.userAnswers)))
 
               case _ =>
                 // If amend failed (e.g., not found), fall back to add
                 connector.addPartnershipAsset(index, request.userAnswers.identifier, asset).map { _ =>
-                  Redirect(navigator.nextPage(PartnershipAnswerPage(index), NormalMode, request.userAnswers))
+                  Redirect(navigator.nextPage(PartnershipAnswerPage(index + 1), NormalMode, request.userAnswers))
                 }
             }
           }

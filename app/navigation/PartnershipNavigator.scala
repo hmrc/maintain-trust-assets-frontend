@@ -34,15 +34,16 @@ class PartnershipNavigator @Inject()() extends Navigator {
 
   def routes(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
     case PartnershipDescriptionPage(index)  => _ => PartnershipStartDateController.onPageLoad(index, mode)
-    case PartnershipStartDatePage           => ua => navigateToCheckAnswers(ua, mode)
-    case p: PartnershipAnswerPage           => _ => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
+    case PartnershipStartDatePage(index)           => ua => navigateToCheckAnswers(ua, mode, index)
+    case PartnershipAnswerPage(index)           => _ => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoadWithIndex(index)
   }
 
-  private def navigateToCheckAnswers(ua: UserAnswers, mode: Mode): Call = {
+  private def navigateToCheckAnswers(ua: UserAnswers, mode: Mode, index: Int): Call = {
     if (mode == NormalMode) {
       AssetNavigator.routeToIndex(
         List.empty, // TODO: COME BACK TO
-        controllers.asset.partnership.add.routes.PartnershipAnswerController.onPageLoad
+        controllers.asset.partnership.add.routes.PartnershipAnswerController.onPageLoad,
+        index = Some(index)
       )
     } else {
       ua.get(IndexPage) match {
