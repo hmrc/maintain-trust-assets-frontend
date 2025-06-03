@@ -114,7 +114,7 @@ case object WhatKindOfAssetPage extends QuestionPage[WhatKindOfAsset] {
   // TODO: COME BACK TO...
   private def removePartnership(userAnswers: UserAnswers): Try[UserAnswers] = {
     userAnswers.remove(PartnershipDescriptionPage(0))
-      .flatMap(_.remove(PartnershipStartDatePage))
+      .flatMap(_.remove(PartnershipStartDatePage(0)))
       .flatMap(removeStatus)
   }
 

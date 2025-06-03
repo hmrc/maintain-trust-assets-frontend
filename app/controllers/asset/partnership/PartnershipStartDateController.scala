@@ -49,7 +49,7 @@ class PartnershipStartDateController @Inject()(
   def onPageLoad(index: Int, mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(PartnershipStartDatePage) match {
+      val preparedForm = request.userAnswers.get(PartnershipStartDatePage(index)) match {
         case None => form
         case Some(value) => form.fill(value)
       }
@@ -65,9 +65,9 @@ class PartnershipStartDateController @Inject()(
 
         value => {
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(PartnershipStartDatePage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(PartnershipStartDatePage(index), value))
             _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(PartnershipStartDatePage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(PartnershipStartDatePage(index), mode, updatedAnswers))
         }
       )
   }

@@ -92,7 +92,7 @@ class PartnershipAmendAnswersController @Inject()(
       mapper(request.userAnswers).map {
         asset =>
           connector.amendPartnershipAsset(request.userAnswers.identifier, index, asset).map(_ =>
-            Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
+            Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoadWithIndex(index))
           )
       } getOrElse {
         logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +

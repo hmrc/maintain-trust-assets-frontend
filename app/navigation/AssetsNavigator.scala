@@ -67,7 +67,7 @@ class AssetsNavigator @Inject()(config: FrontendAppConfig) {
     }
   }
 
-  def addAssetRoute(assets: Assets): Call = {
+  def addAssetRoute(assets: Assets, index: Int): Call = {
     case class AssetRoute(size: Int, maxSize: Int, route: Call)
 
     val routes: List[AssetRoute] = List(
@@ -85,7 +85,8 @@ class AssetsNavigator @Inject()(config: FrontendAppConfig) {
       case assetsRoutes: Seq[AssetRoute] =>
         AssetNavigator.routeToIndex(
           List.empty,
-          controllers.asset.routes.WhatKindOfAssetController.onPageLoad
+          controllers.asset.routes.WhatKindOfAssetController.onPageLoad,
+          Some(index)
         )
     }
   }
