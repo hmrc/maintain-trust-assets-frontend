@@ -71,12 +71,15 @@ class PartnershipAnswerController @Inject()(
                 ele.description.equalsIgnoreCase(asset.description) &&
                   ele.partnershipStart.equals(asset.partnershipStart)
               )
-
-              if (!matchFound) {
-                connector.addPartnershipAsset(index, request.userAnswers.identifier, asset).map { _ =>
-                  Redirect(navigator.nextPage(PartnershipAnswerPage(index + 1), NormalMode, request.userAnswers))
-                }
+              connector.addPartnershipAsset(index, request.userAnswers.identifier, asset).map { _ =>
+                Redirect(navigator.nextPage(PartnershipAnswerPage(index + 1), NormalMode, request.userAnswers))
               }
+
+//              if (!matchFound) {
+//                connector.addPartnershipAsset(index, request.userAnswers.identifier, asset).map { _ =>
+//                  Redirect(navigator.nextPage(PartnershipAnswerPage(index + 1), NormalMode, request.userAnswers))
+//                }
+//              }
           }
           Future.successful(Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoadWithIndex(index)))
 
