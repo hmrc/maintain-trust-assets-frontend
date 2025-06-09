@@ -56,7 +56,7 @@ class PartnershipAnswerController @Inject()(
       Ok(view(index, section))
   }
 
-    def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
 
       mapper(request.userAnswers) match {
@@ -65,41 +65,46 @@ class PartnershipAnswerController @Inject()(
 
         case Some(asset) =>
 
-//          connector.getAssets(request.userAnswers.identifier).map {
-//            case data =>
-//              val matchFound = data.partnerShip.exists(ele =>
-//                ele.description.equalsIgnoreCase(asset.description) &&
-//                  ele.partnershipStart.equals(asset.partnershipStart)
-//              )
-//              connector.addPartnershipAsset(index, request.userAnswers.identifier, asset).map { _ =>
-//                Redirect(navigator.nextPage(PartnershipAnswerPage(index + 1), NormalMode, request.userAnswers))
-//              }
-//
-//              if (!matchFound) {
-//                connector.addPartnershipAsset(index, request.userAnswers.identifier, asset).map { _ =>
-//                  Redirect(navigator.nextPage(PartnershipAnswerPage(index + 1), NormalMode, request.userAnswers))
-//                }
-//              }
-//          }
-//          Future.successful(Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoadWithIndex(index)))
+          connector.getAssets(request.userAnswers.identifier).map {
+            case data =>
+              val matchFound = data.partnerShip.exists(ele =>
+                ele.description.equalsIgnoreCase(asset.description) &&
+                  ele.partnershipStart.equals(asset.partnershipStart)
+              )
+              if (!matchFound) {
+                connector.amendPartnershipAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
+                  response.status match {
+                    case OK | NO_CONTENT =>
+                      Future.successful(Redirect(navigator.nextPage(PartnershipAnswerPage(index + 1), NormalMode, request.userAnswers)))
+
+                    case _ =>
+                      // If amend failed (e.g., not found), fall back to add
+                      connector.addPartnershipAsset(index, request.userAnswers.identifier, asset).map { _ =>
+                        Redirect(navigator.nextPage(PartnershipAnswerPage(index + 1), NormalMode, request.userAnswers))
+                      }
+                  }
+                }
+              }
+          }
+          Future.successful(Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoadWithIndex(index)))
 
         //          connector.addPartnershipAsset(index, request.userAnswers.identifier, asset).map { _ =>
         //            Redirect(navigator.nextPage(PartnershipAnswerPage(index + 1), NormalMode, request.userAnswers))
         //          }
 
-                  // Always try to amend first
-                  connector.amendPartnershipAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
-                    response.status match {
-                      case OK | NO_CONTENT =>
-                        Future.successful(Redirect(navigator.nextPage(PartnershipAnswerPage(index + 1), NormalMode, request.userAnswers)))
-
-                      case _ =>
-                        // If amend failed (e.g., not found), fall back to add
-                        connector.addPartnershipAsset(index, request.userAnswers.identifier, asset).map { _ =>
-                          Redirect(navigator.nextPage(PartnershipAnswerPage(index + 1), NormalMode, request.userAnswers))
-                        }
-                    }
-                  }
+        // Always try to amend first
+        //                  connector.amendPartnershipAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
+        //                    response.status match {
+        //                      case OK | NO_CONTENT =>
+        //                        Future.successful(Redirect(navigator.nextPage(PartnershipAnswerPage(index + 1), NormalMode, request.userAnswers)))
+        //
+        //                      case _ =>
+        //                        // If amend failed (e.g., not found), fall back to add
+        //                        connector.addPartnershipAsset(index, request.userAnswers.identifier, asset).map { _ =>
+        //                          Redirect(navigator.nextPage(PartnershipAnswerPage(index + 1), NormalMode, request.userAnswers))
+        //                        }
+        //                    }
+        //                  }
       }
   }
 }
