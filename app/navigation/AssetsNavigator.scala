@@ -29,9 +29,11 @@ import javax.inject.Inject
 
 class AssetsNavigator @Inject()(config: FrontendAppConfig) {
 
-  def redirectToAddAssetPage(isMigratingToTaxable: Boolean): Call = {
+  def redirectToAddAssetPage(isMigratingToTaxable: Boolean, index: Option[Int] = None): Call = {
+
+    println("redirectToAddAssetPage :::::::::::::::: "+ index)
     if (isMigratingToTaxable) {
-      controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoadWithIndex(0)
+      controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoadWithIndex(if(index.isDefined)  index.get else 0)
     } else {
       controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad()
     }
@@ -126,6 +128,7 @@ class AssetsNavigator @Inject()(config: FrontendAppConfig) {
   }
 
 }
+
 object AssetNavigator {
 
   // taken from 'register-trust-asset-frontend' and modified slighyly

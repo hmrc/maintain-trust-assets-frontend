@@ -25,8 +25,8 @@ import models.Constants._
 import models.TaskStatus.Completed
 import models.assets.Assets
 import models.{AddAssets, UserAnswers, WhatKindOfAsset}
-import navigation.{AssetNavigator, AssetsNavigator}
-import pages.asset.{AddAnAssetYesNoPage, AddAssetsPage}
+import navigation.AssetsNavigator
+import pages.asset.AddAnAssetYesNoPage
 import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi, MessagesProvider}
@@ -73,6 +73,8 @@ class AddAssetsController @Inject()(
     implicit request =>
 
       val userAnswers: UserAnswers = request.userAnswers
+
+      println("#########################userAnswers#############################"+userAnswers )
 
       for {
         assets <- trustService.getAssets(userAnswers.identifier)
