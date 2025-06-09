@@ -25,7 +25,7 @@ import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
-import services.TrustsStoreService
+import services.{TrustService, TrustsStoreService}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Session
 
@@ -38,6 +38,7 @@ class IndexController @Inject()(
                                  cacheRepository: PlaybackRepository,
                                  connector: TrustsConnector,
                                  trustsStoreService: TrustsStoreService,
+                                 trustService: TrustService,
                                  navigator: AssetsNavigator
                                )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
@@ -48,6 +49,8 @@ class IndexController @Inject()(
         logger.info(s"[Session ID: ${Session.id(hc)}][UTR/URN: $identifier]" +
           s" user has started to maintain assets")
         for {
+          assets <- trustService.getAssets(identifier)
+
           details <- connector.getTrustDetails(identifier)
           is5mldEnabled <- trustsStoreService.is5mldEnabled()
           isMigrating <- connector.getTrustMigrationFlag(identifier)
@@ -70,7 +73,9 @@ class IndexController @Inject()(
           _ <- cacheRepository.set(ua)
           _ <- trustsStoreService.updateTaskStatus(identifier, InProgress)
         } yield {
-          Redirect(navigator.redirectToAddAssetPage(ua.isMigratingToTaxable))
+
+          println("request.userAnswers :::::::::::::::: "+assets +":::::::::::::: "+ assets.totalSizeCount)
+          Redirect(navigator.redirectToAddAssetPage(ua.isMigratingToTaxable, Some(assets.totalSizeCount)))
         }
     }
 
