@@ -34,6 +34,7 @@ import views.html.asset.partnership.PartnershipAnswersView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import play.api.http.Status._
 
 class PartnershipAnswerController @Inject()(
                                              override val messagesApi: MessagesApi,
@@ -64,47 +65,31 @@ class PartnershipAnswerController @Inject()(
           errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
 
         case Some(asset) =>
+          connector.amendPartnershipAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
+            response.status match {
+              case OK | NO_CONTENT =>
+                Future.successful(
+                  Redirect(navigator.nextPage(PartnershipAnswerPage(index + 1), NormalMode, request.userAnswers))
+                )
 
-          connector.getAssets(request.userAnswers.identifier).map {
-            case data =>
-              val matchFound = data.partnerShip.exists(ele =>
-                ele.description.equalsIgnoreCase(asset.description) &&
-                  ele.partnershipStart.equals(asset.partnershipStart)
-              )
-              if (!matchFound) {
-                connector.amendPartnershipAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
-                  response.status match {
-                    case OK | NO_CONTENT =>
-                      Future.successful(Redirect(navigator.nextPage(PartnershipAnswerPage(index + 1), NormalMode, request.userAnswers)))
-
-                    case _ =>
-                      // If amend failed (e.g., not found), fall back to add
+              case _ =>
+                connector.getAssets(request.userAnswers.identifier).map {
+                  case data =>
+                    val matchFound = data.partnerShip.exists(ele =>
+                      ele.description.equalsIgnoreCase(asset.description) &&
+                        ele.partnershipStart.equals(asset.partnershipStart)
+                    )
+                    if (!matchFound) {
                       connector.addPartnershipAsset(index, request.userAnswers.identifier, asset).map { _ =>
                         Redirect(navigator.nextPage(PartnershipAnswerPage(index + 1), NormalMode, request.userAnswers))
                       }
-                  }
+                    }
                 }
-              }
+            }
+            Future.successful(
+              Redirect(navigator.nextPage(PartnershipAnswerPage(index + 1), NormalMode, request.userAnswers))
+            )
           }
-          Future.successful(Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoadWithIndex(index)))
-
-        //          connector.addPartnershipAsset(index, request.userAnswers.identifier, asset).map { _ =>
-        //            Redirect(navigator.nextPage(PartnershipAnswerPage(index + 1), NormalMode, request.userAnswers))
-        //          }
-
-        // Always try to amend first
-        //                  connector.amendPartnershipAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
-        //                    response.status match {
-        //                      case OK | NO_CONTENT =>
-        //                        Future.successful(Redirect(navigator.nextPage(PartnershipAnswerPage(index + 1), NormalMode, request.userAnswers)))
-        //
-        //                      case _ =>
-        //                        // If amend failed (e.g., not found), fall back to add
-        //                        connector.addPartnershipAsset(index, request.userAnswers.identifier, asset).map { _ =>
-        //                          Redirect(navigator.nextPage(PartnershipAnswerPage(index + 1), NormalMode, request.userAnswers))
-        //                        }
-        //                    }
-        //                  }
       }
   }
 }
