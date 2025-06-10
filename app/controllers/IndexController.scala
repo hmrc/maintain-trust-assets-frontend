@@ -75,7 +75,7 @@ class IndexController @Inject()(
         } yield {
 
           println("request.userAnswers :::::::::::::::: "+assets +":::::::::::::: "+ assets.totalSizeCount)
-          Redirect(navigator.redirectToAddAssetPage(ua.isMigratingToTaxable, Some(assets.totalSizeCount)))
+          Redirect(navigator.redirectToAddAssetPage(ua.isMigratingToTaxable, Some(0)))
         }
     }
 
