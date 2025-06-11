@@ -165,7 +165,7 @@ class AddAssetsController @Inject()(
               completeAssets = assetRows.complete,
               heading = heading(assetRows.count),
               maxedOut = WhatKindOfAsset.maxedOutOptions(assets),
-              index + 1
+              index
             )))
           },
           {
