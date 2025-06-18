@@ -18,7 +18,6 @@ package utils.print
 
 import controllers.asset.partnership.routes._
 import models.{CheckMode, Mode, NormalMode, UserAnswers}
-import navigation.AssetNavigator
 import pages.asset.partnership._
 import play.api.i18n.Messages
 import utils.AnswerRowConverter

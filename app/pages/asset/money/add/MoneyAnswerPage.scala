@@ -16,6 +16,9 @@
 
 package pages.asset.money.add
 
-import pages.Page
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-case object MoneyAnswerPage extends Page
+case class MoneyAnswerPage(index: Int) extends QuestionPage[Boolean] {
+  override def path: JsPath = JsPath \ "assets" \ "money" \ index \ "answersComplete"
+}

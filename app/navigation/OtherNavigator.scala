@@ -20,7 +20,6 @@ import controllers.asset.other.routes._
 import models.{Mode, NormalMode, UserAnswers}
 import pages.Page
 import pages.asset.other._
-import pages.asset.other.add.OtherAnswerPage
 import pages.asset.other.amend.IndexPage
 import play.api.mvc.Call
 
@@ -37,7 +36,6 @@ class OtherNavigator @Inject()() extends Navigator() {
   def simpleNavigation(ua: UserAnswers, mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
     case OtherAssetDescriptionPage(index) => _ => OtherAssetValueController.onPageLoad(index, mode)
     case OtherAssetValuePage(index) => _ => navigateToCheckAnswers(ua, mode, index)
-    case OtherAnswerPage(index) => _ => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
   }
 
   private def navigateToCheckAnswers(ua: UserAnswers, mode: Mode, index: Int): Call = {
@@ -45,7 +43,7 @@ class OtherNavigator @Inject()() extends Navigator() {
       controllers.asset.other.add.routes.OtherAnswerController.onPageLoad(index)
     } else {
       ua.get(IndexPage) match {
-        case Some(indexPage: Int) => controllers.asset.other.amend.routes.AnswersController.renderFromUserAnswers(indexPage)
+        case Some(index) => controllers.asset.other.amend.routes.AnswersController.renderFromUserAnswers(index)
         case None => controllers.routes.SessionExpiredController.onPageLoad
       }
     }

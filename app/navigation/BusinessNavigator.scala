@@ -41,7 +41,7 @@ class BusinessNavigator @Inject()() extends Navigator {
     case BusinessUkAddressPage(index) => _ => BusinessValueController.onPageLoad(index, mode)
     case BusinessInternationalAddressPage(index) => _ => BusinessValueController.onPageLoad(index, mode)
     case BusinessValuePage(index) => ua => navigateToCheckAnswers(ua, mode, index)
-    case BusinessAnswerPage(index) => _ => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
+    case BusinessAnswerPage(index) => _ => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoadWithIndex(index)
   }
 
   private def yesNoNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
@@ -55,14 +55,10 @@ class BusinessNavigator @Inject()() extends Navigator {
 
   private def navigateToCheckAnswers(ua: UserAnswers, mode: Mode, index: Int): Call = {
     if (mode == NormalMode) {
-      AssetNavigator.routeToIndex(
-        List.empty, // TODO: COME BACK TO
-        controllers.asset.business.add.routes.BusinessAnswersController.onPageLoad,
-        index = Some(index)
-      )
+      controllers.asset.business.add.routes.BusinessAnswersController.onPageLoad(index)
     } else {
       ua.get(IndexPage) match {
-        case Some(indexPage: Int) => controllers.asset.business.amend.routes.BusinessAmendAnswersController.renderFromUserAnswers(indexPage)
+        case Some(index) => controllers.asset.business.amend.routes.BusinessAmendAnswersController.renderFromUserAnswers(index)
         case None => controllers.routes.SessionExpiredController.onPageLoad
       }
     }

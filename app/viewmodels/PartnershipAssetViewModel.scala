@@ -36,9 +36,19 @@ object PartnershipAssetViewModel {
 
   // TODO: COME BACK TO...
   implicit lazy val reads: Reads[PartnershipAssetViewModel] = (
-    (__ \ WhatKindOfAssetPage).read[WhatKindOfAsset].filter(_ == Partnership) and
-      (__ \ PartnershipDescriptionPage(0)).readNullable[String] and
-      (__ \ AssetStatus).readWithDefault[Status](InProgress)
+    (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].filter(_ == Partnership) and
+      (__ \ PartnershipDescriptionPage.key).readNullable[String] and
+      (__ \ AssetStatus.key).readWithDefault[Status](InProgress)
     )(PartnershipAssetViewModel.apply _)
-
 }
+
+//object PartnershipAssetViewModel {
+//
+//  // TODO: COME BACK TO...
+//  implicit lazy val reads: Reads[PartnershipAssetViewModel] = (
+//    (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].filter(_ == Partnership) and
+//      (__ \ PartnershipDescriptionPage(0)).readNullable[String] and
+//      (__ \ AssetStatus).readWithDefault[Status](InProgress)
+//    )(PartnershipAssetViewModel.apply _)
+//
+//}

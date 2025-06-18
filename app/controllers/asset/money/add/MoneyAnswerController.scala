@@ -47,30 +47,46 @@ class MoneyAnswerController @Inject()(
 
   private val provisional: Boolean = true
 
-  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
+  def onPageLoad(index: Int): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
-      val section: AnswerSection = printHelper(userAnswers = request.userAnswers, provisional, request.name)
-      Ok(view(section))
+      val section: AnswerSection = printHelper(userAnswers = request.userAnswers, index = index, provisional = provisional, name = request.name)
+
+      Ok(view(index, section))
   }
 
-  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
       mapper(request.userAnswers) match {
         case None =>
           errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
 
         case Some(asset) =>
-          service.getMonetaryAsset(request.userAnswers.identifier).flatMap {
-            case Some(_) =>
-              connector.amendMoneyAsset(request.userAnswers.identifier, 0, asset).map(_ =>
-                Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
-              )
+          connector.amendMoneyAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
+            response.status match {
+              case OK | NO_CONTENT =>
+                Future.successful(
+                  Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
+                )
 
-            case None =>
-              connector.addMoneyAsset(request.userAnswers.identifier, asset).map(_ =>
-                Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
-              )
+              case _ =>
+                connector.getAssets(request.userAnswers.identifier).flatMap { data =>
+                  val matchFound = data.monetary.exists(existing =>
+                    existing.assetMonetaryAmount == asset.assetMonetaryAmount
+                  )
+
+                  if (!matchFound) {
+                    connector.addMoneyAsset(index, request.userAnswers.identifier, asset).map { _ =>
+                      Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
+                    }
+                  } else {
+                    Future.successful(
+                      Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
+                    )
+                  }
+                }
+            }
           }
       }
   }
+
 }

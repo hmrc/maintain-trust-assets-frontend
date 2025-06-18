@@ -42,7 +42,7 @@ class PropertyOrLandNavigator @Inject()() extends Navigator {
     case PropertyOrLandInternationalAddressPage(index)  => _ => PropertyOrLandTotalValueController.onPageLoad(index, mode)
     case PropertyOrLandTotalValuePage(index) => _ => TrustOwnAllThePropertyOrLandController.onPageLoad(index, mode)
     case PropertyLandValueTrustPage(index) => ua => navigateToCheckAnswers(ua, mode, index)
-    case PropertyOrLandAnswerPage(index) => _ => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
+    case PropertyOrLandAnswerPage(index) => _ => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoadWithIndex(index)
   }
 
   private def yesNoNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
@@ -68,14 +68,10 @@ class PropertyOrLandNavigator @Inject()() extends Navigator {
 
   private def navigateToCheckAnswers(ua: UserAnswers, mode: Mode, index: Int): Call = {
     if (mode == NormalMode) {
-      AssetNavigator.routeToIndex(
-        List.empty, // TODO: COME BACK TO
-        controllers.asset.property_or_land.add.routes.PropertyOrLandAnswerController.onPageLoad,
-        index = Some(index)
-      )
+      controllers.asset.property_or_land.add.routes.PropertyOrLandAnswerController.onPageLoad(index)
     } else {
       ua.get(IndexPage) match {
-        case Some(indexPage) => controllers.asset.property_or_land.amend.routes.PropertyOrLandAmendAnswersController.renderFromUserAnswers(indexPage)
+        case Some(index) => controllers.asset.property_or_land.amend.routes.PropertyOrLandAmendAnswersController.renderFromUserAnswers(index)
         case None => controllers.routes.SessionExpiredController.onPageLoad
       }
     }

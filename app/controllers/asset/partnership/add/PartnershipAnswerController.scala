@@ -31,10 +31,8 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.PartnershipPrintHelper
 import viewmodels.AnswerSection
 import views.html.asset.partnership.PartnershipAnswersView
-
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import play.api.http.Status._
 
 class PartnershipAnswerController @Inject()(
                                              override val messagesApi: MessagesApi,
@@ -59,11 +57,9 @@ class PartnershipAnswerController @Inject()(
 
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-
       mapper(request.userAnswers) match {
         case None =>
           errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
-
         case Some(asset) =>
           connector.amendPartnershipAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
             response.status match {
@@ -71,7 +67,6 @@ class PartnershipAnswerController @Inject()(
                 Future.successful(
                   Redirect(navigator.nextPage(PartnershipAnswerPage(index + 1), NormalMode, request.userAnswers))
                 )
-
               case _ =>
                 connector.getAssets(request.userAnswers.identifier).map {
                   case data =>

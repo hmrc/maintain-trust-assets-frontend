@@ -32,10 +32,10 @@ class BusinessExtractor extends AssetExtractor[BusinessAssetType] {
                      index: Int): Try[UserAnswers] = {
 
     super.apply(answers, assetType, index)
-      .flatMap(_.set(BusinessNamePage(index), assetType.orgName))
-      .flatMap(_.set(BusinessDescriptionPage(index), assetType.businessDescription))
+      .flatMap(_.set(BusinessNamePage(0), assetType.orgName))
+      .flatMap(_.set(BusinessDescriptionPage(0), assetType.businessDescription))
       .flatMap(answers => extractAddress(Some(assetType.address), answers))
-      .flatMap(_.set(BusinessValuePage(index), assetType.businessValue))
+      .flatMap(_.set(BusinessValuePage(0), assetType.businessValue))
   }
 
   override def ukAddressYesNoPage: QuestionPage[Boolean] = BusinessAddressUkYesNoPage(0)

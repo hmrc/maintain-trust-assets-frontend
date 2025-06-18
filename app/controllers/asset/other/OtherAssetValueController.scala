@@ -46,32 +46,30 @@ class OtherAssetValueController @Inject()(
 
   private val form: Form[Long] = formProvider.withConfig(prefix = "other.value")
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
+  def onPageLoad(index: Int, mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
-      val description = request.userAnswers.get(OtherAssetDescriptionPage).getOrElse("")
-
-      val preparedForm = request.userAnswers.get(OtherAssetValuePage) match {
-        case None => form
+      val description = request.userAnswers.get(OtherAssetDescriptionPage(index)).getOrElse("")
+      val preparedForm = request.userAnswers.get(OtherAssetValuePage(index)) match {
         case Some(value) => form.fill(value)
+        case None        => form
       }
-      Ok(view(preparedForm, mode, description))
-  }
+      Ok(view(preparedForm, index, mode, description))
+    }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
+
+  def onSubmit(index: Int, mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
     implicit request =>
-      val description = request.userAnswers.get(OtherAssetDescriptionPage).getOrElse("")
+      val description = request.userAnswers.get(OtherAssetDescriptionPage(index)).getOrElse("")
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode, description))),
-
+          Future.successful(BadRequest(view(formWithErrors, index, mode, description))),
         value => {
-          val answers = request.userAnswers.set(OtherAssetValuePage, value)
+          val answers = request.userAnswers.set(OtherAssetValuePage(index), value)
           for {
             updatedAnswers <- Future.fromTry(answers)
             _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(OtherAssetValuePage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(OtherAssetValuePage(index), mode, updatedAnswers))
         }
       )
   }
-
 }
