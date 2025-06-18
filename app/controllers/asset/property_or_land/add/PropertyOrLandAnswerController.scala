@@ -21,6 +21,7 @@ import connectors.TrustsConnector
 import controllers.actions._
 import controllers.actions.property_or_land.NameRequiredAction
 import handlers.ErrorHandler
+
 import javax.inject.Inject
 import mapping.PropertyOrLandMapper
 import models.NormalMode
@@ -33,7 +34,7 @@ import utils.print.PropertyOrLandPrintHelper
 import viewmodels.AnswerSection
 import views.html.asset.property_or_land.add.PropertyOrLandAnswersView
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class PropertyOrLandAnswerController @Inject()(
                                                 override val messagesApi: MessagesApi,
@@ -50,22 +51,49 @@ class PropertyOrLandAnswerController @Inject()(
 
   private val provisional: Boolean = true
 
-  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
+  def onPageLoad(index: Int): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
-      val section: AnswerSection = printHelper(userAnswers = request.userAnswers, provisional, request.name)
-      Ok(view(section))
+      val section: AnswerSection = printHelper(request.userAnswers, index, provisional, request.name)
+      Ok(view(index, section))
   }
 
-  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-
       mapper(request.userAnswers) match {
         case None =>
           errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
         case Some(asset) =>
-          connector.addPropertyOrLandAsset(request.userAnswers.identifier, asset).map(_ =>
-            Redirect(navigator.nextPage(PropertyOrLandAnswerPage, NormalMode, request.userAnswers))
-          )
+          connector.amendPropertyOrLandAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
+            response.status match {
+              case OK | NO_CONTENT =>
+                Future.successful(
+                  Redirect(navigator.nextPage(PropertyOrLandAnswerPage(index + 1), NormalMode, request.userAnswers))
+                )
+
+              case _ =>
+                connector.getAssets(request.userAnswers.identifier).flatMap { data =>
+                  val matchFound = data.propertyOrLand.exists(existing =>
+                    existing.name.equalsIgnoreCase(asset.name) &&
+                      existing.address == asset.address &&
+                      existing.buildingLandName == asset.buildingLandName &&
+                      existing.descriptionOrAddress == asset.descriptionOrAddress &&
+                      existing.valueFull == asset.valueFull &&
+                      existing.valuePrevious == asset.valuePrevious
+                  )
+
+                  if (!matchFound) {
+                    connector.addPropertyOrLandAsset(index, request.userAnswers.identifier, asset).map { _ =>
+                      Redirect(navigator.nextPage(PropertyOrLandAnswerPage(index + 1), NormalMode, request.userAnswers))
+                    }
+                  } else {
+                    Future.successful(
+                      Redirect(navigator.nextPage(PropertyOrLandAnswerPage(index + 1), NormalMode, request.userAnswers))
+                    )
+                  }
+                }
+            }
+          }
       }
   }
+
 }

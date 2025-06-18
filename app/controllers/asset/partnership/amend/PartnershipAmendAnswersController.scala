@@ -57,7 +57,7 @@ class PartnershipAmendAnswersController @Inject()(
 
   private def render(userAnswers: UserAnswers, index: Int, name: String)
                     (implicit request: Request[AnyContent]): Result = {
-    val section: AnswerSection = printHelper(userAnswers, provisional, name)
+    val section: AnswerSection = printHelper(userAnswers, index, provisional, name)
     Ok(view(section, index))
   }
 
@@ -91,7 +91,7 @@ class PartnershipAmendAnswersController @Inject()(
       mapper(request.userAnswers).map {
         asset =>
           connector.amendPartnershipAsset(request.userAnswers.identifier, index, asset).map(_ =>
-            Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
+            Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoadWithIndex(index))
           )
       } getOrElse {
         logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +

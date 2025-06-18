@@ -38,10 +38,10 @@ final case class NonEeaBusinessAsset(override val whatKindOfAsset: WhatKindOfAss
 object NonEeaBusinessAsset {
 
   implicit lazy val reads: Reads[NonEeaBusinessAsset] = (
-    (__ \ WhatKindOfAssetPage).read[WhatKindOfAsset].filter(_ == NonEeaBusiness) and
-      (__ \ NamePage).read[String] and
-      (__ \ NonUkAddressPage).read[Address] and
-      (__ \ GoverningCountryPage).read[String] and
+    (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].filter(_ == NonEeaBusiness) and
+      (__ \ NamePage.key).read[String] and
+      (__ \ NonUkAddressPage.key).read[Address] and
+      (__ \ GoverningCountryPage.key).read[String] and
       (__ \ StartDatePage).read[LocalDate]
     )(NonEeaBusinessAsset.apply _)
 

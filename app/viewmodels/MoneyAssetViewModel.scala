@@ -36,9 +36,9 @@ final case class MoneyAssetViewModel(`type`: WhatKindOfAsset,
 object MoneyAssetViewModel {
 
   implicit lazy val reads: Reads[MoneyAssetViewModel] = (
-    (__ \ WhatKindOfAssetPage).read[WhatKindOfAsset].filter(_ == Money) and
-      (__ \ AssetMoneyValuePage).readNullable[Long].map(_.map(_.toString)) and
-      (__ \ AssetStatus).readWithDefault[Status](InProgress)
+    (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].filter(_ == Money) and
+      (__ \ AssetMoneyValuePage.key).readNullable[Long].map(_.map(_.toString)) and
+      (__ \ AssetStatus.key).readWithDefault[Status](InProgress)
     )(MoneyAssetViewModel.apply _)
 
 }

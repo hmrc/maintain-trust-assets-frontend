@@ -29,7 +29,7 @@ import utils.print.NonEeaBusinessPrintHelper
 import views.html.asset.noneeabusiness.add.AnswersView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class AnswersController @Inject()(
                                    override val messagesApi: MessagesApi,
@@ -46,22 +46,35 @@ class AnswersController @Inject()(
 
   private val provisional: Boolean = true
 
-  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
+  def onPageLoad(index: Int): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
-
-      Ok(view(printHelper(userAnswers = request.userAnswers, provisional, request.name)))
+      Ok(view(printHelper(userAnswers = request.userAnswers, index, provisional, request.name)))
   }
 
-  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-
       mapper(request.userAnswers) match {
         case None =>
           errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
         case Some(asset) =>
-          connector.addNonEeaBusinessAsset(request.userAnswers.identifier, asset).map(_ =>
-            Redirect(navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable))
-          )
+          connector.getAssets(request.userAnswers.identifier).map {
+            case data =>
+              val matchFound = data.nonEEABusiness.exists(ele =>
+                ele.orgName.equalsIgnoreCase(asset.orgName) &&
+                  ele.address.line1.equalsIgnoreCase(asset.address.line1) &&
+                  ele.govLawCountry.equalsIgnoreCase(asset.govLawCountry) &&
+                  ele.startDate.equals(asset.startDate) &&
+                  ele.endDate.equals(asset.endDate)
+
+              )
+
+              if (!matchFound) {
+                connector.addNonEeaBusinessAsset(index, request.userAnswers.identifier, asset).map(_ =>
+                  Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
+                )
+              }
+          }
+          Future.successful(Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()))
       }
   }
 }

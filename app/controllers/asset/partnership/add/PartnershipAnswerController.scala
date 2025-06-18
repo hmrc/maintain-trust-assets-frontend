@@ -31,9 +31,8 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.PartnershipPrintHelper
 import viewmodels.AnswerSection
 import views.html.asset.partnership.PartnershipAnswersView
-
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class PartnershipAnswerController @Inject()(
                                              override val messagesApi: MessagesApi,
@@ -50,21 +49,42 @@ class PartnershipAnswerController @Inject()(
 
   private val provisional: Boolean = true
 
-  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
+  def onPageLoad(index: Int): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
-      val section: AnswerSection = printHelper(userAnswers = request.userAnswers, provisional, request.name)
-      Ok(view(section))
+      val section: AnswerSection = printHelper(request.userAnswers, index, provisional, request.name)
+      Ok(view(index, section))
   }
 
-  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
       mapper(request.userAnswers) match {
         case None =>
           errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
         case Some(asset) =>
-          connector.addPartnershipAsset(request.userAnswers.identifier, asset).map(_ =>
-            Redirect(navigator.nextPage(PartnershipAnswerPage, NormalMode, request.userAnswers))
-          )
+          connector.amendPartnershipAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
+            response.status match {
+              case OK | NO_CONTENT =>
+                Future.successful(
+                  Redirect(navigator.nextPage(PartnershipAnswerPage(index + 1), NormalMode, request.userAnswers))
+                )
+              case _ =>
+                connector.getAssets(request.userAnswers.identifier).map {
+                  case data =>
+                    val matchFound = data.partnerShip.exists(ele =>
+                      ele.description.equalsIgnoreCase(asset.description) &&
+                        ele.partnershipStart.equals(asset.partnershipStart)
+                    )
+                    if (!matchFound) {
+                      connector.addPartnershipAsset(index, request.userAnswers.identifier, asset).map { _ =>
+                        Redirect(navigator.nextPage(PartnershipAnswerPage(index + 1), NormalMode, request.userAnswers))
+                      }
+                    }
+                }
+            }
+            Future.successful(
+              Redirect(navigator.nextPage(PartnershipAnswerPage(index + 1), NormalMode, request.userAnswers))
+            )
+          }
       }
   }
 }

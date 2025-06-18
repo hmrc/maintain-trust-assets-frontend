@@ -26,7 +26,7 @@
     heading: Heading
 )
 
-@(form: Form[_], mode: Mode)(implicit request: RequestHeader, messages: Messages)
+@(form: Form[_], index: Int, mode: Mode)(implicit request: RequestHeader, messages: Messages)
 
 @optionalHtmlContent = {<p>@messages("money.value.paragraph1")</p>}
 
@@ -35,7 +35,7 @@
     showBackLink = true
 ) {
 
-    @formHelper(action = AssetMoneyValueController.onSubmit(mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = AssetMoneyValueController.onSubmit(index, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

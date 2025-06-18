@@ -66,9 +66,8 @@ class AddNonEeaBusinessAssetController @Inject()(
     }
   }
 
-  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
+  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-
       for {
         assets <- trustService.getAssets(request.userAnswers.identifier)
         updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)

@@ -25,14 +25,14 @@
     submitButton: SubmitButton
 )
 
-@(form: Form[_], mode: Mode)(implicit request: RequestHeader, messages: Messages)
+@(form: Form[_], index: Int, mode: Mode)(implicit request: RequestHeader, messages: Messages)
 
 @mainTemplate(
     title = s"${errorPrefix(form)} ${messages("nonEeaBusiness.name.title")}",
     showBackLink = true
 ) {
 
-    @formHelper(action = NameController.onSubmit(mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = NameController.onSubmit(index, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

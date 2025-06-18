@@ -18,6 +18,7 @@ package navigation
 
 import base.SpecBase
 import controllers.asset.other.routes._
+import controllers.asset.other.add.routes._
 import generators.Generators
 import models.{NormalMode, UserAnswers}
 import org.scalacheck.Arbitrary.arbitrary
@@ -50,7 +51,7 @@ class OtherNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
           val answers = userAnswers.set(OtherAssetValuePage, 4000L).success.value
 
           navigator.nextPage(OtherAssetValuePage, NormalMode, answers)
-            .mustBe(controllers.asset.other.add.routes.OtherAnswerController.onPageLoad())
+            .mustBe(OtherAnswerController.onPageLoad())
       }
     }
   }

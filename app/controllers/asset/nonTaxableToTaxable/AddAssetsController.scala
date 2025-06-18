@@ -23,6 +23,7 @@ import forms.{AddAssetsFormProvider, YesNoFormProvider}
 import handlers.ErrorHandler
 import models.Constants._
 import models.TaskStatus.Completed
+import models.assets.Assets
 import models.{AddAssets, UserAnswers, WhatKindOfAsset}
 import navigation.AssetsNavigator
 import pages.asset.AddAnAssetYesNoPage
@@ -68,15 +69,15 @@ class AddAssetsController @Inject()(
     }
   }
 
-  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
+  def onPageLoadWithIndex(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
 
       val userAnswers: UserAnswers = request.userAnswers
 
+      println("#########################userAnswers#############################"+userAnswers )
+
       for {
         assets <- trustService.getAssets(userAnswers.identifier)
-        updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
-        _ <- repository.set(updatedAnswers)
       } yield {
         assets match {
           case _ if assets.isEmpty =>
@@ -91,7 +92,37 @@ class AddAssetsController @Inject()(
                 form = addAnotherForm,
                 completeAssets = assetRows.complete,
                 heading = heading(assetRows.count),
-                maxedOut = WhatKindOfAsset.maxedOutOptions(assets)
+                maxedOut = WhatKindOfAsset.maxedOutOptions(assets),
+                index
+              ))
+            }
+        }
+      }
+  }
+
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
+    implicit request =>
+
+      val userAnswers: UserAnswers = request.userAnswers
+
+      for {
+        assets <- trustService.getAssets(userAnswers.identifier)
+      } yield {
+        assets match {
+          case _ if assets.isEmpty =>
+            Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetYesNoController.onPageLoad())
+          case _ =>
+            val assetRows = viewHelper.rows(assets, isNonTaxable = false)
+
+            if (WhatKindOfAsset.nonMaxedOutOptions(assets).isEmpty) {
+              Ok(maxedOutView(assetRows.complete, heading(assetRows.count), MAX_ALL_ASSETS, prefix))
+            } else {
+              Ok(addAssetsView(
+                form = addAnotherForm,
+                completeAssets = assetRows.complete,
+                heading = heading(assetRows.count),
+                maxedOut = WhatKindOfAsset.maxedOutOptions(assets),
+                0
               ))
             }
         }
@@ -100,7 +131,7 @@ class AddAssetsController @Inject()(
 
   def submitOne(): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
-
+      logger.info("~~~~~~~~~ IN submitOne ~~~~~~~~~")
       yesNoForm.bindFromRequest().fold(
         (formWithErrors: Form[_]) => {
           Future.successful(BadRequest(yesNoView(formWithErrors)))
@@ -111,7 +142,7 @@ class AddAssetsController @Inject()(
               cleanedAnswers <- Future.fromTry(request.userAnswers.cleanup)
               updatedAnswers <- Future.fromTry(cleanedAnswers.set(AddAnAssetYesNoPage, value))
               _ <- repository.set(updatedAnswers)
-            } yield Redirect(controllers.asset.routes.WhatKindOfAssetController.onPageLoad())
+            } yield Redirect(navigator.addAssetRoute(Assets(), 0)) // TODO: COME BACK TO
           } else {
             submitComplete()(request)
           }
@@ -119,10 +150,11 @@ class AddAssetsController @Inject()(
       )
   }
 
-  def submitAnother(): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
+  def submitAnother(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
+      logger.info("~~~~~~~~~ IN submitAnother ~~~~~~~~~")
 
-      trustService.getAssets(request.userAnswers.identifier).flatMap { assets =>
+      trustService.getAssets(request.userAnswers.identifier).flatMap { assets: Assets =>
         addAnotherForm.bindFromRequest().fold(
           (formWithErrors: Form[_]) => {
 
@@ -132,7 +164,8 @@ class AddAssetsController @Inject()(
               form = formWithErrors,
               completeAssets = assetRows.complete,
               heading = heading(assetRows.count),
-              maxedOut = WhatKindOfAsset.maxedOutOptions(assets)
+              maxedOut = WhatKindOfAsset.maxedOutOptions(assets),
+              index
             )))
           },
           {
@@ -140,7 +173,7 @@ class AddAssetsController @Inject()(
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
                 _ <- repository.set(updatedAnswers)
-              } yield Redirect(navigator.addAssetRoute(assets))
+              } yield Redirect(navigator.addAssetRoute(assets, index))
 
             case AddAssets.NoComplete =>
               submitComplete()(request)
