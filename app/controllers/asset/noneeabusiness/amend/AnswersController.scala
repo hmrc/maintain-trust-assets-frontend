@@ -61,7 +61,10 @@ class AnswersController @Inject()(
                      name: String)
                     (implicit request: Request[AnyContent]): Result = {
 
-    Ok(view(answerSections = printHelper(userAnswers, index,provisional, name),index = index))
+    Ok(view(
+      answerSections = printHelper(userAnswers, index,provisional, name),
+      index = index
+    ))
   }
 
   def extractAndRender(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
