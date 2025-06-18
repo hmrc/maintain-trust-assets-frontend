@@ -38,10 +38,10 @@ class NonEeaBusinessNavigator @Inject()() extends Navigator {
     simpleNavigation(mode)
 
   def simpleNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
-    case NamePage => _ => rts.InternationalAddressController.onPageLoad(mode)
-    case NonUkAddressPage => _ => rts.GoverningCountryController.onPageLoad(mode)
-    case GoverningCountryPage => ua => navigateToStartDateOrCheckAnswers(ua, mode)
-    case StartDatePage => _ => addRts.AnswersController.onPageLoad()
+    case NamePage(index) => _ => rts.InternationalAddressController.onPageLoad(index,mode)
+    case NonUkAddressPage(index) => _ => rts.GoverningCountryController.onPageLoad(index,mode)
+    case GoverningCountryPage(index) => ua => navigateToStartDateOrCheckAnswers(ua, mode)
+    case StartDatePage => _ => addRts.AnswersController.onPageLoad(0)
   }
 
   private def navigateToStartDateOrCheckAnswers(ua: UserAnswers, mode: Mode): Call = {

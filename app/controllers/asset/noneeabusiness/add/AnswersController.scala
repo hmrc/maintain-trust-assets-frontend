@@ -48,7 +48,7 @@ class AnswersController @Inject()(
 
   def onPageLoad(index: Int): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
-      Ok(view(printHelper(userAnswers = request.userAnswers, index, provisional, request.name)))
+      Ok(view(index,printHelper(userAnswers = request.userAnswers, index, provisional, request.name)))
   }
 
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {

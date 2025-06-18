@@ -62,7 +62,7 @@ class AnswersController @Inject()(
                     (implicit request: Request[AnyContent]): Result = {
 
     Ok(view(
-      answerSections = printHelper(userAnswers, provisional, name),
+      answerSections = printHelper(userAnswers, index,provisional, name),
       index = index
     ))
   }
