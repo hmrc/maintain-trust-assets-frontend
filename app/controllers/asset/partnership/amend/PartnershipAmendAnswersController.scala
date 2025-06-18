@@ -58,7 +58,6 @@ class PartnershipAmendAnswersController @Inject()(
   private def render(userAnswers: UserAnswers, index: Int, name: String)
                     (implicit request: Request[AnyContent]): Result = {
     val section: AnswerSection = printHelper(userAnswers, index, provisional, name)
-
     Ok(view(section, index))
   }
 

@@ -34,13 +34,13 @@ class OtherNavigator @Inject()() extends Navigator() {
     simpleNavigation(ua, mode)
 
   def simpleNavigation(ua: UserAnswers, mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
-    case OtherAssetDescriptionPage => _ => OtherAssetValueController.onPageLoad(mode)
-    case OtherAssetValuePage => _ => navigateToCheckAnswers(ua, mode)
+    case OtherAssetDescriptionPage(index) => _ => OtherAssetValueController.onPageLoad(index, mode)
+    case OtherAssetValuePage(index) => _ => navigateToCheckAnswers(ua, mode, index)
   }
 
-  private def navigateToCheckAnswers(ua: UserAnswers, mode: Mode): Call = {
+  private def navigateToCheckAnswers(ua: UserAnswers, mode: Mode, index: Int): Call = {
     if (mode == NormalMode) {
-      controllers.asset.other.add.routes.OtherAnswerController.onPageLoad()
+      controllers.asset.other.add.routes.OtherAnswerController.onPageLoad(index)
     } else {
       ua.get(IndexPage) match {
         case Some(index) => controllers.asset.other.amend.routes.AnswersController.renderFromUserAnswers(index)

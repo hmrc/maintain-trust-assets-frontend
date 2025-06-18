@@ -32,8 +32,8 @@ class OtherAssetExtractor extends AssetExtractor[OtherAssetType] {
                      index: Int): Try[UserAnswers] = {
 
     super.apply(answers, otherAssetType, index)
-      .flatMap(_.set(OtherAssetDescriptionPage, otherAssetType.description))
-      .flatMap(_.set(OtherAssetValuePage, otherAssetType.value))
+      .flatMap(_.set(OtherAssetDescriptionPage(0), otherAssetType.description))
+      .flatMap(_.set(OtherAssetValuePage(0), otherAssetType.value))
   }
 
   override def indexPage: QuestionPage[Int] = IndexPage

@@ -27,14 +27,14 @@
     govukSummaryList: GovukSummaryList
 )
 
-@(answerSections: AnswerSection)(implicit request: RequestHeader, messages: Messages)
+@(index: Int, answerSections: AnswerSection)(implicit request: RequestHeader, messages: Messages)
 
 @mainTemplate(
     title = messages("nonEeaBusiness.answers.title"),
     showBackLink = true
 ) {
 
-    @formHelper(action = AnswersController.onSubmit(), Symbol("autoComplete") -> "off") {
+    @formHelper(action = AnswersController.onSubmit(index), Symbol("autoComplete") -> "off") {
         @heading("nonEeaBusiness.answers.heading")
 
         @govukSummaryList(SummaryList(rows = formatAnswerSection(answerSections)))

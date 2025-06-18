@@ -44,32 +44,26 @@ class OtherAssetDescriptionController @Inject()(
 
   private val form: Form[String] = formProvider.withConfig(length = 56, prefix = "other.description")
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
+  def onPageLoad(index: Int, mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
     implicit request =>
-
-      val preparedForm = request.userAnswers.get(OtherAssetDescriptionPage) match {
+      val preparedForm = request.userAnswers.get(OtherAssetDescriptionPage(index)) match {
         case None => form
         case Some(value) => form.fill(value)
       }
-
-      Ok(view(preparedForm, mode))
+      Ok(view(preparedForm, index, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
+  def onSubmit(index: Int, mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
-
+          Future.successful(BadRequest(view(formWithErrors, index, mode))),
         value => {
-
-          val answers = request.userAnswers.set(OtherAssetDescriptionPage, value)
-
+          val answers = request.userAnswers.set(OtherAssetDescriptionPage(index), value)
           for {
             updatedAnswers <- Future.fromTry(answers)
             _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(OtherAssetDescriptionPage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(OtherAssetDescriptionPage(index), mode, updatedAnswers))
         }
       )
   }

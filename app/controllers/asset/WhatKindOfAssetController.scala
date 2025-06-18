@@ -58,7 +58,7 @@ class WhatKindOfAssetController @Inject()(
       for {
         assets: Assets <- trustService.getAssets(request.userAnswers.identifier)
       } yield {
-        val preparedForm = request.userAnswers.get(WhatKindOfAssetPage) match {
+        val preparedForm = request.userAnswers.get(WhatKindOfAssetPage(index)) match {
           case None => form
           case Some(value) => form.fill(value)
         }
@@ -77,7 +77,7 @@ class WhatKindOfAssetController @Inject()(
             Future.successful(BadRequest(view(formWithErrors, index, options(assets)))),
           value => {
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(WhatKindOfAssetPage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(WhatKindOfAssetPage(index), value))
               _ <- repository.set(updatedAnswers)
             } yield Redirect(navigator.addAssetNowRoute(value, assets.partnerShip, Some(index)))
           }

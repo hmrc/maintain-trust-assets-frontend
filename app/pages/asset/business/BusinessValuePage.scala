@@ -17,11 +17,16 @@
 package pages.asset.business
 
 import pages.QuestionPage
+import pages.asset.business.BusinessValuePage.key
 import play.api.libs.json.JsPath
 
-case object BusinessValuePage extends QuestionPage[Long] {
+case class BusinessValuePage(index: Int) extends QuestionPage[Long] {
 
   override def path: JsPath = basePath \ toString
 
-  override def toString: String = "businessValue"
+  override def toString: String = key
+}
+
+object BusinessValuePage {
+  val key: String = "businessValue"
 }

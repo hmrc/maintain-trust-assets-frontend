@@ -46,29 +46,25 @@ class SharesOnStockExchangeController @Inject()(
 
   val form: Form[Boolean] = formProvider.withPrefix("shares.onStockExchangeYesNo")
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
+  def onPageLoad(index: Int, mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
-
-      val preparedForm = request.userAnswers.get(SharesOnStockExchangePage) match {
+      val preparedForm = request.userAnswers.get(SharesOnStockExchangePage(index)) match {
         case None => form
         case Some(value) => form.fill(value)
       }
-
-      Ok(view(preparedForm, mode, request.name))
+      Ok(view(preparedForm, index, mode, request.name))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
+  def onSubmit(index: Int, mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
     implicit request =>
-
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode, request.name))),
-
+          Future.successful(BadRequest(view(formWithErrors, index, mode, request.name))),
         value => {
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(SharesOnStockExchangePage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(SharesOnStockExchangePage(index), value))
             _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(SharesOnStockExchangePage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(SharesOnStockExchangePage(index), mode, updatedAnswers))
         }
       )
   }

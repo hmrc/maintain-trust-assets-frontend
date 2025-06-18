@@ -28,16 +28,16 @@ import pages.asset.noneeabusiness.add.StartDatePage
 
 class NonEeaBusinessPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) {
 
-  def apply(userAnswers: UserAnswers, provisional: Boolean, name: String)(implicit messages: Messages): AnswerSection = {
+  def apply(userAnswers: UserAnswers, index: Int, provisional: Boolean, name: String)(implicit messages: Messages): AnswerSection = {
 
     val bound: answerRowConverter.Bound = answerRowConverter.bind(userAnswers, name)
 
     def answerRows: Seq[AnswerRow] = {
       val mode: Mode = if (provisional) NormalMode else CheckMode
       Seq(
-        bound.stringQuestion(NamePage, "nonEeaBusiness.name", NameController.onPageLoad(mode).url),
-        bound.addressQuestion(NonUkAddressPage, "nonEeaBusiness.internationalAddress", InternationalAddressController.onPageLoad(mode).url),
-        bound.countryQuestion(GoverningCountryPage, "nonEeaBusiness.governingCountry", GoverningCountryController.onPageLoad(mode).url),
+        bound.stringQuestion(NamePage(index), "nonEeaBusiness.name", NameController.onPageLoad(index, mode).url),
+        bound.addressQuestion(NonUkAddressPage(index), "nonEeaBusiness.internationalAddress", InternationalAddressController.onPageLoad(index, mode).url),
+        bound.countryQuestion(GoverningCountryPage(index), "nonEeaBusiness.governingCountry", GoverningCountryController.onPageLoad(index, mode).url),
         if (mode == NormalMode) bound.dateQuestion(StartDatePage, "nonEeaBusiness.startDate", StartDateController.onPageLoad().url) else None
       ).flatten
     }

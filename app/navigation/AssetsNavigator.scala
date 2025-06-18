@@ -30,8 +30,6 @@ import javax.inject.Inject
 class AssetsNavigator @Inject()(config: FrontendAppConfig) {
 
   def redirectToAddAssetPage(isMigratingToTaxable: Boolean, index: Option[Int] = None): Call = {
-
-    println("redirectToAddAssetPage :::::::::::::::: "+ index)
     if (isMigratingToTaxable) {
       controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoadWithIndex(if(index.isDefined)  index.get else 0)
     } else {
@@ -97,12 +95,12 @@ class AssetsNavigator @Inject()(config: FrontendAppConfig) {
                        assets: List[AssetType],
                        index: Option[Int] = None): Call = {
     `type` match {
-      case Money => controllers.asset.money.routes.AssetMoneyValueController.onPageLoad(NormalMode)
-      case PropertyOrLand => controllers.asset.property_or_land.routes.PropertyOrLandAddressYesNoController.onPageLoad(NormalMode)
-      case Shares => controllers.asset.shares.routes.SharesInAPortfolioController.onPageLoad(NormalMode)
-      case Business => controllers.asset.business.routes.BusinessNameController.onPageLoad(NormalMode)
+      case Money => routeToMoneyIndex(assets, index)
+      case PropertyOrLand => routeToPropertyOrLandIndex(assets, index)
+      case Shares => routeToSharesIndex(assets, index)
+      case Business => routeToBusinessIndex(assets, index)
       case Partnership => routeToPartnershipIndex(assets, index)
-      case Other => controllers.asset.other.routes.OtherAssetDescriptionController.onPageLoad(NormalMode)
+      case Other => routeToOtherIndex(assets, index)
       case NonEeaBusiness => controllers.asset.noneeabusiness.routes.NameController.onPageLoad(NormalMode)
     }
   }
@@ -119,14 +117,53 @@ class AssetsNavigator @Inject()(config: FrontendAppConfig) {
     Call(GET, config.maintainATrustOverview)
   }
 
+  private def routeToMoneyIndex(assets: List[AssetType], index: Option[Int]): Call = {
+    AssetNavigator.routeToIndexUsingModeCall(
+      assets,
+      controllers.asset.money.routes.AssetMoneyValueController.onPageLoad,
+      index
+    )
+  }
+
+  private def routeToPropertyOrLandIndex(assets: List[AssetType], index: Option[Int]): Call = {
+    AssetNavigator.routeToIndexUsingModeCall(
+      assets,
+      controllers.asset.property_or_land.routes.PropertyOrLandAddressYesNoController.onPageLoad,
+      index
+    )
+  }
+
+  private def routeToSharesIndex(assets: List[AssetType], index: Option[Int]): Call = {
+    AssetNavigator.routeToIndexUsingModeCall(
+      assets,
+      controllers.asset.shares.routes.SharesInAPortfolioController.onPageLoad,
+      index
+    )
+  }
+
+  private def routeToBusinessIndex(assets: List[AssetType], index: Option[Int]): Call = {
+    AssetNavigator.routeToIndexUsingModeCall(
+      assets,
+      controllers.asset.business.routes.BusinessNameController.onPageLoad,
+      index
+    )
+  }
+
   private def routeToPartnershipIndex(assets: List[AssetType], index: Option[Int]): Call = {
+    AssetNavigator.routeToIndexUsingModeCall(
+      assets,
+      controllers.asset.other.routes.OtherAssetDescriptionController.onPageLoad,
+      index
+    )
+  }
+
+  private def routeToOtherIndex(assets: List[AssetType], index: Option[Int]): Call = {
     AssetNavigator.routeToIndexUsingModeCall(
       assets,
       controllers.asset.partnership.routes.PartnershipDescriptionController.onPageLoad,
       index
     )
   }
-
 }
 
 object AssetNavigator {

@@ -18,8 +18,7 @@ package utils
 
 import com.google.inject.Inject
 import controllers.asset.routes.WhatKindOfAssetController
-import models.{Address, NormalMode, ShareClass, UserAnswers, WhatKindOfAsset}
-import org.apache.pekko.actor.FSM.Normal
+import models.{Address, ShareClass, UserAnswers, WhatKindOfAsset}
 import pages.asset.WhatKindOfAssetPage
 import play.api.i18n.Messages
 import play.api.libs.json.Reads
@@ -85,7 +84,7 @@ class AnswerRowConverter @Inject()(checkAnswersFormatters: CheckAnswersFormatter
     def assetTypeQuestion(index: Int): Option[AnswerRow] = {
       val format = (x: WhatKindOfAsset) => formatEnum("whatKindOfAsset", x)
       question(
-        WhatKindOfAssetPage,
+        WhatKindOfAssetPage(index),
         s"whatKindOfAsset",
         format,
         WhatKindOfAssetController.onPageLoad(index).url

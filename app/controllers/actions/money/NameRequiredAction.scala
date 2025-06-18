@@ -35,7 +35,7 @@ class NameRequiredAction @Inject()(val executionContext: ExecutionContext, val m
   }
 
   private def getName[A](request: DataRequest[A]): String = {
-    request.userAnswers.get(AssetMoneyValuePage) match {
+    request.userAnswers.get(AssetMoneyValuePage(0)) match {
       case Some(value) => value.toString
       case _ => request.messages(messagesApi)("money.description.default")
     }

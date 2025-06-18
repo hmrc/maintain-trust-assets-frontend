@@ -46,13 +46,12 @@ class AnswersController @Inject()(
 
   private val provisional: Boolean = true
 
-  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
+  def onPageLoad(index: Int): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
-
-      Ok(view(printHelper(userAnswers = request.userAnswers, provisional, request.name)))
+      Ok(view(printHelper(userAnswers = request.userAnswers, index, provisional, request.name)))
   }
 
-  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
       mapper(request.userAnswers) match {
         case None =>
@@ -70,7 +69,7 @@ class AnswersController @Inject()(
               )
 
               if (!matchFound) {
-                connector.addNonEeaBusinessAsset(request.userAnswers.identifier, asset).map(_ =>
+                connector.addNonEeaBusinessAsset(index, request.userAnswers.identifier, asset).map(_ =>
                   Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
                 )
               }

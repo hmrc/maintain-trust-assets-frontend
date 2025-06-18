@@ -27,16 +27,16 @@ class PropertyOrLandMapper extends Mapper[PropertyLandType] {
   def apply(answers: UserAnswers): Option[PropertyLandType] = {
     val readFromUserAnswers: Reads[PropertyLandType] =
       (
-          PropertyOrLandDescriptionPage.path.readNullable[String] and
-          PropertyOrLandAddressUkYesNoPage.path.readNullable[Boolean].flatMap {
-            case Some(true) => PropertyOrLandUKAddressPage.path.readNullable[UkAddress].widen[Option[Address]]
-            case Some(false) => PropertyOrLandInternationalAddressPage.path.readNullable[NonUkAddress].widen[Option[Address]]
+          PropertyOrLandDescriptionPage(0).path.readNullable[String] and
+          PropertyOrLandAddressUkYesNoPage(0).path.readNullable[Boolean].flatMap {
+            case Some(true) => PropertyOrLandUKAddressPage(0).path.readNullable[UkAddress].widen[Option[Address]]
+            case Some(false) => PropertyOrLandInternationalAddressPage(0).path.readNullable[NonUkAddress].widen[Option[Address]]
             case _ => Reads(_ => JsSuccess(None)).widen[Option[Address]]
           } and
-          PropertyOrLandTotalValuePage.path.read[Long] and
-          TrustOwnAllThePropertyOrLandPage.path.read[Boolean].flatMap {
-            case true => PropertyOrLandTotalValuePage.path.readNullable[Long]
-            case false => PropertyLandValueTrustPage.path.readNullable[Long]
+          PropertyOrLandTotalValuePage(0).path.read[Long] and
+          TrustOwnAllThePropertyOrLandPage(0).path.read[Boolean].flatMap {
+            case true => PropertyOrLandTotalValuePage(0).path.readNullable[Long]
+            case false => PropertyLandValueTrustPage(0).path.readNullable[Long]
           }
         ) (PropertyLandType.apply _)
 

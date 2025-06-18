@@ -32,8 +32,8 @@ final case class MoneyAsset(override val whatKindOfAsset: WhatKindOfAsset,
 object MoneyAsset {
 
   implicit lazy val reads: Reads[MoneyAsset] = (
-    (__ \ WhatKindOfAssetPage).read[WhatKindOfAsset].filter(_ == Money) and
-      (__ \ AssetMoneyValuePage).read[Long] and
+    (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].filter(_ == Money) and
+      (__ \ AssetMoneyValuePage.key).read[Long] and
       (__ \ StartDatePage).read[LocalDate]
     )(MoneyAsset.apply _)
 

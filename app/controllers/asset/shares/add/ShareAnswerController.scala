@@ -51,36 +51,50 @@ class ShareAnswerController @Inject()(
 
   private val provisional: Boolean = true
 
-  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
+  def onPageLoad(index: Int): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
-      val section: AnswerSection = printHelper(userAnswers = request.userAnswers, provisional, request.name)
-      Ok(view(section))
+      val section: AnswerSection = printHelper(request.userAnswers, index, provisional, request.name)
+      Ok(view(index, section))
   }
 
-  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
-    implicit request =>
-      mapper(request.userAnswers) match {
-        case None =>
-          errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
-        case Some(asset) =>
-          connector.getAssets(request.userAnswers.identifier).map {
-            case data =>
-              val matchFound = data.shares.exists(ele =>
-                ele.orgName.equalsIgnoreCase(asset.orgName) &&
-                  ele.isPortfolio.equals(asset.isPortfolio) &&
-                  ele.shareClass.equalsIgnoreCase(asset.shareClass) &&
-                  ele.typeOfShare.equalsIgnoreCase(asset.typeOfShare) &&
-                  ele.numberOfShares.equalsIgnoreCase(asset.numberOfShares) &&
-                  ele.shareClassDisplay.equals(asset.shareClassDisplay) &&
-                  ele.value == asset.value
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async { implicit request =>
+    mapper(request.userAnswers) match {
+      case None =>
+        errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
+
+      case Some(asset) =>
+        connector.amendSharesAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
+          response.status match {
+            case OK | NO_CONTENT =>
+              Future.successful(
+                Redirect(navigator.nextPage(ShareAnswerPage(index + 1), NormalMode, request.userAnswers))
               )
-              if (!matchFound) {
-                connector.addSharesAsset(request.userAnswers.identifier, asset).map(_ =>
-                  Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
+
+            case _ =>
+              connector.getAssets(request.userAnswers.identifier).flatMap { data =>
+                val matchFound = data.shares.exists(ele =>
+                  ele.orgName.equalsIgnoreCase(asset.orgName) &&
+                    ele.isPortfolio == asset.isPortfolio &&
+                    ele.shareClass.equalsIgnoreCase(asset.shareClass) &&
+                    ele.typeOfShare.equalsIgnoreCase(asset.typeOfShare) &&
+                    ele.numberOfShares.equalsIgnoreCase(asset.numberOfShares) &&
+                    ele.shareClassDisplay == asset.shareClassDisplay &&
+                    ele.value == asset.value
                 )
+
+                if (!matchFound) {
+                  connector.addSharesAsset(index, request.userAnswers.identifier, asset).map { _ =>
+                    Redirect(navigator.nextPage(ShareAnswerPage(index + 1), NormalMode, request.userAnswers))
+                  }
+                } else {
+                  Future.successful(
+                    Redirect(navigator.nextPage(ShareAnswerPage(index + 1), NormalMode, request.userAnswers))
+                  )
+                }
               }
           }
-          Future.successful(Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()))
-      }
+        }
+    }
   }
+
 }

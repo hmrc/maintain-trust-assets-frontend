@@ -37,13 +37,13 @@ final case class ShareNonPortfolioAsset(override val whatKindOfAsset: WhatKindOf
 object ShareNonPortfolioAsset {
 
   implicit lazy val reads: Reads[ShareNonPortfolioAsset] = (
-    (__ \ WhatKindOfAssetPage).read[WhatKindOfAsset].filter(_ == Shares) and
+    (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].filter(_ == Shares) and
       Reads(_ => JsSuccess(false)) and
-      (__ \ ShareCompanyNamePage).read[String] and
-      (__ \ SharesOnStockExchangePage).read[Boolean] and
-      (__ \ ShareClassPage).read[ShareClass] and
-      (__ \ ShareQuantityInTrustPage).read[Long] and
-      (__ \ ShareValueInTrustPage).read[Long] and
+      (__ \ ShareCompanyNamePage.key).read[String] and
+      (__ \ SharesOnStockExchangePage.key).read[Boolean] and
+      (__ \ ShareClassPage.key).read[ShareClass] and
+      (__ \ ShareQuantityInTrustPage.key).read[Long] and
+      (__ \ ShareValueInTrustPage.key).read[Long] and
       (__ \ StartDatePage).read[LocalDate]
     )(ShareNonPortfolioAsset.apply _)
 
