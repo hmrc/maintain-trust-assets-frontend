@@ -101,7 +101,7 @@ class AddNonEeaBusinessAssetController @Inject()(
               cleanedAnswers <- Future.fromTry(request.userAnswers.cleanup)
               updatedAnswers <- Future.fromTry(cleanedAnswers.set(AddAnAssetYesNoPage, value))
               _ <- repository.set(updatedAnswers)
-            } yield Redirect(controllers.asset.noneeabusiness.routes.NameController.onPageLoad(NormalMode))
+            } yield Redirect(controllers.asset.noneeabusiness.routes.NameController.onPageLoad(0, NormalMode))
           } else {
             submitComplete()(request)
           }
@@ -125,7 +125,7 @@ class AddNonEeaBusinessAssetController @Inject()(
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
                 _ <- repository.set(updatedAnswers)
-              } yield Redirect(controllers.asset.noneeabusiness.routes.NameController.onPageLoad(NormalMode))
+              } yield Redirect(controllers.asset.noneeabusiness.routes.NameController.onPageLoad(0, NormalMode))
 
             case AddAssets.NoComplete =>
               submitComplete()(request)

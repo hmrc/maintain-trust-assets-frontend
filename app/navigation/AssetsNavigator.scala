@@ -33,7 +33,7 @@ class AssetsNavigator @Inject()(config: FrontendAppConfig) {
     if (isMigratingToTaxable) {
       controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoadWithIndex(if(index.isDefined)  index.get else 0)
     } else {
-      controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad()
+      controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad(if(index.isDefined)  index.get else 0)
     }
   }
 
@@ -45,14 +45,14 @@ class AssetsNavigator @Inject()(config: FrontendAppConfig) {
           controllers.asset.routes.WhatKindOfAssetController.onPageLoad
         )
       case (true, false) => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
-      case (false, _) => controllers.asset.noneeabusiness.routes.NameController.onPageLoad(NormalMode)
+      case (false, _) => controllers.asset.noneeabusiness.routes.NameController.onPageLoad(0,NormalMode)
     }
   }
 
   def redirectFromAddAssetYesNoPage(value: Boolean, isMigratingToTaxable: Boolean, noAssets: Boolean): Call = {
     (value, isMigratingToTaxable, noAssets) match {
       case (true, true, _) => AssetInterruptPageController.onPageLoad()
-      case (true, false, _) => controllers.asset.noneeabusiness.routes.NameController.onPageLoad(NormalMode)
+      case (true, false, _) => controllers.asset.noneeabusiness.routes.NameController.onPageLoad(0,NormalMode)
       case (false, true, true) => maintainATrustOverview
       case (false, true, false) => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
       case (false, false, _) => submitTaskComplete(isMigratingToTaxable)
@@ -101,7 +101,7 @@ class AssetsNavigator @Inject()(config: FrontendAppConfig) {
       case Business => routeToBusinessIndex(assets, index)
       case Partnership => routeToPartnershipIndex(assets, index)
       case Other => routeToOtherIndex(assets, index)
-      case NonEeaBusiness => controllers.asset.noneeabusiness.routes.NameController.onPageLoad(NormalMode)
+      case NonEeaBusiness => controllers.asset.noneeabusiness.routes.NameController.onPageLoad(0,NormalMode)
     }
   }
 
