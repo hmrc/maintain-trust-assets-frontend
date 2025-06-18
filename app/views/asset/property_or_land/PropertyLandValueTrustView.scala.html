@@ -25,14 +25,14 @@
     submitButton: SubmitButton
 )
 
-@(form: Form[_], mode: Mode)(implicit request: RequestHeader, messages: Messages)
+@(form: Form[_], index: Int, mode: Mode)(implicit request: RequestHeader, messages: Messages)
 
 @mainTemplate(
     title = s"${errorPrefix(form)} ${messages("propertyOrLand.valueInTrust.title")}",
     showBackLink = true
 ) {
 
-    @formHelper(action = PropertyLandValueTrustController.onSubmit(mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = PropertyLandValueTrustController.onSubmit(index, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

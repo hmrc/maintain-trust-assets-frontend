@@ -21,7 +21,6 @@ import controllers.actions.StandardActionSets
 import forms.NameFormProvider
 import navigation.Navigator
 import pages.asset.shares.ShareCompanyNamePage
-import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
@@ -44,30 +43,27 @@ class ShareCompanyNameController @Inject()(
 
   private val form = formProvider.withConfig(53, "shares.companyName")
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
-    implicit request =>
-
-      val preparedForm = request.userAnswers.get(ShareCompanyNamePage) match {
+  def onPageLoad(index: Int, mode: Mode): Action[AnyContent] =
+    standardActionSets.verifiedForIdentifier { implicit request =>
+      val preparedForm = request.userAnswers.get(ShareCompanyNamePage(index)) match {
         case None => form
         case Some(value) => form.fill(value)
       }
+      Ok(view(preparedForm, index, mode))
+    }
 
-      Ok(view(preparedForm, mode))
-  }
-
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
-    implicit request =>
-
+  def onSubmit(index: Int, mode: Mode): Action[AnyContent] =
+    standardActionSets.verifiedForIdentifier.async { implicit request =>
       form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
-
+        formWithErrors =>
+          Future.successful(BadRequest(view(formWithErrors, index, mode))),
         value => {
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(ShareCompanyNamePage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(ShareCompanyNamePage(index), value))
             _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(ShareCompanyNamePage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(ShareCompanyNamePage(index), mode, updatedAnswers))
         }
       )
-  }
+    }
+
 }

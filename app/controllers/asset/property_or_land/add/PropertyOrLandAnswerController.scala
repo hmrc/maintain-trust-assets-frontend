@@ -51,36 +51,49 @@ class PropertyOrLandAnswerController @Inject()(
 
   private val provisional: Boolean = true
 
-  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
+  def onPageLoad(index: Int): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
-      val section: AnswerSection = printHelper(userAnswers = request.userAnswers, provisional, request.name)
-      Ok(view(section))
+      val section: AnswerSection = printHelper(request.userAnswers, index, provisional, request.name)
+      Ok(view(index, section))
   }
 
-  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
       mapper(request.userAnswers) match {
         case None =>
           errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
         case Some(asset) =>
-          connector.getAssets(request.userAnswers.identifier).map {
-            case data =>
-              val matchFound = data.propertyOrLand.exists(ele =>
-                ele.name.equalsIgnoreCase(asset.name) &&
-                  ele.address.equals(asset.address) &&
-                  ele.buildingLandName.equals(asset.buildingLandName) &&
-                  ele.descriptionOrAddress.equals(asset.descriptionOrAddress) &&
-                  ele.valueFull.equals(asset.valueFull) &&
-                  ele.valuePrevious.equals(asset.valuePrevious)
-              )
-
-              if (!matchFound) {
-                connector.addPropertyOrLandAsset(request.userAnswers.identifier, asset).map(_ =>
-                  Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
+          connector.amendPropertyOrLandAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
+            response.status match {
+              case OK | NO_CONTENT =>
+                Future.successful(
+                  Redirect(navigator.nextPage(PropertyOrLandAnswerPage(index + 1), NormalMode, request.userAnswers))
                 )
-              }
+
+              case _ =>
+                connector.getAssets(request.userAnswers.identifier).flatMap { data =>
+                  val matchFound = data.propertyOrLand.exists(existing =>
+                    existing.name.equalsIgnoreCase(asset.name) &&
+                      existing.address == asset.address &&
+                      existing.buildingLandName == asset.buildingLandName &&
+                      existing.descriptionOrAddress == asset.descriptionOrAddress &&
+                      existing.valueFull == asset.valueFull &&
+                      existing.valuePrevious == asset.valuePrevious
+                  )
+
+                  if (!matchFound) {
+                    connector.addPropertyOrLandAsset(index, request.userAnswers.identifier, asset).map { _ =>
+                      Redirect(navigator.nextPage(PropertyOrLandAnswerPage(index + 1), NormalMode, request.userAnswers))
+                    }
+                  } else {
+                    Future.successful(
+                      Redirect(navigator.nextPage(PropertyOrLandAnswerPage(index + 1), NormalMode, request.userAnswers))
+                    )
+                  }
+                }
+            }
           }
-          Future.successful(Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()))
       }
   }
+
 }

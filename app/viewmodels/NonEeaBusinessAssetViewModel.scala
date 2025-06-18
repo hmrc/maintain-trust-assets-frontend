@@ -35,9 +35,9 @@ final case class NonEeaBusinessAssetViewModel(`type`: WhatKindOfAsset,
 object NonEeaBusinessAssetViewModel {
 
   implicit lazy val reads: Reads[NonEeaBusinessAssetViewModel] = (
-    (__ \ WhatKindOfAssetPage).read[WhatKindOfAsset].filter(_ == NonEeaBusiness) and
-      (__ \ NamePage).readNullable[String] and
-      (__ \ AssetStatus).readWithDefault[Status](InProgress)
+    (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].filter(_ == NonEeaBusiness) and
+      (__ \ NamePage.key).readNullable[String] and
+      (__ \ AssetStatus.key).readWithDefault[Status](InProgress)
     )(NonEeaBusinessAssetViewModel.apply _)
 
 }

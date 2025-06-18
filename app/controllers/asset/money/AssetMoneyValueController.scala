@@ -48,28 +48,29 @@ class AssetMoneyValueController @Inject()(
 
   private val form: Form[Long] = formProvider.withConfig(prefix = "money.value")
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
+  def onPageLoad(index: Int, mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
       trustService.getMonetaryAsset(request.userAnswers.identifier).map { money =>
         val preparedForm = money match {
-          case Some(value) => form.fill(value = value.assetMonetaryAmount)
-          case None => form
+          case Some(value) => form.fill(value.assetMonetaryAmount)
+          case None        => form
         }
-        Ok(view(preparedForm, mode))
+        Ok(view(preparedForm, index, mode))
       }
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
+  def onSubmit(index: Int, mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
       form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
+        formWithErrors =>
+          Future.successful(BadRequest(view(formWithErrors, index, mode))),
         value => {
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(AssetMoneyValuePage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(AssetMoneyValuePage(index), value))
             _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(AssetMoneyValuePage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(AssetMoneyValuePage(index), mode, updatedAnswers))
         }
       )
   }
+
 }

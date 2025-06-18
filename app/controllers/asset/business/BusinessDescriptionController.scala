@@ -46,31 +46,27 @@ class BusinessDescriptionController @Inject()(
 
   val form: Form[String] = formProvider.withConfig(length = 56, prefix = "business.description")
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
-    implicit request =>
-
-      val preparedForm = request.userAnswers.get(BusinessDescriptionPage) match {
-        case None => form
+  def onPageLoad(index: Int, mode: Mode): Action[AnyContent] =
+    (standardActionSets.verifiedForIdentifier andThen nameAction) { implicit request =>
+      val preparedForm = request.userAnswers.get(BusinessDescriptionPage(index)) match {
+        case None        => form
         case Some(value) => form.fill(value)
       }
+      Ok(view(preparedForm, index, mode, request.name))
+    }
 
-      Ok(view(preparedForm, mode, request.name))
-
-  }
-
-  def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
-    implicit request =>
-
+  def onSubmit(index: Int, mode: Mode): Action[AnyContent] =
+    (standardActionSets.verifiedForIdentifier andThen nameAction).async { implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode, request.name))),
-
+          Future.successful(BadRequest(view(formWithErrors, index, mode, request.name))),
         value => {
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(BusinessDescriptionPage, value))
-            _ <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(BusinessDescriptionPage, mode, updatedAnswers))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(BusinessDescriptionPage(index), value))
+            _              <- repository.set(updatedAnswers)
+          } yield Redirect(navigator.nextPage(BusinessDescriptionPage(index), mode, updatedAnswers))
         }
       )
-  }
+    }
+
 }

@@ -26,20 +26,20 @@ import javax.inject.Inject
 
 class BusinessPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) {
 
-  def apply(userAnswers: UserAnswers, provisional: Boolean, name: String)(implicit messages: Messages): AnswerSection = {
+  def apply(userAnswers: UserAnswers, index: Int, provisional: Boolean, name: String)(implicit messages: Messages): AnswerSection = {
 
     val bound: answerRowConverter.Bound = answerRowConverter.bind(userAnswers, name)
 
     def answerRows: Seq[AnswerRow] = {
       val mode: Mode = if (provisional) NormalMode else CheckMode
       Seq(
-        bound.assetTypeQuestion(0),
-        bound.stringQuestion(BusinessNamePage, "business.name", BusinessNameController.onPageLoad(mode).url),
-        bound.stringQuestion(BusinessDescriptionPage, "business.description", BusinessDescriptionController.onPageLoad(mode).url),
-        bound.yesNoQuestion(BusinessAddressUkYesNoPage, "business.addressUkYesNo", BusinessAddressUkYesNoController.onPageLoad(mode).url),
-        bound.addressQuestion(BusinessUkAddressPage, "business.ukAddress", BusinessUkAddressController.onPageLoad(mode).url),
-        bound.addressQuestion(BusinessInternationalAddressPage, "business.internationalAddress", BusinessInternationalAddressController.onPageLoad(mode).url),
-        bound.currencyQuestion(BusinessValuePage, "business.currentValue", BusinessValueController.onPageLoad(mode).url)
+        bound.assetTypeQuestion(index),
+        bound.stringQuestion(BusinessNamePage(index), "business.name", BusinessNameController.onPageLoad(index, mode).url),
+        bound.stringQuestion(BusinessDescriptionPage(index), "business.description", BusinessDescriptionController.onPageLoad(index, mode).url),
+        bound.yesNoQuestion(BusinessAddressUkYesNoPage(index), "business.addressUkYesNo", BusinessAddressUkYesNoController.onPageLoad(index, mode).url),
+        bound.addressQuestion(BusinessUkAddressPage(index), "business.ukAddress", BusinessUkAddressController.onPageLoad(index, mode).url),
+        bound.addressQuestion(BusinessInternationalAddressPage(index), "business.internationalAddress", BusinessInternationalAddressController.onPageLoad(index, mode).url),
+        bound.currencyQuestion(BusinessValuePage(index), "business.currentValue", BusinessValueController.onPageLoad(index, mode).url)
       ).flatten
     }
 

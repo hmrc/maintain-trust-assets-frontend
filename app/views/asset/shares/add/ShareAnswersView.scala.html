@@ -27,14 +27,14 @@
     govukSummaryList: GovukSummaryList
 )
 
-@(answerSections: AnswerSection)(implicit request: RequestHeader, messages: Messages)
+@(index: Int, answerSections: AnswerSection)(implicit request: RequestHeader, messages: Messages)
 
 @mainTemplate(
     title = messages("shares.answers.title"),
     showBackLink = true
 ) {
 
-    @formHelper(action = ShareAnswerController.onSubmit(), Symbol("autoComplete") -> "off") {
+    @formHelper(action = ShareAnswerController.onSubmit(index), Symbol("autoComplete") -> "off") {
         @heading("shares.answers.heading")
 
         @govukSummaryList(SummaryList(rows = formatAnswerSection(answerSections)))

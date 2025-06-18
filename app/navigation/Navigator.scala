@@ -16,10 +16,8 @@
 
 package navigation
 
-import controllers.asset.partnership.routes
 import models.{Mode, NormalMode, UserAnswers}
 import pages.{Page, QuestionPage}
-import pages.asset.partnership.PartnershipDescriptionPage
 import play.api.mvc.Call
 
 trait Navigator {
