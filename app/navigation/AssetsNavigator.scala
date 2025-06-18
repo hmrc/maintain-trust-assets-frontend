@@ -152,7 +152,7 @@ class AssetsNavigator @Inject()(config: FrontendAppConfig) {
   private def routeToPartnershipIndex(assets: List[AssetType], index: Option[Int]): Call = {
     AssetNavigator.routeToIndexUsingModeCall(
       assets,
-      controllers.asset.other.routes.OtherAssetDescriptionController.onPageLoad,
+      controllers.asset.partnership.routes.PartnershipDescriptionController.onPageLoad,
       index
     )
   }
@@ -160,7 +160,7 @@ class AssetsNavigator @Inject()(config: FrontendAppConfig) {
   private def routeToOtherIndex(assets: List[AssetType], index: Option[Int]): Call = {
     AssetNavigator.routeToIndexUsingModeCall(
       assets,
-      controllers.asset.partnership.routes.PartnershipDescriptionController.onPageLoad,
+      controllers.asset.other.routes.OtherAssetDescriptionController.onPageLoad,
       index
     )
   }
