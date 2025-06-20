@@ -55,7 +55,11 @@ class BusinessNavigator @Inject()() extends Navigator {
 
   private def navigateToCheckAnswers(ua: UserAnswers, mode: Mode, index: Int): Call = {
     if (mode == NormalMode) {
-      controllers.asset.business.add.routes.BusinessAnswersController.onPageLoad(index)
+      AssetNavigator.routeToIndex(
+        List.empty, // TODO: COME BACK TO
+        controllers.asset.business.add.routes.BusinessAnswersController.onPageLoad,
+        index = Some(index)
+      )
     } else {
       ua.get(IndexPage) match {
         case Some(index) => controllers.asset.business.amend.routes.BusinessAmendAnswersController.renderFromUserAnswers(index)

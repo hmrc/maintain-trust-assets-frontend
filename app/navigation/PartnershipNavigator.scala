@@ -52,5 +52,4 @@ class PartnershipNavigator @Inject()() extends Navigator {
       }
     }
   }
-
 }
