@@ -16,9 +16,11 @@
 
 package navigation
 
-import models.{Mode, UserAnswers}
+import models.{Mode, NormalMode, UserAnswers}
 import pages.Page
 import pages.asset.money._
+import pages.asset.money.add.MoneyAnswerPage
+import pages.asset.money.amend.IndexPage
 import play.api.mvc.Call
 
 import javax.inject.Inject
@@ -26,12 +28,25 @@ import javax.inject.Inject
 class MoneyNavigator @Inject()() extends Navigator {
 
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
-    routes(page)(userAnswers)
+    routes(mode)(page)(userAnswers)
 
-  def routes: PartialFunction[Page, UserAnswers => Call] =
-    simpleNavigation
+  def routes(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
+    case AssetMoneyValuePage(index) => ua => navigateToCheckAnswers(ua, mode, index)
+    case MoneyAnswerPage(index) => _ => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoadWithIndex(index)
+  }
 
-  def simpleNavigation: PartialFunction[Page, UserAnswers => Call] = {
-    case AssetMoneyValuePage(index) => _ => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoadWithIndex(index)
+  private def navigateToCheckAnswers(ua: UserAnswers, mode: Mode, index: Int): Call = {
+    if (mode == NormalMode) {
+      AssetNavigator.routeToIndex(
+        List.empty, // TODO: COME BACK TO
+        controllers.asset.money.add.routes.MoneyAnswerController.onPageLoad,
+        index = Some(index)
+      )
+    } else {
+      ua.get(IndexPage) match {
+        case Some(index) => controllers.asset.partnership.amend.routes.PartnershipAmendAnswersController.renderFromUserAnswers(index)
+        case None => controllers.routes.SessionExpiredController.onPageLoad
+      }
+    }
   }
 }
