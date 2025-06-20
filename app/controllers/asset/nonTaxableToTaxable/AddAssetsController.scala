@@ -71,11 +71,7 @@ class AddAssetsController @Inject()(
 
   def onPageLoadWithIndex(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-
       val userAnswers: UserAnswers = request.userAnswers
-
-      println("#########################userAnswers#############################"+userAnswers )
-
       for {
         assets <- trustService.getAssets(userAnswers.identifier)
       } yield {
@@ -102,9 +98,7 @@ class AddAssetsController @Inject()(
 
   def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-
       val userAnswers: UserAnswers = request.userAnswers
-
       for {
         assets <- trustService.getAssets(userAnswers.identifier)
       } yield {
@@ -131,7 +125,6 @@ class AddAssetsController @Inject()(
 
   def submitOne(): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
-      logger.info("~~~~~~~~~ IN submitOne ~~~~~~~~~")
       yesNoForm.bindFromRequest().fold(
         (formWithErrors: Form[_]) => {
           Future.successful(BadRequest(yesNoView(formWithErrors)))
@@ -152,14 +145,10 @@ class AddAssetsController @Inject()(
 
   def submitAnother(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
-      logger.info("~~~~~~~~~ IN submitAnother ~~~~~~~~~")
-
       trustService.getAssets(request.userAnswers.identifier).flatMap { assets: Assets =>
         addAnotherForm.bindFromRequest().fold(
           (formWithErrors: Form[_]) => {
-
             val assetRows = viewHelper.rows(assets, isNonTaxable = false)
-
             Future.successful(BadRequest(addAssetsView(
               form = formWithErrors,
               completeAssets = assetRows.complete,
@@ -189,7 +178,6 @@ class AddAssetsController @Inject()(
 
   def submitComplete(): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
-
       for {
         _ <- trustsStoreConnector.updateTaskStatus(request.userAnswers.identifier, Completed)
       } yield {
