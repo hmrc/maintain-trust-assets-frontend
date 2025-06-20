@@ -8,8 +8,8 @@ POST       /:index/value                                                       c
 GET        /:index/change-value                                                controllers.asset.other.OtherAssetValueController.onPageLoad(index: Int, mode: Mode = CheckMode)
 POST       /:index/change-value                                                controllers.asset.other.OtherAssetValueController.onSubmit(index: Int, mode: Mode = CheckMode)
 
-GET        /:index/check-answers                                               controllers.asset.other.add.OtherAnswerController.onPageLoad(index: Int)
-POST       /:index/check-answers                                               controllers.asset.other.add.OtherAnswerController.onSubmit(index: Int)
+GET        /:index/check-answers1                                               controllers.asset.other.add.OtherAnswerController.onPageLoad(index: Int)
+POST       /:index/check-answers1                                               controllers.asset.other.add.OtherAnswerController.onSubmit(index: Int)
 
 GET        /:index/:index/remove                                               controllers.asset.other.remove.RemoveAssetYesNoController.onPageLoad(index: Int)
 POST       /:index/:index/remove                                               controllers.asset.other.remove.RemoveAssetYesNoController.onSubmit(index: Int)
