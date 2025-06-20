@@ -68,7 +68,11 @@ class PropertyOrLandNavigator @Inject()() extends Navigator {
 
   private def navigateToCheckAnswers(ua: UserAnswers, mode: Mode, index: Int): Call = {
     if (mode == NormalMode) {
-      controllers.asset.property_or_land.add.routes.PropertyOrLandAnswerController.onPageLoad(index)
+      AssetNavigator.routeToIndex(
+        List.empty, // TODO: COME BACK TO
+        controllers.asset.property_or_land.add.routes.PropertyOrLandAnswerController.onPageLoad,
+        index = Some(index)
+      )
     } else {
       ua.get(IndexPage) match {
         case Some(index) => controllers.asset.property_or_land.amend.routes.PropertyOrLandAmendAnswersController.renderFromUserAnswers(index)
