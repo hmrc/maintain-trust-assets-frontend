@@ -20,9 +20,8 @@ import config.annotations.Business
 import controllers.actions._
 import controllers.actions.business.NameRequiredAction
 import forms.ValueFormProvider
-import models.Status.Completed
+import models.Mode
 import navigation.Navigator
-import pages.AssetStatus
 import pages.asset.business.BusinessValuePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -30,9 +29,8 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.asset.business.BusinessValueView
-import javax.inject.Inject
-import models.Mode
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class BusinessValueController @Inject()(
@@ -64,14 +62,11 @@ class BusinessValueController @Inject()(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, index, mode, request.name))),
         value => {
-          val answers = request.userAnswers.set(BusinessValuePage(index), value)
-            .flatMap(_.set(AssetStatus(index), Completed))
 
-          println("request.userAnswers "+request.userAnswers +":::::::::::::: "+answers)
-//          val updatedAnswersTry = for {
-//            answersWithValue <- request.userAnswers.set(BusinessValuePage(index), value)
-//            finalAnswers     <- answersWithValue.set(AssetStatus(index), Completed)
-//          } yield finalAnswers
+          println("request.userAnswers "+request.userAnswers +" ::::::::::::: "+request.userAnswers.set(BusinessValuePage(index), value))
+
+          val answers = request.userAnswers.set(BusinessValuePage(index), value)
+//            .flatMap(_.set(AssetStatus(index), Completed))
 
           for {
             updatedAnswers <- Future.fromTry(answers)
