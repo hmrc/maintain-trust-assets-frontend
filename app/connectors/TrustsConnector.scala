@@ -72,6 +72,7 @@ class TrustsConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig) e
   def addPropertyOrLandAsset(index: Int, identifier: String, asset: PropertyLandType)
                             (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     val url: String = s"$assetsUrl/add-property-or-land/$identifier/$index"
+    println("Json.toJson(asset) "+Json.toJson(asset))
     http
       .post(url"$url")
       .withBody(Json.toJson(asset))
@@ -81,6 +82,7 @@ class TrustsConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig) e
   def amendPropertyOrLandAsset(identifier: String, index: Int, asset: PropertyLandType)
                               (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     val url: String = s"$assetsUrl/amend-property-or-land/$identifier/$index"
+    println("asset =============== "+asset)
     http
       .post(url"$url")
       .withBody(Json.toJson(asset))
