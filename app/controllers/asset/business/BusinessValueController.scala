@@ -64,13 +64,17 @@ class BusinessValueController @Inject()(
         formWithErrors =>
           Future.successful(BadRequest(view(formWithErrors, index, mode, request.name))),
         value => {
-          val updatedAnswersTry = for {
-            answersWithValue <- request.userAnswers.set(BusinessValuePage(index), value)
-            finalAnswers     <- answersWithValue.set(AssetStatus(index), Completed)
-          } yield finalAnswers
+          val answers = request.userAnswers.set(BusinessValuePage(index), value)
+            .flatMap(_.set(AssetStatus(index), Completed))
+
+          println("request.userAnswers "+request.userAnswers +":::::::::::::: "+answers)
+//          val updatedAnswersTry = for {
+//            answersWithValue <- request.userAnswers.set(BusinessValuePage(index), value)
+//            finalAnswers     <- answersWithValue.set(AssetStatus(index), Completed)
+//          } yield finalAnswers
 
           for {
-            updatedAnswers <- Future.fromTry(updatedAnswersTry)
+            updatedAnswers <- Future.fromTry(answers)
             _              <- repository.set(updatedAnswers)
           } yield Redirect(navigator.nextPage(BusinessValuePage(index), mode, updatedAnswers))
         }
