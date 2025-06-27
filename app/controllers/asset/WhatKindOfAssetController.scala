@@ -93,7 +93,7 @@ class WhatKindOfAssetController @Inject()(
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(WhatKindOfAssetPage(correctIndex), value))
               _ <- repository.set(updatedAnswers)
-            } yield Redirect(navigator.addAssetNowRoute(value, assets.monetary, Some(correctIndex)))
+            } yield Redirect(navigator.addAssetNowRoute(value, assets.partnerShip, Some(correctIndex)))
           }
         )
       }

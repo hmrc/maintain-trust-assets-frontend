@@ -36,6 +36,8 @@ class MoneyNavigator @Inject()() extends Navigator {
   }
 
   private def navigateToCheckAnswers(ua: UserAnswers, mode: Mode, index: Int): Call = {
+
+    println("ua::::::::::::::::::::::: "+ua +"::IndexPage "+IndexPage +":::::::::::: "+ua.get(AssetMoneyValuePage(index)))
     if (mode == NormalMode) {
       AssetNavigator.routeToIndex(
         List.empty, // TODO: COME BACK TO
@@ -43,8 +45,8 @@ class MoneyNavigator @Inject()() extends Navigator {
         index = Some(index)
       )
     } else {
-      ua.get(IndexPage) match {
-        case Some(index) => controllers.asset.partnership.amend.routes.PartnershipAmendAnswersController.renderFromUserAnswers(index)
+      ua.get(AssetMoneyValuePage(index)) match {
+        case Some(moneyVlue) => controllers.asset.money.add.routes.MoneyAnswerController.onPageLoad(index)
         case None => controllers.routes.SessionExpiredController.onPageLoad
       }
     }
