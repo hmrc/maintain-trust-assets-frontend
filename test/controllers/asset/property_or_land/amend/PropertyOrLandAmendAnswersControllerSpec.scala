@@ -42,8 +42,7 @@ class PropertyOrLandAmendAnswersControllerSpec extends SpecBase with MockitoSuga
   private lazy val answersRoute = routes.PropertyOrLandAmendAnswersController.extractAndRender(index).url
   private lazy val submitAnswersRoute = routes.PropertyOrLandAmendAnswersController.onSubmit(index).url
 
-  private val index = 0
-  private val name: String = "BusinessName"
+    private val name: String = "BusinessName"
   private val valueFull: Long = 790L
 
   private val propertyOrLandAsset = PropertyLandType(
@@ -55,10 +54,10 @@ class PropertyOrLandAmendAnswersControllerSpec extends SpecBase with MockitoSuga
 
   def userAnswers: UserAnswers = emptyUserAnswers.copy(isMigratingToTaxable = true)
     .set(IndexPage, index).success.value
-    .set(PropertyOrLandAddressYesNoPage, false).success.value
-    .set(PropertyOrLandDescriptionPage, name).success.value
-    .set(PropertyOrLandTotalValuePage, valueFull).success.value
-    .set(TrustOwnAllThePropertyOrLandPage, true).success.value
+    .set(PropertyOrLandAddressYesNoPage(index), false).success.value
+    .set(PropertyOrLandDescriptionPage(index), name).success.value
+    .set(PropertyOrLandTotalValuePage(index), valueFull).success.value
+    .set(TrustOwnAllThePropertyOrLandPage(index), true).success.value
 
 
   "PropertyOrLandAmendAnswersController" must {
@@ -82,7 +81,7 @@ class PropertyOrLandAmendAnswersControllerSpec extends SpecBase with MockitoSuga
 
       val view = application.injector.instanceOf[AnswersView]
       val printHelper = application.injector.instanceOf[PropertyOrLandPrintHelper]
-      val answerSection = printHelper(userAnswers, provisional = false, name)
+      val answerSection = printHelper(userAnswers, index, provisional = false, name)
 
       status(result) mustEqual OK
 

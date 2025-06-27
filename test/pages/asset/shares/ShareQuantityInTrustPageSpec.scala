@@ -21,7 +21,7 @@ import pages.behaviours.PageBehaviours
 
 class ShareQuantityInTrustPageSpec extends PageBehaviours {
 
-  val page: ShareQuantityInTrustPage.type = ShareQuantityInTrustPage
+  val page: ShareQuantityInTrustPage = ShareQuantityInTrustPage(index)
 
   "ShareQuantityInTrustPage" must {
 

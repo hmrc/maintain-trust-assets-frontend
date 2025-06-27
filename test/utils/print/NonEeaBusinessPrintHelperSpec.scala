@@ -37,15 +37,15 @@ class NonEeaBusinessPrintHelperSpec extends SpecBase {
   private val date: LocalDate = LocalDate.parse("1996-02-03")
 
   private val userAnswers: UserAnswers = emptyUserAnswers
-    .set(NamePage, name).success.value
-    .set(NonUkAddressPage, nonUkAddress).success.value
-    .set(GoverningCountryPage, country).success.value
+    .set(NamePage(index), name).success.value
+    .set(NonUkAddressPage(index), nonUkAddress).success.value
+    .set(GoverningCountryPage(index), country).success.value
     .set(StartDatePage, date).success.value
 
   private val assetRows: Seq[AnswerRow] = Seq(
-    AnswerRow(label = messages("nonEeaBusiness.name.checkYourAnswersLabel"), Html(name), NameController.onPageLoad(NormalMode).url),
-    AnswerRow(label = messages("nonEeaBusiness.internationalAddress.checkYourAnswersLabel", name), Html("Line 1<br />Line 2<br />France"), InternationalAddressController.onPageLoad(NormalMode).url),
-    AnswerRow(label = messages("nonEeaBusiness.governingCountry.checkYourAnswersLabel", name), Html("France"), GoverningCountryController.onPageLoad(NormalMode).url),
+    AnswerRow(label = messages("nonEeaBusiness.name.checkYourAnswersLabel"), Html(name), NameController.onPageLoad(index, NormalMode).url),
+    AnswerRow(label = messages("nonEeaBusiness.internationalAddress.checkYourAnswersLabel", name), Html("Line 1<br />Line 2<br />France"), InternationalAddressController.onPageLoad(index, NormalMode).url),
+    AnswerRow(label = messages("nonEeaBusiness.governingCountry.checkYourAnswersLabel", name), Html("France"), GoverningCountryController.onPageLoad(index, NormalMode).url),
     AnswerRow(label = messages("nonEeaBusiness.startDate.checkYourAnswersLabel", name), Html("3 February 1996"), StartDateController.onPageLoad().url)
   )
 
@@ -55,7 +55,7 @@ class NonEeaBusinessPrintHelperSpec extends SpecBase {
 
       "added" in {
 
-        val result = helper(userAnswers.copy(isTaxable = true), provisional = true, name)
+        val result = helper(userAnswers.copy(isTaxable = true), index, provisional = true, name)
 
         result mustBe AnswerSection(
           headingKey = None,

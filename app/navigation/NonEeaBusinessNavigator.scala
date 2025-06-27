@@ -49,7 +49,7 @@ class NonEeaBusinessNavigator @Inject()() extends Navigator {
       addRts.StartDateController.onPageLoad()
     } else {
       ua.get(IndexPage) match {
-        case Some(index) => amendRts.AnswersController.renderFromUserAnswers(index)
+        case Some(indexPage: Int) => amendRts.AnswersController.renderFromUserAnswers(indexPage)
         case None => controllers.routes.SessionExpiredController.onPageLoad
       }
     }

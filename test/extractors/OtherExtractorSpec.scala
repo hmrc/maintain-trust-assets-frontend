@@ -24,8 +24,6 @@ import pages.asset.other.{OtherAssetDescriptionPage, OtherAssetValuePage}
 
 class OtherExtractorSpec extends SpecBase {
 
-  private val index = 0
-
   private val extractor = new OtherAssetExtractor()
 
   "OtherExtractor" must {
@@ -44,8 +42,8 @@ class OtherExtractorSpec extends SpecBase {
         val result = extractor(baseAnswers, otherAsset, index).get
 
         result.get(IndexPage) mustBe Some(index)
-        result.get(OtherAssetDescriptionPage) mustBe Some("Other Asset")
-        result.get(OtherAssetValuePage) mustBe Some(4000)
+        result.get(OtherAssetDescriptionPage(index)) mustBe Some("Other Asset")
+        result.get(OtherAssetValuePage(index)) mustBe Some(4000)
       }
     }
   }

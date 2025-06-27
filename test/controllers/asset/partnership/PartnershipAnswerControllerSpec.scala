@@ -20,7 +20,7 @@ import base.SpecBase
 import connectors.TrustsConnector
 import models.Status.Completed
 import models.WhatKindOfAsset.Partnership
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.when
 import pages.AssetStatus
 import pages.asset.WhatKindOfAssetPage
@@ -46,10 +46,10 @@ class PartnershipAnswerControllerSpec extends SpecBase {
 
     val answers =
       emptyUserAnswers
-        .set(WhatKindOfAssetPage, Partnership).success.value
-        .set(PartnershipDescriptionPage, "Partnership Description").success.value
-        .set(PartnershipStartDatePage, validDate).success.value
-        .set(AssetStatus, Completed).success.value
+        .set(WhatKindOfAssetPage(index), Partnership).success.value
+        .set(PartnershipDescriptionPage(index), "Partnership Description").success.value
+        .set(PartnershipStartDatePage(index), validDate).success.value
+        .set(AssetStatus(index), Completed).success.value
 
     "on GET" must {
 
@@ -63,12 +63,12 @@ class PartnershipAnswerControllerSpec extends SpecBase {
 
         val view = application.injector.instanceOf[PartnershipAnswersView]
         val printHelper = application.injector.instanceOf[PartnershipPrintHelper]
-        val answerSection = printHelper(answers, provisional = true, name)
+        val answerSection = printHelper(answers, index, provisional = true, name)
 
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(answerSection)(request, messages).toString
+          view(index, answerSection)(request, messages).toString
 
         application.stop()
       }
@@ -99,7 +99,7 @@ class PartnershipAnswerControllerSpec extends SpecBase {
           .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
           .build()
 
-        when(mockTrustConnector.addPartnershipAsset(any(), any())(any(), any()))
+        when(mockTrustConnector.addPartnershipAsset(eqTo(index), any(), any())(any(), any()))
           .thenReturn(Future.successful(HttpResponse(OK, "")))
 
         val request = FakeRequest(POST, partnershipAnswerRoute)

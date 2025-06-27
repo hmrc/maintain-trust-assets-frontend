@@ -65,7 +65,6 @@ class RemoveAssetEndDateControllerSpec extends SpecBase with ScalaCheckPropertyC
 
     "return OK and the correct view for a GET" in {
 
-      val index = 0
 
       when(mockConnector.getAssets(any())(any(), any()))
         .thenReturn(Future.successful(Assets(Nil, Nil, Nil, Nil, Nil, Nil, nonEeaAssets)))
@@ -117,7 +116,7 @@ class RemoveAssetEndDateControllerSpec extends SpecBase with ScalaCheckPropertyC
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad(index).url
 
         application.stop()
       }
@@ -160,7 +159,6 @@ class RemoveAssetEndDateControllerSpec extends SpecBase with ScalaCheckPropertyC
 
       "redirect to the 'add non-eea asset' page, removing the asset and not migrating" in {
 
-        val index = 0
 
         val answers = userAnswers(migrating = false)
 
@@ -186,14 +184,13 @@ class RemoveAssetEndDateControllerSpec extends SpecBase with ScalaCheckPropertyC
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad(index).url
 
         application.stop()
       }
 
       "redirect to the 'add asset' page, removing the asset when migrating" in {
 
-        val index = 0
 
         val answers = userAnswers(migrating = true)
 
@@ -226,8 +223,7 @@ class RemoveAssetEndDateControllerSpec extends SpecBase with ScalaCheckPropertyC
     }
 
     "return a Bad Request and errors when the entered date is before the asset start date" in {
-      val index = 0
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[TrustsConnector].toInstance(mockConnector))
         .build()
 
@@ -262,7 +258,6 @@ class RemoveAssetEndDateControllerSpec extends SpecBase with ScalaCheckPropertyC
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val index = 0
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(bind[TrustsConnector].toInstance(mockConnector)).build()
 
@@ -286,7 +281,6 @@ class RemoveAssetEndDateControllerSpec extends SpecBase with ScalaCheckPropertyC
 
     "redirect to Session Expired for a GET if no existing data is found" in {
 
-      val index = 0
 
       val application = applicationBuilder(userAnswers = None).build()
 
@@ -303,7 +297,6 @@ class RemoveAssetEndDateControllerSpec extends SpecBase with ScalaCheckPropertyC
 
     "redirect to Session Expired for a POST if no existing data is found" in {
 
-      val index = 0
 
       val application = applicationBuilder(userAnswers = None).build()
 

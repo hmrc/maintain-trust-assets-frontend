@@ -62,7 +62,6 @@ class RemovePartnershipAssetYesNoControllerSpec extends SpecBase with ScalaCheck
 
     "return OK and the correct view for a GET" in {
 
-      val index = 0
 
       when(mockConnector.getAssets(any())(any(), any()))
         .thenReturn(Future.successful(Assets(Nil, Nil, Nil, Nil, assets, Nil, Nil)))
@@ -88,7 +87,6 @@ class RemovePartnershipAssetYesNoControllerSpec extends SpecBase with ScalaCheck
 
       "redirect to the 'add asset' page when valid data is submitted and migrating" in {
 
-        val index = 0
 
         val answers = userAnswers(migrating = true)
 
@@ -114,7 +112,6 @@ class RemovePartnershipAssetYesNoControllerSpec extends SpecBase with ScalaCheck
 
       "redirect to the 'add asset' page, removing the asset when migrating" in {
 
-        val index = 0
 
         val answers = userAnswers(migrating = true)
 
@@ -144,7 +141,6 @@ class RemovePartnershipAssetYesNoControllerSpec extends SpecBase with ScalaCheck
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val index = 0
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[TrustsConnector].toInstance(mockConnector))
@@ -170,7 +166,6 @@ class RemovePartnershipAssetYesNoControllerSpec extends SpecBase with ScalaCheck
 
     "redirect to Session Expired for a GET if no existing data is found" in {
 
-      val index = 0
 
       val application = applicationBuilder(userAnswers = None).build()
 
@@ -187,7 +182,6 @@ class RemovePartnershipAssetYesNoControllerSpec extends SpecBase with ScalaCheck
 
     "redirect to Session Expired for a POST if no existing data is found" in {
 
-      val index = 0
 
       val application = applicationBuilder(userAnswers = None).build()
 

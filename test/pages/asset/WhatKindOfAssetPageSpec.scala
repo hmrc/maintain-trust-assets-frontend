@@ -39,11 +39,11 @@ class WhatKindOfAssetPageSpec extends PageBehaviours {
 
   "WhatKindOfAssetPage" must {
 
-    beRetrievable[WhatKindOfAsset](WhatKindOfAssetPage)
+    beRetrievable[WhatKindOfAsset](WhatKindOfAssetPage(index))
 
-    beSettable[WhatKindOfAsset](WhatKindOfAssetPage)
+    beSettable[WhatKindOfAsset](WhatKindOfAssetPage(index))
 
-    beRemovable[WhatKindOfAsset](WhatKindOfAssetPage)
+    beRemovable[WhatKindOfAsset](WhatKindOfAssetPage(index))
   }
 
   "remove money when changing type of asset" in {
@@ -53,14 +53,14 @@ class WhatKindOfAssetPageSpec extends PageBehaviours {
     forAll(arbitrary[UserAnswers], kindOfAsset) {
       (initial, kind) =>
         val answers: UserAnswers = initial
-          .set(AssetMoneyValuePage, num).success.value
-          .set(AssetStatus, Status.Completed).success.value
+          .set(AssetMoneyValuePage(index), num).success.value
+          .set(AssetStatus(index), Status.Completed).success.value
 
-        val result = answers.set(WhatKindOfAssetPage, kind).success.value
+        val result = answers.set(WhatKindOfAssetPage(index), kind).success.value
 
-        result.get(WhatKindOfAssetPage).value mustEqual kind
-        result.get(AssetMoneyValuePage) mustNot be(defined)
-        result.get(AssetStatus) mustNot be(defined)
+        result.get(WhatKindOfAssetPage(index)).value mustEqual kind
+        result.get(AssetMoneyValuePage(index)) mustNot be(defined)
+        result.get(AssetStatus(index)) mustNot be(defined)
     }
   }
 
@@ -71,33 +71,33 @@ class WhatKindOfAssetPageSpec extends PageBehaviours {
     forAll(arbitrary[UserAnswers], kindOfAsset) {
       (initial, kind) =>
         val answers: UserAnswers = initial
-          .set(SharesInAPortfolioPage, true).success.value
-          .set(SharePortfolioNamePage, str).success.value
-          .set(SharePortfolioOnStockExchangePage, true).success.value
-          .set(SharePortfolioQuantityInTrustPage, num).success.value
-          .set(SharePortfolioValueInTrustPage, num).success.value
-          .set(ShareCompanyNamePage, str).success.value
-          .set(SharesOnStockExchangePage, false).success.value
-          .set(ShareClassPage, ShareClass.Ordinary).success.value
-          .set(ShareQuantityInTrustPage, num).success.value
-          .set(ShareValueInTrustPage, num).success.value
-          .set(AssetStatus, Status.Completed).success.value
+          .set(SharesInAPortfolioPage(index), true).success.value
+          .set(SharePortfolioNamePage(index), str).success.value
+          .set(SharePortfolioOnStockExchangePage(index), true).success.value
+          .set(SharePortfolioQuantityInTrustPage(index), num).success.value
+          .set(SharePortfolioValueInTrustPage(index), num).success.value
+          .set(ShareCompanyNamePage(index), str).success.value
+          .set(SharesOnStockExchangePage(index), false).success.value
+          .set(ShareClassPage(index), ShareClass.Ordinary).success.value
+          .set(ShareQuantityInTrustPage(index), num).success.value
+          .set(ShareValueInTrustPage(index), num).success.value
+          .set(AssetStatus(index), Status.Completed).success.value
 
-        val result = answers.set(WhatKindOfAssetPage, kind).success.value
+        val result = answers.set(WhatKindOfAssetPage(index), kind).success.value
 
-        result.get(WhatKindOfAssetPage).value mustEqual kind
+        result.get(WhatKindOfAssetPage(index)).value mustEqual kind
 
-        result.get(SharesInAPortfolioPage) mustNot be(defined)
-        result.get(SharePortfolioNamePage) mustNot be(defined)
-        result.get(SharePortfolioOnStockExchangePage) mustNot be(defined)
-        result.get(SharePortfolioQuantityInTrustPage) mustNot be(defined)
-        result.get(SharePortfolioValueInTrustPage) mustNot be(defined)
-        result.get(ShareCompanyNamePage) mustNot be(defined)
-        result.get(SharesOnStockExchangePage) mustNot be(defined)
-        result.get(ShareClassPage) mustNot be(defined)
-        result.get(ShareQuantityInTrustPage) mustNot be(defined)
-        result.get(ShareValueInTrustPage) mustNot be(defined)
-        result.get(AssetStatus) mustNot be(defined)
+        result.get(SharesInAPortfolioPage(index)) mustNot be(defined)
+        result.get(SharePortfolioNamePage(index)) mustNot be(defined)
+        result.get(SharePortfolioOnStockExchangePage(index)) mustNot be(defined)
+        result.get(SharePortfolioQuantityInTrustPage(index)) mustNot be(defined)
+        result.get(SharePortfolioValueInTrustPage(index)) mustNot be(defined)
+        result.get(ShareCompanyNamePage(index)) mustNot be(defined)
+        result.get(SharesOnStockExchangePage(index)) mustNot be(defined)
+        result.get(ShareClassPage(index)) mustNot be(defined)
+        result.get(ShareQuantityInTrustPage(index)) mustNot be(defined)
+        result.get(ShareValueInTrustPage(index)) mustNot be(defined)
+        result.get(AssetStatus(index)) mustNot be(defined)
     }
   }
 
@@ -109,29 +109,29 @@ class WhatKindOfAssetPageSpec extends PageBehaviours {
       (initial, kind) =>
 
         val answers: UserAnswers = initial
-          .set(PropertyOrLandAddressYesNoPage, true).success.value
-          .set(PropertyOrLandAddressUkYesNoPage, true).success.value
-          .set(PropertyOrLandUKAddressPage, ukAddress).success.value
-          .set(PropertyOrLandInternationalAddressPage, internationalAddress).success.value
-          .set(PropertyOrLandDescriptionPage, str).success.value
-          .set(PropertyOrLandTotalValuePage, num).success.value
-          .set(TrustOwnAllThePropertyOrLandPage, false).success.value
-          .set(PropertyLandValueTrustPage, num).success.value
-          .set(AssetStatus, Status.Completed).success.value
+          .set(PropertyOrLandAddressYesNoPage(index), true).success.value
+          .set(PropertyOrLandAddressUkYesNoPage(index), true).success.value
+          .set(PropertyOrLandUKAddressPage(index), ukAddress).success.value
+          .set(PropertyOrLandInternationalAddressPage(index), internationalAddress).success.value
+          .set(PropertyOrLandDescriptionPage(index), str).success.value
+          .set(PropertyOrLandTotalValuePage(index), num).success.value
+          .set(TrustOwnAllThePropertyOrLandPage(index), false).success.value
+          .set(PropertyLandValueTrustPage(index), num).success.value
+          .set(AssetStatus(index), Status.Completed).success.value
 
-        val result = answers.set(WhatKindOfAssetPage, kind).success.value
+        val result: UserAnswers = answers.set(WhatKindOfAssetPage(index), kind).success.value
 
-        result.get(WhatKindOfAssetPage).value mustEqual kind
+        result.get(WhatKindOfAssetPage(index)).value mustEqual kind
 
-        result.get(PropertyOrLandAddressYesNoPage) mustNot be(defined)
-        result.get(PropertyOrLandAddressUkYesNoPage) mustNot be(defined)
-        result.get(PropertyOrLandUKAddressPage) mustNot be(defined)
-        result.get(PropertyOrLandInternationalAddressPage) mustNot be(defined)
-        result.get(PropertyOrLandDescriptionPage) mustNot be(defined)
-        result.get(PropertyOrLandTotalValuePage) mustNot be(defined)
-        result.get(TrustOwnAllThePropertyOrLandPage) mustNot be(defined)
-        result.get(PropertyLandValueTrustPage) mustNot be(defined)
-        result.get(AssetStatus) mustNot be(defined)
+        result.get(PropertyOrLandAddressYesNoPage(index)) mustNot be(defined)
+        result.get(PropertyOrLandAddressUkYesNoPage(index)) mustNot be(defined)
+        result.get(PropertyOrLandUKAddressPage(index)) mustNot be(defined)
+        result.get(PropertyOrLandInternationalAddressPage(index)) mustNot be(defined)
+        result.get(PropertyOrLandDescriptionPage(index)) mustNot be(defined)
+        result.get(PropertyOrLandTotalValuePage(index)) mustNot be(defined)
+        result.get(TrustOwnAllThePropertyOrLandPage(index)) mustNot be(defined)
+        result.get(PropertyLandValueTrustPage(index)) mustNot be(defined)
+        result.get(AssetStatus(index)) mustNot be(defined)
     }
   }
 
@@ -142,18 +142,18 @@ class WhatKindOfAssetPageSpec extends PageBehaviours {
     forAll(arbitrary[UserAnswers], kindOfAsset) {
       (initial, kind) =>
         val answers: UserAnswers = initial
-          .set(OtherAssetDescriptionPage, str).success.value
-          .set(OtherAssetValuePage, num).success.value
-          .set(AssetStatus, Status.Completed).success.value
+          .set(OtherAssetDescriptionPage(index), str).success.value
+          .set(OtherAssetValuePage(index), num).success.value
+          .set(AssetStatus(index), Status.Completed).success.value
 
-        val result = answers.set(WhatKindOfAssetPage, kind).success.value
+        val result = answers.set(WhatKindOfAssetPage(index), kind).success.value
 
-        result.get(WhatKindOfAssetPage).value mustEqual kind
+        result.get(WhatKindOfAssetPage(index)).value mustEqual kind
 
-        result.get(OtherAssetDescriptionPage) mustNot be(defined)
-        result.get(OtherAssetValuePage) mustNot be(defined)
+        result.get(OtherAssetDescriptionPage(index)) mustNot be(defined)
+        result.get(OtherAssetValuePage(index)) mustNot be(defined)
 
-        result.get(AssetStatus) mustNot be(defined)
+        result.get(AssetStatus(index)) mustNot be(defined)
     }
   }
 
@@ -164,17 +164,17 @@ class WhatKindOfAssetPageSpec extends PageBehaviours {
     forAll(arbitrary[UserAnswers], kindOfAsset) {
       (initial, kind) =>
         val answers: UserAnswers = initial
-          .set(PartnershipDescriptionPage, str).success.value
-          .set(PartnershipStartDatePage, date).success.value
-          .set(AssetStatus, Status.Completed).success.value
+          .set(PartnershipDescriptionPage(index), str).success.value
+          .set(PartnershipStartDatePage(index), date).success.value
+          .set(AssetStatus(index), Status.Completed).success.value
 
-        val result = answers.set(WhatKindOfAssetPage, kind).success.value
+        val result = answers.set(WhatKindOfAssetPage(index), kind).success.value
 
-        result.get(WhatKindOfAssetPage).value mustEqual kind
+        result.get(WhatKindOfAssetPage(index)).value mustEqual kind
 
-        result.get(PartnershipDescriptionPage) mustNot be(defined)
-        result.get(PartnershipStartDatePage) mustNot be(defined)
-        result.get(AssetStatus) mustNot be(defined)
+        result.get(PartnershipDescriptionPage(index)) mustNot be(defined)
+        result.get(PartnershipStartDatePage(index)) mustNot be(defined)
+        result.get(AssetStatus(index)) mustNot be(defined)
     }
   }
 
@@ -185,23 +185,23 @@ class WhatKindOfAssetPageSpec extends PageBehaviours {
     forAll(arbitrary[UserAnswers], kindOfAsset) {
       (initial, kind) =>
         val answers: UserAnswers = initial
-          .set(BusinessNamePage, str).success.value
-          .set(BusinessDescriptionPage, str).success.value
-          .set(BusinessUkAddressPage, ukAddress).success.value
-          .set(BusinessInternationalAddressPage, internationalAddress).success.value
-          .set(BusinessValuePage, num).success.value
-          .set(AssetStatus, Status.Completed).success.value
+          .set(BusinessNamePage(index), str).success.value
+          .set(BusinessDescriptionPage(index), str).success.value
+          .set(BusinessUkAddressPage(index), ukAddress).success.value
+          .set(BusinessInternationalAddressPage(index), internationalAddress).success.value
+          .set(BusinessValuePage(index), num).success.value
+          .set(AssetStatus(index), Status.Completed).success.value
 
-        val result = answers.set(WhatKindOfAssetPage, kind).success.value
+        val result = answers.set(WhatKindOfAssetPage(index), kind).success.value
 
-        result.get(WhatKindOfAssetPage).value mustEqual kind
+        result.get(WhatKindOfAssetPage(index)).value mustEqual kind
 
-        result.get(BusinessNamePage) mustNot be(defined)
-        result.get(BusinessDescriptionPage) mustNot be(defined)
-        result.get(BusinessUkAddressPage) mustNot be(defined)
-        result.get(BusinessInternationalAddressPage) mustNot be(defined)
-        result.get(BusinessValuePage) mustNot be(defined)
-        result.get(AssetStatus) mustNot be(defined)
+        result.get(BusinessNamePage(index)) mustNot be(defined)
+        result.get(BusinessDescriptionPage(index)) mustNot be(defined)
+        result.get(BusinessUkAddressPage(index)) mustNot be(defined)
+        result.get(BusinessInternationalAddressPage(index)) mustNot be(defined)
+        result.get(BusinessValuePage(index)) mustNot be(defined)
+        result.get(AssetStatus(index)) mustNot be(defined)
     }
   }
 
@@ -212,21 +212,21 @@ class WhatKindOfAssetPageSpec extends PageBehaviours {
     forAll(arbitrary[UserAnswers], kindOfAsset) {
       (initial, kind) =>
         val answers: UserAnswers = initial
-          .set(noneeabusiness.NamePage, str).success.value
-          .set(noneeabusiness.NonUkAddressPage, internationalAddress).success.value
-          .set(noneeabusiness.GoverningCountryPage, str).success.value
+          .set(noneeabusiness.NamePage(index), str).success.value
+          .set(noneeabusiness.NonUkAddressPage(index), internationalAddress).success.value
+          .set(noneeabusiness.GoverningCountryPage(index), str).success.value
           .set(noneeabusiness.add.StartDatePage, date).success.value
-          .set(AssetStatus, Status.Completed).success.value
+          .set(AssetStatus(index), Status.Completed).success.value
 
-        val result = answers.set(WhatKindOfAssetPage, kind).success.value
+        val result = answers.set(WhatKindOfAssetPage(index), kind).success.value
 
-        result.get(WhatKindOfAssetPage).value mustEqual kind
+        result.get(WhatKindOfAssetPage(index)).value mustEqual kind
 
-        result.get(noneeabusiness.NamePage) mustNot be(defined)
-        result.get(noneeabusiness.NonUkAddressPage) mustNot be(defined)
-        result.get(noneeabusiness.GoverningCountryPage) mustNot be(defined)
+        result.get(noneeabusiness.NamePage(index)) mustNot be(defined)
+        result.get(noneeabusiness.NonUkAddressPage(index)) mustNot be(defined)
+        result.get(noneeabusiness.GoverningCountryPage(index)) mustNot be(defined)
         result.get(noneeabusiness.add.StartDatePage) mustNot be(defined)
-        result.get(AssetStatus) mustNot be(defined)
+        result.get(AssetStatus(index)) mustNot be(defined)
     }
   }
 }

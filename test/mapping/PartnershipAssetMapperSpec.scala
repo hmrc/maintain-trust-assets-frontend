@@ -40,7 +40,7 @@ class PartnershipAssetMapperSpec extends SpecBase with Matchers
 
       val userAnswers =
         emptyUserAnswers
-          .set(WhatKindOfAssetPage, WhatKindOfAsset.Partnership).success.value
+          .set(WhatKindOfAssetPage(index), WhatKindOfAsset.Partnership).success.value
 
       partnershipAssetMapper(userAnswers) mustNot be(defined)
     }
@@ -49,10 +49,10 @@ class PartnershipAssetMapperSpec extends SpecBase with Matchers
 
       val userAnswers =
         emptyUserAnswers
-          .set(WhatKindOfAssetPage, WhatKindOfAsset.Partnership).success.value
-          .set(PartnershipDescriptionPage, "Partnership Description").success.value
-          .set(PartnershipStartDatePage, LocalDate.now).success.value
-          .set(AssetStatus, Completed).success.value
+          .set(WhatKindOfAssetPage(index), WhatKindOfAsset.Partnership).success.value
+          .set(PartnershipDescriptionPage(index), "Partnership Description").success.value
+          .set(PartnershipStartDatePage(index), LocalDate.now).success.value
+          .set(AssetStatus(index), Completed).success.value
 
       partnershipAssetMapper(userAnswers).value mustBe PartnershipType("Partnership Description", LocalDate.now)
 

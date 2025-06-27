@@ -22,7 +22,7 @@ import controllers.routes._
 import models.Status.Completed
 import models.UserAnswers
 import models.WhatKindOfAsset.Other
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.when
 import pages.AssetStatus
 import pages.asset.WhatKindOfAssetPage
@@ -38,16 +38,18 @@ import scala.concurrent.Future
 
 class OtherAnswerControllerSpec extends SpecBase {
 
+
+
   val description: String = "Other asset"
 
-  lazy val otherAnswerRoute: String = routes.OtherAnswerController.onPageLoad().url
+  lazy val otherAnswerRoute: String = routes.OtherAnswerController.onPageLoad(index).url
 
   val answers: UserAnswers =
     emptyUserAnswers
-      .set(WhatKindOfAssetPage, Other).success.value
-      .set(OtherAssetDescriptionPage, "Other asset").success.value
-      .set(OtherAssetValuePage, 4000L).success.value
-      .set(AssetStatus, Completed).success.value
+      .set(WhatKindOfAssetPage(index), Other).success.value
+      .set(OtherAssetDescriptionPage(index), "Other asset").success.value
+      .set(OtherAssetValuePage(index), 4000L).success.value
+      .set(AssetStatus(index), Completed).success.value
 
   "OtherAnswer Controller" must {
 
@@ -61,12 +63,12 @@ class OtherAnswerControllerSpec extends SpecBase {
 
       val view = application.injector.instanceOf[OtherAssetAnswersView]
       val printHelper = application.injector.instanceOf[OtherPrintHelper]
-      val answerSection = printHelper(answers, provisional = true, description)
+      val answerSection = printHelper(answers, index, provisional = true, description)
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(answerSection)(request, messages).toString
+        view(index, answerSection)(request, messages).toString
 
       application.stop()
     }
@@ -79,9 +81,9 @@ class OtherAnswerControllerSpec extends SpecBase {
         .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
         .build()
 
-      when(mockTrustConnector.addOtherAsset(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+      when(mockTrustConnector.addOtherAsset(eqTo(index), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
 
-      val request = FakeRequest(POST, controllers.asset.other.add.routes.OtherAnswerController.onSubmit().url)
+      val request = FakeRequest(POST, controllers.asset.other.add.routes.OtherAnswerController.onSubmit(index).url)
 
       val result = route(application, request).value
 

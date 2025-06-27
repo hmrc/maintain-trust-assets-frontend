@@ -27,7 +27,6 @@ class RemoveShareAssetYesNoViewSpec extends YesNoViewBehaviours {
   val messageKeyPrefix = "shares.removeYesNo"
   val form: Form[Boolean] = (new YesNoFormProvider).withPrefix(messageKeyPrefix)
   val name: String = "Name"
-  val index = 0
 
   "RemoveShareAssetYesNoView view" must {
 

@@ -37,7 +37,7 @@ import scala.concurrent.Future
 
 class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
 
-  private def whatKindOfAssetRoute(): String = routes.WhatKindOfAssetController.onPageLoad().url
+  private def whatKindOfAssetRoute(index: Int): String = routes.WhatKindOfAssetController.onPageLoad(index).url
 
   private val formProvider = new WhatKindOfAssetFormProvider()
   private val form = formProvider()
@@ -61,7 +61,7 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
 
       when(mockTrustService.getAssets(any())(any(), any())).thenReturn(Future.successful(Assets()))
 
-      val request = FakeRequest(GET, whatKindOfAssetRoute())
+      val request = FakeRequest(GET, whatKindOfAssetRoute(index))
 
       val result = route(application, request).value
 
@@ -70,7 +70,7 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, options)(request, messages).toString
+        view(form, 0, options)(request, messages).toString
 
       application.stop()
     }
@@ -78,7 +78,7 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = baseAnswers
-        .set(WhatKindOfAssetPage, Shares).success.value
+        .set(WhatKindOfAssetPage(index), Shares).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(
@@ -88,7 +88,7 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
 
       when(mockTrustService.getAssets(any())(any(), any())).thenReturn(Future.successful(Assets()))
 
-      val request = FakeRequest(GET, whatKindOfAssetRoute())
+      val request = FakeRequest(GET, whatKindOfAssetRoute(index))
 
       val view = application.injector.instanceOf[WhatKindOfAssetView]
 
@@ -97,7 +97,7 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(Shares), options)(request, messages).toString
+        view(form.fill(Shares), 0, options)(request, messages).toString
 
       application.stop()
     }
@@ -105,7 +105,7 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
     "display Money if the same index is an in progress Money asset" in {
 
       val userAnswers = baseAnswers
-        .set(WhatKindOfAssetPage, Money).success.value
+        .set(WhatKindOfAssetPage(index), Money).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(
@@ -115,7 +115,7 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
 
       when(mockTrustService.getAssets(any())(any(), any())).thenReturn(Future.successful(Assets()))
 
-      val request = FakeRequest(GET, whatKindOfAssetRoute())
+      val request = FakeRequest(GET, whatKindOfAssetRoute(index))
 
       val view = application.injector.instanceOf[WhatKindOfAssetView]
 
@@ -124,7 +124,7 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(Money), options)(request, messages).toString
+        view(form.fill(Money), 0, options)(request, messages).toString
 
       application.stop()
     }
@@ -140,7 +140,7 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
       when(mockTrustService.getAssets(any())(any(), any())).thenReturn(Future.successful(Assets()))
 
       val request =
-        FakeRequest(POST, whatKindOfAssetRoute())
+        FakeRequest(POST, whatKindOfAssetRoute(index))
           .withFormUrlEncodedBody(("value", "invalid value"))
 
       val boundForm = form.bind(Map("value" -> "invalid value"))
@@ -152,7 +152,7 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, options)(request, messages).toString
+        view(boundForm, 0, options)(request, messages).toString
 
       application.stop()
     }
@@ -161,7 +161,7 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
   "redirect to the next page when valid data is submitted" in {
 
     val mockNavigator: AssetsNavigator = mock[AssetsNavigator]
-    when(mockNavigator.addAssetNowRoute(any())).thenReturn(fakeNavigator.desiredRoute)
+    when(mockNavigator.addAssetNowRoute(any(), any())).thenReturn(fakeNavigator.desiredRoute) // TODO: Review change??
 
     val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
       .overrides(
@@ -172,7 +172,7 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
     when(mockTrustService.getAssets(any())(any(), any())).thenReturn(Future.successful(Assets()))
 
     val request =
-      FakeRequest(POST, whatKindOfAssetRoute())
+      FakeRequest(POST, whatKindOfAssetRoute(index))
         .withFormUrlEncodedBody(("value", WhatKindOfAsset.options().head.value))
 
     val result = route(application, request).value
@@ -188,7 +188,7 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
 
     val application = applicationBuilder(userAnswers = None).build()
 
-    val request = FakeRequest(GET, whatKindOfAssetRoute())
+    val request = FakeRequest(GET, whatKindOfAssetRoute(index))
 
     val result = route(application, request).value
 
@@ -203,7 +203,7 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
     val application = applicationBuilder(userAnswers = None).build()
 
     val request =
-      FakeRequest(POST, whatKindOfAssetRoute())
+      FakeRequest(POST, whatKindOfAssetRoute(index))
         .withFormUrlEncodedBody(("value", WhatKindOfAsset.values.head.toString))
 
     val result = route(application, request).value

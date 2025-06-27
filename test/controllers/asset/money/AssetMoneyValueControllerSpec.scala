@@ -24,7 +24,7 @@ import forms.ValueFormProvider
 import models.NormalMode
 import models.assets.AssetMonetaryAmount
 import navigation.Navigator
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.when
 import pages.asset.money.AssetMoneyValuePage
 import play.api.data.Form
@@ -47,7 +47,7 @@ class AssetMoneyValueControllerSpec extends SpecBase {
 
   val validAnswer: Long = 4000L
 
-  lazy val assetMoneyValueRoute: String = routes.AssetMoneyValueController.onPageLoad(NormalMode).url
+  lazy val assetMoneyValueRoute: String = routes.AssetMoneyValueController.onPageLoad(index, NormalMode).url
 
   "AssetMoneyValue Controller" must {
 
@@ -69,14 +69,14 @@ class AssetMoneyValueControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode)(request, messages).toString
+        view(form, index, NormalMode)(request, messages).toString
 
       application.stop()
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(AssetMoneyValuePage, validAnswer).success.value
+      val userAnswers = emptyUserAnswers.set(AssetMoneyValuePage(index), validAnswer).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).overrides(
         bind(classOf[TrustService]).toInstance(mockTrustService)
@@ -94,7 +94,7 @@ class AssetMoneyValueControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), NormalMode)(request, messages).toString
+        view(form.fill(validAnswer), index, NormalMode)(request, messages).toString
 
       application.stop()
     }
@@ -112,7 +112,7 @@ class AssetMoneyValueControllerSpec extends SpecBase {
       when(mockTrustService.getMonetaryAsset(any())(any(), any()))
         .thenReturn(Future.successful(Some(AssetMonetaryAmount(validAnswer))))
 
-      when(mockConnector.addMoneyAsset(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+      when(mockConnector.addMoneyAsset(eqTo(index), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val request =
         FakeRequest(POST, assetMoneyValueRoute)
@@ -148,7 +148,7 @@ class AssetMoneyValueControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode)(request, messages).toString
+        view(boundForm, index, NormalMode)(request, messages).toString
 
       application.stop()
     }

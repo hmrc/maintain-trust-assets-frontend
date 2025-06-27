@@ -45,9 +45,10 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAfterEach {
 
+
   lazy val addAssetsRoute: String = controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
   lazy val addOnePostRoute: String = controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.submitOne().url
-  lazy val addAnotherPostRoute: String = controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.submitAnother().url
+  lazy val addAnotherPostRoute: String = controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.submitAnother(index).url
   lazy val completePostRoute: String = controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.submitComplete().url
 
   val prefix = "nonTaxableToTaxable.addAssets"
@@ -112,7 +113,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
     reset(mockStoreConnector)
     reset(mockViewHelper)
 
-    when(mockNavigator.addAssetRoute(any())).thenReturn(fakeNavigator.desiredRoute)
+    when(mockNavigator.addAssetRoute(any(), eqTo(index))).thenReturn(fakeNavigator.desiredRoute)
     when(mockStoreConnector.updateTaskStatus(any(), any())(any(), any()))
       .thenReturn(Future.successful(HttpResponse(OK, "")))
   }
@@ -187,7 +188,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.asset.routes.WhatKindOfAssetController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.asset.routes.WhatKindOfAssetController.onPageLoad(index).url
 
         application.stop()
       }
@@ -262,7 +263,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(addAssetForm, fakeAddRows, "Add assets", Nil)(request, messages).toString
+          view(addAssetForm, fakeAddRows, "Add assets", Nil, index)(request, messages).toString
 
         verify(mockViewHelper).rows(eqTo(assets), eqTo(false))(any())
 
@@ -298,7 +299,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(addAssetForm, fakeAddRows, s"You have added $numberOfAssets assets", Nil)(request, messages).toString
+          view(addAssetForm, fakeAddRows, s"You have added $numberOfAssets assets", Nil, index)(request, messages).toString
 
         verify(mockViewHelper).rows(eqTo(assets), eqTo(false))(any())
 
@@ -321,7 +322,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value mustEqual fakeNavigator.desiredRoute.url
 
-        verify(mockNavigator).addAssetRoute(assets)
+        verify(mockNavigator).addAssetRoute(assets, index)
 
         application.stop()
       }
@@ -368,7 +369,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
 
         status(result) mustEqual BAD_REQUEST
 
-        contentAsString(result) mustEqual view(boundForm, fakeAddRows, s"You have added $numberOfAssets assets", Nil)(request, messages).toString
+        contentAsString(result) mustEqual view(boundForm, fakeAddRows, s"You have added $numberOfAssets assets", Nil, index)(request, messages).toString
 
         verify(mockViewHelper).rows(eqTo(assets), eqTo(false))(any())
 

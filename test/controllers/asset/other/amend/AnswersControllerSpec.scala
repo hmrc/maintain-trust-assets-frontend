@@ -42,8 +42,7 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
   private lazy val answersRoute = controllers.asset.other.amend.routes.AnswersController.extractAndRender(index).url
   private lazy val submitAnswersRoute = controllers.asset.other.amend.routes.AnswersController.onSubmit(index).url
 
-  private val index = 0
-  private val name: String = "Other Asset"
+    private val name: String = "Other Asset"
 
   private val otherAsset = OtherAssetType(
     description = "Other Asset",
@@ -52,8 +51,8 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
 
   def userAnswers: UserAnswers = emptyUserAnswers.copy(isMigratingToTaxable = true)
     .set(IndexPage, index).success.value
-    .set(OtherAssetDescriptionPage, "Other Asset").success.value
-    .set(OtherAssetValuePage, 4000L).success.value
+    .set(OtherAssetDescriptionPage(index), "Other Asset").success.value
+    .set(OtherAssetValuePage(index), 4000L).success.value
 
 
   "Asset Answers Controller" must {
@@ -77,7 +76,7 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
 
       val view = application.injector.instanceOf[AnswersView]
       val printHelper = application.injector.instanceOf[OtherPrintHelper]
-      val answerSection = printHelper(userAnswers, provisional = false, name)
+      val answerSection = printHelper(userAnswers, index, provisional = false, name)
 
       status(result) mustEqual OK
 
