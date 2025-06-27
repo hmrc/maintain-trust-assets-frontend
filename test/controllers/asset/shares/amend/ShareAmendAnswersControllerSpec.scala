@@ -43,8 +43,7 @@ class ShareAmendAnswersControllerSpec extends SpecBase with MockitoSugar with Sc
   private lazy val answersRoute = routes.ShareAmendAnswersController.extractAndRender(index).url
   private lazy val submitAnswersRoute = routes.ShareAmendAnswersController.onSubmit(index).url
 
-  private val index = 0
-  private val name: String = "ShareName"
+    private val name: String = "ShareName"
   private val quantity: Long = 5
   private val assetValue: Long = 790L
 
@@ -59,12 +58,12 @@ class ShareAmendAnswersControllerSpec extends SpecBase with MockitoSugar with Sc
 
   private val userAnswers: UserAnswers = emptyUserAnswers
     .set(IndexPage, index).success.value
-    .set(SharesInAPortfolioPage, true).success.value
-    .set(SharePortfolioNamePage, name).success.value
-    .set(SharePortfolioQuantityInTrustPage, quantity).success.value
-    .set(ShareClassPage, ShareClass.Deferred).success.value
-    .set(SharePortfolioOnStockExchangePage, false).success.value
-    .set(SharePortfolioValueInTrustPage, assetValue).success.value
+    .set(SharesInAPortfolioPage(index), true).success.value
+    .set(SharePortfolioNamePage(index), name).success.value
+    .set(SharePortfolioQuantityInTrustPage(index), quantity).success.value
+    .set(ShareClassPage(index), ShareClass.Deferred).success.value
+    .set(SharePortfolioOnStockExchangePage(index), false).success.value
+    .set(SharePortfolioValueInTrustPage(index), assetValue).success.value
 
   "ShareAmendAnswersController" must {
 
@@ -87,7 +86,7 @@ class ShareAmendAnswersControllerSpec extends SpecBase with MockitoSugar with Sc
 
       val view = application.injector.instanceOf[ShareAmendAnswersView]
       val printHelper = application.injector.instanceOf[SharesPrintHelper]
-      val answerSection = printHelper(userAnswers, provisional = false, name)
+      val answerSection = printHelper(userAnswers, index, provisional = false, name)
 
       status(result) mustEqual OK
 

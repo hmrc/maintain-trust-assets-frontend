@@ -52,7 +52,7 @@ class AssetsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
         "redirect to non-taxable add-to page" in {
 
           navigator.redirectToAddAssetPage(isMigratingToTaxable = false)
-            .mustBe(controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad())
+            .mustBe(controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad(index))
         }
       }
     }
@@ -65,14 +65,14 @@ class AssetsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
           "redirect to what-kind-of-asset page" in {
 
             navigator.redirectFromInterruptPage(isMigratingToTaxable = true, noAssets = true)
-              .mustBe(rts.WhatKindOfAssetController.onPageLoad())
+              .mustBe(rts.WhatKindOfAssetController.onPageLoad(index))
           }
         }
 
         "assets exist" must {
           "redirect to add-to page" in {
 
-            navigator.redirectFromInterruptPage(isMigratingToTaxable = true, noAssets = false)
+            navigator.redirectFromInterruptPage(isMigratingToTaxable = true, noAssets = false) // TODO: COME BACK TO
               .mustBe(nonTaxToTaxRts.AddAssetsController.onPageLoad())
           }
         }
@@ -82,7 +82,7 @@ class AssetsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
         "redirect to non-EEA business name page" in {
           forAll(arbitrary[Boolean]) { bool =>
             navigator.redirectFromInterruptPage(isMigratingToTaxable = false, bool)
-              .mustBe(controllers.asset.noneeabusiness.routes.NameController.onPageLoad(NormalMode))
+              .mustBe(controllers.asset.noneeabusiness.routes.NameController.onPageLoad(index, NormalMode))
           }
         }
       }
@@ -125,7 +125,7 @@ class AssetsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
           "redirect to non-EEA business name page" in {
             forAll(arbitrary[Boolean]) { bool =>
               navigator.redirectFromAddAssetYesNoPage(value = true, isMigratingToTaxable = false, noAssets = bool)
-                .mustBe(controllers.asset.noneeabusiness.routes.NameController.onPageLoad(NormalMode))
+                .mustBe(controllers.asset.noneeabusiness.routes.NameController.onPageLoad(index, NormalMode))
             }
           }
         }
@@ -231,8 +231,8 @@ class AssetsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
             nonEEABusiness = List.fill(MAX_NON_EEA_BUSINESS_ASSETS)(nonEeaBusiness)
           )
 
-          navigator.addAssetRoute(assets).url mustBe
-            controllers.asset.money.routes.AssetMoneyValueController.onPageLoad(NormalMode).url
+          navigator.addAssetRoute(assets, index).url mustBe
+            controllers.asset.money.routes.AssetMoneyValueController.onPageLoad(index, NormalMode).url
         }
       }
 
@@ -249,8 +249,8 @@ class AssetsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
             nonEEABusiness = List.fill(MAX_NON_EEA_BUSINESS_ASSETS)(nonEeaBusiness)
           )
 
-          navigator.addAssetRoute(assets).url mustBe
-            controllers.asset.property_or_land.routes.PropertyOrLandAddressYesNoController.onPageLoad(NormalMode).url
+          navigator.addAssetRoute(assets, index).url mustBe
+            controllers.asset.property_or_land.routes.PropertyOrLandAddressYesNoController.onPageLoad(index, NormalMode).url
         }
       }
 
@@ -267,8 +267,8 @@ class AssetsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
             nonEEABusiness = List.fill(MAX_NON_EEA_BUSINESS_ASSETS)(nonEeaBusiness)
           )
 
-          navigator.addAssetRoute(assets).url mustBe
-            controllers.asset.shares.routes.SharesInAPortfolioController.onPageLoad(NormalMode).url
+          navigator.addAssetRoute(assets, index).url mustBe
+            controllers.asset.shares.routes.SharesInAPortfolioController.onPageLoad(index, NormalMode).url
         }
       }
 
@@ -285,8 +285,8 @@ class AssetsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
             nonEEABusiness = List.fill(MAX_NON_EEA_BUSINESS_ASSETS)(nonEeaBusiness)
           )
 
-          navigator.addAssetRoute(assets).url mustBe
-            controllers.asset.business.routes.BusinessNameController.onPageLoad(NormalMode).url
+          navigator.addAssetRoute(assets, index).url mustBe
+            controllers.asset.business.routes.BusinessNameController.onPageLoad(index, NormalMode).url
         }
       }
 
@@ -303,8 +303,8 @@ class AssetsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
             nonEEABusiness = List.fill(MAX_NON_EEA_BUSINESS_ASSETS)(nonEeaBusiness)
           )
 
-          navigator.addAssetRoute(assets).url mustBe
-            controllers.asset.partnership.routes.PartnershipDescriptionController.onPageLoad(NormalMode).url
+          navigator.addAssetRoute(assets, index).url mustBe
+            controllers.asset.partnership.routes.PartnershipDescriptionController.onPageLoad(index, NormalMode).url
         }
       }
 
@@ -321,8 +321,8 @@ class AssetsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
             nonEEABusiness = List.fill(MAX_NON_EEA_BUSINESS_ASSETS)(nonEeaBusiness)
           )
 
-          navigator.addAssetRoute(assets).url mustBe
-            controllers.asset.other.routes.OtherAssetDescriptionController.onPageLoad(NormalMode).url
+          navigator.addAssetRoute(assets, index).url mustBe
+            controllers.asset.other.routes.OtherAssetDescriptionController.onPageLoad(index, NormalMode).url
         }
       }
 
@@ -339,8 +339,8 @@ class AssetsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
             nonEEABusiness = Nil
           )
 
-          navigator.addAssetRoute(assets).url mustBe
-            controllers.asset.noneeabusiness.routes.NameController.onPageLoad(NormalMode).url
+          navigator.addAssetRoute(assets, index).url mustBe
+            controllers.asset.noneeabusiness.routes.NameController.onPageLoad(index, NormalMode).url
         }
       }
 
@@ -359,8 +359,8 @@ class AssetsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
               nonEEABusiness = Nil
             )
 
-            navigator.addAssetRoute(assets).url mustBe
-              controllers.asset.routes.WhatKindOfAssetController.onPageLoad().url
+            navigator.addAssetRoute(assets, index).url mustBe
+              controllers.asset.routes.WhatKindOfAssetController.onPageLoad(index).url
           }
 
           "one type maxed out" in {
@@ -375,8 +375,8 @@ class AssetsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
               nonEEABusiness = Nil
             )
 
-            navigator.addAssetRoute(assets).url mustBe
-              controllers.asset.routes.WhatKindOfAssetController.onPageLoad().url
+            navigator.addAssetRoute(assets, index).url mustBe
+              controllers.asset.routes.WhatKindOfAssetController.onPageLoad(index).url
           }
 
           "all types maxed out bar 2" in {
@@ -391,8 +391,8 @@ class AssetsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
               nonEEABusiness = Nil
             )
 
-            navigator.addAssetRoute(assets).url mustBe
-              controllers.asset.routes.WhatKindOfAssetController.onPageLoad().url
+            navigator.addAssetRoute(assets, index).url mustBe
+              controllers.asset.routes.WhatKindOfAssetController.onPageLoad(index).url
           }
         }
       }
@@ -402,50 +402,50 @@ class AssetsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
       "money" must {
         "redirect to money journey" in {
-          navigator.addAssetNowRoute(Money).url mustBe
-            controllers.asset.money.routes.AssetMoneyValueController.onPageLoad(NormalMode).url
+          navigator.addAssetNowRoute(Money, List[AssetType]()).url mustBe
+            controllers.asset.money.routes.AssetMoneyValueController.onPageLoad(index, NormalMode).url
         }
       }
 
       "property or land" must {
         "redirect to property or land journey" in {
-          navigator.addAssetNowRoute(PropertyOrLand).url mustBe
-            controllers.asset.property_or_land.routes.PropertyOrLandAddressYesNoController.onPageLoad(NormalMode).url
+          navigator.addAssetNowRoute(PropertyOrLand, List[AssetType]()).url mustBe
+            controllers.asset.property_or_land.routes.PropertyOrLandAddressYesNoController.onPageLoad(index, NormalMode).url
         }
       }
 
       "shares" must {
         "redirect to shares journey" in {
-          navigator.addAssetNowRoute(Shares).url mustBe
-            controllers.asset.shares.routes.SharesInAPortfolioController.onPageLoad(NormalMode).url
+          navigator.addAssetNowRoute(Shares, List[AssetType]()).url mustBe
+            controllers.asset.shares.routes.SharesInAPortfolioController.onPageLoad(index, NormalMode).url
         }
       }
 
       "business" must {
         "redirect to business journey" in {
-          navigator.addAssetNowRoute(Business).url mustBe
-            controllers.asset.business.routes.BusinessNameController.onPageLoad(NormalMode).url
+          navigator.addAssetNowRoute(Business, List[AssetType]()).url mustBe
+            controllers.asset.business.routes.BusinessNameController.onPageLoad(index, NormalMode).url
         }
       }
 
       "partnership" must {
         "redirect to partnership journey" in {
-          navigator.addAssetNowRoute(Partnership).url mustBe
-            controllers.asset.partnership.routes.PartnershipDescriptionController.onPageLoad(NormalMode).url
+          navigator.addAssetNowRoute(Partnership, List[AssetType]()).url mustBe
+            controllers.asset.partnership.routes.PartnershipDescriptionController.onPageLoad(index, NormalMode).url
         }
       }
 
       "other" must {
         "redirect to other journey" in {
-          navigator.addAssetNowRoute(Other).url mustBe
-            controllers.asset.other.routes.OtherAssetDescriptionController.onPageLoad(NormalMode).url
+          navigator.addAssetNowRoute(Other, List[AssetType]()).url mustBe
+            controllers.asset.other.routes.OtherAssetDescriptionController.onPageLoad(index, NormalMode).url
         }
       }
 
       "non-EEA business" must {
         "redirect to non-EEA business journey" in {
-          navigator.addAssetNowRoute(NonEeaBusiness).url mustBe
-            controllers.asset.noneeabusiness.routes.NameController.onPageLoad(NormalMode).url
+          navigator.addAssetNowRoute(NonEeaBusiness, List[AssetType]()).url mustBe
+            controllers.asset.noneeabusiness.routes.NameController.onPageLoad(index, NormalMode).url
         }
       }
     }

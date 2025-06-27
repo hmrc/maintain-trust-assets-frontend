@@ -37,15 +37,14 @@ class BusinessInternationalAddressControllerSpec extends SpecBase with IndexVali
   val formProvider = new InternationalAddressFormProvider()
   val form: Form[NonUkAddress] = formProvider()
 
-  val index = 0
   val businessName = "Test"
 
   val validAnswer: NonUkAddress = NonUkAddress("line 1", "line 2", Some("line 3"), "country")
 
-  lazy val businessInternationalAddressRoute: String = routes.BusinessInternationalAddressController.onPageLoad(NormalMode).url
+  lazy val businessInternationalAddressRoute: String = routes.BusinessInternationalAddressController.onPageLoad(index, NormalMode).url
 
   val baseAnswers: UserAnswers = emptyUserAnswers
-    .set(BusinessNamePage, businessName).success.value
+    .set(BusinessNamePage(index), businessName).success.value
 
   "AssetInternationalAddress Controller" must {
 
@@ -64,7 +63,7 @@ class BusinessInternationalAddressControllerSpec extends SpecBase with IndexVali
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, countryOptions, NormalMode, businessName)(request, messages).toString
+        view(form, index, countryOptions, NormalMode, businessName)(request, messages).toString
 
       application.stop()
     }
@@ -72,7 +71,7 @@ class BusinessInternationalAddressControllerSpec extends SpecBase with IndexVali
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = baseAnswers
-        .set(BusinessInternationalAddressPage, validAnswer).success.value
+        .set(BusinessInternationalAddressPage(index), validAnswer).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -87,7 +86,7 @@ class BusinessInternationalAddressControllerSpec extends SpecBase with IndexVali
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), countryOptions, NormalMode, businessName)(request, messages).toString
+        view(form.fill(validAnswer), index, countryOptions, NormalMode, businessName)(request, messages).toString
 
       application.stop()
     }
@@ -135,7 +134,7 @@ class BusinessInternationalAddressControllerSpec extends SpecBase with IndexVali
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, countryOptions, NormalMode, businessName)(request, messages).toString
+        view(boundForm, index, countryOptions, NormalMode, businessName)(request, messages).toString
 
       application.stop()
     }

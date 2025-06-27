@@ -37,35 +37,35 @@ class BusinessPrintHelperSpec extends SpecBase {
   private val amount: Long = 100L
 
   private val baseAnswers: UserAnswers = emptyUserAnswers
-    .set(WhatKindOfAssetPage, Business).success.value
-    .set(BusinessNamePage, name).success.value
-    .set(BusinessDescriptionPage, description).success.value
-    .set(BusinessValuePage, amount).success.value
+    .set(WhatKindOfAssetPage(index), Business).success.value
+    .set(BusinessNamePage(index), name).success.value
+    .set(BusinessDescriptionPage(index), description).success.value
+    .set(BusinessValuePage(index), amount).success.value
 
   private val ukAddressAnswers: UserAnswers = baseAnswers
-    .set(BusinessAddressUkYesNoPage, true).success.value
-    .set(BusinessUkAddressPage, ukAddress).success.value
+    .set(BusinessAddressUkYesNoPage(index), true).success.value
+    .set(BusinessUkAddressPage(index), ukAddress).success.value
 
   private val nonUkAddressAnswers: UserAnswers = baseAnswers
-    .set(BusinessAddressUkYesNoPage, false).success.value
-    .set(BusinessInternationalAddressPage, nonUkAddress).success.value
+    .set(BusinessAddressUkYesNoPage(index), false).success.value
+    .set(BusinessInternationalAddressPage(index), nonUkAddress).success.value
 
   private val ukAddressRows: Seq[AnswerRow] = Seq(
-    AnswerRow(label = messages("whatKindOfAsset.checkYourAnswersLabel"), Html("Business"), WhatKindOfAssetController.onPageLoad().url),
-    AnswerRow(label = messages("business.name.checkYourAnswersLabel"), Html(name), BusinessNameController.onPageLoad(NormalMode).url),
-    AnswerRow(label = messages("business.description.checkYourAnswersLabel", name), Html(description), BusinessDescriptionController.onPageLoad(NormalMode).url),
-    AnswerRow(label = messages("business.addressUkYesNo.checkYourAnswersLabel", name), Html("Yes"), BusinessAddressUkYesNoController.onPageLoad(NormalMode).url),
-    AnswerRow(label = messages("business.ukAddress.checkYourAnswersLabel", name), Html("Line 1<br />Line 2<br />AB1 1AB"), BusinessUkAddressController.onPageLoad(NormalMode).url),
-    AnswerRow(label = messages("business.currentValue.checkYourAnswersLabel", name), Html("£100"), BusinessValueController.onPageLoad(NormalMode).url)
+    AnswerRow(label = messages("whatKindOfAsset.checkYourAnswersLabel"), Html("Business"), WhatKindOfAssetController.onPageLoad(index).url),
+    AnswerRow(label = messages("business.name.checkYourAnswersLabel"), Html(name), BusinessNameController.onPageLoad(index, NormalMode).url),
+    AnswerRow(label = messages("business.description.checkYourAnswersLabel", name), Html(description), BusinessDescriptionController.onPageLoad(index, NormalMode).url),
+    AnswerRow(label = messages("business.addressUkYesNo.checkYourAnswersLabel", name), Html("Yes"), BusinessAddressUkYesNoController.onPageLoad(index, NormalMode).url),
+    AnswerRow(label = messages("business.ukAddress.checkYourAnswersLabel", name), Html("Line 1<br />Line 2<br />AB1 1AB"), BusinessUkAddressController.onPageLoad(index, NormalMode).url),
+    AnswerRow(label = messages("business.currentValue.checkYourAnswersLabel", name), Html("£100"), BusinessValueController.onPageLoad(index, NormalMode).url)
   )
 
   private val nonUkAddressRows: Seq[AnswerRow] = Seq(
-    AnswerRow(label = messages("whatKindOfAsset.checkYourAnswersLabel"), Html("Business"), WhatKindOfAssetController.onPageLoad().url),
-    AnswerRow(label = messages("business.name.checkYourAnswersLabel"), Html(name), BusinessNameController.onPageLoad(NormalMode).url),
-    AnswerRow(label = messages("business.description.checkYourAnswersLabel", name), Html(description), BusinessDescriptionController.onPageLoad(NormalMode).url),
-    AnswerRow(label = messages("business.addressUkYesNo.checkYourAnswersLabel", name), Html("No"), BusinessAddressUkYesNoController.onPageLoad(NormalMode).url),
-    AnswerRow(label = messages("business.internationalAddress.checkYourAnswersLabel", name), Html("Line 1<br />Line 2<br />France"), BusinessInternationalAddressController.onPageLoad(NormalMode).url),
-    AnswerRow(label = messages("business.currentValue.checkYourAnswersLabel", name), Html("£100"), BusinessValueController.onPageLoad(NormalMode).url)
+    AnswerRow(label = messages("whatKindOfAsset.checkYourAnswersLabel"), Html("Business"), WhatKindOfAssetController.onPageLoad(index).url),
+    AnswerRow(label = messages("business.name.checkYourAnswersLabel"), Html(name), BusinessNameController.onPageLoad(index, NormalMode).url),
+    AnswerRow(label = messages("business.description.checkYourAnswersLabel", name), Html(description), BusinessDescriptionController.onPageLoad(index, NormalMode).url),
+    AnswerRow(label = messages("business.addressUkYesNo.checkYourAnswersLabel", name), Html("No"), BusinessAddressUkYesNoController.onPageLoad(index, NormalMode).url),
+    AnswerRow(label = messages("business.internationalAddress.checkYourAnswersLabel", name), Html("Line 1<br />Line 2<br />France"), BusinessInternationalAddressController.onPageLoad(index, NormalMode).url),
+    AnswerRow(label = messages("business.currentValue.checkYourAnswersLabel", name), Html("£100"), BusinessValueController.onPageLoad(index, NormalMode).url)
   )
 
   "BusinessPrintHelper" when {
@@ -76,7 +76,7 @@ class BusinessPrintHelperSpec extends SpecBase {
 
         "business has UK address" in {
 
-          val result = helper(ukAddressAnswers, provisional = true, name)
+          val result = helper(ukAddressAnswers, index, provisional = true, name)
 
           result mustBe AnswerSection(
             headingKey = None,
@@ -86,7 +86,7 @@ class BusinessPrintHelperSpec extends SpecBase {
 
         "business has non-UK address" in {
 
-          val result = helper(nonUkAddressAnswers, provisional = true, name)
+          val result = helper(nonUkAddressAnswers, index, provisional = true, name)
 
           result mustBe AnswerSection(
             headingKey = None,

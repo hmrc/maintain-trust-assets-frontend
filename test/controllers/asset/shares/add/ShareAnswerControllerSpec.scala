@@ -19,7 +19,7 @@ package controllers.asset.shares.add
 import base.SpecBase
 import connectors.TrustsConnector
 import models.{ShareClass, UserAnswers}
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.when
 import pages.asset.shares._
 import play.api.inject.bind
@@ -33,20 +33,19 @@ import scala.concurrent.Future
 
 class ShareAnswerControllerSpec extends SpecBase {
 
-  private lazy val shareAnswerRoute: String = routes.ShareAnswerController.onPageLoad().url
-  val index = 0
+  private lazy val shareAnswerRoute: String = routes.ShareAnswerController.onPageLoad(index).url
 
   val name: String = "OrgName"
   val assetValue: Long = 300L
   val quantity: Long = 20L
 
   val answers: UserAnswers = emptyUserAnswers
-    .set(SharesInAPortfolioPage, true).success.value
-    .set(SharePortfolioNamePage, name).success.value
-    .set(SharePortfolioQuantityInTrustPage, quantity).success.value
-    .set(ShareClassPage, ShareClass.Other).success.value
-    .set(SharePortfolioOnStockExchangePage, false).success.value
-    .set(SharePortfolioValueInTrustPage, assetValue).success.value
+    .set(SharesInAPortfolioPage(index), true).success.value
+    .set(SharePortfolioNamePage(index), name).success.value
+    .set(SharePortfolioQuantityInTrustPage(index), quantity).success.value
+    .set(ShareClassPage(index), ShareClass.Other).success.value
+    .set(SharePortfolioOnStockExchangePage(index), false).success.value
+    .set(SharePortfolioValueInTrustPage(index), assetValue).success.value
 
   "ShareAnswer Controller" must {
 
@@ -57,8 +56,8 @@ class ShareAnswerControllerSpec extends SpecBase {
         val name: String = "Company Name"
 
         val answers = emptyUserAnswers
-          .set(SharesInAPortfolioPage, false).success.value
-          .set(ShareCompanyNamePage, name).success.value
+          .set(SharesInAPortfolioPage(index), false).success.value
+          .set(ShareCompanyNamePage(index), name).success.value
 
         val application = applicationBuilder(userAnswers = Some(answers)).build()
 
@@ -68,12 +67,12 @@ class ShareAnswerControllerSpec extends SpecBase {
 
         val view = application.injector.instanceOf[ShareAnswersView]
         val printHelper = application.injector.instanceOf[SharesPrintHelper]
-        val answerSection = printHelper(answers, provisional = true, name)
+        val answerSection = printHelper(answers, index, provisional = true, name)
 
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(answerSection)(request, messages).toString
+          view(index, answerSection)(request, messages).toString
 
         application.stop()
       }
@@ -83,8 +82,8 @@ class ShareAnswerControllerSpec extends SpecBase {
         val name: String = "Portfolio Name"
 
         val answers = emptyUserAnswers
-          .set(SharesInAPortfolioPage, true).success.value
-          .set(SharePortfolioNamePage, name).success.value
+          .set(SharesInAPortfolioPage(index), true).success.value
+          .set(SharePortfolioNamePage(index), name).success.value
 
         val application = applicationBuilder(userAnswers = Some(answers)).build()
 
@@ -94,12 +93,12 @@ class ShareAnswerControllerSpec extends SpecBase {
 
         val view = application.injector.instanceOf[ShareAnswersView]
         val printHelper = application.injector.instanceOf[SharesPrintHelper]
-        val answerSection = printHelper(answers, provisional = true, name)
+        val answerSection = printHelper(answers, index, provisional = true, name)
 
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(answerSection)(request, messages).toString
+          view(index, answerSection)(request, messages).toString
 
         application.stop()
       }
@@ -107,7 +106,7 @@ class ShareAnswerControllerSpec extends SpecBase {
       "no name" in {
 
         val answers = emptyUserAnswers
-          .set(SharesInAPortfolioPage, true).success.value
+          .set(SharesInAPortfolioPage(index), true).success.value
 
         val application = applicationBuilder(userAnswers = Some(answers)).build()
 
@@ -117,12 +116,12 @@ class ShareAnswerControllerSpec extends SpecBase {
 
         val view = application.injector.instanceOf[ShareAnswersView]
         val printHelper = application.injector.instanceOf[SharesPrintHelper]
-        val answerSection = printHelper(answers, provisional = true, "name") //TODO
+        val answerSection = printHelper(answers, index, provisional = true, "name") //TODO
 
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(answerSection)(request, messages).toString
+          view(index, answerSection)(request, messages).toString
 
         application.stop()
       }
@@ -135,9 +134,9 @@ class ShareAnswerControllerSpec extends SpecBase {
         .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
         .build()
 
-      when(mockTrustConnector.addSharesAsset(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+      when(mockTrustConnector.addSharesAsset(eqTo(index), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
 
-      val request = FakeRequest(POST, routes.ShareAnswerController.onSubmit().url)
+      val request = FakeRequest(POST, routes.ShareAnswerController.onSubmit(index).url)
 
       val result = route(application, request).value
 

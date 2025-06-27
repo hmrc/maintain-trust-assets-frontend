@@ -40,7 +40,7 @@ class OtherAssetMapperSpec extends SpecBase with Matchers
 
       val userAnswers =
         emptyUserAnswers
-          .set(WhatKindOfAssetPage, Other).success.value
+          .set(WhatKindOfAssetPage(index), Other).success.value
 
       otherAssetMapper(userAnswers).isDefined mustBe false
     }
@@ -49,10 +49,10 @@ class OtherAssetMapperSpec extends SpecBase with Matchers
 
       val userAnswers =
         emptyUserAnswers
-          .set(WhatKindOfAssetPage, Other).success.value
-          .set(OtherAssetDescriptionPage, "Description").success.value
-          .set(OtherAssetValuePage, assetValue1).success.value
-          .set(AssetStatus, Completed).success.value
+          .set(WhatKindOfAssetPage(index), Other).success.value
+          .set(OtherAssetDescriptionPage(index), "Description").success.value
+          .set(OtherAssetValuePage(index), assetValue1).success.value
+          .set(AssetStatus(index), Completed).success.value
 
       val result = otherAssetMapper(userAnswers).get
 

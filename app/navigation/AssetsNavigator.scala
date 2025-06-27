@@ -37,7 +37,7 @@ class AssetsNavigator @Inject()(config: FrontendAppConfig) {
     }
   }
 
-  def redirectFromInterruptPage(userAnswers: UserAnswers, isMigratingToTaxable: Boolean, noAssets: Boolean): Call = {
+  def   redirectFromInterruptPage(isMigratingToTaxable: Boolean, noAssets: Boolean): Call = {
     (isMigratingToTaxable, noAssets) match {
       case (true, true) =>
         AssetNavigator.routeToIndex(

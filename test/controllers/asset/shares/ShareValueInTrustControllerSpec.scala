@@ -37,13 +37,13 @@ class ShareValueInTrustControllerSpec extends SpecBase with ModelGenerators with
   val validAnswer: Long = 4000L
   val companyName = "Company"
 
-  lazy val shareValueInTrustRoute: String = routes.ShareValueInTrustController.onPageLoad(NormalMode).url
+  lazy val shareValueInTrustRoute: String = routes.ShareValueInTrustController.onPageLoad(index, NormalMode).url
 
   "ShareValueInTrust Controller" must {
 
     "return OK and the correct view for a GET" in {
 
-      val ua = emptyUserAnswers.set(ShareCompanyNamePage, "Company").success.value
+      val ua = emptyUserAnswers.set(ShareCompanyNamePage(index), "Company").success.value
 
       val application = applicationBuilder(userAnswers = Some(ua)).build()
 
@@ -56,15 +56,16 @@ class ShareValueInTrustControllerSpec extends SpecBase with ModelGenerators with
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode, companyName)(request, messages).toString
+        view(form, index, NormalMode, companyName)(request, messages).toString
 
       application.stop()
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val ua = emptyUserAnswers.set(ShareCompanyNamePage, "Company").success.value
-        .set(ShareValueInTrustPage, validAnswer).success.value
+      val ua = emptyUserAnswers
+        .set(ShareCompanyNamePage(index), "Company").success.value
+        .set(ShareValueInTrustPage(index), validAnswer).success.value
 
       val application = applicationBuilder(userAnswers = Some(ua)).build()
 
@@ -77,14 +78,14 @@ class ShareValueInTrustControllerSpec extends SpecBase with ModelGenerators with
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), NormalMode, companyName)(request, messages).toString
+        view(form.fill(validAnswer), index, NormalMode, companyName)(request, messages).toString
 
       application.stop()
     }
 
     "redirect to the next page when valid data is submitted" in {
 
-      val ua = emptyUserAnswers.set(ShareCompanyNamePage, "Company").success.value
+      val ua = emptyUserAnswers.set(ShareCompanyNamePage(index), "Company").success.value
 
       val application =
         applicationBuilder(userAnswers = Some(ua))
@@ -105,7 +106,7 @@ class ShareValueInTrustControllerSpec extends SpecBase with ModelGenerators with
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val ua = emptyUserAnswers.set(ShareCompanyNamePage, "Company").success.value
+      val ua = emptyUserAnswers.set(ShareCompanyNamePage(index), "Company").success.value
 
       val application = applicationBuilder(userAnswers = Some(ua)).build()
 
@@ -122,7 +123,7 @@ class ShareValueInTrustControllerSpec extends SpecBase with ModelGenerators with
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode, companyName)(request, messages).toString
+        view(boundForm, index, NormalMode, companyName)(request, messages).toString
 
       application.stop()
     }

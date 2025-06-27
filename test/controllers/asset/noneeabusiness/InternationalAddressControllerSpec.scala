@@ -39,10 +39,11 @@ class InternationalAddressControllerSpec extends SpecBase with IndexValidation {
   private val name = "Test"
   private val validAnswer: NonUkAddress = NonUkAddress("value 1", "value 2", Some("value 3"), "FR")
 
-  private lazy val onPageLoadRoute: String = routes.InternationalAddressController.onPageLoad(NormalMode).url
+
+  private lazy val onPageLoadRoute: String = routes.InternationalAddressController.onPageLoad(index, NormalMode).url
 
   private val baseAnswers: UserAnswers = emptyUserAnswers
-    .set(NamePage, name).success.value
+    .set(NamePage(index), name).success.value
 
   private val countryOptions: Seq[InputOption] = injector.instanceOf[CountryOptionsNonUK].options()
 
@@ -61,7 +62,7 @@ class InternationalAddressControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, countryOptions, NormalMode, name)(request, messages).toString
+        view(form, countryOptions, index, NormalMode, name)(request, messages).toString
 
       application.stop()
     }
@@ -69,7 +70,7 @@ class InternationalAddressControllerSpec extends SpecBase with IndexValidation {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = baseAnswers
-        .set(NonUkAddressPage, validAnswer).success.value
+        .set(NonUkAddressPage(index), validAnswer).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -82,7 +83,7 @@ class InternationalAddressControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), countryOptions, NormalMode, name)(request, messages).toString
+        view(form.fill(validAnswer), countryOptions, index, NormalMode, name)(request, messages).toString
 
       application.stop()
     }
@@ -128,7 +129,7 @@ class InternationalAddressControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, countryOptions, NormalMode, name)(request, messages).toString
+        view(boundForm, countryOptions, index, NormalMode, name)(request, messages).toString
 
       application.stop()
     }

@@ -40,29 +40,29 @@ class NonEeaBusinessNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
 
       "navigate from NamePage to InternationalAddressPage" in {
 
-        val page = NamePage
+        val page = NamePage(index)
 
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>
             navigator.nextPage(page, mode, userAnswers)
-              .mustBe(rts.InternationalAddressController.onPageLoad(mode))
+              .mustBe(rts.InternationalAddressController.onPageLoad(index, mode))
         }
       }
 
       "navigate from InternationalAddressPage to GoverningCountryPage" in {
 
-        val page = NonUkAddressPage
+        val page = NonUkAddressPage(index)
 
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>
             navigator.nextPage(page, mode, userAnswers)
-              .mustBe(rts.GoverningCountryController.onPageLoad(mode))
+              .mustBe(rts.GoverningCountryController.onPageLoad(index, mode))
         }
       }
 
       "navigate from GoverningCountryPage to StartDatePage" in {
 
-        val page = GoverningCountryPage
+        val page = GoverningCountryPage(index)
 
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>
@@ -78,7 +78,7 @@ class NonEeaBusinessNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>
             navigator.nextPage(page, mode, userAnswers)
-              .mustBe(addRts.AnswersController.onPageLoad())
+              .mustBe(addRts.AnswersController.onPageLoad(index))
         }
       }
     }
@@ -86,33 +86,32 @@ class NonEeaBusinessNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
     "amending" must {
 
       val mode = CheckMode
-      val index = 0
 
       "navigate from NamePage to InternationalAddressPage" in {
 
-        val page = NamePage
+        val page = NamePage(index)
 
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>
             navigator.nextPage(page, mode, userAnswers.set(IndexPage, index).success.value)
-              .mustBe(rts.InternationalAddressController.onPageLoad(mode))
+              .mustBe(rts.InternationalAddressController.onPageLoad(index, mode))
         }
       }
 
       "navigate from InternationalAddressPage to GoverningCountryPage" in {
 
-        val page = NonUkAddressPage
+        val page = NonUkAddressPage(index)
 
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>
             navigator.nextPage(page, mode, userAnswers.set(IndexPage, index).success.value)
-              .mustBe(rts.GoverningCountryController.onPageLoad(mode))
+              .mustBe(rts.GoverningCountryController.onPageLoad(index, mode))
         }
       }
 
       "navigate from GoverningCountryPage to Check Answers" in {
 
-        val page = GoverningCountryPage
+        val page = GoverningCountryPage(index)
 
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>

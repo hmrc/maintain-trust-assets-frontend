@@ -24,8 +24,7 @@ import pages.asset.business.amend.IndexPage
 
 class BusinessExtractorSpec extends SpecBase {
 
-  private val index = 0
-  private val name: String = "BusinessName"
+    private val name: String = "BusinessName"
   private val description: String = "BusinessDescription"
   private val valueFull: Long = 790L
   private val nonUkAddress: NonUkAddress = NonUkAddress("Line 1", "Line 2", None, "FR")
@@ -51,11 +50,11 @@ class BusinessExtractorSpec extends SpecBase {
         val result = extractor(baseAnswers, businessAsset, index).get
 
         result.get(IndexPage).get mustBe index
-        result.get(BusinessNamePage) mustBe Some(name)
-        result.get(BusinessDescriptionPage) mustBe Some(description)
-        result.get(BusinessAddressUkYesNoPage) mustBe Some(false)
-        result.get(BusinessInternationalAddressPage) mustBe Some(nonUkAddress)
-        result.get(BusinessValuePage) mustBe Some(valueFull)
+        result.get(BusinessNamePage(index)) mustBe Some(name)
+        result.get(BusinessDescriptionPage(index)) mustBe Some(description)
+        result.get(BusinessAddressUkYesNoPage(index)) mustBe Some(false)
+        result.get(BusinessInternationalAddressPage(index)) mustBe Some(nonUkAddress)
+        result.get(BusinessValuePage(index)) mustBe Some(valueFull)
       }
 
       "has a uk address asset data" in {
@@ -70,11 +69,11 @@ class BusinessExtractorSpec extends SpecBase {
         val result = extractor(baseAnswers, businessAsset, index).get
 
         result.get(IndexPage).get mustBe index
-        result.get(BusinessNamePage) mustBe Some(name)
-        result.get(BusinessDescriptionPage) mustBe Some(description)
-        result.get(BusinessAddressUkYesNoPage) mustBe Some(true)
-        result.get(BusinessUkAddressPage) mustBe Some(ukAddress)
-        result.get(BusinessValuePage) mustBe Some(valueFull)
+        result.get(BusinessNamePage(index)) mustBe Some(name)
+        result.get(BusinessDescriptionPage(index)) mustBe Some(description)
+        result.get(BusinessAddressUkYesNoPage(index)) mustBe Some(true)
+        result.get(BusinessUkAddressPage(index)) mustBe Some(ukAddress)
+        result.get(BusinessValuePage(index)) mustBe Some(valueFull)
       }
     }
   }

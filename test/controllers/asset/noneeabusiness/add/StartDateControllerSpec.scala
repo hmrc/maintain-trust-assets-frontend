@@ -45,8 +45,9 @@ class StartDateControllerSpec extends SpecBase with IndexValidation {
 
   private lazy val onPageLoadRoute = routes.StartDateController.onPageLoad().url
 
+
   private val baseAnswers: UserAnswers = emptyUserAnswers.copy(whenTrustSetup = trustStartDate)
-    .set(NamePage, name).success.value
+    .set(NamePage(index), name).success.value
 
 
   "StartDateController" must {

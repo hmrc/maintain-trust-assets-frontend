@@ -34,14 +34,14 @@ class OtherPrintHelperSpec extends SpecBase {
   private val amount: Long = 100L
 
   private val answers: UserAnswers = emptyUserAnswers
-    .set(WhatKindOfAssetPage, Other).success.value
-    .set(OtherAssetDescriptionPage, description).success.value
-    .set(OtherAssetValuePage, amount).success.value
+    .set(WhatKindOfAssetPage(index), Other).success.value
+    .set(OtherAssetDescriptionPage(index), description).success.value
+    .set(OtherAssetValuePage(index), amount).success.value
 
   private val rows: Seq[AnswerRow] = Seq(
-    AnswerRow(label = messages("whatKindOfAsset.checkYourAnswersLabel"), Html("Other"), WhatKindOfAssetController.onPageLoad().url),
-    AnswerRow(label = messages("other.description.checkYourAnswersLabel"), Html(description), OtherAssetDescriptionController.onPageLoad(NormalMode).url),
-    AnswerRow(label = messages("other.value.checkYourAnswersLabel", description), Html("£100"), OtherAssetValueController.onPageLoad(NormalMode).url)
+    AnswerRow(label = messages("whatKindOfAsset.checkYourAnswersLabel"), Html("Other"), WhatKindOfAssetController.onPageLoad(index).url),
+    AnswerRow(label = messages("other.description.checkYourAnswersLabel"), Html(description), OtherAssetDescriptionController.onPageLoad(index, NormalMode).url),
+    AnswerRow(label = messages("other.value.checkYourAnswersLabel", description), Html("£100"), OtherAssetValueController.onPageLoad(index, NormalMode).url)
   )
 
   "OtherPrintHelper" when {
@@ -50,7 +50,7 @@ class OtherPrintHelperSpec extends SpecBase {
 
       "added" in {
 
-        val result = helper(answers, provisional = true, description)
+        val result = helper(answers, index, provisional = true, description)
 
         result mustBe AnswerSection(
           headingKey = None,

@@ -35,7 +35,7 @@ class PropertyOrLandDescriptionControllerSpec extends SpecBase with IndexValidat
   val formProvider = new DescriptionFormProvider()
   val form: Form[String] = formProvider.withConfig(56, "propertyOrLand.description")
 
-  lazy val propertyOrLandDescriptionRoute: String = routes.PropertyOrLandDescriptionController.onPageLoad(NormalMode).url
+  lazy val propertyOrLandDescriptionRoute: String = routes.PropertyOrLandDescriptionController.onPageLoad(index, NormalMode).url
 
   "PropertyOrLandDescription Controller" must {
 
@@ -52,14 +52,14 @@ class PropertyOrLandDescriptionControllerSpec extends SpecBase with IndexValidat
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode)(request, messages).toString
+        view(form, index, NormalMode)(request, messages).toString
 
       application.stop()
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(PropertyOrLandDescriptionPage, "answer").success.value
+      val userAnswers = emptyUserAnswers.set(PropertyOrLandDescriptionPage(index), "answer").success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -72,7 +72,7 @@ class PropertyOrLandDescriptionControllerSpec extends SpecBase with IndexValidat
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill("answer"), NormalMode)(request, messages).toString
+        view(form.fill("answer"), index, NormalMode)(request, messages).toString
 
       application.stop()
     }
@@ -113,7 +113,7 @@ class PropertyOrLandDescriptionControllerSpec extends SpecBase with IndexValidat
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode)(request, messages).toString
+        view(boundForm, index, NormalMode)(request, messages).toString
 
       application.stop()
     }

@@ -54,7 +54,6 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
   }
 
   val identifier = "1000000008"
-  val index = 0
   val description = "description"
   val date: LocalDate = LocalDate.parse("2019-02-03")
 
@@ -322,7 +321,7 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
             .willReturn(ok)
         )
 
-        val processed = connector.addMoneyAsset(identifier, moneyAsset)
+        val processed = connector.addMoneyAsset(index, identifier, moneyAsset)
 
         whenReady(processed) {
           r =>
@@ -347,7 +346,7 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
             .willReturn(badRequest)
         )
 
-        val processed = connector.addMoneyAsset(identifier, moneyAsset)
+        val processed = connector.addMoneyAsset(index, identifier, moneyAsset)
 
         whenReady(processed) {
           r =>
@@ -429,7 +428,7 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
             .willReturn(ok)
         )
 
-        val processed = connector.addPropertyOrLandAsset(identifier, propertyOrLandAsset)
+        val processed = connector.addPropertyOrLandAsset(index, identifier, propertyOrLandAsset)
 
         whenReady(processed) {
           r =>
@@ -454,7 +453,7 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
             .willReturn(badRequest)
         )
 
-        val processed = connector.addPropertyOrLandAsset(identifier, propertyOrLandAsset)
+        val processed = connector.addPropertyOrLandAsset(index, identifier, propertyOrLandAsset)
 
         whenReady(processed) {
           r =>
@@ -534,7 +533,7 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
             .willReturn(ok)
         )
 
-        val processed = connector.addSharesAsset(identifier, sharesAsset)
+        val processed = connector.addSharesAsset(index, identifier, sharesAsset)
 
         whenReady(processed) {
           r =>
@@ -559,7 +558,7 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
             .willReturn(badRequest)
         )
 
-        val processed = connector.addSharesAsset(identifier, sharesAsset)
+        val processed = connector.addSharesAsset(index, identifier, sharesAsset)
 
         whenReady(processed) {
           r =>
@@ -639,7 +638,7 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
             .willReturn(ok)
         )
 
-        val processed = connector.addBusinessAsset(identifier, businessAsset)
+        val processed = connector.addBusinessAsset(index, identifier, businessAsset)
 
         whenReady(processed) {
           r =>
@@ -664,7 +663,7 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
             .willReturn(badRequest)
         )
 
-        val processed = connector.addBusinessAsset(identifier, businessAsset)
+        val processed = connector.addBusinessAsset(index, identifier, businessAsset)
 
         whenReady(processed) {
           r =>
@@ -743,7 +742,7 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
             .willReturn(ok)
         )
 
-        val processed = connector.addPartnershipAsset(identifier, partnershipAsset)
+        val processed = connector.addPartnershipAsset(index, identifier, partnershipAsset)
 
         whenReady(processed) {
           r =>
@@ -768,7 +767,7 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
             .willReturn(badRequest)
         )
 
-        val processed = connector.addPartnershipAsset(identifier, partnershipAsset)
+        val processed = connector.addPartnershipAsset(index, identifier, partnershipAsset)
 
         whenReady(processed) {
           r =>
@@ -847,7 +846,7 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
             .willReturn(ok)
         )
 
-        val processed = connector.addOtherAsset(identifier, otherAsset)
+        val processed = connector.addOtherAsset(index, identifier, otherAsset)
 
         whenReady(processed) {
           r =>
@@ -872,7 +871,7 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
             .willReturn(badRequest)
         )
 
-        val processed = connector.addOtherAsset(identifier, otherAsset)
+        val processed = connector.addOtherAsset(index, identifier, otherAsset)
 
         whenReady(processed) {
           r =>
@@ -951,7 +950,7 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
             .willReturn(ok)
         )
 
-        val processed = connector.addNonEeaBusinessAsset(identifier, nonEeaBusinessAsset)
+        val processed = connector.addNonEeaBusinessAsset(index, identifier, nonEeaBusinessAsset)
 
         whenReady(processed) {
           r =>
@@ -976,7 +975,7 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
             .willReturn(badRequest)
         )
 
-        val processed = connector.addNonEeaBusinessAsset(identifier, nonEeaBusinessAsset)
+        val processed = connector.addNonEeaBusinessAsset(index, identifier, nonEeaBusinessAsset)
 
         whenReady(processed) {
           r =>

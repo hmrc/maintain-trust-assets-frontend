@@ -57,12 +57,12 @@ class NonEeaBusinessAssetMapperSpec extends SpecBase {
       "one asset" in {
 
         val answers = baseAnswers
-          .set(WhatKindOfAssetPage, NonEeaBusiness).success.value
-          .set(NamePage, name).success.value
-          .set(NonUkAddressPage, nonUkAddress).success.value
-          .set(GoverningCountryPage, country).success.value
+          .set(WhatKindOfAssetPage(index), NonEeaBusiness).success.value
+          .set(NamePage(index), name).success.value
+          .set(NonUkAddressPage(index), nonUkAddress).success.value
+          .set(GoverningCountryPage(index), country).success.value
           .set(StartDatePage, date).success.value
-          .set(AssetStatus, Completed).success.value
+          .set(AssetStatus(index), Completed).success.value
 
         val result = mapper(answers).get
 

@@ -17,6 +17,7 @@
 package controllers.asset
 
 import controllers.actions.StandardActionSets
+import models.assets.Assets
 import navigation.AssetsNavigator
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -57,9 +58,9 @@ class AssetInterruptPageController @Inject()(
       for {
         updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
         _ <- repository.set(request.userAnswers)
-        assets <- trustService.getAssets(updatedAnswers.identifier)
+        assets: Assets <- trustService.getAssets(updatedAnswers.identifier)
       } yield {
-        Redirect(navigator.redirectFromInterruptPage(request.userAnswers, updatedAnswers.isMigratingToTaxable, assets.isEmpty))
+        Redirect(navigator.redirectFromInterruptPage(updatedAnswers.isMigratingToTaxable, assets.allAssets.isEmpty))
       }
   }
 

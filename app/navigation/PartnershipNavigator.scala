@@ -47,7 +47,7 @@ class PartnershipNavigator @Inject()() extends Navigator {
       )
     } else {
       ua.get(IndexPage) match {
-        case Some(index) => controllers.asset.partnership.amend.routes.PartnershipAmendAnswersController.renderFromUserAnswers(index)
+        case Some(indexPage) => controllers.asset.partnership.amend.routes.PartnershipAmendAnswersController.renderFromUserAnswers(indexPage)
         case None => controllers.routes.SessionExpiredController.onPageLoad
       }
     }

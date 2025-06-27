@@ -22,10 +22,10 @@ class OtherAssetDescriptionPageSpec extends PageBehaviours {
 
   "OtherAssetDescriptionPage" must {
 
-    beRetrievable[String](OtherAssetDescriptionPage)
+    beRetrievable[String](OtherAssetDescriptionPage(index))
 
-    beSettable[String](OtherAssetDescriptionPage)
+    beSettable[String](OtherAssetDescriptionPage(index))
 
-    beRemovable[String](OtherAssetDescriptionPage)
+    beRemovable[String](OtherAssetDescriptionPage(index))
   }
 }
