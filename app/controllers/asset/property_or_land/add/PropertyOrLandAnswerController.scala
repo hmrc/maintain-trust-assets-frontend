@@ -83,7 +83,7 @@ class PropertyOrLandAnswerController @Inject()(
                   )
 
                   if (!matchFound) {
-                    connector.addPropertyOrLandAsset(index, request.userAnswers.identifier, asset).map { _ =>
+                    connector.addPropertyOrLandAsset(request.userAnswers.identifier, asset).map { _ =>
                       Redirect(navigator.nextPage(PropertyOrLandAnswerPage(index + 1), NormalMode, request.userAnswers))
                     }
                   } else {

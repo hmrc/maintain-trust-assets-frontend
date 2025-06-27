@@ -75,7 +75,7 @@ class PartnershipAnswerController @Inject()(
                         ele.partnershipStart.equals(asset.partnershipStart)
                     )
                     if (!matchFound) {
-                      connector.addPartnershipAsset(index, request.userAnswers.identifier, asset).map { _ =>
+                      connector.addPartnershipAsset(request.userAnswers.identifier, asset).map { _ =>
                         Redirect(navigator.nextPage(PartnershipAnswerPage(index + 1), NormalMode, request.userAnswers))
                       }
                     }
