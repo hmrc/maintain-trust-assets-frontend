@@ -145,7 +145,10 @@ class AddAssetsController @Inject()(
 
   def submitAnother(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
+
       trustService.getAssets(request.userAnswers.identifier).flatMap { assets: Assets =>
+
+
         addAnotherForm.bindFromRequest().fold(
           (formWithErrors: Form[_]) => {
             val assetRows = viewHelper.rows(assets, isNonTaxable = false)
