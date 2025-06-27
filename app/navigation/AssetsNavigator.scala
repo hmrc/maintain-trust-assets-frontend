@@ -31,7 +31,7 @@ class AssetsNavigator @Inject()(config: FrontendAppConfig) {
 
   def redirectToAddAssetPage(isMigratingToTaxable: Boolean, index: Option[Int] = None): Call = {
     if (isMigratingToTaxable) {
-      controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoadWithIndex(if(index.isDefined)  index.get else 0)
+      controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
     } else {
       controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad(if(index.isDefined)  index.get else 0)
     }

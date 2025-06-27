@@ -41,7 +41,7 @@ class BusinessNavigator @Inject()() extends Navigator {
     case BusinessUkAddressPage(index) => _ => BusinessValueController.onPageLoad(index, mode)
     case BusinessInternationalAddressPage(index) => _ => BusinessValueController.onPageLoad(index, mode)
     case BusinessValuePage(index) => ua => navigateToCheckAnswers(ua, mode, index)
-    case BusinessAnswerPage(index) => _ => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoadWithIndex(index)
+    case BusinessAnswerPage(index) => _ => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
   }
 
   private def yesNoNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {

@@ -42,7 +42,7 @@ class PropertyOrLandNavigator @Inject()() extends Navigator {
     case PropertyOrLandInternationalAddressPage(index)  => _ => PropertyOrLandTotalValueController.onPageLoad(index, mode)
     case PropertyOrLandTotalValuePage(index) => _ => TrustOwnAllThePropertyOrLandController.onPageLoad(index, mode)
     case PropertyLandValueTrustPage(index) => ua => navigateToCheckAnswers(ua, mode, index)
-    case PropertyOrLandAnswerPage(index) => _ => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoadWithIndex(index)
+    case PropertyOrLandAnswerPage(index) => _ => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
   }
 
   private def yesNoNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {

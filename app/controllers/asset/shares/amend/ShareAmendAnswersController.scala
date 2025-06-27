@@ -92,7 +92,7 @@ class ShareAmendAnswersController @Inject()(
       mapper(request.userAnswers).map {
         asset =>
           connector.amendSharesAsset(request.userAnswers.identifier, index, asset).map(_ =>
-            Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoadWithIndex(index))
+            Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
           )
       }.getOrElse {
         logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
