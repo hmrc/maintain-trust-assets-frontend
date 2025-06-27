@@ -69,32 +69,7 @@ class AddAssetsController @Inject()(
     }
   }
 
-  def onPageLoadWithIndex(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
-    implicit request =>
-      val userAnswers: UserAnswers = request.userAnswers
-      for {
-        assets <- trustService.getAssets(userAnswers.identifier)
-      } yield {
-        assets match {
-          case _ if assets.isEmpty =>
-            Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetYesNoController.onPageLoad())
-          case _ =>
-            val assetRows = viewHelper.rows(assets, isNonTaxable = false)
 
-            if (WhatKindOfAsset.nonMaxedOutOptions(assets).isEmpty) {
-              Ok(maxedOutView(assetRows.complete, heading(assetRows.count), MAX_ALL_ASSETS, prefix))
-            } else {
-              Ok(addAssetsView(
-                form = addAnotherForm,
-                completeAssets = assetRows.complete,
-                heading = heading(assetRows.count),
-                maxedOut = WhatKindOfAsset.maxedOutOptions(assets),
-                index
-              ))
-            }
-        }
-      }
-  }
 
   def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
@@ -102,6 +77,7 @@ class AddAssetsController @Inject()(
       for {
         assets <- trustService.getAssets(userAnswers.identifier)
       } yield {
+        println("assets.isEmpty "+assets)
         assets match {
           case _ if assets.isEmpty =>
             Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetYesNoController.onPageLoad())

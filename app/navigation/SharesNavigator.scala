@@ -38,7 +38,7 @@ class SharesNavigator @Inject()() extends Navigator() {
       yesNoNavigation(mode)
 
   def simpleNavigation: PartialFunction[Page, UserAnswers => Call] = {
-    case ShareAnswerPage(index) => _ => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoadWithIndex(index)
+    case ShareAnswerPage(index) => _ => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
   }
 
   private def portfolioRoutes(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
