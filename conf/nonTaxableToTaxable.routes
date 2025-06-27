@@ -3,7 +3,6 @@ GET        /has-taxable-asset                                controllers.asset.n
 POST       /has-taxable-asset                                controllers.asset.nonTaxableToTaxable.AddAssetYesNoController.onSubmit()
 
 GET        /add                                              controllers.asset.nonTaxableToTaxable.AddAssetsController.onPageLoad()
-GET        /add-index/:index                                 controllers.asset.nonTaxableToTaxable.AddAssetsController.onPageLoadWithIndex(index: Int)
 
 POST       /add                                              controllers.asset.nonTaxableToTaxable.AddAssetsController.submitOne()
 GET        /add-another                                      controllers.asset.nonTaxableToTaxable.AddAssetsController.onPageLoad()

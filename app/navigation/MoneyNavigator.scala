@@ -32,7 +32,7 @@ class MoneyNavigator @Inject()() extends Navigator {
 
   def routes(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
     case AssetMoneyValuePage(index) => ua => navigateToCheckAnswers(ua, mode, index)
-    case MoneyAnswerPage(index) => _ => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoadWithIndex(index)
+    case MoneyAnswerPage(index) => _ => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
   }
 
   private def navigateToCheckAnswers(ua: UserAnswers, mode: Mode, index: Int): Call = {
