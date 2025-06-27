@@ -83,7 +83,7 @@ class ShareAnswerController @Inject()(
                 )
 
                 if (!matchFound) {
-                  connector.addSharesAsset(index, request.userAnswers.identifier, asset).map { _ =>
+                  connector.addSharesAsset(request.userAnswers.identifier, asset).map { _ =>
                     Redirect(navigator.nextPage(ShareAnswerPage(index + 1), NormalMode, request.userAnswers))
                   }
                 } else {

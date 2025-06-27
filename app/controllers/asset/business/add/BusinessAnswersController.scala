@@ -81,7 +81,7 @@ class BusinessAnswersController @Inject()(
                   )
 
                   if (!matchFound) {
-                    connector.addBusinessAsset(index, request.userAnswers.identifier, asset).map { _ =>
+                    connector.addBusinessAsset(request.userAnswers.identifier, asset).map { _ =>
                       Redirect(navigator.nextPage(BusinessAnswerPage(index + 1), NormalMode, request.userAnswers))
                     }
                   } else {
