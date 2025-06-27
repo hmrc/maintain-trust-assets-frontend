@@ -28,6 +28,7 @@ import play.api.data.Form
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{route, _}
+import queries.Settable
 import views.html.asset.business.BusinessDescriptionView
 
 class BusinessDescriptionControllerSpec extends SpecBase with IndexValidation {

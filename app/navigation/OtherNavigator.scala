@@ -45,7 +45,7 @@ class OtherNavigator @Inject()() extends Navigator() {
       controllers.asset.other.add.routes.OtherAnswerController.onPageLoad(index)
     } else {
       ua.get(IndexPage) match {
-        case Some(index) => controllers.asset.other.amend.routes.AnswersController.renderFromUserAnswers(index)
+        case Some(indexPage: Int) => controllers.asset.other.amend.routes.AnswersController.renderFromUserAnswers(indexPage)
         case None => controllers.routes.SessionExpiredController.onPageLoad
       }
     }

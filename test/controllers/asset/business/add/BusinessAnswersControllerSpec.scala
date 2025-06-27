@@ -20,7 +20,7 @@ import base.SpecBase
 import connectors.TrustsConnector
 import controllers.routes._
 import models.{UkAddress, UserAnswers}
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.when
 import pages.asset.business._
 import play.api.inject.bind
@@ -73,9 +73,7 @@ class BusinessAnswersControllerSpec extends SpecBase {
         .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
         .build()
 
-      when(mockTrustConnector.amendBusinessAsset(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
-      when(mockTrustConnector.addBusinessAsset(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
-
+      when(mockTrustConnector.addBusinessAsset(eqTo(index), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val request = FakeRequest(POST, routes.BusinessAnswersController.onSubmit(index).url)
 

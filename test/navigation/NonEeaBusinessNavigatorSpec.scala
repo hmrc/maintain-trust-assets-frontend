@@ -78,7 +78,7 @@ class NonEeaBusinessNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>
             navigator.nextPage(page, mode, userAnswers)
-              .mustBe(addRts.AnswersController.onPageLoad())
+              .mustBe(addRts.AnswersController.onPageLoad(index))
         }
       }
     }

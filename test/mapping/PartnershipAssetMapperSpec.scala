@@ -18,10 +18,12 @@ package mapping
 
 import base.SpecBase
 import generators.Generators
+import models.Status.Completed
 import models.WhatKindOfAsset
 import models.assets.PartnershipType
 import org.scalatest.OptionValues
 import org.scalatest.matchers.must.Matchers
+import pages.AssetStatus
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.partnership._
 
@@ -50,6 +52,7 @@ class PartnershipAssetMapperSpec extends SpecBase with Matchers
           .set(WhatKindOfAssetPage(index), WhatKindOfAsset.Partnership).success.value
           .set(PartnershipDescriptionPage(index), "Partnership Description").success.value
           .set(PartnershipStartDatePage(index), LocalDate.now).success.value
+          .set(AssetStatus(index), Completed).success.value
 
       partnershipAssetMapper(userAnswers).value mustBe PartnershipType("Partnership Description", LocalDate.now)
 

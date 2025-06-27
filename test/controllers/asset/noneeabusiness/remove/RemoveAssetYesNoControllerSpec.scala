@@ -135,7 +135,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
       "redirect to the 'add non-eea asset' page, removing the asset when not migrating" in {
 
-        val index = 0
+        val index = 2
 
         val answers = userAnswers(migrating = false)
 
@@ -157,7 +157,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.asset.noneeabusiness.remove.routes.RemoveAssetEndDateController.onPageLoad(index).url
+        redirectLocation(result).value mustEqual controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad(index).url
 
         application.stop()
       }

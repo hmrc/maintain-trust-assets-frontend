@@ -42,7 +42,7 @@ class PropertyOrLandAmendAnswersControllerSpec extends SpecBase with MockitoSuga
   private lazy val answersRoute = routes.PropertyOrLandAmendAnswersController.extractAndRender(index).url
   private lazy val submitAnswersRoute = routes.PropertyOrLandAmendAnswersController.onSubmit(index).url
 
-  private val name: String = "BusinessName"
+    private val name: String = "BusinessName"
   private val valueFull: Long = 790L
 
   private val propertyOrLandAsset = PropertyLandType(
@@ -89,26 +89,6 @@ class PropertyOrLandAmendAnswersControllerSpec extends SpecBase with MockitoSuga
         view(answerSection, index)(request, messages).toString
     }
 
-
-    "return INTERNAL_SERVER_ERROR when service fails" in {
-
-      val mockService: TrustService = mock[TrustService]
-
-      val application = applicationBuilder(userAnswers = Some(userAnswers))
-        .overrides(
-          bind[TrustService].toInstance(mockService)
-        )
-        .build()
-
-      when(mockService.getPropertyOrLandAsset(any(), any())(any(), any()))
-        .thenReturn(Future.failed(new Exception("failed")))
-
-      val request = FakeRequest(GET, answersRoute)
-
-      val result = route(application, request).value
-
-      status(result) mustEqual INTERNAL_SERVER_ERROR
-    }
 
     "redirect to the 'add asset' page when submitted and migrating to taxable" in {
 

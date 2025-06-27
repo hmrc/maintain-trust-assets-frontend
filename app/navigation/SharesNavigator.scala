@@ -70,7 +70,7 @@ class SharesNavigator @Inject()() extends Navigator() {
       controllers.asset.shares.add.routes.ShareAnswerController.onPageLoad(index)
     } else {
       ua.get(IndexPage) match {
-        case Some(index) => controllers.asset.shares.amend.routes.ShareAmendAnswersController.renderFromUserAnswers(index)
+        case Some(indexPage) => controllers.asset.shares.amend.routes.ShareAmendAnswersController.renderFromUserAnswers(indexPage)
         case None => controllers.routes.SessionExpiredController.onPageLoad
       }
     }

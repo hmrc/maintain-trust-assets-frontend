@@ -19,10 +19,12 @@ package mapping
 import base.SpecBase
 import generators.Generators
 import models.ShareClass
+import models.Status.{Completed, InProgress}
 import models.WhatKindOfAsset.Shares
 import models.assets.SharesType
 import org.scalatest.OptionValues
 import org.scalatest.matchers.must.Matchers
+import pages.AssetStatus
 import pages.asset._
 import pages.asset.shares._
 
@@ -40,7 +42,7 @@ class ShareAssetMapperSpec extends SpecBase with Matchers
       val userAnswers = emptyUserAnswers
         .set(WhatKindOfAssetPage(index), Shares).success.value
         .set(SharesInAPortfolioPage(index), true).success.value
-
+        .set(AssetStatus(index), InProgress).success.value
 
       shareAssetMapper(userAnswers).isDefined mustBe false
     }
@@ -56,7 +58,7 @@ class ShareAssetMapperSpec extends SpecBase with Matchers
           .set(ShareValueInTrustPage(index), assetValue).success.value
           .set(SharesOnStockExchangePage(index), true).success.value
           .set(ShareClassPage(index), ShareClass.Deferred).success.value
-
+          .set(AssetStatus(index), Completed).success.value
 
         val result = shareAssetMapper(userAnswers)
         result.isDefined mustBe true
@@ -84,7 +86,7 @@ class ShareAssetMapperSpec extends SpecBase with Matchers
           .set(SharePortfolioQuantityInTrustPage(index), quantity).success.value
           .set(SharePortfolioValueInTrustPage(index), assetValue).success.value
           .set(SharePortfolioOnStockExchangePage(index), false).success.value
-
+          .set(AssetStatus(index), Completed).success.value
 
         val result = shareAssetMapper(userAnswers)
         result.isDefined mustBe true

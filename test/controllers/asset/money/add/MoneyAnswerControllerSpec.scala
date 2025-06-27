@@ -44,13 +44,15 @@ class MoneyAnswerControllerSpec extends SpecBase {
 
   val description: String = "Money asset"
 
-  lazy val moneyAnswerRoute: String = routes.MoneyAnswerController.onPageLoad().url
+  lazy val moneyAnswerRoute: String = routes.MoneyAnswerController.onPageLoad(index).url
+
+
 
   val answers: UserAnswers =
     emptyUserAnswers
-      .set(WhatKindOfAssetPage, Money).success.value
-      .set(AssetMoneyValuePage, 4000L).success.value
-      .set(AssetStatus, Completed).success.value
+      .set(WhatKindOfAssetPage(index), Money).success.value
+      .set(AssetMoneyValuePage(index), 4000L).success.value
+      .set(AssetStatus(index), Completed).success.value
 
   "MoneyAnswer Controller" must {
 
@@ -64,12 +66,12 @@ class MoneyAnswerControllerSpec extends SpecBase {
 
       val view = application.injector.instanceOf[MoneyAnswersView]
       val printHelper = application.injector.instanceOf[MoneyPrintHelper]
-      val answerSection = printHelper(answers, provisional = true, description)
+      val answerSection = printHelper(answers, index, provisional = true, description)
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(answerSection)(request, messages).toString
+        view(index, answerSection)(request, messages).toString
 
       application.stop()
     }
@@ -94,7 +96,7 @@ class MoneyAnswerControllerSpec extends SpecBase {
       // Mocking the amendMoneyAsset method to return a successful response (this is crucial!)
       when(mockTrustConnector.amendMoneyAsset(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
 
-      val request = FakeRequest(POST, controllers.asset.money.add.routes.MoneyAnswerController.onSubmit().url)
+      val request = FakeRequest(POST, controllers.asset.money.add.routes.MoneyAnswerController.onSubmit(index).url)
         .withFormUrlEncodedBody("value" -> "4000")
 
       val result = route(application, request).value
