@@ -75,7 +75,7 @@ class MoneyAnswerController @Inject()(
                   )
 
                   if (!matchFound) {
-                    connector.addMoneyAsset(index, request.userAnswers.identifier, asset).map { _ =>
+                    connector.addMoneyAsset(request.userAnswers.identifier, asset).map { _ =>
                       Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
                     }
                   } else {

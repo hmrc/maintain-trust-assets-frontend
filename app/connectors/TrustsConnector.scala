@@ -51,9 +51,9 @@ class TrustsConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig) e
       .execute[Assets]
   }
 
-  def addMoneyAsset(index: Int, identifier: String, asset: AssetMonetaryAmount)
+  def addMoneyAsset(identifier: String, asset: AssetMonetaryAmount)
                           (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    val url: String = s"$assetsUrl/add-money/$identifier/$index"
+    val url: String = s"$assetsUrl/add-money/$identifier"
     http
       .post(url"$url")
       .withBody(Json.toJson(asset))
@@ -69,10 +69,9 @@ class TrustsConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig) e
       .execute[HttpResponse]
   }
 
-  def addPropertyOrLandAsset(index: Int, identifier: String, asset: PropertyLandType)
+  def addPropertyOrLandAsset(identifier: String, asset: PropertyLandType)
                             (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    val url: String = s"$assetsUrl/add-property-or-land/$identifier/$index"
-    println("Json.toJson(asset) "+Json.toJson(asset))
+    val url: String = s"$assetsUrl/add-property-or-land/$identifier"
     http
       .post(url"$url")
       .withBody(Json.toJson(asset))
@@ -82,16 +81,15 @@ class TrustsConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig) e
   def amendPropertyOrLandAsset(identifier: String, index: Int, asset: PropertyLandType)
                               (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
     val url: String = s"$assetsUrl/amend-property-or-land/$identifier/$index"
-    println("asset =============== "+asset)
     http
       .post(url"$url")
       .withBody(Json.toJson(asset))
       .execute[HttpResponse]
   }
 
-  def addSharesAsset(index: Int, identifier: String, asset: SharesType)
+  def addSharesAsset(identifier: String, asset: SharesType)
                        (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    val url: String = s"$assetsUrl/add-shares/$identifier/$index"
+    val url: String = s"$assetsUrl/add-shares/$identifier"
     http
       .post(url"$url")
       .withBody(Json.toJson(asset))
@@ -107,9 +105,9 @@ class TrustsConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig) e
       .execute[HttpResponse]
   }
 
-  def addBusinessAsset(index: Int, identifier: String, asset: BusinessAssetType)
+  def addBusinessAsset(identifier: String, asset: BusinessAssetType)
                     (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    val url: String = s"$assetsUrl/add-business/$identifier/$index"
+    val url: String = s"$assetsUrl/add-business/$identifier"
     http
       .post(url"$url")
       .withBody(Json.toJson(asset))
@@ -125,9 +123,9 @@ class TrustsConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig) e
       .execute[HttpResponse]
   }
 
-  def addPartnershipAsset(index: Int, identifier: String, asset: PartnershipType)
-                         (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    val url: String = s"$assetsUrl/add-partnership/$identifier/$index"
+  def addPartnershipAsset(identifier: String, asset: PartnershipType)
+                      (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
+    val url: String = s"$assetsUrl/add-partnership/$identifier"
     http
       .post(url"$url")
       .withBody(Json.toJson(asset))
@@ -143,9 +141,9 @@ class TrustsConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig) e
       .execute[HttpResponse]
   }
 
-  def addOtherAsset(index: Int, identifier: String, asset: OtherAssetType)
+  def addOtherAsset(identifier: String, asset: OtherAssetType)
                    (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    val url: String = s"$assetsUrl/add-other/$identifier/$index"
+    val url: String = s"$assetsUrl/add-other/$identifier"
     http
       .post(url"$url")
       .withBody(Json.toJson(asset))
@@ -161,9 +159,9 @@ class TrustsConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig) e
       .execute[HttpResponse]
   }
 
-  def addNonEeaBusinessAsset(index: Int, identifier: String, asset: NonEeaBusinessType)
+  def addNonEeaBusinessAsset(identifier: String, asset: NonEeaBusinessType)
                       (implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] = {
-    val url: String = s"$assetsUrl/add-non-eea-business/$identifier/$index"
+    val url: String = s"$assetsUrl/add-non-eea-business/$identifier"
     http
       .post(url"$url")
       .withBody(Json.toJson(asset))
