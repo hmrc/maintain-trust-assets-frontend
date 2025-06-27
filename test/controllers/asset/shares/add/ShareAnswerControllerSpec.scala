@@ -19,7 +19,7 @@ package controllers.asset.shares.add
 import base.SpecBase
 import connectors.TrustsConnector
 import models.{ShareClass, UserAnswers}
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.asset.shares._
 import play.api.inject.bind
@@ -134,7 +134,7 @@ class ShareAnswerControllerSpec extends SpecBase {
         .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
         .build()
 
-      when(mockTrustConnector.addSharesAsset(eqTo(index), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+      when(mockTrustConnector.addSharesAsset(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val request = FakeRequest(POST, routes.ShareAnswerController.onSubmit(index).url)
 

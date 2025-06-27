@@ -81,7 +81,7 @@ class OtherAnswerControllerSpec extends SpecBase {
         .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
         .build()
 
-      when(mockTrustConnector.addOtherAsset(eqTo(index), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+      when(mockTrustConnector.addOtherAsset( any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val request = FakeRequest(POST, controllers.asset.other.add.routes.OtherAnswerController.onSubmit(index).url)
 

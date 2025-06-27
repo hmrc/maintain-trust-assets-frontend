@@ -112,7 +112,7 @@ class AssetMoneyValueControllerSpec extends SpecBase {
       when(mockTrustService.getMonetaryAsset(any())(any(), any()))
         .thenReturn(Future.successful(Some(AssetMonetaryAmount(validAnswer))))
 
-      when(mockConnector.addMoneyAsset(eqTo(index), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+      when(mockConnector.addMoneyAsset( any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val request =
         FakeRequest(POST, assetMoneyValueRoute)
