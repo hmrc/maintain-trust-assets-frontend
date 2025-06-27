@@ -99,7 +99,7 @@ class PartnershipAnswerControllerSpec extends SpecBase {
           .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
           .build()
 
-        when(mockTrustConnector.addPartnershipAsset(eqTo(index), any(), any())(any(), any()))
+        when(mockTrustConnector.addPartnershipAsset(any(), any())(any(), any()))
           .thenReturn(Future.successful(HttpResponse(OK, "")))
 
         val request = FakeRequest(POST, partnershipAnswerRoute)

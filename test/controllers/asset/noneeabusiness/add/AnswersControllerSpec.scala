@@ -85,7 +85,7 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
         .overrides(bind[TrustsConnector].toInstance(mockTrustsConnector))
         .build()
 
-      when(mockTrustsConnector.addNonEeaBusinessAsset(eqTo(index), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+      when(mockTrustsConnector.addNonEeaBusinessAsset( any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val request = FakeRequest(POST, routes.AnswersController.onSubmit(index).url)
 
@@ -107,7 +107,7 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
         .overrides(bind[TrustsConnector].toInstance(mockTrustsConnector))
         .build()
 
-      when(mockTrustsConnector.addNonEeaBusinessAsset(eqTo(index), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+      when(mockTrustsConnector.addNonEeaBusinessAsset( any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val request = FakeRequest(POST, routes.AnswersController.onSubmit(index).url)
 
