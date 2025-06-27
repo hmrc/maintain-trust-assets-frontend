@@ -18,6 +18,7 @@ package controllers.asset
 
 import controllers.actions.StandardActionSets
 import forms.WhatKindOfAssetFormProvider
+import models.WhatKindOfAsset.{Business, Money, NonEeaBusiness, Other, Partnership, PropertyOrLand, Shares}
 import models.assets.Assets
 import models.{Enumerable, Mode, NormalMode, WhatKindOfAsset}
 import navigation.AssetsNavigator
@@ -71,15 +72,28 @@ class WhatKindOfAssetController @Inject()(
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
       trustService.getAssets(request.userAnswers.identifier).flatMap{ assets: Assets =>
+        println("assets================== "+ assets)
 
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
             Future.successful(BadRequest(view(formWithErrors, index, options(assets)))),
           value => {
+            println("value === "+ value)
+
+            val correctIndex = value match {
+              case Money => assets.monetary.size
+              case PropertyOrLand => assets.propertyOrLand.size
+              case Shares => assets.shares.size
+              case Business =>assets.business.size
+              case Partnership => assets.partnerShip.size
+              case Other => assets.other.size
+              case NonEeaBusiness =>assets.nonEEABusiness.size
+            }
+            println("correctIndex ============== "+correctIndex)
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(WhatKindOfAssetPage(index), value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(WhatKindOfAssetPage(correctIndex), value))
               _ <- repository.set(updatedAnswers)
-            } yield Redirect(navigator.addAssetNowRoute(value, assets.partnerShip, Some(index)))
+            } yield Redirect(navigator.addAssetNowRoute(value, assets.monetary, Some(correctIndex)))
           }
         )
       }
