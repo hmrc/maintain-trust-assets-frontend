@@ -19,13 +19,11 @@ package controllers.asset.money.add
 import base.SpecBase
 import connectors.TrustsConnector
 import controllers.routes._
-import models.Status.Completed
 import models.UserAnswers
 import models.WhatKindOfAsset.Money
 import models.assets.AssetMonetaryAmount
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.AssetStatus
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.money.AssetMoneyValuePage
 import play.api.inject.bind
@@ -48,7 +46,7 @@ class MoneyAnswerControllerSpec extends SpecBase {
     emptyUserAnswers
       .set(WhatKindOfAssetPage(index), Money).success.value
       .set(AssetMoneyValuePage(index), 4000L).success.value
-      .set(AssetStatus(index), Completed).success.value
+
 
   "MoneyAnswer Controller" must {
 

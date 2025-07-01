@@ -90,7 +90,7 @@ class RemoveAssetEndDateControllerSpec extends SpecBase with ScalaCheckPropertyC
 
       "redirect to the 'add non-eea asset' page, removing the asset when not migrating" in {
 
-        val index = 2
+        val index = 0
 
         val answers = userAnswers(migrating = false)
 
@@ -123,7 +123,7 @@ class RemoveAssetEndDateControllerSpec extends SpecBase with ScalaCheckPropertyC
 
       "redirect to the 'add asset' page, removing the asset when migrating" in {
 
-        val index = 2
+        val index = 0
 
         val answers = userAnswers(migrating = true)
 

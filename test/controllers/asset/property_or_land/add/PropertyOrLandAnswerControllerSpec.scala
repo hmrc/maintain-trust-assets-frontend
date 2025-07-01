@@ -51,7 +51,7 @@ class PropertyOrLandAnswerControllerSpec extends SpecBase {
         .set(PropertyOrLandDescriptionPage(index), "Property Land Description").success.value
         .set(PropertyOrLandTotalValuePage(index), totalValue).success.value
         .set(TrustOwnAllThePropertyOrLandPage(index), true).success.value
-        .set(AssetStatus(index), Completed).success.value
+
 
     "property or land does not have an address and total value is owned by the trust" must {
 
@@ -83,7 +83,7 @@ class PropertyOrLandAnswerControllerSpec extends SpecBase {
       val application = applicationBuilder(userAnswers = Some(answers))
         .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
         .build()
-
+      when(mockTrustConnector.amendPropertyOrLandAsset(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
       when(mockTrustConnector.addPropertyOrLandAsset( any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val request = FakeRequest(POST, routes.PropertyOrLandAnswerController.onSubmit(index).url)
