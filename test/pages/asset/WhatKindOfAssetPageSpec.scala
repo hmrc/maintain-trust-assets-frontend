@@ -16,7 +16,7 @@
 
 package pages.asset
 
-import models.{NonUkAddress, ShareClass, Status, UkAddress, UserAnswers, WhatKindOfAsset}
+import models.{NonUkAddress, ShareClass, UkAddress, UserAnswers, WhatKindOfAsset}
 import org.scalacheck.Arbitrary.arbitrary
 import pages.AssetStatus
 import pages.asset.business._
@@ -54,13 +54,13 @@ class WhatKindOfAssetPageSpec extends PageBehaviours {
       (initial, kind) =>
         val answers: UserAnswers = initial
           .set(AssetMoneyValuePage(index), num).success.value
-          .set(AssetStatus(index), Status.Completed).success.value
+
 
         val result = answers.set(WhatKindOfAssetPage(index), kind).success.value
 
         result.get(WhatKindOfAssetPage(index)).value mustEqual kind
         result.get(AssetMoneyValuePage(index)) mustNot be(defined)
-        result.get(AssetStatus(index)) mustNot be(defined)
+
     }
   }
 
@@ -81,7 +81,7 @@ class WhatKindOfAssetPageSpec extends PageBehaviours {
           .set(ShareClassPage(index), ShareClass.Ordinary).success.value
           .set(ShareQuantityInTrustPage(index), num).success.value
           .set(ShareValueInTrustPage(index), num).success.value
-          .set(AssetStatus(index), Status.Completed).success.value
+
 
         val result = answers.set(WhatKindOfAssetPage(index), kind).success.value
 
@@ -117,7 +117,7 @@ class WhatKindOfAssetPageSpec extends PageBehaviours {
           .set(PropertyOrLandTotalValuePage(index), num).success.value
           .set(TrustOwnAllThePropertyOrLandPage(index), false).success.value
           .set(PropertyLandValueTrustPage(index), num).success.value
-          .set(AssetStatus(index), Status.Completed).success.value
+
 
         val result: UserAnswers = answers.set(WhatKindOfAssetPage(index), kind).success.value
 
@@ -144,7 +144,7 @@ class WhatKindOfAssetPageSpec extends PageBehaviours {
         val answers: UserAnswers = initial
           .set(OtherAssetDescriptionPage(index), str).success.value
           .set(OtherAssetValuePage(index), num).success.value
-          .set(AssetStatus(index), Status.Completed).success.value
+
 
         val result = answers.set(WhatKindOfAssetPage(index), kind).success.value
 
@@ -166,7 +166,7 @@ class WhatKindOfAssetPageSpec extends PageBehaviours {
         val answers: UserAnswers = initial
           .set(PartnershipDescriptionPage(index), str).success.value
           .set(PartnershipStartDatePage(index), date).success.value
-          .set(AssetStatus(index), Status.Completed).success.value
+
 
         val result = answers.set(WhatKindOfAssetPage(index), kind).success.value
 
@@ -190,7 +190,7 @@ class WhatKindOfAssetPageSpec extends PageBehaviours {
           .set(BusinessUkAddressPage(index), ukAddress).success.value
           .set(BusinessInternationalAddressPage(index), internationalAddress).success.value
           .set(BusinessValuePage(index), num).success.value
-          .set(AssetStatus(index), Status.Completed).success.value
+
 
         val result = answers.set(WhatKindOfAssetPage(index), kind).success.value
 
@@ -216,7 +216,7 @@ class WhatKindOfAssetPageSpec extends PageBehaviours {
           .set(noneeabusiness.NonUkAddressPage(index), internationalAddress).success.value
           .set(noneeabusiness.GoverningCountryPage(index), str).success.value
           .set(noneeabusiness.add.StartDatePage, date).success.value
-          .set(AssetStatus(index), Status.Completed).success.value
+
 
         val result = answers.set(WhatKindOfAssetPage(index), kind).success.value
 
