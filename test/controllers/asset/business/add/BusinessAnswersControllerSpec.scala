@@ -20,7 +20,7 @@ import base.SpecBase
 import connectors.TrustsConnector
 import controllers.routes._
 import models.{UkAddress, UserAnswers}
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.asset.business._
 import play.api.inject.bind

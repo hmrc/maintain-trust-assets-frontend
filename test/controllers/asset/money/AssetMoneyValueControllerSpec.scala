@@ -24,7 +24,7 @@ import forms.ValueFormProvider
 import models.NormalMode
 import models.assets.AssetMonetaryAmount
 import navigation.Navigator
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.asset.money.AssetMoneyValuePage
 import play.api.data.Form

@@ -16,8 +16,6 @@
 
 package controllers.asset.money.add
 
-
-
 import base.SpecBase
 import connectors.TrustsConnector
 import controllers.routes._
@@ -45,8 +43,6 @@ class MoneyAnswerControllerSpec extends SpecBase {
   val description: String = "Money asset"
 
   lazy val moneyAnswerRoute: String = routes.MoneyAnswerController.onPageLoad(index).url
-
-
 
   val answers: UserAnswers =
     emptyUserAnswers

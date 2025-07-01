@@ -71,7 +71,7 @@ class WhatKindOfAssetController @Inject()(
 
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-      trustService.getAssets(request.userAnswers.identifier).flatMap { assets: Assets =>
+      trustService.getAssets(request.userAnswers.identifier).flatMap{ assets: Assets =>
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
             Future.successful(BadRequest(view(formWithErrors, index, options(assets)))),
@@ -80,10 +80,10 @@ class WhatKindOfAssetController @Inject()(
               case Money => assets.monetary.size
               case PropertyOrLand => assets.propertyOrLand.size
               case Shares => assets.shares.size
-              case Business => assets.business.size
+              case Business =>assets.business.size
               case Partnership => assets.partnerShip.size
               case Other => assets.other.size
-              case NonEeaBusiness => assets.nonEEABusiness.size
+              case NonEeaBusiness =>assets.nonEEABusiness.size
             }
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(WhatKindOfAssetPage(correctIndex), value))

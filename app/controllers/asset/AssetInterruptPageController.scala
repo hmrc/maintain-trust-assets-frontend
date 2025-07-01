@@ -17,7 +17,6 @@
 package controllers.asset
 
 import controllers.actions.StandardActionSets
-import models.assets.Assets
 import navigation.AssetsNavigator
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}

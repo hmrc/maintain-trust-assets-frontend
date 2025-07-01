@@ -21,7 +21,7 @@ import connectors.TrustsConnector
 import controllers.routes._
 import mapping.NonEeaBusinessAssetMapper
 import models.{NonUkAddress, UserAnswers}
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
@@ -40,8 +40,6 @@ import scala.concurrent.Future
 class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures {
 
   private val name: String = "Noneeabusiness"
-
-
 
   def userAnswers(migrating: Boolean): UserAnswers = emptyUserAnswers.copy(isMigratingToTaxable = migrating)
     .set(NamePage(index), name).success.value
