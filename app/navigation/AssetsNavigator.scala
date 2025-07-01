@@ -21,7 +21,7 @@ import controllers.asset.routes.AssetInterruptPageController
 import models.Constants._
 import models.WhatKindOfAsset.{Business, Money, NonEeaBusiness, Other, Partnership, PropertyOrLand, Shares}
 import models.assets.{AssetType, Assets}
-import models.{Mode, NormalMode, UserAnswers, WhatKindOfAsset}
+import models.{Mode, NormalMode, WhatKindOfAsset}
 import play.api.mvc.Call
 import uk.gov.hmrc.http.HttpVerbs.GET
 

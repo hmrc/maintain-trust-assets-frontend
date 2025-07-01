@@ -20,7 +20,7 @@ import base.SpecBase
 import connectors.TrustsConnector
 import models.Status.Completed
 import models.WhatKindOfAsset.Partnership
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.AssetStatus
 import pages.asset.WhatKindOfAssetPage
