@@ -71,25 +71,20 @@ class WhatKindOfAssetController @Inject()(
 
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-      trustService.getAssets(request.userAnswers.identifier).flatMap{ assets: Assets =>
-        println("assets================== "+ assets)
-
+      trustService.getAssets(request.userAnswers.identifier).flatMap { assets: Assets =>
         form.bindFromRequest().fold(
           (formWithErrors: Form[_]) =>
             Future.successful(BadRequest(view(formWithErrors, index, options(assets)))),
           value => {
-            println("value === "+ value)
-
             val correctIndex = value match {
               case Money => assets.monetary.size
               case PropertyOrLand => assets.propertyOrLand.size
               case Shares => assets.shares.size
-              case Business =>assets.business.size
+              case Business => assets.business.size
               case Partnership => assets.partnerShip.size
               case Other => assets.other.size
-              case NonEeaBusiness =>assets.nonEEABusiness.size
+              case NonEeaBusiness => assets.nonEEABusiness.size
             }
-            println("correctIndex ============== "+correctIndex)
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(WhatKindOfAssetPage(correctIndex), value))
               _ <- repository.set(updatedAnswers)
