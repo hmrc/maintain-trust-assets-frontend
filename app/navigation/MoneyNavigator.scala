@@ -35,7 +35,6 @@ class MoneyNavigator @Inject()() extends Navigator {
   }
 
   private def navigateToCheckAnswers(ua: UserAnswers, mode: Mode, index: Int): Call = {
-
     if (mode == NormalMode) {
       AssetNavigator.routeToIndex(
         List.empty, // TODO: COME BACK TO
