@@ -18,11 +18,9 @@ package controllers.asset.partnership
 
 import base.SpecBase
 import connectors.TrustsConnector
-import models.Status.Completed
 import models.WhatKindOfAsset.Partnership
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.AssetStatus
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.partnership._
 import play.api.inject.bind
@@ -40,7 +38,7 @@ class PartnershipAnswerControllerSpec extends SpecBase {
   val validDate: LocalDate = LocalDate.now(ZoneOffset.UTC)
   val name: String = "Description"
 
-  private val partnershipAnswerRoute = "/maintain-a-trust/trust-assets/partnership/check-answers"
+  private val partnershipAnswerRoute = "/maintain-a-trust/trust-assets/partnership/0/check-answers1"
 
   "PartnershipAnswer Controller" must {
 
@@ -49,7 +47,7 @@ class PartnershipAnswerControllerSpec extends SpecBase {
         .set(WhatKindOfAssetPage(index), Partnership).success.value
         .set(PartnershipDescriptionPage(index), "Partnership Description").success.value
         .set(PartnershipStartDatePage(index), validDate).success.value
-        .set(AssetStatus(index), Completed).success.value
+
 
     "on GET" must {
 
@@ -98,6 +96,10 @@ class PartnershipAnswerControllerSpec extends SpecBase {
         val application = applicationBuilder(userAnswers = Some(answers))
           .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
           .build()
+
+
+        when(mockTrustConnector.amendPartnershipAsset(any(), any(),any())(any(), any()))
+          .thenReturn(Future.successful(HttpResponse(OK, "")))
 
         when(mockTrustConnector.addPartnershipAsset(any(), any())(any(), any()))
           .thenReturn(Future.successful(HttpResponse(OK, "")))

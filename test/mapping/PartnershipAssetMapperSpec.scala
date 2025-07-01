@@ -52,7 +52,6 @@ class PartnershipAssetMapperSpec extends SpecBase with Matchers
           .set(WhatKindOfAssetPage(index), WhatKindOfAsset.Partnership).success.value
           .set(PartnershipDescriptionPage(index), "Partnership Description").success.value
           .set(PartnershipStartDatePage(index), LocalDate.now).success.value
-          .set(AssetStatus(index), Completed).success.value
 
       partnershipAssetMapper(userAnswers).value mustBe PartnershipType("Partnership Description", LocalDate.now)
 

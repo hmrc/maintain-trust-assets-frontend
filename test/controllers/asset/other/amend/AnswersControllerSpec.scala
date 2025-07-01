@@ -19,7 +19,7 @@ package controllers.asset.other.amend
 import base.SpecBase
 import connectors.TrustsConnector
 import models.UserAnswers
-import models.assets.OtherAssetType
+import models.assets.{AssetMonetaryAmount, Assets, OtherAssetType}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
@@ -94,6 +94,9 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
           .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
           .build()
 
+      val moneyAsset = AssetMonetaryAmount(4000L)
+      val assets: Assets = Assets(monetary = List(moneyAsset))
+      when(mockTrustConnector.getAssets(any())(any(), any())).thenReturn(Future.successful(assets))
       when(mockTrustConnector.amendOtherAsset(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val request = FakeRequest(POST, submitAnswersRoute)
