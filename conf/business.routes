@@ -31,9 +31,9 @@ POST       /:index/change-current-value                                      con
 GET        /:index/check-answers                                             controllers.asset.business.add.BusinessAnswersController.onPageLoad(index: Int)
 POST       /:index/check-answers                                             controllers.asset.business.add.BusinessAnswersController.onSubmit(index: Int)
 
-GET        /:index/remove                                             controllers.asset.business.remove.RemoveBusinessAssetYesNoController.onPageLoad(index: Int)
-POST       /:index/remove                                             controllers.asset.business.remove.RemoveBusinessAssetYesNoController.onSubmit(index: Int)
+GET        /:index/remove                                                    controllers.asset.business.remove.RemoveBusinessAssetYesNoController.onPageLoad(index: Int)
+POST       /:index/remove                                                    controllers.asset.business.remove.RemoveBusinessAssetYesNoController.onSubmit(index: Int)
 
-GET        /:index/check-answers                                      controllers.asset.business.amend.BusinessAmendAnswersController.extractAndRender(index: Int)
-GET        /:index/updated-answers                                    controllers.asset.business.amend.BusinessAmendAnswersController.renderFromUserAnswers(index: Int)
-POST       /:index/check-answers                                      controllers.asset.business.amend.BusinessAmendAnswersController.onSubmit(index: Int)
+GET        /:index/check-answers                                             controllers.asset.business.amend.BusinessAmendAnswersController.extractAndRender(index: Int)
+GET        /:index/updated-answers                                           controllers.asset.business.amend.BusinessAmendAnswersController.renderFromUserAnswers(index: Int)
+POST       /:index/check-answers                                             controllers.asset.business.amend.BusinessAmendAnswersController.onSubmit(index: Int)
