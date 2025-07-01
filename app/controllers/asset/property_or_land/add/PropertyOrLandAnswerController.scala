@@ -64,7 +64,6 @@ class PropertyOrLandAnswerController @Inject()(
           errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
         case Some(asset) =>
           connector.amendPropertyOrLandAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
-            println("======PropertyOrLandAnswerController ============== "+ response.status)
             response.status match {
               case OK | NO_CONTENT =>
                 Future.successful(

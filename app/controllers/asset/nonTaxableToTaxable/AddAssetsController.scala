@@ -77,7 +77,6 @@ class AddAssetsController @Inject()(
       for {
         assets <- trustService.getAssets(userAnswers.identifier)
       } yield {
-        println("assets.isEmpty "+assets)
         assets match {
           case _ if assets.isEmpty =>
             Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetYesNoController.onPageLoad())

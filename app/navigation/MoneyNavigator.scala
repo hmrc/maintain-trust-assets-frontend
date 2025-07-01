@@ -20,7 +20,6 @@ import models.{Mode, NormalMode, UserAnswers}
 import pages.Page
 import pages.asset.money._
 import pages.asset.money.add.MoneyAnswerPage
-import pages.asset.money.amend.IndexPage
 import play.api.mvc.Call
 
 import javax.inject.Inject
@@ -37,7 +36,6 @@ class MoneyNavigator @Inject()() extends Navigator {
 
   private def navigateToCheckAnswers(ua: UserAnswers, mode: Mode, index: Int): Call = {
 
-    println("ua::::::::::::::::::::::: "+ua +"::IndexPage "+IndexPage +":::::::::::: "+ua.get(AssetMoneyValuePage(index)))
     if (mode == NormalMode) {
       AssetNavigator.routeToIndex(
         List.empty, // TODO: COME BACK TO

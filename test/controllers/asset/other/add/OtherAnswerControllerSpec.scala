@@ -19,12 +19,10 @@ package controllers.asset.other.add
 import base.SpecBase
 import connectors.TrustsConnector
 import controllers.routes._
-import models.Status.Completed
 import models.UserAnswers
 import models.WhatKindOfAsset.Other
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.AssetStatus
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.other.{OtherAssetDescriptionPage, OtherAssetValuePage}
 import play.api.inject.bind
@@ -38,8 +36,6 @@ import scala.concurrent.Future
 
 class OtherAnswerControllerSpec extends SpecBase {
 
-
-
   val description: String = "Other asset"
 
   lazy val otherAnswerRoute: String = routes.OtherAnswerController.onPageLoad(index).url
@@ -49,7 +45,7 @@ class OtherAnswerControllerSpec extends SpecBase {
       .set(WhatKindOfAssetPage(index), Other).success.value
       .set(OtherAssetDescriptionPage(index), "Other asset").success.value
       .set(OtherAssetValuePage(index), 4000L).success.value
-      .set(AssetStatus(index), Completed).success.value
+
 
   "OtherAnswer Controller" must {
 
@@ -82,6 +78,8 @@ class OtherAnswerControllerSpec extends SpecBase {
         .build()
 
       when(mockTrustConnector.addOtherAsset( any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+
+      when(mockTrustConnector.amendOtherAsset(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val request = FakeRequest(POST, controllers.asset.other.add.routes.OtherAnswerController.onSubmit(index).url)
 
