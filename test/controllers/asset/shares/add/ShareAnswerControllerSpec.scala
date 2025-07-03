@@ -134,6 +134,7 @@ class ShareAnswerControllerSpec extends SpecBase {
         .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
         .build()
 
+      when(mockTrustConnector.amendSharesAsset(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
       when(mockTrustConnector.addSharesAsset(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val request = FakeRequest(POST, routes.ShareAnswerController.onSubmit(index).url)

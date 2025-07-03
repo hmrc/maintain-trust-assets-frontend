@@ -161,7 +161,7 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
   "redirect to the next page when valid data is submitted" in {
 
     val mockNavigator: AssetsNavigator = mock[AssetsNavigator]
-    when(mockNavigator.addAssetNowRoute(any(), any())).thenReturn(fakeNavigator.desiredRoute) // TODO: Review change??
+    when(mockNavigator.addAssetNowRoute(any(), any(), any())).thenReturn(fakeNavigator.desiredRoute) // TODO: Review change??
 
     val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
       .overrides(
