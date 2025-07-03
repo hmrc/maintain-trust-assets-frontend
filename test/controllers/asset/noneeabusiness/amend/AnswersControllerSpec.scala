@@ -18,8 +18,8 @@ package controllers.asset.noneeabusiness.amend
 
 import base.SpecBase
 import connectors.TrustsConnector
-import models.{NonUkAddress, UserAnswers}
 import models.assets.{Assets, NonEeaBusinessType}
+import models.{NonUkAddress, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
@@ -41,10 +41,10 @@ import scala.concurrent.Future
 
 class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures {
 
-  private lazy val answersRoute = routes.AnswersController.extractAndRender(index).url
-  private lazy val submitAnswersRoute = routes.AnswersController.onSubmit(index).url
+  private lazy val answersRoute = controllers.asset.noneeabusiness.amend.routes.AnswersController.extractAndRender(index).url
+  private lazy val submitAnswersRoute = controllers.asset.noneeabusiness.amend.routes.AnswersController.onSubmit(index).url
 
-    private val name: String = "OrgName"
+  private val name: String = "OrgName"
   private val date: LocalDate = LocalDate.parse("1996-02-03")
   private val country: String = "FR"
   private val nonUkAddress: NonUkAddress = NonUkAddress("Line 1", "Line 2", None, "FR")
@@ -58,6 +58,12 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
     endDate = None,
     provisional = true
   )
+
+
+  val assets: Assets = Assets(
+    nonEEABusiness = List(nonEeaBusinessAsset)
+  )
+
 
   def userAnswers(migrating: Boolean): UserAnswers = emptyUserAnswers.copy(isMigratingToTaxable = migrating)
     .set(NamePage(index), name).success.value
@@ -108,11 +114,10 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
           .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
           .build()
 
-      when(mockTrustConnector.amendNonEeaBusinessAsset(any(), any(), any())(any(), any()))
-        .thenReturn(Future.successful(HttpResponse(OK, "")))
-
       when(mockTrustConnector.getAssets(any())(any(), any()))
-        .thenReturn(Future.successful(Assets()))
+        .thenReturn(Future.successful(assets))
+
+      when(mockTrustConnector.amendNonEeaBusinessAsset(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val request = FakeRequest(POST, submitAnswersRoute)
 
@@ -120,7 +125,7 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad(index).url
+      redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
 
       application.stop()
     }
@@ -136,11 +141,10 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
           .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
           .build()
 
-      when(mockTrustConnector.amendNonEeaBusinessAsset(any(), any(), any())(any(), any()))
-        .thenReturn(Future.successful(HttpResponse(OK, "")))
-
       when(mockTrustConnector.getAssets(any())(any(), any()))
-        .thenReturn(Future.successful(Assets()))
+        .thenReturn(Future.successful(assets))
+
+      when(mockTrustConnector.amendNonEeaBusinessAsset(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val request = FakeRequest(POST, submitAnswersRoute)
 

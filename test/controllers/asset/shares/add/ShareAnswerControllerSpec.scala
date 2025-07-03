@@ -134,11 +134,8 @@ class ShareAnswerControllerSpec extends SpecBase {
         .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
         .build()
 
-      when(mockTrustConnector.addSharesAsset(any(), any())(any(), any()))
-        .thenReturn(Future.successful(HttpResponse(OK, "")))
-
-      when(mockTrustConnector.amendSharesAsset(any[String](), any[Int](), any[models.assets.SharesType]())(any(), any()))
-        .thenReturn(Future.successful(HttpResponse(OK, "")))
+      when(mockTrustConnector.amendSharesAsset(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+      when(mockTrustConnector.addSharesAsset(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val request = FakeRequest(POST, routes.ShareAnswerController.onSubmit(index).url)
 
@@ -150,7 +147,6 @@ class ShareAnswerControllerSpec extends SpecBase {
 
       application.stop()
     }
-
 
     "redirect to Session Expired for a GET if no existing data is found" in {
       val application = applicationBuilder(userAnswers = None).build()
