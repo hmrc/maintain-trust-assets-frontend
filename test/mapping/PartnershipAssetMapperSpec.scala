@@ -18,12 +18,10 @@ package mapping
 
 import base.SpecBase
 import generators.Generators
-import models.Status.Completed
 import models.WhatKindOfAsset
 import models.assets.PartnershipType
 import org.scalatest.OptionValues
 import org.scalatest.matchers.must.Matchers
-import pages.AssetStatus
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.partnership._
 

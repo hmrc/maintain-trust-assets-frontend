@@ -19,11 +19,9 @@ package controllers.asset.property_or_land.add
 import base.SpecBase
 import connectors.TrustsConnector
 import controllers.routes._
-import models.Status.Completed
 import models.WhatKindOfAsset.PropertyOrLand
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.AssetStatus
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.property_or_land._
 import play.api.inject.bind
