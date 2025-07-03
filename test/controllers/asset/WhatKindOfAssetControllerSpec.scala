@@ -22,7 +22,7 @@ import controllers.routes._
 import forms.WhatKindOfAssetFormProvider
 import models.WhatKindOfAsset
 import models.WhatKindOfAsset._
-import models.assets.Assets
+import models.assets.{AssetType, Assets}
 import navigation.AssetsNavigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -161,7 +161,9 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
   "redirect to the next page when valid data is submitted" in {
 
     val mockNavigator: AssetsNavigator = mock[AssetsNavigator]
-    when(mockNavigator.addAssetNowRoute(any(), any())).thenReturn(fakeNavigator.desiredRoute) // TODO: Review change??
+    when(mockNavigator.addAssetNowRoute(any[WhatKindOfAsset](), any[List[AssetType]](), any[Option[Int]]()))
+      .thenReturn(fakeNavigator.desiredRoute)
+    // TODO: Review change??
 
     val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
       .overrides(

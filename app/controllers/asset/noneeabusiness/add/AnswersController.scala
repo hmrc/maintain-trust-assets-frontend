@@ -65,7 +65,6 @@ class AnswersController @Inject()(
                   ele.govLawCountry.equalsIgnoreCase(asset.govLawCountry) &&
                   ele.startDate.equals(asset.startDate) &&
                   ele.endDate.equals(asset.endDate)
-
               )
 
               if (!matchFound) {
