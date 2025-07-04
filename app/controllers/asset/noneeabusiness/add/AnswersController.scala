@@ -46,12 +46,12 @@ class AnswersController @Inject()(
 
   private val provisional: Boolean = true
 
-  def onPageLoad(index: Int): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
+  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
-      Ok(view(index, printHelper(userAnswers = request.userAnswers, index, provisional, request.name)))
+      Ok(view(printHelper(userAnswers = request.userAnswers, 0, provisional, request.name)))
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
+  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
       mapper(request.userAnswers) match {
         case None =>
