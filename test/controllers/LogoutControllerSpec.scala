@@ -17,37 +17,76 @@
 package controllers
 
 import base.SpecBase
-import org.mockito.ArgumentMatchers.{eq => eqTo, _}
+import config.FrontendAppConfig
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito._
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
 class LogoutControllerSpec extends SpecBase with MockitoSugar {
+  // Mocks
+  val mockAppConfig = mock[FrontendAppConfig]
+  val mockAuditConnector = mock[AuditConnector]
+  implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  "logout should redirect to feedback and audit" in {
 
-    val mockAuditConnector = mock[AuditConnector]
+  "LogoutController" should {
 
-    val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-      .overrides(bind[AuditConnector].toInstance(mockAuditConnector))
-      .build()
+    "redirect to logoutUrl with feedbackId in session and send audit if auditing is enabled" in {
+      when(mockAppConfig.logoutUrl).thenReturn(frontendAppConfig.logoutUrl)
+      when(mockAppConfig.logoutAudit).thenReturn(true)
 
-    val request = FakeRequest(GET, routes.LogoutController.logout().url)
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[AuditConnector].toInstance(mockAuditConnector))
+        .overrides(bind[FrontendAppConfig].toInstance(mockAppConfig))
+        .build()
 
-    val result = route(application, request).value
 
-    status(result) mustEqual SEE_OTHER
+      val request = FakeRequest(GET, routes.LogoutController.logout().url)
 
-    redirectLocation(result).value mustBe frontendAppConfig.logoutUrl
+      val result = route(application, request).value
 
-    verify(mockAuditConnector, never)
-      .sendExplicitAudit(eqTo("trusts"), any[Map[String, String]])(any(), any())
+      status(result) mustEqual SEE_OTHER
 
-    application.stop()
+      redirectLocation(result) mustBe Some(frontendAppConfig.logoutUrl)
+
+      verify(mockAuditConnector, times(1))
+        .sendExplicitAudit(eqTo("trusts"), org.mockito.ArgumentMatchers.any[Map[String, String]]
+        )(any(), any())
+
+      application.stop()
+
+    }
+
+    "redirect to logoutUrl and NOT send audit if auditing is disabled" in {
+
+      reset(mockAppConfig, mockAuditConnector)
+
+      when(mockAppConfig.logoutUrl).thenReturn(frontendAppConfig.logoutUrl)
+      when(mockAppConfig.logoutAudit).thenReturn(false)
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(
+          bind[FrontendAppConfig].toInstance(mockAppConfig),
+          bind[AuditConnector].toInstance(mockAuditConnector)
+        )
+        .build()
+
+      val request = FakeRequest(GET, routes.LogoutController.logout().url)
+
+      val result = route(application, request).value
+
+      status(result) mustBe SEE_OTHER
+      redirectLocation(result) mustBe Some(frontendAppConfig.logoutUrl)
+
+      verify(mockAuditConnector, never()).sendExplicitAudit(any(), org.mockito.ArgumentMatchers.any[Map[String, String]])(any(), any())
+
+      application.stop()
+    }
 
   }
-
 }
