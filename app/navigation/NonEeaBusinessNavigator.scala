@@ -41,7 +41,7 @@ class NonEeaBusinessNavigator @Inject()() extends Navigator {
     case NamePage(index) => _ => rts.InternationalAddressController.onPageLoad(index,mode)
     case NonUkAddressPage(index) => _ => rts.GoverningCountryController.onPageLoad(index,mode)
     case GoverningCountryPage(index) => ua => navigateToStartDateOrCheckAnswers(ua, mode, index)
-    case StartDatePage => _ => addRts.AnswersController.onPageLoad(0)
+    case StartDatePage => _ => addRts.AnswersController.onPageLoad()
   }
 
   private def navigateToStartDateOrCheckAnswers(ua: UserAnswers, mode: Mode, index: Int): Call = {
