@@ -48,7 +48,7 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
     .set(GoverningCountryPage(index), "FR").success.value
     .set(StartDatePage, LocalDate.parse("1996-02-03")).success.value
 
-  private lazy val onPageLoadRoute: String = routes.AnswersController.onSubmit(index).url
+  private lazy val onPageLoadRoute: String = routes.AnswersController.onSubmit().url
 
   "AnswersController" must {
 
@@ -70,7 +70,7 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(index, answerSection)(request, messages).toString
+        view(answerSection)(request, messages).toString
 
       application.stop()
     }
@@ -89,7 +89,7 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
       when(mockTrustsConnector.getAssets(any())(any(), any())).thenReturn(Future.successful(assets))
       when(mockTrustsConnector.addNonEeaBusinessAsset( any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
 
-      val request = FakeRequest(POST, routes.AnswersController.onSubmit(index).url)
+      val request = FakeRequest(POST, routes.AnswersController.onSubmit().url)
 
       val result = route(application, request).value
 
@@ -114,7 +114,7 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
       when(mockTrustsConnector.getAssets(any())(any(), any())).thenReturn(Future.successful(assets))
       when(mockTrustsConnector.addNonEeaBusinessAsset( any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
 
-      val request = FakeRequest(POST, routes.AnswersController.onSubmit(index).url)
+      val request = FakeRequest(POST, routes.AnswersController.onSubmit().url)
 
       val result = route(application, request).value
 
@@ -143,7 +143,7 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(POST, routes.AnswersController.onSubmit(index).url)
+      val request = FakeRequest(POST, routes.AnswersController.onSubmit().url)
 
       val result = route(application, request).value
 
@@ -164,7 +164,7 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
 
       when(mockNonEeaBusinessAssetMapper(any)).thenReturn(None)
 
-      val request = FakeRequest(POST, routes.AnswersController.onSubmit(index).url)
+      val request = FakeRequest(POST, routes.AnswersController.onSubmit().url)
 
       val result = route(application, request).value
       status(result) mustEqual INTERNAL_SERVER_ERROR

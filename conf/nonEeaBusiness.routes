@@ -16,8 +16,8 @@ POST       /:index/change-governing-country                                  con
 GET        /start-date                                                       controllers.asset.noneeabusiness.add.StartDateController.onPageLoad()
 POST       /start-date                                                       controllers.asset.noneeabusiness.add.StartDateController.onSubmit()
 
-GET        /:index/check-answers                                             controllers.asset.noneeabusiness.add.AnswersController.onPageLoad(index: Int)
-POST       /:index/check-answers                                             controllers.asset.noneeabusiness.add.AnswersController.onSubmit(index: Int)
+GET        /check-answers                                                    controllers.asset.noneeabusiness.add.AnswersController.onPageLoad()
+POST       /check-answers                                                    controllers.asset.noneeabusiness.add.AnswersController.onSubmit()
 
 GET        /:index/add                                                       controllers.asset.noneeabusiness.AddNonEeaBusinessAssetController.onPageLoad(index: Int)
 POST       /add                                                              controllers.asset.noneeabusiness.AddNonEeaBusinessAssetController.submitOne()
