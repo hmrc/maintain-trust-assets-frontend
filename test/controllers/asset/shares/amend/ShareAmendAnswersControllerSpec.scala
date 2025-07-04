@@ -86,7 +86,7 @@ class ShareAmendAnswersControllerSpec extends SpecBase with MockitoSugar with Sc
 
       val view = application.injector.instanceOf[ShareAmendAnswersView]
       val printHelper = application.injector.instanceOf[SharesPrintHelper]
-      val answerSection = printHelper(userAnswers, index, provisional = false, name)
+      val answerSection = printHelper(userAnswers, index, provisional = true, name)
 
       status(result) mustEqual OK
 
