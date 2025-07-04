@@ -89,7 +89,7 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
 
       val view = application.injector.instanceOf[AnswersView]
       val printHelper = application.injector.instanceOf[NonEeaBusinessPrintHelper]
-      val answerSection = printHelper(answers, index, provisional = false, name)
+      val answerSection = printHelper(answers, index, provisional = true, name)
 
       status(result) mustEqual OK
 
