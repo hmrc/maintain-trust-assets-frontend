@@ -90,7 +90,7 @@ class BusinessAmendAnswersControllerSpec extends SpecBase with MockitoSugar with
 
       val view = application.injector.instanceOf[BusinessAmendAnswersView]
       val printHelper = application.injector.instanceOf[BusinessPrintHelper]
-      val answerSection = printHelper(userAnswers, index, provisional = false, name)
+      val answerSection = printHelper(userAnswers, index, provisional = true, name)
 
       status(result) mustEqual OK
 

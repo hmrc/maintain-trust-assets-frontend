@@ -98,7 +98,7 @@ class AddNonEeaBusinessAssetControllerSpec extends SpecBase with Generators with
         val application = applicationBuilder(userAnswers = None)
           .build()
 
-        val request = FakeRequest(POST, addAssetsRoute)
+        val request = FakeRequest(POST, addOnePostRoute)
           .withFormUrlEncodedBody(("value", AddAssets.values.head.toString))
 
         val result = route(application, request).value
