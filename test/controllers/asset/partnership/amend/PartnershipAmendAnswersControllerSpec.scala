@@ -14,61 +14,50 @@
  * limitations under the License.
  */
 
-package controllers.asset.business.amend
+package controllers.asset.partnership.amend
 
 import base.SpecBase
 import connectors.TrustsConnector
 import controllers.routes._
-import models.assets.BusinessAssetType
-import models.{NonUkAddress, UserAnswers}
+import models.WhatKindOfAsset.Partnership
+import models.assets.PartnershipType
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
-import pages.asset.business._
-import pages.asset.business.amend.IndexPage
+import pages.asset.WhatKindOfAssetPage
+import pages.asset.partnership.{PartnershipDescriptionPage, PartnershipStartDatePage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.TrustService
 import uk.gov.hmrc.auth.core.AffinityGroup.Agent
 import uk.gov.hmrc.http.HttpResponse
-import utils.print.BusinessPrintHelper
-import views.html.asset.business.amend.BusinessAmendAnswersView
+import utils.print.PartnershipPrintHelper
+import views.html.asset.partnership.PartnershipAmendAnswersView
 
-import java.time.LocalDate
+import java.time.{LocalDate, ZoneOffset}
 import scala.concurrent.Future
 
-class BusinessAmendAnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures {
+class PartnershipAmendAnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures {
 
-  private lazy val answersRoute = routes.BusinessAmendAnswersController.extractAndRender(index).url
-  private lazy val submitAnswersRoute = routes.BusinessAmendAnswersController.onSubmit(index).url
+  private lazy val answersRoute = routes.PartnershipAmendAnswersController.extractAndRender(index).url
+  private lazy val submitAnswersRoute = routes.PartnershipAmendAnswersController.onSubmit(index).url
 
-  private val name: String = "BusinessName"
-  private val description: String = "BusinessDescription"
-  private val internationalAddress: NonUkAddress = NonUkAddress("", "", None, "")
-  private val valueFull: Long = 790L
+//  private val answersRoute = "/maintain-a-trust/trust-assets/partnership/0/check-answers"
+//  private lazy val submitAnswersRoute = "/maintain-a-trust/trust-assets/partnership/0/check-answers"
 
-  private val businessAsset = BusinessAssetType(
-    orgName = name,
-    businessDescription = description,
-    address = internationalAddress,
-    businessValue = valueFull
-  )
+  val validDate: LocalDate = LocalDate.now(ZoneOffset.UTC)
+  val name: String = "Description"
 
-  def userAnswers: UserAnswers = UserAnswers("internalId",
-    "identifier",
-    "sessionId",
-    "internalId-identifier-sessionId",
-    LocalDate.now,
-    isMigratingToTaxable = true)
-    .set(IndexPage, index).success.value
-    .set(BusinessAddressUkYesNoPage(index), false).success.value
-    .set(BusinessInternationalAddressPage(index), internationalAddress).success.value
-    .set(BusinessNamePage(index), name).success.value
-    .set(BusinessDescriptionPage(index), description).success.value
-    .set(BusinessValuePage(index), valueFull).success.value
+  private val partnershipType = PartnershipType(name, validDate)
 
+
+  val answers =
+    emptyUserAnswers
+      .set(WhatKindOfAssetPage(index), Partnership).success.value
+      .set(PartnershipDescriptionPage(index), name).success.value
+      .set(PartnershipStartDatePage(index), validDate).success.value
 
   "BusinessAmendAnswersController" must {
 
@@ -76,22 +65,25 @@ class BusinessAmendAnswersControllerSpec extends SpecBase with MockitoSugar with
 
       val mockService: TrustService = mock[TrustService]
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers))
+      val application = applicationBuilder(userAnswers = Some(answers))
         .overrides(
           bind[TrustService].toInstance(mockService)
         )
         .build()
 
-      when(mockService.getBusinessAsset(any(), any())(any(), any()))
-        .thenReturn(Future.successful(businessAsset))
+
+      when(mockService.getPartnershipAsset(any(), any())(any(), any()))
+        .thenReturn(Future.successful(partnershipType))
+
 
       val request = FakeRequest(GET, answersRoute)
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[BusinessAmendAnswersView]
-      val printHelper = application.injector.instanceOf[BusinessPrintHelper]
-      val answerSection = printHelper(userAnswers, index, provisional = false, name)
+      val view = application.injector.instanceOf[PartnershipAmendAnswersView]
+      val printHelper = application.injector.instanceOf[PartnershipPrintHelper]
+      val answerSection = printHelper(answers, index, provisional = false, name)
+
 
       status(result) mustEqual OK
 
@@ -104,13 +96,13 @@ class BusinessAmendAnswersControllerSpec extends SpecBase with MockitoSugar with
 
       val mockService = mock[TrustService]
 
-      val application = applicationBuilder(Some(emptyUserAnswers))
+      val application = applicationBuilder(Some(answers))
         .overrides(
           bind[TrustService].toInstance(mockService)
         )
         .build()
 
-      when(mockService.getBusinessAsset(any(), any())(any(), any()))
+      when(mockService.getPartnershipAsset(any(), any())(any(), any()))
         .thenReturn(Future.failed(new Exception("failed")))
 
       val request = FakeRequest(GET, answersRoute)
@@ -127,11 +119,11 @@ class BusinessAmendAnswersControllerSpec extends SpecBase with MockitoSugar with
       val mockTrustConnector = mock[TrustsConnector]
 
       val application =
-        applicationBuilder(userAnswers = Some(userAnswers), affinityGroup = Agent)
+        applicationBuilder(userAnswers = Some(answers), affinityGroup = Agent)
           .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
           .build()
 
-      when(mockTrustConnector.amendBusinessAsset(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+      when(mockTrustConnector.amendPartnershipAsset(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val request = FakeRequest(POST, submitAnswersRoute)
 
@@ -143,6 +135,7 @@ class BusinessAmendAnswersControllerSpec extends SpecBase with MockitoSugar with
 
       application.stop()
     }
+
     "redirect to Session Expired for a GET if no existing data is found" in {
 
       val application = applicationBuilder(userAnswers = None).build()

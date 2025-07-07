@@ -82,8 +82,33 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
 
       contentAsString(result) mustEqual
         view(answerSection, index)(request, messages).toString
+
+      application.stop()
     }
 
+
+    "return to Error page when internal server error occured For GET" in {
+
+      val mockService: TrustService = mock[TrustService]
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(
+          bind[TrustService].toInstance(mockService)
+        )
+        .build()
+
+      when(mockService.getOtherAsset(any(), any())(any(), any()))
+        .thenReturn(Future.failed(new Exception("Failed")))
+
+      val request = FakeRequest(GET, answersRoute)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual INTERNAL_SERVER_ERROR
+
+      application.stop()
+
+    }
 
     "redirect to the 'add asset' page when submitted and migrating to taxable" in {
 
