@@ -20,6 +20,7 @@ import base.SpecBase
 import connectors.TrustsConnector
 import controllers.routes._
 import models.WhatKindOfAsset.PropertyOrLand
+import models.assets.Assets
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import pages.asset.WhatKindOfAssetPage
@@ -35,10 +36,9 @@ import scala.concurrent.Future
 
 class PropertyOrLandAnswerControllerSpec extends SpecBase {
 
-  private val totalValue: Long = 10000L
-  val name: String = "Description"
-
   lazy val propertyOrLandAnswerRoute: String = routes.PropertyOrLandAnswerController.onPageLoad(index).url
+  val name: String = "Description"
+  private val totalValue: Long = 10000L
 
   "PropertyOrLandAnswer Controller" must {
 
@@ -82,7 +82,34 @@ class PropertyOrLandAnswerControllerSpec extends SpecBase {
         .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
         .build()
       when(mockTrustConnector.amendPropertyOrLandAsset(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
-      when(mockTrustConnector.addPropertyOrLandAsset( any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+      when(mockTrustConnector.addPropertyOrLandAsset(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+
+      val request = FakeRequest(POST, routes.PropertyOrLandAnswerController.onSubmit(index).url)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+
+      application.stop()
+    }
+
+
+    "redirect to the next page when valid data is not valid" in {
+      val mockTrustConnector = mock[TrustsConnector]
+
+      val application = applicationBuilder(userAnswers = Some(answers))
+        .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
+        .build()
+      when(mockTrustConnector.amendPropertyOrLandAsset(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(PARTIAL_CONTENT, "")))
+
+      when(mockTrustConnector.getAssets(any())(any(), any()))
+        .thenReturn(Future.successful(Assets()))
+
+      when(mockTrustConnector.addPropertyOrLandAsset(any(), any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val request = FakeRequest(POST, routes.PropertyOrLandAnswerController.onSubmit(index).url)
 
