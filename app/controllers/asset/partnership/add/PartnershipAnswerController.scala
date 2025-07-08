@@ -65,7 +65,7 @@ class PartnershipAnswerController @Inject()(
             response.status match {
               case OK | NO_CONTENT =>
                 Future.successful(
-                  Redirect(navigator.nextPage(PartnershipAnswerPage(index + 1), NormalMode, request.userAnswers))
+                  Redirect(navigator.nextPage(PartnershipAnswerPage(index), NormalMode, request.userAnswers))
                 )
               case _ =>
                 connector.getAssets(request.userAnswers.identifier).map {
@@ -76,13 +76,13 @@ class PartnershipAnswerController @Inject()(
                     )
                     if (!matchFound) {
                       connector.addPartnershipAsset(request.userAnswers.identifier, asset).map { _ =>
-                        Redirect(navigator.nextPage(PartnershipAnswerPage(index + 1), NormalMode, request.userAnswers))
+                        Redirect(navigator.nextPage(PartnershipAnswerPage(index), NormalMode, request.userAnswers))
                       }
                     }
                 }
             }
             Future.successful(
-              Redirect(navigator.nextPage(PartnershipAnswerPage(index + 1), NormalMode, request.userAnswers))
+              Redirect(navigator.nextPage(PartnershipAnswerPage(index), NormalMode, request.userAnswers))
             )
           }
       }

@@ -67,7 +67,7 @@ class ShareAnswerController @Inject()(
           response.status match {
             case OK | NO_CONTENT =>
               Future.successful(
-                Redirect(navigator.nextPage(ShareAnswerPage(index + 1), NormalMode, request.userAnswers))
+                Redirect(navigator.nextPage(ShareAnswerPage(index), NormalMode, request.userAnswers))
               )
 
             case _ =>
@@ -84,11 +84,11 @@ class ShareAnswerController @Inject()(
 
                 if (!matchFound) {
                   connector.addSharesAsset(request.userAnswers.identifier, asset).map { _ =>
-                    Redirect(navigator.nextPage(ShareAnswerPage(index + 1), NormalMode, request.userAnswers))
+                    Redirect(navigator.nextPage(ShareAnswerPage(index), NormalMode, request.userAnswers))
                   }
                 } else {
                   Future.successful(
-                    Redirect(navigator.nextPage(ShareAnswerPage(index + 1), NormalMode, request.userAnswers))
+                    Redirect(navigator.nextPage(ShareAnswerPage(index), NormalMode, request.userAnswers))
                   )
                 }
               }

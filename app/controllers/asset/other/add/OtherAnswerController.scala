@@ -70,7 +70,7 @@ class OtherAnswerController @Inject()(
             response.status match {
               case OK | NO_CONTENT =>
                 Future.successful(
-                  Redirect(navigator.nextPage(OtherAnswerPage(index + 1), NormalMode, request.userAnswers))
+                  Redirect(navigator.nextPage(OtherAnswerPage(index), NormalMode, request.userAnswers))
                 )
 
               case _ =>
@@ -82,11 +82,11 @@ class OtherAnswerController @Inject()(
 
                   if (!matchFound) {
                     connector.addOtherAsset(request.userAnswers.identifier, asset).map { _ =>
-                      Redirect(navigator.nextPage(OtherAnswerPage(index + 1), NormalMode, request.userAnswers))
+                      Redirect(navigator.nextPage(OtherAnswerPage(index), NormalMode, request.userAnswers))
                     }
                   } else {
                     Future.successful(
-                      Redirect(navigator.nextPage(OtherAnswerPage(index + 1), NormalMode, request.userAnswers))
+                      Redirect(navigator.nextPage(OtherAnswerPage(index), NormalMode, request.userAnswers))
                     )
                   }
                 }

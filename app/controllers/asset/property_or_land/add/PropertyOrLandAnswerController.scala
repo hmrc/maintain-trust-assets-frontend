@@ -67,7 +67,7 @@ class PropertyOrLandAnswerController @Inject()(
             response.status match {
               case OK | NO_CONTENT =>
                 Future.successful(
-                  Redirect(navigator.nextPage(PropertyOrLandAnswerPage(index + 1), NormalMode, request.userAnswers))
+                  Redirect(navigator.nextPage(PropertyOrLandAnswerPage(index), NormalMode, request.userAnswers))
                 )
 
               case _ =>
@@ -83,11 +83,11 @@ class PropertyOrLandAnswerController @Inject()(
 
                   if (!matchFound) {
                     connector.addPropertyOrLandAsset(request.userAnswers.identifier, asset).map { _ =>
-                      Redirect(navigator.nextPage(PropertyOrLandAnswerPage(index + 1), NormalMode, request.userAnswers))
+                      Redirect(navigator.nextPage(PropertyOrLandAnswerPage(index), NormalMode, request.userAnswers))
                     }
                   } else {
                     Future.successful(
-                      Redirect(navigator.nextPage(PropertyOrLandAnswerPage(index + 1), NormalMode, request.userAnswers))
+                      Redirect(navigator.nextPage(PropertyOrLandAnswerPage(index), NormalMode, request.userAnswers))
                     )
                   }
                 }
