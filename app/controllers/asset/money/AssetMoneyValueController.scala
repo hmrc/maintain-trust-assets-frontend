@@ -19,6 +19,7 @@ package controllers.asset.money
 import config.annotations.Money
 import connectors.TrustsConnector
 import controllers.actions.StandardActionSets
+import controllers.actions.other.NameRequiredAction
 import forms.ValueFormProvider
 import models.Mode
 import navigation.Navigator
@@ -38,6 +39,7 @@ class AssetMoneyValueController @Inject()(
                                            override val messagesApi: MessagesApi,
                                            standardActionSets: StandardActionSets,
                                            repository: PlaybackRepository,
+                                           nameAction: NameRequiredAction,
                                            @Money navigator: Navigator,
                                            formProvider: ValueFormProvider,
                                            val controllerComponents: MessagesControllerComponents,
@@ -48,15 +50,13 @@ class AssetMoneyValueController @Inject()(
 
   private val form: Form[Long] = formProvider.withConfig(prefix = "money.value")
 
-  def onPageLoad(index: Int, mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
+  def onPageLoad(index: Int, mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
-      trustService.getMonetaryAsset(request.userAnswers.identifier).map { money =>
-        val preparedForm = money match {
-          case Some(value) => form.fill(value.assetMonetaryAmount)
-          case None        => form
-        }
-        Ok(view(preparedForm, index, mode))
+      val preparedForm = request.userAnswers.get(AssetMoneyValuePage(index)) match {
+        case Some(value) => form.fill(value)
+        case None        => form
       }
+      Ok(view(preparedForm, index, mode))
   }
 
   def onSubmit(index: Int, mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
