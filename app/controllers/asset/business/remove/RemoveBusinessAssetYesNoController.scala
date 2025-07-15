@@ -33,53 +33,56 @@ import views.html.asset.business.remove.RemoveBusinessAssetYesNoView
 import scala.concurrent.{ExecutionContext, Future}
 
 class RemoveBusinessAssetYesNoController @Inject()(
-                                            override val messagesApi: MessagesApi,
-                                            standardActionSets: StandardActionSets,
-                                            formProvider: RemoveIndexFormProvider,
-                                            trustService: TrustService,
-                                            val controllerComponents: MessagesControllerComponents,
-                                            view: RemoveBusinessAssetYesNoView,
-                                            errorHandler: ErrorHandler
-                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+                                                    override val messagesApi: MessagesApi,
+                                                    standardActionSets: StandardActionSets,
+                                                    formProvider: RemoveIndexFormProvider,
+                                                    trustService: TrustService,
+                                                    val controllerComponents: MessagesControllerComponents,
+                                                    view: RemoveBusinessAssetYesNoView,
+                                                    errorHandler: ErrorHandler
+                                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   private val messagesPrefix: String = "business.removeYesNo"
   private val form = formProvider.apply(messagesPrefix)
 
   def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
-
-      trustService.getBusinessAsset(request.userAnswers.identifier, index).map {
-        asset =>
-          Ok(view(form, index, asset.orgName))
-      } recoverWith {
+      trustService.getBusinessAsset(request.userAnswers.identifier, index).map { asset =>
+        Ok(view(form, index, asset.orgName))
+      }.recoverWith {
         case iobe: IndexOutOfBoundsException =>
-          logger.warn(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
-            s" user cannot remove asset as asset was not found ${iobe.getMessage}: IndexOutOfBoundsException")
+          logger.warn(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}] user cannot remove asset as asset was not found: ${iobe.getMessage}")
           Future.successful(Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()))
         case _ =>
-          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
-            s" user cannot remove asset as asset was not found")
+          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}] user cannot remove asset as asset was not found")
           errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
       }
   }
 
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
-
       form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) => {
-          trustService.getBusinessAsset(request.userAnswers.identifier, index).map {
-            asset =>
-              BadRequest(view(formWithErrors, index, asset.orgName))
+        formWithErrors => {
+          trustService.getBusinessAsset(request.userAnswers.identifier, index).map { asset =>
+            BadRequest(view(formWithErrors, index, asset.orgName))
           }
         },
         value => {
           if (value) {
-            trustService.getBusinessAsset(request.userAnswers.identifier, index).flatMap {
-              _ =>
-                trustService.removeAsset(request.userAnswers.identifier, RemoveAsset(AssetNameType.BusinessAssetNameType, index)).map(_ =>
-                  Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
-                )
+            trustService.getBusinessAsset(request.userAnswers.identifier, index).flatMap { _ =>
+              trustService.removeAsset(
+                request.userAnswers.identifier,
+                RemoveAsset(AssetNameType.BusinessAssetNameType, index)
+              ).map { _ =>
+                Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
+              }
+            }.recoverWith {
+              case iobe: IndexOutOfBoundsException =>
+                logger.warn(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}] user cannot remove asset as asset was not found: ${iobe.getMessage}")
+                Future.successful(Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()))
+              case e =>
+                logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}] Unexpected error removing asset: ${e.getMessage}", e)
+                errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
             }
           } else {
             Future.successful(Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()))
