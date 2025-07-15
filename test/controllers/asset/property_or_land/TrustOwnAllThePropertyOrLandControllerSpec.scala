@@ -34,7 +34,7 @@ class TrustOwnAllThePropertyOrLandControllerSpec extends SpecBase with IndexVali
 
   val form: Form[Boolean] = new YesNoFormProvider().withPrefix("propertyOrLand.trustOwnAllYesNo")
 
-  lazy val trustOwnAllThePropertyOrLandRoute: String = routes.TrustOwnAllThePropertyOrLandController.onPageLoad(NormalMode).url
+  lazy val trustOwnAllThePropertyOrLandRoute: String = routes.TrustOwnAllThePropertyOrLandController.onPageLoad(index, NormalMode).url
 
   "TrustOwnAllThePropertyOrLand Controller" must {
 
@@ -51,14 +51,14 @@ class TrustOwnAllThePropertyOrLandControllerSpec extends SpecBase with IndexVali
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode)(request, messages).toString
+        view(form, index, NormalMode)(request, messages).toString
 
       application.stop()
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(TrustOwnAllThePropertyOrLandPage, true).success.value
+      val userAnswers = emptyUserAnswers.set(TrustOwnAllThePropertyOrLandPage(index), true).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -71,7 +71,7 @@ class TrustOwnAllThePropertyOrLandControllerSpec extends SpecBase with IndexVali
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), NormalMode)(request, messages).toString
+        view(form.fill(true), index, NormalMode)(request, messages).toString
 
       application.stop()
     }
@@ -113,7 +113,7 @@ class TrustOwnAllThePropertyOrLandControllerSpec extends SpecBase with IndexVali
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode)(request, messages).toString
+        view(boundForm, index, NormalMode)(request, messages).toString
 
       application.stop()
     }

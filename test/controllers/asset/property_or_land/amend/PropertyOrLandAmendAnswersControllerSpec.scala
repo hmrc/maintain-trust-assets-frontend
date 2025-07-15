@@ -42,7 +42,6 @@ class PropertyOrLandAmendAnswersControllerSpec extends SpecBase with MockitoSuga
   private lazy val answersRoute = routes.PropertyOrLandAmendAnswersController.extractAndRender(index).url
   private lazy val submitAnswersRoute = routes.PropertyOrLandAmendAnswersController.onSubmit(index).url
 
-  private val index = 0
   private val name: String = "BusinessName"
   private val valueFull: Long = 790L
 
@@ -55,10 +54,10 @@ class PropertyOrLandAmendAnswersControllerSpec extends SpecBase with MockitoSuga
 
   def userAnswers: UserAnswers = emptyUserAnswers.copy(isMigratingToTaxable = true)
     .set(IndexPage, index).success.value
-    .set(PropertyOrLandAddressYesNoPage, false).success.value
-    .set(PropertyOrLandDescriptionPage, name).success.value
-    .set(PropertyOrLandTotalValuePage, valueFull).success.value
-    .set(TrustOwnAllThePropertyOrLandPage, true).success.value
+    .set(PropertyOrLandAddressYesNoPage(index), false).success.value
+    .set(PropertyOrLandDescriptionPage(index), name).success.value
+    .set(PropertyOrLandTotalValuePage(index), valueFull).success.value
+    .set(TrustOwnAllThePropertyOrLandPage(index), true).success.value
 
 
   "PropertyOrLandAmendAnswersController" must {
@@ -82,7 +81,7 @@ class PropertyOrLandAmendAnswersControllerSpec extends SpecBase with MockitoSuga
 
       val view = application.injector.instanceOf[AnswersView]
       val printHelper = application.injector.instanceOf[PropertyOrLandPrintHelper]
-      val answerSection = printHelper(userAnswers, provisional = false, name)
+      val answerSection = printHelper(userAnswers, index, provisional = false, name)
 
       status(result) mustEqual OK
 
@@ -90,6 +89,26 @@ class PropertyOrLandAmendAnswersControllerSpec extends SpecBase with MockitoSuga
         view(answerSection, index)(request, messages).toString
     }
 
+
+    "return INTERNAL_SERVER_ERROR when service fails" in {
+
+      val mockService: TrustService = mock[TrustService]
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(
+          bind[TrustService].toInstance(mockService)
+        )
+        .build()
+
+      when(mockService.getPropertyOrLandAsset(any(), any())(any(), any()))
+        .thenReturn(Future.failed(new Exception("failed")))
+
+      val request = FakeRequest(GET, answersRoute)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual INTERNAL_SERVER_ERROR
+    }
 
     "redirect to the 'add asset' page when submitted and migrating to taxable" in {
 

@@ -16,6 +16,9 @@
 
 package pages.asset.shares.add
 
-import pages.Page
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-case object ShareAnswerPage extends Page
+case class ShareAnswerPage(index: Int) extends QuestionPage[Boolean] {
+  override def path: JsPath = JsPath \ "assets" \ "shares" \ index \ "answersComplete"
+}

@@ -37,10 +37,10 @@ class SharesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
 
-          val answers = userAnswers.set(SharesInAPortfolioPage, true).success.value
+          val answers = userAnswers.set(SharesInAPortfolioPage(index), true).success.value
 
-          navigator.nextPage(SharesInAPortfolioPage, NormalMode, answers)
-            .mustBe(SharePortfolioNameController.onPageLoad(NormalMode))
+          navigator.nextPage(SharesInAPortfolioPage(index), NormalMode, answers)
+            .mustBe(SharePortfolioNameController.onPageLoad(index, NormalMode))
       }
     }
 
@@ -48,8 +48,8 @@ class SharesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
-          navigator.nextPage(SharePortfolioNamePage, NormalMode, userAnswers)
-            .mustBe(SharePortfolioOnStockExchangeController.onPageLoad(NormalMode))
+          navigator.nextPage(SharePortfolioNamePage(index), NormalMode, userAnswers)
+            .mustBe(SharePortfolioOnStockExchangeController.onPageLoad(index, NormalMode))
       }
     }
 
@@ -57,8 +57,8 @@ class SharesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
-          navigator.nextPage(SharePortfolioOnStockExchangePage, NormalMode, userAnswers)
-            .mustBe(SharePortfolioQuantityInTrustController.onPageLoad(NormalMode))
+          navigator.nextPage(SharePortfolioOnStockExchangePage(index), NormalMode, userAnswers)
+            .mustBe(SharePortfolioQuantityInTrustController.onPageLoad(index, NormalMode))
       }
     }
 
@@ -66,8 +66,8 @@ class SharesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
-          navigator.nextPage(SharePortfolioQuantityInTrustPage, NormalMode, userAnswers)
-            .mustBe(SharePortfolioValueInTrustController.onPageLoad(NormalMode))
+          navigator.nextPage(SharePortfolioQuantityInTrustPage(index), NormalMode, userAnswers)
+            .mustBe(SharePortfolioValueInTrustController.onPageLoad(index, NormalMode))
       }
     }
 
@@ -75,8 +75,8 @@ class SharesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
 
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
-          navigator.nextPage(SharePortfolioValueInTrustPage, NormalMode, userAnswers)
-            .mustBe(controllers.asset.shares.add.routes.ShareAnswerController.onPageLoad())
+          navigator.nextPage(SharePortfolioValueInTrustPage(index), NormalMode, userAnswers)
+            .mustBe(controllers.asset.shares.add.routes.ShareAnswerController.onPageLoad(index))
       }
     }
 
@@ -85,10 +85,10 @@ class SharesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
 
-          val answers = userAnswers.set(SharesInAPortfolioPage, false).success.value
+          val answers = userAnswers.set(SharesInAPortfolioPage(index), false).success.value
 
-          navigator.nextPage(SharesInAPortfolioPage, NormalMode, answers)
-            .mustBe(ShareCompanyNameController.onPageLoad(NormalMode))
+          navigator.nextPage(SharesInAPortfolioPage(index), NormalMode, answers)
+            .mustBe(ShareCompanyNameController.onPageLoad(index, NormalMode))
       }
     }
 
@@ -97,8 +97,8 @@ class SharesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
 
-          navigator.nextPage(ShareCompanyNamePage, NormalMode, userAnswers)
-            .mustBe(SharesOnStockExchangeController.onPageLoad(NormalMode))
+          navigator.nextPage(ShareCompanyNamePage(index), NormalMode, userAnswers)
+            .mustBe(SharesOnStockExchangeController.onPageLoad(index, NormalMode))
       }
     }
 
@@ -107,8 +107,8 @@ class SharesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
 
-          navigator.nextPage(SharesOnStockExchangePage, NormalMode, userAnswers)
-            .mustBe(ShareClassController.onPageLoad(NormalMode))
+          navigator.nextPage(SharesOnStockExchangePage(index), NormalMode, userAnswers)
+            .mustBe(ShareClassController.onPageLoad(index, NormalMode))
       }
     }
 
@@ -117,8 +117,8 @@ class SharesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
 
-          navigator.nextPage(ShareClassPage, NormalMode, userAnswers)
-            .mustBe(ShareQuantityInTrustController.onPageLoad(NormalMode))
+          navigator.nextPage(ShareClassPage(index), NormalMode, userAnswers)
+            .mustBe(ShareQuantityInTrustController.onPageLoad(index, NormalMode))
       }
     }
 
@@ -127,8 +127,8 @@ class SharesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
 
-          navigator.nextPage(ShareQuantityInTrustPage, NormalMode, userAnswers)
-            .mustBe(ShareValueInTrustController.onPageLoad(NormalMode))
+          navigator.nextPage(ShareQuantityInTrustPage(index), NormalMode, userAnswers)
+            .mustBe(ShareValueInTrustController.onPageLoad(index, NormalMode))
       }
     }
 
@@ -138,8 +138,8 @@ class SharesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>
 
-            navigator.nextPage(ShareValueInTrustPage, NormalMode, userAnswers)
-              .mustBe(controllers.asset.shares.add.routes.ShareAnswerController.onPageLoad())
+            navigator.nextPage(ShareValueInTrustPage(index), NormalMode, userAnswers)
+              .mustBe(controllers.asset.shares.add.routes.ShareAnswerController.onPageLoad(index))
         }
       }
     }
@@ -148,15 +148,14 @@ class SharesNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
 
-          navigator.nextPage(ShareAnswerPage, NormalMode, userAnswers)
+          navigator.nextPage(ShareAnswerPage(index), NormalMode, userAnswers)
             .mustBe(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
       }
     }
 
     "navigate to amend Answers Page" when {
       "go to ShareAnswers from ShareValueInTrust" in {
-        val page = ShareValueInTrustPage
-        val index = 0
+        val page = ShareValueInTrustPage(index)
 
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>

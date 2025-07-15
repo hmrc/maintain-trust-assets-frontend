@@ -28,7 +28,7 @@ class ShareAssetMapper extends Mapper[SharesType] {
 
   def apply(answers: UserAnswers): Option[SharesType] = {
     val readFromUserAnswers: Reads[SharesType] =
-      SharesInAPortfolioPage.path.read[Boolean].flatMap {
+      SharesInAPortfolioPage(0).path.read[Boolean].flatMap {
         case true => readPortfolio
         case false => readNonPortfolio
       }
@@ -38,11 +38,11 @@ class ShareAssetMapper extends Mapper[SharesType] {
 
   private def readPortfolio: Reads[SharesType] = {
     (
-      readStringToLong(SharePortfolioQuantityInTrustPage) and
-        SharePortfolioNamePage.path.read[String] and
+      readStringToLong(SharePortfolioQuantityInTrustPage(0)) and
+        SharePortfolioNamePage(0).path.read[String] and
         Reads(_ => JsSuccess(ShareClass.toDES(ShareClass.Other))) and
-        onStockExchange(SharePortfolioOnStockExchangePage) and
-        SharePortfolioValueInTrustPage.path.read[Long] and
+        onStockExchange(SharePortfolioOnStockExchangePage(0)) and
+        SharePortfolioValueInTrustPage(0).path.read[Long] and
         Reads(_ => JsSuccess(Some(true))) and
         Reads(_ => JsSuccess(Some(ShareClass.Other)))
     ) (SharesType.apply _)
@@ -50,13 +50,13 @@ class ShareAssetMapper extends Mapper[SharesType] {
 
   private def readNonPortfolio: Reads[SharesType] = {
     (
-      readStringToLong(ShareQuantityInTrustPage) and
-        ShareCompanyNamePage.path.read[String] and
-        ShareClassPage.path.read[ShareClass].map(ShareClass.toDES) and
-        onStockExchange(SharesOnStockExchangePage) and
-        ShareValueInTrustPage.path.read[Long] and
+      readStringToLong(ShareQuantityInTrustPage(0)) and
+        ShareCompanyNamePage(0).path.read[String] and
+        ShareClassPage(0).path.read[ShareClass].map(ShareClass.toDES) and
+        onStockExchange(SharesOnStockExchangePage(0)) and
+        ShareValueInTrustPage(0).path.read[Long] and
         Reads(_ => JsSuccess(Some(false))) and
-        ShareClassPage.path.read[ShareClass].map(Some(_))
+        ShareClassPage(0).path.read[ShareClass].map(Some(_))
       ) (SharesType.apply _)
   }
 

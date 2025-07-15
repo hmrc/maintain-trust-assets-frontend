@@ -20,7 +20,7 @@ import pages.behaviours.PageBehaviours
 
 class SharePortfolioOnStockExchangePageSpec extends PageBehaviours {
 
-  val page: SharePortfolioOnStockExchangePage.type = SharePortfolioOnStockExchangePage
+  val page: SharePortfolioOnStockExchangePage = SharePortfolioOnStockExchangePage(index)
 
   "SharePortfolioOnStockExchangePage" must {
 

@@ -25,14 +25,14 @@
     submitButton: SubmitButton
 )
 
-@(form: Form[_], mode: Mode, businessName: String)(implicit request: RequestHeader, messages: Messages)
+@(form: Form[_], index: Int, mode: Mode, businessName: String)(implicit request: RequestHeader, messages: Messages)
 
 @mainTemplate(
     title = s"${errorPrefix(form)} ${messages("business.currentValue.title")}",
     showBackLink = true
 ) {
 
-    @formHelper(action = BusinessValueController.onSubmit(mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = BusinessValueController.onSubmit(index, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

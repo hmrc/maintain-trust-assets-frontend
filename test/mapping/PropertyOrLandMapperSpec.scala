@@ -39,8 +39,8 @@ class PropertyOrLandMapperSpec extends SpecBase with Matchers
     "not be able to create a property or land asset when missing values in user answers" in {
 
       val answers = emptyUserAnswers
-        .set(WhatKindOfAssetPage, PropertyOrLand).success.value
-        .set(PropertyOrLandAddressYesNoPage, true).success.value
+        .set(WhatKindOfAssetPage(index), PropertyOrLand).success.value
+        .set(PropertyOrLandAddressYesNoPage(index), true).success.value
 
       mapper(answers).isDefined mustBe false
 
@@ -51,13 +51,13 @@ class PropertyOrLandMapperSpec extends SpecBase with Matchers
       "uk address" in {
 
         val userAnswers = emptyUserAnswers
-          .set(WhatKindOfAssetPage, WhatKindOfAsset.PropertyOrLand).success.value
-          .set(PropertyOrLandAddressYesNoPage, true).success.value
-          .set(PropertyOrLandAddressUkYesNoPage, true).success.value
-          .set(PropertyOrLandUKAddressPage, UkAddress("26", "Grangetown", Some("Tyne and Wear"), Some("Newcastle"), "Z99 2YY")).success.value
-          .set(PropertyOrLandTotalValuePage, assetTotalValue).success.value
-          .set(TrustOwnAllThePropertyOrLandPage, false).success.value
-          .set(PropertyLandValueTrustPage, assetTrustValue).success.value
+          .set(WhatKindOfAssetPage(index), WhatKindOfAsset.PropertyOrLand).success.value
+          .set(PropertyOrLandAddressYesNoPage(index), true).success.value
+          .set(PropertyOrLandAddressUkYesNoPage(index), true).success.value
+          .set(PropertyOrLandUKAddressPage(index), UkAddress("26", "Grangetown", Some("Tyne and Wear"), Some("Newcastle"), "Z99 2YY")).success.value
+          .set(PropertyOrLandTotalValuePage(index), assetTotalValue).success.value
+          .set(TrustOwnAllThePropertyOrLandPage(index), false).success.value
+          .set(PropertyLandValueTrustPage(index), assetTrustValue).success.value
 
         val result = mapper(userAnswers).get
 
@@ -80,13 +80,13 @@ class PropertyOrLandMapperSpec extends SpecBase with Matchers
       "international address" in {
 
         val userAnswers = emptyUserAnswers
-          .set(WhatKindOfAssetPage, WhatKindOfAsset.PropertyOrLand).success.value
-          .set(PropertyOrLandAddressYesNoPage, true).success.value
-          .set(PropertyOrLandAddressUkYesNoPage, false).success.value
-          .set(PropertyOrLandInternationalAddressPage, NonUkAddress("1", "Broadway", Some("New York"), "US")).success.value
-          .set(PropertyOrLandTotalValuePage, assetTotalValue).success.value
-          .set(TrustOwnAllThePropertyOrLandPage, false).success.value
-          .set(PropertyLandValueTrustPage, assetTrustValue).success.value
+          .set(WhatKindOfAssetPage(index), WhatKindOfAsset.PropertyOrLand).success.value
+          .set(PropertyOrLandAddressYesNoPage(index), true).success.value
+          .set(PropertyOrLandAddressUkYesNoPage(index), false).success.value
+          .set(PropertyOrLandInternationalAddressPage(index), NonUkAddress("1", "Broadway", Some("New York"), "US")).success.value
+          .set(PropertyOrLandTotalValuePage(index), assetTotalValue).success.value
+          .set(TrustOwnAllThePropertyOrLandPage(index), false).success.value
+          .set(PropertyLandValueTrustPage(index), assetTrustValue).success.value
 
         val result = mapper(userAnswers).get
 
@@ -109,11 +109,11 @@ class PropertyOrLandMapperSpec extends SpecBase with Matchers
     "be able to create a property or land Asset with a property description and owns full value" in {
 
       val userAnswers = emptyUserAnswers
-        .set(WhatKindOfAssetPage, WhatKindOfAsset.PropertyOrLand).success.value
-        .set(PropertyOrLandAddressYesNoPage, false).success.value
-        .set(PropertyOrLandDescriptionPage, "Property Or Land").success.value
-        .set(PropertyOrLandTotalValuePage, assetTotalValue).success.value
-        .set(TrustOwnAllThePropertyOrLandPage, true).success.value
+        .set(WhatKindOfAssetPage(index), WhatKindOfAsset.PropertyOrLand).success.value
+        .set(PropertyOrLandAddressYesNoPage(index), false).success.value
+        .set(PropertyOrLandDescriptionPage(index), "Property Or Land").success.value
+        .set(PropertyOrLandTotalValuePage(index), assetTotalValue).success.value
+        .set(TrustOwnAllThePropertyOrLandPage(index), true).success.value
 
       val result = mapper(userAnswers).get
 

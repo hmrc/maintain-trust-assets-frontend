@@ -34,29 +34,29 @@ class BusinessNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
     "navigate from BusinessNamePage to BusinessDescriptionPage" in {
 
-      val page = BusinessNamePage
+      val page = BusinessNamePage(index)
 
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
           navigator.nextPage(page, NormalMode, userAnswers)
-            .mustBe(BusinessDescriptionController.onPageLoad(NormalMode))
+            .mustBe(BusinessDescriptionController.onPageLoad(index, NormalMode))
       }
     }
 
     "navigate from BusinessDescriptionPage to BusinessAddressUkYesNoPage" in {
 
-      val page = BusinessDescriptionPage
+      val page = BusinessDescriptionPage(index)
 
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
           navigator.nextPage(page, NormalMode, userAnswers)
-            .mustBe(BusinessAddressUkYesNoController.onPageLoad(NormalMode))
+            .mustBe(BusinessAddressUkYesNoController.onPageLoad(index, NormalMode))
       }
     }
 
     "navigate from BusinessAddressUkYesNoPage" when {
 
-      val page = BusinessAddressUkYesNoPage
+      val page = BusinessAddressUkYesNoPage(index)
 
       "yes selected" in {
 
@@ -64,7 +64,7 @@ class BusinessNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           userAnswers =>
             val answers = userAnswers.set(page, true).success.value
             navigator.nextPage(page, NormalMode, answers)
-              .mustBe(BusinessUkAddressController.onPageLoad(NormalMode))
+              .mustBe(BusinessUkAddressController.onPageLoad(index, NormalMode))
         }
       }
 
@@ -74,38 +74,37 @@ class BusinessNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
           userAnswers =>
             val answers = userAnswers.set(page, false).success.value
             navigator.nextPage(page, NormalMode, answers)
-              .mustBe(BusinessInternationalAddressController.onPageLoad(NormalMode))
+              .mustBe(BusinessInternationalAddressController.onPageLoad(index, NormalMode))
         }
       }
     }
 
     "navigate from BusinessUkAddressPage to BusinessValuePage" in {
 
-      val page = BusinessUkAddressPage
+      val page = BusinessUkAddressPage(index)
 
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
           navigator.nextPage(page, NormalMode, userAnswers)
-            .mustBe(BusinessValueController.onPageLoad(NormalMode))
+            .mustBe(BusinessValueController.onPageLoad(index, NormalMode))
       }
     }
 
     "navigate from BusinessInternationalAddressPage to BusinessValuePage" in {
 
-      val page = BusinessInternationalAddressPage
+      val page = BusinessInternationalAddressPage(index)
 
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
           navigator.nextPage(page, NormalMode, userAnswers)
-            .mustBe(BusinessValueController.onPageLoad(NormalMode))
+            .mustBe(BusinessValueController.onPageLoad(index, NormalMode))
       }
     }
 
     "navigate to amend Answers Page" when {
       "navigating from BusinessValuePage" in {
 
-        val page = BusinessValuePage
-        val index = 0
+        val page = BusinessValuePage(index)
 
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>
@@ -119,7 +118,7 @@ class BusinessNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with 
 
     "navigate from BusinessAnswerPage" in {
 
-      val page = BusinessAnswerPage
+      val page = BusinessAnswerPage(index)
 
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>

@@ -19,12 +19,10 @@ package mapping
 import base.SpecBase
 import generators.Generators
 import models.ShareClass
-import models.Status.{Completed, InProgress}
 import models.WhatKindOfAsset.Shares
 import models.assets.SharesType
 import org.scalatest.OptionValues
 import org.scalatest.matchers.must.Matchers
-import pages.AssetStatus
 import pages.asset._
 import pages.asset.shares._
 
@@ -40,9 +38,9 @@ class ShareAssetMapperSpec extends SpecBase with Matchers
     "not be able to create a share asset when missing values in user answers" in {
 
       val userAnswers = emptyUserAnswers
-        .set(WhatKindOfAssetPage, Shares).success.value
-        .set(SharesInAPortfolioPage, true).success.value
-        .set(AssetStatus, InProgress).success.value
+        .set(WhatKindOfAssetPage(index), Shares).success.value
+        .set(SharesInAPortfolioPage(index), true).success.value
+
 
       shareAssetMapper(userAnswers).isDefined mustBe false
     }
@@ -51,14 +49,14 @@ class ShareAssetMapperSpec extends SpecBase with Matchers
 
       "be able to create a Share Asset" in {
         val userAnswers = emptyUserAnswers
-          .set(WhatKindOfAssetPage, Shares).success.value
-          .set(SharesInAPortfolioPage, false).success.value
-          .set(ShareCompanyNamePage, "Non-Portfolio").success.value
-          .set(ShareQuantityInTrustPage, quantity).success.value
-          .set(ShareValueInTrustPage, assetValue).success.value
-          .set(SharesOnStockExchangePage, true).success.value
-          .set(ShareClassPage, ShareClass.Deferred).success.value
-          .set(AssetStatus, Completed).success.value
+          .set(WhatKindOfAssetPage(index), Shares).success.value
+          .set(SharesInAPortfolioPage(index), false).success.value
+          .set(ShareCompanyNamePage(index), "Non-Portfolio").success.value
+          .set(ShareQuantityInTrustPage(index), quantity).success.value
+          .set(ShareValueInTrustPage(index), assetValue).success.value
+          .set(SharesOnStockExchangePage(index), true).success.value
+          .set(ShareClassPage(index), ShareClass.Deferred).success.value
+
 
         val result = shareAssetMapper(userAnswers)
         result.isDefined mustBe true
@@ -80,13 +78,13 @@ class ShareAssetMapperSpec extends SpecBase with Matchers
 
       "be able to create a Share Asset" in {
         val userAnswers = emptyUserAnswers
-          .set(WhatKindOfAssetPage, Shares).success.value
-          .set(SharesInAPortfolioPage, true).success.value
-          .set(SharePortfolioNamePage, "Portfolio").success.value
-          .set(SharePortfolioQuantityInTrustPage, quantity).success.value
-          .set(SharePortfolioValueInTrustPage, assetValue).success.value
-          .set(SharePortfolioOnStockExchangePage, false).success.value
-          .set(AssetStatus, Completed).success.value
+          .set(WhatKindOfAssetPage(index), Shares).success.value
+          .set(SharesInAPortfolioPage(index), true).success.value
+          .set(SharePortfolioNamePage(index), "Portfolio").success.value
+          .set(SharePortfolioQuantityInTrustPage(index), quantity).success.value
+          .set(SharePortfolioValueInTrustPage(index), assetValue).success.value
+          .set(SharePortfolioOnStockExchangePage(index), false).success.value
+
 
         val result = shareAssetMapper(userAnswers)
         result.isDefined mustBe true

@@ -28,8 +28,8 @@ class OtherAssetMapper extends Mapper[OtherAssetType] with Logging {
   def apply(answers: UserAnswers): Option[OtherAssetType] = {
     val readFromUserAnswers: Reads[OtherAssetType] =
       (
-        OtherAssetDescriptionPage.path.read[String] and
-          OtherAssetValuePage.path.read[Long]
+        OtherAssetDescriptionPage(0).path.read[String] and
+          OtherAssetValuePage(0).path.read[Long]
         ) (OtherAssetType.apply _)
 
     mapAnswersWithExplicitReads(answers, readFromUserAnswers)
