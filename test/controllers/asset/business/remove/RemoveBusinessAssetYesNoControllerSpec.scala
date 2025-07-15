@@ -81,7 +81,7 @@ class RemoveBusinessAssetYesNoControllerSpec extends SpecBase with ScalaCheckPro
     "gets exception when service fails and it will be redirected" in {
 
       when(mockConnector.getAssets(any())(any(), any()))
-        .thenReturn(Future.failed(new RuntimeException("failed")))
+        .thenReturn(Future.failed(new IndexOutOfBoundsException("No asset found")))
 
       val answers = userAnswers(migrating = true)
 
@@ -99,6 +99,7 @@ class RemoveBusinessAssetYesNoControllerSpec extends SpecBase with ScalaCheckPro
 
       application.stop()
     }
+
 
     "return INTERNAL_SERVER_ERROR when service fails" in {
 
@@ -124,7 +125,6 @@ class RemoveBusinessAssetYesNoControllerSpec extends SpecBase with ScalaCheckPro
 
       "redirect to the 'add asset' page when valid data is submitted and migrating" in {
 
-
         val answers = userAnswers(migrating = true)
 
         val application = applicationBuilder(userAnswers = Some(answers))
@@ -148,7 +148,6 @@ class RemoveBusinessAssetYesNoControllerSpec extends SpecBase with ScalaCheckPro
     "removing an old asset" must {
 
       "redirect to the 'add asset' page, removing the asset when migrating" in {
-
 
         val answers = userAnswers(migrating = true)
 
@@ -178,7 +177,6 @@ class RemoveBusinessAssetYesNoControllerSpec extends SpecBase with ScalaCheckPro
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(bind[TrustsConnector].toInstance(mockConnector)).build()
 
       val request =
@@ -201,7 +199,6 @@ class RemoveBusinessAssetYesNoControllerSpec extends SpecBase with ScalaCheckPro
 
     "redirect to Session Expired for a GET if no existing data is found" in {
 
-
       val application = applicationBuilder(userAnswers = None).build()
 
       val request = FakeRequest(GET, routes.RemoveBusinessAssetYesNoController.onPageLoad(index).url)
@@ -216,7 +213,6 @@ class RemoveBusinessAssetYesNoControllerSpec extends SpecBase with ScalaCheckPro
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
-
 
       val application = applicationBuilder(userAnswers = None).build()
 
