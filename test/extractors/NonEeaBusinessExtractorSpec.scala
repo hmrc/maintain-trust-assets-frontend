@@ -27,7 +27,6 @@ import java.time.LocalDate
 
 class NonEeaBusinessExtractorSpec extends SpecBase {
 
-  private val index = 0
   private val name: String = "OrgName"
   private val date: LocalDate = LocalDate.parse("1996-02-03")
   private val country: String = "FR"
@@ -56,9 +55,9 @@ class NonEeaBusinessExtractorSpec extends SpecBase {
         val result = extractor(baseAnswers, nonEeaBusiness, index).get
 
         result.get(IndexPage).get mustBe index
-        result.get(NamePage).get mustBe name
-        result.get(NonUkAddressPage).get mustBe nonUkAddress
-        result.get(GoverningCountryPage).get mustBe country
+        result.get(NamePage(index)).get mustBe name
+        result.get(NonUkAddressPage(index)).get mustBe nonUkAddress
+        result.get(GoverningCountryPage(index)).get mustBe country
         result.get(StartDatePage).get mustBe date
       }
 

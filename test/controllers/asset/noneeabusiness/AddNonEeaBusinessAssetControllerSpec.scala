@@ -44,7 +44,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AddNonEeaBusinessAssetControllerSpec extends SpecBase with Generators with BeforeAndAfterEach {
 
-  lazy val addAssetsRoute: String = controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad().url
+  lazy val addAssetsRoute: String = controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad(index).url
   lazy val addOnePostRoute: String = controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.submitOne().url
   lazy val addAnotherPostRoute: String = controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.submitAnother().url
   lazy val completePostRoute: String = controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.submitComplete().url
@@ -98,7 +98,7 @@ class AddNonEeaBusinessAssetControllerSpec extends SpecBase with Generators with
         val application = applicationBuilder(userAnswers = None)
           .build()
 
-        val request = FakeRequest(POST, addAssetsRoute)
+        val request = FakeRequest(POST, addOnePostRoute)
           .withFormUrlEncodedBody(("value", AddAssets.values.head.toString))
 
         val result = route(application, request).value
@@ -145,7 +145,7 @@ class AddNonEeaBusinessAssetControllerSpec extends SpecBase with Generators with
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.asset.noneeabusiness.routes.NameController.onPageLoad(NormalMode).url
+        redirectLocation(result).value mustEqual controllers.asset.noneeabusiness.routes.NameController.onPageLoad(index, NormalMode).url
 
         application.stop()
       }
@@ -276,7 +276,7 @@ class AddNonEeaBusinessAssetControllerSpec extends SpecBase with Generators with
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual
-          controllers.asset.noneeabusiness.routes.NameController.onPageLoad(NormalMode).url
+          controllers.asset.noneeabusiness.routes.NameController.onPageLoad(index, NormalMode).url
 
         application.stop()
       }

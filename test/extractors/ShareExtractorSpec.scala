@@ -25,8 +25,7 @@ import utils.Constants.{QUOTED, UNQUOTED}
 
 class ShareExtractorSpec extends SpecBase {
 
-  private val index = 0
-  private val name: String = "OrgName"
+    private val name: String = "OrgName"
   private val assetValue: Long = 300L
   private val quantity: Long = 20
 
@@ -51,12 +50,12 @@ class ShareExtractorSpec extends SpecBase {
         val result = extractor(baseAnswers, sharesAsset, index).get
 
         result.get(IndexPage) mustBe Some(index)
-        result.get(SharesInAPortfolioPage) mustBe Some(true)
-        result.get(SharePortfolioQuantityInTrustPage) mustBe Some(quantity)
-        result.get(SharePortfolioNamePage) mustBe Some(name)
-        result.get(ShareClassPage) mustBe Some(ShareClass.Other)
-        result.get(SharePortfolioOnStockExchangePage) mustBe Some(false)
-        result.get(SharePortfolioValueInTrustPage) mustBe Some(assetValue)
+        result.get(SharesInAPortfolioPage(index)) mustBe Some(true)
+        result.get(SharePortfolioQuantityInTrustPage(index)) mustBe Some(quantity)
+        result.get(SharePortfolioNamePage(index)) mustBe Some(name)
+        result.get(ShareClassPage(index)) mustBe Some(ShareClass.Other)
+        result.get(SharePortfolioOnStockExchangePage(index)) mustBe Some(false)
+        result.get(SharePortfolioValueInTrustPage(index)) mustBe Some(assetValue)
       }
 
       "portfolio with Quoted shares" in {
@@ -72,12 +71,12 @@ class ShareExtractorSpec extends SpecBase {
         val result = extractor(baseAnswers, sharesAsset, index).get
 
         result.get(IndexPage) mustBe Some(index)
-        result.get(SharesInAPortfolioPage) mustBe Some(true)
-        result.get(SharePortfolioQuantityInTrustPage) mustBe Some(quantity)
-        result.get(SharePortfolioNamePage) mustBe Some(name)
-        result.get(ShareClassPage) mustBe Some(ShareClass.Other)
-        result.get(SharePortfolioOnStockExchangePage) mustBe Some(true)
-        result.get(SharePortfolioValueInTrustPage) mustBe Some(assetValue)
+        result.get(SharesInAPortfolioPage(index)) mustBe Some(true)
+        result.get(SharePortfolioQuantityInTrustPage(index)) mustBe Some(quantity)
+        result.get(SharePortfolioNamePage(index)) mustBe Some(name)
+        result.get(ShareClassPage(index)) mustBe Some(ShareClass.Other)
+        result.get(SharePortfolioOnStockExchangePage(index)) mustBe Some(true)
+        result.get(SharePortfolioValueInTrustPage(index)) mustBe Some(assetValue)
       }
 
       "non-portfolio with UnQuoted shares" in {
@@ -94,12 +93,12 @@ class ShareExtractorSpec extends SpecBase {
         val result = extractor(baseAnswers, sharesAsset, index).get
 
         result.get(IndexPage) mustBe Some(index)
-        result.get(SharesInAPortfolioPage) mustBe Some(false)
-        result.get(ShareQuantityInTrustPage) mustBe Some(quantity)
-        result.get(ShareCompanyNamePage) mustBe Some(name)
-        result.get(ShareClassPage) mustBe Some(ShareClass.Deferred)
-        result.get(SharesOnStockExchangePage) mustBe Some(false)
-        result.get(ShareValueInTrustPage) mustBe Some(assetValue)
+        result.get(SharesInAPortfolioPage(index)) mustBe Some(false)
+        result.get(ShareQuantityInTrustPage(index)) mustBe Some(quantity)
+        result.get(ShareCompanyNamePage(index)) mustBe Some(name)
+        result.get(ShareClassPage(index)) mustBe Some(ShareClass.Deferred)
+        result.get(SharesOnStockExchangePage(index)) mustBe Some(false)
+        result.get(ShareValueInTrustPage(index)) mustBe Some(assetValue)
       }
 
       "non-portfolio with Quoted shares" in {
@@ -116,12 +115,12 @@ class ShareExtractorSpec extends SpecBase {
         val result = extractor(baseAnswers, sharesAsset, index).get
 
         result.get(IndexPage) mustBe Some(index)
-        result.get(SharesInAPortfolioPage) mustBe Some(false)
-        result.get(ShareQuantityInTrustPage) mustBe Some(quantity)
-        result.get(ShareCompanyNamePage) mustBe Some(name)
-        result.get(ShareClassPage) mustBe Some(ShareClass.Deferred)
-        result.get(SharesOnStockExchangePage) mustBe Some(true)
-        result.get(ShareValueInTrustPage) mustBe Some(assetValue)
+        result.get(SharesInAPortfolioPage(index)) mustBe Some(false)
+        result.get(ShareQuantityInTrustPage(index)) mustBe Some(quantity)
+        result.get(ShareCompanyNamePage(index)) mustBe Some(name)
+        result.get(ShareClassPage(index)) mustBe Some(ShareClass.Deferred)
+        result.get(SharesOnStockExchangePage(index)) mustBe Some(true)
+        result.get(ShareValueInTrustPage(index)) mustBe Some(assetValue)
       }
     }
 

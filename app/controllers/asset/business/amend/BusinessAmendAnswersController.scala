@@ -59,13 +59,12 @@ class BusinessAmendAnswersController @Inject()(
                      index: Int,
                      name: String)
                     (implicit request: Request[AnyContent]): Result = {
-    val section: AnswerSection = printHelper(userAnswers, provisional, name)
+    val section: AnswerSection = printHelper(userAnswers, index, provisional, name)
     Ok(view(section, index))
   }
 
   def extractAndRender(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-
       service.getBusinessAsset(request.userAnswers.identifier, index) flatMap {
         businessType =>
           val extractedAnswers = extractor(request.userAnswers, businessType, index)
@@ -90,7 +89,6 @@ class BusinessAmendAnswersController @Inject()(
 
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-
       mapper(request.userAnswers).map {
         asset =>
           connector.amendBusinessAsset(request.userAnswers.identifier, index, asset).map(_ =>

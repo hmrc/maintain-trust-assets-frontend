@@ -19,11 +19,10 @@ package controllers.asset.property_or_land.add
 import base.SpecBase
 import connectors.TrustsConnector
 import controllers.routes._
-import models.Status.Completed
 import models.WhatKindOfAsset.PropertyOrLand
+import models.assets.Assets
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import pages.AssetStatus
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.property_or_land._
 import play.api.inject.bind
@@ -37,21 +36,20 @@ import scala.concurrent.Future
 
 class PropertyOrLandAnswerControllerSpec extends SpecBase {
 
-  private val totalValue: Long = 10000L
+  lazy val propertyOrLandAnswerRoute: String = routes.PropertyOrLandAnswerController.onPageLoad(index).url
   val name: String = "Description"
-
-  lazy val propertyOrLandAnswerRoute: String = routes.PropertyOrLandAnswerController.onPageLoad().url
+  private val totalValue: Long = 10000L
 
   "PropertyOrLandAnswer Controller" must {
 
     val answers =
       emptyUserAnswers
-        .set(WhatKindOfAssetPage, PropertyOrLand).success.value
-        .set(PropertyOrLandAddressYesNoPage, false).success.value
-        .set(PropertyOrLandDescriptionPage, "Property Land Description").success.value
-        .set(PropertyOrLandTotalValuePage, totalValue).success.value
-        .set(TrustOwnAllThePropertyOrLandPage, true).success.value
-        .set(AssetStatus, Completed).success.value
+        .set(WhatKindOfAssetPage(index), PropertyOrLand).success.value
+        .set(PropertyOrLandAddressYesNoPage(index), false).success.value
+        .set(PropertyOrLandDescriptionPage(index), "Property Land Description").success.value
+        .set(PropertyOrLandTotalValuePage(index), totalValue).success.value
+        .set(TrustOwnAllThePropertyOrLandPage(index), true).success.value
+
 
     "property or land does not have an address and total value is owned by the trust" must {
 
@@ -65,12 +63,12 @@ class PropertyOrLandAnswerControllerSpec extends SpecBase {
 
         val view = application.injector.instanceOf[PropertyOrLandAnswersView]
         val printHelper = application.injector.instanceOf[PropertyOrLandPrintHelper]
-        val answerSection = printHelper(answers, provisional = true, name)
+        val answerSection = printHelper(answers, index, provisional = true, name)
 
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(answerSection)(request, messages).toString
+          view(index, answerSection)(request, messages).toString
 
         application.stop()
       }
@@ -83,10 +81,37 @@ class PropertyOrLandAnswerControllerSpec extends SpecBase {
       val application = applicationBuilder(userAnswers = Some(answers))
         .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
         .build()
-
+      when(mockTrustConnector.amendPropertyOrLandAsset(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
       when(mockTrustConnector.addPropertyOrLandAsset(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
 
-      val request = FakeRequest(POST, routes.PropertyOrLandAnswerController.onSubmit().url)
+      val request = FakeRequest(POST, routes.PropertyOrLandAnswerController.onSubmit(index).url)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+
+      application.stop()
+    }
+
+
+    "redirect to the next page when valid data is not valid" in {
+      val mockTrustConnector = mock[TrustsConnector]
+
+      val application = applicationBuilder(userAnswers = Some(answers))
+        .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
+        .build()
+      when(mockTrustConnector.amendPropertyOrLandAsset(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(PARTIAL_CONTENT, "")))
+
+      when(mockTrustConnector.getAssets(any())(any(), any()))
+        .thenReturn(Future.successful(Assets()))
+
+      when(mockTrustConnector.addPropertyOrLandAsset(any(), any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(OK, "")))
+
+      val request = FakeRequest(POST, routes.PropertyOrLandAnswerController.onSubmit(index).url)
 
       val result = route(application, request).value
 

@@ -22,7 +22,7 @@ import controllers.actions.business.NameRequiredAction
 import forms.InternationalAddressFormProvider
 import models.{Mode, NonUkAddress}
 import navigation.Navigator
-import pages.asset.business.BusinessInternationalAddressPage
+import pages.asset.business.{BusinessInternationalAddressPage, BusinessNamePage}
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -30,8 +30,8 @@ import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.countryOptions.CountryOptionsNonUK
 import views.html.asset.business.BusinessInternationalAddressView
-import javax.inject.Inject
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class BusinessInternationalAddressController @Inject()(
@@ -48,30 +48,42 @@ class BusinessInternationalAddressController @Inject()(
 
   val form: Form[NonUkAddress] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
+  def onPageLoad(index: Int, mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
     implicit request =>
 
-      val preparedForm = request.userAnswers.get(BusinessInternationalAddressPage) match {
-        case None => form
+      val preparedForm = request.userAnswers.get(BusinessInternationalAddressPage(index)) match {
+        case None        => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, countryOptions.options(), mode, request.name))
+      request.userAnswers.get(BusinessNamePage(index)) match {
+        case Some(businessName) =>
+          Ok(view(preparedForm, index, countryOptions.options(), mode, businessName))
+
+        case None =>
+          Redirect(controllers.asset.business.routes.BusinessNameController.onPageLoad(index, mode))
+      }
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
+  def onSubmit(index: Int, mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
 
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, countryOptions.options(), mode, request.name))),
+      request.userAnswers.get(BusinessNamePage(index)) match {
+        case Some(businessName) =>
+          form.bindFromRequest().fold(
+            (formWithErrors: Form[_]) =>
+              Future.successful(BadRequest(view(formWithErrors, index, countryOptions.options(), mode, businessName))),
 
-        value => {
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(BusinessInternationalAddressPage, value))
-            _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(BusinessInternationalAddressPage, mode, updatedAnswers))
-        }
-      )
+            value => {
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(BusinessInternationalAddressPage(index), value))
+                _              <- repository.set(updatedAnswers)
+              } yield Redirect(navigator.nextPage(BusinessInternationalAddressPage(index), mode, updatedAnswers))
+            }
+          )
+
+        case None =>
+          Future.successful(Redirect(controllers.asset.business.routes.BusinessNameController.onPageLoad(index, mode)))
+      }
   }
 }

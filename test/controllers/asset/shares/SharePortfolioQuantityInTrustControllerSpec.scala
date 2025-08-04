@@ -36,7 +36,7 @@ class SharePortfolioQuantityInTrustControllerSpec extends SpecBase with ModelGen
   private val form: Form[Long] = formProvider.withPrefix("shares.portfolioQuantityInTrust")
   private val validAnswer: Long = 4000L
 
-  private lazy val sharePortfolioQuantityInTrustRoute: String = routes.SharePortfolioQuantityInTrustController.onPageLoad(NormalMode).url
+  private lazy val sharePortfolioQuantityInTrustRoute: String = routes.SharePortfolioQuantityInTrustController.onPageLoad(index, NormalMode).url
 
   "SharePortfolioQuantityInTrust Controller" must {
 
@@ -53,14 +53,14 @@ class SharePortfolioQuantityInTrustControllerSpec extends SpecBase with ModelGen
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode)(request, messages).toString
+        view(form, index, NormalMode)(request, messages).toString
 
       application.stop()
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(SharePortfolioQuantityInTrustPage, validAnswer).success.value
+      val userAnswers = emptyUserAnswers.set(SharePortfolioQuantityInTrustPage(index), validAnswer).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -73,7 +73,7 @@ class SharePortfolioQuantityInTrustControllerSpec extends SpecBase with ModelGen
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), NormalMode)(request, messages).toString
+        view(form.fill(validAnswer), index, NormalMode)(request, messages).toString
 
       application.stop()
     }
@@ -114,7 +114,7 @@ class SharePortfolioQuantityInTrustControllerSpec extends SpecBase with ModelGen
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode)(request, messages).toString
+        view(boundForm, index, NormalMode)(request, messages).toString
 
       application.stop()
     }
