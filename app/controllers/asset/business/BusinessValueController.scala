@@ -63,7 +63,6 @@ class BusinessValueController @Inject()(
           Future.successful(BadRequest(view(formWithErrors, index, mode, request.name))),
         value => {
           val answers = request.userAnswers.set(BusinessValuePage(index), value)
-//            .flatMap(_.set(AssetStatus(index), Completed))
           for {
             updatedAnswers <- Future.fromTry(answers)
             _              <- repository.set(updatedAnswers)
