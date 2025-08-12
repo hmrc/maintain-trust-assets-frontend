@@ -31,8 +31,6 @@ final case class PartnershipAsset(override val whatKindOfAsset: WhatKindOfAsset,
                                   startDate: LocalDate) extends Asset
 
 object PartnershipAsset {
-
-  // TODO: COME BACK TO...
   implicit lazy val reads: Reads[PartnershipAsset] = (
     (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].filter(_ == Partnership) and
       (__ \ PartnershipDescriptionPage.key).read[String] and
