@@ -38,8 +38,8 @@ POST       /:index/has-address                                      controllers.
 GET        /:index/change-has-address                               controllers.asset.property_or_land.PropertyOrLandAddressYesNoController.onPageLoad(index: Int, mode: Mode = CheckMode)
 POST       /:index/change-has-address                               controllers.asset.property_or_land.PropertyOrLandAddressYesNoController.onSubmit(index: Int, mode: Mode = CheckMode)
 
-GET        /:index/property-check-answers                                    controllers.asset.property_or_land.add.PropertyOrLandAnswerController.onPageLoad(index: Int)
-POST       /:index/property-check-answers                                   controllers.asset.property_or_land.add.PropertyOrLandAnswerController.onSubmit(index: Int)
+GET        /:index/check-answers1                                    controllers.asset.property_or_land.add.PropertyOrLandAnswerController.onPageLoad(index: Int)
+POST       /:index/check-answers1                                   controllers.asset.property_or_land.add.PropertyOrLandAnswerController.onSubmit(index: Int)
 
 GET        /:index/remove                                           controllers.asset.property_or_land.remove.PropertyOrLandRemoveAssetYesNoController.onPageLoad(index: Int)
 POST       /:index/remove                                           controllers.asset.property_or_land.remove.PropertyOrLandRemoveAssetYesNoController.onSubmit(index: Int)
