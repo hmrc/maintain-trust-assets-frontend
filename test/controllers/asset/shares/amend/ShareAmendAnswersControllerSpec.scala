@@ -94,7 +94,6 @@ class ShareAmendAnswersControllerSpec extends SpecBase with MockitoSugar with Sc
         view(answerSection, index)(request, messages).toString
     }
 
-
     "redirect to the 'add asset' page when submitted and migrating to taxable" in {
 
       val mockTrustConnector = mock[TrustsConnector]
@@ -116,6 +115,5 @@ class ShareAmendAnswersControllerSpec extends SpecBase with MockitoSugar with Sc
 
       application.stop()
     }
-
   }
 }
