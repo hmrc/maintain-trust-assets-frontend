@@ -38,7 +38,7 @@ class PartnershipAnswerControllerSpec extends SpecBase {
   val validDate: LocalDate = LocalDate.now(ZoneOffset.UTC)
   val name: String = "Description"
 
-  private val partnershipAnswerRoute = "/maintain-a-trust/trust-assets/partnership/0/check-answers1"
+  private val partnershipAnswerRoute = "/maintain-a-trust/trust-assets/partnership/0/partnership-check-answers"
 
   "PartnershipAnswer Controller" must {
 
@@ -47,7 +47,6 @@ class PartnershipAnswerControllerSpec extends SpecBase {
         .set(WhatKindOfAssetPage(index), Partnership).success.value
         .set(PartnershipDescriptionPage(index), "Partnership Description").success.value
         .set(PartnershipStartDatePage(index), validDate).success.value
-
 
     "on GET" must {
 
