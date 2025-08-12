@@ -28,11 +28,4 @@ class MoneyAssetMapper extends Mapper[AssetMonetaryAmount] {
 
     mapAnswersWithExplicitReads(answers, readFromUserAnswers)
   }
-
-//  def apply(answers: UserAnswers): Option[MoneyType] = {
-//    val readFromUserAnswers: Reads[MoneyType] =
-//      AssetMoneyValuePage.path.read[Long].map(MoneyType.apply)
-//
-//    mapAnswersWithExplicitReads(answers, readFromUserAnswers)
-//  }
 }

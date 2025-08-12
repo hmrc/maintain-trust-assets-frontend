@@ -112,7 +112,6 @@ final case class WhatKindOfAssetPage(index: Int) extends QuestionPage[WhatKindOf
       .flatMap(removeStatus)
   }
 
-  // TODO: COME BACK TO...
   private def removePartnership(userAnswers: UserAnswers): Try[UserAnswers] = {
     userAnswers.remove(PartnershipDescriptionPage(index))
       .flatMap(_.remove(PartnershipStartDatePage(index)))
