@@ -27,13 +27,13 @@ class BusinessAssetMapper extends Mapper[BusinessAssetType] {
   def apply(answers: UserAnswers): Option[BusinessAssetType] = {
     val readFromUserAnswers: Reads[BusinessAssetType] =
       (
-        BusinessNamePage.path.read[String] and
-          BusinessDescriptionPage.path.read[String] and
-          BusinessAddressUkYesNoPage.path.read[Boolean].flatMap {
-            case true => BusinessUkAddressPage.path.read[UkAddress].widen[Address]
-            case false => BusinessInternationalAddressPage.path.read[NonUkAddress].widen[Address]
+        BusinessNamePage(0).path.read[String] and
+          BusinessDescriptionPage(0).path.read[String] and
+          BusinessAddressUkYesNoPage(0).path.read[Boolean].flatMap {
+            case true => BusinessUkAddressPage(0).path.read[UkAddress].widen[Address]
+            case false => BusinessInternationalAddressPage(0).path.read[NonUkAddress].widen[Address]
           } and
-          BusinessValuePage.path.read[Long]
+          BusinessValuePage(0).path.read[Long]
         ) (BusinessAssetType.apply _)
 
     mapAnswersWithExplicitReads(answers, readFromUserAnswers)

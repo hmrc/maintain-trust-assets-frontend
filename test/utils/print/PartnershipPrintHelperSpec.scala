@@ -36,14 +36,14 @@ class PartnershipPrintHelperSpec extends SpecBase {
   private val date: LocalDate = LocalDate.parse("1996-02-03")
 
   private val answers: UserAnswers = emptyUserAnswers
-    .set(WhatKindOfAssetPage, Partnership).success.value
-    .set(PartnershipDescriptionPage, description).success.value
-    .set(PartnershipStartDatePage, date).success.value
+    .set(WhatKindOfAssetPage(index), Partnership).success.value
+    .set(PartnershipDescriptionPage(index), description).success.value
+    .set(PartnershipStartDatePage(index), date).success.value
 
   private val rows: Seq[AnswerRow] = Seq(
-    AnswerRow(label = messages("whatKindOfAsset.checkYourAnswersLabel"), Html("Partnership"), WhatKindOfAssetController.onPageLoad().url),
-    AnswerRow(label = messages("partnership.description.checkYourAnswersLabel"), Html(description), PartnershipDescriptionController.onPageLoad(NormalMode).url),
-    AnswerRow(label = messages("partnership.startDate.checkYourAnswersLabel", description), Html("3 February 1996"), PartnershipStartDateController.onPageLoad(NormalMode).url)
+    AnswerRow(label = messages("whatKindOfAsset.checkYourAnswersLabel"), Html("Partnership"), WhatKindOfAssetController.onPageLoad(index).url),
+    AnswerRow(label = messages("partnership.description.checkYourAnswersLabel"), Html(description), PartnershipDescriptionController.onPageLoad(index, NormalMode).url),
+    AnswerRow(label = messages("partnership.startDate.checkYourAnswersLabel", description), Html("3 February 1996"), PartnershipStartDateController.onPageLoad(index, NormalMode).url)
   )
 
   "PartnershipPrintHelper" when {
@@ -52,7 +52,7 @@ class PartnershipPrintHelperSpec extends SpecBase {
 
       "added" in {
 
-        val result = helper(answers, provisional = true, description)
+        val result = helper(answers, index, provisional = true, description)
 
         result mustBe AnswerSection(
           headingKey = None,

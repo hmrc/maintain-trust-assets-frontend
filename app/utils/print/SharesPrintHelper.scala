@@ -26,24 +26,24 @@ import javax.inject.Inject
 
 class SharesPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) {
 
-  def apply(userAnswers: UserAnswers, provisional: Boolean, name: String)(implicit messages: Messages): AnswerSection = {
+  def apply(userAnswers: UserAnswers, index: Int, provisional: Boolean, name: String)(implicit messages: Messages): AnswerSection = {
 
     val bound: answerRowConverter.Bound = answerRowConverter.bind(userAnswers, name)
 
     def answerRows: Seq[AnswerRow] = {
       val mode: Mode = if (provisional) NormalMode else CheckMode
       Seq(
-        bound.assetTypeQuestion(0),
-        bound.yesNoQuestion(SharesInAPortfolioPage, "shares.inAPortfolioYesNo", SharesInAPortfolioController.onPageLoad(mode).url),
-        bound.stringQuestion(ShareCompanyNamePage, "shares.companyName", ShareCompanyNameController.onPageLoad(mode).url),
-        bound.stringQuestion(SharePortfolioNamePage, "shares.portfolioName", SharePortfolioNameController.onPageLoad(mode).url),
-        bound.yesNoQuestion(SharesOnStockExchangePage, "shares.onStockExchangeYesNo", SharesOnStockExchangeController.onPageLoad(mode).url),
-        bound.yesNoQuestion(SharePortfolioOnStockExchangePage, "shares.portfolioOnStockExchangeYesNo", SharePortfolioOnStockExchangeController.onPageLoad(mode).url),
-        bound.shareClassQuestion(ShareClassPage, "shares.class", ShareClassController.onPageLoad(mode).url),
-        bound.numberQuestion(ShareQuantityInTrustPage, "shares.quantityInTrust", ShareQuantityInTrustController.onPageLoad(mode).url),
-        bound.numberQuestion(SharePortfolioQuantityInTrustPage, "shares.portfolioQuantityInTrust", SharePortfolioQuantityInTrustController.onPageLoad(mode).url),
-        bound.currencyQuestion(ShareValueInTrustPage, "shares.valueInTrust", ShareValueInTrustController.onPageLoad(mode).url),
-        bound.currencyQuestion(SharePortfolioValueInTrustPage, "shares.portfolioValueInTrust", SharePortfolioValueInTrustController.onPageLoad(mode).url)
+        bound.assetTypeQuestion(index),
+        bound.yesNoQuestion(SharesInAPortfolioPage(index), "shares.inAPortfolioYesNo", SharesInAPortfolioController.onPageLoad(index, mode).url),
+        bound.stringQuestion(ShareCompanyNamePage(index), "shares.companyName", ShareCompanyNameController.onPageLoad(index, mode).url),
+        bound.stringQuestion(SharePortfolioNamePage(index), "shares.portfolioName", SharePortfolioNameController.onPageLoad(index, mode).url),
+        bound.yesNoQuestion(SharesOnStockExchangePage(index), "shares.onStockExchangeYesNo", SharesOnStockExchangeController.onPageLoad(index, mode).url),
+        bound.yesNoQuestion(SharePortfolioOnStockExchangePage(index), "shares.portfolioOnStockExchangeYesNo", SharePortfolioOnStockExchangeController.onPageLoad(index, mode).url),
+        bound.shareClassQuestion(ShareClassPage(index), "shares.class", ShareClassController.onPageLoad(index, mode).url),
+        bound.numberQuestion(ShareQuantityInTrustPage(index), "shares.quantityInTrust", ShareQuantityInTrustController.onPageLoad(index, mode).url),
+        bound.numberQuestion(SharePortfolioQuantityInTrustPage(index), "shares.portfolioQuantityInTrust", SharePortfolioQuantityInTrustController.onPageLoad(index, mode).url),
+        bound.currencyQuestion(ShareValueInTrustPage(index), "shares.valueInTrust", ShareValueInTrustController.onPageLoad(index, mode).url),
+        bound.currencyQuestion(SharePortfolioValueInTrustPage(index), "shares.portfolioValueInTrust", SharePortfolioValueInTrustController.onPageLoad(index, mode).url)
       ).flatten
     }
 

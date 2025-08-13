@@ -22,7 +22,6 @@ import handlers.ErrorHandler
 import models.RemoveAsset
 import models.assets.AssetNameType
 import play.api.Logging
-import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import services.TrustService
@@ -49,13 +48,13 @@ class RemoveAssetYesNoController @Inject()(
 
   private def redirectToAddAssetsPage(): Result = Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
 
-  def onPageLoad(): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
+  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
 
       trustService.getMonetaryAsset(request.userAnswers.identifier).map {
         asset =>
           asset.map{ x =>
-            Ok(view(form, currencyFormat(x.assetMonetaryAmount.toString)))
+            Ok(view(form, index, currencyFormat(x.assetMonetaryAmount.toString)))
           }.getOrElse {
             redirectToAddAssetsPage()
           }
@@ -71,29 +70,27 @@ class RemoveAssetYesNoController @Inject()(
       }
   }
 
-  def onSubmit(): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
-
       form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) => {
+        formWithErrors => {
           trustService.getMonetaryAsset(request.userAnswers.identifier).map {
-            asset =>
-              asset.map{ x =>
-                BadRequest(view(formWithErrors, currencyFormat(x.assetMonetaryAmount.toString)))
-              }.getOrElse {
-                redirectToAddAssetsPage()
-              }
+            case Some(asset) =>
+              BadRequest(view(formWithErrors, index, currencyFormat(asset.assetMonetaryAmount.toString)))
+            case None =>
+              redirectToAddAssetsPage()
           }
         },
         value => {
           if (value) {
-              removeAsset(request.userAnswers.identifier, 0)
+            removeAsset(request.userAnswers.identifier, index)
           } else {
             Future.successful(redirectToAddAssetsPage())
           }
         }
       )
   }
+
 
   private def removeAsset(identifier: String, index: Int)(implicit hc: HeaderCarrier): Future[Result] = {
     trustService.removeAsset(identifier, RemoveAsset(AssetNameType.MoneyAssetNameType, index)).map(_ =>

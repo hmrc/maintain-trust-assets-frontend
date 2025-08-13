@@ -36,7 +36,7 @@ class PropertyOrLandTotalValueControllerSpec extends SpecBase with IndexValidati
   val form: Form[Long] = formProvider.withConfig(prefix = "propertyOrLand.totalValue")
   val validAnswer: Long = 4000L
 
-  lazy val propertyOrLandTotalValueRoute: String = routes.PropertyOrLandTotalValueController.onPageLoad(NormalMode).url
+  lazy val propertyOrLandTotalValueRoute: String = routes.PropertyOrLandTotalValueController.onPageLoad(index, NormalMode).url
 
   "PropertyOrLandTotalValue Controller" must {
 
@@ -53,14 +53,14 @@ class PropertyOrLandTotalValueControllerSpec extends SpecBase with IndexValidati
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode)(request, messages).toString
+        view(form, index, NormalMode)(request, messages).toString
 
       application.stop()
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(PropertyOrLandTotalValuePage, validAnswer).success.value
+      val userAnswers = emptyUserAnswers.set(PropertyOrLandTotalValuePage(index), validAnswer).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -73,7 +73,7 @@ class PropertyOrLandTotalValueControllerSpec extends SpecBase with IndexValidati
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), NormalMode)(request, messages).toString
+        view(form.fill(validAnswer), index, NormalMode)(request, messages).toString
 
       application.stop()
     }
@@ -114,7 +114,7 @@ class PropertyOrLandTotalValueControllerSpec extends SpecBase with IndexValidati
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode)(request, messages).toString
+        view(boundForm, index, NormalMode)(request, messages).toString
 
       application.stop()
     }

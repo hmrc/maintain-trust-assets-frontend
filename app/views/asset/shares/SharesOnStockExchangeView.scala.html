@@ -25,14 +25,14 @@
     errorSummary: ErrorSummary
 )
 
-@(form: Form[_], mode: Mode, companyName: String)(implicit request: RequestHeader, messages: Messages)
+@(form: Form[_], index: Int, mode: Mode, companyName: String)(implicit request: RequestHeader, messages: Messages)
 
 @mainTemplate(
     title = s"${errorPrefix(form)} ${messages("shares.onStockExchangeYesNo.title")}",
     showBackLink = true
 ) {
 
-    @formHelper(action = SharesOnStockExchangeController.onSubmit(mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = SharesOnStockExchangeController.onSubmit(index, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

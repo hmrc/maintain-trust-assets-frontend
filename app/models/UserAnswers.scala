@@ -40,7 +40,7 @@ final case class UserAnswers(internalId: String,
   def cleanup : Try[UserAnswers] = {
     this
       .deleteAtPath(pages.asset.money.basePath)
-      .flatMap(_.deleteAtPath(pages.asset.WhatKindOfAssetPage.path))
+      .flatMap(_.deleteAtPath(pages.asset.WhatKindOfAssetPage(0).path))
       .flatMap(_.deleteAtPath(pages.asset.business.basePath))
       .flatMap(_.deleteAtPath(pages.asset.other.basePath))
       .flatMap(_.deleteAtPath(pages.asset.partnership.basePath))

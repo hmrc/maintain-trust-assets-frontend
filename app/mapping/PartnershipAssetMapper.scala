@@ -29,8 +29,8 @@ class PartnershipAssetMapper extends Mapper[PartnershipType] {
   def apply(answers: UserAnswers): Option[PartnershipType] = {
     val readFromUserAnswers: Reads[PartnershipType] =
       (
-        PartnershipDescriptionPage.path.read[String] and
-          PartnershipStartDatePage.path.read[LocalDate]
+        PartnershipDescriptionPage(0).path.read[String] and
+          PartnershipStartDatePage(0).path.read[LocalDate]
         ) (PartnershipType.apply _)
 
     mapAnswersWithExplicitReads(answers, readFromUserAnswers)

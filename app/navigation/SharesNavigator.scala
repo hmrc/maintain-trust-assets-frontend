@@ -38,39 +38,39 @@ class SharesNavigator @Inject()() extends Navigator() {
       yesNoNavigation(mode)
 
   def simpleNavigation: PartialFunction[Page, UserAnswers => Call] = {
-    case ShareAnswerPage => _ => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
+    case ShareAnswerPage(index) => _ => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
   }
 
   private def portfolioRoutes(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
-    case SharePortfolioNamePage  => _ => SharePortfolioOnStockExchangeController.onPageLoad(mode)
-    case SharePortfolioOnStockExchangePage => _ => SharePortfolioQuantityInTrustController.onPageLoad(mode)
-    case SharePortfolioQuantityInTrustPage => _ => SharePortfolioValueInTrustController.onPageLoad(mode)
-    case SharePortfolioValueInTrustPage => ua => navigateToCheckAnswers(ua, mode)
+    case SharePortfolioNamePage(index)  => _ => SharePortfolioOnStockExchangeController.onPageLoad(index, mode)
+    case SharePortfolioOnStockExchangePage(index) => _ => SharePortfolioQuantityInTrustController.onPageLoad(index, mode)
+    case SharePortfolioQuantityInTrustPage(index) => _ => SharePortfolioValueInTrustController.onPageLoad(index, mode)
+    case SharePortfolioValueInTrustPage(index) => ua => navigateToCheckAnswers(ua, mode, index)
   }
 
   private def nonPortfolioRoutes(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
-    case ShareCompanyNamePage => _ => SharesOnStockExchangeController.onPageLoad(mode)
-    case SharesOnStockExchangePage => _ => ShareClassController.onPageLoad(mode)
-    case ShareClassPage => _ => ShareQuantityInTrustController.onPageLoad(mode)
-    case ShareQuantityInTrustPage  => _ => ShareValueInTrustController.onPageLoad(mode)
-    case ShareValueInTrustPage => ua => navigateToCheckAnswers(ua, mode)
+    case ShareCompanyNamePage(index) => _ => SharesOnStockExchangeController.onPageLoad(index, mode)
+    case SharesOnStockExchangePage(index) => _ => ShareClassController.onPageLoad(index, mode)
+    case ShareClassPage(index) => _ => ShareQuantityInTrustController.onPageLoad(index, mode)
+    case ShareQuantityInTrustPage(index)  => _ => ShareValueInTrustController.onPageLoad(index, mode)
+    case ShareValueInTrustPage(index) => ua => navigateToCheckAnswers(ua, mode, index)
   }
 
   private def yesNoNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
-    case SharesInAPortfolioPage => ua => yesNoNav(
+    case SharesInAPortfolioPage(index) => ua => yesNoNav(
       ua = ua,
-      fromPage = SharesInAPortfolioPage,
-      yesCall = SharePortfolioNameController.onPageLoad(mode),
-      noCall = ShareCompanyNameController.onPageLoad(mode)
+      fromPage = SharesInAPortfolioPage(index),
+      yesCall = SharePortfolioNameController.onPageLoad(index, mode),
+      noCall = ShareCompanyNameController.onPageLoad(index, mode)
     )
   }
 
-  private def navigateToCheckAnswers(ua: UserAnswers, mode: Mode): Call = {
+  private def navigateToCheckAnswers(ua: UserAnswers, mode: Mode, index: Int): Call = {
     if (mode == NormalMode) {
-      controllers.asset.shares.add.routes.ShareAnswerController.onPageLoad()
+      controllers.asset.shares.add.routes.ShareAnswerController.onPageLoad(index)
     } else {
       ua.get(IndexPage) match {
-        case Some(index) => controllers.asset.shares.amend.routes.ShareAmendAnswersController.renderFromUserAnswers(index)
+        case Some(indexPage) => controllers.asset.shares.amend.routes.ShareAmendAnswersController.renderFromUserAnswers(indexPage)
         case None => controllers.routes.SessionExpiredController.onPageLoad
       }
     }
