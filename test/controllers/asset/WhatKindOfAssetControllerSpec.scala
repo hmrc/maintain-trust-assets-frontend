@@ -163,7 +163,6 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
     val mockNavigator: AssetsNavigator = mock[AssetsNavigator]
     when(mockNavigator.addAssetNowRoute(any[WhatKindOfAsset](), any[List[AssetType]](), any[Option[Int]]()))
       .thenReturn(fakeNavigator.desiredRoute)
-    // TODO: Review change??
 
     val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
       .overrides(

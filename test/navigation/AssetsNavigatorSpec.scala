@@ -72,7 +72,7 @@ class AssetsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
         "assets exist" must {
           "redirect to add-to page" in {
 
-            navigator.redirectFromInterruptPage(isMigratingToTaxable = true, noAssets = false) // TODO: COME BACK TO
+            navigator.redirectFromInterruptPage(isMigratingToTaxable = true, noAssets = false)
               .mustBe(nonTaxToTaxRts.AddAssetsController.onPageLoad())
           }
         }

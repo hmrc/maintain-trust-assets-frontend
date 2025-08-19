@@ -41,7 +41,7 @@ class AssetsNavigator @Inject()(config: FrontendAppConfig) {
     (isMigratingToTaxable, noAssets) match {
       case (true, true) =>
         AssetNavigator.routeToIndex(
-          List.empty, // TODO: COME BACK TO
+          List.empty,
           controllers.asset.routes.WhatKindOfAssetController.onPageLoad
         )
       case (true, false) => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()

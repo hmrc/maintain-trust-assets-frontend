@@ -44,14 +44,10 @@ class PartnershipAmendAnswersControllerSpec extends SpecBase with MockitoSugar w
   private lazy val answersRoute = routes.PartnershipAmendAnswersController.extractAndRender(index).url
   private lazy val submitAnswersRoute = routes.PartnershipAmendAnswersController.onSubmit(index).url
 
-//  private val answersRoute = "/maintain-a-trust/trust-assets/partnership/0/check-answers"
-//  private lazy val submitAnswersRoute = "/maintain-a-trust/trust-assets/partnership/0/check-answers"
-
   val validDate: LocalDate = LocalDate.now(ZoneOffset.UTC)
   val name: String = "Description"
 
   private val partnershipType = PartnershipType(name, validDate)
-
 
   val answers =
     emptyUserAnswers

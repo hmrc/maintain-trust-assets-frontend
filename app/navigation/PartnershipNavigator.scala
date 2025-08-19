@@ -41,7 +41,7 @@ class PartnershipNavigator @Inject()() extends Navigator {
   private def navigateToCheckAnswers(ua: UserAnswers, mode: Mode, index: Int): Call = {
     if (mode == NormalMode) {
       AssetNavigator.routeToIndex(
-        List.empty, // TODO: COME BACK TO
+        List.empty,
         controllers.asset.partnership.add.routes.PartnershipAnswerController.onPageLoad,
         index = Some(index)
       )
