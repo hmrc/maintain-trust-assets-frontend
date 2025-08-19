@@ -37,7 +37,7 @@ class MoneyNavigator @Inject()() extends Navigator {
   private def navigateToCheckAnswers(ua: UserAnswers, mode: Mode, index: Int): Call = {
     if (mode == NormalMode) {
       AssetNavigator.routeToIndex(
-        List.empty
+        List.empty,
         controllers.asset.money.add.routes.MoneyAnswerController.onPageLoad,
         index = Some(index)
       )
