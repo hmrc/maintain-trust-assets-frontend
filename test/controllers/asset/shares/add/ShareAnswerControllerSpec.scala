@@ -116,7 +116,7 @@ class ShareAnswerControllerSpec extends SpecBase {
 
         val view = application.injector.instanceOf[ShareAnswersView]
         val printHelper = application.injector.instanceOf[SharesPrintHelper]
-        val answerSection = printHelper(answers, index, provisional = true, "name") //TODO
+        val answerSection = printHelper(answers, index, provisional = true, "name")
 
         status(result) mustEqual OK
 
