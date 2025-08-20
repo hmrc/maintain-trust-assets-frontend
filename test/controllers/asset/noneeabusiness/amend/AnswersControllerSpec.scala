@@ -59,11 +59,9 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
     provisional = true
   )
 
-
   val assets: Assets = Assets(
     nonEEABusiness = List(nonEeaBusinessAsset)
   )
-
 
   def userAnswers(migrating: Boolean): UserAnswers = emptyUserAnswers.copy(isMigratingToTaxable = migrating)
     .set(NamePage(index), name).success.value
@@ -107,7 +105,7 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
 
       val mockTrustConnector = mock[TrustsConnector]
 
-      val answers = userAnswers(migrating = false)
+      val answers = userAnswers(migrating = true)
 
       val application =
         applicationBuilder(userAnswers = Some(answers), affinityGroup = Agent)
