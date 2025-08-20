@@ -23,10 +23,10 @@ class BusinessNonUkAddressPageSpec extends PageBehaviours {
 
   "BusinessInternationalAddressPage" must {
 
-    beRetrievable[NonUkAddress](BusinessInternationalAddressPage)
+    beRetrievable[NonUkAddress](BusinessInternationalAddressPage(index))
 
-    beSettable[NonUkAddress](BusinessInternationalAddressPage)
+    beSettable[NonUkAddress](BusinessInternationalAddressPage(index))
 
-    beRemovable[NonUkAddress](BusinessInternationalAddressPage)
+    beRemovable[NonUkAddress](BusinessInternationalAddressPage(index))
   }
 }

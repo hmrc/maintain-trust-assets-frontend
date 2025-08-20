@@ -22,10 +22,10 @@ class OtherAssetValuePageSpec extends PageBehaviours {
 
   "OtherAssetValuePage" must {
 
-    beRetrievable[Long](OtherAssetValuePage)
+    beRetrievable[Long](OtherAssetValuePage(index))
 
-    beSettable[Long](OtherAssetValuePage)
+    beSettable[Long](OtherAssetValuePage(index))
 
-    beRemovable[Long](OtherAssetValuePage)
+    beRemovable[Long](OtherAssetValuePage(index))
   }
 }
