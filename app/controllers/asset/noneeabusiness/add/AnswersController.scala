@@ -81,7 +81,7 @@ class AnswersController @Inject()(
   private def cleanAllAndRedirect() (implicit request: DataRequest[AnyContent]): Future[Result] = {
     request.userAnswers.cleanup.fold(
       _ => Future.successful(
-        Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
+        Redirect(navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable))
       ),
       cleaned => repository.set(cleaned).map { _ =>
         Redirect(navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable))
