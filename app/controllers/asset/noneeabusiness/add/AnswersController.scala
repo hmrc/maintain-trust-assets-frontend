@@ -84,7 +84,7 @@ class AnswersController @Inject()(
         Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
       ),
       cleaned => repository.set(cleaned).map { _ =>
-        Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
+        Redirect(navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable))
       }
     )
   }
