@@ -42,8 +42,8 @@ class AnswersController @Inject()(
                                    printHelper: NonEeaBusinessPrintHelper,
                                    mapper: NonEeaBusinessAssetMapper,
                                    errorHandler: ErrorHandler,
-                                   navigator: AssetsNavigator,            // kept as-is (even if not used directly)
-                                   repository: PlaybackRepository         // ⬅️ persist cleaned UserAnswers
+                                   navigator: AssetsNavigator,
+                                   repository: PlaybackRepository
                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val provisional: Boolean = true
