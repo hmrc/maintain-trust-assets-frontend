@@ -21,19 +21,19 @@ import connectors.TrustsConnector
 import controllers.actions._
 import controllers.actions.property_or_land.NameRequiredAction
 import handlers.ErrorHandler
+
+import javax.inject.Inject
 import mapping.PropertyOrLandMapper
 import models.NormalMode
-import models.requests.DataRequest
 import navigation.Navigator
 import pages.asset.property_or_land.add.PropertyOrLandAnswerPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc._
-import repositories.PlaybackRepository
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.PropertyOrLandPrintHelper
 import viewmodels.AnswerSection
 import views.html.asset.property_or_land.add.PropertyOrLandAnswersView
-import javax.inject.Inject
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class PropertyOrLandAnswerController @Inject()(
@@ -46,8 +46,7 @@ class PropertyOrLandAnswerController @Inject()(
                                                 printHelper: PropertyOrLandPrintHelper,
                                                 connector: TrustsConnector,
                                                 mapper: PropertyOrLandMapper,
-                                                errorHandler: ErrorHandler,
-                                                repository: PlaybackRepository
+                                                errorHandler: ErrorHandler
                                               )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val provisional: Boolean = true
@@ -56,19 +55,20 @@ class PropertyOrLandAnswerController @Inject()(
     implicit request =>
       val section: AnswerSection = printHelper(request.userAnswers, index, provisional, request.name)
       Ok(view(index, section))
-    }
+  }
 
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
       mapper(request.userAnswers) match {
         case None =>
           errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
-
         case Some(asset) =>
           connector.amendPropertyOrLandAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
             response.status match {
               case OK | NO_CONTENT =>
-                cleanAllAndRedirect(index)
+                Future.successful(
+                  Redirect(navigator.nextPage(PropertyOrLandAnswerPage(index), NormalMode, request.userAnswers))
+                )
 
               case _ =>
                 connector.getAssets(request.userAnswers.identifier).flatMap { data =>
@@ -82,26 +82,17 @@ class PropertyOrLandAnswerController @Inject()(
                   )
 
                   if (!matchFound) {
-                    connector.addPropertyOrLandAsset(request.userAnswers.identifier, asset).flatMap { _ =>
-                      cleanAllAndRedirect(index)
+                    connector.addPropertyOrLandAsset(request.userAnswers.identifier, asset).map { _ =>
+                      Redirect(navigator.nextPage(PropertyOrLandAnswerPage(index), NormalMode, request.userAnswers))
                     }
                   } else {
-                    cleanAllAndRedirect(index)
+                    Future.successful(
+                      Redirect(navigator.nextPage(PropertyOrLandAnswerPage(index), NormalMode, request.userAnswers))
+                    )
                   }
                 }
             }
           }
       }
-    }
-
-  private def cleanAllAndRedirect(index: Int) (implicit request: DataRequest[AnyContent]): Future[Result] = {
-    request.userAnswers.cleanup.fold(
-      _ => Future.successful(
-        Redirect(navigator.nextPage(PropertyOrLandAnswerPage(index), NormalMode, request.userAnswers))
-      ),
-      cleanedUa => repository.set(cleanedUa).map { _ =>
-        Redirect(navigator.nextPage(PropertyOrLandAnswerPage(index), NormalMode, cleanedUa))
-      }
-    )
   }
 }

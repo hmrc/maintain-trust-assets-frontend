@@ -21,20 +21,20 @@ import connectors.TrustsConnector
 import controllers.actions._
 import controllers.actions.property_or_land.NameRequiredAction
 import handlers.ErrorHandler
+
+import javax.inject.Inject
 import mapping.OtherAssetMapper
 import models.NormalMode
-import models.requests.DataRequest
 import navigation.Navigator
 import pages.asset.other.OtherAssetDescriptionPage
 import pages.asset.other.add.OtherAnswerPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc._
-import repositories.PlaybackRepository
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.OtherPrintHelper
 import viewmodels.AnswerSection
 import views.html.asset.other.add.OtherAssetAnswersView
-import javax.inject.Inject
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class OtherAnswerController @Inject()(
@@ -47,18 +47,17 @@ class OtherAnswerController @Inject()(
                                        val controllerComponents: MessagesControllerComponents,
                                        printHelper: OtherPrintHelper,
                                        mapper: OtherAssetMapper,
-                                       errorHandler: ErrorHandler,
-                                       repository: PlaybackRepository
+                                       errorHandler: ErrorHandler
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val provisional: Boolean = true
 
   def onPageLoad(index: Int): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
-      val name: String = request.userAnswers.get(OtherAssetDescriptionPage(index)).getOrElse("")
-      val section: AnswerSection = printHelper(userAnswers = request.userAnswers, index = index, provisional = provisional, name = name)
+      val description = request.userAnswers.get(OtherAssetDescriptionPage(index)).getOrElse("")
+      val section: AnswerSection = printHelper(userAnswers = request.userAnswers, index, provisional, description)
       Ok(view(index, section))
-    }
+  }
 
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
@@ -70,32 +69,30 @@ class OtherAnswerController @Inject()(
           connector.amendOtherAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
             response.status match {
               case OK | NO_CONTENT =>
-                cleanAllAndRedirect(index)
+                Future.successful(
+                  Redirect(navigator.nextPage(OtherAnswerPage(index), NormalMode, request.userAnswers))
+                )
 
               case _ =>
                 connector.getAssets(request.userAnswers.identifier).flatMap { data =>
-                  val exists = data.other.exists(e =>
-                    e.description.equalsIgnoreCase(asset.description) && e.value == asset.value
+                  val matchFound = data.other.exists(existing =>
+                    existing.description.equalsIgnoreCase(asset.description) &&
+                      existing.value == asset.value
                   )
-                  if (!exists) {
-                    connector.addOtherAsset(request.userAnswers.identifier, asset).flatMap(_ => cleanAllAndRedirect(index))
+
+                  if (!matchFound) {
+                    connector.addOtherAsset(request.userAnswers.identifier, asset).map { _ =>
+                      Redirect(navigator.nextPage(OtherAnswerPage(index), NormalMode, request.userAnswers))
+                    }
                   } else {
-                    cleanAllAndRedirect(index)
+                    Future.successful(
+                      Redirect(navigator.nextPage(OtherAnswerPage(index), NormalMode, request.userAnswers))
+                    )
                   }
                 }
             }
           }
       }
-    }
-
-  private def cleanAllAndRedirect(index: Int) (implicit request: DataRequest[AnyContent]): Future[Result] = {
-    request.userAnswers.cleanup.fold(
-      _ => Future.successful(
-        Redirect(navigator.nextPage(OtherAnswerPage(index), NormalMode, request.userAnswers))
-      ),
-      ua => repository.set(ua).map { _ =>
-        Redirect(navigator.nextPage(OtherAnswerPage(index), NormalMode, ua))
-      }
-    )
   }
+
 }
