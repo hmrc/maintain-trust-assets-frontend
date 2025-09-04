@@ -50,6 +50,12 @@ final case class UserAnswers(internalId: String,
       .flatMap(_.remove(pages.asset.AddNowPage))
   }
 
+  def cleanupTest : Try[UserAnswers] = {
+    this
+      .deleteAtPath(pages.asset.money.basePath)
+      .flatMap(_.deleteAtPath(pages.asset.WhatKindOfAssetPage(0).path))
+  }
+
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] = {
     Reads.at(page.path).reads(data) match {
       case JsSuccess(value, _) => Some(value)

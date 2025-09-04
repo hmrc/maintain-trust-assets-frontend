@@ -95,7 +95,7 @@ class ShareAnswerController @Inject()(
     }
 
   private def cleanAllAndRedirect(index: Int) (implicit request: DataRequest[AnyContent]): Future[Result] = {
-    request.userAnswers.cleanup.fold(
+    request.userAnswers.cleanupTest.fold(
       _ => Future.successful(
         Redirect(navigator.nextPage(ShareAnswerPage(index), NormalMode, request.userAnswers))
       ),

@@ -50,13 +50,21 @@ class AssetMoneyValueController @Inject()(
 
   private val form: Form[Long] = formProvider.withConfig(prefix = "money.value")
 
-  def onPageLoad(index: Int, mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
+  def onPageLoad(index: Int, mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
     implicit request =>
-      val preparedForm = request.userAnswers.get(AssetMoneyValuePage(index)) match {
-        case Some(value) => form.fill(value)
-        case None        => form
+      trustService.getMonetaryAsset(request.userAnswers.identifier).map { moneyOpt =>
+        val filledForm: Form[Long] =
+          moneyOpt match {
+            case Some(value) =>
+              form.fill(value.assetMonetaryAmount)
+            case None =>
+              request.userAnswers
+                .get(AssetMoneyValuePage(index))
+                .map(form.fill)
+                .getOrElse(form)
+          }
+        Ok(view(filledForm, index, mode))
       }
-      Ok(view(preparedForm, index, mode))
   }
 
   def onSubmit(index: Int, mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {

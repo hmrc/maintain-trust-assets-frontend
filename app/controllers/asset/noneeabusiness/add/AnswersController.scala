@@ -79,7 +79,7 @@ class AnswersController @Inject()(
     }
 
   private def cleanAllAndRedirect() (implicit request: DataRequest[AnyContent]): Future[Result] = {
-    request.userAnswers.cleanup.fold(
+    request.userAnswers.cleanupTest.fold(
       _ => Future.successful(
         Redirect(navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable))
       ),

@@ -50,7 +50,6 @@ class MoneyAnswerController @Inject()(
   def onPageLoad(index: Int): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
       val section: AnswerSection = printHelper(userAnswers = request.userAnswers, index = index, provisional = provisional, name = request.name)
-
       Ok(view(index, section))
   }
 
