@@ -25,20 +25,20 @@
     submitButton: SubmitButton
 )
 
-@(form: Form[_], name: String)(implicit request: RequestHeader, messages: Messages)
+@(form: Form[_], index: Int, mode: Mode)(implicit request: RequestHeader, messages: Messages)
 
 @mainTemplate(
     title = s"${errorPrefix(form)} ${messages("nonEeaBusiness.startDate.title")}",
     showBackLink = true
 ) {
 
-    @formHelper(action = StartDateController.onSubmit(), Symbol("autoComplete") -> "off") {
+    @formHelper(action = StartDateController.onSubmit(index, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 
         @inputDate(
             field           = form("value"),
-            legend          = messages("nonEeaBusiness.startDate.heading", name),
+            legend          = messages("nonEeaBusiness.startDate.heading"),
             legendClass     = "govuk-heading-l",
             legendAsHeading = true,
             hint            = Some(messages("nonEeaBusiness.startDate.hint"))

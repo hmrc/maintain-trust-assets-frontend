@@ -36,7 +36,6 @@ import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AddAssetViewHelper
 import views.html.asset.nonTaxableToTaxable.{AddAssetYesNoView, AddAssetsView, MaxedOutView}
-
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -68,8 +67,6 @@ class AddAssetsController @Inject()(
       case _ => Messages(s"$prefix.heading")
     }
   }
-
-
 
   def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>

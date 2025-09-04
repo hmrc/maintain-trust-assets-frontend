@@ -132,7 +132,7 @@ final case class WhatKindOfAssetPage(index: Int) extends QuestionPage[WhatKindOf
     userAnswers.remove(noneeabusiness.NamePage(index))
       .flatMap(_.remove(noneeabusiness.NonUkAddressPage(index)))
       .flatMap(_.remove(noneeabusiness.GoverningCountryPage(index)))
-      .flatMap(_.remove(noneeabusiness.add.StartDatePage))
+      .flatMap(_.remove(noneeabusiness.add.StartDatePage(index)))
       .flatMap(removeStatus)
   }
 

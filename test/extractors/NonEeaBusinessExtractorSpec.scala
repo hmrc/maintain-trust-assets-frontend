@@ -58,7 +58,7 @@ class NonEeaBusinessExtractorSpec extends SpecBase {
         result.get(NamePage(index)).get mustBe name
         result.get(NonUkAddressPage(index)).get mustBe nonUkAddress
         result.get(GoverningCountryPage(index)).get mustBe country
-        result.get(StartDatePage).get mustBe date
+        result.get(StartDatePage(index)).get mustBe date
       }
 
     }

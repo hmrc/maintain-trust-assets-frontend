@@ -48,12 +48,10 @@ class PartnershipStartDateController @Inject()(
 
   def onPageLoad(index: Int, mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
-
       val preparedForm = request.userAnswers.get(PartnershipStartDatePage(index)) match {
         case None => form
         case Some(value) => form.fill(value)
       }
-
       Ok(view(preparedForm, index, mode))
   }
 
