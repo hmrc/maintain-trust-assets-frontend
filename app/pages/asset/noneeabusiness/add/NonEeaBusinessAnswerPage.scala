@@ -16,20 +16,9 @@
 
 package pages.asset.noneeabusiness.add
 
-import java.time.LocalDate
-
 import pages.QuestionPage
-import pages.asset.noneeabusiness.basePath
-import pages.asset.noneeabusiness.add.StartDatePage.key
 import play.api.libs.json.JsPath
 
-case class StartDatePage(index: Int) extends QuestionPage[LocalDate] {
-
-  override def path: JsPath = basePath \ toString
-
-  override def toString: String = key
-}
-
-object StartDatePage {
-  val key: String = "nonEeaBusinessStartDate"
+case class NonEeaBusinessAnswerPage(index: Int) extends QuestionPage[Boolean] {
+  override def path: JsPath = JsPath \ "assets" \ "noneeabusiness" \ index \ "answersComplete"
 }

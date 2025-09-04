@@ -22,7 +22,7 @@ import controllers.asset.noneeabusiness.{routes => rts}
 import models.{Mode, NormalMode, UserAnswers}
 import pages.Page
 import pages.asset.noneeabusiness._
-import pages.asset.noneeabusiness.add.StartDatePage
+import pages.asset.noneeabusiness.add.{NonEeaBusinessAnswerPage, StartDatePage}
 import pages.asset.noneeabusiness.amend.IndexPage
 import play.api.mvc.Call
 
@@ -38,15 +38,16 @@ class NonEeaBusinessNavigator @Inject()() extends Navigator {
     simpleNavigation(mode)
 
   def simpleNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
-    case NamePage(index) => _ => rts.InternationalAddressController.onPageLoad(index,mode)
-    case NonUkAddressPage(index) => _ => rts.GoverningCountryController.onPageLoad(index,mode)
+    case NamePage(index) => _ => rts.InternationalAddressController.onPageLoad(index, mode)
+    case NonUkAddressPage(index) => _ => rts.GoverningCountryController.onPageLoad(index, mode)
     case GoverningCountryPage(index) => ua => navigateToStartDateOrCheckAnswers(ua, mode, index)
-    case StartDatePage => _ => addRts.AnswersController.onPageLoad()
+    case StartDatePage(index) => _ => addRts.AnswersController.onPageLoad(index)
+    case NonEeaBusinessAnswerPage(index) => _ => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
   }
 
   private def navigateToStartDateOrCheckAnswers(ua: UserAnswers, mode: Mode, index: Int): Call = {
     if (mode == NormalMode) {
-      addRts.StartDateController.onPageLoad()
+      addRts.StartDateController.onPageLoad(index, mode)
     } else {
       ua.get(IndexPage) match {
         case Some(indexPage: Int) => amendRts.AnswersController.renderFromUserAnswers(indexPage)

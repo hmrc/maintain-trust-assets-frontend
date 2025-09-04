@@ -18,14 +18,11 @@ package controllers.asset.noneeabusiness.add
 
 import base.SpecBase
 import connectors.TrustsConnector
-import mapping.NonEeaBusinessAssetMapper
 import models.assets.{AssetMonetaryAmount, Assets}
-import models.{NonUkAddress, UserAnswers}
-import navigation.AssetsNavigator
+import models.{NonUkAddress, WhatKindOfAsset, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.scalatest.concurrent.ScalaFutures
-import org.scalatestplus.mockito.MockitoSugar
+import pages.asset.WhatKindOfAssetPage
 import pages.asset.noneeabusiness._
 import pages.asset.noneeabusiness.add.StartDatePage
 import play.api.inject.bind
@@ -34,98 +31,107 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpResponse
 import utils.print.NonEeaBusinessPrintHelper
 import views.html.asset.noneeabusiness.add.AnswersView
+import mapping.NonEeaBusinessAssetMapper
+
 import java.time.LocalDate
 import scala.concurrent.Future
 
-class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures {
+class AnswersControllerSpec extends SpecBase {
 
-  private val name: String = "Noneeabusiness"
+  private val name = "Noneeabusiness"
 
-  private def userAnswers(migrating: Boolean): UserAnswers = emptyUserAnswers.copy(isMigratingToTaxable = migrating)
+  private def ua(migrating: Boolean): UserAnswers =
+    emptyUserAnswers.copy(isMigratingToTaxable = migrating)
+      .set(WhatKindOfAssetPage(index), WhatKindOfAsset.NonEeaBusiness).success.value
       .set(NamePage(index), name).success.value
       .set(NonUkAddressPage(index), NonUkAddress("Line 1", "Line 2", Some("Line 3"), "FR")).success.value
       .set(GoverningCountryPage(index), "FR").success.value
-      .set(StartDatePage, LocalDate.parse("1996-02-03")).success.value
+      .set(StartDatePage(index), LocalDate.parse("1996-02-03")).success.value
 
-  private lazy val getRoute: String  = controllers.asset.noneeabusiness.add.routes.AnswersController.onPageLoad().url
-  private lazy val postRoute: String = controllers.asset.noneeabusiness.add.routes.AnswersController.onSubmit().url
+  private lazy val getRoute  = routes.AnswersController.onPageLoad(index).url
+  private lazy val postRoute = routes.AnswersController.onSubmit(index).url
 
-  "AnswersController (add – Non-EEA Business)" must {
+  "AnswersController (non-EEA add)" must {
 
     "return OK and the correct view for a GET" in {
-      val answers = userAnswers(migrating = false)
+      val answers = ua(migrating = false)
 
       val application = applicationBuilder(userAnswers = Some(answers)).build()
 
       val request = FakeRequest(GET, getRoute)
       val result  = route(application, request).value
 
-      val view        = application.injector.instanceOf[AnswersView]
-      val printHelper = application.injector.instanceOf[NonEeaBusinessPrintHelper]
-      val answerSect  = printHelper(answers, index, provisional = true, name)
+      val view         = application.injector.instanceOf[AnswersView]
+      val printHelper  = application.injector.instanceOf[NonEeaBusinessPrintHelper]
+      val answerSection = printHelper(answers, index, provisional = true, name)
 
       status(result) mustEqual OK
-      contentAsString(result) mustEqual view(answerSect)(request, messages).toString
+      contentAsString(result) mustEqual view(index, answerSection)(request, messages).toString
 
       application.stop()
     }
 
-    "redirect to the correct add page when valid data is submitted and NOT migrating" in {
-      val mockTrustsConnector = mock[TrustsConnector]
-      val answers             = userAnswers(migrating = false)
-
-      val application = applicationBuilder(userAnswers = Some(answers))
-        .overrides(bind[TrustsConnector].toInstance(mockTrustsConnector))
-        .build()
-
-      val navigator = application.injector.instanceOf[AssetsNavigator]
+    "redirect to AddAssets page when valid data is submitted and not migrating" in {
+      val mockConnector = mock[TrustsConnector]
+      val answers       = ua(migrating = false)
 
       val moneyAsset = AssetMonetaryAmount(4000L)
-      val assets: Assets = Assets(monetary = List(moneyAsset))
+      val assets     = Assets(monetary = List(moneyAsset))
 
-      when(mockTrustsConnector.getAssets(any())(any(), any()))
+      when(mockConnector.getAssets(any())(any(), any()))
         .thenReturn(Future.successful(assets))
 
-      when(mockTrustsConnector.addNonEeaBusinessAsset(any(), any())(any(), any()))
+      // Amend succeeds -> controller takes OK/NO_CONTENT branch
+      when(mockConnector.amendNonEeaBusinessAsset(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(HttpResponse(OK, "")))
+
+      // Not used when amend succeeds, but safe to stub:
+      when(mockConnector.addNonEeaBusinessAsset(any(), any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(OK, "")))
+
+      val application =
+        applicationBuilder(userAnswers = Some(answers))
+          .overrides(bind[TrustsConnector].toInstance(mockConnector))
+          .build()
 
       val request = FakeRequest(POST, postRoute)
       val result  = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-
-      val expectedUrl = navigator.redirectToAddAssetPage(answers.isMigratingToTaxable).url
-      redirectLocation(result).value mustEqual expectedUrl
+      redirectLocation(result).value mustEqual
+        controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
 
       application.stop()
     }
 
-    "redirect to the add non-eea asset page when valid data is submitted and are migrating to taxable" in {
-      val mockTrustsConnector = mock[TrustsConnector]
-      val answers             = userAnswers(migrating = true)
-
-      val application = applicationBuilder(userAnswers = Some(answers))
-        .overrides(bind[TrustsConnector].toInstance(mockTrustsConnector))
-        .build()
-
-      val navigator = application.injector.instanceOf[AssetsNavigator]
+    "redirect to AddAssets page when valid data is submitted and migrating to taxable" in {
+      val mockConnector = mock[TrustsConnector]
+      val answers       = ua(migrating = true)
 
       val moneyAsset = AssetMonetaryAmount(4000L)
-      val assets: Assets = Assets(monetary = List(moneyAsset))
+      val assets     = Assets(monetary = List(moneyAsset))
 
-      when(mockTrustsConnector.getAssets(any())(any(), any()))
+      when(mockConnector.getAssets(any())(any(), any()))
         .thenReturn(Future.successful(assets))
 
-      when(mockTrustsConnector.addNonEeaBusinessAsset(any(), any())(any(), any()))
+      // Amend succeeds -> controller takes OK/NO_CONTENT branch
+      when(mockConnector.amendNonEeaBusinessAsset(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(HttpResponse(OK, "")))
+
+      when(mockConnector.addNonEeaBusinessAsset(any(), any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(OK, "")))
+
+      val application =
+        applicationBuilder(userAnswers = Some(answers))
+          .overrides(bind[TrustsConnector].toInstance(mockConnector))
+          .build()
 
       val request = FakeRequest(POST, postRoute)
       val result  = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-
-      val expectedUrl = navigator.redirectToAddAssetPage(answers.isMigratingToTaxable).url
-      redirectLocation(result).value mustEqual expectedUrl
+      redirectLocation(result).value mustEqual
+        controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
 
       application.stop()
     }
@@ -154,14 +160,15 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
       application.stop()
     }
 
-    "return an internal server error given None is returned from NonEeaBusinessAssetMapper" in {
+    "return an internal server error when the mapper returns None" in {
       val mockMapper = mock[NonEeaBusinessAssetMapper]
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers(migrating = true)))
-        .overrides(bind[NonEeaBusinessAssetMapper].toInstance(mockMapper))
-        .build()
+      val application =
+        applicationBuilder(userAnswers = Some(ua(migrating = true)))
+          .overrides(bind[NonEeaBusinessAssetMapper].toInstance(mockMapper))
+          .build()
 
-      when(mockMapper(any)).thenReturn(None)
+      when(mockMapper(any())).thenReturn(None)
 
       val request = FakeRequest(POST, postRoute)
       val result  = route(application, request).value

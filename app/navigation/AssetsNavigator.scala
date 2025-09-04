@@ -101,7 +101,7 @@ class AssetsNavigator @Inject()(config: FrontendAppConfig) {
       case Business => routeToBusinessIndex(assets, index)
       case Partnership => routeToPartnershipIndex(assets, index)
       case Other => routeToOtherIndex(assets, index)
-      case NonEeaBusiness => controllers.asset.noneeabusiness.routes.NameController.onPageLoad(0,NormalMode)
+      case NonEeaBusiness => routeToNonEeaBusinessIndex(assets, index)
     }
   }
 
@@ -161,6 +161,14 @@ class AssetsNavigator @Inject()(config: FrontendAppConfig) {
     AssetNavigator.routeToIndexUsingModeCall(
       assets,
       controllers.asset.other.routes.OtherAssetDescriptionController.onPageLoad,
+      index
+    )
+  }
+
+  private def routeToNonEeaBusinessIndex(assets: List[AssetType], index: Option[Int]): Call = {
+    AssetNavigator.routeToIndexUsingModeCall(
+      assets,
+      controllers.asset.noneeabusiness.routes.NameController.onPageLoad,
       index
     )
   }

@@ -40,13 +40,13 @@ class NonEeaBusinessPrintHelperSpec extends SpecBase {
     .set(NamePage(index), name).success.value
     .set(NonUkAddressPage(index), nonUkAddress).success.value
     .set(GoverningCountryPage(index), country).success.value
-    .set(StartDatePage, date).success.value
+    .set(StartDatePage(index), date).success.value
 
   private val assetRows: Seq[AnswerRow] = Seq(
     AnswerRow(label = messages("nonEeaBusiness.name.checkYourAnswersLabel"), Html(name), NameController.onPageLoad(index, NormalMode).url),
     AnswerRow(label = messages("nonEeaBusiness.internationalAddress.checkYourAnswersLabel", name), Html("Line 1<br />Line 2<br />France"), InternationalAddressController.onPageLoad(index, NormalMode).url),
     AnswerRow(label = messages("nonEeaBusiness.governingCountry.checkYourAnswersLabel", name), Html("France"), GoverningCountryController.onPageLoad(index, NormalMode).url),
-    AnswerRow(label = messages("nonEeaBusiness.startDate.checkYourAnswersLabel", name), Html("3 February 1996"), StartDateController.onPageLoad().url)
+    AnswerRow(label = messages("nonEeaBusiness.startDate.checkYourAnswersLabel", name), Html("3 February 1996"), StartDateController.onPageLoad(index, NormalMode).url)
   )
 
   "NonEeaBusinessPrintHelper" when {

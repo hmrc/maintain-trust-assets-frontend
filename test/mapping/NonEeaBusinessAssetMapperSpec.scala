@@ -59,7 +59,7 @@ class NonEeaBusinessAssetMapperSpec extends SpecBase {
           .set(NamePage(index), name).success.value
           .set(NonUkAddressPage(index), nonUkAddress).success.value
           .set(GoverningCountryPage(index), country).success.value
-          .set(StartDatePage, date).success.value
+          .set(StartDatePage(index), date).success.value
 
         val result = mapper(answers).get
 

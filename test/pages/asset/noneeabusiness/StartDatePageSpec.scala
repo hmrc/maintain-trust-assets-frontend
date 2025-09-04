@@ -16,6 +16,7 @@
 
 package pages.asset.noneeabusiness
 
+import org.scalacheck.Arbitrary
 import pages.asset.noneeabusiness.add.StartDatePage
 import pages.behaviours.PageBehaviours
 
@@ -23,14 +24,16 @@ import java.time.LocalDate
 
 class StartDatePageSpec extends PageBehaviours {
 
-  private val page = StartDatePage
-
   "StartDatePage" must {
 
-    beRetrievable[LocalDate](page)
+    implicit lazy val arbitraryLocalDate: Arbitrary[LocalDate] = Arbitrary {
+      datesBetween(LocalDate.of(1900, 1, 1), LocalDate.of(2100, 1, 1))
+    }
 
-    beSettable[LocalDate](page)
+    beRetrievable[LocalDate](StartDatePage(index))
 
-    beRemovable[LocalDate](page)
+    beSettable[LocalDate](StartDatePage(index))
+
+    beRemovable[LocalDate](StartDatePage(index))
   }
 }

@@ -36,7 +36,6 @@ import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.AddAssetViewHelper
 import views.html.asset.nonTaxableToTaxable.{AddAssetYesNoView, AddAssetsView, MaxedOutView}
-
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -69,13 +68,13 @@ class AddAssetsController @Inject()(
     }
   }
 
-
-
   def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
       val userAnswers: UserAnswers = request.userAnswers
       for {
         assets <- trustService.getAssets(userAnswers.identifier)
+        updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
+        _ <- repository.set(updatedAnswers)
       } yield {
         assets match {
           case _ if assets.isEmpty =>

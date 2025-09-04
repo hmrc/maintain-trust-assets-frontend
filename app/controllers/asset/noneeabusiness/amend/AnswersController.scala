@@ -32,6 +32,7 @@ import repositories.PlaybackRepository
 import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.NonEeaBusinessPrintHelper
+import viewmodels.AnswerSection
 import views.html.asset.noneeabusiness.amend.AnswersView
 
 import javax.inject.Inject
@@ -56,12 +57,10 @@ class AnswersController @Inject()(
 
   private val provisional: Boolean = false
 
-  private def render(userAnswers: UserAnswers,
-                     index: Int,
-                     name: String)
+  private def render(userAnswers: UserAnswers, index: Int, name: String)
                     (implicit request: Request[AnyContent]): Result = {
-
-    Ok(view(answerSections = printHelper(userAnswers, index,provisional, name),index = index))
+    val section: AnswerSection = printHelper(userAnswers, index, provisional, name)
+    Ok(view(section, index))
   }
 
   def extractAndRender(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
@@ -91,7 +90,6 @@ class AnswersController @Inject()(
 
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-
       mapper(request.userAnswers).map {
         asset =>
           connector.amendNonEeaBusinessAsset(request.userAnswers.identifier, index, asset).map(_ =>

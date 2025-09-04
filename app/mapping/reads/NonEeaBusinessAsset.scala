@@ -42,7 +42,7 @@ object NonEeaBusinessAsset {
       (__ \ NamePage.key).read[String] and
       (__ \ NonUkAddressPage.key).read[Address] and
       (__ \ GoverningCountryPage.key).read[String] and
-      (__ \ StartDatePage).read[LocalDate]
+      (__ \ StartDatePage.key).read[LocalDate]
     )(NonEeaBusinessAsset.apply _)
 
 }
