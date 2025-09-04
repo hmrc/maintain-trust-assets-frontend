@@ -20,9 +20,8 @@ import config.annotations.Business
 import controllers.actions._
 import controllers.actions.business.NameRequiredAction
 import forms.ValueFormProvider
-import models.Status.Completed
+import models.Mode
 import navigation.Navigator
-import pages.AssetStatus
 import pages.asset.business.BusinessValuePage
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -30,9 +29,8 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.asset.business.BusinessValueView
-import javax.inject.Inject
-import models.Mode
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class BusinessValueController @Inject()(
@@ -48,35 +46,29 @@ class BusinessValueController @Inject()(
 
   private val form: Form[Long] = formProvider.withConfig(prefix = "business.currentValue")
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
-    implicit request =>
-
-
-      val preparedForm = request.userAnswers.get(BusinessValuePage) match {
-        case None => form
+  def onPageLoad(index: Int, mode: Mode): Action[AnyContent] =
+    (standardActionSets.verifiedForIdentifier andThen nameAction) { implicit request =>
+      val preparedForm = request.userAnswers.get(BusinessValuePage(index)) match {
+        case None        => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, mode, request.name))
-  }
+      Ok(view(preparedForm, index, mode, request.name))
+    }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
-    implicit request =>
-
+  def onSubmit(index: Int, mode: Mode): Action[AnyContent] =
+    (standardActionSets.verifiedForIdentifier andThen nameAction).async { implicit request =>
       form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode, request.name))),
-
+        formWithErrors =>
+          Future.successful(BadRequest(view(formWithErrors, index, mode, request.name))),
         value => {
-
-          val answers = request.userAnswers.set(BusinessValuePage, value)
-            .flatMap(_.set(AssetStatus, Completed))
-
+          val answers = request.userAnswers.set(BusinessValuePage(index), value)
           for {
-                updatedAnswers <- Future.fromTry(answers)
-                _              <- repository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(BusinessValuePage, mode, updatedAnswers))
-          }
+            updatedAnswers <- Future.fromTry(answers)
+            _              <- repository.set(updatedAnswers)
+          } yield Redirect(navigator.nextPage(BusinessValuePage(index), mode, updatedAnswers))
+        }
       )
-  }
+    }
+
 }

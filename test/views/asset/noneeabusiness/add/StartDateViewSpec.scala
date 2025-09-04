@@ -17,6 +17,7 @@
 package views.asset.noneeabusiness.add
 
 import forms.StartDateFormProvider
+import models.NormalMode
 import play.api.data.Form
 import play.twirl.api.HtmlFormat
 import views.behaviours.QuestionViewBehaviours
@@ -35,7 +36,7 @@ class StartDateViewSpec extends QuestionViewBehaviours[LocalDate] {
     val view = viewFor[StartDateView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, name)(fakeRequest, messages)
+      view.apply(form, index, NormalMode)(fakeRequest, messages)
 
     val applyViewF = (form: Form[_]) => applyView(form)
 

@@ -39,15 +39,15 @@ object PropertyOrLandAssetViewModel extends AssetViewModelReads {
   implicit lazy val reads: Reads[PropertyOrLandAssetViewModel] = {
 
     val addressLine1Reads: Reads[Option[String]] =
-      (__ \ PropertyOrLandUKAddressPage).read[UkAddress].map(_.toLine1Option) orElse
-        (__ \ PropertyOrLandInternationalAddressPage).read[NonUkAddress].map(_.toLine1Option) orElse
+      (__ \ PropertyOrLandUKAddressPage.key).read[UkAddress].map(_.toLine1Option) orElse
+        (__ \ PropertyOrLandInternationalAddressPage.key).read[NonUkAddress].map(_.toLine1Option) orElse
         Reads(_ => JsSuccess(None))
 
-    ((__ \ WhatKindOfAssetPage).read[WhatKindOfAsset].filter(_ == PropertyOrLand) and
-      (__ \ PropertyOrLandAddressYesNoPage).readNullable[Boolean] and
+    ((__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].filter(_ == PropertyOrLand) and
+      (__ \ PropertyOrLandAddressYesNoPage.key).readNullable[Boolean] and
       addressLine1Reads and
-      (__ \ PropertyOrLandDescriptionPage).readNullable[String] and
-      (__ \ AssetStatus).readWithDefault[Status](InProgress)
+      (__ \ PropertyOrLandDescriptionPage.key).readNullable[String] and
+      (__ \ AssetStatus.key).readWithDefault[Status](InProgress)
       )(PropertyOrLandAssetViewModel.apply _)
 
   }

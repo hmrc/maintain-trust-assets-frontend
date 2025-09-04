@@ -20,7 +20,7 @@ import config.annotations.NonEeaBusiness
 import controllers.actions._
 import controllers.actions.noneeabusiness.NameRequiredAction
 import forms.StartDateFormProvider
-import models.NormalMode
+import models.Mode
 import navigation.Navigator
 import pages.asset.noneeabusiness.add.StartDatePage
 import play.api.data.Form
@@ -46,31 +46,28 @@ class StartDateController @Inject()(
 
   private val messagePrefix: String = "nonEeaBusiness.startDate"
 
-  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
+  def onPageLoad(index: Int, mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
-
       val form = formProvider.withConfig(messagePrefix, request.userAnswers.whenTrustSetup)
-      val preparedForm = request.userAnswers.get(StartDatePage) match {
-        case None => form
+      val preparedForm = request.userAnswers.get(StartDatePage(index)) match {
+        case None        => form
         case Some(value) => form.fill(value)
       }
+      Ok(view(preparedForm, index, mode))
+    }
 
-      Ok(view(preparedForm, request.name))
-  }
-
-  def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
+  def onSubmit(index: Int, mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
     implicit request =>
-
       val form = formProvider.withConfig(messagePrefix, request.userAnswers.whenTrustSetup)
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, request.name))),
+          Future.successful(BadRequest(view(formWithErrors, index, mode))),
 
         value => {
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(StartDatePage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(StartDatePage(index), value))
             _ <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(StartDatePage, NormalMode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(StartDatePage(index), mode, updatedAnswers))
         }
       )
   }

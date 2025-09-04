@@ -40,7 +40,7 @@ final case class UserAnswers(internalId: String,
   def cleanup : Try[UserAnswers] = {
     this
       .deleteAtPath(pages.asset.money.basePath)
-      .flatMap(_.deleteAtPath(pages.asset.WhatKindOfAssetPage.path))
+      .flatMap(_.deleteAtPath(pages.asset.WhatKindOfAssetPage(0).path))
       .flatMap(_.deleteAtPath(pages.asset.business.basePath))
       .flatMap(_.deleteAtPath(pages.asset.other.basePath))
       .flatMap(_.deleteAtPath(pages.asset.partnership.basePath))
@@ -48,6 +48,12 @@ final case class UserAnswers(internalId: String,
       .flatMap(_.deleteAtPath(pages.asset.shares.basePath))
       .flatMap(_.deleteAtPath(pages.asset.noneeabusiness.basePath))
       .flatMap(_.remove(pages.asset.AddNowPage))
+  }
+
+  def cleanupTest : Try[UserAnswers] = {
+    this
+      .deleteAtPath(pages.asset.money.basePath)
+      .flatMap(_.deleteAtPath(pages.asset.WhatKindOfAssetPage(0).path))
   }
 
   def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] = {

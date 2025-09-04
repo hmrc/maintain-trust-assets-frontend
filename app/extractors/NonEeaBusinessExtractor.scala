@@ -16,8 +16,6 @@
 
 package extractors
 
-import java.time.LocalDate
-
 import models.{NonUkAddress, UkAddress, UserAnswers}
 import models.assets.NonEeaBusinessType
 import pages.QuestionPage
@@ -35,19 +33,19 @@ class NonEeaBusinessExtractor extends AssetExtractor[NonEeaBusinessType] {
                      index: Int): Try[UserAnswers] = {
 
     super.apply(answers, noneEaBusiness, index)
-      .flatMap(_.set(NamePage, noneEaBusiness.orgName))
-      .flatMap(_.set(GoverningCountryPage, noneEaBusiness.govLawCountry))
+      .flatMap(_.set(NamePage(0), noneEaBusiness.orgName))
+      .flatMap(_.set(GoverningCountryPage(0), noneEaBusiness.govLawCountry))
       .flatMap(answers => extractAddress(Some(noneEaBusiness.address), answers))
-      .flatMap(_.set(StartDatePage, noneEaBusiness.startDate))
+      .flatMap(_.set(StartDatePage(0), noneEaBusiness.startDate))
   }
 
-  override def namePage: QuestionPage[String] = NamePage
+  override def namePage: QuestionPage[String] = NamePage(0)
 
   override def ukAddressYesNoPage: QuestionPage[Boolean] = UkAddressYesNoPage
   override def ukAddressPage: QuestionPage[UkAddress] = UkAddressPage
-  override def nonUkAddressPage: QuestionPage[NonUkAddress] = NonUkAddressPage
+  override def nonUkAddressPage: QuestionPage[NonUkAddress] = NonUkAddressPage(0)
 
-  override def startDatePage: QuestionPage[LocalDate] = StartDatePage
+//  override def startDatePage: QuestionPage[LocalDate] = StartDatePage
 
   override def indexPage: QuestionPage[Int] = IndexPage
 

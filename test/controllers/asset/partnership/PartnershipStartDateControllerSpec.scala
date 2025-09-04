@@ -38,7 +38,7 @@ class PartnershipStartDateControllerSpec extends SpecBase with IndexValidation {
   private val formProvider = new StartDateFormProvider(frontendAppConfig)
   private val form = formProvider.withConfig(prefix)
 
-  private lazy val partnershipStartDateRoute = routes.PartnershipStartDateController.onPageLoad(NormalMode).url
+  private lazy val partnershipStartDateRoute = routes.PartnershipStartDateController.onPageLoad(index, NormalMode).url
 
   "PartnershipStartDate Controller" must {
 
@@ -55,14 +55,14 @@ class PartnershipStartDateControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode)(request, messages).toString
+        view(form, index, NormalMode)(request, messages).toString
 
       application.stop()
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(PartnershipStartDatePage, validAnswer).success.value
+      val userAnswers = emptyUserAnswers.set(PartnershipStartDatePage(index), validAnswer).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -75,7 +75,7 @@ class PartnershipStartDateControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), NormalMode)(request, messages).toString
+        view(form.fill(validAnswer), index, NormalMode)(request, messages).toString
 
       application.stop()
     }
@@ -121,7 +121,7 @@ class PartnershipStartDateControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode)(request, messages).toString
+        view(boundForm, index, NormalMode)(request, messages).toString
 
       application.stop()
     }

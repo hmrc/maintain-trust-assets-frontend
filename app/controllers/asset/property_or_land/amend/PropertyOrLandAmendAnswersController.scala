@@ -59,7 +59,7 @@ class PropertyOrLandAmendAnswersController @Inject()(
                      index: Int,
                      name: String)
                     (implicit request: Request[AnyContent]): Result = {
-    val section: AnswerSection = printHelper(userAnswers, provisional, name)
+    val section: AnswerSection = printHelper(userAnswers, index, provisional, name)
     Ok(view(section, index))
   }
 

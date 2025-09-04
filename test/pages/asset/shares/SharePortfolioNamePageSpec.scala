@@ -21,7 +21,7 @@ import pages.behaviours.PageBehaviours
 
 class SharePortfolioNamePageSpec extends PageBehaviours {
 
-  val page: SharePortfolioNamePage.type = SharePortfolioNamePage
+  val page: SharePortfolioNamePage = SharePortfolioNamePage(index)
 
   "SharePortfolioNamePage" must {
 

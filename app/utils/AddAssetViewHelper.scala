@@ -28,7 +28,7 @@ class AddAssetViewHelper {
   def rows(assets: Assets, isNonTaxable: Boolean)(implicit messages: Messages): AddToRows = {
 
     val rows = assets.nonEEABusiness.zipWithIndex.map(x => renderNonEEABusiness(x._1, x._2)) ++
-      assets.monetary.map(renderMoney) ++
+      assets.monetary.zipWithIndex.map(x => renderMoney(x._1, x._2)) ++
       assets.propertyOrLand.zipWithIndex.map(x => renderPropertyOrLand(x._1, x._2)) ++
       assets.other.zipWithIndex.map(x => renderOther(x._1, x._2)) ++
       assets.business.zipWithIndex.map(x => renderBusiness(x._1, x._2)) ++
@@ -40,12 +40,12 @@ class AddAssetViewHelper {
     )
   }
 
-  private def renderMoney(asset: AssetMonetaryAmount)(implicit messages: Messages): AddRow = {
+  private def renderMoney(asset: AssetMonetaryAmount, index: Int)(implicit messages: Messages): AddRow = {
     AddRow(
       name = currencyFormat(asset.assetMonetaryAmount.toString),
       typeLabel = messages("entities.asset.monetary"),
-      changeUrl = money.routes.AssetMoneyValueController.onPageLoad(mode = CheckMode).url,
-      removeUrl = money.remove.routes.RemoveAssetYesNoController.onPageLoad().url
+      changeUrl = money.routes.AssetMoneyValueController.onPageLoad(index, mode = CheckMode).url,
+      removeUrl = money.remove.routes.RemoveAssetYesNoController.onPageLoad(index).url
     )
   }
 

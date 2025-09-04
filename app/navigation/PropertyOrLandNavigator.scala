@@ -37,41 +37,45 @@ class PropertyOrLandNavigator @Inject()() extends Navigator {
       yesNoNavigation(mode)
 
   def simpleNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
-    case PropertyOrLandDescriptionPage => _ => PropertyOrLandTotalValueController.onPageLoad(mode)
-    case PropertyOrLandUKAddressPage  => _ => PropertyOrLandTotalValueController.onPageLoad(mode)
-    case PropertyOrLandInternationalAddressPage  => _ => PropertyOrLandTotalValueController.onPageLoad(mode)
-    case PropertyOrLandTotalValuePage => _ => TrustOwnAllThePropertyOrLandController.onPageLoad(mode)
-    case PropertyLandValueTrustPage => ua => navigateToCheckAnswers(ua, mode)
-    case PropertyOrLandAnswerPage => _ => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
+    case PropertyOrLandDescriptionPage(index) => _ => PropertyOrLandTotalValueController.onPageLoad(index, mode)
+    case PropertyOrLandUKAddressPage(index)  => _ => PropertyOrLandTotalValueController.onPageLoad(index, mode)
+    case PropertyOrLandInternationalAddressPage(index)  => _ => PropertyOrLandTotalValueController.onPageLoad(index, mode)
+    case PropertyOrLandTotalValuePage(index) => _ => TrustOwnAllThePropertyOrLandController.onPageLoad(index, mode)
+    case PropertyLandValueTrustPage(index) => ua => navigateToCheckAnswers(ua, mode, index)
+    case PropertyOrLandAnswerPage(index) => _ => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
   }
 
   private def yesNoNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
-    case PropertyOrLandAddressYesNoPage => ua => yesNoNav(
+    case PropertyOrLandAddressYesNoPage(index) => ua => yesNoNav(
       ua = ua,
-      fromPage = PropertyOrLandAddressYesNoPage,
-      yesCall = PropertyOrLandAddressUkYesNoController.onPageLoad(mode),
-      noCall = PropertyOrLandDescriptionController.onPageLoad(mode)
+      fromPage = PropertyOrLandAddressYesNoPage(index),
+      yesCall = PropertyOrLandAddressUkYesNoController.onPageLoad(index, mode),
+      noCall = PropertyOrLandDescriptionController.onPageLoad(index, mode)
     )
-    case PropertyOrLandAddressUkYesNoPage => ua => yesNoNav(
+    case PropertyOrLandAddressUkYesNoPage(index) => ua => yesNoNav(
       ua = ua,
-      fromPage = PropertyOrLandAddressUkYesNoPage,
-      yesCall = PropertyOrLandUKAddressController.onPageLoad(mode),
-      noCall = PropertyOrLandInternationalAddressController.onPageLoad(mode)
+      fromPage = PropertyOrLandAddressUkYesNoPage(index),
+      yesCall = PropertyOrLandUKAddressController.onPageLoad(index, mode),
+      noCall = PropertyOrLandInternationalAddressController.onPageLoad(index, mode)
     )
-    case TrustOwnAllThePropertyOrLandPage => ua => yesNoNav(
+    case TrustOwnAllThePropertyOrLandPage(index) => ua => yesNoNav(
       ua = ua,
-      fromPage = TrustOwnAllThePropertyOrLandPage,
-      yesCall = navigateToCheckAnswers(ua, mode),
-      noCall = PropertyLandValueTrustController.onPageLoad(mode)
+      fromPage = TrustOwnAllThePropertyOrLandPage(index),
+      yesCall = navigateToCheckAnswers(ua, mode, index),
+      noCall = PropertyLandValueTrustController.onPageLoad(index, mode)
     )
   }
 
-  private def navigateToCheckAnswers(ua: UserAnswers, mode: Mode): Call = {
+  private def navigateToCheckAnswers(ua: UserAnswers, mode: Mode, index: Int): Call = {
     if (mode == NormalMode) {
-      controllers.asset.property_or_land.add.routes.PropertyOrLandAnswerController.onPageLoad()
+      AssetNavigator.routeToIndex(
+        List.empty,
+        controllers.asset.property_or_land.add.routes.PropertyOrLandAnswerController.onPageLoad,
+        index = Some(index)
+      )
     } else {
       ua.get(IndexPage) match {
-        case Some(index) => controllers.asset.property_or_land.amend.routes.PropertyOrLandAmendAnswersController.renderFromUserAnswers(index)
+        case Some(indexPage) => controllers.asset.property_or_land.amend.routes.PropertyOrLandAmendAnswersController.renderFromUserAnswers(indexPage)
         case None => controllers.routes.SessionExpiredController.onPageLoad
       }
     }

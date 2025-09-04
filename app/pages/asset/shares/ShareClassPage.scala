@@ -18,11 +18,16 @@ package pages.asset.shares
 
 import models.ShareClass
 import pages.QuestionPage
+import pages.asset.shares.ShareClassPage.key
 import play.api.libs.json.JsPath
 
-case object ShareClassPage extends QuestionPage[ShareClass] {
+case class ShareClassPage(index: Int) extends QuestionPage[ShareClass] {
 
   override def path: JsPath = basePath \ toString
 
-  override def toString: String = "nonPortfolioSharesClass"
+  override def toString: String = key
+}
+
+object ShareClassPage {
+  val key: String = "nonPortfolioSharesClass"
 }
