@@ -35,13 +35,12 @@ class BusinessValueControllerSpec extends SpecBase {
   val form: Form[Long] = formProvider.withConfig(prefix = "business.currentValue")
   val businessName = "Test"
 
-  val index = 0
-  val validAnswer: Long = 4000L
+    val validAnswer: Long = 4000L
 
-  lazy val currentValueRoute: String = routes.BusinessValueController.onPageLoad(NormalMode).url
+  lazy val currentValueRoute: String = routes.BusinessValueController.onPageLoad(index, NormalMode).url
 
   val baseAnswers: UserAnswers = emptyUserAnswers
-    .set(BusinessNamePage, businessName).success.value
+    .set(BusinessNamePage(index), businessName).success.value
 
   "CurrentValue Controller" must {
 
@@ -58,7 +57,7 @@ class BusinessValueControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode, businessName)(request, messages).toString
+        view(form, index, NormalMode, businessName)(request, messages).toString
 
       application.stop()
     }
@@ -66,7 +65,7 @@ class BusinessValueControllerSpec extends SpecBase {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = baseAnswers
-        .set(BusinessValuePage, validAnswer).success.value
+        .set(BusinessValuePage(index), validAnswer).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -79,7 +78,7 @@ class BusinessValueControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), NormalMode, businessName)(request, messages).toString
+        view(form.fill(validAnswer), index, NormalMode, businessName)(request, messages).toString
 
       application.stop()
     }
@@ -106,7 +105,7 @@ class BusinessValueControllerSpec extends SpecBase {
     "return a Bad Request and errors when invalid data is submitted" in {
 
       val userAnswers = emptyUserAnswers
-        .set(BusinessNamePage, businessName).success.value
+        .set(BusinessNamePage(index), businessName).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -123,7 +122,7 @@ class BusinessValueControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode, businessName)(request, messages).toString
+        view(boundForm, index, NormalMode, businessName)(request, messages).toString
 
       application.stop()
     }

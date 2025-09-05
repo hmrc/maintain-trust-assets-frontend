@@ -56,6 +56,8 @@ trait SpecBase extends PlaySpec
   lazy val userSessionId = "internalId"
   lazy val newId = s"$userInternalId-$userUtr-$userSessionId"
 
+  val index: Int = 0
+
   def emptyUserAnswers: UserAnswers = models.UserAnswers(userInternalId, userUtr, userSessionId, newId, LocalDate.now())
 
   def bodyParsers: BodyParsers.Default = injector.instanceOf[BodyParsers.Default]

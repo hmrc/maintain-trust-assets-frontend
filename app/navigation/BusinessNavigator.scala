@@ -36,29 +36,33 @@ class BusinessNavigator @Inject()() extends Navigator {
       yesNoNavigation(mode)
 
   def simpleNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
-    case BusinessNamePage => _ => BusinessDescriptionController.onPageLoad(mode)
-    case BusinessDescriptionPage => _ => BusinessAddressUkYesNoController.onPageLoad(mode)
-    case BusinessUkAddressPage => _ => BusinessValueController.onPageLoad(mode)
-    case BusinessInternationalAddressPage => _ => BusinessValueController.onPageLoad(mode)
-    case BusinessValuePage => ua => navigateToCheckAnswers(ua, mode)
-    case BusinessAnswerPage => _ => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
+    case BusinessNamePage(index) => _ => BusinessDescriptionController.onPageLoad(index, mode)
+    case BusinessDescriptionPage(index) => _ => BusinessAddressUkYesNoController.onPageLoad(index, mode)
+    case BusinessUkAddressPage(index) => _ => BusinessValueController.onPageLoad(index, mode)
+    case BusinessInternationalAddressPage(index) => _ => BusinessValueController.onPageLoad(index, mode)
+    case BusinessValuePage(index) => ua => navigateToCheckAnswers(ua, mode, index)
+    case BusinessAnswerPage(index) => _ => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
   }
 
   private def yesNoNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
-    case BusinessAddressUkYesNoPage => ua => yesNoNav(
+    case BusinessAddressUkYesNoPage(index) => ua => yesNoNav(
       ua = ua,
-      fromPage = BusinessAddressUkYesNoPage,
-      yesCall = BusinessUkAddressController.onPageLoad(mode),
-      noCall = BusinessInternationalAddressController.onPageLoad(mode)
+      fromPage = BusinessAddressUkYesNoPage(index),
+      yesCall = BusinessUkAddressController.onPageLoad(index, mode),
+      noCall = BusinessInternationalAddressController.onPageLoad(index, mode)
     )
   }
 
-  private def navigateToCheckAnswers(ua: UserAnswers, mode: Mode): Call = {
+  private def navigateToCheckAnswers(ua: UserAnswers, mode: Mode, index: Int): Call = {
     if (mode == NormalMode) {
-      controllers.asset.business.add.routes.BusinessAnswersController.onPageLoad()
+      AssetNavigator.routeToIndex(
+        List.empty,
+        controllers.asset.business.add.routes.BusinessAnswersController.onPageLoad,
+        index = Some(index)
+      )
     } else {
       ua.get(IndexPage) match {
-        case Some(index) => controllers.asset.business.amend.routes.BusinessAmendAnswersController.renderFromUserAnswers(index)
+        case Some(indexPage: Int) => controllers.asset.business.amend.routes.BusinessAmendAnswersController.renderFromUserAnswers(indexPage)
         case None => controllers.routes.SessionExpiredController.onPageLoad
       }
     }

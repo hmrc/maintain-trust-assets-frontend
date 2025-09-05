@@ -30,9 +30,9 @@ class NonEeaBusinessAssetMapper extends Mapper[NonEeaBusinessType] {
     val readFromUserAnswers: Reads[NonEeaBusinessType] =
       (
         Reads(_ => JsSuccess(None)) and
-          NamePage.path.read[String] and
-          NonUkAddressPage.path.read[Address] and
-          GoverningCountryPage.path.read[String] and
+          NamePage(0).path.read[String] and
+          NonUkAddressPage(0).path.read[Address] and
+          GoverningCountryPage(0).path.read[String] and
           StartDatePage.path.read[LocalDate] and
           Reads(_ => JsSuccess(None)) and
           Reads(_ => JsSuccess(true))

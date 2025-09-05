@@ -44,30 +44,25 @@ class NameController @Inject()(
 
   private val form: Form[String] = formProvider.withConfig(105, "nonEeaBusiness.name")
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
+  def onPageLoad(index: Int, mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
     implicit request =>
-
-      val preparedForm = request.userAnswers.get(NamePage) match {
+      val preparedForm = request.userAnswers.get(NamePage(index)) match {
         case None => form
         case Some(value) => form.fill(value)
       }
-
-      Ok(view(preparedForm, mode))
-
+      Ok(view(preparedForm, index, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
+  def onSubmit(index: Int, mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
-
+          Future.successful(BadRequest(view(formWithErrors, index, mode))),
         value => {
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(NamePage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(NamePage(index), value))
             _ <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(NamePage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(NamePage(index), mode, updatedAnswers))
         }
       )
   }

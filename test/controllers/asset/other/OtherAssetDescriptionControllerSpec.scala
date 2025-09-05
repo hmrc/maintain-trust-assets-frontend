@@ -32,14 +32,16 @@ import views.html.asset.other.OtherAssetDescriptionView
 
 class OtherAssetDescriptionControllerSpec extends SpecBase {
 
+
+
   val formProvider = new DescriptionFormProvider()
   val form: Form[String] = formProvider.withConfig(56, "other.description")
   val validAnswer: String = "Description"
 
-  lazy val descriptionRoute: String = routes.OtherAssetDescriptionController.onPageLoad(NormalMode).url
+  lazy val descriptionRoute: String = routes.OtherAssetDescriptionController.onPageLoad(index, NormalMode).url
 
   val baseAnswers: UserAnswers = emptyUserAnswers
-    .set(WhatKindOfAssetPage, Other).success.value
+    .set(WhatKindOfAssetPage(index), Other).success.value
 
   "OtherAssetDescriptionController" must {
 
@@ -56,7 +58,7 @@ class OtherAssetDescriptionControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode)(request, messages).toString
+        view(form, index, NormalMode)(request, messages).toString
 
       application.stop()
     }
@@ -64,7 +66,7 @@ class OtherAssetDescriptionControllerSpec extends SpecBase {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = baseAnswers
-        .set(OtherAssetDescriptionPage, validAnswer).success.value
+        .set(OtherAssetDescriptionPage(index), validAnswer).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -77,7 +79,7 @@ class OtherAssetDescriptionControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), NormalMode)(request, messages).toString
+        view(form.fill(validAnswer), index, NormalMode)(request, messages).toString
 
       application.stop()
     }
@@ -118,7 +120,7 @@ class OtherAssetDescriptionControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode)(request, messages).toString
+        view(boundForm, index, NormalMode)(request, messages).toString
 
       application.stop()
     }

@@ -18,12 +18,10 @@ package mapping
 
 import base.SpecBase
 import generators.Generators
-import models.Status.Completed
 import models.WhatKindOfAsset.Other
 import models.assets.OtherAssetType
 import org.scalatest.OptionValues
 import org.scalatest.matchers.must.Matchers
-import pages.AssetStatus
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.other.{OtherAssetDescriptionPage, OtherAssetValuePage}
 
@@ -40,7 +38,7 @@ class OtherAssetMapperSpec extends SpecBase with Matchers
 
       val userAnswers =
         emptyUserAnswers
-          .set(WhatKindOfAssetPage, Other).success.value
+          .set(WhatKindOfAssetPage(index), Other).success.value
 
       otherAssetMapper(userAnswers).isDefined mustBe false
     }
@@ -49,10 +47,10 @@ class OtherAssetMapperSpec extends SpecBase with Matchers
 
       val userAnswers =
         emptyUserAnswers
-          .set(WhatKindOfAssetPage, Other).success.value
-          .set(OtherAssetDescriptionPage, "Description").success.value
-          .set(OtherAssetValuePage, assetValue1).success.value
-          .set(AssetStatus, Completed).success.value
+          .set(WhatKindOfAssetPage(index), Other).success.value
+          .set(OtherAssetDescriptionPage(index), "Description").success.value
+          .set(OtherAssetValuePage(index), assetValue1).success.value
+
 
       val result = otherAssetMapper(userAnswers).get
 

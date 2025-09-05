@@ -39,7 +39,7 @@ class CompanyNameRequiredAction @Inject()(val executionContext: ExecutionContext
   private def getName[A](request: DataRequest[A]): String = {
     def getPage(page: Gettable[String]): Option[String] = request.userAnswers.get(page)
 
-    (getPage(ShareCompanyNamePage), getPage(SharePortfolioNamePage)) match {
+    (getPage(ShareCompanyNamePage(0)), getPage(SharePortfolioNamePage(0))) match {
       case (Some(name), None) => name
       case (None, Some(name)) => name
       case _ => request.messages(messagesApi)("shares.name.default")

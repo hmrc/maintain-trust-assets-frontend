@@ -33,7 +33,8 @@
     form: Form[_],
     completeAssets: Seq[AddRow],
     heading: String,
-    maxedOut: List[(String, Int)]
+    maxedOut: List[(String, Int)],
+    index: Int
 )(implicit request: RequestHeader, messages: Messages)
 
 @mainTemplate(
@@ -41,7 +42,7 @@
     showBackLink = true
 ) {
 
-    @formHelper(action = AddAssetsController.submitAnother(), Symbol("autoComplete") -> "off") {
+    @formHelper(action = AddAssetsController.submitAnother(index), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors, AddAssets.options("nonTaxableToTaxable.addAssets"))
 
