@@ -22,10 +22,10 @@ class BusinessDescriptionPageSpec extends PageBehaviours {
 
   "BusinessDescriptionPage" must {
 
-    beRetrievable[String](BusinessDescriptionPage)
+    beRetrievable[String](BusinessDescriptionPage(index))
 
-    beSettable[String](BusinessDescriptionPage)
+    beSettable[String](BusinessDescriptionPage(index))
 
-    beRemovable[String](BusinessDescriptionPage)
+    beRemovable[String](BusinessDescriptionPage(index))
   }
 }

@@ -25,14 +25,14 @@
     inputYesNo  : InputYesNo
 )
 
-@(form: Form[_], amount: String)(implicit request: RequestHeader, messages: Messages)
+@(form: Form[_], index: Int, amount: String)(implicit request: RequestHeader, messages: Messages)
 
 @mainTemplate(
     title = s"${errorPrefix(form)} ${messages(s"money.removeYesNo.title")}",
     showBackLink = true
 ) {
 
-    @formHelper(action = RemoveAssetYesNoController.onSubmit(), Symbol("autoComplete") -> "off") {
+    @formHelper(action = RemoveAssetYesNoController.onSubmit(index), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

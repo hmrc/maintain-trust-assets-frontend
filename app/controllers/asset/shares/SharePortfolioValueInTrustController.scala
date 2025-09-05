@@ -44,29 +44,25 @@ class SharePortfolioValueInTrustController @Inject()(
 
   private val form = formProvider.withConfig(prefix = "shares.portfolioValueInTrust")
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
+  def onPageLoad(index:Int, mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
     implicit request =>
-
-      val preparedForm = request.userAnswers.get(SharePortfolioValueInTrustPage) match {
+      val preparedForm = request.userAnswers.get(SharePortfolioValueInTrustPage(index)) match {
         case None => form
         case Some(value) => form.fill(value)
       }
-
-      Ok(view(preparedForm, mode))
+      Ok(view(preparedForm, index, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
+  def onSubmit(index:Int, mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
-
+          Future.successful(BadRequest(view(formWithErrors, index, mode))),
         value => {
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(SharePortfolioValueInTrustPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(SharePortfolioValueInTrustPage(index), value))
             _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(SharePortfolioValueInTrustPage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(SharePortfolioValueInTrustPage(index), mode, updatedAnswers))
         }
       )
   }

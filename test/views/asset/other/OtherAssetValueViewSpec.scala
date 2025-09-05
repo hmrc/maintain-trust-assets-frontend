@@ -36,7 +36,7 @@ class OtherAssetValueViewSpec extends LongViewBehaviours {
     val view = viewFor[OtherAssetValueView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, NormalMode, description)(fakeRequest, messages)
+      view.apply(form, index, NormalMode, description)(fakeRequest, messages)
 
     behave like dynamicTitlePage(applyView(form), prefix, description)
 

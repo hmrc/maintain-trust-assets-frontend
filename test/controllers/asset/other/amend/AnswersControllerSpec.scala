@@ -19,7 +19,7 @@ package controllers.asset.other.amend
 import base.SpecBase
 import connectors.TrustsConnector
 import models.UserAnswers
-import models.assets.OtherAssetType
+import models.assets.{AssetMonetaryAmount, Assets, OtherAssetType}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
@@ -42,8 +42,7 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
   private lazy val answersRoute = controllers.asset.other.amend.routes.AnswersController.extractAndRender(index).url
   private lazy val submitAnswersRoute = controllers.asset.other.amend.routes.AnswersController.onSubmit(index).url
 
-  private val index = 0
-  private val name: String = "Other Asset"
+    private val name: String = "Other Asset"
 
   private val otherAsset = OtherAssetType(
     description = "Other Asset",
@@ -52,8 +51,8 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
 
   def userAnswers: UserAnswers = emptyUserAnswers.copy(isMigratingToTaxable = true)
     .set(IndexPage, index).success.value
-    .set(OtherAssetDescriptionPage, "Other Asset").success.value
-    .set(OtherAssetValuePage, 4000L).success.value
+    .set(OtherAssetDescriptionPage(index), "Other Asset").success.value
+    .set(OtherAssetValuePage(index), 4000L).success.value
 
 
   "Asset Answers Controller" must {
@@ -77,14 +76,39 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
 
       val view = application.injector.instanceOf[AnswersView]
       val printHelper = application.injector.instanceOf[OtherPrintHelper]
-      val answerSection = printHelper(userAnswers, provisional = false, name)
+      val answerSection = printHelper(userAnswers, index, provisional = false, name)
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
         view(answerSection, index)(request, messages).toString
+
+      application.stop()
     }
 
+
+    "return to Error page when internal server error occured For GET" in {
+
+      val mockService: TrustService = mock[TrustService]
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(
+          bind[TrustService].toInstance(mockService)
+        )
+        .build()
+
+      when(mockService.getOtherAsset(any(), any())(any(), any()))
+        .thenReturn(Future.failed(new Exception("Failed")))
+
+      val request = FakeRequest(GET, answersRoute)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual INTERNAL_SERVER_ERROR
+
+      application.stop()
+
+    }
 
     "redirect to the 'add asset' page when submitted and migrating to taxable" in {
 
@@ -95,6 +119,9 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
           .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
           .build()
 
+      val moneyAsset = AssetMonetaryAmount(4000L)
+      val assets: Assets = Assets(monetary = List(moneyAsset))
+      when(mockTrustConnector.getAssets(any())(any(), any())).thenReturn(Future.successful(assets))
       when(mockTrustConnector.amendOtherAsset(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val request = FakeRequest(POST, submitAnswersRoute)

@@ -180,10 +180,10 @@ class AddAssetViewHelperSpec extends SpecBase {
     noneeabusiness.remove.routes.RemoveAssetYesNoController.onPageLoad(index).url
 
   def changeMoneyAssetRoute(): String =
-    controllers.asset.money.routes.AssetMoneyValueController.onPageLoad(mode = CheckMode).url
+    controllers.asset.money.routes.AssetMoneyValueController.onPageLoad(index, mode = CheckMode).url
 
   def removeMoneyAssetRoute(): String =
-    controllers.asset.money.remove.routes.RemoveAssetYesNoController.onPageLoad().url
+    controllers.asset.money.remove.routes.RemoveAssetYesNoController.onPageLoad(index).url
 
   def changePropertyLandAssetRoute(index: Int): String =
     property_or_land.amend.routes.PropertyOrLandAmendAnswersController.extractAndRender(index).url

@@ -24,8 +24,7 @@ import pages.asset.property_or_land.amend.IndexPage
 
 class PropertyOrLandExtractorSpec extends SpecBase {
 
-  private val index = 0
-  private val name: String = "BusinessName"
+    private val name: String = "BusinessName"
   private val valueFull: Long = 790L
   private val valuePrevious: Long = 380L
   private val nonUkAddress: NonUkAddress = NonUkAddress("Line 1", "Line 2", None, "FR")
@@ -51,14 +50,14 @@ class PropertyOrLandExtractorSpec extends SpecBase {
         val result = extractor(baseAnswers, propertyOrLandAsset, index).get
 
         result.get(IndexPage).get mustBe index
-        result.get(PropertyOrLandAddressYesNoPage).get mustBe false
-        result.get(PropertyOrLandDescriptionPage).get mustBe name
-        result.get(PropertyOrLandAddressUkYesNoPage).isDefined mustBe false
-        result.get(PropertyOrLandUKAddressPage).isDefined mustBe false
-        result.get(PropertyOrLandInternationalAddressPage).isDefined mustBe false
-        result.get(PropertyOrLandTotalValuePage).get mustBe valueFull
-        result.get(TrustOwnAllThePropertyOrLandPage).get mustBe false
-        result.get(PropertyLandValueTrustPage).get mustBe valuePrevious
+        result.get(PropertyOrLandAddressYesNoPage(index)).get mustBe false
+        result.get(PropertyOrLandDescriptionPage(index)).get mustBe name
+        result.get(PropertyOrLandAddressUkYesNoPage(index)).isDefined mustBe false
+        result.get(PropertyOrLandUKAddressPage(index)).isDefined mustBe false
+        result.get(PropertyOrLandInternationalAddressPage(index)).isDefined mustBe false
+        result.get(PropertyOrLandTotalValuePage(index)).get mustBe valueFull
+        result.get(TrustOwnAllThePropertyOrLandPage(index)).get mustBe false
+        result.get(PropertyLandValueTrustPage(index)).get mustBe valuePrevious
       }
 
       "has no address asset data and Trust Owns all the land - previous populated" in {
@@ -73,14 +72,14 @@ class PropertyOrLandExtractorSpec extends SpecBase {
         val result = extractor(baseAnswers, propertyOrLandAsset, index).get
 
         result.get(IndexPage).get mustBe index
-        result.get(PropertyOrLandAddressYesNoPage).get mustBe false
-        result.get(PropertyOrLandDescriptionPage).get mustBe name
-        result.get(PropertyOrLandAddressUkYesNoPage).isDefined mustBe false
-        result.get(PropertyOrLandUKAddressPage).isDefined mustBe false
-        result.get(PropertyOrLandInternationalAddressPage).isDefined mustBe false
-        result.get(PropertyOrLandTotalValuePage).get mustBe valueFull
-        result.get(TrustOwnAllThePropertyOrLandPage).get mustBe true
-        result.get(PropertyLandValueTrustPage).isDefined mustBe false
+        result.get(PropertyOrLandAddressYesNoPage(index)).get mustBe false
+        result.get(PropertyOrLandDescriptionPage(index)).get mustBe name
+        result.get(PropertyOrLandAddressUkYesNoPage(index)).isDefined mustBe false
+        result.get(PropertyOrLandUKAddressPage(index)).isDefined mustBe false
+        result.get(PropertyOrLandInternationalAddressPage(index)).isDefined mustBe false
+        result.get(PropertyOrLandTotalValuePage(index)).get mustBe valueFull
+        result.get(TrustOwnAllThePropertyOrLandPage(index)).get mustBe true
+        result.get(PropertyLandValueTrustPage(index)).isDefined mustBe false
       }
 
       "has no address asset data and Trust Owns all the land - previous not populated" in {
@@ -95,14 +94,14 @@ class PropertyOrLandExtractorSpec extends SpecBase {
         val result = extractor(baseAnswers, propertyOrLandAsset, index).get
 
         result.get(IndexPage).get mustBe index
-        result.get(PropertyOrLandAddressYesNoPage).get mustBe false
-        result.get(PropertyOrLandDescriptionPage).get mustBe name
-        result.get(PropertyOrLandAddressUkYesNoPage).isDefined mustBe false
-        result.get(PropertyOrLandUKAddressPage).isDefined mustBe false
-        result.get(PropertyOrLandInternationalAddressPage).isDefined mustBe false
-        result.get(PropertyOrLandTotalValuePage).get mustBe valueFull
-        result.get(TrustOwnAllThePropertyOrLandPage).get mustBe true
-        result.get(PropertyLandValueTrustPage).isDefined mustBe false
+        result.get(PropertyOrLandAddressYesNoPage(index)).get mustBe false
+        result.get(PropertyOrLandDescriptionPage(index)).get mustBe name
+        result.get(PropertyOrLandAddressUkYesNoPage(index)).isDefined mustBe false
+        result.get(PropertyOrLandUKAddressPage(index)).isDefined mustBe false
+        result.get(PropertyOrLandInternationalAddressPage(index)).isDefined mustBe false
+        result.get(PropertyOrLandTotalValuePage(index)).get mustBe valueFull
+        result.get(TrustOwnAllThePropertyOrLandPage(index)).get mustBe true
+        result.get(PropertyLandValueTrustPage(index)).isDefined mustBe false
       }
 
       "has a none uk address asset data and Trust Owns all the land" in {
@@ -117,14 +116,14 @@ class PropertyOrLandExtractorSpec extends SpecBase {
         val result = extractor(baseAnswers, propertyOrLandAsset, index).get
 
         result.get(IndexPage).get mustBe index
-        result.get(PropertyOrLandAddressYesNoPage).get mustBe true
-        result.get(PropertyOrLandDescriptionPage).isDefined mustBe false
-        result.get(PropertyOrLandAddressUkYesNoPage).get mustBe false
-        result.get(PropertyOrLandUKAddressPage).isDefined mustBe false
-        result.get(PropertyOrLandInternationalAddressPage).get mustBe nonUkAddress
-        result.get(PropertyOrLandTotalValuePage).get mustBe valueFull
-        result.get(TrustOwnAllThePropertyOrLandPage).get mustBe true
-        result.get(PropertyLandValueTrustPage).isDefined mustBe false
+        result.get(PropertyOrLandAddressYesNoPage(index)).get mustBe true
+        result.get(PropertyOrLandDescriptionPage(index)).isDefined mustBe false
+        result.get(PropertyOrLandAddressUkYesNoPage(index)).get mustBe false
+        result.get(PropertyOrLandUKAddressPage(index)).isDefined mustBe false
+        result.get(PropertyOrLandInternationalAddressPage(index)).get mustBe nonUkAddress
+        result.get(PropertyOrLandTotalValuePage(index)).get mustBe valueFull
+        result.get(TrustOwnAllThePropertyOrLandPage(index)).get mustBe true
+        result.get(PropertyLandValueTrustPage(index)).isDefined mustBe false
       }
 
       "has a uk address asset data and Trust Owns all the land" in {
@@ -139,14 +138,14 @@ class PropertyOrLandExtractorSpec extends SpecBase {
         val result = extractor(baseAnswers, propertyOrLandAsset, index).get
 
         result.get(IndexPage).get mustBe index
-        result.get(PropertyOrLandAddressYesNoPage).get mustBe true
-        result.get(PropertyOrLandDescriptionPage).isDefined mustBe false
-        result.get(PropertyOrLandAddressUkYesNoPage).get mustBe true
-        result.get(PropertyOrLandUKAddressPage).get mustBe ukAddress
-        result.get(PropertyOrLandInternationalAddressPage).isDefined mustBe false
-        result.get(PropertyOrLandTotalValuePage).get mustBe valueFull
-        result.get(TrustOwnAllThePropertyOrLandPage).get mustBe true
-        result.get(PropertyLandValueTrustPage).isDefined mustBe false
+        result.get(PropertyOrLandAddressYesNoPage(index)).get mustBe true
+        result.get(PropertyOrLandDescriptionPage(index)).isDefined mustBe false
+        result.get(PropertyOrLandAddressUkYesNoPage(index)).get mustBe true
+        result.get(PropertyOrLandUKAddressPage(index)).get mustBe ukAddress
+        result.get(PropertyOrLandInternationalAddressPage(index)).isDefined mustBe false
+        result.get(PropertyOrLandTotalValuePage(index)).get mustBe valueFull
+        result.get(TrustOwnAllThePropertyOrLandPage(index)).get mustBe true
+        result.get(PropertyLandValueTrustPage(index)).isDefined mustBe false
       }
     }
 

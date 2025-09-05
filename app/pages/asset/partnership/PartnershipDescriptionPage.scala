@@ -17,11 +17,16 @@
 package pages.asset.partnership
 
 import pages.QuestionPage
+import pages.asset.partnership.PartnershipDescriptionPage.key
 import play.api.libs.json.JsPath
 
-case object PartnershipDescriptionPage extends QuestionPage[String] {
+case class PartnershipDescriptionPage(index: Int) extends QuestionPage[String] {
 
   override def path: JsPath = basePath \ toString
 
-  override def toString: String = "partnershipDescription"
+  override def toString: String = key
+}
+
+object PartnershipDescriptionPage {
+  val key: String = "partnershipDescription"
 }

@@ -18,10 +18,8 @@ package mapping
 
 import base.SpecBase
 import models.NonUkAddress
-import models.Status.Completed
 import models.WhatKindOfAsset.NonEeaBusiness
 import models.assets.NonEeaBusinessType
-import pages.AssetStatus
 import pages.asset._
 import pages.asset.noneeabusiness._
 import pages.asset.noneeabusiness.add.StartDatePage
@@ -57,12 +55,11 @@ class NonEeaBusinessAssetMapperSpec extends SpecBase {
       "one asset" in {
 
         val answers = baseAnswers
-          .set(WhatKindOfAssetPage, NonEeaBusiness).success.value
-          .set(NamePage, name).success.value
-          .set(NonUkAddressPage, nonUkAddress).success.value
-          .set(GoverningCountryPage, country).success.value
+          .set(WhatKindOfAssetPage(index), NonEeaBusiness).success.value
+          .set(NamePage(index), name).success.value
+          .set(NonUkAddressPage(index), nonUkAddress).success.value
+          .set(GoverningCountryPage(index), country).success.value
           .set(StartDatePage, date).success.value
-          .set(AssetStatus, Completed).success.value
 
         val result = mapper(answers).get
 

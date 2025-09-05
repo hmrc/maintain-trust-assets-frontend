@@ -21,19 +21,20 @@ import connectors.TrustsConnector
 import controllers.actions._
 import controllers.actions.shares.CompanyNameRequiredAction
 import handlers.ErrorHandler
-import javax.inject.Inject
 import mapping.ShareAssetMapper
 import models.NormalMode
+import models.requests.DataRequest
 import navigation.Navigator
 import pages.asset.shares.add.ShareAnswerPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc._
+import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.SharesPrintHelper
 import viewmodels.AnswerSection
 import views.html.asset.shares.add.ShareAnswersView
-
-import scala.concurrent.ExecutionContext
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class ShareAnswerController @Inject()(
                                        override val messagesApi: MessagesApi,
@@ -45,26 +46,62 @@ class ShareAnswerController @Inject()(
                                        printHelper: SharesPrintHelper,
                                        connector: TrustsConnector,
                                        mapper: ShareAssetMapper,
-                                       errorHandler: ErrorHandler
+                                       errorHandler: ErrorHandler,
+                                       repository: PlaybackRepository
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val provisional: Boolean = true
 
-  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
+  def onPageLoad(index: Int): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
-      val section: AnswerSection = printHelper(userAnswers = request.userAnswers, provisional, request.name)
-      Ok(view(section))
-  }
+      val section: AnswerSection = printHelper(request.userAnswers, index, provisional, request.name)
+      Ok(view(index, section))
+    }
 
-  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
       mapper(request.userAnswers) match {
         case None =>
           errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
+
         case Some(asset) =>
-          connector.addSharesAsset(request.userAnswers.identifier, asset).map(_ =>
-            Redirect(navigator.nextPage(ShareAnswerPage, NormalMode, request.userAnswers))
-          )
+          connector.amendSharesAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
+            response.status match {
+              case OK | NO_CONTENT =>
+                cleanAllAndRedirect(index)
+              case _ =>
+                connector.getAssets(request.userAnswers.identifier).flatMap { data =>
+                  val matchFound = data.shares.exists(ele =>
+                    ele.orgName.equalsIgnoreCase(asset.orgName) &&
+                      ele.isPortfolio == asset.isPortfolio &&
+                      ele.shareClass.equalsIgnoreCase(asset.shareClass) &&
+                      ele.typeOfShare.equalsIgnoreCase(asset.typeOfShare) &&
+                      ele.numberOfShares.equalsIgnoreCase(asset.numberOfShares) &&
+                      ele.shareClassDisplay == asset.shareClassDisplay &&
+                      ele.value == asset.value
+                  )
+
+                  if (!matchFound) {
+                    connector.addSharesAsset(request.userAnswers.identifier, asset).flatMap { _ =>
+                      cleanAllAndRedirect(index)
+                    }
+                  } else {
+                    cleanAllAndRedirect(index)
+                  }
+                }
+            }
+          }
       }
+    }
+
+  private def cleanAllAndRedirect(index: Int) (implicit request: DataRequest[AnyContent]): Future[Result] = {
+    request.userAnswers.cleanup.fold(
+      _ => Future.successful(
+        Redirect(navigator.nextPage(ShareAnswerPage(index), NormalMode, request.userAnswers))
+      ),
+      cleanedUa => repository.set(cleanedUa).map { _ =>
+        Redirect(navigator.nextPage(ShareAnswerPage(index), NormalMode, cleanedUa))
+      }
+    )
   }
 }

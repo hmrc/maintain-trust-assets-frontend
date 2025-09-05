@@ -22,15 +22,14 @@ import controllers.actions.shares.CompanyNameRequiredAction
 import forms.shares.ShareClassFormProvider
 import models.{Enumerable, Mode}
 import navigation.Navigator
-import pages.asset.shares.ShareClassPage
-import play.api.data.Form
+import pages.asset.shares.{ShareClassPage, ShareCompanyNamePage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.asset.shares.ShareClassView
-import javax.inject.Inject
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ShareClassController @Inject()(
@@ -46,30 +45,29 @@ class ShareClassController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
-    implicit request =>
-
-      val preparedForm = request.userAnswers.get(ShareClassPage) match {
-        case None => form
+  def onPageLoad(index: Int, mode: Mode): Action[AnyContent] =
+    (standardActionSets.verifiedForIdentifier andThen nameAction) { implicit request =>
+      val preparedForm = request.userAnswers.get(ShareClassPage(index)) match {
+        case None        => form
         case Some(value) => form.fill(value)
       }
+      val companyName = request.userAnswers.get(ShareCompanyNamePage(index)).getOrElse("")
+      Ok(view(preparedForm, index, mode, companyName))
+    }
 
-      Ok(view(preparedForm, mode, request.name))
-  }
-
-  def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
-    implicit request =>
-
+  def onSubmit(index: Int, mode: Mode): Action[AnyContent] =
+    (standardActionSets.verifiedForIdentifier andThen nameAction).async { implicit request =>
       form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode, request.name))),
-
+        formWithErrors => {
+          val companyName = request.userAnswers.get(ShareCompanyNamePage(index)).getOrElse("")
+          Future.successful(BadRequest(view(formWithErrors, index, mode, companyName)))
+        },
         value => {
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(ShareClassPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(ShareClassPage(index), value))
             _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(ShareClassPage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(ShareClassPage(index), mode, updatedAnswers))
         }
       )
-  }
+    }
 }

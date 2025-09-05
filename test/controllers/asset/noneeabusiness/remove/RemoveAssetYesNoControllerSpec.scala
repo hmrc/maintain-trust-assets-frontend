@@ -62,7 +62,6 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
     "return OK and the correct view for a GET" in {
 
-      val index = 0
 
       when(mockConnector.getAssets(any())(any(), any()))
         .thenReturn(Future.successful(Assets(Nil, Nil, Nil, Nil, Nil, Nil, nonEeaAssets)))
@@ -88,7 +87,6 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
       "redirect to the 'add non-eea asset' page when valid data is submitted and not migrating" in {
 
-        val index = 0
 
         val answers = userAnswers(migrating = false)
 
@@ -104,14 +102,13 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad(index).url
 
         application.stop()
       }
 
       "redirect to the 'add asset' page when valid data is submitted and migrating" in {
 
-        val index = 0
 
         val answers = userAnswers(migrating = true)
 
@@ -138,7 +135,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
       "redirect to the 'add non-eea asset' page, removing the asset when not migrating" in {
 
-        val index = 2
+        val index = 0
 
         val answers = userAnswers(migrating = false)
 
@@ -160,7 +157,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.asset.noneeabusiness.remove.routes.RemoveAssetEndDateController.onPageLoad(index).url
 
         application.stop()
       }
@@ -199,7 +196,6 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
       "redirect to the end date" in {
 
-        val index = 0
 
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(bind[TrustsConnector].toInstance(mockConnector))
@@ -224,7 +220,6 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val index = 0
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(bind[TrustsConnector].toInstance(mockConnector)).build()
 
@@ -248,7 +243,6 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
     "redirect to Session Expired for a GET if no existing data is found" in {
 
-      val index = 0
 
       val application = applicationBuilder(userAnswers = None).build()
 
@@ -265,7 +259,6 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
     "redirect to Session Expired for a POST if no existing data is found" in {
 
-      val index = 0
 
       val application = applicationBuilder(userAnswers = None).build()
 

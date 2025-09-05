@@ -19,6 +19,7 @@ package controllers
 import base.SpecBase
 import connectors.TrustsConnector
 import models.TaskStatus.InProgress
+import models.assets.{AssetMonetaryAmount, Assets}
 import models.http.TaxableMigrationFlag
 import models.{TrustDetails, TypeOfTrust, UserAnswers}
 import org.mockito.ArgumentCaptor
@@ -74,6 +75,11 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
       when(mockTrustsConnector.getTrustMigrationFlag(any())(any(), any()))
         .thenReturn(Future.successful(TaxableMigrationFlag(Some(false))))
 
+      when(mockTrustsConnector.getAssets(any())(any(), any())).thenReturn(Future.successful(Assets(
+        monetary = List(AssetMonetaryAmount(100))
+      )))
+
+
       val application = applicationBuilder(userAnswers = None)
         .overrides(
           bind[TrustsConnector].toInstance(mockTrustsConnector),
@@ -86,7 +92,7 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result) mustBe Some(controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad(1).url)
 
       val uaCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(playbackRepository).set(uaCaptor.capture)
@@ -111,6 +117,15 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
       when(mockTrustsConnector.getTrustMigrationFlag(any())(any(), any()))
         .thenReturn(Future.successful(TaxableMigrationFlag(Some(false))))
 
+      when(mockTrustsConnector.getAssets(any())(any(), any()))
+        .thenReturn(
+          Future.successful(
+            Assets(
+              monetary = List(AssetMonetaryAmount(100))
+            )
+          )
+        )
+
       val application = applicationBuilder(userAnswers = None)
         .overrides(
           bind[TrustsConnector].toInstance(mockTrustsConnector),
@@ -123,7 +138,7 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result) mustBe Some(controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad(1).url)
 
       val uaCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(playbackRepository).set(uaCaptor.capture)
@@ -142,6 +157,15 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       when(mockTrustsConnector.getTrustMigrationFlag(any())(any(), any()))
         .thenReturn(Future.successful(TaxableMigrationFlag(Some(true))))
+
+      when(mockTrustsConnector.getAssets(any())(any(), any()))
+        .thenReturn(
+          Future.successful(
+            Assets(
+              monetary = List(AssetMonetaryAmount(100))
+            )
+          )
+        )
 
       val application = applicationBuilder(userAnswers = None)
         .overrides(

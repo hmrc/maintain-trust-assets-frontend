@@ -26,16 +26,16 @@ import javax.inject.Inject
 
 class OtherPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) {
 
-  def apply(userAnswers: UserAnswers, provisional: Boolean, name: String)(implicit messages: Messages): AnswerSection = {
+  def apply(userAnswers: UserAnswers, index: Int, provisional: Boolean, name: String)(implicit messages: Messages): AnswerSection = {
 
     val bound: answerRowConverter.Bound = answerRowConverter.bind(userAnswers, name)
 
     def answerRows: Seq[AnswerRow] = {
       val mode: Mode = if (provisional) NormalMode else CheckMode
       Seq(
-        bound.assetTypeQuestion(0),
-        bound.stringQuestion(OtherAssetDescriptionPage, "other.description", OtherAssetDescriptionController.onPageLoad(mode).url),
-        bound.currencyQuestion(OtherAssetValuePage, "other.value", OtherAssetValueController.onPageLoad(mode).url)
+        bound.assetTypeQuestion(index),
+        bound.stringQuestion(OtherAssetDescriptionPage(index), "other.description", OtherAssetDescriptionController.onPageLoad(index, mode).url),
+        bound.currencyQuestion(OtherAssetValuePage(index), "other.value", OtherAssetValueController.onPageLoad(index, mode).url)
       ).flatten
     }
 

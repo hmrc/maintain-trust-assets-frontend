@@ -36,7 +36,7 @@ class SharePortfolioValueInTrustControllerSpec extends SpecBase with ModelGenera
   val form: Form[Long] = formProvider.withConfig(prefix = "shares.portfolioValueInTrust")
   val validAnswer: Long = 4000L
 
-  lazy val sharePortfolioValueInTrustRoute: String = routes.SharePortfolioValueInTrustController.onPageLoad(NormalMode).url
+  lazy val sharePortfolioValueInTrustRoute: String = routes.SharePortfolioValueInTrustController.onPageLoad(index, NormalMode).url
 
   "SharePortfolioValueInTrust Controller" must {
 
@@ -53,14 +53,14 @@ class SharePortfolioValueInTrustControllerSpec extends SpecBase with ModelGenera
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode)(request, messages).toString
+        view(form, index, NormalMode)(request, messages).toString
 
       application.stop()
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(SharePortfolioValueInTrustPage, validAnswer).success.value
+      val userAnswers = emptyUserAnswers.set(SharePortfolioValueInTrustPage(index), validAnswer).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -73,7 +73,7 @@ class SharePortfolioValueInTrustControllerSpec extends SpecBase with ModelGenera
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), NormalMode)(request, messages).toString
+        view(form.fill(validAnswer), index, NormalMode)(request, messages).toString
 
       application.stop()
     }
@@ -114,7 +114,7 @@ class SharePortfolioValueInTrustControllerSpec extends SpecBase with ModelGenera
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode)(request, messages).toString
+        view(boundForm, index, NormalMode)(request, messages).toString
 
       application.stop()
     }

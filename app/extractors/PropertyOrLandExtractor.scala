@@ -32,12 +32,12 @@ class PropertyOrLandExtractor extends AssetExtractor[PropertyLandType] {
                      index: Int): Try[UserAnswers] = {
 
     super.apply(answers, propertyLandType, index)
-      .flatMap(_.set(PropertyOrLandAddressYesNoPage, propertyLandType.address.isDefined))
-      .flatMap(_.set(PropertyOrLandDescriptionPage, propertyLandType.buildingLandName))
+      .flatMap(_.set(PropertyOrLandAddressYesNoPage(0), propertyLandType.address.isDefined))
+      .flatMap(_.set(PropertyOrLandDescriptionPage(0), propertyLandType.buildingLandName))
       .flatMap(answers => extractAddress(propertyLandType.address, answers))
-      .flatMap(_.set(PropertyOrLandTotalValuePage, propertyLandType.valueFull))
-      .flatMap(_.set(TrustOwnAllThePropertyOrLandPage, doesTrustOwnAllThePropertyOrLand(propertyLandType)))
-      .flatMap(_.set(PropertyLandValueTrustPage, if (doesTrustOwnAllThePropertyOrLand(propertyLandType)) None else propertyLandType.valuePrevious))
+      .flatMap(_.set(PropertyOrLandTotalValuePage(0), propertyLandType.valueFull))
+      .flatMap(_.set(TrustOwnAllThePropertyOrLandPage(0), doesTrustOwnAllThePropertyOrLand(propertyLandType)))
+      .flatMap(_.set(PropertyLandValueTrustPage(0), if (doesTrustOwnAllThePropertyOrLand(propertyLandType)) None else propertyLandType.valuePrevious))
   }
 
   private def doesTrustOwnAllThePropertyOrLand(propertyLandType: PropertyLandType) : Boolean = {
@@ -47,9 +47,9 @@ class PropertyOrLandExtractor extends AssetExtractor[PropertyLandType] {
     }
   }
 
-  override def ukAddressYesNoPage: QuestionPage[Boolean] = PropertyOrLandAddressUkYesNoPage
-  override def ukAddressPage: QuestionPage[UkAddress] = PropertyOrLandUKAddressPage
-  override def nonUkAddressPage: QuestionPage[NonUkAddress] = PropertyOrLandInternationalAddressPage
+  override def ukAddressYesNoPage: QuestionPage[Boolean] = PropertyOrLandAddressUkYesNoPage(0)
+  override def ukAddressPage: QuestionPage[UkAddress] = PropertyOrLandUKAddressPage(0)
+  override def nonUkAddressPage: QuestionPage[NonUkAddress] = PropertyOrLandInternationalAddressPage(0)
 
   override def indexPage: QuestionPage[Int] = IndexPage
 
