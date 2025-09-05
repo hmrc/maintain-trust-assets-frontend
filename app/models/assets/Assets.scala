@@ -34,6 +34,10 @@ case class Assets(monetary: List[AssetMonetaryAmount] = Nil,
     case Assets(Nil, Nil, Nil, Nil, Nil, Nil, Nil) => true
     case _ => false
   }
+
+
+  def totalSizeCount: Int = List(monetary, propertyOrLand, shares, business, partnerShip, other, nonEEABusiness)
+    .count(_.nonEmpty)
 }
 
 object Assets {

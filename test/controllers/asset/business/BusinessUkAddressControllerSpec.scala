@@ -34,14 +34,13 @@ class BusinessUkAddressControllerSpec extends SpecBase with IndexValidation {
 
   val formProvider = new UKAddressFormProvider()
   val form: Form[UkAddress] = formProvider()
-  val index = 0
-  val businessName = "Test"
+    val businessName = "Test"
   val validAnswer: UkAddress = UkAddress("value 1", "value 2", Some("value 3"), Some("value 4"), "AB1 1AB")
 
-  lazy val assetUkAddressRoute: String = routes.BusinessUkAddressController.onPageLoad(NormalMode).url
+  lazy val assetUkAddressRoute: String = routes.BusinessUkAddressController.onPageLoad(index, NormalMode).url
 
   val baseAnswers: UserAnswers = emptyUserAnswers
-    .set(BusinessNamePage, businessName).success.value
+    .set(BusinessNamePage(index), businessName).success.value
 
   "AssetUkAddress Controller" must {
 
@@ -58,7 +57,7 @@ class BusinessUkAddressControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode, businessName)(request, messages).toString
+        view(form, index, NormalMode, businessName)(request, messages).toString
 
       application.stop()
     }
@@ -66,7 +65,7 @@ class BusinessUkAddressControllerSpec extends SpecBase with IndexValidation {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = baseAnswers
-        .set(BusinessUkAddressPage, validAnswer).success.value
+        .set(BusinessUkAddressPage(index), validAnswer).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -79,7 +78,7 @@ class BusinessUkAddressControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), NormalMode, businessName)(request, messages).toString
+        view(form.fill(validAnswer), index, NormalMode, businessName)(request, messages).toString
 
       application.stop()
     }
@@ -126,7 +125,7 @@ class BusinessUkAddressControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode, businessName)(request, messages).toString
+        view(boundForm, index, NormalMode, businessName)(request, messages).toString
 
       application.stop()
     }

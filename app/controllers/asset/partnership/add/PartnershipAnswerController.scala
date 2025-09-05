@@ -23,17 +23,18 @@ import controllers.actions.partnership.NameRequiredAction
 import handlers.ErrorHandler
 import mapping.PartnershipAssetMapper
 import models.NormalMode
+import models.requests.DataRequest
 import navigation.Navigator
 import pages.asset.partnership.add.PartnershipAnswerPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc._
+import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.PartnershipPrintHelper
 import viewmodels.AnswerSection
 import views.html.asset.partnership.PartnershipAnswersView
-
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class PartnershipAnswerController @Inject()(
                                              override val messagesApi: MessagesApi,
@@ -45,26 +46,56 @@ class PartnershipAnswerController @Inject()(
                                              val controllerComponents: MessagesControllerComponents,
                                              errorHandler: ErrorHandler,
                                              mapper: PartnershipAssetMapper,
-                                             printHelper: PartnershipPrintHelper
+                                             printHelper: PartnershipPrintHelper,
+                                             repository: PlaybackRepository
                                            )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val provisional: Boolean = true
 
-  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
-    implicit request =>
-      val section: AnswerSection = printHelper(userAnswers = request.userAnswers, provisional, request.name)
-      Ok(view(section))
-  }
+  def onPageLoad(index: Int): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) { implicit request =>
+      val section: AnswerSection = printHelper(request.userAnswers, index, provisional, request.name)
+      Ok(view(index, section))
+    }
 
-  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
-    implicit request =>
+  def onSubmit(index: Int): Action[AnyContent] =
+    standardActionSets.verifiedForIdentifier.async { implicit request =>
       mapper(request.userAnswers) match {
         case None =>
           errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
+
         case Some(asset) =>
-          connector.addPartnershipAsset(request.userAnswers.identifier, asset).map(_ =>
-            Redirect(navigator.nextPage(PartnershipAnswerPage, NormalMode, request.userAnswers))
-          )
+          connector.amendPartnershipAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
+            response.status match {
+              case OK | NO_CONTENT =>
+                cleanAllAndRedirect(index)
+              case _ =>
+                connector.getAssets(request.userAnswers.identifier).flatMap { data =>
+                  val exists = data.partnerShip.exists(ele =>
+                    ele.description.equalsIgnoreCase(asset.description) &&
+                      ele.partnershipStart == asset.partnershipStart
+                  )
+                  if (!exists) {
+                    connector.addPartnershipAsset(request.userAnswers.identifier, asset).flatMap { _ =>
+                      cleanAllAndRedirect(index)
+                    }
+                  } else {
+                    cleanAllAndRedirect(index)
+                  }
+                }
+            }
+          }
       }
+    }
+
+  private def cleanAllAndRedirect(index: Int)
+                                 (implicit request: DataRequest[AnyContent]): Future[Result] = {
+    request.userAnswers.cleanup.fold(
+      _ => Future.successful(
+        Redirect(navigator.nextPage(PartnershipAnswerPage(index), NormalMode, request.userAnswers))
+      ),
+      ua => repository.set(ua).map { _ =>
+        Redirect(navigator.nextPage(PartnershipAnswerPage(index), NormalMode, ua))
+      }
+    )
   }
 }

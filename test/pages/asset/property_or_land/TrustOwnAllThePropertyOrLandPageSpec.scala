@@ -22,7 +22,7 @@ import pages.behaviours.PageBehaviours
 
 class TrustOwnAllThePropertyOrLandPageSpec extends PageBehaviours {
 
-  val page: TrustOwnAllThePropertyOrLandPage.type = TrustOwnAllThePropertyOrLandPage
+  val page = TrustOwnAllThePropertyOrLandPage(index)
 
   "TrustOwnAllThePropertyOrLandPage" must {
 
@@ -38,11 +38,11 @@ class TrustOwnAllThePropertyOrLandPageSpec extends PageBehaviours {
         forAll(arbitrary[UserAnswers]) {
           initial =>
             val answers: UserAnswers = initial.set(page, false).success.value
-              .set(PropertyLandValueTrustPage, 100L).success.value
+              .set(PropertyLandValueTrustPage(index), 100L).success.value
 
             val result = answers.set(page, true).success.value
 
-            result.get(PropertyLandValueTrustPage) must not be defined
+            result.get(PropertyLandValueTrustPage(index)) must not be defined
         }
       }
 

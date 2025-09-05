@@ -26,14 +26,14 @@
 )
 
 
-@(form: Form[_], mode: Mode, description: String)(implicit request: RequestHeader, messages: Messages)
+@(form: Form[_], index: Int, mode: Mode, description: String)(implicit request: RequestHeader, messages: Messages)
 
 @mainTemplate(
     title = s"${errorPrefix(form)} ${messages("other.value.title")}",
     showBackLink = true
 ) {
 
-    @formHelper(action = OtherAssetValueController.onSubmit(mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = OtherAssetValueController.onSubmit(index, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

@@ -25,25 +25,25 @@
     submitButton: SubmitButton
 )
 
-@(form: Form[_], mode: Mode)(implicit request: RequestHeader, messages: Messages)
+@(form: Form[_], index: Int, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-    title = s"${errorPrefix(form)} ${messages("partnership.startDate.title")}",
-    showBackLink = true
+title = s"${errorPrefix(form)} ${messages("partnership.startDate.title")}",
+showBackLink = true
 ) {
 
-    @formHelper(action = PartnershipStartDateController.onSubmit(mode), Symbol("autoComplete") -> "off") {
+@formHelper(action = PartnershipStartDateController.onSubmit(index, mode), Symbol("autoComplete") -> "off") {
 
-        @errorSummary(form.errors)
+@errorSummary(form.errors)
 
-        @inputDate(
-            field = form("value"),
-            legend = messages("partnership.startDate.heading"),
-            legendClass = "govuk-heading-l",
-            legendAsHeading = true,
-            hint = Some(messages("partnership.startDate.hint"))
-        )
+@inputDate(
+field = form("value"),
+legend = messages("partnership.startDate.heading"),
+legendClass = "govuk-heading-l",
+legendAsHeading = true,
+hint = Some(messages("partnership.startDate.hint"))
+)
 
-        @submitButton()
-    }
+@submitButton()
+}
 }

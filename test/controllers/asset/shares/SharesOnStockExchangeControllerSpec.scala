@@ -32,16 +32,18 @@ import views.html.asset.shares.SharesOnStockExchangeView
 
 class SharesOnStockExchangeControllerSpec extends SpecBase with ModelGenerators with IndexValidation {
 
+
+
   val form: Form[Boolean] = new YesNoFormProvider().withPrefix("shares.onStockExchangeYesNo")
   val companyName = "Company"
 
-  lazy val sharesOnStockExchangeRoute: String = routes.SharesOnStockExchangeController.onPageLoad(NormalMode).url
+  lazy val sharesOnStockExchangeRoute: String = routes.SharesOnStockExchangeController.onPageLoad(index, NormalMode).url
 
   "SharesOnStockExchange Controller" must {
 
     "return OK and the correct view for a GET" in {
 
-      val ua = emptyUserAnswers.set(ShareCompanyNamePage, companyName).success.value
+      val ua = emptyUserAnswers.set(ShareCompanyNamePage(index), companyName).success.value
 
       val application = applicationBuilder(userAnswers = Some(ua)).build()
 
@@ -54,15 +56,15 @@ class SharesOnStockExchangeControllerSpec extends SpecBase with ModelGenerators 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode, companyName)(request, messages).toString
+        view(form, index, NormalMode, companyName)(request, messages).toString
 
       application.stop()
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val ua = emptyUserAnswers.set(ShareCompanyNamePage, companyName).success.value
-        .set(SharesOnStockExchangePage, true).success.value
+      val ua = emptyUserAnswers.set(ShareCompanyNamePage(index), companyName).success.value
+        .set(SharesOnStockExchangePage(index), true).success.value
 
       val application = applicationBuilder(userAnswers = Some(ua)).build()
 
@@ -75,14 +77,14 @@ class SharesOnStockExchangeControllerSpec extends SpecBase with ModelGenerators 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), NormalMode, companyName)(request, messages).toString
+        view(form.fill(true), index, NormalMode, companyName)(request, messages).toString
 
       application.stop()
     }
 
     "redirect to the next page when valid data is submitted" in {
 
-      val ua = emptyUserAnswers.set(ShareCompanyNamePage, "Share").success.value
+      val ua = emptyUserAnswers.set(ShareCompanyNamePage(index), "Share").success.value
 
       val application =
         applicationBuilder(userAnswers = Some(ua))
@@ -104,7 +106,7 @@ class SharesOnStockExchangeControllerSpec extends SpecBase with ModelGenerators 
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val ua = emptyUserAnswers.set(ShareCompanyNamePage, companyName).success.value
+      val ua = emptyUserAnswers.set(ShareCompanyNamePage(index), companyName).success.value
 
       val application = applicationBuilder(userAnswers = Some(ua)).build()
 
@@ -121,7 +123,7 @@ class SharesOnStockExchangeControllerSpec extends SpecBase with ModelGenerators 
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode, companyName)(request, messages).toString
+        view(boundForm, index, NormalMode, companyName)(request, messages).toString
 
       application.stop()
     }

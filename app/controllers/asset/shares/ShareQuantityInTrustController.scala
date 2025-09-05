@@ -46,29 +46,25 @@ class ShareQuantityInTrustController @Inject()(
 
   private val form: Form[Long] = formProvider.withPrefix("shares.quantityInTrust")
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
+  def onPageLoad(index: Int, mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
-
-      val preparedForm = request.userAnswers.get(ShareQuantityInTrustPage) match {
+      val preparedForm = request.userAnswers.get(ShareQuantityInTrustPage(index)) match {
         case None => form
         case Some(value) => form.fill(value)
       }
-
-      Ok(view(preparedForm, mode, request.name))
+      Ok(view(preparedForm, index, mode, request.name))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
+  def onSubmit(index: Int, mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
     implicit request =>
-
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode, request.name))),
-
+          Future.successful(BadRequest(view(formWithErrors, index, mode, request.name))),
         value => {
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(ShareQuantityInTrustPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(ShareQuantityInTrustPage(index), value))
             _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(ShareQuantityInTrustPage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(ShareQuantityInTrustPage(index), mode, updatedAnswers))
         }
       )
   }

@@ -40,10 +40,10 @@ class GoverningCountryControllerSpec extends SpecBase with IndexValidation {
   private val name = "Test"
   private val validAnswer: String = "GB"
 
-  private lazy val onPageLoadRoute: String = routes.GoverningCountryController.onPageLoad(NormalMode).url
+  private lazy val onPageLoadRoute: String = routes.GoverningCountryController.onPageLoad(index, NormalMode).url
 
   private val baseAnswers: UserAnswers = emptyUserAnswers
-    .set(NamePage, name).success.value
+    .set(NamePage(index), name).success.value
 
   private val countryOptions: Seq[InputOption] = injector.instanceOf[CountryOptions].options()
 
@@ -62,7 +62,7 @@ class GoverningCountryControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, countryOptions, NormalMode, name)(request, messages).toString
+        view(form, countryOptions, index, NormalMode, name)(request, messages).toString
 
       application.stop()
     }
@@ -70,7 +70,7 @@ class GoverningCountryControllerSpec extends SpecBase with IndexValidation {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = baseAnswers
-        .set(GoverningCountryPage, validAnswer).success.value
+        .set(GoverningCountryPage(index), validAnswer).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -83,7 +83,7 @@ class GoverningCountryControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), countryOptions, NormalMode, name)(request, messages).toString
+        view(form.fill(validAnswer), countryOptions, index, NormalMode, name)(request, messages).toString
 
       application.stop()
     }
@@ -124,7 +124,7 @@ class GoverningCountryControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, countryOptions, NormalMode, name)(request, messages).toString
+        view(boundForm, countryOptions, index, NormalMode, name)(request, messages).toString
 
       application.stop()
     }
