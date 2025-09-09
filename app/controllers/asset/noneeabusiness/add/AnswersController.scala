@@ -48,13 +48,13 @@ class AnswersController @Inject()(
 
   private val provisional: Boolean = true
 
-  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
-    implicit request =>
+  def onPageLoad(): Action[AnyContent] =
+    (standardActionSets.verifiedForIdentifier andThen nameAction) { implicit request =>
       Ok(view(printHelper(userAnswers = request.userAnswers, index = 0, provisional = provisional, name = request.name)))
     }
 
-  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
-    implicit request =>
+  def onSubmit(): Action[AnyContent] =
+    standardActionSets.verifiedForIdentifier.async { implicit request =>
       mapper(request.userAnswers) match {
         case None =>
           errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
@@ -78,14 +78,12 @@ class AnswersController @Inject()(
       }
     }
 
-  private def cleanAllAndRedirect() (implicit request: DataRequest[AnyContent]): Future[Result] = {
-    request.userAnswers.cleanup.fold(
-      _ => Future.successful(
-        Redirect(navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable))
-      ),
-      cleaned => repository.set(cleaned).map { _ =>
-        Redirect(navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable))
-      }
+  private def cleanAllAndRedirect()(implicit request: DataRequest[AnyContent]): Future[Result] = {
+    val next = navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable)
+
+    request.userAnswers.cleanupPreservingNonEea.fold(
+      _        => Future.successful(Redirect(next)),
+      cleaned  => repository.set(cleaned).map(_ => Redirect(next))
     )
   }
 }

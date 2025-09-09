@@ -52,50 +52,39 @@ class PartnershipAnswerController @Inject()(
 
   private val provisional: Boolean = true
 
-  def onPageLoad(index: Int): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) { implicit request =>
+  def onPageLoad(index: Int): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
+    implicit request =>
       val section: AnswerSection = printHelper(request.userAnswers, index, provisional, request.name)
       Ok(view(index, section))
     }
 
-  def onSubmit(index: Int): Action[AnyContent] =
-    standardActionSets.verifiedForIdentifier.async { implicit request =>
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
+    implicit request =>
       mapper(request.userAnswers) match {
-        case None =>
-          errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
-
+        case None => errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
         case Some(asset) =>
           connector.amendPartnershipAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
             response.status match {
-              case OK | NO_CONTENT =>
-                cleanAllAndRedirect(index)
+              case OK | NO_CONTENT => cleanAllAndRedirect(index)
               case _ =>
                 connector.getAssets(request.userAnswers.identifier).flatMap { data =>
                   val exists = data.partnerShip.exists(ele =>
                     ele.description.equalsIgnoreCase(asset.description) &&
                       ele.partnershipStart == asset.partnershipStart
                   )
-                  if (!exists) {
-                    connector.addPartnershipAsset(request.userAnswers.identifier, asset).flatMap { _ =>
-                      cleanAllAndRedirect(index)
-                    }
-                  } else {
-                    cleanAllAndRedirect(index)
-                  }
+                  if (!exists) connector.addPartnershipAsset(request.userAnswers.identifier, asset).flatMap(_ => cleanAllAndRedirect(index))
+                  else cleanAllAndRedirect(index)
                 }
             }
           }
       }
     }
 
-  private def cleanAllAndRedirect(index: Int)
-                                 (implicit request: DataRequest[AnyContent]): Future[Result] = {
-    request.userAnswers.cleanup.fold(
-      _ => Future.successful(
-        Redirect(navigator.nextPage(PartnershipAnswerPage(index), NormalMode, request.userAnswers))
-      ),
-      ua => repository.set(ua).map { _ =>
-        Redirect(navigator.nextPage(PartnershipAnswerPage(index), NormalMode, ua))
-      }
+  private def cleanAllAndRedirect(index: Int)(implicit request: DataRequest[AnyContent]): Future[Result] = {
+    val next = navigator.nextPage(PartnershipAnswerPage(index), NormalMode, request.userAnswers)
+    request.userAnswers.cleanupPreservingPartnership.fold(
+      _ => Future.successful(Redirect(next)),
+      ua => repository.set(ua).map(_ => Redirect(next))
     )
   }
 }

@@ -17,47 +17,83 @@
 package models
 
 import java.time.{LocalDate, LocalDateTime}
-
 import play.api.Logging
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import queries.{Gettable, Settable}
-
 import scala.util.{Failure, Success, Try}
 
-final case class UserAnswers(internalId: String,
-                             identifier: String,
-                             sessionId: String,
-                             newId: String,
-                             whenTrustSetup: LocalDate,
-                             data: JsObject = Json.obj(),
-                             updatedAt: LocalDateTime = LocalDateTime.now,
-                             is5mldEnabled: Boolean = false,
-                             isTaxable: Boolean = true,
-                             isUnderlyingData5mld: Boolean = false,
-                             isMigratingToTaxable: Boolean = false) extends Logging {
+final case class UserAnswers(
+                              internalId: String,
+                              identifier: String,
+                              sessionId: String,
+                              newId: String,
+                              whenTrustSetup: LocalDate,
+                              data: JsObject = Json.obj(),
+                              updatedAt: LocalDateTime = LocalDateTime.now,
+                              is5mldEnabled: Boolean = false,
+                              isTaxable: Boolean = true,
+                              isUnderlyingData5mld: Boolean = false,
+                              isMigratingToTaxable: Boolean = false
+                            ) extends Logging {
 
-  def cleanup : Try[UserAnswers] = {
-    this
-      .deleteAtPath(pages.asset.money.basePath)
-      .flatMap(_.deleteAtPath(pages.asset.WhatKindOfAssetPage(0).path))
-      .flatMap(_.deleteAtPath(pages.asset.business.basePath))
-      .flatMap(_.deleteAtPath(pages.asset.other.basePath))
-      .flatMap(_.deleteAtPath(pages.asset.partnership.basePath))
-      .flatMap(_.deleteAtPath(pages.asset.property_or_land.basePath))
-      .flatMap(_.deleteAtPath(pages.asset.shares.basePath))
-      .flatMap(_.deleteAtPath(pages.asset.noneeabusiness.basePath))
-      .flatMap(_.remove(pages.asset.AddNowPage))
+  def cleanup: Try[UserAnswers] =
+    cleanupBase(preserveMoney = false, preserveOther = false, preservePartnership = false,
+      preservePropertyOrLand = false, preserveShares = false, preserveNonEea = false, preserveBusiness = false)
+
+  def cleanupPreservingBusiness: Try[UserAnswers] =
+    cleanupBase(preserveMoney = false, preserveOther = false, preservePartnership = false,
+      preservePropertyOrLand = false, preserveShares = false, preserveNonEea = false, preserveBusiness = true)
+
+  def cleanupPreservingMoney: Try[UserAnswers] =
+    cleanupBase(preserveMoney = true, preserveOther = false, preservePartnership = false,
+      preservePropertyOrLand = false, preserveShares = false, preserveNonEea = false, preserveBusiness = false)
+
+  def cleanupPreservingOther: Try[UserAnswers] =
+    cleanupBase(preserveMoney = false, preserveOther = true, preservePartnership = false,
+      preservePropertyOrLand = false, preserveShares = false, preserveNonEea = false, preserveBusiness = false)
+
+  def cleanupPreservingPartnership: Try[UserAnswers] =
+    cleanupBase(preserveMoney = false, preserveOther = false, preservePartnership = true,
+      preservePropertyOrLand = false, preserveShares = false, preserveNonEea = false, preserveBusiness = false)
+
+  def cleanupPreservingPropertyOrLand: Try[UserAnswers] =
+    cleanupBase(preserveMoney = false, preserveOther = false, preservePartnership = false,
+      preservePropertyOrLand = true, preserveShares = false, preserveNonEea = false, preserveBusiness = false)
+
+  def cleanupPreservingShares: Try[UserAnswers] =
+    cleanupBase(preserveMoney = false, preserveOther = false, preservePartnership = false,
+      preservePropertyOrLand = false, preserveShares = true, preserveNonEea = false, preserveBusiness = false)
+
+  def cleanupPreservingNonEea: Try[UserAnswers] =
+    cleanupBase(preserveMoney = false, preserveOther = false, preservePartnership = false,
+      preservePropertyOrLand = false, preserveShares = false, preserveNonEea = true, preserveBusiness = false)
+
+  private def cleanupBase(
+                           preserveBusiness: Boolean,
+                           preserveMoney: Boolean,
+                           preserveOther: Boolean,
+                           preservePartnership: Boolean,
+                           preservePropertyOrLand: Boolean,
+                           preserveShares: Boolean,
+                           preserveNonEea: Boolean
+                         ): Try[UserAnswers] = {
+    val afterMoney   = if (preserveMoney) Success(this) else this.deleteAtPath(pages.asset.money.basePath)
+    val afterOther   = afterMoney.flatMap(u => if (preserveOther) Success(u) else u.deleteAtPath(pages.asset.other.basePath))
+    val afterPartner = afterOther.flatMap(u => if (preservePartnership) Success(u) else u.deleteAtPath(pages.asset.partnership.basePath))
+    val afterPoL     = afterPartner.flatMap(u => if (preservePropertyOrLand) Success(u) else u.deleteAtPath(pages.asset.property_or_land.basePath))
+    val afterShares  = afterPoL.flatMap(u => if (preserveShares) Success(u) else u.deleteAtPath(pages.asset.shares.basePath))
+    val afterNonEea  = afterShares.flatMap(u => if (preserveNonEea) Success(u) else u.deleteAtPath(pages.asset.noneeabusiness.basePath))
+    val afterBiz     = afterNonEea.flatMap(u => if (preserveBusiness) Success(u) else u.deleteAtPath(pages.asset.business.basePath))
+    val afterKind    = afterBiz.flatMap(_.deleteAtPath(pages.asset.WhatKindOfAssetPage(0).path))
+    afterKind.flatMap(_.remove(pages.asset.AddNowPage))
   }
 
-  def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] = {
+  def get[A](page: Gettable[A])(implicit rds: Reads[A]): Option[A] =
     Reads.at(page.path).reads(data) match {
       case JsSuccess(value, _) => Some(value)
-      case JsError(errors) =>
-        logger.info(s"Tried to read path ${page.path} errors: $errors")
-        None
+      case JsError(errors)     => logger.info(s"Tried to read path ${page.path} errors: $errors"); None
     }
-  }
 
   def set[A](page: Settable[A], value: Option[A])(implicit writes: Writes[A]): Try[UserAnswers] = {
     value match {
@@ -86,7 +122,6 @@ final case class UserAnswers(internalId: String,
   }
 
   def remove[A](query: Settable[A]): Try[UserAnswers] = {
-
     val updatedData = data.removeObject(query.path) match {
       case JsSuccess(jsValue, _) =>
         Success(jsValue)
@@ -99,6 +134,7 @@ final case class UserAnswers(internalId: String,
         val updatedAnswers = copy (data = d)
         query.cleanup(None, updatedAnswers)
     }
+    updatedData.flatMap { d => val updatedAnswers = copy(data = d); query.cleanup(None, updatedAnswers) }
   }
 
   def deleteAtPath(path: JsPath): Try[UserAnswers] = {
@@ -110,7 +146,6 @@ final case class UserAnswers(internalId: String,
 }
 
 object UserAnswers {
-
   implicit lazy val reads: Reads[UserAnswers] = (
     (__ \ "internalId").read[String] and
       ((__ \ "utr").read[String] or (__ \ "identifier").read[String]) and
@@ -138,5 +173,4 @@ object UserAnswers {
       (__ \ "isUnderlyingData5mld").write[Boolean] and
       (__ \ "migratingFromNonTaxableToTaxable").write[Boolean]
     )(unlift(UserAnswers.unapply))
-
 }

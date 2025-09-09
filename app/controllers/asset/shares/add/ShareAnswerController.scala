@@ -61,14 +61,11 @@ class ShareAnswerController @Inject()(
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
       mapper(request.userAnswers) match {
-        case None =>
-          errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
-
+        case None => errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
         case Some(asset) =>
           connector.amendSharesAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
             response.status match {
-              case OK | NO_CONTENT =>
-                cleanAllAndRedirect(index)
+              case OK | NO_CONTENT => cleanAllAndRedirect(index)
               case _ =>
                 connector.getAssets(request.userAnswers.identifier).flatMap { data =>
                   val matchFound = data.shares.exists(ele =>
@@ -80,28 +77,19 @@ class ShareAnswerController @Inject()(
                       ele.shareClassDisplay == asset.shareClassDisplay &&
                       ele.value == asset.value
                   )
-
-                  if (!matchFound) {
-                    connector.addSharesAsset(request.userAnswers.identifier, asset).flatMap { _ =>
-                      cleanAllAndRedirect(index)
-                    }
-                  } else {
-                    cleanAllAndRedirect(index)
-                  }
+                  if (!matchFound) connector.addSharesAsset(request.userAnswers.identifier, asset).flatMap(_ => cleanAllAndRedirect(index))
+                  else cleanAllAndRedirect(index)
                 }
             }
           }
       }
     }
 
-  private def cleanAllAndRedirect(index: Int) (implicit request: DataRequest[AnyContent]): Future[Result] = {
-    request.userAnswers.cleanup.fold(
-      _ => Future.successful(
-        Redirect(navigator.nextPage(ShareAnswerPage(index), NormalMode, request.userAnswers))
-      ),
-      cleanedUa => repository.set(cleanedUa).map { _ =>
-        Redirect(navigator.nextPage(ShareAnswerPage(index), NormalMode, cleanedUa))
-      }
+  private def cleanAllAndRedirect(index: Int)(implicit request: DataRequest[AnyContent]): Future[Result] = {
+    val next = navigator.nextPage(ShareAnswerPage(index), NormalMode, request.userAnswers)
+    request.userAnswers.cleanupPreservingShares.fold(
+      _ => Future.successful(Redirect(next)),
+      cleanedUa => repository.set(cleanedUa).map(_ => Redirect(next))
     )
   }
 }

@@ -52,24 +52,20 @@ class PropertyOrLandAnswerController @Inject()(
 
   private val provisional: Boolean = true
 
-  def onPageLoad(index: Int): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
-    implicit request =>
+  def onPageLoad(index: Int): Action[AnyContent] =
+    (standardActionSets.verifiedForIdentifier andThen nameAction) { implicit request =>
       val section: AnswerSection = printHelper(request.userAnswers, index, provisional, request.name)
       Ok(view(index, section))
     }
 
-  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
-    implicit request =>
+  def onSubmit(index: Int): Action[AnyContent] =
+    standardActionSets.verifiedForIdentifier.async { implicit request =>
       mapper(request.userAnswers) match {
-        case None =>
-          errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
-
+        case None => errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
         case Some(asset) =>
           connector.amendPropertyOrLandAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
             response.status match {
-              case OK | NO_CONTENT =>
-                cleanAllAndRedirect(index)
-
+              case OK | NO_CONTENT => cleanAllAndRedirect(index)
               case _ =>
                 connector.getAssets(request.userAnswers.identifier).flatMap { data =>
                   val matchFound = data.propertyOrLand.exists(existing =>
@@ -80,28 +76,19 @@ class PropertyOrLandAnswerController @Inject()(
                       existing.valueFull == asset.valueFull &&
                       existing.valuePrevious == asset.valuePrevious
                   )
-
-                  if (!matchFound) {
-                    connector.addPropertyOrLandAsset(request.userAnswers.identifier, asset).flatMap { _ =>
-                      cleanAllAndRedirect(index)
-                    }
-                  } else {
-                    cleanAllAndRedirect(index)
-                  }
+                  if (!matchFound) connector.addPropertyOrLandAsset(request.userAnswers.identifier, asset).flatMap(_ => cleanAllAndRedirect(index))
+                  else cleanAllAndRedirect(index)
                 }
             }
           }
       }
     }
 
-  private def cleanAllAndRedirect(index: Int) (implicit request: DataRequest[AnyContent]): Future[Result] = {
-    request.userAnswers.cleanup.fold(
-      _ => Future.successful(
-        Redirect(navigator.nextPage(PropertyOrLandAnswerPage(index), NormalMode, request.userAnswers))
-      ),
-      cleanedUa => repository.set(cleanedUa).map { _ =>
-        Redirect(navigator.nextPage(PropertyOrLandAnswerPage(index), NormalMode, cleanedUa))
-      }
+  private def cleanAllAndRedirect(index: Int)(implicit request: DataRequest[AnyContent]): Future[Result] = {
+    val next = navigator.nextPage(PropertyOrLandAnswerPage(index), NormalMode, request.userAnswers)
+    request.userAnswers.cleanupPreservingPropertyOrLand.fold(
+      _ => Future.successful(Redirect(next)),
+      cleanedUa => repository.set(cleanedUa).map(_ => Redirect(next))
     )
   }
 }

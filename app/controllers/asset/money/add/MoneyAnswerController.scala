@@ -22,15 +22,16 @@ import controllers.actions.money.NameRequiredAction
 import handlers.ErrorHandler
 import mapping.MoneyAssetMapper
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.MoneyPrintHelper
 import viewmodels.AnswerSection
 import views.html.asset.money.MoneyAnswersView
-
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import models.requests.DataRequest
+import repositories.PlaybackRepository
 
 class MoneyAnswerController @Inject()(
                                        override val messagesApi: MessagesApi,
@@ -42,7 +43,8 @@ class MoneyAnswerController @Inject()(
                                        val controllerComponents: MessagesControllerComponents,
                                        errorHandler: ErrorHandler,
                                        mapper: MoneyAssetMapper,
-                                       printHelper: MoneyPrintHelper
+                                       printHelper: MoneyPrintHelper,
+                                       repository: PlaybackRepository
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   private val provisional: Boolean = true
@@ -50,9 +52,8 @@ class MoneyAnswerController @Inject()(
   def onPageLoad(index: Int): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
       val section: AnswerSection = printHelper(userAnswers = request.userAnswers, index = index, provisional = provisional, name = request.name)
-
       Ok(view(index, section))
-  }
+    }
 
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
@@ -64,29 +65,28 @@ class MoneyAnswerController @Inject()(
           connector.amendMoneyAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
             response.status match {
               case OK | NO_CONTENT =>
-                Future.successful(
-                  Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
-                )
+                cleanAllAndRedirect()
 
               case _ =>
                 connector.getAssets(request.userAnswers.identifier).flatMap { data =>
-                  val matchFound = data.monetary.exists(existing =>
-                    existing.assetMonetaryAmount == asset.assetMonetaryAmount
-                  )
-
+                  val matchFound = data.monetary.exists(existing => existing.assetMonetaryAmount == asset.assetMonetaryAmount)
                   if (!matchFound) {
-                    connector.addMoneyAsset(request.userAnswers.identifier, asset).map { _ =>
-                      Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
-                    }
+                    connector.addMoneyAsset(request.userAnswers.identifier, asset).flatMap(_ => cleanAllAndRedirect())
                   } else {
-                    Future.successful(
-                      Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
-                    )
+                    cleanAllAndRedirect()
                   }
                 }
             }
           }
       }
-  }
+    }
 
+  /** Compute target first; then cleanup (preserving current Money journey) and persist. */
+  private def cleanAllAndRedirect()(implicit request: DataRequest[AnyContent]): Future[Result] = {
+    val next = controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
+    request.userAnswers.cleanupPreservingMoney.fold(
+      _ => Future.successful(Redirect(next)),
+      cleaned => repository.set(cleaned).map(_ => Redirect(next))
+    )
+  }
 }

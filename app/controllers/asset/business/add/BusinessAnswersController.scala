@@ -33,8 +33,10 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.BusinessPrintHelper
 import viewmodels.AnswerSection
 import views.html.asset.business.add.BusinessAnswersView
+
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import play.api.http.Status._
 
 class BusinessAnswersController @Inject()(
                                            override val messagesApi: MessagesApi,
@@ -52,14 +54,14 @@ class BusinessAnswersController @Inject()(
 
   private val provisional: Boolean = true
 
-  def onPageLoad(index: Int): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
-    implicit request =>
+  def onPageLoad(index: Int): Action[AnyContent] =
+    (standardActionSets.verifiedForIdentifier andThen nameAction) { implicit request =>
       val section: AnswerSection = printHelper(request.userAnswers, index, provisional, request.name)
       Ok(view(index, section))
     }
 
-  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
-    implicit request =>
+  def onSubmit(index: Int): Action[AnyContent] =
+    standardActionSets.verifiedForIdentifier.async { implicit request =>
       mapper(request.userAnswers) match {
         case None =>
           errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
@@ -80,9 +82,7 @@ class BusinessAnswersController @Inject()(
                   )
 
                   if (!matchFound) {
-                    connector.addBusinessAsset(request.userAnswers.identifier, asset).flatMap { _ =>
-                      cleanAllAndRedirect(index)
-                    }
+                    connector.addBusinessAsset(request.userAnswers.identifier, asset).flatMap(_ => cleanAllAndRedirect(index))
                   } else {
                     cleanAllAndRedirect(index)
                   }
@@ -92,14 +92,12 @@ class BusinessAnswersController @Inject()(
       }
     }
 
-  private def cleanAllAndRedirect(index: Int) (implicit request: DataRequest[AnyContent]): Future[Result] = {
-    request.userAnswers.cleanup.fold(
-      _ => Future.successful(
-        Redirect(navigator.nextPage(BusinessAnswerPage(index), NormalMode, request.userAnswers))
-      ),
-      cleanedUa => repository.set(cleanedUa).map { _ =>
-        Redirect(navigator.nextPage(BusinessAnswerPage(index), NormalMode, cleanedUa))
-      }
+  private def cleanAllAndRedirect(index: Int)(implicit request: DataRequest[AnyContent]): Future[Result] = {
+    val next = navigator.nextPage(BusinessAnswerPage(index), NormalMode, request.userAnswers)
+
+    request.userAnswers.cleanupPreservingBusiness.fold(
+      _          => Future.successful(Redirect(next)),
+      cleanedUa  => repository.set(cleanedUa).map(_ => Redirect(next))
     )
   }
 }
