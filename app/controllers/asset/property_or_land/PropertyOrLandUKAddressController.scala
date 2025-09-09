@@ -46,29 +46,25 @@ class PropertyOrLandUKAddressController @Inject()(
 
   private val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
+  def onPageLoad(index:Int, mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
   implicit request =>
-
-      val preparedForm = request.userAnswers.get(PropertyOrLandUKAddressPage) match {
+      val preparedForm = request.userAnswers.get(PropertyOrLandUKAddressPage(index)) match {
         case None => form
         case Some(value) => form.fill(value)
       }
-
-      Ok(view(preparedForm, mode))
+      Ok(view(preparedForm, index, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
+  def onSubmit(index: Int, mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
     implicit request =>
-
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
-
+          Future.successful(BadRequest(view(formWithErrors, index, mode))),
         value => {
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(PropertyOrLandUKAddressPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(PropertyOrLandUKAddressPage(index), value))
             _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(PropertyOrLandUKAddressPage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(PropertyOrLandUKAddressPage(index), mode, updatedAnswers))
         }
       )
   }

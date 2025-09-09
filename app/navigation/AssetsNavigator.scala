@@ -20,8 +20,8 @@ import config.FrontendAppConfig
 import controllers.asset.routes.AssetInterruptPageController
 import models.Constants._
 import models.WhatKindOfAsset.{Business, Money, NonEeaBusiness, Other, Partnership, PropertyOrLand, Shares}
-import models.assets.Assets
-import models.{NormalMode, WhatKindOfAsset}
+import models.assets.{AssetType, Assets}
+import models.{Mode, NormalMode, WhatKindOfAsset}
 import play.api.mvc.Call
 import uk.gov.hmrc.http.HttpVerbs.GET
 
@@ -29,26 +29,30 @@ import javax.inject.Inject
 
 class AssetsNavigator @Inject()(config: FrontendAppConfig) {
 
-  def redirectToAddAssetPage(isMigratingToTaxable: Boolean): Call = {
+  def redirectToAddAssetPage(isMigratingToTaxable: Boolean, index: Option[Int] = None): Call = {
     if (isMigratingToTaxable) {
       controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
     } else {
-      controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad()
+      controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad(if(index.isDefined)  index.get else 0)
     }
   }
 
-  def redirectFromInterruptPage(isMigratingToTaxable: Boolean, noAssets: Boolean): Call = {
-    (isMigratingToTaxable, noAssets)  match {
-      case (true, true) => controllers.asset.routes.WhatKindOfAssetController.onPageLoad()
-      case (true, false)  => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
-      case (false, _) => controllers.asset.noneeabusiness.routes.NameController.onPageLoad(NormalMode)
+  def   redirectFromInterruptPage(isMigratingToTaxable: Boolean, noAssets: Boolean): Call = {
+    (isMigratingToTaxable, noAssets) match {
+      case (true, true) =>
+        AssetNavigator.routeToIndex(
+          List.empty,
+          controllers.asset.routes.WhatKindOfAssetController.onPageLoad
+        )
+      case (true, false) => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
+      case (false, _) => controllers.asset.noneeabusiness.routes.NameController.onPageLoad(0,NormalMode)
     }
   }
 
   def redirectFromAddAssetYesNoPage(value: Boolean, isMigratingToTaxable: Boolean, noAssets: Boolean): Call = {
     (value, isMigratingToTaxable, noAssets) match {
       case (true, true, _) => AssetInterruptPageController.onPageLoad()
-      case (true, false, _) => controllers.asset.noneeabusiness.routes.NameController.onPageLoad(NormalMode)
+      case (true, false, _) => controllers.asset.noneeabusiness.routes.NameController.onPageLoad(0,NormalMode)
       case (false, true, true) => maintainATrustOverview
       case (false, true, false) => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
       case (false, false, _) => submitTaskComplete(isMigratingToTaxable)
@@ -63,35 +67,41 @@ class AssetsNavigator @Inject()(config: FrontendAppConfig) {
     }
   }
 
-  def addAssetRoute(assets: Assets): Call = {
-
+  def addAssetRoute(assets: Assets, index: Int): Call = {
     case class AssetRoute(size: Int, maxSize: Int, route: Call)
 
     val routes: List[AssetRoute] = List(
-      AssetRoute(assets.monetary.size, MAX_MONEY_ASSETS, addAssetNowRoute(Money)),
-      AssetRoute(assets.propertyOrLand.size, MAX_PROPERTY_OR_LAND_ASSETS, addAssetNowRoute(PropertyOrLand)),
-      AssetRoute(assets.shares.size, MAX_SHARES_ASSETS, addAssetNowRoute(Shares)),
-      AssetRoute(assets.business.size, MAX_BUSINESS_ASSETS, addAssetNowRoute(Business)),
-      AssetRoute(assets.partnerShip.size, MAX_PARTNERSHIP_ASSETS, addAssetNowRoute(Partnership)),
-      AssetRoute(assets.other.size, MAX_OTHER_ASSETS, addAssetNowRoute(Other)),
-      AssetRoute(assets.nonEEABusiness.size, MAX_NON_EEA_BUSINESS_ASSETS, addAssetNowRoute(NonEeaBusiness))
+      AssetRoute(assets.monetary.size, MAX_MONEY_ASSETS, addAssetNowRoute(Money, assets.monetary)),
+      AssetRoute(assets.propertyOrLand.size, MAX_PROPERTY_OR_LAND_ASSETS, addAssetNowRoute(PropertyOrLand, assets.propertyOrLand)),
+      AssetRoute(assets.shares.size, MAX_SHARES_ASSETS, addAssetNowRoute(Shares, assets.shares)),
+      AssetRoute(assets.business.size, MAX_BUSINESS_ASSETS, addAssetNowRoute(Business, assets.business)),
+      AssetRoute(assets.partnerShip.size, MAX_PARTNERSHIP_ASSETS, addAssetNowRoute(Partnership, assets.partnerShip)),
+      AssetRoute(assets.other.size, MAX_OTHER_ASSETS, addAssetNowRoute(Other, assets.other)),
+      AssetRoute(assets.nonEEABusiness.size, MAX_NON_EEA_BUSINESS_ASSETS, addAssetNowRoute(NonEeaBusiness, assets.nonEEABusiness))
     )
 
     routes.filter(x => x.size < x.maxSize) match {
       case x :: Nil => x.route
-      case _ => controllers.asset.routes.WhatKindOfAssetController.onPageLoad()
+      case assetsRoutes: Seq[AssetRoute] =>
+        AssetNavigator.routeToIndex(
+          List.empty,
+          controllers.asset.routes.WhatKindOfAssetController.onPageLoad,
+          Some(index)
+        )
     }
   }
 
-  def addAssetNowRoute(`type`: WhatKindOfAsset): Call = {
+  def addAssetNowRoute(`type`: WhatKindOfAsset,
+                       assets: List[AssetType],
+                       index: Option[Int] = None): Call = {
     `type` match {
-      case Money => controllers.asset.money.routes.AssetMoneyValueController.onPageLoad(NormalMode)
-      case PropertyOrLand => controllers.asset.property_or_land.routes.PropertyOrLandAddressYesNoController.onPageLoad(NormalMode)
-      case Shares => controllers.asset.shares.routes.SharesInAPortfolioController.onPageLoad(NormalMode)
-      case Business => controllers.asset.business.routes.BusinessNameController.onPageLoad(NormalMode)
-      case Partnership => controllers.asset.partnership.routes.PartnershipDescriptionController.onPageLoad(NormalMode)
-      case Other => controllers.asset.other.routes.OtherAssetDescriptionController.onPageLoad(NormalMode)
-      case NonEeaBusiness => controllers.asset.noneeabusiness.routes.NameController.onPageLoad(NormalMode)
+      case Money => routeToMoneyIndex(assets, index)
+      case PropertyOrLand => routeToPropertyOrLandIndex(assets, index)
+      case Shares => routeToSharesIndex(assets, index)
+      case Business => routeToBusinessIndex(assets, index)
+      case Partnership => routeToPartnershipIndex(assets, index)
+      case Other => routeToOtherIndex(assets, index)
+      case NonEeaBusiness => controllers.asset.noneeabusiness.routes.NameController.onPageLoad(0,NormalMode)
     }
   }
 
@@ -105,6 +115,74 @@ class AssetsNavigator @Inject()(config: FrontendAppConfig) {
 
   private def maintainATrustOverview: Call = {
     Call(GET, config.maintainATrustOverview)
+  }
+
+  private def routeToMoneyIndex(assets: List[AssetType], index: Option[Int]): Call = {
+    AssetNavigator.routeToIndexUsingModeCall(
+      assets,
+      controllers.asset.money.routes.AssetMoneyValueController.onPageLoad,
+      index
+    )
+  }
+
+  private def routeToPropertyOrLandIndex(assets: List[AssetType], index: Option[Int]): Call = {
+    AssetNavigator.routeToIndexUsingModeCall(
+      assets,
+      controllers.asset.property_or_land.routes.PropertyOrLandAddressYesNoController.onPageLoad,
+      index
+    )
+  }
+
+  private def routeToSharesIndex(assets: List[AssetType], index: Option[Int]): Call = {
+    AssetNavigator.routeToIndexUsingModeCall(
+      assets,
+      controllers.asset.shares.routes.SharesInAPortfolioController.onPageLoad,
+      index
+    )
+  }
+
+  private def routeToBusinessIndex(assets: List[AssetType], index: Option[Int]): Call = {
+    AssetNavigator.routeToIndexUsingModeCall(
+      assets,
+      controllers.asset.business.routes.BusinessNameController.onPageLoad,
+      index
+    )
+  }
+
+  private def routeToPartnershipIndex(assets: List[AssetType], index: Option[Int]): Call = {
+    AssetNavigator.routeToIndexUsingModeCall(
+      assets,
+      controllers.asset.partnership.routes.PartnershipDescriptionController.onPageLoad,
+      index
+    )
+  }
+
+  private def routeToOtherIndex(assets: List[AssetType], index: Option[Int]): Call = {
+    AssetNavigator.routeToIndexUsingModeCall(
+      assets,
+      controllers.asset.other.routes.OtherAssetDescriptionController.onPageLoad,
+      index
+    )
+  }
+}
+
+object AssetNavigator {
+
+  // taken from 'register-trust-asset-frontend' and modified slighyly
+  def routeToIndexUsingModeCall(assets: List[AssetType], route: (Int, Mode) => Call, index: Option[Int] = None): Call = {
+    val i = index match {
+      case Some(value) => value
+      case None => assets.size
+    }
+    route(i, NormalMode)
+  }
+
+  def routeToIndex(assets: List[AssetType], route: Int => Call, index: Option[Int] = None): Call = {
+    val i = index match {
+      case Some(value) => value
+      case None => assets.size
+    }
+    route(i)
   }
 
 }

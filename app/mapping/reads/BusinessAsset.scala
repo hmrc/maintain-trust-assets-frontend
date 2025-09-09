@@ -17,40 +17,40 @@
 package mapping.reads
 
 import java.time.LocalDate
-
 import models.WhatKindOfAsset.Business
 import models.{Address, WhatKindOfAsset}
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.business._
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Reads, __}
+import play.api.libs.json.Reads._
 
-final case class BusinessAsset(override val whatKindOfAsset: WhatKindOfAsset,
-                               assetName: String,
-                               assetDescription: String,
-                               address: Address,
-                               currentValue: Long,
-                               startDate: LocalDate) extends Asset {
-
+final case class BusinessAsset(
+                                override val whatKindOfAsset: WhatKindOfAsset,
+                                assetName: String,
+                                assetDescription: String,
+                                address: Address,
+                                currentValue: Long,
+                                startDate: LocalDate
+                              ) extends Asset {
   override val arg: String = assetName
 }
 
 object BusinessAsset {
-
   implicit lazy val reads: Reads[BusinessAsset] = {
+    val addressReads: Reads[Address] =
+      (__ \ BusinessUkAddressPage.key).read[Address]
+        .orElse((__ \ BusinessInternationalAddressPage.key).read[Address])
 
-    val addressReads: Reads[Address] = {
-      (__ \ BusinessUkAddressPage).read[Address] orElse
-        (__ \ BusinessInternationalAddressPage).read[Address]
-    }
-
-    ((__ \ WhatKindOfAssetPage).read[WhatKindOfAsset].filter(_ == Business) and
-      (__ \ BusinessNamePage).read[String] and
-      (__ \ BusinessDescriptionPage).read[String] and
-      addressReads and
-      (__ \ BusinessValuePage).read[Long] and
-      (__ \ StartDatePage).read[LocalDate]
+    (
+      (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].filter(_ == Business) and
+        (__ \ BusinessNamePage.key).read[String] and
+        (__ \ BusinessDescriptionPage.key).read[String] and
+        addressReads and
+        (__ \ BusinessValuePage.key).read[Long] and
+        (__ \ StartDatePage).read[LocalDate]
       )(BusinessAsset.apply _)
-
   }
 }
+
+

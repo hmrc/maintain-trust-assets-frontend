@@ -44,30 +44,25 @@ class BusinessNameController @Inject()(
 
   val form: Form[String] = formProvider.withConfig(105, "business.name")
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
+  def onPageLoad(index: Int, mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
     implicit request =>
-
-      val preparedForm = request.userAnswers.get(BusinessNamePage) match {
-        case None => form
+      val preparedForm = request.userAnswers.get(BusinessNamePage(index)) match {
+        case None        => form
         case Some(value) => form.fill(value)
       }
-
-      Ok(view(preparedForm, mode))
-
+      Ok(view(preparedForm, index, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
+  def onSubmit(index: Int, mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
-
+          Future.successful(BadRequest(view(formWithErrors, index, mode))),
         value => {
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(BusinessNamePage, value))
-            _ <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(BusinessNamePage, mode, updatedAnswers))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(BusinessNamePage(index), value))
+            _              <- repository.set(updatedAnswers)
+          } yield Redirect(navigator.nextPage(BusinessNamePage(index), mode, updatedAnswers))
         }
       )
   }

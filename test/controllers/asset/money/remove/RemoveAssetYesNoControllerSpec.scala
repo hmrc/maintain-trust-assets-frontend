@@ -38,10 +38,12 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
   val messagesPrefix = "money.removeYesNo"
 
+
+
   lazy val formProvider = new RemoveIndexFormProvider()
   lazy val form: Form[Boolean] = formProvider(messagesPrefix)
 
-  lazy val formRoute: Call = controllers.asset.money.remove.routes.RemoveAssetYesNoController.onSubmit()
+  lazy val formRoute: Call = controllers.asset.money.remove.routes.RemoveAssetYesNoController.onSubmit(index)
 
   val mockConnector: TrustsConnector = mock[TrustsConnector]
 
@@ -58,7 +60,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
         .overrides(bind[TrustsConnector].toInstance(mockConnector))
         .build()
 
-      val request = FakeRequest(GET, controllers.asset.money.remove.routes.RemoveAssetYesNoController.onPageLoad().url)
+      val request = FakeRequest(GET, controllers.asset.money.remove.routes.RemoveAssetYesNoController.onPageLoad(index).url)
 
       val result = route(application, request).value
 
@@ -66,7 +68,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
       status(result) mustEqual OK
 
-      contentAsString(result) mustEqual view(form, "£4000")(request, messages).toString
+      contentAsString(result) mustEqual view(form, index, "£4000")(request, messages).toString
 
       application.stop()
     }
@@ -80,7 +82,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
           .build()
 
         val request =
-          FakeRequest(POST, controllers.asset.money.remove.routes.RemoveAssetYesNoController.onSubmit().url)
+          FakeRequest(POST, controllers.asset.money.remove.routes.RemoveAssetYesNoController.onSubmit(index).url)
             .withFormUrlEncodedBody(("value", "false"))
 
         val result = route(application, request).value
@@ -109,7 +111,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
           .thenReturn(Future.successful(HttpResponse(200, "")))
 
         val request =
-          FakeRequest(POST, controllers.asset.money.remove.routes.RemoveAssetYesNoController.onSubmit().url)
+          FakeRequest(POST, controllers.asset.money.remove.routes.RemoveAssetYesNoController.onSubmit(index).url)
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
@@ -128,7 +130,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
         .overrides(bind[TrustsConnector].toInstance(mockConnector)).build()
 
       val request =
-        FakeRequest(POST, controllers.asset.money.remove.routes.RemoveAssetYesNoController.onSubmit().url)
+        FakeRequest(POST, controllers.asset.money.remove.routes.RemoveAssetYesNoController.onSubmit(index).url)
           .withFormUrlEncodedBody(("value", ""))
 
       val boundForm = form.bind(Map("value" -> ""))
@@ -140,7 +142,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, "£4000")(request, messages).toString
+        view(boundForm, index, "£4000")(request, messages).toString
 
       application.stop()
     }
@@ -149,7 +151,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, controllers.asset.money.remove.routes.RemoveAssetYesNoController.onPageLoad().url)
+      val request = FakeRequest(GET, controllers.asset.money.remove.routes.RemoveAssetYesNoController.onPageLoad(index).url)
 
       val result = route(application, request).value
 
@@ -165,7 +167,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, controllers.asset.money.remove.routes.RemoveAssetYesNoController.onSubmit().url)
+        FakeRequest(POST, controllers.asset.money.remove.routes.RemoveAssetYesNoController.onSubmit(index).url)
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value

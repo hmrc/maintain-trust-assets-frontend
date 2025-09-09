@@ -54,7 +54,6 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
   }
 
   val identifier = "1000000008"
-  val index = 0
   val description = "description"
   val date: LocalDate = LocalDate.parse("2019-02-03")
 

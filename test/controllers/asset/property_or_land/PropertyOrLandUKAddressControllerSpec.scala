@@ -36,7 +36,7 @@ class PropertyOrLandUKAddressControllerSpec extends SpecBase with ModelGenerator
   val formProvider = new UKAddressFormProvider()
   val form: Form[UkAddress] = formProvider()
 
-  lazy val PropertyOrLandUKAddressRoute: String = routes.PropertyOrLandUKAddressController.onPageLoad(NormalMode).url
+  lazy val PropertyOrLandUKAddressRoute: String = routes.PropertyOrLandUKAddressController.onPageLoad(index, NormalMode).url
 
   "WhatIsThePropertyOrLandAddress Controller" must {
 
@@ -53,7 +53,7 @@ class PropertyOrLandUKAddressControllerSpec extends SpecBase with ModelGenerator
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode)(request, messages).toString
+        view(form, index, NormalMode)(request, messages).toString
 
       application.stop()
     }
@@ -61,7 +61,7 @@ class PropertyOrLandUKAddressControllerSpec extends SpecBase with ModelGenerator
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers
-        .set(PropertyOrLandUKAddressPage, UkAddress("line 1", "line 2", Some("line 3"), Some("line 4"), "line 5")).success.value
+        .set(PropertyOrLandUKAddressPage(index), UkAddress("line 1", "line 2", Some("line 3"), Some("line 4"), "line 5")).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -74,7 +74,7 @@ class PropertyOrLandUKAddressControllerSpec extends SpecBase with ModelGenerator
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(UkAddress("line 1", "line 2", Some("line 3"), Some("line 4"), "line 5")), NormalMode)(request, messages).toString
+        view(form.fill(UkAddress("line 1", "line 2", Some("line 3"), Some("line 4"), "line 5")), index, NormalMode)(request, messages).toString
 
       application.stop()
     }
@@ -115,7 +115,7 @@ class PropertyOrLandUKAddressControllerSpec extends SpecBase with ModelGenerator
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode)(request, messages).toString
+        view(boundForm, index, NormalMode)(request, messages).toString
 
       application.stop()
     }

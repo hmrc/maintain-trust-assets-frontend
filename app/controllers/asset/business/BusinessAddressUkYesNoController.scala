@@ -46,30 +46,26 @@ class BusinessAddressUkYesNoController @Inject()(
 
   private val form: Form[Boolean] = formProvider.withPrefix("business.addressUkYesNo")
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
-    implicit request =>
-
-      val preparedForm = request.userAnswers.get(BusinessAddressUkYesNoPage) match {
-        case None => form
+  def onPageLoad(index: Int, mode: Mode): Action[AnyContent] =
+    (standardActionSets.verifiedForIdentifier andThen nameAction) { implicit request =>
+      val preparedForm = request.userAnswers.get(BusinessAddressUkYesNoPage(index)) match {
+        case None        => form
         case Some(value) => form.fill(value)
       }
+      Ok(view(preparedForm, index, mode, request.name))
+    }
 
-      Ok(view(preparedForm, mode, request.name))
-  }
-
-  def onSubmit(mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier  andThen nameAction).async {
-    implicit request =>
-
+  def onSubmit(index: Int, mode: Mode): Action[AnyContent] =
+    (standardActionSets.verifiedForIdentifier andThen nameAction).async { implicit request =>
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode, request.name))),
-
+          Future.successful(BadRequest(view(formWithErrors, index, mode, request.name))),
         value => {
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(BusinessAddressUkYesNoPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(BusinessAddressUkYesNoPage(index), value))
             _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(BusinessAddressUkYesNoPage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(BusinessAddressUkYesNoPage(index), mode, updatedAnswers))
         }
       )
-  }
+    }
 }

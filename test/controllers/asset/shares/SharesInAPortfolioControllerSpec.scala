@@ -34,7 +34,7 @@ class SharesInAPortfolioControllerSpec extends SpecBase with ModelGenerators wit
 
   val form: Form[Boolean] = new YesNoFormProvider().withPrefix("shares.inAPortfolioYesNo")
 
-  lazy val sharesInAPortfolioRoute: String = routes.SharesInAPortfolioController.onPageLoad(NormalMode).url
+  lazy val sharesInAPortfolioRoute: String = routes.SharesInAPortfolioController.onPageLoad(index, NormalMode).url
 
   "SharesInAPortfolio Controller" must {
 
@@ -51,14 +51,14 @@ class SharesInAPortfolioControllerSpec extends SpecBase with ModelGenerators wit
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode)(request, messages).toString
+        view(form, index, NormalMode)(request, messages).toString
 
       application.stop()
     }
 
     "populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = emptyUserAnswers.set(SharesInAPortfolioPage, true).success.value
+      val userAnswers = emptyUserAnswers.set(SharesInAPortfolioPage(index), true).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -71,7 +71,7 @@ class SharesInAPortfolioControllerSpec extends SpecBase with ModelGenerators wit
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), NormalMode)(request, messages).toString
+        view(form.fill(true), index, NormalMode)(request, messages).toString
 
       application.stop()
     }
@@ -112,7 +112,7 @@ class SharesInAPortfolioControllerSpec extends SpecBase with ModelGenerators wit
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode)(request, messages).toString
+        view(boundForm, index, NormalMode)(request, messages).toString
 
       application.stop()
     }
