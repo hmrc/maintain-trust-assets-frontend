@@ -35,7 +35,7 @@ class SharesOnStockExchangeViewSpec extends YesNoViewBehaviours {
     val view = viewFor[SharesOnStockExchangeView](Some(emptyUserAnswers))
 
     def applyView(form: Form[_]): HtmlFormat.Appendable =
-      view.apply(form, NormalMode, companyName)(fakeRequest, messages)
+      view.apply(form, index, NormalMode, companyName)(fakeRequest, messages)
 
     behave like dynamicTitlePage(applyView(form), messageKeyPrefix, companyName, "hint")
 

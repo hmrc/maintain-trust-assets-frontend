@@ -84,10 +84,10 @@ class AnswerRowConverter @Inject()(checkAnswersFormatters: CheckAnswersFormatter
     def assetTypeQuestion(index: Int): Option[AnswerRow] = {
       val format = (x: WhatKindOfAsset) => formatEnum("whatKindOfAsset", x)
       question(
-        WhatKindOfAssetPage,
+        WhatKindOfAssetPage(index),
         s"whatKindOfAsset",
         format,
-        WhatKindOfAssetController.onPageLoad().url
+        WhatKindOfAssetController.onPageLoad(index).url
       )
     }
 

@@ -16,55 +16,75 @@
 
 package controllers.asset.other.add
 
+import config.annotations.Other
 import connectors.TrustsConnector
 import controllers.actions._
 import controllers.actions.property_or_land.NameRequiredAction
 import handlers.ErrorHandler
-
-import javax.inject.Inject
 import mapping.OtherAssetMapper
+import models.NormalMode
+import models.requests.DataRequest
+import navigation.Navigator
 import pages.asset.other.OtherAssetDescriptionPage
+import pages.asset.other.add.OtherAnswerPage
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc._
+import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.OtherPrintHelper
 import viewmodels.AnswerSection
 import views.html.asset.other.add.OtherAssetAnswersView
-
-import scala.concurrent.ExecutionContext
+import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class OtherAnswerController @Inject()(
                                        override val messagesApi: MessagesApi,
                                        standardActionSets: StandardActionSets,
                                        nameAction: NameRequiredAction,
                                        connector: TrustsConnector,
+                                       @Other navigator: Navigator,
                                        view: OtherAssetAnswersView,
                                        val controllerComponents: MessagesControllerComponents,
                                        printHelper: OtherPrintHelper,
                                        mapper: OtherAssetMapper,
-                                       errorHandler: ErrorHandler
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                       errorHandler: ErrorHandler,
+                                       repository: PlaybackRepository
+                                     )(implicit ec: ExecutionContext)
+  extends FrontendBaseController with I18nSupport {
 
   private val provisional: Boolean = true
 
-  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
+  def onPageLoad(index: Int): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
+      val name: String = request.userAnswers.get(OtherAssetDescriptionPage(index)).getOrElse("")
+      val section: AnswerSection = printHelper(userAnswers = request.userAnswers, index = index, provisional = provisional, name = name)
+      Ok(view(index, section))
+    }
 
-      val description = request.userAnswers.get(OtherAssetDescriptionPage).getOrElse("")
-      val section: AnswerSection = printHelper(userAnswers = request.userAnswers, provisional, description)
-      Ok(view(section))
-  }
-
-  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-
       mapper(request.userAnswers) match {
-        case None =>
-          errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
+        case None => errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
         case Some(asset) =>
-          connector.addOtherAsset(request.userAnswers.identifier, asset).map(_ =>
-            Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
-          )
+          connector.amendOtherAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
+            response.status match {
+              case OK | NO_CONTENT => cleanAllAndRedirect(index)
+              case _ =>
+                connector.getAssets(request.userAnswers.identifier).flatMap { data =>
+                  val exists = data.other.exists(e => e.description.equalsIgnoreCase(asset.description) && e.value == asset.value)
+                  if (!exists) connector.addOtherAsset(request.userAnswers.identifier, asset).flatMap(_ => cleanAllAndRedirect(index))
+                  else cleanAllAndRedirect(index)
+                }
+            }
+          }
       }
+    }
+
+  private def cleanAllAndRedirect(index: Int)(implicit request: DataRequest[AnyContent]): Future[Result] = {
+    val next = navigator.nextPage(OtherAnswerPage(index), NormalMode, request.userAnswers)
+    request.userAnswers.cleanupPreservingOther.fold(
+      _ => Future.successful(Redirect(next)),
+      ua => repository.set(ua).map(_ => Redirect(next))
+    )
   }
 }

@@ -24,7 +24,7 @@ import pages.behaviours.PageBehaviours
 class SharesInAPortfolioPageSpec extends PageBehaviours {
 
   private val assetValue: Long = 2000L
-  val page: SharesInAPortfolioPage.type = SharesInAPortfolioPage
+  val page: SharesInAPortfolioPage = SharesInAPortfolioPage(index)
 
   "SharesInAPortfolioPage" must {
 
@@ -38,42 +38,42 @@ class SharesInAPortfolioPageSpec extends PageBehaviours {
   "remove relevant data when ShareInAPortfolio is set to false" in {
     forAll(arbitrary[UserAnswers]) {
       initial =>
-        val answers: UserAnswers = initial.set(SharesInAPortfolioPage, false).success.value
-          .set(ShareCompanyNamePage, "Company").success.value
-          .set(SharesOnStockExchangePage, false).success.value
-          .set(ShareClassPage, ShareClass.Ordinary).success.value
-          .set(ShareQuantityInTrustPage, 20L).success.value
-          .set(ShareValueInTrustPage, assetValue).success.value
-          .set(AssetStatus, Status.Completed).success.value
+        val answers: UserAnswers = initial.set(SharesInAPortfolioPage(index), false).success.value
+          .set(ShareCompanyNamePage(index), "Company").success.value
+          .set(SharesOnStockExchangePage(index), false).success.value
+          .set(ShareClassPage(index), ShareClass.Ordinary).success.value
+          .set(ShareQuantityInTrustPage(index), 20L).success.value
+          .set(ShareValueInTrustPage(index), assetValue).success.value
+          .set(AssetStatus(index), Status.Completed).success.value
 
-        val result = answers.set(SharesInAPortfolioPage, true).success.value
+        val result = answers.set(SharesInAPortfolioPage(index), true).success.value
 
-        result.get(SharesOnStockExchangePage) mustNot be(defined)
-        result.get(ShareCompanyNamePage) mustNot be(defined)
-        result.get(ShareClassPage) mustNot be(defined)
-        result.get(ShareQuantityInTrustPage) mustNot be(defined)
-        result.get(ShareValueInTrustPage) mustNot be(defined)
-        result.get(AssetStatus) mustNot be(defined)
+        result.get(SharesOnStockExchangePage(index)) mustNot be(defined)
+        result.get(ShareCompanyNamePage(index)) mustNot be(defined)
+        result.get(ShareClassPage(index)) mustNot be(defined)
+        result.get(ShareQuantityInTrustPage(index)) mustNot be(defined)
+        result.get(ShareValueInTrustPage(index)) mustNot be(defined)
+        result.get(AssetStatus(index)) mustNot be(defined)
     }
   }
 
   "remove relevant data when ShareInAPortfolio is set to true" in {
     forAll(arbitrary[UserAnswers]) {
       initial =>
-        val answers: UserAnswers = initial.set(SharesInAPortfolioPage, true).success.value
-          .set(SharePortfolioNamePage, "Shares").success.value
-          .set(SharePortfolioOnStockExchangePage, true).success.value
-          .set(SharePortfolioQuantityInTrustPage, 20L).success.value
-          .set(SharePortfolioValueInTrustPage, assetValue).success.value
-          .set(AssetStatus, Status.Completed).success.value
+        val answers: UserAnswers = initial.set(SharesInAPortfolioPage(index), true).success.value
+          .set(SharePortfolioNamePage(index), "Shares").success.value
+          .set(SharePortfolioOnStockExchangePage(index), true).success.value
+          .set(SharePortfolioQuantityInTrustPage(index), 20L).success.value
+          .set(SharePortfolioValueInTrustPage(index), assetValue).success.value
+          .set(AssetStatus(index), Status.Completed).success.value
 
-        val result = answers.set(SharesInAPortfolioPage, false).success.value
+        val result = answers.set(SharesInAPortfolioPage(index), false).success.value
 
-        result.get(SharePortfolioNamePage) mustNot be(defined)
-        result.get(SharePortfolioOnStockExchangePage) mustNot be(defined)
-        result.get(SharePortfolioQuantityInTrustPage) mustNot be(defined)
-        result.get(SharePortfolioValueInTrustPage) mustNot be(defined)
-        result.get(AssetStatus) mustNot be(defined)
+        result.get(SharePortfolioNamePage(index)) mustNot be(defined)
+        result.get(SharePortfolioOnStockExchangePage(index)) mustNot be(defined)
+        result.get(SharePortfolioQuantityInTrustPage(index)) mustNot be(defined)
+        result.get(SharePortfolioValueInTrustPage(index)) mustNot be(defined)
+        result.get(AssetStatus(index)) mustNot be(defined)
     }
   }
 }

@@ -18,6 +18,7 @@ package controllers.asset.business.amend
 
 import base.SpecBase
 import connectors.TrustsConnector
+import controllers.routes._
 import models.assets.BusinessAssetType
 import models.{NonUkAddress, UserAnswers}
 import org.mockito.ArgumentMatchers.any
@@ -43,7 +44,6 @@ class BusinessAmendAnswersControllerSpec extends SpecBase with MockitoSugar with
   private lazy val answersRoute = routes.BusinessAmendAnswersController.extractAndRender(index).url
   private lazy val submitAnswersRoute = routes.BusinessAmendAnswersController.onSubmit(index).url
 
-  private val index = 0
   private val name: String = "BusinessName"
   private val description: String = "BusinessDescription"
   private val internationalAddress: NonUkAddress = NonUkAddress("", "", None, "")
@@ -63,11 +63,11 @@ class BusinessAmendAnswersControllerSpec extends SpecBase with MockitoSugar with
     LocalDate.now,
     isMigratingToTaxable = true)
     .set(IndexPage, index).success.value
-    .set(BusinessAddressUkYesNoPage, false).success.value
-    .set(BusinessInternationalAddressPage, internationalAddress).success.value
-    .set(BusinessNamePage, name).success.value
-    .set(BusinessDescriptionPage, description).success.value
-    .set(BusinessValuePage, valueFull).success.value
+    .set(BusinessAddressUkYesNoPage(index), false).success.value
+    .set(BusinessInternationalAddressPage(index), internationalAddress).success.value
+    .set(BusinessNamePage(index), name).success.value
+    .set(BusinessDescriptionPage(index), description).success.value
+    .set(BusinessValuePage(index), valueFull).success.value
 
 
   "BusinessAmendAnswersController" must {
@@ -91,12 +91,34 @@ class BusinessAmendAnswersControllerSpec extends SpecBase with MockitoSugar with
 
       val view = application.injector.instanceOf[BusinessAmendAnswersView]
       val printHelper = application.injector.instanceOf[BusinessPrintHelper]
-      val answerSection = printHelper(userAnswers, provisional = false, name)
+      val answerSection = printHelper(userAnswers, index, provisional = false, name)
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
         view(answerSection, index)(request, messages).toString
+    }
+
+
+    "return INTERNAL_SERVER_ERROR when service fails" in {
+
+      val mockService = mock[TrustService]
+
+      val application = applicationBuilder(Some(emptyUserAnswers))
+        .overrides(
+          bind[TrustService].toInstance(mockService)
+        )
+        .build()
+
+      when(mockService.getBusinessAsset(any(), any())(any(), any()))
+        .thenReturn(Future.failed(new Exception("failed")))
+
+      val request = FakeRequest(GET, answersRoute)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual INTERNAL_SERVER_ERROR
+
     }
 
 
@@ -118,6 +140,33 @@ class BusinessAmendAnswersControllerSpec extends SpecBase with MockitoSugar with
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+
+      application.stop()
+    }
+    "redirect to Session Expired for a GET if no existing data is found" in {
+
+      val application = applicationBuilder(userAnswers = None).build()
+
+      val request = FakeRequest(GET, answersRoute)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad.url
+
+      application.stop()
+    }
+
+    "redirect to Session Expired for a POST if no existing data is found" in {
+
+      val application = applicationBuilder(userAnswers = None).build()
+
+      val request = FakeRequest(POST, submitAnswersRoute)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad.url
 
       application.stop()
     }

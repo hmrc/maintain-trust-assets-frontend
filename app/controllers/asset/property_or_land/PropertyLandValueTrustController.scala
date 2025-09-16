@@ -43,41 +43,35 @@ class PropertyLandValueTrustController @Inject()(
                                                   view: PropertyLandValueTrustView
                                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
+  def onPageLoad(index: Int, mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
     implicit request =>
-
-      val form: Form[Long] = configuredForm()
-
-      val preparedForm = request.userAnswers.get(PropertyLandValueTrustPage) match {
+      val form: Form[Long] = configuredForm(index)
+      val preparedForm = request.userAnswers.get(PropertyLandValueTrustPage(index)) match {
         case None => form
         case Some(value) => form.fill(value)
       }
-
-      Ok(view(preparedForm, mode))
+      Ok(view(preparedForm, index, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
+  def onSubmit(index: Int, mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-
-      val form: Form[Long] = configuredForm()
-
+      val form: Form[Long] = configuredForm(index)
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
-
+          Future.successful(BadRequest(view(formWithErrors, index, mode))),
         value => {
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(PropertyLandValueTrustPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(PropertyLandValueTrustPage(index), value))
             _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(PropertyLandValueTrustPage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(PropertyLandValueTrustPage(index), mode, updatedAnswers))
         }
       )
   }
 
-  private def configuredForm()(implicit request: DataRequest[AnyContent]): Form[Long] = {
+  private def configuredForm(index: Int)(implicit request: DataRequest[AnyContent]): Form[Long] = {
     formProvider.withConfig(
       prefix = "propertyOrLand.valueInTrust",
-      maxValue = request.userAnswers.get(PropertyOrLandTotalValuePage)
+      maxValue = request.userAnswers.get(PropertyOrLandTotalValuePage(index))
     )
   }
 }

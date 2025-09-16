@@ -16,6 +16,9 @@
 
 package pages.asset.business.add
 
-import pages.Page
+import pages.QuestionPage
+import play.api.libs.json.JsPath
 
-case object BusinessAnswerPage extends Page
+case class BusinessAnswerPage(index: Int) extends QuestionPage[Boolean] {
+  override def path: JsPath = JsPath \ "assets" \ "business" \ index \ "answersComplete"
+}

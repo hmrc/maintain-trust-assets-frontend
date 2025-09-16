@@ -35,10 +35,12 @@ class OtherAssetValueControllerSpec extends SpecBase {
   val description: String = "Description"
   val validAnswer: Long = 4000L
 
-  val requiredAnswers: UserAnswers = emptyUserAnswers
-    .set(OtherAssetDescriptionPage, description).success.value
 
-  lazy val valueRoute: String = routes.OtherAssetValueController.onPageLoad(NormalMode).url
+
+  val requiredAnswers: UserAnswers = emptyUserAnswers
+    .set(OtherAssetDescriptionPage(index), description).success.value
+
+  lazy val valueRoute: String = routes.OtherAssetValueController.onPageLoad(index, NormalMode).url
 
   "OtherAssetValueController" must {
 
@@ -55,7 +57,7 @@ class OtherAssetValueControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode, description)(request, messages).toString
+        view(form, index, NormalMode, description)(request, messages).toString
 
       application.stop()
     }
@@ -63,7 +65,7 @@ class OtherAssetValueControllerSpec extends SpecBase {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = requiredAnswers
-        .set(OtherAssetValuePage, validAnswer).success.value
+        .set(OtherAssetValuePage(index), validAnswer).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -76,7 +78,7 @@ class OtherAssetValueControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), NormalMode, description)(request, messages).toString
+        view(form.fill(validAnswer), index, NormalMode, description)(request, messages).toString
 
       application.stop()
     }
@@ -117,7 +119,7 @@ class OtherAssetValueControllerSpec extends SpecBase {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode, description)(request, messages).toString
+        view(boundForm, index, NormalMode, description)(request, messages).toString
 
       application.stop()
     }

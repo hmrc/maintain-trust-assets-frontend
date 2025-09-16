@@ -22,7 +22,7 @@ import pages.behaviours.PageBehaviours
 
 class PropertyOrLandAddressYesNoPageSpec extends PageBehaviours {
 
-  val page: PropertyOrLandAddressYesNoPage.type = PropertyOrLandAddressYesNoPage
+  val page = PropertyOrLandAddressYesNoPage(index)
 
   "PropertyOrLandAddressYesNoPage" must {
 
@@ -38,15 +38,15 @@ class PropertyOrLandAddressYesNoPageSpec extends PageBehaviours {
         forAll(arbitrary[UserAnswers]) {
           initial =>
             val answers: UserAnswers = initial.set(page, true).success.value
-              .set(PropertyOrLandAddressUkYesNoPage, true).success.value
-              .set(PropertyOrLandInternationalAddressPage, NonUkAddress("line 1", "line 2", None, "France")).success.value
-              .set(PropertyOrLandUKAddressPage, UkAddress("line 1", "line2", None, None, "NE1 1NE")).success.value
+              .set(PropertyOrLandAddressUkYesNoPage(index), true).success.value
+              .set(PropertyOrLandInternationalAddressPage(index), NonUkAddress("line 1", "line 2", None, "France")).success.value
+              .set(PropertyOrLandUKAddressPage(index), UkAddress("line 1", "line2", None, None, "NE1 1NE")).success.value
 
             val result = answers.set(page, false).success.value
 
-            result.get(PropertyOrLandAddressUkYesNoPage) must not be defined
-            result.get(PropertyOrLandInternationalAddressPage) must not be defined
-            result.get(PropertyOrLandUKAddressPage) must not be defined
+            result.get(PropertyOrLandAddressUkYesNoPage(index)) must not be defined
+            result.get(PropertyOrLandInternationalAddressPage(index)) must not be defined
+            result.get(PropertyOrLandUKAddressPage(index)) must not be defined
         }
       }
 
@@ -54,11 +54,11 @@ class PropertyOrLandAddressYesNoPageSpec extends PageBehaviours {
         forAll(arbitrary[UserAnswers]) {
           initial =>
             val answers: UserAnswers = initial.set(page, false).success.value
-              .set(PropertyOrLandDescriptionPage, "Test").success.value
+              .set(PropertyOrLandDescriptionPage(index), "Test").success.value
 
             val result = answers.set(page, true).success.value
 
-            result.get(PropertyOrLandDescriptionPage) must not be defined
+            result.get(PropertyOrLandDescriptionPage(index)) must not be defined
         }
       }
     }

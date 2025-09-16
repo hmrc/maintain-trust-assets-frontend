@@ -22,7 +22,7 @@ import play.api.libs.json.JsPath
 
 import scala.util.Try
 
-case object SharesInAPortfolioPage extends QuestionPage[Boolean] {
+final case class SharesInAPortfolioPage(index: Int) extends QuestionPage[Boolean] {
 
   override def path: JsPath = basePath \ toString
 
@@ -32,20 +32,20 @@ case object SharesInAPortfolioPage extends QuestionPage[Boolean] {
     value match {
       case Some(true) =>
 
-        userAnswers.remove(SharesOnStockExchangePage)
-          .flatMap(_.remove(ShareCompanyNamePage))
-          .flatMap(_.remove(ShareClassPage))
-          .flatMap(_.remove(ShareQuantityInTrustPage))
-          .flatMap(_.remove(ShareValueInTrustPage))
-          .flatMap(_.remove(AssetStatus))
+        userAnswers.remove(SharesOnStockExchangePage(index))
+          .flatMap(_.remove(ShareCompanyNamePage(index)))
+          .flatMap(_.remove(ShareClassPage(index)))
+          .flatMap(_.remove(ShareQuantityInTrustPage(index)))
+          .flatMap(_.remove(ShareValueInTrustPage(index)))
+          .flatMap(_.remove(AssetStatus(index)))
 
       case Some(false) =>
 
-        userAnswers.remove(SharePortfolioNamePage)
-          .flatMap(_.remove(SharePortfolioOnStockExchangePage))
-          .flatMap(_.remove(SharePortfolioQuantityInTrustPage))
-          .flatMap(_.remove(SharePortfolioValueInTrustPage))
-          .flatMap(_.remove(AssetStatus))
+        userAnswers.remove(SharePortfolioNamePage(index))
+          .flatMap(_.remove(SharePortfolioOnStockExchangePage(index)))
+          .flatMap(_.remove(SharePortfolioQuantityInTrustPage(index)))
+          .flatMap(_.remove(SharePortfolioValueInTrustPage(index)))
+          .flatMap(_.remove(AssetStatus(index)))
 
       case _ => super.cleanup(value, userAnswers)
     }

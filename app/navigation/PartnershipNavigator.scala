@@ -32,24 +32,24 @@ class PartnershipNavigator @Inject()() extends Navigator {
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
     routes(mode)(page)(userAnswers)
 
-  def routes(mode: Mode): PartialFunction[Page, UserAnswers => Call] =
-    simpleNavigation(mode)
-
-  def simpleNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
-    case PartnershipDescriptionPage  => _ => PartnershipStartDateController.onPageLoad(mode)
-    case PartnershipStartDatePage => ua => navigateToCheckAnswers(ua, mode)
-    case PartnershipAnswerPage => _ => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
+  def routes(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
+    case PartnershipDescriptionPage(index)  => _ => PartnershipStartDateController.onPageLoad(index, mode)
+    case PartnershipStartDatePage(index)           => ua => navigateToCheckAnswers(ua, mode, index)
+    case PartnershipAnswerPage(index)           => _ => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
   }
 
-  private def navigateToCheckAnswers(ua: UserAnswers, mode: Mode): Call = {
+  private def navigateToCheckAnswers(ua: UserAnswers, mode: Mode, index: Int): Call = {
     if (mode == NormalMode) {
-      controllers.asset.partnership.add.routes.PartnershipAnswerController.onPageLoad()
+      AssetNavigator.routeToIndex(
+        List.empty,
+        controllers.asset.partnership.add.routes.PartnershipAnswerController.onPageLoad,
+        index = Some(index)
+      )
     } else {
       ua.get(IndexPage) match {
-        case Some(index) => controllers.asset.partnership.amend.routes.PartnershipAmendAnswersController.renderFromUserAnswers(index)
+        case Some(indexPage) => controllers.asset.partnership.amend.routes.PartnershipAmendAnswersController.renderFromUserAnswers(indexPage)
         case None => controllers.routes.SessionExpiredController.onPageLoad
       }
     }
   }
-
 }

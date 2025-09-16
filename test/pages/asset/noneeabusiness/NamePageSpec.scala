@@ -20,7 +20,7 @@ import pages.behaviours.PageBehaviours
 
 class NamePageSpec extends PageBehaviours {
 
-  private val page = NamePage
+  private val page = NamePage(index)
 
   "NamePage" must {
 

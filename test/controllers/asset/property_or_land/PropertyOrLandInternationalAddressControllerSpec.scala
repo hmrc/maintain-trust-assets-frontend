@@ -41,7 +41,7 @@ class PropertyOrLandInternationalAddressControllerSpec extends SpecBase with Ind
   val formProvider = new InternationalAddressFormProvider()
   val form: Form[NonUkAddress] = formProvider()
 
-  lazy val propertyOrLandInternationalAddressRoute: String = routes.PropertyOrLandInternationalAddressController.onPageLoad(NormalMode).url
+  lazy val propertyOrLandInternationalAddressRoute: String = routes.PropertyOrLandInternationalAddressController.onPageLoad(index, NormalMode).url
 
   "PropertyOrLandInternationalAddress Controller" must {
 
@@ -60,7 +60,7 @@ class PropertyOrLandInternationalAddressControllerSpec extends SpecBase with Ind
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, countryOptions, NormalMode)(request, messages).toString
+        view(form, index, countryOptions, NormalMode)(request, messages).toString
 
       application.stop()
     }
@@ -68,7 +68,7 @@ class PropertyOrLandInternationalAddressControllerSpec extends SpecBase with Ind
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers
-        .set(PropertyOrLandInternationalAddressPage, NonUkAddress("line 1", "line 2", Some("line 3"), "country")).success.value
+        .set(PropertyOrLandInternationalAddressPage(index), NonUkAddress("line 1", "line 2", Some("line 3"), "country")).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -83,7 +83,7 @@ class PropertyOrLandInternationalAddressControllerSpec extends SpecBase with Ind
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(NonUkAddress("line 1", "line 2", Some("line 3"), "country")), countryOptions, NormalMode)(request, messages).toString
+        view(form.fill(NonUkAddress("line 1", "line 2", Some("line 3"), "country")), index, countryOptions, NormalMode)(request, messages).toString
 
       application.stop()
     }
@@ -127,7 +127,7 @@ class PropertyOrLandInternationalAddressControllerSpec extends SpecBase with Ind
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, countryOptions, NormalMode)(request, messages).toString
+        view(boundForm, index, countryOptions, NormalMode)(request, messages).toString
 
       application.stop()
     }

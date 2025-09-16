@@ -26,14 +26,14 @@
     submitButton        : SubmitButton
 )
 
-@(form: Form[_], countryOptions: Seq[InputOption], mode: Mode, name: String)(implicit request: RequestHeader, messages: Messages)
+@(form: Form[_], countryOptions: Seq[InputOption], index: Int, mode: Mode, name: String)(implicit request: RequestHeader, messages: Messages)
 
 @mainTemplate(
     title = s"${errorPrefix(form)} ${messages("nonEeaBusiness.internationalAddress.title")}",
     showBackLink = true
 ) {
 
-    @formHelper(action = InternationalAddressController.onSubmit(mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = InternationalAddressController.onSubmit(index, mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

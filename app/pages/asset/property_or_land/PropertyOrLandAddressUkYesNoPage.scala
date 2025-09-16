@@ -22,7 +22,7 @@ import play.api.libs.json.JsPath
 
 import scala.util.Try
 
-case object PropertyOrLandAddressUkYesNoPage extends QuestionPage[Boolean] {
+case class PropertyOrLandAddressUkYesNoPage(index: Int) extends QuestionPage[Boolean] {
 
   override def path: JsPath = basePath \ toString
 
@@ -31,9 +31,9 @@ case object PropertyOrLandAddressUkYesNoPage extends QuestionPage[Boolean] {
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
       case Some(true) =>
-        userAnswers.remove(PropertyOrLandInternationalAddressPage)
+        userAnswers.remove(PropertyOrLandInternationalAddressPage(index))
       case Some(false) =>
-        userAnswers.remove(PropertyOrLandUKAddressPage)
+        userAnswers.remove(PropertyOrLandUKAddressPage(index))
       case _ => super.cleanup(value, userAnswers)
     }
 }

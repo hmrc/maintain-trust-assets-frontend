@@ -27,14 +27,14 @@
     govukSummaryList: GovukSummaryList
 )
 
-@(answerSections: AnswerSection)(implicit request: RequestHeader, messages: Messages)
+@(index: Int, answerSections: AnswerSection)(implicit request: RequestHeader, messages: Messages)
 
 @mainTemplate(
     title = messages("propertyOrLand.answers.title"),
     showBackLink = true
 ) {
 
-    @formHelper(action = PropertyOrLandAnswerController.onSubmit(), Symbol("autoComplete") -> "off") {
+    @formHelper(action = PropertyOrLandAnswerController.onSubmit(index), Symbol("autoComplete") -> "off") {
 
         @heading("propertyOrLand.answers.heading")
 

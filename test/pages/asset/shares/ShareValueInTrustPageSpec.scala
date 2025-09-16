@@ -21,7 +21,7 @@ import pages.behaviours.PageBehaviours
 
 class ShareValueInTrustPageSpec extends PageBehaviours {
 
-  val page: ShareValueInTrustPage.type = ShareValueInTrustPage
+  val page: ShareValueInTrustPage = ShareValueInTrustPage(index)
 
   "ShareValueInTrustPage" must {
 

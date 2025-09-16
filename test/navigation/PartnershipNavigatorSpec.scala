@@ -39,13 +39,13 @@ class PartnershipNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks wi
 
     "navigate from PartnershipDescriptionPage to PartnershipStartDatePage" in {
 
-      val page = PartnershipDescriptionPage
+      val page = PartnershipDescriptionPage(index)
 
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
           val answers = userAnswers.set(page, "Partnership Description").success.value
           navigator.nextPage(page, NormalMode, answers)
-            .mustBe(PartnershipStartDateController.onPageLoad(NormalMode))
+            .mustBe(PartnershipStartDateController.onPageLoad(index, NormalMode))
       }
     }
 
@@ -53,25 +53,25 @@ class PartnershipNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks wi
 
       "normal mode" in {
 
-        val page = PartnershipStartDatePage
+        val page = PartnershipStartDatePage(index)
 
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>
             val answers = userAnswers
-              .set(PartnershipStartDatePage, validDate).success.value
+              .set(PartnershipStartDatePage(index), validDate).success.value
             navigator.nextPage(page, NormalMode, answers)
-              .mustBe(PartnershipAnswerController.onPageLoad())
+              .mustBe(PartnershipAnswerController.onPageLoad(index))
         }
       }
 
       "check mode" in {
 
-        val page = PartnershipStartDatePage
+        val page = PartnershipStartDatePage(index)
 
         forAll(arbitrary[UserAnswers]) {
           userAnswers =>
             val answers = userAnswers
-              .set(PartnershipStartDatePage, validDate).success.value
+              .set(PartnershipStartDatePage(index), validDate).success.value
               .set(IndexPage, 1).success.value
             navigator.nextPage(page, CheckMode, answers)
               .mustBe(PartnershipAmendAnswersController.renderFromUserAnswers(1))
@@ -81,7 +81,7 @@ class PartnershipNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks wi
 
     "navigate from PartnershipAnswerPage to AddAssetsPage" in {
 
-      val page = PartnershipAnswerPage
+      val page = PartnershipAnswerPage(index)
 
       forAll(arbitrary[UserAnswers]) {
         userAnswers =>
