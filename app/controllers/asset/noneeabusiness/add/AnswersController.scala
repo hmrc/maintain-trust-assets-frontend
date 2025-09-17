@@ -54,7 +54,6 @@ class AnswersController @Inject()(
     (standardActionSets.verifiedForIdentifier andThen nameAction) { implicit request =>
       val name: String = request.name
       val section: AnswerSection = printHelper(userAnswers = request.userAnswers, index = index, provisional = provisional, name = name)
-
       Ok(view(index, section))
     }
 

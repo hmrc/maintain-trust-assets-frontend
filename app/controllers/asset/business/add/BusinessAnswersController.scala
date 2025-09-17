@@ -36,7 +36,6 @@ import views.html.asset.business.add.BusinessAnswersView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import play.api.http.Status._
 
 class BusinessAnswersController @Inject()(
                                            override val messagesApi: MessagesApi,
