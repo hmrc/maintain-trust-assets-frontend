@@ -28,7 +28,9 @@ import play.api.mvc._
 import repositories.PlaybackRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.NonEeaBusinessPrintHelper
+import viewmodels.AnswerSection
 import views.html.asset.noneeabusiness.add.AnswersView
+
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -48,42 +50,53 @@ class AnswersController @Inject()(
 
   private val provisional: Boolean = true
 
-  def onPageLoad(): Action[AnyContent] =
+  def onPageLoad(index: Int): Action[AnyContent] =
     (standardActionSets.verifiedForIdentifier andThen nameAction) { implicit request =>
-      Ok(view(printHelper(userAnswers = request.userAnswers, index = 0, provisional = provisional, name = request.name)))
+      val name: String = request.name
+      val section: AnswerSection = printHelper(userAnswers = request.userAnswers, index = index, provisional = provisional, name = name)
+
+      Ok(view(index, section))
     }
 
-  def onSubmit(): Action[AnyContent] =
-    standardActionSets.verifiedForIdentifier.async { implicit request =>
-      mapper(request.userAnswers) match {
-        case None =>
-          errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async { implicit request =>
+    mapper(request.userAnswers) match {
+      case None =>
+        errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
 
-        case Some(asset) =>
-          connector.getAssets(request.userAnswers.identifier).flatMap { data =>
-            val exists = data.nonEEABusiness.exists { ele =>
-              ele.orgName.equalsIgnoreCase(asset.orgName) &&
-                ele.address.line1.equalsIgnoreCase(asset.address.line1) &&
-                ele.govLawCountry.equalsIgnoreCase(asset.govLawCountry) &&
-                ele.startDate.equals(asset.startDate) &&
-                ele.endDate.equals(asset.endDate)
-            }
+      case Some(asset) =>
+        connector.amendNonEeaBusinessAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
+          response.status match {
+            case OK | NO_CONTENT =>
+              cleanAllAndRedirect()
 
-            val addIfNeededF: Future[Unit] =
-              if (!exists) connector.addNonEeaBusinessAsset(request.userAnswers.identifier, asset).map(_ => ())
-              else Future.successful(())
+            case _ =>
+              connector.getAssets(request.userAnswers.identifier).flatMap { data =>
+                val exists = data.nonEEABusiness.exists { e =>
+                  e.orgName.equalsIgnoreCase(asset.orgName) &&
+                    e.address.line1.equalsIgnoreCase(asset.address.line1) &&
+                    e.govLawCountry.equalsIgnoreCase(asset.govLawCountry) &&
+                    e.startDate == asset.startDate &&
+                    e.endDate == asset.endDate
+                }
 
-            addIfNeededF.flatMap(_ => cleanAllAndRedirect())
+                if (!exists)
+                  connector.addNonEeaBusinessAsset(request.userAnswers.identifier, asset)
+                    .flatMap(_ => cleanAllAndRedirect())
+                else
+                  cleanAllAndRedirect()
+              }
           }
-      }
+        }
     }
+  }
 
-  private def cleanAllAndRedirect()(implicit request: DataRequest[AnyContent]): Future[Result] = {
+  private def cleanAllAndRedirect()
+                                 (implicit request: DataRequest[AnyContent]): Future[Result] = {
     val next = navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable)
-
     request.userAnswers.cleanupPreservingNonEea.fold(
-      _        => Future.successful(Redirect(next)),
-      cleaned  => repository.set(cleaned).map(_ => Redirect(next))
+      _  => Future.successful(Redirect(next)),
+      ua => repository.set(ua).map(_ => Redirect(next))
     )
   }
+
 }

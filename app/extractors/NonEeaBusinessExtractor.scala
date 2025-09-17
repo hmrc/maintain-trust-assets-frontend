@@ -35,10 +35,10 @@ class NonEeaBusinessExtractor extends AssetExtractor[NonEeaBusinessType] {
                      index: Int): Try[UserAnswers] = {
 
     super.apply(answers, noneEaBusiness, index)
-      .flatMap(_.set(NamePage(0), noneEaBusiness.orgName))
-      .flatMap(_.set(GoverningCountryPage(0), noneEaBusiness.govLawCountry))
+      .flatMap(_.set(NamePage(index), noneEaBusiness.orgName))
+      .flatMap(_.set(GoverningCountryPage(index), noneEaBusiness.govLawCountry))
       .flatMap(answers => extractAddress(Some(noneEaBusiness.address), answers))
-      .flatMap(_.set(StartDatePage, noneEaBusiness.startDate))
+      .flatMap(_.set(StartDatePage(index), noneEaBusiness.startDate))
   }
 
   override def namePage: QuestionPage[String] = NamePage(0)
@@ -47,7 +47,7 @@ class NonEeaBusinessExtractor extends AssetExtractor[NonEeaBusinessType] {
   override def ukAddressPage: QuestionPage[UkAddress] = UkAddressPage
   override def nonUkAddressPage: QuestionPage[NonUkAddress] = NonUkAddressPage(0)
 
-  override def startDatePage: QuestionPage[LocalDate] = StartDatePage
+  override def startDatePage: QuestionPage[LocalDate] = StartDatePage(0)
 
   override def indexPage: QuestionPage[Int] = IndexPage
 

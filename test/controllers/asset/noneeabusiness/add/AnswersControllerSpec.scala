@@ -19,7 +19,7 @@ package controllers.asset.noneeabusiness.add
 import base.SpecBase
 import connectors.TrustsConnector
 import mapping.NonEeaBusinessAssetMapper
-import models.assets.{AssetMonetaryAmount, Assets}
+import models.assets.{AssetMonetaryAmount, Assets, NonEeaBusinessType}
 import models.{NonUkAddress, UserAnswers}
 import navigation.AssetsNavigator
 import org.mockito.ArgumentMatchers.any
@@ -34,6 +34,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpResponse
 import utils.print.NonEeaBusinessPrintHelper
 import views.html.asset.noneeabusiness.add.AnswersView
+
 import java.time.LocalDate
 import scala.concurrent.Future
 
@@ -41,14 +42,15 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
 
   private val name: String = "Noneeabusiness"
 
-  private def userAnswers(migrating: Boolean): UserAnswers = emptyUserAnswers.copy(isMigratingToTaxable = migrating)
+  private def userAnswers(migrating: Boolean): UserAnswers =
+    emptyUserAnswers.copy(isMigratingToTaxable = migrating)
       .set(NamePage(index), name).success.value
       .set(NonUkAddressPage(index), NonUkAddress("Line 1", "Line 2", Some("Line 3"), "FR")).success.value
       .set(GoverningCountryPage(index), "FR").success.value
-      .set(StartDatePage, LocalDate.parse("1996-02-03")).success.value
+      .set(StartDatePage(index), LocalDate.parse("1996-02-03")).success.value
 
-  private lazy val getRoute: String  = controllers.asset.noneeabusiness.add.routes.AnswersController.onPageLoad().url
-  private lazy val postRoute: String = controllers.asset.noneeabusiness.add.routes.AnswersController.onSubmit().url
+  private lazy val getRoute: String  = controllers.asset.noneeabusiness.add.routes.AnswersController.onPageLoad(index).url
+  private lazy val postRoute: String = controllers.asset.noneeabusiness.add.routes.AnswersController.onSubmit(index).url
 
   "AnswersController (add – Non-EEA Business)" must {
 
@@ -65,7 +67,7 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
       val answerSect  = printHelper(answers, index, provisional = true, name)
 
       status(result) mustEqual OK
-      contentAsString(result) mustEqual view(answerSect)(request, messages).toString
+      contentAsString(result) mustEqual view(index, answerSect)(request, messages).toString
 
       application.stop()
     }
@@ -82,6 +84,9 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
 
       val moneyAsset = AssetMonetaryAmount(4000L)
       val assets: Assets = Assets(monetary = List(moneyAsset))
+
+      when(mockTrustsConnector.amendNonEeaBusinessAsset(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(NOT_FOUND, "")))
 
       when(mockTrustsConnector.getAssets(any())(any(), any()))
         .thenReturn(Future.successful(assets))
@@ -113,6 +118,9 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
       val moneyAsset = AssetMonetaryAmount(4000L)
       val assets: Assets = Assets(monetary = List(moneyAsset))
 
+      when(mockTrustsConnector.amendNonEeaBusinessAsset(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(NOT_FOUND, "")))
+
       when(mockTrustsConnector.getAssets(any())(any(), any()))
         .thenReturn(Future.successful(assets))
 
@@ -126,6 +134,26 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
 
       val expectedUrl = navigator.redirectToAddAssetPage(answers.isMigratingToTaxable).url
       redirectLocation(result).value mustEqual expectedUrl
+
+      application.stop()
+    }
+
+    "amend an existing asset when session editing key is present (EDIT flow)" in {
+      val mockTrustsConnector = mock[TrustsConnector]
+      val answers             = userAnswers(migrating = false)
+
+      val application = applicationBuilder(userAnswers = Some(answers))
+        .overrides(bind[TrustsConnector].toInstance(mockTrustsConnector))
+        .build()
+
+      when(mockTrustsConnector.amendNonEeaBusinessAsset(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(OK, "")))
+
+      val request = FakeRequest(POST, postRoute)
+        .withSession(s"neea.$index.key" -> "dummy-key")
+      val result  = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
 
       application.stop()
     }
