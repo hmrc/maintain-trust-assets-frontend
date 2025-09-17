@@ -38,7 +38,7 @@ class NonEeaBusinessPrintHelper @Inject()(answerRowConverter: AnswerRowConverter
         bound.stringQuestion(NamePage(index), "nonEeaBusiness.name", NameController.onPageLoad(index, mode).url),
         bound.addressQuestion(NonUkAddressPage(index), "nonEeaBusiness.internationalAddress", InternationalAddressController.onPageLoad(index, mode).url),
         bound.countryQuestion(GoverningCountryPage(index), "nonEeaBusiness.governingCountry", GoverningCountryController.onPageLoad(index, mode).url),
-        if (mode == NormalMode) bound.dateQuestion(StartDatePage, "nonEeaBusiness.startDate", StartDateController.onPageLoad().url) else None
+        if (mode == NormalMode) bound.dateQuestion(StartDatePage(index), "nonEeaBusiness.startDate", StartDateController.onPageLoad(index).url) else None
       ).flatten
     }
 

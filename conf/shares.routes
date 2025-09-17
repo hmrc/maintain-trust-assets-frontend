@@ -54,6 +54,6 @@ POST       /:index/check-answers                                                
 GET        /:index/remove                                                            controllers.asset.shares.remove.RemoveShareAssetYesNoController.onPageLoad(index: Int)
 POST       /:index/remove                                                            controllers.asset.shares.remove.RemoveShareAssetYesNoController.onSubmit(index: Int)
 
-GET        /:index/share-check-answers                                                     controllers.asset.shares.amend.ShareAmendAnswersController.extractAndRender(index: Int)
+GET        /:index/share-check-answers                                               controllers.asset.shares.amend.ShareAmendAnswersController.extractAndRender(index: Int)
 GET        /:index/updated-answers                                                   controllers.asset.shares.amend.ShareAmendAnswersController.renderFromUserAnswers(index: Int)
-POST       /:index/share-check-answers                                                     controllers.asset.shares.amend.ShareAmendAnswersController.onSubmit(index: Int)
+POST       /:index/share-check-answers                                               controllers.asset.shares.amend.ShareAmendAnswersController.onSubmit(index: Int)

@@ -43,7 +43,7 @@ class StartDateControllerSpec extends SpecBase with IndexValidation {
   private val prefix: String = "nonEeaBusiness.startDate"
   private val form = formProvider.withConfig(prefix, trustStartDate)
 
-  private lazy val onPageLoadRoute = routes.StartDateController.onPageLoad().url
+  private lazy val onPageLoadRoute = routes.StartDateController.onPageLoad(index).url
 
 
   private val baseAnswers: UserAnswers = emptyUserAnswers.copy(whenTrustSetup = trustStartDate)
@@ -65,7 +65,7 @@ class StartDateControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, name)(request, messages).toString
+        view(index, form, name)(request, messages).toString
 
       application.stop()
     }
@@ -73,7 +73,7 @@ class StartDateControllerSpec extends SpecBase with IndexValidation {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = baseAnswers
-        .set(StartDatePage, validAnswer).success.value
+        .set(StartDatePage(index), validAnswer).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -86,7 +86,7 @@ class StartDateControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(validAnswer), name)(request, messages).toString
+        view(index, form.fill(validAnswer), name)(request, messages).toString
 
       application.stop()
     }
@@ -139,7 +139,7 @@ class StartDateControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, name)(request, messages).toString
+        view(index, boundForm, name)(request, messages).toString
 
       application.stop()
     }
@@ -161,7 +161,7 @@ class StartDateControllerSpec extends SpecBase with IndexValidation {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, name)(request, messages).toString
+        view(index, boundForm, name)(request, messages).toString
 
       application.stop()
     }

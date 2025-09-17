@@ -68,7 +68,7 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
     .set(IndexPage, index).success.value
     .set(NonUkAddressPage(index), nonUkAddress).success.value
     .set(GoverningCountryPage(index), country).success.value
-    .set(StartDatePage, date).success.value
+    .set(StartDatePage(index), date).success.value
 
   "Answers Controller" must {
 

@@ -23,7 +23,7 @@ import java.time.LocalDate
 
 class StartDatePageSpec extends PageBehaviours {
 
-  private val page = StartDatePage
+  private val page = StartDatePage(index)
 
   "StartDatePage" must {
 
