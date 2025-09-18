@@ -92,7 +92,7 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result) mustBe Some(controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad(1).url)
+      redirectLocation(result) mustBe Some(controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad().url)
 
       val uaCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(playbackRepository).set(uaCaptor.capture)
@@ -138,7 +138,7 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result) mustBe Some(controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad(1).url)
+      redirectLocation(result) mustBe Some(controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad().url)
 
       val uaCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(playbackRepository).set(uaCaptor.capture)

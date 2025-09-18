@@ -102,7 +102,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad(index).url
+        redirectLocation(result).value mustEqual controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad().url
 
         application.stop()
       }

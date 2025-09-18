@@ -33,7 +33,7 @@ class AssetsNavigator @Inject()(config: FrontendAppConfig) {
     if (isMigratingToTaxable) {
       controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
     } else {
-      controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad(if(index.isDefined)  index.get else 0)
+      controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad()
     }
   }
 
