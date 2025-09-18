@@ -44,7 +44,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AddNonEeaBusinessAssetControllerSpec extends SpecBase with Generators with BeforeAndAfterEach {
 
-  lazy val addAssetsRoute: String = controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad(index).url
+  lazy val addAssetsRoute: String = controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad().url
   lazy val addOnePostRoute: String = controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.submitOne().url
   lazy val addAnotherPostRoute: String = controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.submitAnother().url
   lazy val completePostRoute: String = controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.submitComplete().url
@@ -276,7 +276,7 @@ class AddNonEeaBusinessAssetControllerSpec extends SpecBase with Generators with
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual
-          controllers.asset.noneeabusiness.routes.NameController.onPageLoad(index, NormalMode).url
+          controllers.asset.noneeabusiness.routes.NameController.onPageLoad(numberOfAssets, NormalMode).url
 
         application.stop()
       }

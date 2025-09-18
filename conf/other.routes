@@ -8,12 +8,12 @@ POST       /:index/value                                                       c
 GET        /:index/change-value                                                controllers.asset.other.OtherAssetValueController.onPageLoad(index: Int, mode: Mode = CheckMode)
 POST       /:index/change-value                                                controllers.asset.other.OtherAssetValueController.onSubmit(index: Int, mode: Mode = CheckMode)
 
-GET        /:index/other-check-answers                                               controllers.asset.other.add.OtherAnswerController.onPageLoad(index: Int)
-POST       /:index/other-check-answers                                               controllers.asset.other.add.OtherAnswerController.onSubmit(index: Int)
+GET        /:index/other-check-answers                                         controllers.asset.other.add.OtherAnswerController.onPageLoad(index: Int)
+POST       /:index/other-check-answers                                         controllers.asset.other.add.OtherAnswerController.onSubmit(index: Int)
 
 GET        /:index/:index/remove                                               controllers.asset.other.remove.RemoveAssetYesNoController.onPageLoad(index: Int)
 POST       /:index/:index/remove                                               controllers.asset.other.remove.RemoveAssetYesNoController.onSubmit(index: Int)
 
-GET        /:index/check-answers                                        controllers.asset.other.amend.AnswersController.extractAndRender(index: Int)
-GET        /:index/updated-answers                                      controllers.asset.other.amend.AnswersController.renderFromUserAnswers(index: Int)
-POST       /:index/check-answers                                        controllers.asset.other.amend.AnswersController.onSubmit(index: Int)
+GET        /:index/check-answers                                               controllers.asset.other.amend.AnswersController.extractAndRender(index: Int)
+GET        /:index/updated-answers                                             controllers.asset.other.amend.AnswersController.renderFromUserAnswers(index: Int)
+POST       /:index/check-answers                                               controllers.asset.other.amend.AnswersController.onSubmit(index: Int)

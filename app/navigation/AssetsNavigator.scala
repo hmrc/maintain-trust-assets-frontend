@@ -33,7 +33,7 @@ class AssetsNavigator @Inject()(config: FrontendAppConfig) {
     if (isMigratingToTaxable) {
       controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
     } else {
-      controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad(if(index.isDefined)  index.get else 0)
+      controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad()
     }
   }
 
@@ -101,7 +101,7 @@ class AssetsNavigator @Inject()(config: FrontendAppConfig) {
       case Business => routeToBusinessIndex(assets, index)
       case Partnership => routeToPartnershipIndex(assets, index)
       case Other => routeToOtherIndex(assets, index)
-      case NonEeaBusiness => controllers.asset.noneeabusiness.routes.NameController.onPageLoad(0,NormalMode)
+      case NonEeaBusiness => controllers.asset.noneeabusiness.routes.NameController.onPageLoad(index.getOrElse(0), NormalMode)
     }
   }
 

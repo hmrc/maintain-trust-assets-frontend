@@ -52,7 +52,7 @@ class AssetsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
         "redirect to non-taxable add-to page" in {
 
           navigator.redirectToAddAssetPage(isMigratingToTaxable = false)
-            .mustBe(controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad(index))
+            .mustBe(controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad())
         }
       }
     }

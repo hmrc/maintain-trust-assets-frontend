@@ -33,7 +33,7 @@ class NonEeaBusinessAssetMapper extends Mapper[NonEeaBusinessType] {
           NamePage(0).path.read[String] and
           NonUkAddressPage(0).path.read[Address] and
           GoverningCountryPage(0).path.read[String] and
-          StartDatePage.path.read[LocalDate] and
+          StartDatePage(0).path.read[LocalDate] and
           Reads(_ => JsSuccess(None)) and
           Reads(_ => JsSuccess(true))
         ) (NonEeaBusinessType.apply _)

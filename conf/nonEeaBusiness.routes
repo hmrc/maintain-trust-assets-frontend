@@ -13,16 +13,16 @@ POST       /:index/governing-country                                         con
 GET        /:index/change-governing-country                                  controllers.asset.noneeabusiness.GoverningCountryController.onPageLoad(index: Int, mode: Mode = CheckMode)
 POST       /:index/change-governing-country                                  controllers.asset.noneeabusiness.GoverningCountryController.onSubmit(index: Int, mode: Mode = CheckMode)
 
-GET        /start-date                                                       controllers.asset.noneeabusiness.add.StartDateController.onPageLoad()
-POST       /start-date                                                       controllers.asset.noneeabusiness.add.StartDateController.onSubmit()
+GET        /:index/start-date                                                controllers.asset.noneeabusiness.add.StartDateController.onPageLoad(index: Int)
+POST       /:index/start-date                                                controllers.asset.noneeabusiness.add.StartDateController.onSubmit(index: Int)
 
-GET        /check-answers                                                    controllers.asset.noneeabusiness.add.AnswersController.onPageLoad()
-POST       /check-answers                                                    controllers.asset.noneeabusiness.add.AnswersController.onSubmit()
+GET        /:index/noneea-check-answers                                      controllers.asset.noneeabusiness.add.AnswersController.onPageLoad(index: Int)
+POST       /:index/noneea-check-answers                                      controllers.asset.noneeabusiness.add.AnswersController.onSubmit(index: Int)
 
-GET        /:index/add                                                       controllers.asset.noneeabusiness.AddNonEeaBusinessAssetController.onPageLoad(index: Int)
-POST       /add                                                              controllers.asset.noneeabusiness.AddNonEeaBusinessAssetController.submitOne()
+GET        /add                                                             controllers.asset.noneeabusiness.AddNonEeaBusinessAssetController.onPageLoad()
+POST       /add                                                             controllers.asset.noneeabusiness.AddNonEeaBusinessAssetController.submitOne()
 
-GET        /:index/add-another                                               controllers.asset.noneeabusiness.AddNonEeaBusinessAssetController.onPageLoad(index: Int)
+GET        /add-another                                                      controllers.asset.noneeabusiness.AddNonEeaBusinessAssetController.onPageLoad()
 POST       /add-another                                                      controllers.asset.noneeabusiness.AddNonEeaBusinessAssetController.submitAnother()
 
 GET        /complete                                                         controllers.asset.noneeabusiness.AddNonEeaBusinessAssetController.submitComplete()

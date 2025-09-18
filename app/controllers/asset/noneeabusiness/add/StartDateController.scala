@@ -46,31 +46,31 @@ class StartDateController @Inject()(
 
   private val messagePrefix: String = "nonEeaBusiness.startDate"
 
-  def onPageLoad(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
+  def onPageLoad(index: Int): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
 
       val form = formProvider.withConfig(messagePrefix, request.userAnswers.whenTrustSetup)
-      val preparedForm = request.userAnswers.get(StartDatePage) match {
+      val preparedForm = request.userAnswers.get(StartDatePage(index)) match {
         case None => form
         case Some(value) => form.fill(value)
       }
 
-      Ok(view(preparedForm, request.name))
+      Ok(view(index, preparedForm, request.name))
   }
 
-  def onSubmit(): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
+  def onSubmit(index: Int): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
     implicit request =>
 
       val form = formProvider.withConfig(messagePrefix, request.userAnswers.whenTrustSetup)
       form.bindFromRequest().fold(
         (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, request.name))),
+          Future.successful(BadRequest(view(index, formWithErrors, request.name))),
 
         value => {
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(StartDatePage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(StartDatePage(index), value))
             _ <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(StartDatePage, NormalMode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(StartDatePage(index), NormalMode, updatedAnswers))
         }
       )
   }

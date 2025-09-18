@@ -215,7 +215,7 @@ class WhatKindOfAssetPageSpec extends PageBehaviours {
           .set(noneeabusiness.NamePage(index), str).success.value
           .set(noneeabusiness.NonUkAddressPage(index), internationalAddress).success.value
           .set(noneeabusiness.GoverningCountryPage(index), str).success.value
-          .set(noneeabusiness.add.StartDatePage, date).success.value
+          .set(noneeabusiness.add.StartDatePage(index), date).success.value
 
 
         val result = answers.set(WhatKindOfAssetPage(index), kind).success.value
@@ -225,7 +225,7 @@ class WhatKindOfAssetPageSpec extends PageBehaviours {
         result.get(noneeabusiness.NamePage(index)) mustNot be(defined)
         result.get(noneeabusiness.NonUkAddressPage(index)) mustNot be(defined)
         result.get(noneeabusiness.GoverningCountryPage(index)) mustNot be(defined)
-        result.get(noneeabusiness.add.StartDatePage) mustNot be(defined)
+        result.get(noneeabusiness.add.StartDatePage(index)) mustNot be(defined)
         result.get(AssetStatus(index)) mustNot be(defined)
     }
   }

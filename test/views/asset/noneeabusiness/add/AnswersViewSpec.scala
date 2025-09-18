@@ -30,7 +30,7 @@ class AnswersViewSpec extends ViewBehaviours {
   "AnswersView" must {
 
     def applyView(): HtmlFormat.Appendable =
-      view.apply(AnswerSection(None, Seq()))(fakeRequest, messages)
+      view.apply(index = 0, answerSections = AnswerSection(None, Nil))(fakeRequest, messages)
 
     behave like normalPage(applyView(), prefix)
 

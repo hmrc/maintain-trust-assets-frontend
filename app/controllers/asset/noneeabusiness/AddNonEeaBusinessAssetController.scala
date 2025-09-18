@@ -66,7 +66,7 @@ class AddNonEeaBusinessAssetController @Inject()(
     }
   }
 
-  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
       for {
         assets <- trustService.getAssets(request.userAnswers.identifier)
@@ -125,7 +125,7 @@ class AddNonEeaBusinessAssetController @Inject()(
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
                 _ <- repository.set(updatedAnswers)
-              } yield Redirect(controllers.asset.noneeabusiness.routes.NameController.onPageLoad(0, NormalMode))
+              } yield Redirect(controllers.asset.noneeabusiness.routes.NameController.onPageLoad(assets.nonEEABusiness.size, NormalMode))
 
             case AddAssets.NoComplete =>
               submitComplete()(request)
