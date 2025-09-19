@@ -41,7 +41,7 @@ class AddNonEeaBusinessAssetViewSpec extends OptionsViewBehaviours with TabularD
     view.apply(form, Nil, "Add a non-EEA company")(fakeRequest, messages)
 
   private def applyView(form: Form[_], completeAssets: Seq[AddRow], count: Int) = {
-    val title = if (count > 1) s"You have added $count non-EEA companies" else "Add a non-EEA company"
+    val title = if (count > 1) s"You have added $count companies" else "Add a non-EEA company"
     view.apply(form, completeAssets, title)(fakeRequest, messages)
   }
 
@@ -61,11 +61,13 @@ class AddNonEeaBusinessAssetViewSpec extends OptionsViewBehaviours with TabularD
 
       val viewWithData = applyView(form, completeAssets, 2)
 
-      behave like dynamicTitlePage(viewWithData, s"$messageKeyPrefix.count", "2")
+      behave like pageWithTitle(viewWithData, s"$messageKeyPrefix")
+      behave like pageWithSubTitle(viewWithData, s"$messageKeyPrefix.count", "2")
 
       behave like pageWithBackLink(viewWithData)
 
       behave like pageWithCompleteTabularData(viewWithData, completeAssets)
+      //data-list-heading--complete
 
       behave like pageWithOptions(form, applyView, AddAssets.options(messageKeyPrefix))
     }

@@ -19,7 +19,8 @@ package views
 import base.SpecBase
 import models.UserAnswers
 import org.jsoup.Jsoup
-import org.jsoup.nodes.Document
+import org.jsoup.nodes.{Document, Element}
+import org.jsoup.select.Elements
 import org.scalatest.Assertion
 import play.twirl.api.Html
 
@@ -60,6 +61,20 @@ trait ViewSpecBase extends SpecBase {
       .text
       .replaceAll("\u00a0", " ")
 
+    actual mustBe expected
+  }
+
+  def assertPageFistSubTitleEqualsMessage(doc: Document, expectedMessageKey: String, args: Any*): Assertion = {
+    val actual = doc
+      .getElementsByTag("h2")
+      .first()
+      .text
+      .replaceAll("\u00a0", " ")
+
+    val expected: String = messages(s"$expectedMessageKey.heading", args: _*)
+      .replaceAll("&nbsp;", " ")
+
+    println(actual)
     actual mustBe expected
   }
 
