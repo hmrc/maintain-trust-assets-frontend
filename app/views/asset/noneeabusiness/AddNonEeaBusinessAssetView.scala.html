@@ -30,10 +30,10 @@
     submitButton: SubmitButton
 )
 
-@(form: Form[_], completeAssets: Seq[AddRow], heading: String)(implicit request: RequestHeader, messages: Messages)
+@(form: Form[_], completeAssets: Seq[AddRow], completedAssetsHeading: String)(implicit request: RequestHeader, messages: Messages)
 
 @mainTemplate(
-    title = s"${errorPrefix(form)} $heading",
+    title = s"${errorPrefix(form)} $completedAssetsHeading",
     showBackLink = true
 ) {
 
@@ -41,9 +41,9 @@
 
         @errorSummary(form.errors)
 
-        @headingComp(heading)
+        @headingComp("addNonEeaBusinessAsset.heading")
 
-        @addToList(completeAssets, "complete", "asset")
+        @addToList(completeAssets, completedAssetsHeading)
 
         @inputRadio(
             field = form("value"),

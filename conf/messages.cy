@@ -19,7 +19,7 @@ entities.assets=Asedion
 entity.asset=Asedion
 entities.asset.business=Busnes
 entities.asset.monetary=Arian
-entities.asset.nonEeaBusiness=Cwmni nad yw’n rhan o’r AEE
+entities.asset.nonEeaBusiness=Cwmnïau sydd y tu allan i’r DU neu’r AEE (Ardal Economaidd Ewropeaidd)
 entities.asset.partnership=Partneriaeth
 entities.asset.propertyOrLand=Eiddo neu dir
 entities.asset.shares=Rhannu
@@ -502,19 +502,19 @@ nonEeaBusiness.endDate.error.invalid=Nodwch ddyddiad go iawn ar gyfer y dyddiad 
 nonEeaBusiness.endDate.error.future=Mae’n rhaid i’r dyddiad y daeth yr ymddiriedolaeth ei pherchnogaeth neu gyfran reolaethol yn y cwmni i ben fod heddiw neu yn y gorffennol
 nonEeaBusiness.endDate.error.beforeAssetStartDate=Mae’n rhaid i’r dyddiad y daeth yr ymddiriedolaeth ei pherchnogaeth neu gyfran reolaethol yn y cwmni i ben fod ar ôl iddi ddechrau
 
-nonEeaBusiness.answers.title=Gwiriwch fanylion y cwmni nad yw’n rhan o’r AEE
-nonEeaBusiness.answers.heading=Gwiriwch fanylion y cwmni nad yw’n rhan o’r AEE
+nonEeaBusiness.answers.title=Gwirio manylion y cwmni
+nonEeaBusiness.answers.heading=Gwirio manylion y cwmni
 
 date.day=Diwrnod
 date.month=Mis
 date.year=Blwyddyn
 
 addNonEeaBusinessAsset.add-them-now=Iawn, ychwanegwch un nawr
-addNonEeaBusinessAsset.additional-content=A ydych am ychwanegu cwmni arall?
-addNonEeaBusinessAsset.count.heading=Rydych wedi ychwanegu {0} o gwmnïau nad ydynt yn rhan o’r AEE
-addNonEeaBusinessAsset.count.title=Rydych wedi ychwanegu {0} o gwmnïau nad ydynt yn rhan o’r AEE
+addNonEeaBusinessAsset.additional-content=A ydych chi am ychwanegu cwmni arall?
+addNonEeaBusinessAsset.count.heading=Rydych wedi ychwanegu {0} o gwmnïau
+addNonEeaBusinessAsset.count.title=Rydych wedi ychwanegu {0} o gwmnïau
 addNonEeaBusinessAsset.error.required=Dewiswch ‘Iawn’ os ydych am ychwanegu cwmni nad yw’n rhan o’r AEE
-addNonEeaBusinessAsset.heading=Ychwanegu perchnogaeth neu gyfran reolaethol ar gyfer cwmni sydd wedi’i gofrestru y tu allan i’r DU a’r AEE
+addNonEeaBusinessAsset.heading=Ychwanegu perchnogaeth neu gyfran reolaethol o gwmni sydd wedi’i gofrestru y tu allan i’r DU a’r AEE
 addNonEeaBusinessAsset.no-complete=Na, rwyf wedi ychwanegu pob cwmni nad yw’n rhan o’r AEE
 addNonEeaBusinessAsset.title=Ychwanegu perchnogaeth neu gyfran reolaethol ar gyfer cwmni sydd wedi’i gofrestru y tu allan i’r DU a’r AEE
 addNonEeaBusinessAsset.maxedOut.p1=Ni allwch ychwanegu ased arall gan eich bod wedi nodi uchafswm o {0}.

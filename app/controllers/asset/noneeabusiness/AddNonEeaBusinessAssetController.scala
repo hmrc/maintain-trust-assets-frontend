@@ -62,7 +62,7 @@ class AddNonEeaBusinessAssetController @Inject()(
   private def heading(count: Int)(implicit mp: MessagesProvider): String = {
     count match {
       case c if c > 1 => Messages(s"$prefix.count.heading", c)
-      case _ => Messages(s"$prefix.heading")
+      case _ => Messages("site.complete")
     }
   }
 
