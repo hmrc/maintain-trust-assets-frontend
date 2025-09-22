@@ -67,7 +67,6 @@ class AddNonEeaBusinessAssetViewSpec extends OptionsViewBehaviours with TabularD
       behave like pageWithBackLink(viewWithData)
 
       behave like pageWithCompleteTabularData(viewWithData, completeAssets)
-      //data-list-heading--complete
 
       behave like pageWithOptions(form, applyView, AddAssets.options(messageKeyPrefix))
     }
