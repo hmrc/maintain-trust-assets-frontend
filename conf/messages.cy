@@ -175,7 +175,6 @@ assetInterruptPage.subheading5=Partneriaethau
 assetInterruptPage.paragraph8=Rhowch enw’r bartneriaeth, disgrifiad o’r bartneriaeth a’r dyddiad dechrau i ni.
 assetInterruptPage.subheading6=Asedion eraill
 assetInterruptPage.paragraph9=Mae angen i chi roi disgrifiad o’r ased ac amcangyfrif o’i werth presennol.
-assetInterruptPage.subheading7=Cwmni nad yw’n rhan o’r Ardal Economaidd Ewropeaidd (AEE)
 assetInterruptPage.paragraph10=Os oes gan yr ymddiriedolaeth berchnogaeth neu gyfran reolaethol mewn cwmni sydd wedi’i gofrestru y tu allan i’r DU neu’r AEE, mae angen i chi roi gwybod i CThEF am y canlynol:
 assetInterruptPage.lead_in = Mae’r AEE yn cynnwys:
 assetInterruptPage.bullet11=enw’r cwmni
