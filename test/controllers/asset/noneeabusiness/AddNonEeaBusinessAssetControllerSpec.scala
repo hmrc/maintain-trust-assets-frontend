@@ -220,7 +220,7 @@ class AddNonEeaBusinessAssetControllerSpec extends SpecBase with Generators with
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(AddNonEeaBusinessAssetForm, fakeAddRows, "Add a non-EEA company")(request, messages).toString
+          view(AddNonEeaBusinessAssetForm, fakeAddRows, "Completed")(request, messages).toString
 
         verify(mockViewHelper).rows(eqTo(assets), eqTo(true))(any())
 
@@ -254,7 +254,7 @@ class AddNonEeaBusinessAssetControllerSpec extends SpecBase with Generators with
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(AddNonEeaBusinessAssetForm, fakeAddRows, s"You have added $numberOfAssets non-EEA companies")(request, messages).toString
+          view(AddNonEeaBusinessAssetForm, fakeAddRows, s"You have added $numberOfAssets companies")(request, messages).toString
 
         verify(mockViewHelper).rows(eqTo(assets), eqTo(true))(any())
 
@@ -323,7 +323,7 @@ class AddNonEeaBusinessAssetControllerSpec extends SpecBase with Generators with
 
         status(result) mustEqual BAD_REQUEST
 
-        contentAsString(result) mustEqual view(boundForm, fakeAddRows, s"You have added $numberOfAssets non-EEA companies")(request, messages).toString
+        contentAsString(result) mustEqual view(boundForm, fakeAddRows, s"You have added $numberOfAssets companies")(request, messages).toString
 
         verify(mockViewHelper).rows(eqTo(assets), eqTo(true))(any())
 
@@ -365,7 +365,7 @@ class AddNonEeaBusinessAssetControllerSpec extends SpecBase with Generators with
         val content = contentAsString(result)
 
         content mustEqual
-          view(fakeAddRows, s"You have added $MAX_NON_EEA_BUSINESS_ASSETS non-EEA companies", MAX_NON_EEA_BUSINESS_ASSETS, prefix)(request, messages).toString
+          view(fakeAddRows, s"You have added $MAX_NON_EEA_BUSINESS_ASSETS companies", MAX_NON_EEA_BUSINESS_ASSETS, prefix)(request, messages).toString
 
         content must include("You cannot add another non-EEA company as you have entered a maximum of 25.")
         content must include("You can add another non-EEA company by removing an existing one, or write to HMRC with details of any additional non-EEA companies.")
