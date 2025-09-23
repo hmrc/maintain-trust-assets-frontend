@@ -194,6 +194,8 @@ money.removeYesNo.error.required=Dewiswch ‘Iawn’ os ydych am dynnu’r ased
 money.removeYesNo.heading=A ydych yn siŵr eich bod am dynnu {0}?
 money.removeYesNo.title=A ydych yn siŵr eich bod am dynnu’r ased?
 
+money.answers.title=Gwirio manylion yr eiddo neu dir
+
 propertyOrLand.addressYesNo.title=A oes gan yr eiddo neu dir gyfeiriad?
 propertyOrLand.addressYesNo.heading=A oes gan yr eiddo neu dir gyfeiriad?
 propertyOrLand.addressYesNo.checkYourAnswersLabel=A oes gan yr eiddo neu dir gyfeiriad?
@@ -340,7 +342,7 @@ shares.removeYesNo.error.required=Dewiswch ‘Iawn’ os ydych am dynnu’r ased
 shares.removeYesNo.heading=A ydych yn siŵr eich bod am dynnu {0}?
 shares.removeYesNo.title=A ydych yn siŵr eich bod am dynnu’r ased?
 
-shares.answers.title=Gwirio manylion y cyfranddaliadau
+shares.answers.title=Gwirio manylion yr eiddo neu dir
 shares.answers.heading=Gwirio manylion y cyfranddaliadau
 
 business.name.title=Beth yw enw’r busnes?
