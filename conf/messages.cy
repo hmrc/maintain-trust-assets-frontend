@@ -126,12 +126,9 @@ answerPage.section.nonEeaBusinessAsset.subheading=Cwmni nad yw’n rhan o’r AE
 
 assets.defaultText=y cwmni hwn nad yw’n AEE
 
-trustOwnsNonEeaBusinessYesNo.title=A yw’r ymddiriedolaeth yn berchen ar gwmni nad yw’n rhan o’r AEE neu a oes ganddi gyfran reolaethol ynddo?
-trustOwnsNonEeaBusinessYesNo.heading=A yw’r ymddiriedolaeth yn berchen ar gwmni nad yw’n rhan o’r AEE neu a oes ganddi gyfran reolaethol ynddo?
+trustOwnsNonEeaBusinessYesNo.title=A oes gan yr ymddiriedolaeth berchnogaeth neu gyfran reolaethol mewn cwmni sydd wedi’i leoli y tu allan i’r DU a’r AEE?
+trustOwnsNonEeaBusinessYesNo.heading=A oes gan yr ymddiriedolaeth berchnogaeth neu gyfran reolaethol mewn cwmni sydd wedi’i leoli y tu allan i’r DU a’r AEE?
 trustOwnsNonEeaBusinessYesNo.error.required=Dewiswch ‘Iawn’ os yw’r ymddiriedolaeth yn berchen ar gwmni nad yw’n rhan o’r AEE neu a oes ganddi gyfran reolaethol ynddo
-
-trustOwnsNonEeaBusinessYesNo.title = Cwmnïau sydd wedi’u cofrestru y tu allan i’r DU neu’r AEE (Ardal Economaidd Ewropeaidd)
-trustOwnsNonEeaBusinessYesNo.heading = Cwmnïau sydd wedi’u cofrestru y tu allan i’r DU neu’r AEE (Ardal Economaidd Ewropeaidd)
 trustOwnsNonEeaBusinessYesNo.paragraph1 = Mae angen i chi roi gwybod i CThEF a oes gan yr ymddiriedolaeth berchnogaeth neu gyfran reolaethol mewn cwmni sydd wedi’i leoli y tu allan i’r DU neu’r AEE.
 trustOwnsNonEeaBusinessYesNo.lead_in1 = Mae’r AEE yn cynnwys:
 trustOwnsNonEeaBusinessYesNo.bullet1 = yr holl wledydd yn yr Undeb Ewropeaidd (UE)
