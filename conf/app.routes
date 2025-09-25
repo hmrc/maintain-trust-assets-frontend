@@ -24,8 +24,8 @@ GET        /logout                                              controllers.Logo
 GET        /:index/assets-type                                  controllers.asset.WhatKindOfAssetController.onPageLoad(index: Int)
 POST       /:index/assets-type                                  controllers.asset.WhatKindOfAssetController.onSubmit(index: Int)
 
-GET        /trust-owns-non-eea-company                          controllers.asset.TrustOwnsNonEeaBusinessYesNoController.onPageLoad(mode: Mode = NormalMode)
-POST       /trust-owns-non-eea-company                          controllers.asset.TrustOwnsNonEeaBusinessYesNoController.onSubmit(mode: Mode = NormalMode)
+GET        /trust-owns-non-eea                                  controllers.asset.TrustOwnsNonEeaBusinessYesNoController.onPageLoad(mode: Mode = NormalMode)
+POST       /trust-owns-non-eea                                  controllers.asset.TrustOwnsNonEeaBusinessYesNoController.onSubmit(mode: Mode = NormalMode)
 GET        /change-trust-owns-non-eea-company                   controllers.asset.TrustOwnsNonEeaBusinessYesNoController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-trust-owns-non-eea-company                   controllers.asset.TrustOwnsNonEeaBusinessYesNoController.onSubmit(mode: Mode = CheckMode)
 
