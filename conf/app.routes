@@ -6,7 +6,7 @@
 ->         /business                                            business.Routes
 ->         /partnership                                         partnership.Routes
 ->         /other                                               other.Routes
-->         /non-eea-business                                    nonEeaBusiness.Routes
+->         /ownership-or-controlling-interest                   nonEeaBusiness.Routes
 ->         /migrate-to-taxable                                  nonTaxableToTaxable.Routes
 ->         /hmrc-frontend                                       hmrcfrontend.Routes
 
