@@ -29,8 +29,8 @@ POST       /trust-owns-non-eea                                  controllers.asse
 GET        /change-trust-owns-non-eea-company                   controllers.asset.TrustOwnsNonEeaBusinessYesNoController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-trust-owns-non-eea-company                   controllers.asset.TrustOwnsNonEeaBusinessYesNoController.onSubmit(mode: Mode = CheckMode)
 
-GET        /information-you-need                                controllers.asset.AssetInterruptPageController.onPageLoad()
-POST       /information-you-need                                controllers.asset.AssetInterruptPageController.onSubmit()
+GET        /asset-start                                        controllers.asset.AssetInterruptPageController.onPageLoad()
+POST       /asset-start                                        controllers.asset.AssetInterruptPageController.onSubmit()
 
 GET        /feature-not-available                               controllers.FeatureNotAvailableController.onPageLoad()
 
