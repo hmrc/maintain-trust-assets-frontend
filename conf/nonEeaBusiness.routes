@@ -21,10 +21,6 @@ POST       /:index/check-your-answers                                        con
 
 GET        /add-non-eea                                                      controllers.asset.noneeabusiness.AddNonEeaBusinessAssetController.onPageLoad()
 POST       /add-non-eea                                                      controllers.asset.noneeabusiness.AddNonEeaBusinessAssetController.submitOne()
-GET        /add-another                                                      controllers.asset.noneeabusiness.AddNonEeaBusinessAssetController.onPageLoad()
-POST       /add-another                                                      controllers.asset.noneeabusiness.AddNonEeaBusinessAssetController.submitAnother()
-GET        /complete                                                         controllers.asset.noneeabusiness.AddNonEeaBusinessAssetController.submitComplete()
-POST       /complete                                                         controllers.asset.noneeabusiness.AddNonEeaBusinessAssetController.submitComplete()
 
 GET        /add-another                                                      controllers.asset.noneeabusiness.AddNonEeaBusinessAssetController.onPageLoad()
 POST       /add-another                                                      controllers.asset.noneeabusiness.AddNonEeaBusinessAssetController.submitAnother()
