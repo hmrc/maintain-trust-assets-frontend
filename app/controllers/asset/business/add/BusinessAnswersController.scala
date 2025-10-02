@@ -59,37 +59,31 @@ class BusinessAnswersController @Inject()(
       Ok(view(index, section))
     }
 
-  def onSubmit(index: Int): Action[AnyContent] =
-    standardActionSets.verifiedForIdentifier.async { implicit request =>
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
+    implicit request =>
       mapper(request.userAnswers) match {
-        case None =>
-          errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
-
+        case None => errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
         case Some(asset) =>
-          connector.amendBusinessAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
-            response.status match {
-              case OK | NO_CONTENT =>
-                cleanAllAndRedirect(index)
-
-              case _ =>
-                connector.getAssets(request.userAnswers.identifier).flatMap { data =>
-                  val matchFound = data.business.exists(existing =>
-                    existing.orgName.equalsIgnoreCase(asset.orgName) &&
-                      existing.businessDescription.equalsIgnoreCase(asset.businessDescription) &&
-                      existing.address == asset.address &&
-                      existing.businessValue == asset.businessValue
-                  )
-
-                  if (!matchFound) {
-                    connector.addBusinessAsset(request.userAnswers.identifier, asset).flatMap(_ => cleanAllAndRedirect(index))
-                  } else {
-                    cleanAllAndRedirect(index)
-                  }
+          connector.getAssets(request.userAnswers.identifier).flatMap { data =>
+            if (data.business.nonEmpty && (data.business.size - 1 == index)) {
+              connector.amendBusinessAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
+                response.status match {
+                  case OK | NO_CONTENT => cleanAllAndRedirect(index)
                 }
+              }
+            } else {
+              val exists = data.business.exists(e =>
+                e.orgName.equalsIgnoreCase(asset.orgName) &&
+                  e.businessDescription.equalsIgnoreCase(asset.businessDescription) &&
+                  e.address == asset.address &&
+                  e.businessValue == asset.businessValue
+              )
+              if (!exists) connector.addBusinessAsset(request.userAnswers.identifier, asset).flatMap(_ => cleanAllAndRedirect(index))
+              else cleanAllAndRedirect(index)
             }
           }
       }
-    }
+  }
 
   private def cleanAllAndRedirect(index: Int)(implicit request: DataRequest[AnyContent]): Future[Result] = {
     val next = navigator.nextPage(BusinessAnswerPage(index), NormalMode, request.userAnswers)

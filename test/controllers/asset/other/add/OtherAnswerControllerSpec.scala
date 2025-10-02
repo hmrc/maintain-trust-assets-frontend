@@ -77,9 +77,14 @@ class OtherAnswerControllerSpec extends SpecBase {
         .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
         .build()
 
-      when(mockTrustConnector.addOtherAsset( any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+      when(mockTrustConnector.getAssets(any())(any(), any()))
+        .thenReturn(Future.successful(models.assets.Assets()))
 
-      when(mockTrustConnector.amendOtherAsset(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+      when(mockTrustConnector.addOtherAsset(any(), any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(OK, "")))
+
+      when(mockTrustConnector.amendOtherAsset(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val request = FakeRequest(POST, controllers.asset.other.add.routes.OtherAnswerController.onSubmit(index).url)
 
@@ -91,7 +96,6 @@ class OtherAnswerControllerSpec extends SpecBase {
 
       application.stop()
     }
-
 
     "redirect to Session Expired for a GET if no existing data is found" in {
 

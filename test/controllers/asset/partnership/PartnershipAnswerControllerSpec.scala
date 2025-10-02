@@ -83,21 +83,21 @@ class PartnershipAnswerControllerSpec extends SpecBase {
 
         application.stop()
       }
-
     }
 
     "on POST" must {
 
       "redirect to the next page when valid data is submitted" in {
-
         val mockTrustConnector = mock[TrustsConnector]
 
         val application = applicationBuilder(userAnswers = Some(answers))
           .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
           .build()
 
+        when(mockTrustConnector.getAssets(any())(any(), any()))
+          .thenReturn(Future.successful(models.assets.Assets()))
 
-        when(mockTrustConnector.amendPartnershipAsset(any(), any(),any())(any(), any()))
+        when(mockTrustConnector.amendPartnershipAsset(any(), any(), any())(any(), any()))
           .thenReturn(Future.successful(HttpResponse(OK, "")))
 
         when(mockTrustConnector.addPartnershipAsset(any(), any())(any(), any()))
@@ -127,7 +127,6 @@ class PartnershipAnswerControllerSpec extends SpecBase {
 
         application.stop()
       }
-
     }
   }
 }

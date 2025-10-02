@@ -63,22 +63,24 @@ class PartnershipAnswerController @Inject()(
       mapper(request.userAnswers) match {
         case None => errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
         case Some(asset) =>
-          connector.amendPartnershipAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
-            response.status match {
-              case OK | NO_CONTENT => cleanAllAndRedirect(index)
-              case _ =>
-                connector.getAssets(request.userAnswers.identifier).flatMap { data =>
-                  val exists = data.partnerShip.exists(ele =>
-                    ele.description.equalsIgnoreCase(asset.description) &&
-                      ele.partnershipStart == asset.partnershipStart
-                  )
-                  if (!exists) connector.addPartnershipAsset(request.userAnswers.identifier, asset).flatMap(_ => cleanAllAndRedirect(index))
-                  else cleanAllAndRedirect(index)
+          connector.getAssets(request.userAnswers.identifier).flatMap { data =>
+            if (data.partnerShip.nonEmpty && (data.partnerShip.size - 1 == index)) {
+              connector.amendPartnershipAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
+                response.status match {
+                  case OK | NO_CONTENT => cleanAllAndRedirect(index)
                 }
+              }
+            } else {
+              val exists = data.partnerShip.exists(ele =>
+                ele.description.equalsIgnoreCase(asset.description) &&
+                  ele.partnershipStart == asset.partnershipStart
+              )
+              if (!exists) connector.addPartnershipAsset(request.userAnswers.identifier, asset).flatMap(_ => cleanAllAndRedirect(index))
+              else cleanAllAndRedirect(index)
             }
           }
       }
-    }
+  }
 
   private def cleanAllAndRedirect(index: Int)(implicit request: DataRequest[AnyContent]): Future[Result] = {
     val next = navigator.nextPage(PartnershipAnswerPage(index), NormalMode, request.userAnswers)

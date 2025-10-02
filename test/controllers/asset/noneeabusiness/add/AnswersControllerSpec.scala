@@ -146,6 +146,12 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
         .overrides(bind[TrustsConnector].toInstance(mockTrustsConnector))
         .build()
 
+      when(mockTrustsConnector.getAssets(any())(any(), any()))
+        .thenReturn(Future.successful(models.assets.Assets()))
+
+      when(mockTrustsConnector.addNonEeaBusinessAsset(any(), any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(OK, "")))
+
       when(mockTrustsConnector.amendNonEeaBusinessAsset(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(HttpResponse(OK, "")))
 
