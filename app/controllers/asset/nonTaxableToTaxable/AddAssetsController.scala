@@ -123,9 +123,7 @@ class AddAssetsController @Inject()(
       trustService.getAssets(request.userAnswers.identifier).flatMap { assets: Assets =>
         addAnotherForm.bindFromRequest().fold(
           (formWithErrors: Form[_]) => {
-            logger.info("=================================")
             val assetRows = viewHelper.rows(assets, isNonTaxable = false)
-            logger.info("=================================" + assetRows + "============================")
             Future.successful(BadRequest(addAssetsView(
               form = formWithErrors,
               completeAssets = assetRows.complete,

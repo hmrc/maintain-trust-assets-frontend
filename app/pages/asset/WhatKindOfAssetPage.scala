@@ -32,7 +32,7 @@ import scala.util.{Success, Try}
 
 final case class WhatKindOfAssetPage(index: Int) extends QuestionPage[WhatKindOfAsset] {
 
-  override def path: JsPath = JsPath \ Assets \ index \ toString
+  override def path: JsPath = JsPath \ Assets \ toString
 
   override def toString: String = key
 
