@@ -58,30 +58,24 @@ class MoneyAnswerController @Inject()(
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
       mapper(request.userAnswers) match {
-        case None =>
-          errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
-
+        case None => errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
         case Some(asset) =>
-          connector.amendMoneyAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
-            response.status match {
-              case OK | NO_CONTENT =>
-                cleanAllAndRedirect()
-
-              case _ =>
-                connector.getAssets(request.userAnswers.identifier).flatMap { data =>
-                  val matchFound = data.monetary.exists(existing => existing.assetMonetaryAmount == asset.assetMonetaryAmount)
-                  if (!matchFound) {
-                    connector.addMoneyAsset(request.userAnswers.identifier, asset).flatMap(_ => cleanAllAndRedirect())
-                  } else {
-                    cleanAllAndRedirect()
-                  }
+          connector.getAssets(request.userAnswers.identifier).flatMap { data =>
+            if (data.monetary.nonEmpty && (data.monetary.size - 1 == index)) {
+              connector.amendMoneyAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
+                response.status match {
+                  case OK | NO_CONTENT => cleanAllAndRedirect()
                 }
+              }
+            } else {
+              val exists = data.monetary.exists(e => e.assetMonetaryAmount == asset.assetMonetaryAmount)
+              if (!exists) connector.addMoneyAsset(request.userAnswers.identifier, asset).flatMap(_ => cleanAllAndRedirect())
+              else cleanAllAndRedirect()
             }
           }
       }
-    }
+  }
 
-  /** Compute target first; then cleanup (preserving current Money journey) and persist. */
   private def cleanAllAndRedirect()(implicit request: DataRequest[AnyContent]): Future[Result] = {
     val next = controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
     request.userAnswers.cleanupPreservingMoney.fold(

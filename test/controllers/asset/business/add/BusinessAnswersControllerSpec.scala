@@ -73,9 +73,14 @@ class BusinessAnswersControllerSpec extends SpecBase {
         .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
         .build()
 
-      when(mockTrustConnector.amendBusinessAsset(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
-      when(mockTrustConnector.addBusinessAsset(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+      when(mockTrustConnector.getAssets(any())(any(), any()))
+        .thenReturn(Future.successful(models.assets.Assets()))
 
+      when(mockTrustConnector.amendBusinessAsset(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(OK, "")))
+
+      when(mockTrustConnector.addBusinessAsset(any(), any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val request = FakeRequest(POST, routes.BusinessAnswersController.onSubmit(index).url)
 
@@ -115,6 +120,5 @@ class BusinessAnswersControllerSpec extends SpecBase {
 
       application.stop()
     }
-
   }
 }

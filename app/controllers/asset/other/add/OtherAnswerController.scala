@@ -66,15 +66,17 @@ class OtherAnswerController @Inject()(
       mapper(request.userAnswers) match {
         case None => errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
         case Some(asset) =>
-          connector.amendOtherAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
-            response.status match {
-              case OK | NO_CONTENT => cleanAllAndRedirect(index)
-              case _ =>
-                connector.getAssets(request.userAnswers.identifier).flatMap { data =>
-                  val exists = data.other.exists(e => e.description.equalsIgnoreCase(asset.description) && e.value == asset.value)
-                  if (!exists) connector.addOtherAsset(request.userAnswers.identifier, asset).flatMap(_ => cleanAllAndRedirect(index))
-                  else cleanAllAndRedirect(index)
+          connector.getAssets(request.userAnswers.identifier).flatMap { data =>
+            if (data.other.nonEmpty && (data.other.size - 1 == index)) {
+              connector.amendOtherAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
+                response.status match {
+                  case OK | NO_CONTENT => cleanAllAndRedirect(index)
                 }
+              }
+            } else {
+              val exists = data.other.exists(e => e.description.equalsIgnoreCase(asset.description) && e.value == asset.value)
+              if (!exists) connector.addOtherAsset(request.userAnswers.identifier, asset).flatMap(_ => cleanAllAndRedirect(index))
+              else cleanAllAndRedirect(index)
             }
           }
       }
