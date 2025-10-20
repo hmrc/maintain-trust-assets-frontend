@@ -6,7 +6,7 @@
 ->         /business                                            business.Routes
 ->         /partnership                                         partnership.Routes
 ->         /other                                               other.Routes
-->         /ownership-or-controlling-interest                   nonEeaBusiness.Routes
+->         /non-eea-business                                    nonEeaBusiness.Routes
 ->         /migrate-to-taxable                                  nonTaxableToTaxable.Routes
 ->         /hmrc-frontend                                       hmrcfrontend.Routes
 
@@ -24,13 +24,13 @@ GET        /logout                                              controllers.Logo
 GET        /:index/assets-type                                  controllers.asset.WhatKindOfAssetController.onPageLoad(index: Int)
 POST       /:index/assets-type                                  controllers.asset.WhatKindOfAssetController.onSubmit(index: Int)
 
-GET        /trust-owns-non-eea                                  controllers.asset.TrustOwnsNonEeaBusinessYesNoController.onPageLoad(mode: Mode = NormalMode)
-POST       /trust-owns-non-eea                                  controllers.asset.TrustOwnsNonEeaBusinessYesNoController.onSubmit(mode: Mode = NormalMode)
+GET        /trust-owns-non-eea-company                          controllers.asset.TrustOwnsNonEeaBusinessYesNoController.onPageLoad(mode: Mode = NormalMode)
+POST       /trust-owns-non-eea-company                          controllers.asset.TrustOwnsNonEeaBusinessYesNoController.onSubmit(mode: Mode = NormalMode)
 GET        /change-trust-owns-non-eea-company                   controllers.asset.TrustOwnsNonEeaBusinessYesNoController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-trust-owns-non-eea-company                   controllers.asset.TrustOwnsNonEeaBusinessYesNoController.onSubmit(mode: Mode = CheckMode)
 
-GET        /asset-start                                        controllers.asset.AssetInterruptPageController.onPageLoad()
-POST       /asset-start                                        controllers.asset.AssetInterruptPageController.onSubmit()
+GET        /information-you-need                                controllers.asset.AssetInterruptPageController.onPageLoad()
+POST       /information-you-need                                controllers.asset.AssetInterruptPageController.onSubmit()
 
 GET        /feature-not-available                               controllers.FeatureNotAvailableController.onPageLoad()
 
