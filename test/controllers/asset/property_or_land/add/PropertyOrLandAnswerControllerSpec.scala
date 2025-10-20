@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,7 +50,6 @@ class PropertyOrLandAnswerControllerSpec extends SpecBase {
         .set(PropertyOrLandTotalValuePage(index), totalValue).success.value
         .set(TrustOwnAllThePropertyOrLandPage(index), true).success.value
 
-
     "property or land does not have an address and total value is owned by the trust" must {
 
       "return OK and the correct view for a GET" in {
@@ -72,7 +71,6 @@ class PropertyOrLandAnswerControllerSpec extends SpecBase {
 
         application.stop()
       }
-
     }
 
     "redirect to the next page when valid data is submitted" in {
@@ -81,20 +79,25 @@ class PropertyOrLandAnswerControllerSpec extends SpecBase {
       val application = applicationBuilder(userAnswers = Some(answers))
         .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
         .build()
-      when(mockTrustConnector.amendPropertyOrLandAsset(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
-      when(mockTrustConnector.addPropertyOrLandAsset(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+
+      when(mockTrustConnector.getAssets(any())(any(), any()))
+        .thenReturn(Future.successful(models.assets.Assets()))
+
+      when(mockTrustConnector.amendPropertyOrLandAsset(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(OK, "")))
+
+      when(mockTrustConnector.addPropertyOrLandAsset(any(), any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val request = FakeRequest(POST, routes.PropertyOrLandAnswerController.onSubmit(index).url)
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-
       redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
 
       application.stop()
     }
-
 
     "redirect to the next page when valid data is not valid" in {
       val mockTrustConnector = mock[TrustsConnector]
@@ -135,6 +138,5 @@ class PropertyOrLandAnswerControllerSpec extends SpecBase {
 
       application.stop()
     }
-
   }
 }

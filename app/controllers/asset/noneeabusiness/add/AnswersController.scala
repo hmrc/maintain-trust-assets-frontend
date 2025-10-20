@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,36 +57,31 @@ class AnswersController @Inject()(
       Ok(view(index, section))
     }
 
-  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async { implicit request =>
-    mapper(request.userAnswers) match {
-      case None =>
-        errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
-
-      case Some(asset) =>
-        connector.amendNonEeaBusinessAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
-          response.status match {
-            case OK | NO_CONTENT =>
-              cleanAllAndRedirect()
-
-            case _ =>
-              connector.getAssets(request.userAnswers.identifier).flatMap { data =>
-                val exists = data.nonEEABusiness.exists { e =>
-                  e.orgName.equalsIgnoreCase(asset.orgName) &&
-                    e.address.line1.equalsIgnoreCase(asset.address.line1) &&
-                    e.govLawCountry.equalsIgnoreCase(asset.govLawCountry) &&
-                    e.startDate == asset.startDate &&
-                    e.endDate == asset.endDate
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
+    implicit request =>
+      mapper(request.userAnswers) match {
+        case None => errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
+        case Some(asset) =>
+          connector.getAssets(request.userAnswers.identifier).flatMap { data =>
+            if (data.nonEEABusiness.nonEmpty && (data.nonEEABusiness.size - 1 == index)) {
+              connector.amendNonEeaBusinessAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
+                response.status match {
+                  case OK | NO_CONTENT => cleanAllAndRedirect()
                 }
-
-                if (!exists)
-                  connector.addNonEeaBusinessAsset(request.userAnswers.identifier, asset)
-                    .flatMap(_ => cleanAllAndRedirect())
-                else
-                  cleanAllAndRedirect()
               }
+            } else {
+              val exists = data.nonEEABusiness.exists { e =>
+                e.orgName.equalsIgnoreCase(asset.orgName) &&
+                  e.address.line1.equalsIgnoreCase(asset.address.line1) &&
+                  e.govLawCountry.equalsIgnoreCase(asset.govLawCountry) &&
+                  e.startDate == asset.startDate &&
+                  e.endDate == asset.endDate
+              }
+              if (!exists) connector.addNonEeaBusinessAsset(request.userAnswers.identifier, asset).flatMap(_ => cleanAllAndRedirect())
+              else cleanAllAndRedirect()
+            }
           }
-        }
-    }
+      }
   }
 
   private def cleanAllAndRedirect()
@@ -97,5 +92,4 @@ class AnswersController @Inject()(
       ua => repository.set(ua).map(_ => Redirect(next))
     )
   }
-
 }

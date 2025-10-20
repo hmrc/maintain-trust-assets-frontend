@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,9 +73,14 @@ class BusinessAnswersControllerSpec extends SpecBase {
         .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
         .build()
 
-      when(mockTrustConnector.amendBusinessAsset(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
-      when(mockTrustConnector.addBusinessAsset(any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+      when(mockTrustConnector.getAssets(any())(any(), any()))
+        .thenReturn(Future.successful(models.assets.Assets()))
 
+      when(mockTrustConnector.amendBusinessAsset(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(OK, "")))
+
+      when(mockTrustConnector.addBusinessAsset(any(), any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val request = FakeRequest(POST, routes.BusinessAnswersController.onSubmit(index).url)
 
@@ -115,6 +120,5 @@ class BusinessAnswersControllerSpec extends SpecBase {
 
       application.stop()
     }
-
   }
 }

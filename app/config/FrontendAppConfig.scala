@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,12 +21,14 @@ import controllers.routes
 import play.api.Configuration
 import play.api.i18n.{Lang, Messages}
 import play.api.mvc.Call
+
 import java.time.LocalDate
 import uk.gov.hmrc.hmrcfrontend.config.ContactFrontendConfig
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 @Singleton
 class FrontendAppConfig @Inject()(val configuration: Configuration,
-                                  contactFrontendConfig: ContactFrontendConfig) {
+                                  contactFrontendConfig: ContactFrontendConfig, servicesConfig: ServicesConfig) {
 
   final val ENGLISH = "en"
   final val WELSH = "cy"
@@ -42,7 +44,7 @@ class FrontendAppConfig @Inject()(val configuration: Configuration,
   lazy val countdownLength: Int = configuration.get[Int]("timeout.countdown")
   lazy val timeoutLength: Int = configuration.get[Int]("timeout.length")
 
-  lazy val authUrl: String = configuration.get[Service]("auth").baseUrl
+  lazy val authUrl: String = servicesConfig.baseUrl("auth")
   lazy val loginUrl: String = configuration.get[String]("urls.login")
   lazy val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
 
@@ -51,11 +53,11 @@ class FrontendAppConfig @Inject()(val configuration: Configuration,
   lazy val logoutAudit: Boolean =
     configuration.get[Boolean]("microservice.services.features.auditing.logout")
 
-  lazy val trustsUrl: String = configuration.get[Service]("microservice.services.trusts").baseUrl
+  lazy val trustsUrl: String = servicesConfig.baseUrl("trusts")
 
-  lazy val trustAuthUrl: String = configuration.get[Service]("microservice.services.trusts-auth").baseUrl
+  lazy val trustAuthUrl: String = servicesConfig.baseUrl("trusts-auth")
 
-  lazy val trustsStoreUrl: String = configuration.get[Service]("microservice.services.trusts-store").baseUrl
+  lazy val trustsStoreUrl: String = servicesConfig.baseUrl("trusts-store")
 
   lazy val maintainATrustOverview: String = configuration.get[String]("urls.maintainATrustOverview")
 

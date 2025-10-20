@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,27 +63,30 @@ class ShareAnswerController @Inject()(
       mapper(request.userAnswers) match {
         case None => errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
         case Some(asset) =>
-          connector.amendSharesAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
-            response.status match {
-              case OK | NO_CONTENT => cleanAllAndRedirect(index)
-              case _ =>
-                connector.getAssets(request.userAnswers.identifier).flatMap { data =>
-                  val matchFound = data.shares.exists(ele =>
-                    ele.orgName.equalsIgnoreCase(asset.orgName) &&
-                      ele.isPortfolio == asset.isPortfolio &&
-                      ele.shareClass.equalsIgnoreCase(asset.shareClass) &&
-                      ele.typeOfShare.equalsIgnoreCase(asset.typeOfShare) &&
-                      ele.numberOfShares.equalsIgnoreCase(asset.numberOfShares) &&
-                      ele.shareClassDisplay == asset.shareClassDisplay &&
-                      ele.value == asset.value
-                  )
-                  if (!matchFound) connector.addSharesAsset(request.userAnswers.identifier, asset).flatMap(_ => cleanAllAndRedirect(index))
-                  else cleanAllAndRedirect(index)
+          connector.getAssets(request.userAnswers.identifier).flatMap { data =>
+            if (data.shares.nonEmpty && (data.shares.size - 1 == index)) {
+              connector.amendSharesAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
+                response.status match {
+                  case OK | NO_CONTENT => cleanAllAndRedirect(index)
                 }
+              }
+            } else {
+              val matchFound = data.shares.exists(ele =>
+                ele.orgName.equalsIgnoreCase(asset.orgName) &&
+                  ele.isPortfolio == asset.isPortfolio &&
+                  ele.shareClass.equalsIgnoreCase(asset.shareClass) &&
+                  ele.typeOfShare.equalsIgnoreCase(asset.typeOfShare) &&
+                  ele.numberOfShares.equalsIgnoreCase(asset.numberOfShares) &&
+                  ele.shareClassDisplay == asset.shareClassDisplay &&
+                  ele.value == asset.value
+              )
+              if (!matchFound) connector.addSharesAsset(request.userAnswers.identifier, asset).flatMap(_ => cleanAllAndRedirect(index))
+              else cleanAllAndRedirect(index)
             }
           }
       }
-    }
+  }
+
 
   private def cleanAllAndRedirect(index: Int)(implicit request: DataRequest[AnyContent]): Future[Result] = {
     val next = navigator.nextPage(ShareAnswerPage(index), NormalMode, request.userAnswers)

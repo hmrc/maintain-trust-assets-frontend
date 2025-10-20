@@ -28,7 +28,7 @@ govukSummaryList: GovukSummaryList
 )
 
 
-@(index: Int, answerSections: AnswerSection)(implicit request: Request[_], messages: Messages)
+@(index: Int, answerSections: AnswerSection)(implicit request: RequestHeader, messages: Messages)
 
 @mainTemplate(
 title = messages("money.answers.title"),

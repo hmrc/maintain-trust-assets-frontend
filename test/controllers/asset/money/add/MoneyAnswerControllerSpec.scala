@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,8 +72,7 @@ class MoneyAnswerControllerSpec extends SpecBase {
 
     "redirect to the next page when valid data is submitted" in {
 
-      // Mocking the TrustService to return a monetary asset
-      val mockTrustService = mock[TrustService]
+      val mockTrustService   = mock[TrustService]
       val mockTrustConnector = mock[TrustsConnector]
 
       val application = applicationBuilder(userAnswers = Some(answers))
@@ -83,12 +82,19 @@ class MoneyAnswerControllerSpec extends SpecBase {
         )
         .build()
 
-      // Mocking getMonetaryAsset to return a valid asset
       val validMonetaryAsset = AssetMonetaryAmount(4000L)
-      when(mockTrustService.getMonetaryAsset(any())(any(), any())).thenReturn(Future.successful(Some(validMonetaryAsset)))
 
-      // Mocking the amendMoneyAsset method to return a successful response (this is crucial!)
-      when(mockTrustConnector.amendMoneyAsset(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+      when(mockTrustService.getMonetaryAsset(any())(any(), any()))
+        .thenReturn(Future.successful(Some(validMonetaryAsset)))
+
+      when(mockTrustConnector.getAssets(any())(any(), any()))
+        .thenReturn(Future.successful(models.assets.Assets()))
+
+      when(mockTrustConnector.amendMoneyAsset(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(OK, "")))
+
+      when(mockTrustConnector.addMoneyAsset(any(), any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val request = FakeRequest(POST, controllers.asset.money.add.routes.MoneyAnswerController.onSubmit(index).url)
         .withFormUrlEncodedBody("value" -> "4000")
@@ -100,6 +106,7 @@ class MoneyAnswerControllerSpec extends SpecBase {
 
       application.stop()
     }
+
 
     "redirect to Session Expired for a GET if no existing data is found" in {
 

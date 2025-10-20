@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -83,21 +83,21 @@ class PartnershipAnswerControllerSpec extends SpecBase {
 
         application.stop()
       }
-
     }
 
     "on POST" must {
 
       "redirect to the next page when valid data is submitted" in {
-
         val mockTrustConnector = mock[TrustsConnector]
 
         val application = applicationBuilder(userAnswers = Some(answers))
           .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
           .build()
 
+        when(mockTrustConnector.getAssets(any())(any(), any()))
+          .thenReturn(Future.successful(models.assets.Assets()))
 
-        when(mockTrustConnector.amendPartnershipAsset(any(), any(),any())(any(), any()))
+        when(mockTrustConnector.amendPartnershipAsset(any(), any(), any())(any(), any()))
           .thenReturn(Future.successful(HttpResponse(OK, "")))
 
         when(mockTrustConnector.addPartnershipAsset(any(), any())(any(), any()))
@@ -127,7 +127,6 @@ class PartnershipAnswerControllerSpec extends SpecBase {
 
         application.stop()
       }
-
     }
   }
 }

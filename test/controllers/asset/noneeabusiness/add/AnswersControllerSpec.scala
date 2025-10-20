@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ package controllers.asset.noneeabusiness.add
 import base.SpecBase
 import connectors.TrustsConnector
 import mapping.NonEeaBusinessAssetMapper
-import models.assets.{AssetMonetaryAmount, Assets, NonEeaBusinessType}
+import models.assets.{AssetMonetaryAmount, Assets}
 import models.{NonUkAddress, UserAnswers}
 import navigation.AssetsNavigator
 import org.mockito.ArgumentMatchers.any
@@ -145,6 +145,12 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
       val application = applicationBuilder(userAnswers = Some(answers))
         .overrides(bind[TrustsConnector].toInstance(mockTrustsConnector))
         .build()
+
+      when(mockTrustsConnector.getAssets(any())(any(), any()))
+        .thenReturn(Future.successful(models.assets.Assets()))
+
+      when(mockTrustsConnector.addNonEeaBusinessAsset(any(), any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(OK, "")))
 
       when(mockTrustsConnector.amendNonEeaBusinessAsset(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(HttpResponse(OK, "")))

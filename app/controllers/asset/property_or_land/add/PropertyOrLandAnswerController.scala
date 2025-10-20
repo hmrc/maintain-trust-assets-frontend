@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,22 +63,24 @@ class PropertyOrLandAnswerController @Inject()(
       mapper(request.userAnswers) match {
         case None => errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
         case Some(asset) =>
-          connector.amendPropertyOrLandAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
-            response.status match {
-              case OK | NO_CONTENT => cleanAllAndRedirect(index)
-              case _ =>
-                connector.getAssets(request.userAnswers.identifier).flatMap { data =>
-                  val matchFound = data.propertyOrLand.exists(existing =>
-                    existing.name.equalsIgnoreCase(asset.name) &&
-                      existing.address == asset.address &&
-                      existing.buildingLandName == asset.buildingLandName &&
-                      existing.descriptionOrAddress == asset.descriptionOrAddress &&
-                      existing.valueFull == asset.valueFull &&
-                      existing.valuePrevious == asset.valuePrevious
-                  )
-                  if (!matchFound) connector.addPropertyOrLandAsset(request.userAnswers.identifier, asset).flatMap(_ => cleanAllAndRedirect(index))
-                  else cleanAllAndRedirect(index)
+          connector.getAssets(request.userAnswers.identifier).flatMap { data =>
+            if (data.propertyOrLand.nonEmpty && (data.propertyOrLand.size - 1 == index)) {
+              connector.amendPropertyOrLandAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
+                response.status match {
+                  case OK | NO_CONTENT => cleanAllAndRedirect(index)
                 }
+              }
+            } else {
+              val matchFound = data.propertyOrLand.exists(existing =>
+                existing.name.equalsIgnoreCase(asset.name) &&
+                  existing.address == asset.address &&
+                  existing.buildingLandName == asset.buildingLandName &&
+                  existing.descriptionOrAddress == asset.descriptionOrAddress &&
+                  existing.valueFull == asset.valueFull &&
+                  existing.valuePrevious == asset.valuePrevious
+              )
+              if (!matchFound) connector.addPropertyOrLandAsset(request.userAnswers.identifier, asset).flatMap(_ => cleanAllAndRedirect(index))
+              else cleanAllAndRedirect(index)
             }
           }
       }
