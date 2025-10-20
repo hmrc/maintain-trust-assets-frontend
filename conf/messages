@@ -154,9 +154,9 @@ addNonEeaBusinessAsset.maxedOut.p2 = You can add another non-EEA company by remo
 
 assets.defaultText = this non-EEA company
 
-trustOwnsNonEeaBusinessYesNo.title = Does the trust own or have a controlling interest in a company outside the UK and EEA?
-trustOwnsNonEeaBusinessYesNo.heading = Does the trust own or have a controlling interest in a company outside the UK and EEA?
-trustOwnsNonEeaBusinessYesNo.error.required = Select yes if the trust owns or has a controlling interest in a non-EEA company
+trustOwnsNonEeaBusinessYesNo.title = Companies registered outside the UK and EEA (European Economic Area)
+trustOwnsNonEeaBusinessYesNo.heading = Companies registered outside the UK and EEA (European Economic Area)
+trustOwnsNonEeaBusinessYesNo.error.required = Select yes if the trust owns or has a controlling interest in a company outside the UK and EEA
 trustOwnsNonEeaBusinessYesNo.paragraph1 = You need to tell HMRC if the trust has ownership of or a controlling interest in a company outside the UK or EEA.
 trustOwnsNonEeaBusinessYesNo.lead_in1 = The EEA includes:
 trustOwnsNonEeaBusinessYesNo.bullet1 = all countries within the European Union (EU)
