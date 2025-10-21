@@ -19,8 +19,7 @@ package views
 import base.SpecBase
 import models.UserAnswers
 import org.jsoup.Jsoup
-import org.jsoup.nodes.{Document, Element}
-import org.jsoup.select.Elements
+import org.jsoup.nodes.Document
 import org.scalatest.Assertion
 import play.twirl.api.Html
 

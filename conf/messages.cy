@@ -24,7 +24,7 @@ entities.asset.partnership=Partneriaeth
 entities.asset.propertyOrLand=Eiddo neu dir
 entities.asset.shares=Rhannu
 entities.asset.other=Arall
-entities.nonTaxable=Nad yw’n rhan o’r AEE
+entities.nonTaxable=Y tu allan i’r DU neu’r AEE
 
 session_expired.title=Er eich diogelwch, gwnaethom eich allgofnodi
 session_expired.heading=Er eich diogelwch, gwnaethom eich allgofnodi
@@ -122,13 +122,13 @@ answerPage.section.propertyOrLandAsset.subheading=Eiddo neu dir {0}
 answerPage.section.partnershipAsset.subheading=Partneriaeth {0}
 answerPage.section.businessAsset.subheading=Busnes {0}
 answerPage.section.otherAsset.subheading=Arall {0}
-answerPage.section.nonEeaBusinessAsset.subheading=Cwmni nad yw’n rhan o’r AEE {0}
+answerPage.section.nonEeaBusinessAsset.subheading=Cwmni sydd wedi’i leoli y tu allan i’r DU neu’r AEE {0}
 
-assets.defaultText=y cwmni hwn nad yw’n AEE
+assets.defaultText=y cwmni hwn sydd wedi’i leoli y tu allan i’r DU neu’r AEE
 
 trustOwnsNonEeaBusinessYesNo.title=Cwmnïau sydd wedi’u cofrestru y tu allan i’r DU neu’r AEE (Ardal Economaidd Ewropeaidd)
 trustOwnsNonEeaBusinessYesNo.heading=Cwmnïau sydd wedi’u cofrestru y tu allan i’r DU neu’r AEE (Ardal Economaidd Ewropeaidd)
-trustOwnsNonEeaBusinessYesNo.error.required=Dewiswch ‘Iawn’ os oes gan yr ymddiriedolaeth berchnogaeth neu gyfran reolaethol mewn cwmni sydd wedi’i leoli y tu allan i’r DU a’r AEE
+trustOwnsNonEeaBusinessYesNo.error.required=Dewiswch ‘Iawn’ os oes gan yr ymddiriedolaeth berchnogaeth neu gyfran reolaethol mewn cwmni sydd wedi’i leoli y tu allan i’r DU neu’r AEE
 trustOwnsNonEeaBusinessYesNo.paragraph1 = Mae angen i chi roi gwybod i CThEF a oes gan yr ymddiriedolaeth berchnogaeth neu gyfran reolaethol mewn cwmni sydd wedi’i leoli y tu allan i’r DU neu’r AEE.
 trustOwnsNonEeaBusinessYesNo.lead_in1 = Mae’r AEE yn cynnwys:
 trustOwnsNonEeaBusinessYesNo.bullet1 = yr holl wledydd yn yr Undeb Ewropeaidd (UE)
@@ -188,7 +188,7 @@ whatKindOfAsset.Shares=Cyfranddaliadau
 whatKindOfAsset.Business=Busnes
 whatKindOfAsset.Partnership=Partneriaeth
 whatKindOfAsset.Other=Arall
-whatKindOfAsset.NonEeaBusiness=Cwmni nad yw’n rhan o’r AEE
+whatKindOfAsset.NonEeaBusiness=Cwmni sydd wedi’i leoli y tu allan i’r DU neu’r AEE
 whatKindOfAsset.error.required=Dewiswch y math o ased y mae angen i chi ei ychwanegu
 
 money.value.title=Beth yw cyfanswm yr arian yn yr ymddiriedolaeth?
@@ -489,7 +489,7 @@ nonEeaBusiness.removeYesNo.title=A ydych yn siŵr eich bod am dynnu’r ased?
 nonEeaBusiness.removeYesNo.heading=A ydych yn siŵr eich bod am dynnu {0}?
 nonEeaBusiness.removeYesNo.error.required=Dewiswch ‘Iawn’ os ydych am dynnu’r ased
 
-nonEeaBusiness.endDate.title=Pryd wnaeth perchnogaeth neu gyfran reolaethol yn y cwmni nad yw’n rhan o’r AEE ddod i ben?
+nonEeaBusiness.endDate.title=Pryd wnaeth perchnogaeth neu gyfran reolaethol yn y cwmni sydd wedi’i leoli y tu allan i’r DU neu’r AEE ddod i ben?
 nonEeaBusiness.endDate.heading=Pryd wnaeth perchnogaeth neu gyfran reolaethol yn {0} ddod i ben?
 nonEeaBusiness.endDate.checkYourAnswersLabel=Pryd wnaeth perchnogaeth neu gyfran reolaethol yn {0} ddod i ben?
 nonEeaBusiness.endDate.hint=Er enghraifft, 31 3 2015.
@@ -511,16 +511,16 @@ addNonEeaBusinessAsset.add-them-now=Iawn, ychwanegwch un nawr
 addNonEeaBusinessAsset.additional-content=A ydych chi am ychwanegu cwmni arall?
 addNonEeaBusinessAsset.count.heading=Rydych wedi ychwanegu {0} o gwmnïau
 addNonEeaBusinessAsset.count.title=Rydych wedi ychwanegu {0} o gwmnïau
-addNonEeaBusinessAsset.error.required=Dewiswch ‘Iawn’ os ydych am ychwanegu cwmni nad yw’n rhan o’r AEE
+addNonEeaBusinessAsset.error.required=Dewiswch ‘Iawn’ os oes angen i chi ychwanegu cwmni sydd wedi’i leoli y tu allan i’r DU neu’r AEE
 addNonEeaBusinessAsset.heading=Ychwanegu perchnogaeth neu gyfran reolaethol o gwmni sydd wedi’i gofrestru y tu allan i’r DU a’r AEE
 addNonEeaBusinessAsset.no-complete=Na, rwyf wedi ychwanegu pob cwmni nad yw’n rhan o’r AEE
 addNonEeaBusinessAsset.title=Ychwanegu perchnogaeth neu gyfran reolaethol ar gyfer cwmni sydd wedi’i gofrestru y tu allan i’r DU a’r AEE
-addNonEeaBusinessAsset.maxedOut.p1=Ni allwch ychwanegu ased arall gan eich bod wedi nodi uchafswm o {0}.
-addNonEeaBusinessAsset.maxedOut.p2=Gallwch ychwanegu ased arall drwy dynnu un presennol, neu drwy ysgrifennu i CThEF gyda manylion unrhyw asedion ychwanegol.
+addNonEeaBusinessAsset.maxedOut.p1=Ni allwch ychwanegu cwmni arall sydd wedi’i leoli y tu allan i’r DU neu’r AEE gan eich bod wedi nodi uchafswm o {0}.
+addNonEeaBusinessAsset.maxedOut.p2=Gallwch ychwanegu cwmni arall drwy dynnu un presennol, neu drwy ysgrifennu at CThEF gyda manylion unrhyw gwmni arall sydd wedi’i leoli y tu allan i’r DU neu’r AEE.
 
-addNonEeaBusinessAssetYesNo.error.required=Dewiswch ‘Iawn’ os ydych am ychwanegu cwmni nad yw’n rhan o’r AEE
-addNonEeaBusinessAssetYesNo.heading=A ydych am ychwanegu cwmni nad yw’n rhan o’r AEE?
-addNonEeaBusinessAssetYesNo.title=A ydych am ychwanegu cwmni nad yw’n rhan o’r AEE?
+addNonEeaBusinessAssetYesNo.error.required=Dewiswch ‘Iawn’ os oes angen i chi ychwanegu cwmni sydd wedi’i leoli y tu allan i’r DU neu’r AEE
+addNonEeaBusinessAssetYesNo.heading=A oes angen i chi ychwanegu cwmni sydd wedi’i leoli y tu allan i’r DU neu’r AEE?
+addNonEeaBusinessAssetYesNo.title=A oes angen i chi ychwanegu cwmni sydd wedi’i leoli y tu allan i’r DU neu’r AEE?
 
 nonTaxableToTaxable.addAssets.add-them-later=Iawn, rwyf am ei ychwanegu yn nes ymlaen
 nonTaxableToTaxable.addAssets.add-them-now=Iawn, rwyf am ei ychwanegu nawr
@@ -582,7 +582,7 @@ nonTaxableToTaxable.assetInterruptPage.subheading1=Arian
 nonTaxableToTaxable.assetInterruptPage.subheading2=Eiddo neu dir
 nonTaxableToTaxable.assetInterruptPage.subheading3=Cyfranddaliadau
 nonTaxableToTaxable.assetInterruptPage.subheading4=Busnes
-nonTaxableToTaxable.assetInterruptPage.subheading5=Cwmni nad yw’n rhan o’r Ardal Economaidd Ewropeaidd (AEE)
+nonTaxableToTaxable.assetInterruptPage.subheading5=Cwmnïau sydd y tu allan i’r DU neu’r AEE (Ardal Economaidd Ewropeaidd)
 nonTaxableToTaxable.assetInterruptPage.subheading6=Partneriaethau
 nonTaxableToTaxable.assetInterruptPage.subheading7=Asedion eraill
 nonTaxableToTaxable.assetInterruptPage.tellus=Rhowch y canlynol i ni:

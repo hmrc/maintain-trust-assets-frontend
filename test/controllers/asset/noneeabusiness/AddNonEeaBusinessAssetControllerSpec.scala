@@ -367,8 +367,8 @@ class AddNonEeaBusinessAssetControllerSpec extends SpecBase with Generators with
         content mustEqual
           view(fakeAddRows, s"You have added $MAX_NON_EEA_BUSINESS_ASSETS companies", MAX_NON_EEA_BUSINESS_ASSETS, prefix)(request, messages).toString
 
-        content must include("You cannot add another non-EEA company as you have entered a maximum of 25.")
-        content must include("You can add another non-EEA company by removing an existing one, or write to HMRC with details of any additional non-EEA companies.")
+        content must include("You cannot add another company outside the UK or EEA as you have entered a maximum of 25.")
+        content must include("You can add another company by removing an existing one, or write to HMRC with details of any additional companies outside the UK or EEA.")
 
         verify(mockViewHelper).rows(eqTo(assets), eqTo(true))(any())
 

@@ -19,13 +19,18 @@ package extensions
 object Enhancers {
 
   implicit class StringEnhancer(str: String) {
-    def uncapitalize: String = str.split(' ').foldLeft("")((acc, word) => {
-      def uncapitalizeWord = s"${word.head.toLower}${word.tail}"
+    def uncapitalise: String = str.split(' ').foldLeft("")((acc, word) => {
+      def uncapitaliseWord = s"${word.head.toLower}${word.tail}"
       if (acc.isEmpty) {
-        uncapitalizeWord
+        uncapitaliseWord
       } else {
-        s"$acc $uncapitalizeWord"
+        s"$acc $uncapitaliseWord"
       }
     })
+
+    def lowercaseFirstWord: String = str match {
+      case "" => ""
+      case s => s.head.toLower.toString + s.tail
+    }
   }
 }
