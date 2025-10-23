@@ -147,8 +147,10 @@ addNonEeaBusinessAsset.additional-content = Do you want to add another company?
 addNonEeaBusinessAsset.add-them-now = Yes, add one now
 addNonEeaBusinessAsset.no-complete = No, I have added all companies
 addNonEeaBusinessAsset.error.required = Select yes if you want to add a company outside the UK or EEA
-addNonEeaBusinessAsset.count.title = You have added {0} companies
-addNonEeaBusinessAsset.count.heading = You have added {0} companies
+
+addNonEeaBusinessAsset.count.subHeading = You have added {0} companies
+addNonEeaBusinessAsset.count.one.subHeading = You have added {0} company
+
 addNonEeaBusinessAsset.maxedOut.p1 = You cannot add another company outside the UK or EEA as you have entered a maximum of {0}.
 addNonEeaBusinessAsset.maxedOut.p2 = You can add another company by removing an existing one, or write to HMRC with details of any additional companies outside the UK or EEA.
 

@@ -41,7 +41,9 @@ class AddNonEeaBusinessAssetViewSpec extends OptionsViewBehaviours with TabularD
     view.apply(form, Nil, "Add a non-EEA company")(fakeRequest, messages)
 
   private def applyView(form: Form[_], completeAssets: Seq[AddRow], count: Int) = {
-    val title = if (count > 1) s"You have added $count companies" else "Add a non-EEA company"
+//    val title = if (count > 1) s"You have added $count companies" else "Add a non-EEA company" // todo: test x company/companies subheading
+    val title = "Add ownership or controlling interest of a company registered outside UK and EEA"
+
     view.apply(form, completeAssets, title)(fakeRequest, messages)
   }
 

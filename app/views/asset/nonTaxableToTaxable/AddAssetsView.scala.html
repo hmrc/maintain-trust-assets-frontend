@@ -18,7 +18,7 @@
 @import extensions.Enhancers.StringEnhancer
 @import models.AddAssets
 @import viewmodels.AddRow
-@import views.html.components.{SubmitButton, Heading, InputRadio, ErrorSummary, AddToList}
+@import views.html.components.{SubmitButton, Heading, InputRadio, ErrorSummary, RowFormGroupWithSubHeading}
 
 @this(
     mainTemplate: MainTemplate,
@@ -27,7 +27,7 @@
     headingComp : Heading,
     inputRadio  : InputRadio,
     errorSummary: ErrorSummary,
-    addToList   : AddToList
+    rowFormGroupWithSubHeading: RowFormGroupWithSubHeading
 )
 @(
     form: Form[_],
@@ -48,7 +48,7 @@
 
         @headingComp(heading)
 
-        @addToList(completeAssets, "complete")
+        @rowFormGroupWithSubHeading(completeAssets, "complete")
 
         @if(maxedOut.size == 1) {
             <div class="govuk-inset-text">

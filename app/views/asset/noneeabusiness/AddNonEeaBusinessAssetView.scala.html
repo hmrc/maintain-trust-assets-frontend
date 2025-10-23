@@ -17,7 +17,7 @@
 @import controllers.asset.noneeabusiness.routes._
 @import models.AddAssets
 @import viewmodels.AddRow
-@import views.html.components.{SubmitButton, ErrorSummary, InputRadio, Heading, AddToList}
+@import views.html.components.{SubmitButton, ErrorSummary, InputRadio, Heading, RowFormGroupWithSubHeading, CompletedNonEeaCompaniesWithSubHeading}
 
 
 @this(
@@ -25,9 +25,10 @@
     formHelper  : FormWithCSRF,
     errorSummary: ErrorSummary,
     headingComp : Heading,
-    addToList   : AddToList,
+    rowFormGroupWithSubHeading: RowFormGroupWithSubHeading,
     inputRadio  : InputRadio,
-    submitButton: SubmitButton
+    submitButton: SubmitButton,
+    completedNonEeaCompaniesWithSubHeading: CompletedNonEeaCompaniesWithSubHeading
 )
 
 @(form: Form[_], completeAssets: Seq[AddRow], completedAssetsHeading: String)(implicit request: RequestHeader, messages: Messages)
@@ -43,7 +44,7 @@
 
         @headingComp("addNonEeaBusinessAsset.heading")
 
-        @addToList(completeAssets, completedAssetsHeading)
+        @completedNonEeaCompaniesWithSubHeading(completeAssets)
 
         @inputRadio(
             field = form("value"),

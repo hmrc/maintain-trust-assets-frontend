@@ -509,14 +509,15 @@ date.year=Blwyddyn
 
 addNonEeaBusinessAsset.add-them-now=Iawn, ychwanegwch un nawr
 addNonEeaBusinessAsset.additional-content=A ydych chi am ychwanegu cwmni arall?
-addNonEeaBusinessAsset.count.heading=Rydych wedi ychwanegu {0} o gwmnïau
-addNonEeaBusinessAsset.count.title=Rydych wedi ychwanegu {0} o gwmnïau
 addNonEeaBusinessAsset.error.required=Dewiswch ‘Iawn’ os oes angen i chi ychwanegu cwmni sydd wedi’i leoli y tu allan i’r DU neu’r AEE
 addNonEeaBusinessAsset.heading=Ychwanegu perchnogaeth neu gyfran reolaethol o gwmni sydd wedi’i gofrestru y tu allan i’r DU a’r AEE
-addNonEeaBusinessAsset.no-complete=Na, rwyf wedi ychwanegu pob cwmni nad yw’n rhan o’r AEE
+addNonEeaBusinessAsset.no-complete=Na, rwyf wedi ychwanegu’r holl cwmnïau
 addNonEeaBusinessAsset.title=Ychwanegu perchnogaeth neu gyfran reolaethol ar gyfer cwmni sydd wedi’i gofrestru y tu allan i’r DU a’r AEE
 addNonEeaBusinessAsset.maxedOut.p1=Ni allwch ychwanegu cwmni arall sydd wedi’i leoli y tu allan i’r DU neu’r AEE gan eich bod wedi nodi uchafswm o {0}.
 addNonEeaBusinessAsset.maxedOut.p2=Gallwch ychwanegu cwmni arall drwy dynnu un presennol, neu drwy ysgrifennu at CThEF gyda manylion unrhyw gwmni arall sydd wedi’i leoli y tu allan i’r DU neu’r AEE.
+
+addNonEeaBusinessAsset.count.subHeading = Rydych wedi ychwanegu {0} o gwmnïau
+addNonEeaBusinessAsset.count.one.subHeading = Rydych wedi ychwanegu {0} o gwmnïau
 
 addNonEeaBusinessAssetYesNo.error.required=Dewiswch ‘Iawn’ os oes angen i chi ychwanegu cwmni sydd wedi’i leoli y tu allan i’r DU neu’r AEE
 addNonEeaBusinessAssetYesNo.heading=A oes angen i chi ychwanegu cwmni sydd wedi’i leoli y tu allan i’r DU neu’r AEE?
