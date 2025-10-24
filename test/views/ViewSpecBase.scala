@@ -70,10 +70,9 @@ trait ViewSpecBase extends SpecBase {
       .text
       .replaceAll("\u00a0", " ")
 
-    val expected: String = messages(s"$expectedMessageKey.heading", args: _*)
+    val expected: String = messages(s"$expectedMessageKey", args: _*)
       .replaceAll("&nbsp;", " ")
 
-    println(actual)
     actual mustBe expected
   }
 

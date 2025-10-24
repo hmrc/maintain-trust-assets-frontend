@@ -517,7 +517,7 @@ addNonEeaBusinessAsset.maxedOut.p1=Ni allwch ychwanegu cwmni arall sydd wedi’i
 addNonEeaBusinessAsset.maxedOut.p2=Gallwch ychwanegu cwmni arall drwy dynnu un presennol, neu drwy ysgrifennu at CThEF gyda manylion unrhyw gwmni arall sydd wedi’i leoli y tu allan i’r DU neu’r AEE.
 
 addNonEeaBusinessAsset.count.subHeading = Rydych wedi ychwanegu {0} o gwmnïau
-addNonEeaBusinessAsset.count.one.subHeading = Rydych wedi ychwanegu {0} o gwmnïau
+addNonEeaBusinessAsset.count.one.subHeading = Rydych wedi ychwanegu 1 o gwmnïau
 
 addNonEeaBusinessAssetYesNo.error.required=Dewiswch ‘Iawn’ os oes angen i chi ychwanegu cwmni sydd wedi’i leoli y tu allan i’r DU neu’r AEE
 addNonEeaBusinessAssetYesNo.heading=A oes angen i chi ychwanegu cwmni sydd wedi’i leoli y tu allan i’r DU neu’r AEE?

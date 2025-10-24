@@ -63,13 +63,12 @@ class AddAssetsController @Inject()(
   private val yesNoForm: Form[Boolean] = yesNoFormProvider.withPrefix("nonTaxableToTaxable.addAssetsYesNo")
 
   private def heading(count: Int)(implicit mp: MessagesProvider): String = {
-    count match {
-      case c if c > 1 => Messages(s"$prefix.count.heading", c)
+    (prefix, count) match {
+      case (prefix, _) if prefix == "addNonEeaBusinessAsset" => Messages(s"$prefix.heading")
+      case (prefix, count) if count > 1 => Messages(s"$prefix.count.heading", count)
       case _ => Messages(s"$prefix.heading")
     }
   }
-
-
 
   def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
