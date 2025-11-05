@@ -25,15 +25,15 @@ import models.Mode
 import navigation.Navigator
 import pages.asset.money.AssetMoneyValuePage
 import play.api.data.Form
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.i18n.{ I18nSupport, MessagesApi }
+import play.api.mvc.{ Action, AnyContent, MessagesControllerComponents }
 import repositories.PlaybackRepository
 import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import views.html.asset.money.AssetMoneyValueView
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 class AssetMoneyValueController @Inject()(
                                            override val messagesApi: MessagesApi,
@@ -50,28 +50,19 @@ class AssetMoneyValueController @Inject()(
 
   private val form: Form[Long] = formProvider.withConfig(prefix = "money.value")
 
-  def onPageLoad(index: Int, mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
+  def onPageLoad(index: Int, mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
-      trustService.getMonetaryAsset(request.userAnswers.identifier).map { moneyOpt =>
-        val filledForm: Form[Long] =
-          moneyOpt match {
-            case Some(value) =>
-              form.fill(value.assetMonetaryAmount)
-            case None =>
-              request.userAnswers
-                .get(AssetMoneyValuePage(index))
-                .map(form.fill)
-                .getOrElse(form)
-          }
-        Ok(view(filledForm, index, mode))
-      }
-  }
+        val preparedForm = request.userAnswers.get(AssetMoneyValuePage(index)) match {
+          case Some(value) => form.fill(value)
+          case None    => form
+        }
+        Ok(view(preparedForm, index, mode))
+    }
 
   def onSubmit(index: Int, mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
       form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, index, mode))),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, index, mode))),
         value => {
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(AssetMoneyValuePage(index), value))
@@ -79,6 +70,5 @@ class AssetMoneyValueController @Inject()(
           } yield Redirect(navigator.nextPage(AssetMoneyValuePage(index), mode, updatedAnswers))
         }
       )
-  }
-
+    }
 }

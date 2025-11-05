@@ -57,8 +57,8 @@ class AssetMoneyValueControllerSpec extends SpecBase {
         bind(classOf[TrustService]).toInstance(mockTrustService)
       ).build()
 
-      when(mockTrustService.getMonetaryAsset(any())(any(), any()))
-        .thenReturn(Future.successful(None))
+      when(mockTrustService.getMonetaryAsset(any(), any())(any(), any()))
+        .thenReturn(Future.successful(AssetMonetaryAmount(validAnswer)))
 
       val request = FakeRequest(GET, assetMoneyValueRoute)
 
@@ -82,8 +82,8 @@ class AssetMoneyValueControllerSpec extends SpecBase {
         bind(classOf[TrustService]).toInstance(mockTrustService)
       ).build()
 
-      when(mockTrustService.getMonetaryAsset(any())(any(), any()))
-        .thenReturn(Future.successful(Some(AssetMonetaryAmount(validAnswer))))
+      when(mockTrustService.getMonetaryAsset(any(), any())(any(), any()))
+        .thenReturn(Future.successful(AssetMonetaryAmount(validAnswer)))
 
       val request = FakeRequest(GET, assetMoneyValueRoute)
 
@@ -109,8 +109,8 @@ class AssetMoneyValueControllerSpec extends SpecBase {
             bind[TrustsConnector].to(mockConnector)
           )).build()
 
-      when(mockTrustService.getMonetaryAsset(any())(any(), any()))
-        .thenReturn(Future.successful(Some(AssetMonetaryAmount(validAnswer))))
+      when(mockTrustService.getMonetaryAsset(any(), any())(any(), any()))
+        .thenReturn(Future.successful(AssetMonetaryAmount(validAnswer)))
 
       when(mockConnector.addMoneyAsset( any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
 
@@ -132,8 +132,8 @@ class AssetMoneyValueControllerSpec extends SpecBase {
         bind(classOf[TrustService]).toInstance(mockTrustService)
       ).build()
 
-      when(mockTrustService.getMonetaryAsset(any())(any(), any()))
-        .thenReturn(Future.successful(Some(AssetMonetaryAmount(validAnswer))))
+      when(mockTrustService.getMonetaryAsset(any(), any())(any(), any()))
+        .thenReturn(Future.successful(AssetMonetaryAmount(validAnswer)))
 
       val request =
         FakeRequest(POST, assetMoneyValueRoute)
