@@ -84,8 +84,8 @@ class MoneyAnswerControllerSpec extends SpecBase {
 
       val validMonetaryAsset = AssetMonetaryAmount(4000L)
 
-      when(mockTrustService.getMonetaryAsset(any())(any(), any()))
-        .thenReturn(Future.successful(Some(validMonetaryAsset)))
+      when(mockTrustService.getMonetaryAsset(any(), any())(any(), any()))
+        .thenReturn(Future.successful(AssetMonetaryAmount(validMonetaryAsset.assetMonetaryAmount)))
 
       when(mockTrustConnector.getAssets(any())(any(), any()))
         .thenReturn(Future.successful(models.assets.Assets()))
