@@ -16,9 +16,9 @@
 
 package extensions
 
-object Enhancers {
+object Extensions {
 
-  implicit class StringEnhancer(str: String) {
+  implicit class StringExtensions(str: String) {
 
     def uncapitalise: String = str.split(' ').map(_.lowercaseFirstLetterOfFirstWord).mkString(" ")
 

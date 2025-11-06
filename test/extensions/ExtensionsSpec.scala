@@ -17,13 +17,13 @@
 package extensions
 
 import base.SpecBase
-import extensions.Enhancers._
+import extensions.Extensions._
 import models.WhatKindOfAsset
 import models.WhatKindOfAsset.prefix
 
-class EnhancersSpec extends SpecBase {
+class ExtensionsSpec extends SpecBase {
 
-    "StringEnhancer" when {
+    "StringExtensions" when {
 
       "uncapitalise" must {
 
