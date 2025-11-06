@@ -23,8 +23,6 @@ import models.WhatKindOfAsset.prefix
 
 class EnhancersSpec extends SpecBase {
 
-  "Enhancers" when {
-
     "StringEnhancer" when {
 
       "uncapitalise" must {
@@ -68,20 +66,23 @@ class EnhancersSpec extends SpecBase {
           }
 
         }
+      }
 
-        "uncapitalise the first word" when {
-          "Non-EEA Company" in {
+      "lowercaseFirstLetterOfFirstWord" must {
+        "lowercase the first letter of the first word" when {
+          "passed Non-EEA Company text" in {
             val messageKey = WhatKindOfAsset.NonEeaBusiness.toString
             val string = messages(s"$prefix.$messageKey")
             string.lowercaseFirstLetterOfFirstWord mustEqual "company outside the UK or EEA"
           }
 
-          "Empty string" in {
-            "".lowercaseFirstLetterOfFirstWord mustEqual ""
+          "return an empty string" when {
+            "passed an empty string" in {
+              "".lowercaseFirstLetterOfFirstWord  mustEqual ""
+            }
           }
         }
       }
     }
-  }
 
 }
