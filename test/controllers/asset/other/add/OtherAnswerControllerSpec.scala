@@ -18,11 +18,12 @@ package controllers.asset.other.add
 
 import base.SpecBase
 import connectors.TrustsConnector
-import controllers.routes._
+import mapping.OtherAssetMapper
 import models.UserAnswers
 import models.WhatKindOfAsset.Other
+import models.assets._
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{never, verify, when}
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.other.{OtherAssetDescriptionPage, OtherAssetValuePage}
 import play.api.inject.bind
@@ -38,7 +39,7 @@ class OtherAnswerControllerSpec extends SpecBase {
 
   val description: String = "Other asset"
 
-  lazy val otherAnswerRoute: String = routes.OtherAnswerController.onPageLoad(index).url
+  lazy val otherAnswerRoute: String = controllers.asset.other.add.routes.OtherAnswerController.onPageLoad(index).url
 
   val answers: UserAnswers =
     emptyUserAnswers
@@ -46,6 +47,8 @@ class OtherAnswerControllerSpec extends SpecBase {
       .set(OtherAssetDescriptionPage(index), "Other asset").success.value
       .set(OtherAssetValuePage(index), 4000L).success.value
 
+  private val mapped: OtherAssetType = OtherAssetType("Other asset", 4000L)
+  private val different: OtherAssetType = OtherAssetType("Different asset", 999L)
 
   "OtherAnswer Controller" must {
 
@@ -69,30 +72,142 @@ class OtherAnswerControllerSpec extends SpecBase {
       application.stop()
     }
 
-    "redirect to the next page when valid data is submitted" in {
+    "return INTERNAL_SERVER_ERROR when mapper returns None" in {
 
       val mockTrustConnector = mock[TrustsConnector]
+      val mockMapper = mock[OtherAssetMapper]
+
+      when(mockMapper.apply(any())).thenReturn(None)
 
       val application = applicationBuilder(userAnswers = Some(answers))
-        .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
+        .overrides(
+          bind[TrustsConnector].toInstance(mockTrustConnector),
+          bind[OtherAssetMapper].toInstance(mockMapper)
+        )
         .build()
 
+      val request = FakeRequest(POST, controllers.asset.other.add.routes.OtherAnswerController.onSubmit(index).url)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual INTERNAL_SERVER_ERROR
+
+      application.stop()
+    }
+
+    "amend branch: redirects on OK when amending the last existing other asset" in {
+
+      val mockTrustConnector = mock[TrustsConnector]
+      val mockMapper = mock[OtherAssetMapper]
+
+      when(mockMapper.apply(any())).thenReturn(Some(mapped))
       when(mockTrustConnector.getAssets(any())(any(), any()))
-        .thenReturn(Future.successful(models.assets.Assets()))
-
-      when(mockTrustConnector.addOtherAsset(any(), any())(any(), any()))
-        .thenReturn(Future.successful(HttpResponse(OK, "")))
-
+        .thenReturn(Future.successful(models.assets.Assets(Nil, Nil, Nil, Nil, Nil, List(OtherAssetType("old", 1L)), Nil)))
       when(mockTrustConnector.amendOtherAsset(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(HttpResponse(OK, "")))
+
+      val application = applicationBuilder(userAnswers = Some(answers))
+        .overrides(
+          bind[TrustsConnector].toInstance(mockTrustConnector),
+          bind[OtherAssetMapper].toInstance(mockMapper)
+        )
+        .build()
 
       val request = FakeRequest(POST, controllers.asset.other.add.routes.OtherAnswerController.onSubmit(index).url)
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-
       redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+
+      application.stop()
+    }
+
+    "amend branch: also redirects on NO_CONTENT" in {
+
+      val mockTrustConnector = mock[TrustsConnector]
+      val mockMapper = mock[OtherAssetMapper]
+
+      when(mockMapper.apply(any())).thenReturn(Some(mapped))
+      when(mockTrustConnector.getAssets(any())(any(), any()))
+        .thenReturn(Future.successful(models.assets.Assets(Nil, Nil, Nil, Nil, Nil, List(OtherAssetType("old", 1L)), Nil)))
+      when(mockTrustConnector.amendOtherAsset(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(NO_CONTENT, "")))
+
+      val application = applicationBuilder(userAnswers = Some(answers))
+        .overrides(
+          bind[TrustsConnector].toInstance(mockTrustConnector),
+          bind[OtherAssetMapper].toInstance(mockMapper)
+        )
+        .build()
+
+      val request = FakeRequest(POST, controllers.asset.other.add.routes.OtherAnswerController.onSubmit(index).url)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+
+      application.stop()
+    }
+
+    "add branch: adds when asset does not already exist and redirects" in {
+
+      val mockTrustConnector = mock[TrustsConnector]
+      val mockMapper = mock[OtherAssetMapper]
+
+      when(mockMapper.apply(any())).thenReturn(Some(mapped))
+      when(mockTrustConnector.getAssets(any())(any(), any()))
+        .thenReturn(Future.successful(models.assets.Assets(Nil, Nil, Nil, Nil, Nil, Nil, Nil)))
+      when(mockTrustConnector.addOtherAsset(any(), any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(OK, "")))
+
+      val application = applicationBuilder(userAnswers = Some(answers))
+        .overrides(
+          bind[TrustsConnector].toInstance(mockTrustConnector),
+          bind[OtherAssetMapper].toInstance(mockMapper)
+        )
+        .build()
+
+      val request = FakeRequest(POST, controllers.asset.other.add.routes.OtherAnswerController.onSubmit(index).url)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+
+      application.stop()
+    }
+
+    "exists branch: does not add when exact same asset already exists and redirects" in {
+
+      val mockTrustConnector = mock[TrustsConnector]
+      val mockMapper = mock[OtherAssetMapper]
+
+      when(mockMapper.apply(any())).thenReturn(Some(mapped))
+      // Force NOT amend: list size 2 so (size - 1) = 1 != index(0); include a matching element to hit exists=true
+      when(mockTrustConnector.getAssets(any())(any(), any()))
+        .thenReturn(Future.successful(models.assets.Assets(
+          Nil, Nil, Nil, Nil, Nil,
+          List(OtherAssetType("Other asset", 4000L), different),
+          Nil
+        )))
+
+      val application = applicationBuilder(userAnswers = Some(answers))
+        .overrides(
+          bind[TrustsConnector].toInstance(mockTrustConnector),
+          bind[OtherAssetMapper].toInstance(mockMapper)
+        )
+        .build()
+
+      val request = FakeRequest(POST, controllers.asset.other.add.routes.OtherAnswerController.onSubmit(index).url)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+
+      verify(mockTrustConnector, never()).addOtherAsset(any(), any())(any(), any())
 
       application.stop()
     }
@@ -106,7 +221,21 @@ class OtherAnswerControllerSpec extends SpecBase {
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad.url
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad.url
+
+      application.stop()
+    }
+
+    "redirect to Session Expired for a POST if no existing data is found" in {
+
+      val application = applicationBuilder(userAnswers = None).build()
+
+      val request = FakeRequest(POST, controllers.asset.other.add.routes.OtherAnswerController.onSubmit(index).url)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual controllers.routes.SessionExpiredController.onPageLoad.url
 
       application.stop()
     }
