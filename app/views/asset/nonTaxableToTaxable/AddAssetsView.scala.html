@@ -57,7 +57,7 @@
                         @if(maxedOut.head._1 == "whatKindOfAsset.Other") {
                             <p>@messages("nonTaxableToTaxable.addAssets.other.maxedOut.just1", maxedOut.head._2.toString)</p>
                         } else if(maxedOut.head._1 == "whatKindOfAsset.NonEeaBusiness") {
-                            <p>@messages("nonTaxableToTaxable.addAssets.maxedOut.just1", messages(maxedOut.head._1).lowercaseFirstWord, maxedOut.head._2.toString)</p>
+                            <p>@messages("nonTaxableToTaxable.addAssets.maxedOut.just1", messages(maxedOut.head._1).lowercaseFirstLetterOfFirstWord, maxedOut.head._2.toString)</p>
                         } else {
                             <p>@messages("nonTaxableToTaxable.addAssets.maxedOut.just1", messages(maxedOut.head._1).uncapitalise, maxedOut.head._2.toString)</p>
                         }

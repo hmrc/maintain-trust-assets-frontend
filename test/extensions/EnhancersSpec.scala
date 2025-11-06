@@ -73,13 +73,11 @@ class EnhancersSpec extends SpecBase {
           "Non-EEA Company" in {
             val messageKey = WhatKindOfAsset.NonEeaBusiness.toString
             val string = messages(s"$prefix.$messageKey")
-            string.lowercaseFirstWord mustEqual "company outside the UK or EEA"
+            string.lowercaseFirstLetterOfFirstWord mustEqual "company outside the UK or EEA"
           }
 
           "Empty string" in {
-            val messageKey = WhatKindOfAsset.NonEeaBusiness.toString
-            val string = messages(s"$prefix.$messageKey")
-            "".lowercaseFirstWord mustEqual ""
+            "".lowercaseFirstLetterOfFirstWord mustEqual ""
           }
         }
       }
