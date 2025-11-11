@@ -35,21 +35,22 @@ import views.html.asset.money.amend.MoneyAmendAnswersView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import play.api.http.Status._
 
 class MoneyAmendAnswersController @Inject()(
-                                   override val messagesApi: MessagesApi,
-                                   standardActionSets: StandardActionSets,
-                                   val controllerComponents: MessagesControllerComponents,
-                                   view: MoneyAmendAnswersView,
-                                   service: TrustService,
-                                   connector: TrustsConnector,
-                                   val appConfig: FrontendAppConfig,
-                                   playbackRepository: PlaybackRepository,
-                                   printHelper: MoneyPrintHelper,
-                                   mapper: MoneyAssetMapper,
-                                   extractor: MoneyAssetExtractor,
-                                   errorHandler: ErrorHandler
-                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+                                             override val messagesApi: MessagesApi,
+                                             standardActionSets: StandardActionSets,
+                                             val controllerComponents: MessagesControllerComponents,
+                                             view: MoneyAmendAnswersView,
+                                             service: TrustService,
+                                             connector: TrustsConnector,
+                                             val appConfig: FrontendAppConfig,
+                                             playbackRepository: PlaybackRepository,
+                                             printHelper: MoneyPrintHelper,
+                                             mapper: MoneyAssetMapper,
+                                             extractor: MoneyAssetExtractor,
+                                             errorHandler: ErrorHandler
+                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   private val provisional: Boolean = false
 
@@ -62,19 +63,16 @@ class MoneyAmendAnswersController @Inject()(
   def extractAndRender(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
 
-      service.getMonetaryAsset(request.userAnswers.identifier, index) flatMap {
-        moneyAsset =>
-          val extractedAnswers = extractor(request.userAnswers, moneyAsset, index)
-          for {
-            extractedF <- Future.fromTry(extractedAnswers)
-            _ <- playbackRepository.set(extractedF)
-          } yield {
-            render(extractedF, index, moneyAsset.assetMonetaryAmount.toString)
-          }
-      } recoverWith {
+      (for {
+        moneyAsset       <- service.getMonetaryAsset(request.userAnswers.identifier, index)
+        extractedAnswers <- Future.fromTry(extractor(request.userAnswers, moneyAsset, index))
+        _                <- playbackRepository.set(extractedAnswers)
+      } yield {
+        render(extractedAnswers, index, moneyAsset.assetMonetaryAmount.toString)
+      }).recoverWith {
         case e =>
           logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
-            s" error showing the user the check answers for Other Asset $index ${e.getMessage}")
+            s" error showing the user the check answers for Money Asset $index ${e.getMessage}")
           errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
       }
   }
@@ -86,15 +84,23 @@ class MoneyAmendAnswersController @Inject()(
 
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-      mapper(request.userAnswers).map {
-        asset =>
-          connector.amendMoneyAsset(request.userAnswers.identifier, index, asset).map(_ =>
-            Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
-          )
-      }.getOrElse {
-        logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
-          s" error mapping user answers to Other Asset $index")
-        errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
+      mapper(request.userAnswers) match {
+        case None =>
+          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
+            s" error mapping user answers to Money Asset $index")
+          errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
+
+        case Some(asset) =>
+          connector.amendMoneyAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
+            response.status match {
+              case OK | NO_CONTENT =>
+                Future.successful(Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()))
+              case _ =>
+                logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
+                  s" unexpected response ${response.status} when amending Money Asset $index")
+                errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
+            }
+          }
       }
   }
 }
