@@ -185,7 +185,6 @@ class OtherAnswerControllerSpec extends SpecBase {
       val mockMapper = mock[OtherAssetMapper]
 
       when(mockMapper.apply(any())).thenReturn(Some(mapped))
-      // Force NOT amend: list size 2 so (size - 1) = 1 != index(0); include a matching element to hit exists=true
       when(mockTrustConnector.getAssets(any())(any(), any()))
         .thenReturn(Future.successful(models.assets.Assets(
           Nil, Nil, Nil, Nil, Nil,
