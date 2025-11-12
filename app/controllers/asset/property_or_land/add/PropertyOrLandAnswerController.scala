@@ -68,6 +68,7 @@ class PropertyOrLandAnswerController @Inject()(
               connector.amendPropertyOrLandAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
                 response.status match {
                   case OK | NO_CONTENT => cleanAllAndRedirect(index)
+                  case _               => errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
                 }
               }
             } else {
@@ -79,8 +80,14 @@ class PropertyOrLandAnswerController @Inject()(
                   existing.valueFull == asset.valueFull &&
                   existing.valuePrevious == asset.valuePrevious
               )
-              if (!matchFound) connector.addPropertyOrLandAsset(request.userAnswers.identifier, asset).flatMap(_ => cleanAllAndRedirect(index))
-              else cleanAllAndRedirect(index)
+              if (!matchFound) {
+                connector.addPropertyOrLandAsset(request.userAnswers.identifier, asset).flatMap { response =>
+                  response.status match {
+                    case OK | NO_CONTENT => cleanAllAndRedirect(index)
+                    case _               => errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
+                  }
+                }
+              } else cleanAllAndRedirect(index)
             }
           }
       }

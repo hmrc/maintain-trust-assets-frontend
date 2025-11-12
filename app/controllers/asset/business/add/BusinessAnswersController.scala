@@ -33,9 +33,9 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.BusinessPrintHelper
 import viewmodels.AnswerSection
 import views.html.asset.business.add.BusinessAnswersView
-
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import play.api.Logging
 
 class BusinessAnswersController @Inject()(
                                            override val messagesApi: MessagesApi,
@@ -49,7 +49,7 @@ class BusinessAnswersController @Inject()(
                                            mapper: BusinessAssetMapper,
                                            errorHandler: ErrorHandler,
                                            repository: PlaybackRepository
-                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   private val provisional: Boolean = true
 
@@ -68,7 +68,11 @@ class BusinessAnswersController @Inject()(
             if (data.business.nonEmpty && (data.business.size - 1 == index)) {
               connector.amendBusinessAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
                 response.status match {
-                  case OK | NO_CONTENT => cleanAllAndRedirect(index)
+                  case s if s >= 200 && s < 300 =>
+                    cleanAllAndRedirect(index)
+                  case other =>
+                    logger.error(s"amendBusinessAsset failed with status: $other, body: ${response.body.take(500)}")
+                    errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
                 }
               }
             } else {
@@ -78,8 +82,19 @@ class BusinessAnswersController @Inject()(
                   e.address == asset.address &&
                   e.businessValue == asset.businessValue
               )
-              if (!exists) connector.addBusinessAsset(request.userAnswers.identifier, asset).flatMap(_ => cleanAllAndRedirect(index))
-              else cleanAllAndRedirect(index)
+              if (!exists) {
+                connector.addBusinessAsset(request.userAnswers.identifier, asset).flatMap { response =>
+                  response.status match {
+                    case s if s >= 200 && s < 300 =>
+                      cleanAllAndRedirect(index)
+                    case other =>
+                      logger.error(s"addBusinessAsset failed with status: $other, body: ${response.body.take(500)}")
+                      errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
+                  }
+                }
+              } else {
+                cleanAllAndRedirect(index)
+              }
             }
           }
       }

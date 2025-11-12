@@ -30,7 +30,6 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.NonEeaBusinessPrintHelper
 import viewmodels.AnswerSection
 import views.html.asset.noneeabusiness.add.AnswersView
-
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -67,6 +66,7 @@ class AnswersController @Inject()(
               connector.amendNonEeaBusinessAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
                 response.status match {
                   case OK | NO_CONTENT => cleanAllAndRedirect()
+                  case _               => errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
                 }
               }
             } else {
@@ -77,8 +77,16 @@ class AnswersController @Inject()(
                   e.startDate == asset.startDate &&
                   e.endDate == asset.endDate
               }
-              if (!exists) connector.addNonEeaBusinessAsset(request.userAnswers.identifier, asset).flatMap(_ => cleanAllAndRedirect())
-              else cleanAllAndRedirect()
+              if (!exists) {
+                connector.addNonEeaBusinessAsset(request.userAnswers.identifier, asset).flatMap { response =>
+                  response.status match {
+                    case OK | NO_CONTENT => cleanAllAndRedirect()
+                    case _               => errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
+                  }
+                }
+              } else {
+                cleanAllAndRedirect()
+              }
             }
           }
       }

@@ -18,6 +18,7 @@ package controllers.asset.noneeabusiness.amend
 
 import base.SpecBase
 import connectors.TrustsConnector
+import mapping.NonEeaBusinessAssetMapper
 import models.assets.{Assets, NonEeaBusinessType}
 import models.{NonUkAddress, UserAnswers}
 import org.mockito.ArgumentMatchers.any
@@ -43,6 +44,7 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
 
   private lazy val answersRoute = controllers.asset.noneeabusiness.amend.routes.AnswersController.extractAndRender(index).url
   private lazy val submitAnswersRoute = controllers.asset.noneeabusiness.amend.routes.AnswersController.onSubmit(index).url
+  private lazy val renderFromUaRoute = controllers.asset.noneeabusiness.amend.routes.AnswersController.renderFromUserAnswers(index).url
 
   private val name: String = "OrgName"
   private val date: LocalDate = LocalDate.parse("1996-02-03")
@@ -99,12 +101,51 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
 
       contentAsString(result) mustEqual
         view(answerSection, index)(request, messages).toString
+
+      application.stop()
     }
 
-    "redirect to the 'add non-eea asset' page when submitted and not migrating" in {
+    "render from existing user answers" in {
+
+      val answers = userAnswers(migrating = false)
+
+      val application = applicationBuilder(userAnswers = Some(answers)).build()
+
+      val request = FakeRequest(GET, renderFromUaRoute)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual OK
+
+      application.stop()
+    }
+
+    "return INTERNAL_SERVER_ERROR when extract fails" in {
+
+      val failingService: TrustService = mock[TrustService]
+      val answers = userAnswers(migrating = false)
+
+      val application = applicationBuilder(userAnswers = Some(answers))
+        .overrides(
+          bind[TrustService].toInstance(failingService)
+        )
+        .build()
+
+      when(failingService.getNonEeaBusinessAsset(any(), any())(any(), any()))
+        .thenReturn(Future.failed(new RuntimeException("boom")))
+
+      val request = FakeRequest(GET, answersRoute)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual INTERNAL_SERVER_ERROR
+
+      application.stop()
+    }
+
+    "redirect after successful submit" in {
 
       val mockTrustConnector = mock[TrustsConnector]
-
       val answers = userAnswers(migrating = true)
 
       val application =
@@ -112,10 +153,8 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
           .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
           .build()
 
-      when(mockTrustConnector.getAssets(any())(any(), any()))
-        .thenReturn(Future.successful(assets))
-
-      when(mockTrustConnector.amendNonEeaBusinessAsset(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+      when(mockTrustConnector.amendNonEeaBusinessAsset(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val request = FakeRequest(POST, submitAnswersRoute)
 
@@ -128,32 +167,25 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
       application.stop()
     }
 
-    "redirect to the 'add asset' page when submitted and migrating to taxable" in {
+    "return INTERNAL_SERVER_ERROR when mapper returns None" in {
 
-      val mockTrustConnector = mock[TrustsConnector]
-
-      val answers = userAnswers(migrating = true)
+      val mockMapper = mock[NonEeaBusinessAssetMapper]
+      val answers = userAnswers(migrating = false)
 
       val application =
-        applicationBuilder(userAnswers = Some(answers), affinityGroup = Agent)
-          .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
+        applicationBuilder(userAnswers = Some(answers))
+          .overrides(bind[NonEeaBusinessAssetMapper].toInstance(mockMapper))
           .build()
 
-      when(mockTrustConnector.getAssets(any())(any(), any()))
-        .thenReturn(Future.successful(assets))
-
-      when(mockTrustConnector.amendNonEeaBusinessAsset(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+      when(mockMapper(any)).thenReturn(None)
 
       val request = FakeRequest(POST, submitAnswersRoute)
 
       val result = route(application, request).value
 
-      status(result) mustEqual SEE_OTHER
-
-      redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+      status(result) mustEqual INTERNAL_SERVER_ERROR
 
       application.stop()
     }
-
   }
 }
