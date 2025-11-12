@@ -220,7 +220,7 @@ class AddNonEeaBusinessAssetControllerSpec extends SpecBase with Generators with
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(AddNonEeaBusinessAssetForm, fakeAddRows, "Add a non-EEA company")(request, messages).toString
+          view(AddNonEeaBusinessAssetForm, fakeAddRows, "Completed")(request, messages).toString
 
         verify(mockViewHelper).rows(eqTo(assets), eqTo(true))(any())
 
@@ -253,8 +253,9 @@ class AddNonEeaBusinessAssetControllerSpec extends SpecBase with Generators with
 
         status(result) mustEqual OK
 
+        // todo: test subheading x companies
         contentAsString(result) mustEqual
-          view(AddNonEeaBusinessAssetForm, fakeAddRows, s"You have added $numberOfAssets non-EEA companies")(request, messages).toString
+          view(AddNonEeaBusinessAssetForm, fakeAddRows, "Add ownership or controlling interest of a company registered outside UK and EEA")(request, messages).toString
 
         verify(mockViewHelper).rows(eqTo(assets), eqTo(true))(any())
 
@@ -323,7 +324,7 @@ class AddNonEeaBusinessAssetControllerSpec extends SpecBase with Generators with
 
         status(result) mustEqual BAD_REQUEST
 
-        contentAsString(result) mustEqual view(boundForm, fakeAddRows, s"You have added $numberOfAssets non-EEA companies")(request, messages).toString
+        contentAsString(result) mustEqual view(boundForm, fakeAddRows, "Add ownership or controlling interest of a company registered outside UK and EEA")(request, messages).toString
 
         verify(mockViewHelper).rows(eqTo(assets), eqTo(true))(any())
 
@@ -365,10 +366,10 @@ class AddNonEeaBusinessAssetControllerSpec extends SpecBase with Generators with
         val content = contentAsString(result)
 
         content mustEqual
-          view(fakeAddRows, s"You have added $MAX_NON_EEA_BUSINESS_ASSETS non-EEA companies", MAX_NON_EEA_BUSINESS_ASSETS, prefix)(request, messages).toString
+          view(fakeAddRows, "Add ownership or controlling interest of a company registered outside UK and EEA", MAX_NON_EEA_BUSINESS_ASSETS, prefix)(request, messages).toString
 
-        content must include("You cannot add another non-EEA company as you have entered a maximum of 25.")
-        content must include("You can add another non-EEA company by removing an existing one, or write to HMRC with details of any additional non-EEA companies.")
+        content must include("You cannot add another company outside the UK or EEA as you have entered a maximum of 25.")
+        content must include("You can add another company by removing an existing one, or write to HMRC with details of any additional companies outside the UK or EEA.")
 
         verify(mockViewHelper).rows(eqTo(assets), eqTo(true))(any())
 

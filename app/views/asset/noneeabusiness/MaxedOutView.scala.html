@@ -16,14 +16,15 @@
 
 @import controllers.asset.noneeabusiness.routes._
 @import viewmodels.AddRow
-@import views.html.components.{SubmitButton, Heading, AddToList}
+@import views.html.components.{SubmitButton, Heading, RowFormGroupWithSubHeading, CompletedNonEeaCompaniesWithSubHeading}
 
 @this(
     mainTemplate: MainTemplate,
     formHelper  : FormWithCSRF,
     submitButton: SubmitButton,
-    headingComp : Heading,
-    addToList   : AddToList
+    headingComponent : Heading,
+    rowFormGroupWithSubHeading: RowFormGroupWithSubHeading,
+    completedNonEeaCompaniesWithSubHeading: CompletedNonEeaCompaniesWithSubHeading
 )
 
 @(completeAssets: Seq[AddRow], heading: String, maxLimit: Int, prefix: String)(implicit request: RequestHeader, messages: Messages)
@@ -35,9 +36,15 @@
 
     @formHelper(action = AddNonEeaBusinessAssetController.submitComplete(), Symbol("autoComplete") -> "off") {
 
-        @headingComp(heading)
+        @headingComponent(heading)
 
-        @addToList(completeAssets, "complete", "asset")
+        @{
+            if(prefix == "addNonEeaBusinessAsset") {
+                completedNonEeaCompaniesWithSubHeading(completeAssets)
+            } else {
+                rowFormGroupWithSubHeading(completeAssets, "complete")
+            }
+        }
 
         <div class="govuk-inset-text">
             <ul class="govuk-list">
