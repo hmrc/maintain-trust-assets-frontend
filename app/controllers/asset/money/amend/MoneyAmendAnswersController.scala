@@ -32,10 +32,8 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.MoneyPrintHelper
 import viewmodels.AnswerSection
 import views.html.asset.money.amend.MoneyAmendAnswersView
-
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import play.api.http.Status._
 
 class MoneyAmendAnswersController @Inject()(
                                              override val messagesApi: MessagesApi,

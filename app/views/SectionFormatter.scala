@@ -27,6 +27,7 @@ object SectionFormatter {
     answerSections.flatMap {
       case a: AnswerSection => formatAnswerSection(a)
       case _: RepeaterAnswerSection => throw new NotImplementedError("Not used anywhere in code.")
+      case _ => Nil
     }
   }
 

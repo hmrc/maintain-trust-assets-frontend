@@ -19,9 +19,12 @@ package controllers.asset.business.add
 import base.SpecBase
 import connectors.TrustsConnector
 import controllers.routes._
+import mapping.BusinessAssetMapper
 import models.{UkAddress, UserAnswers}
+import models.assets.{Assets, BusinessAssetType}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalatestplus.mockito.MockitoSugar
 import pages.asset.business._
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -32,17 +35,31 @@ import views.html.asset.business.add.BusinessAnswersView
 
 import scala.concurrent.Future
 
-class BusinessAnswersControllerSpec extends SpecBase {
-
+class BusinessAnswersControllerSpec extends SpecBase with MockitoSugar {
 
   private val name: String = "Business"
 
-  val answers: UserAnswers = emptyUserAnswers
+  private val answers: UserAnswers = emptyUserAnswers
     .set(BusinessNamePage(index), name).success.value
     .set(BusinessDescriptionPage(index), "test test test").success.value
     .set(BusinessAddressUkYesNoPage(index), true).success.value
-    .set(BusinessUkAddressPage(index), UkAddress("test", "test", None, None, "NE11NE")).success.value
+    .set(BusinessUkAddressPage(index), UkAddress("Line 1", "Line 2", None, None, "NE11NE")).success.value
     .set(BusinessValuePage(index), 12L).success.value
+
+  private def businessExisting(
+                                org: String = name,
+                                desc: String = "test test test",
+                                line1: String = "Line 1",
+                                line2: String = "Line 2",
+                                postcode: String = "NE11NE",
+                                value: Long = 12L
+                              ): BusinessAssetType =
+    BusinessAssetType(
+      orgName             = org,
+      businessDescription = desc,
+      address             = UkAddress(line1, line2, None, None, postcode),
+      businessValue       = value
+    )
 
   "BusinessAnswersController" must {
 
@@ -66,7 +83,7 @@ class BusinessAnswersControllerSpec extends SpecBase {
       application.stop()
     }
 
-    "redirect to the next page when valid data is submitted" in {
+    "redirect to the next page when valid data is submitted (add path success)" in {
       val mockTrustConnector = mock[TrustsConnector]
 
       val application = applicationBuilder(userAnswers = Some(answers))
@@ -74,7 +91,7 @@ class BusinessAnswersControllerSpec extends SpecBase {
         .build()
 
       when(mockTrustConnector.getAssets(any())(any(), any()))
-        .thenReturn(Future.successful(models.assets.Assets()))
+        .thenReturn(Future.successful(Assets()))
 
       when(mockTrustConnector.amendBusinessAsset(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(HttpResponse(OK, "")))
@@ -89,6 +106,113 @@ class BusinessAnswersControllerSpec extends SpecBase {
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+
+      application.stop()
+    }
+
+    "redirect via amend path when upstream indicates existing record (amend success)" in {
+      val mockTrustConnector = mock[TrustsConnector]
+
+      val application = applicationBuilder(userAnswers = Some(answers))
+        .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
+        .build()
+
+      val existing = businessExisting()
+      when(mockTrustConnector.getAssets(any())(any(), any()))
+        .thenReturn(Future.successful(Assets(business = List(existing))))
+
+      when(mockTrustConnector.amendBusinessAsset(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(OK, "")))
+
+      val request = FakeRequest(POST, routes.BusinessAnswersController.onSubmit(index).url)
+      val result  = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      application.stop()
+    }
+
+    "return INTERNAL_SERVER_ERROR when amend returns non-2xx" in {
+      val mockTrustConnector = mock[TrustsConnector]
+
+      val application = applicationBuilder(userAnswers = Some(answers))
+        .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
+        .build()
+
+      val existing = businessExisting()
+      when(mockTrustConnector.getAssets(any())(any(), any()))
+        .thenReturn(Future.successful(Assets(business = List(existing))))
+
+      when(mockTrustConnector.amendBusinessAsset(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(BAD_REQUEST, "bad amend")))
+
+      val request = FakeRequest(POST, routes.BusinessAnswersController.onSubmit(index).url)
+      val result  = route(application, request).value
+
+      status(result) mustEqual INTERNAL_SERVER_ERROR
+
+      application.stop()
+    }
+
+    "return INTERNAL_SERVER_ERROR when add returns non-2xx" in {
+      val mockTrustConnector = mock[TrustsConnector]
+
+      val application = applicationBuilder(userAnswers = Some(answers))
+        .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
+        .build()
+
+      when(mockTrustConnector.getAssets(any())(any(), any()))
+        .thenReturn(Future.successful(Assets())) // add path
+
+      when(mockTrustConnector.addBusinessAsset(any(), any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(BAD_GATEWAY, "bad add")))
+
+      val request = FakeRequest(POST, routes.BusinessAnswersController.onSubmit(index).url)
+      val result  = route(application, request).value
+
+      status(result) mustEqual INTERNAL_SERVER_ERROR
+
+      application.stop()
+    }
+
+    "skip add (duplicate exists) and redirect immediately" in {
+      val mockTrustConnector = mock[TrustsConnector]
+
+      val application = applicationBuilder(userAnswers = Some(answers))
+        .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
+        .build()
+
+      val matching   = businessExisting()
+      val different  = matching.copy(orgName = "Other Ltd")
+      when(mockTrustConnector.getAssets(any())(any(), any()))
+        .thenReturn(Future.successful(Assets(business = List(different, matching))))
+
+      when(mockTrustConnector.addBusinessAsset(any(), any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(OK, "")))
+      when(mockTrustConnector.amendBusinessAsset(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(OK, "")))
+
+      val request = FakeRequest(POST, routes.BusinessAnswersController.onSubmit(index).url)
+      val result  = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      application.stop()
+    }
+
+    "return INTERNAL_SERVER_ERROR when mapper returns None" in {
+      val mockMapper = mock[BusinessAssetMapper]
+
+      val application = applicationBuilder(userAnswers = Some(answers))
+        .overrides(bind[BusinessAssetMapper].toInstance(mockMapper))
+        .build()
+
+      when(mockMapper(any)).thenReturn(None)
+
+      val request = FakeRequest(POST, routes.BusinessAnswersController.onSubmit(index).url)
+      val result  = route(application, request).value
+
+      status(result) mustEqual INTERNAL_SERVER_ERROR
 
       application.stop()
     }
