@@ -10,5 +10,4 @@ GET        /:index/money-check-answers                  controllers.asset.money.
 POST       /:index/money-check-answers                  controllers.asset.money.add.MoneyAnswerController.onSubmit(index: Int)
 
 GET        /:index/check-answers                        controllers.asset.money.amend.MoneyAmendAnswersController.extractAndRender(index: Int)
-GET        /:index/updated-answers                      controllers.asset.money.amend.MoneyAmendAnswersController.renderFromUserAnswers(index: Int)
 POST       /:index/check-answers                        controllers.asset.money.amend.MoneyAmendAnswersController.onSubmit(index: Int)
