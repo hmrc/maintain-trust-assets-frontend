@@ -19,7 +19,7 @@ package utils
 import base.SpecBase
 import controllers.asset._
 import models.assets._
-import models.{CheckMode, NonUkAddress, ShareClass}
+import models.{NonUkAddress, ShareClass}
 import utils.Constants.QUOTED
 import viewmodels.AddRow
 
@@ -69,7 +69,7 @@ class AddAssetViewHelperSpec extends SpecBase {
 
         val rows = viewHelper.rows(assets, isNonTaxable = false)
         rows.complete mustBe List(
-          AddRow("£4000", typeLabel = "Money", changeMoneyAssetRoute(), removeMoneyAssetRoute())
+          AddRow("£4000", typeLabel = "Money", changeMoneyAssetRoute(0), removeMoneyAssetRoute(0))
         )
       }
 
@@ -137,6 +137,9 @@ class AddAssetViewHelperSpec extends SpecBase {
 
         val rows = viewHelper.rows(assets, isNonTaxable = false)
         rows.complete mustBe List(
+          AddRow("Non-EEA Business Name1", typeLabel = "Non-EEA Company", changeNonEeaBusinessAssetRoute(0), removeNonEeaBusinessAssetRoute(0)),
+          AddRow("Non-EEA Business Name2", typeLabel = "Non-EEA Company", changeNonEeaBusinessAssetRoute(1), removeNonEeaBusinessAssetRoute(1)),
+          AddRow("£4000", typeLabel = "Money", changeMoneyAssetRoute(0), removeMoneyAssetRoute(0)),
           AddRow("Non-EEA Business Name1", typeLabel = "Company outside UK and EEA (European and Economic Area)", changeNonEeaBusinessAssetRoute(0), removeNonEeaBusinessAssetRoute(0)),
           AddRow("Non-EEA Business Name2", typeLabel = "Company outside UK and EEA (European and Economic Area)", changeNonEeaBusinessAssetRoute(1), removeNonEeaBusinessAssetRoute(1)),
           AddRow("£4000", typeLabel = "Money", changeMoneyAssetRoute(), removeMoneyAssetRoute()),
@@ -179,10 +182,10 @@ class AddAssetViewHelperSpec extends SpecBase {
   def removeNonEeaBusinessAssetRoute(index: Int): String =
     noneeabusiness.remove.routes.RemoveAssetYesNoController.onPageLoad(index).url
 
-  def changeMoneyAssetRoute(): String =
-    controllers.asset.money.routes.AssetMoneyValueController.onPageLoad(index, mode = CheckMode).url
+  def changeMoneyAssetRoute(index: Int): String =
+    controllers.asset.money.amend.routes.MoneyAmendAnswersController.extractAndRender(index).url
 
-  def removeMoneyAssetRoute(): String =
+  def removeMoneyAssetRoute(index: Int): String =
     controllers.asset.money.remove.routes.RemoveAssetYesNoController.onPageLoad(index).url
 
   def changePropertyLandAssetRoute(index: Int): String =
