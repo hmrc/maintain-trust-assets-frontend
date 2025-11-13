@@ -142,7 +142,6 @@ class AddAssetViewHelperSpec extends SpecBase {
           AddRow("£4000", typeLabel = "Money", changeMoneyAssetRoute(0), removeMoneyAssetRoute(0)),
           AddRow("Non-EEA Business Name1", typeLabel = "Company outside UK and EEA (European and Economic Area)", changeNonEeaBusinessAssetRoute(0), removeNonEeaBusinessAssetRoute(0)),
           AddRow("Non-EEA Business Name2", typeLabel = "Company outside UK and EEA (European and Economic Area)", changeNonEeaBusinessAssetRoute(1), removeNonEeaBusinessAssetRoute(1)),
-          AddRow("£4000", typeLabel = "Money", changeMoneyAssetRoute(), removeMoneyAssetRoute()),
           AddRow("PropertyOrLand Name1", typeLabel = "Property or land", changePropertyLandAssetRoute(0), removePropertyLandAssetRoute(0)),
           AddRow("PropertyOrLand Name2", typeLabel = "Property or land", changePropertyLandAssetRoute(1), removePropertyLandAssetRoute(1)),
           AddRow("Other Asset1", typeLabel = "Other", changeOtherAssetRoute(0), removeOtherAssetRoute(0)),
