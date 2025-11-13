@@ -15,10 +15,10 @@
  *@
 
 @import controllers.asset.nonTaxableToTaxable.routes._
-@import extensions.Enhancers.StringEnhancer
+@import extensions.Extensions.StringExtensions
 @import models.AddAssets
 @import viewmodels.AddRow
-@import views.html.components.{SubmitButton, Heading, InputRadio, ErrorSummary, AddToList}
+@import views.html.components.{SubmitButton, Heading, InputRadio, ErrorSummary, RowFormGroupWithSubHeading}
 
 @this(
     mainTemplate: MainTemplate,
@@ -27,7 +27,7 @@
     headingComp : Heading,
     inputRadio  : InputRadio,
     errorSummary: ErrorSummary,
-    addToList   : AddToList
+    rowFormGroupWithSubHeading: RowFormGroupWithSubHeading
 )
 @(
     form: Form[_],
@@ -48,7 +48,7 @@
 
         @headingComp(heading)
 
-        @addToList(completeAssets, "complete", "asset")
+        @rowFormGroupWithSubHeading(completeAssets, "complete")
 
         @if(maxedOut.size == 1) {
             <div class="govuk-inset-text">
@@ -56,8 +56,10 @@
                     <li class="panel-indent">
                         @if(maxedOut.head._1 == "whatKindOfAsset.Other") {
                             <p>@messages("nonTaxableToTaxable.addAssets.other.maxedOut.just1", maxedOut.head._2.toString)</p>
+                        } else if(maxedOut.head._1 == "whatKindOfAsset.NonEeaBusiness") {
+                            <p>@messages("nonTaxableToTaxable.addAssets.maxedOut.just1", messages(maxedOut.head._1).lowercaseFirstLetterOfFirstWord, maxedOut.head._2.toString)</p>
                         } else {
-                            <p>@messages("nonTaxableToTaxable.addAssets.maxedOut.just1", messages(maxedOut.head._1).uncapitalize, maxedOut.head._2.toString)</p>
+                            <p>@messages("nonTaxableToTaxable.addAssets.maxedOut.just1", messages(maxedOut.head._1).uncapitalise, maxedOut.head._2.toString)</p>
                         }
                     </li>
                     <li class="panel-indent"><p>@messages("nonTaxableToTaxable.addAssets.maxedOut.just1.paragraph")</p></li>

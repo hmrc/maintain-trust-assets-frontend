@@ -14,24 +14,26 @@
  * limitations under the License.
  *@
 
+@import views.html.components.RowFormGroupWithSubHeading
 @import viewmodels.AddRow
 
-@import views.html.components.AddToRow
-
 @this(
-    addToRow: AddToRow
+    rowFormGroupWithSubHeading: RowFormGroupWithSubHeading
 )
 
-@(data: Seq[AddRow], id: String, entity : String)(implicit messages: Messages)
+@(completeAssets: Seq[AddRow])(implicit messages: Messages)
+@{
 
-@if(data.nonEmpty){
- <h2 class="govuk-heading-m" id="data-list-heading--@id">@messages(s"site.$id")</h2>
+    val subHeadingKey = if (completeAssets.size > 1) {
+        "addNonEeaBusinessAsset.count.subHeading"
+    } else {
+        "addNonEeaBusinessAsset.count.one.subHeading"
+    }
 
- <div class="govuk-form-group">
-  <dl id="data-list--@id" class="hmrc-add-to-a-list hmrc-add-to-a-list--short">
-  @for(item <- data) {
-      @addToRow(item)
-  }
- </dl>
-</div>
+    rowFormGroupWithSubHeading(
+        data = completeAssets,
+        id = "complete",
+        alternateSubheading = Some(messages(subHeadingKey, completeAssets.size.toString))
+    )
 }
+

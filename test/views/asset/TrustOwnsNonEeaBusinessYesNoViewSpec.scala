@@ -40,7 +40,7 @@ class TrustOwnsNonEeaBusinessYesNoViewSpec extends YesNoViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like yesNoPage(form, applyView, messageKeyPrefix)
+    behave like yesNoPage(form, applyView, messageKeyPrefix, alternateLegendKey = Some("question"))
 
     behave like pageWithASubmitButton(applyView(form))
   }

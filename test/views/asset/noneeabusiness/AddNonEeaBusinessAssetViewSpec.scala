@@ -27,9 +27,11 @@ import views.html.asset.noneeabusiness.AddNonEeaBusinessAssetView
 class AddNonEeaBusinessAssetViewSpec extends OptionsViewBehaviours with TabularDataViewBehaviours {
 
   private val completeAssets: Seq[AddRow] = Seq(
-    AddRow("4500", WhatKindOfAsset.Money.toString, "#", "#"),
-    AddRow("4500", WhatKindOfAsset.Money.toString, "#", "#")
+    AddRow("Company 1", WhatKindOfAsset.NonEeaBusiness.toString, "#", "#"),
+    AddRow("Company 2", WhatKindOfAsset.NonEeaBusiness.toString, "#", "#")
   )
+
+
 
   private val messageKeyPrefix: String = "addNonEeaBusinessAsset"
 
@@ -40,8 +42,8 @@ class AddNonEeaBusinessAssetViewSpec extends OptionsViewBehaviours with TabularD
   private def applyView(form: Form[_]): HtmlFormat.Appendable =
     view.apply(form, Nil, "Add a non-EEA company")(fakeRequest, messages)
 
-  private def applyView(form: Form[_], completeAssets: Seq[AddRow], count: Int) = {
-    val title = if (count > 1) s"You have added $count non-EEA companies" else "Add a non-EEA company"
+  private def applyView(form: Form[_], completeAssets: Seq[AddRow]) = {
+    val title = "Add ownership or controlling interest of a company registered outside UK and EEA"
     view.apply(form, completeAssets, title)(fakeRequest, messages)
   }
 
@@ -57,11 +59,26 @@ class AddNonEeaBusinessAssetViewSpec extends OptionsViewBehaviours with TabularD
       behave like pageWithOptions(form, applyView, AddAssets.options(messageKeyPrefix))
     }
 
-    "there are assets" must {
+    "there is one asset" must {
 
-      val viewWithData = applyView(form, completeAssets, 2)
+      val viewWithData = applyView(form, completeAssets.tail)
 
-      behave like dynamicTitlePage(viewWithData, s"$messageKeyPrefix.count", "2")
+      behave like pageWithTitle(viewWithData, s"$messageKeyPrefix")
+      behave like pageWithSubTitle(viewWithData, s"$messageKeyPrefix.count.one.subHeading")
+
+      behave like pageWithBackLink(viewWithData)
+
+      behave like pageWithCompleteTabularData(viewWithData, completeAssets.tail)
+
+      behave like pageWithOptions(form, applyView, AddAssets.options(messageKeyPrefix))
+    }
+
+    "there are multiple assets" must {
+
+      val viewWithData = applyView(form, completeAssets)
+
+      behave like pageWithTitle(viewWithData, s"$messageKeyPrefix")
+      behave like pageWithSubTitle(viewWithData, s"$messageKeyPrefix.count.subHeading", "2")
 
       behave like pageWithBackLink(viewWithData)
 
