@@ -16,16 +16,16 @@
 
 package extensions
 
-object Enhancers {
+object Extensions {
 
-  implicit class StringEnhancer(str: String) {
-    def uncapitalize: String = str.split(' ').foldLeft("")((acc, word) => {
-      def uncapitalizeWord = s"${word.head.toLower}${word.tail}"
-      if (acc.isEmpty) {
-        uncapitalizeWord
-      } else {
-        s"$acc $uncapitalizeWord"
-      }
-    })
+  implicit class StringExtensions(str: String) {
+
+    def uncapitalise: String = str.split(' ').map(_.lowercaseFirstLetterOfFirstWord).mkString(" ")
+
+    def lowercaseFirstLetterOfFirstWord: String = if (str.isEmpty) {
+      str
+    } else {
+      str.head.toLower.toString + str.tail
+    }
   }
 }

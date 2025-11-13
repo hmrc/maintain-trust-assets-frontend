@@ -68,7 +68,15 @@ trait ViewBehaviours extends ViewSpecBase {
     "display the correct page title" in {
 
       val doc = asDocument(view)
-      assertPageTitleEqualsMessage(doc, s"$messageKeyPrefix", args: _*)
+      assertPageTitleEqualsMessage(doc, messageKeyPrefix, args: _*)
+    }
+  }
+
+  def pageWithSubTitle(view: HtmlFormat.Appendable, messageKeyPrefixes: String, args: Any*): Unit = {
+    "display the correct page sub title" in {
+
+      val doc = asDocument(view)
+      assertPageFistSubTitleEqualsMessage(doc, messageKeyPrefixes, args: _*)
     }
   }
 

@@ -17,64 +17,72 @@
 package extensions
 
 import base.SpecBase
-import extensions.Enhancers._
+import extensions.Extensions._
 import models.WhatKindOfAsset
 import models.WhatKindOfAsset.prefix
 
-class EnhancersSpec extends SpecBase {
+class ExtensionsSpec extends SpecBase {
 
-  "Enhancers" when {
+    "StringExtensions" when {
 
-    "StringEnhancer" when {
+      "uncapitalise" must {
 
-      "uncapitalize" must {
-
-        "uncapitalize first letter of each asset type" when {
+        "uncapitalise first letter of each asset type" when {
 
           "Money" in {
             val messageKey = WhatKindOfAsset.Money.toString
             val string = messages(s"$prefix.$messageKey")
-            string.uncapitalize mustEqual "money"
+            string.uncapitalise mustEqual "money"
           }
 
           "Property or land" in {
             val messageKey = WhatKindOfAsset.PropertyOrLand.toString
             val string = messages(s"$prefix.$messageKey")
-            string.uncapitalize mustEqual "property or land"
+            string.uncapitalise mustEqual "property or land"
           }
 
           "Shares" in {
             val messageKey = WhatKindOfAsset.Shares.toString
             val string = messages(s"$prefix.$messageKey")
-            string.uncapitalize mustEqual "shares"
+            string.uncapitalise mustEqual "shares"
           }
 
           "Business" in {
             val messageKey = WhatKindOfAsset.Business.toString
             val string = messages(s"$prefix.$messageKey")
-            string.uncapitalize mustEqual "business"
+            string.uncapitalise mustEqual "business"
           }
 
           "Partnership" in {
             val messageKey = WhatKindOfAsset.Partnership.toString
             val string = messages(s"$prefix.$messageKey")
-            string.uncapitalize mustEqual "partnership"
+            string.uncapitalise mustEqual "partnership"
           }
 
           "Other" in {
             val messageKey = WhatKindOfAsset.Other.toString
             val string = messages(s"$prefix.$messageKey")
-            string.uncapitalize mustEqual "other"
+            string.uncapitalise mustEqual "other"
           }
 
-          "Non-EEA Company" in {
+        }
+      }
+
+      "lowercaseFirstLetterOfFirstWord" must {
+        "lowercase the first letter of the first word" when {
+          "passed Non-EEA Company text" in {
             val messageKey = WhatKindOfAsset.NonEeaBusiness.toString
             val string = messages(s"$prefix.$messageKey")
-            string.uncapitalize mustEqual "non-EEA company"
+            string.lowercaseFirstLetterOfFirstWord mustEqual "company outside the UK or EEA"
+          }
+
+          "return an empty string" when {
+            "passed an empty string" in {
+              "".lowercaseFirstLetterOfFirstWord  mustEqual ""
+            }
           }
         }
       }
     }
-  }
 
 }

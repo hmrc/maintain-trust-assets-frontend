@@ -63,6 +63,19 @@ trait ViewSpecBase extends SpecBase {
     actual mustBe expected
   }
 
+  def assertPageFistSubTitleEqualsMessage(doc: Document, expectedMessageKey: String, args: Any*): Assertion = {
+    val actual = doc
+      .getElementsByTag("h2")
+      .first()
+      .text
+      .replaceAll("\u00a0", " ")
+
+    val expected: String = messages(s"$expectedMessageKey", args: _*)
+      .replaceAll("&nbsp;", " ")
+
+    actual mustBe expected
+  }
+
   def assertPageTitleWithSectionSubheading(doc: Document,
                                            expectedMessageKey: String): Assertion = {
     val headers = doc.getElementsByTag("h1")
