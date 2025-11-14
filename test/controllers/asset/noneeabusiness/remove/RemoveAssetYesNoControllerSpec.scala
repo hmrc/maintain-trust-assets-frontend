@@ -17,12 +17,11 @@
 package controllers.asset.noneeabusiness.remove
 
 import base.SpecBase
-import connectors.TrustsConnector
 import forms.RemoveIndexFormProvider
 import models.{NonUkAddress, UserAnswers}
 import models.assets._
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{times, verify, when}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.data.Form
@@ -30,6 +29,7 @@ import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.TrustService
 import uk.gov.hmrc.http.HttpResponse
 import views.html.asset.noneeabusiness.remove.RemoveAssetYesNoView
 
@@ -45,29 +45,23 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
   lazy val formRoute: Call = routes.RemoveAssetYesNoController.onSubmit(0)
 
-  val mockConnector: TrustsConnector = mock[TrustsConnector]
+  private def createAsset(id: Int, provisional: Boolean): NonEeaBusinessType =
+    NonEeaBusinessType(None, s"OrgName $id", NonUkAddress("L1", "L2", Some("L3"), "FR"), "FR", LocalDate.now, None, provisional)
 
-  def createAsset(id: Int, provisional: Boolean): NonEeaBusinessType =
-    NonEeaBusinessType(None, s"OrgName $id", NonUkAddress("", "", None, ""), "", LocalDate.now, None, provisional)
-
-  val nonEeaAssets: List[NonEeaBusinessType] = List(
-    createAsset(0, provisional = false),
-    createAsset(1, provisional = true),
-    createAsset(2, provisional = true)
-  )
-
-  def userAnswers(migrating: Boolean): UserAnswers = emptyUserAnswers.copy(isMigratingToTaxable = migrating)
+  private def userAnswers(migrating: Boolean): UserAnswers =
+    emptyUserAnswers.copy(isMigratingToTaxable = migrating)
 
   "RemoveAssetYesNo Controller" when {
 
     "return OK and the correct view for a GET" in {
 
+      val mockTrustService: TrustService = mock[TrustService]
 
-      when(mockConnector.getAssets(any())(any(), any()))
-        .thenReturn(Future.successful(Assets(Nil, Nil, Nil, Nil, Nil, Nil, nonEeaAssets)))
+      when(mockTrustService.getNonEeaBusinessAsset(any(), any())(any(), any()))
+        .thenReturn(Future.successful(createAsset(index, provisional = true)))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-        .overrides(bind[TrustsConnector].toInstance(mockConnector))
+        .overrides(bind[TrustService].toInstance(mockTrustService))
         .build()
 
       val request = FakeRequest(GET, routes.RemoveAssetYesNoController.onPageLoad(index).url)
@@ -83,15 +77,59 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
       application.stop()
     }
 
+    "redirect to add-asset page on GET when index is out of bounds" in {
+
+      val mockTrustService: TrustService = mock[TrustService]
+
+      when(mockTrustService.getNonEeaBusinessAsset(any(), any())(any(), any()))
+        .thenReturn(Future.failed(new IndexOutOfBoundsException("boom")))
+
+      val answers = userAnswers(migrating = false)
+
+      val application = applicationBuilder(userAnswers = Some(answers))
+        .overrides(bind[TrustService].toInstance(mockTrustService))
+        .build()
+
+      val request = FakeRequest(GET, routes.RemoveAssetYesNoController.onPageLoad(index).url)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+      redirectLocation(result).value mustEqual controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad().url
+
+      application.stop()
+    }
+
+    "return INTERNAL_SERVER_ERROR on GET when service fails unexpectedly" in {
+
+      val mockTrustService: TrustService = mock[TrustService]
+
+      when(mockTrustService.getNonEeaBusinessAsset(any(), any())(any(), any()))
+        .thenReturn(Future.failed(new RuntimeException("unexpected")))
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[TrustService].toInstance(mockTrustService))
+        .build()
+
+      val request = FakeRequest(GET, routes.RemoveAssetYesNoController.onPageLoad(index).url)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual INTERNAL_SERVER_ERROR
+
+      application.stop()
+    }
+
     "not removing the asset" must {
 
       "redirect to the 'add non-eea asset' page when valid data is submitted and not migrating" in {
 
+        val mockTrustService: TrustService = mock[TrustService]
 
         val answers = userAnswers(migrating = false)
 
         val application = applicationBuilder(userAnswers = Some(answers))
-          .overrides(bind[TrustsConnector].toInstance(mockConnector))
+          .overrides(bind[TrustService].toInstance(mockTrustService))
           .build()
 
         val request =
@@ -109,11 +147,12 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
       "redirect to the 'add asset' page when valid data is submitted and migrating" in {
 
+        val mockTrustService: TrustService = mock[TrustService]
 
         val answers = userAnswers(migrating = true)
 
         val application = applicationBuilder(userAnswers = Some(answers))
-          .overrides(bind[TrustsConnector].toInstance(mockConnector))
+          .overrides(bind[TrustService].toInstance(mockTrustService))
           .build()
 
         val request =
@@ -130,63 +169,66 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
       }
     }
 
-
     "removing a new asset" must {
 
-      "redirect to the 'add non-eea asset' page, removing the asset when not migrating" in {
+      "redirect to the 'add non-eea asset' page, removing the asset when not migrating (provisional = true)" in {
 
-        val index = 0
+        val mockTrustService: TrustService = mock[TrustService]
 
+        val i = 2
         val answers = userAnswers(migrating = false)
 
-        val application = applicationBuilder(userAnswers = Some(answers))
-          .overrides(bind[TrustsConnector].toInstance(mockConnector))
-          .build()
+        when(mockTrustService.getNonEeaBusinessAsset(any(), any())(any(), any()))
+          .thenReturn(Future.successful(createAsset(i, provisional = true)))
 
-        when(mockConnector.getAssets(any())(any(), any()))
-          .thenReturn(Future.successful(Assets(Nil, Nil, Nil, Nil, Nil, Nil, nonEeaAssets)))
-
-        when(mockConnector.removeAsset(any(), any())(any(), any()))
+        when(mockTrustService.removeAsset(any(), any())(any(), any()))
           .thenReturn(Future.successful(HttpResponse(200, "")))
 
+        val application = applicationBuilder(userAnswers = Some(answers))
+          .overrides(bind[TrustService].toInstance(mockTrustService))
+          .build()
+
         val request =
-          FakeRequest(POST, routes.RemoveAssetYesNoController.onSubmit(index).url)
+          FakeRequest(POST, routes.RemoveAssetYesNoController.onSubmit(i).url)
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad().url
 
-        redirectLocation(result).value mustEqual controllers.asset.noneeabusiness.remove.routes.RemoveAssetEndDateController.onPageLoad(index).url
+        verify(mockTrustService, times(1)).removeAsset(any(), any())(any(), any())
 
         application.stop()
       }
 
-      "redirect to the 'add asset' page, removing the asset when and migrating" in {
+      "redirect to the 'add asset' page, removing the asset when migrating (provisional = true)" in {
 
-        val index = 2
+        val mockTrustService: TrustService = mock[TrustService]
 
+        val i = 1
         val answers = userAnswers(migrating = true)
 
-        val application = applicationBuilder(userAnswers = Some(answers))
-          .overrides(bind[TrustsConnector].toInstance(mockConnector))
-          .build()
+        when(mockTrustService.getNonEeaBusinessAsset(any(), any())(any(), any()))
+          .thenReturn(Future.successful(createAsset(i, provisional = true)))
 
-        when(mockConnector.getAssets(any())(any(), any()))
-          .thenReturn(Future.successful(Assets(Nil, Nil, Nil, Nil, Nil, Nil, nonEeaAssets)))
-
-        when(mockConnector.removeAsset(any(), any())(any(), any()))
+        when(mockTrustService.removeAsset(any(), any())(any(), any()))
           .thenReturn(Future.successful(HttpResponse(200, "")))
 
+        val application = applicationBuilder(userAnswers = Some(answers))
+          .overrides(bind[TrustService].toInstance(mockTrustService))
+          .build()
+
         val request =
-          FakeRequest(POST, routes.RemoveAssetYesNoController.onSubmit(index).url)
+          FakeRequest(POST, routes.RemoveAssetYesNoController.onSubmit(i).url)
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-
         redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+
+        verify(mockTrustService, times(1)).removeAsset(any(), any())(any(), any())
 
         application.stop()
       }
@@ -194,15 +236,16 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
     "removing an old asset" must {
 
-      "redirect to the end date" in {
+      "redirect to the end date when provisional = false" in {
 
+        val mockTrustService: TrustService = mock[TrustService]
+
+        when(mockTrustService.getNonEeaBusinessAsset(any(), any())(any(), any()))
+          .thenReturn(Future.successful(createAsset(index, provisional = false)))
 
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(bind[TrustsConnector].toInstance(mockConnector))
+          .overrides(bind[TrustService].toInstance(mockTrustService))
           .build()
-
-        when(mockConnector.getAssets(any())(any(), any()))
-          .thenReturn(Future.successful(Assets(Nil, Nil, Nil, Nil, Nil, Nil, nonEeaAssets)))
 
         val request =
           FakeRequest(POST, routes.RemoveAssetYesNoController.onSubmit(index).url)
@@ -220,8 +263,14 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
+      val mockTrustService: TrustService = mock[TrustService]
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(bind[TrustsConnector].toInstance(mockConnector)).build()
+      when(mockTrustService.getNonEeaBusinessAsset(any(), any())(any(), any()))
+        .thenReturn(Future.successful(createAsset(index, provisional = true)))
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[TrustService].toInstance(mockTrustService))
+        .build()
 
       val request =
         FakeRequest(POST, routes.RemoveAssetYesNoController.onSubmit(index).url)
@@ -243,7 +292,6 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
     "redirect to Session Expired for a GET if no existing data is found" in {
 
-
       val application = applicationBuilder(userAnswers = None).build()
 
       val request = FakeRequest(GET, routes.RemoveAssetYesNoController.onPageLoad(index).url)
@@ -258,7 +306,6 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
-
 
       val application = applicationBuilder(userAnswers = None).build()
 

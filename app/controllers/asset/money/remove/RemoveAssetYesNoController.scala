@@ -50,14 +50,9 @@ class RemoveAssetYesNoController @Inject()(
 
   def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
-
-      trustService.getMonetaryAsset(request.userAnswers.identifier).map {
+      trustService.getMonetaryAsset(request.userAnswers.identifier, index).map {
         asset =>
-          asset.map{ x =>
-            Ok(view(form, index, currencyFormat(x.assetMonetaryAmount.toString)))
-          }.getOrElse {
-            redirectToAddAssetsPage()
-          }
+            Ok(view(form, index, currencyFormat(asset.assetMonetaryAmount.toString)))
       } recoverWith {
         case iobe: IndexOutOfBoundsException =>
           logger.warn(s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
@@ -74,11 +69,9 @@ class RemoveAssetYesNoController @Inject()(
     implicit request =>
       form.bindFromRequest().fold(
         formWithErrors => {
-          trustService.getMonetaryAsset(request.userAnswers.identifier).map {
-            case Some(asset) =>
+          trustService.getMonetaryAsset(request.userAnswers.identifier, index).map {
+            asset =>
               BadRequest(view(formWithErrors, index, currencyFormat(asset.assetMonetaryAmount.toString)))
-            case None =>
-              redirectToAddAssetsPage()
           }
         },
         value => {

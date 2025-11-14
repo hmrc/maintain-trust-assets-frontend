@@ -56,7 +56,6 @@ class OtherAssetValueController @Inject()(
       Ok(view(preparedForm, index, mode, description))
     }
 
-
   def onSubmit(index: Int, mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
     implicit request =>
       val description = request.userAnswers.get(OtherAssetDescriptionPage(index)).getOrElse("")

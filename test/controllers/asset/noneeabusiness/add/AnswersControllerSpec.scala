@@ -19,7 +19,7 @@ package controllers.asset.noneeabusiness.add
 import base.SpecBase
 import connectors.TrustsConnector
 import mapping.NonEeaBusinessAssetMapper
-import models.assets.{AssetMonetaryAmount, Assets}
+import models.assets.{AssetMonetaryAmount, Assets, NonEeaBusinessType}
 import models.{NonUkAddress, UserAnswers}
 import navigation.AssetsNavigator
 import org.mockito.ArgumentMatchers.any
@@ -48,6 +48,23 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
       .set(NonUkAddressPage(index), NonUkAddress("Line 1", "Line 2", Some("Line 3"), "FR")).success.value
       .set(GoverningCountryPage(index), "FR").success.value
       .set(StartDatePage(index), LocalDate.parse("1996-02-03")).success.value
+
+  private def nonEeaExisting(
+                              org: String,
+                              line1: String,
+                              gov: String,
+                              start: LocalDate,
+                              end: Option[LocalDate]
+                            ): NonEeaBusinessType =
+    NonEeaBusinessType(
+      lineNo        = None,
+      orgName       = org,
+      address       = NonUkAddress(line1, "Line 2", None, "FR"),
+      govLawCountry = gov,
+      startDate     = start,
+      endDate       = end,
+      provisional   = true
+    )
 
   private lazy val getRoute: String  = controllers.asset.noneeabusiness.add.routes.AnswersController.onPageLoad(index).url
   private lazy val postRoute: String = controllers.asset.noneeabusiness.add.routes.AnswersController.onSubmit(index).url
@@ -138,16 +155,112 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
       application.stop()
     }
 
-    "amend an existing asset when session editing key is present (EDIT flow)" in {
+    "amend an existing asset when upstream choose amend branch and returns 200" in {
       val mockTrustsConnector = mock[TrustsConnector]
       val answers             = userAnswers(migrating = false)
+
+      val existing = nonEeaExisting(
+        org   = name,
+        line1 = "Line 1",
+        gov   = "FR",
+        start = LocalDate.parse("1996-02-03"),
+        end   = None
+      )
+      val assetsWithOne = Assets(nonEEABusiness = List(existing))
 
       val application = applicationBuilder(userAnswers = Some(answers))
         .overrides(bind[TrustsConnector].toInstance(mockTrustsConnector))
         .build()
 
       when(mockTrustsConnector.getAssets(any())(any(), any()))
-        .thenReturn(Future.successful(models.assets.Assets()))
+        .thenReturn(Future.successful(assetsWithOne))
+
+      when(mockTrustsConnector.amendNonEeaBusinessAsset(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(OK, "")))
+
+      val request = FakeRequest(POST, postRoute)
+      val result  = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      application.stop()
+    }
+
+    "return INTERNAL_SERVER_ERROR when amend returns non-2xx" in {
+      val mockTrustsConnector = mock[TrustsConnector]
+      val answers             = userAnswers(migrating = false)
+
+      val existing = nonEeaExisting(
+        org   = name,
+        line1 = "Line 1",
+        gov   = "FR",
+        start = LocalDate.parse("1996-02-03"),
+        end   = None
+      )
+      val assetsWithOne = Assets(nonEEABusiness = List(existing))
+
+      val application = applicationBuilder(userAnswers = Some(answers))
+        .overrides(bind[TrustsConnector].toInstance(mockTrustsConnector))
+        .build()
+
+      when(mockTrustsConnector.getAssets(any())(any(), any()))
+        .thenReturn(Future.successful(assetsWithOne))
+
+      when(mockTrustsConnector.amendNonEeaBusinessAsset(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(BAD_REQUEST, "")))
+
+      val request = FakeRequest(POST, postRoute)
+      val result  = route(application, request).value
+
+      status(result) mustEqual INTERNAL_SERVER_ERROR
+
+      application.stop()
+    }
+
+    "return INTERNAL_SERVER_ERROR when add returns non-2xx" in {
+      val mockTrustsConnector = mock[TrustsConnector]
+      val answers             = userAnswers(migrating = false)
+
+      val emptyAssets = Assets()
+
+      val application = applicationBuilder(userAnswers = Some(answers))
+        .overrides(bind[TrustsConnector].toInstance(mockTrustsConnector))
+        .build()
+
+      when(mockTrustsConnector.getAssets(any())(any(), any()))
+        .thenReturn(Future.successful(emptyAssets))
+
+      when(mockTrustsConnector.addNonEeaBusinessAsset(any(), any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(BAD_GATEWAY, "")))
+
+      val request = FakeRequest(POST, postRoute)
+      val result  = route(application, request).value
+
+      status(result) mustEqual INTERNAL_SERVER_ERROR
+
+      application.stop()
+    }
+
+    "skip add (duplicate exists) and redirect immediately" in {
+      val mockTrustsConnector = mock[TrustsConnector]
+      val answers             = userAnswers(migrating = false)
+
+      val matching = nonEeaExisting(
+        org   = name,
+        line1 = "Line 1",
+        gov   = "FR",
+        start = LocalDate.parse("1996-02-03"),
+        end   = None
+      )
+      val other = matching.copy(orgName = "Other Co")
+      val assetsTwo = Assets(nonEEABusiness = List(other, matching))
+
+      val application = applicationBuilder(userAnswers = Some(answers))
+        .overrides(bind[TrustsConnector].toInstance(mockTrustsConnector))
+        .build()
+
+      when(mockTrustsConnector.getAssets(any())(any(), any()))
+        .thenReturn(Future.successful(assetsTwo))
 
       when(mockTrustsConnector.addNonEeaBusinessAsset(any(), any())(any(), any()))
         .thenReturn(Future.successful(HttpResponse(OK, "")))
@@ -156,7 +269,6 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
         .thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val request = FakeRequest(POST, postRoute)
-        .withSession(s"neea.$index.key" -> "dummy-key")
       val result  = route(application, request).value
 
       status(result) mustEqual SEE_OTHER

@@ -22,6 +22,7 @@ import pages.asset.money._
 import play.api.i18n.Messages
 import utils.AnswerRowConverter
 import viewmodels.{AnswerRow, AnswerSection}
+
 import javax.inject.Inject
 
 class MoneyPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) {

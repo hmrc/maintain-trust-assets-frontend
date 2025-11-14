@@ -56,7 +56,7 @@ class PartnershipAnswerController @Inject()(
     implicit request =>
       val section: AnswerSection = printHelper(request.userAnswers, index, provisional, request.name)
       Ok(view(index, section))
-    }
+  }
 
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
@@ -68,6 +68,7 @@ class PartnershipAnswerController @Inject()(
               connector.amendPartnershipAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
                 response.status match {
                   case OK | NO_CONTENT => cleanAllAndRedirect(index)
+                  case _               => errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
                 }
               }
             } else {
@@ -75,8 +76,14 @@ class PartnershipAnswerController @Inject()(
                 ele.description.equalsIgnoreCase(asset.description) &&
                   ele.partnershipStart == asset.partnershipStart
               )
-              if (!exists) connector.addPartnershipAsset(request.userAnswers.identifier, asset).flatMap(_ => cleanAllAndRedirect(index))
-              else cleanAllAndRedirect(index)
+              if (!exists) {
+                connector.addPartnershipAsset(request.userAnswers.identifier, asset).flatMap { response =>
+                  response.status match {
+                    case OK | NO_CONTENT => cleanAllAndRedirect(index)
+                    case _               => errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
+                  }
+                }
+              } else cleanAllAndRedirect(index)
             }
           }
       }

@@ -17,7 +17,6 @@
 package utils
 
 import controllers.asset._
-import models.CheckMode
 import models.assets._
 import play.api.i18n.Messages
 import utils.CheckAnswersFormatters.currencyFormat
@@ -44,7 +43,7 @@ class AddAssetViewHelper {
     AddRow(
       name = currencyFormat(asset.assetMonetaryAmount.toString),
       typeLabel = messages("entities.asset.monetary"),
-      changeUrl = money.routes.AssetMoneyValueController.onPageLoad(index, mode = CheckMode).url,
+      changeUrl = money.amend.routes.MoneyAmendAnswersController.extractAndRender(index).url,
       removeUrl = money.remove.routes.RemoveAssetYesNoController.onPageLoad(index).url
     )
   }

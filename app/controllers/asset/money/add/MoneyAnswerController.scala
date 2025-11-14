@@ -53,7 +53,7 @@ class MoneyAnswerController @Inject()(
     implicit request =>
       val section: AnswerSection = printHelper(userAnswers = request.userAnswers, index = index, provisional = provisional, name = request.name)
       Ok(view(index, section))
-    }
+  }
 
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
@@ -65,12 +65,19 @@ class MoneyAnswerController @Inject()(
               connector.amendMoneyAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
                 response.status match {
                   case OK | NO_CONTENT => cleanAllAndRedirect()
+                  case _               => errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
                 }
               }
             } else {
               val exists = data.monetary.exists(e => e.assetMonetaryAmount == asset.assetMonetaryAmount)
-              if (!exists) connector.addMoneyAsset(request.userAnswers.identifier, asset).flatMap(_ => cleanAllAndRedirect())
-              else cleanAllAndRedirect()
+              if (!exists) {
+                connector.addMoneyAsset(request.userAnswers.identifier, asset).flatMap { response =>
+                  response.status match {
+                    case OK | NO_CONTENT => cleanAllAndRedirect()
+                    case _               => errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
+                  }
+                }
+              } else cleanAllAndRedirect()
             }
           }
       }

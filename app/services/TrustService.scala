@@ -30,8 +30,8 @@ class TrustServiceImpl @Inject()(connector: TrustsConnector) extends TrustServic
   override def getAssets(identifier: String)(implicit hc:HeaderCarrier, ec:ExecutionContext): Future[Assets] =
     connector.getAssets(identifier)
 
-  override def getMonetaryAsset(identifier: String)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[Option[AssetMonetaryAmount]] =
-    getAssets(identifier).map(_.monetary.headOption)
+  override def getMonetaryAsset(identifier: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[AssetMonetaryAmount] =
+    getAssets(identifier).map(_.monetary(index))
 
   override def getPropertyOrLandAsset(identifier: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[PropertyLandType] =
     getAssets(identifier).map(_.propertyOrLand(index))
@@ -60,7 +60,7 @@ trait TrustService {
 
   def getAssets(identifier: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Assets]
 
-  def getMonetaryAsset(identifier: String)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[Option[AssetMonetaryAmount]]
+  def getMonetaryAsset(identifier: String, index:Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[AssetMonetaryAmount]
 
   def getPropertyOrLandAsset(identifier: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[PropertyLandType]
 

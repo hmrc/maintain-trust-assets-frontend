@@ -18,9 +18,11 @@ package controllers.asset.partnership
 
 import base.SpecBase
 import connectors.TrustsConnector
+import mapping.PartnershipAssetMapper
 import models.WhatKindOfAsset.Partnership
+import models.assets._
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{never, verify, when}
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.partnership._
 import play.api.inject.bind
@@ -87,29 +89,153 @@ class PartnershipAnswerControllerSpec extends SpecBase {
 
     "on POST" must {
 
-      "redirect to the next page when valid data is submitted" in {
+      "return INTERNAL_SERVER_ERROR when mapper returns None" in {
         val mockTrustConnector = mock[TrustsConnector]
+        val mockMapper = mock[PartnershipAssetMapper]
+
+        when(mockMapper.apply(any())).thenReturn(None)
 
         val application = applicationBuilder(userAnswers = Some(answers))
-          .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
+          .overrides(
+            bind[TrustsConnector].toInstance(mockTrustConnector),
+            bind[PartnershipAssetMapper].toInstance(mockMapper)
+          )
           .build()
 
-        when(mockTrustConnector.getAssets(any())(any(), any()))
-          .thenReturn(Future.successful(models.assets.Assets()))
+        val request = FakeRequest(POST, partnershipAnswerRoute)
 
+        val result = route(application, request).value
+
+        status(result) mustEqual INTERNAL_SERVER_ERROR
+
+        application.stop()
+      }
+
+      "take the amend branch and redirect when amending the last existing partnership asset (status OK)" in {
+        val mockTrustConnector = mock[TrustsConnector]
+        val mockMapper = mock[PartnershipAssetMapper]
+
+        val mapped = PartnershipType("Partnership Description", validDate)
+
+        when(mockMapper.apply(any())).thenReturn(Some(mapped))
+        when(mockTrustConnector.getAssets(any())(any(), any()))
+          .thenReturn(Future.successful(models.assets.Assets(
+            Nil, Nil, Nil, Nil, List(PartnershipType("Old partnership", validDate.minusDays(2))), Nil, Nil
+          )))
         when(mockTrustConnector.amendPartnershipAsset(any(), any(), any())(any(), any()))
           .thenReturn(Future.successful(HttpResponse(OK, "")))
 
-        when(mockTrustConnector.addPartnershipAsset(any(), any())(any(), any()))
-          .thenReturn(Future.successful(HttpResponse(OK, "")))
+        val application = applicationBuilder(userAnswers = Some(answers))
+          .overrides(
+            bind[TrustsConnector].toInstance(mockTrustConnector),
+            bind[PartnershipAssetMapper].toInstance(mockMapper)
+          )
+          .build()
 
         val request = FakeRequest(POST, partnershipAnswerRoute)
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-
         redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+
+        application.stop()
+      }
+
+      "also redirect when amending the last existing partnership asset (status NO_CONTENT)" in {
+        val mockTrustConnector = mock[TrustsConnector]
+        val mockMapper = mock[PartnershipAssetMapper]
+
+        val mapped = PartnershipType("Partnership Description", validDate)
+
+        when(mockMapper.apply(any())).thenReturn(Some(mapped))
+        when(mockTrustConnector.getAssets(any())(any(), any()))
+          .thenReturn(Future.successful(models.assets.Assets(
+            Nil, Nil, Nil, Nil, List(PartnershipType("Old partnership", validDate.minusDays(2))), Nil, Nil
+          )))
+        when(mockTrustConnector.amendPartnershipAsset(any(), any(), any())(any(), any()))
+          .thenReturn(Future.successful(HttpResponse(NO_CONTENT, "")))
+
+        val application = applicationBuilder(userAnswers = Some(answers))
+          .overrides(
+            bind[TrustsConnector].toInstance(mockTrustConnector),
+            bind[PartnershipAssetMapper].toInstance(mockMapper)
+          )
+          .build()
+
+        val request = FakeRequest(POST, partnershipAnswerRoute)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+
+        application.stop()
+      }
+
+      "take the add branch when asset does not already exist and redirect" in {
+        val mockTrustConnector = mock[TrustsConnector]
+        val mockMapper = mock[PartnershipAssetMapper]
+
+        val mapped = PartnershipType("Partnership Description", validDate)
+
+        when(mockMapper.apply(any())).thenReturn(Some(mapped))
+        when(mockTrustConnector.getAssets(any())(any(), any()))
+          .thenReturn(Future.successful(models.assets.Assets(
+            Nil, Nil, Nil, Nil, Nil, Nil, Nil
+          )))
+        when(mockTrustConnector.addPartnershipAsset(any(), any())(any(), any()))
+          .thenReturn(Future.successful(HttpResponse(OK, "")))
+
+        val application = applicationBuilder(userAnswers = Some(answers))
+          .overrides(
+            bind[TrustsConnector].toInstance(mockTrustConnector),
+            bind[PartnershipAssetMapper].toInstance(mockMapper)
+          )
+          .build()
+
+        val request = FakeRequest(POST, partnershipAnswerRoute)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+
+        application.stop()
+      }
+
+      "take the exists branch (duplicate found) and redirect without adding" in {
+        val mockTrustConnector = mock[TrustsConnector]
+        val mockMapper = mock[PartnershipAssetMapper]
+
+        val mapped = PartnershipType("Partnership Description", validDate)
+
+        when(mockMapper.apply(any())).thenReturn(Some(mapped))
+        when(mockTrustConnector.getAssets(any())(any(), any()))
+          .thenReturn(Future.successful(models.assets.Assets(
+            Nil, Nil, Nil, Nil,
+            List(
+              PartnershipType("Partnership Description", validDate),
+              PartnershipType("Another partnership", validDate.minusDays(5))
+            ),
+            Nil, Nil
+          )))
+
+        val application = applicationBuilder(userAnswers = Some(answers))
+          .overrides(
+            bind[TrustsConnector].toInstance(mockTrustConnector),
+            bind[PartnershipAssetMapper].toInstance(mockMapper)
+          )
+          .build()
+
+        val request = FakeRequest(POST, partnershipAnswerRoute)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+
+        verify(mockTrustConnector, never()).addPartnershipAsset(any(), any())(any(), any())
 
         application.stop()
       }

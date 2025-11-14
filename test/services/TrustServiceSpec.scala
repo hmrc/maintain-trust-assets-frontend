@@ -19,6 +19,7 @@ package services
 import connectors.TrustsConnector
 import models._
 import models.assets._
+import org.apache.pekko.util.Helpers.Requiring
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.OptionValues
@@ -99,7 +100,7 @@ class TrustServiceSpec() extends AnyFreeSpec with MockitoSugar with Matchers wit
         _ mustBe sharesAsset
       }
 
-      whenReady(service.getMonetaryAsset("1234567890")) { money =>
+      whenReady(service.getMonetaryAsset("1234567890", index)) { money =>
         money.value mustBe moneyAsset
       }
 
