@@ -68,7 +68,7 @@ class BusinessAnswersController @Inject()(
             if (data.business.nonEmpty && (data.business.size - 1 == index)) {
               connector.amendBusinessAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
                 response.status match {
-                  case s if s >= 200 && s < 300 =>
+                  case OK | CREATED | NO_CONTENT =>
                     cleanAllAndRedirect(index)
                   case other =>
                     logger.error(s"amendBusinessAsset failed with status: $other, body: ${response.body.take(500)}")
@@ -85,7 +85,7 @@ class BusinessAnswersController @Inject()(
               if (!exists) {
                 connector.addBusinessAsset(request.userAnswers.identifier, asset).flatMap { response =>
                   response.status match {
-                    case s if s >= 200 && s < 300 =>
+                    case OK | CREATED | NO_CONTENT =>
                       cleanAllAndRedirect(index)
                     case other =>
                       logger.error(s"addBusinessAsset failed with status: $other, body: ${response.body.take(500)}")

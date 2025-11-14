@@ -83,7 +83,9 @@ class OtherAnswerController @Inject()(
                     case _               => errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
                   }
                 }
-              } else cleanAllAndRedirect(index)
+              } else {
+                cleanAllAndRedirect(index)
+              }
             }
           }
       }
