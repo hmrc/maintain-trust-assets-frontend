@@ -177,7 +177,7 @@ assetInterruptPage.lead_in = Mae’r AEE yn cynnwys:
 assetInterruptPage.bullet11=enw’r cwmni
 assetInterruptPage.bullet12=cyfeiriad y cwmni
 assetInterruptPage.bullet13=cyfreithiau pa wlad sy’n llywodraethu’r cwmni
-assetInterruptPage.bullet14=y dyddiad y dechreuodd yr ymddiriedolaeth ei pherchnogaeth neu gyfran reolaethol yn y cwmni
+assetInterruptPage.bullet14=y dyddiad y dechreuodd yr ymddiriedolaeth ei pherchnogaeth neu ei chyfran reolaethol yn y cwmni
 
 whatKindOfAsset.checkYourAnswersLabel=Math o ased wedi’i ychwanegu
 whatKindOfAsset.heading=Pa fath o ased y mae angen i chi ei ychwanegu?
