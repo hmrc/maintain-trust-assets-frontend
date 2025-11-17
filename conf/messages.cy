@@ -141,7 +141,7 @@ trustOwnsNonEeaBusinessYesNo.bullet5 = mae gan yr ymddiriedolwyr fwy na 50 y can
 trustOwnsNonEeaBusinessYesNo.bullet6 = mae gan yr ymddiriedolwyr fwy na 50 y cant o’r hawliau pleidleisio yn y cwmni
 trustOwnsNonEeaBusinessYesNo.bullet7 = mae gan yr ymddiriedolwyr yr hawl i benodi neu dynnu mwyafrif bwrdd cyfarwyddwyr y cwmni
 trustOwnsNonEeaBusinessYesNo.bullet8 = gall yr ymddiriedolwyr arfer dylanwad neu reolaeth sylweddol dros y cwmni
-trustOwnsNonEeaBusinessYesNo.question = A ydych am ddiweddaru’r manylion ynghylch cyfran reolaethol sydd gennych mewn cwmni sydd wedi’i gofrestru y tu allan i’r DU a’r AEE cyn cau’r ymddiriedolaeth?
+trustOwnsNonEeaBusinessYesNo.question = A oes gan yr ymddiriedolaeth berchnogaeth neu gyfran reolaethol mewn cwmni sydd wedi’i leoli y tu allan i’r DU a’r AEE?
 
 assetInterruptPage.title=Gwybodaeth sydd ei hangen arnoch i ychwanegu cwmni sydd wedi’i gofrestru y tu allan i’r DU a’r AEE (Ardal Economaidd Ewropeaidd)
 assetInterruptPage.heading=Gwybodaeth sydd ei hangen arnoch i ychwanegu cwmni sydd wedi’i gofrestru y tu allan i’r DU a’r AEE (Ardal Economaidd Ewropeaidd)
