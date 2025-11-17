@@ -141,7 +141,7 @@ trustOwnsNonEeaBusinessYesNo.bullet5 = mae gan yr ymddiriedolwyr fwy na 50 y can
 trustOwnsNonEeaBusinessYesNo.bullet6 = mae gan yr ymddiriedolwyr fwy na 50 y cant o’r hawliau pleidleisio yn y cwmni
 trustOwnsNonEeaBusinessYesNo.bullet7 = mae gan yr ymddiriedolwyr yr hawl i benodi neu dynnu mwyafrif bwrdd cyfarwyddwyr y cwmni
 trustOwnsNonEeaBusinessYesNo.bullet8 = gall yr ymddiriedolwyr arfer dylanwad neu reolaeth sylweddol dros y cwmni
-trustOwnsNonEeaBusinessYesNo.question = A ydych am ddiweddaru’r manylion ynghylch cyfran reolaethol sydd gennych mewn cwmni sydd wedi’i gofrestru y tu allan i’r DU a’r AEE cyn cau’r ymddiriedolaeth?
+trustOwnsNonEeaBusinessYesNo.question = A oes gan yr ymddiriedolaeth berchnogaeth neu gyfran reolaethol mewn cwmni sydd wedi’i leoli y tu allan i’r DU a’r AEE?
 
 assetInterruptPage.title=Gwybodaeth sydd ei hangen arnoch i ychwanegu cwmni sydd wedi’i gofrestru y tu allan i’r DU a’r AEE (Ardal Economaidd Ewropeaidd)
 assetInterruptPage.heading=Gwybodaeth sydd ei hangen arnoch i ychwanegu cwmni sydd wedi’i gofrestru y tu allan i’r DU a’r AEE (Ardal Economaidd Ewropeaidd)
@@ -177,7 +177,7 @@ assetInterruptPage.lead_in = Mae’r AEE yn cynnwys:
 assetInterruptPage.bullet11=enw’r cwmni
 assetInterruptPage.bullet12=cyfeiriad y cwmni
 assetInterruptPage.bullet13=cyfreithiau pa wlad sy’n llywodraethu’r cwmni
-assetInterruptPage.bullet14=y dyddiad y dechreuodd yr ymddiriedolaeth ei pherchnogaeth neu gyfran reolaethol yn y cwmni
+assetInterruptPage.bullet14=y dyddiad y dechreuodd yr ymddiriedolaeth ei pherchnogaeth neu ei chyfran reolaethol yn y cwmni
 
 whatKindOfAsset.checkYourAnswersLabel=Math o ased wedi’i ychwanegu
 whatKindOfAsset.heading=Pa fath o ased y mae angen i chi ei ychwanegu?
