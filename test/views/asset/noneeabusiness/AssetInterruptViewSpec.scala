@@ -33,7 +33,7 @@ class AssetInterruptViewSpec extends ViewBehaviours {
 
     behave like pageWithGuidance(applyView,
       messageKeyPrefix = "assetInterruptPage",
-      expectedGuidanceKeys = "lead_in",
+      expectedGuidanceKeys =
       "paragraph10",
       "bullet11",
       "bullet12",
