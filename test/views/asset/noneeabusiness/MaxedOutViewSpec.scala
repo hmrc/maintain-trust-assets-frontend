@@ -56,8 +56,8 @@ class MaxedOutViewSpec extends OptionsViewBehaviours with TabularDataViewBehavio
       "show maxed out assets content" in {
         val doc = asDocument(applyView())
 
-        assertContainsText(doc, s"You cannot add another company outside the UK or EEA as you have entered a maximum of $max.")
-        assertContainsText(doc, "You can add another company by removing an existing one, or write to HMRC with details of any additional companies outside the UK or EEA.")
+        assertContainsText(doc, s"You cannot add another company registered outside the UK or EEA as you have entered a maximum of $max.")
+        assertContainsText(doc, "You can add another company by removing an existing one, or write to HMRC with details of any additional companies registered outside the UK or EEA.")
       }
     }
   }
