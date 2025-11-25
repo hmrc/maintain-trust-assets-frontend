@@ -59,8 +59,8 @@ class AddAssetViewHelperSpec extends SpecBase {
 
         val rows = viewHelper.rows(assets, isNonTaxable = false)
         rows.complete mustBe List(
-          AddRow("Non-EEA Business Name1", typeLabel = "Company outside UK and EEA (European and Economic Area)", changeNonEeaBusinessAssetRoute(0), removeNonEeaBusinessAssetRoute(0)),
-          AddRow("Non-EEA Business Name2", typeLabel = "Company outside UK and EEA (European and Economic Area)", changeNonEeaBusinessAssetRoute(1), removeNonEeaBusinessAssetRoute(1))
+          AddRow("Non-EEA Business Name1", typeLabel = "Company registered outside UK and EEA (European and Economic Area)", changeNonEeaBusinessAssetRoute(0), removeNonEeaBusinessAssetRoute(0)),
+          AddRow("Non-EEA Business Name2", typeLabel = "Company registered outside UK and EEA (European and Economic Area)", changeNonEeaBusinessAssetRoute(1), removeNonEeaBusinessAssetRoute(1))
         )
       }
 
@@ -137,8 +137,8 @@ class AddAssetViewHelperSpec extends SpecBase {
 
         val rows = viewHelper.rows(assets, isNonTaxable = false)
         rows.complete mustBe List(
-          AddRow("Non-EEA Business Name1", typeLabel = "Company outside UK and EEA (European and Economic Area)", changeNonEeaBusinessAssetRoute(0), removeNonEeaBusinessAssetRoute(0)),
-          AddRow("Non-EEA Business Name2", typeLabel = "Company outside UK and EEA (European and Economic Area)", changeNonEeaBusinessAssetRoute(1), removeNonEeaBusinessAssetRoute(1)),
+          AddRow("Non-EEA Business Name1", typeLabel = "Company registered outside UK and EEA (European and Economic Area)", changeNonEeaBusinessAssetRoute(0), removeNonEeaBusinessAssetRoute(0)),
+          AddRow("Non-EEA Business Name2", typeLabel = "Company registered outside UK and EEA (European and Economic Area)", changeNonEeaBusinessAssetRoute(1), removeNonEeaBusinessAssetRoute(1)),
           AddRow("£4000", typeLabel = "Money", changeMoneyAssetRoute(), removeMoneyAssetRoute()),
           AddRow("PropertyOrLand Name1", typeLabel = "Property or land", changePropertyLandAssetRoute(0), removePropertyLandAssetRoute(0)),
           AddRow("PropertyOrLand Name2", typeLabel = "Property or land", changePropertyLandAssetRoute(1), removePropertyLandAssetRoute(1)),
@@ -166,8 +166,8 @@ class AddAssetViewHelperSpec extends SpecBase {
 
         val rows = viewHelper.rows(assets, isNonTaxable = true)
         rows.complete mustBe List(
-          AddRow("Non-EEA Business Name1", typeLabel = "Company outside UK and EEA (European and Economic Area)", changeNonEeaBusinessAssetRoute(0), removeNonEeaBusinessAssetRoute(0)),
-          AddRow("Non-EEA Business Name2", typeLabel = "Company outside UK and EEA (European and Economic Area)", changeNonEeaBusinessAssetRoute(1), removeNonEeaBusinessAssetRoute(1))
+          AddRow("Non-EEA Business Name1", typeLabel = "Company registered outside UK and EEA (European and Economic Area)", changeNonEeaBusinessAssetRoute(0), removeNonEeaBusinessAssetRoute(0)),
+          AddRow("Non-EEA Business Name2", typeLabel = "Company registered outside UK and EEA (European and Economic Area)", changeNonEeaBusinessAssetRoute(1), removeNonEeaBusinessAssetRoute(1))
         )
       }
     }
