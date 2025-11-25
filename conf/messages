@@ -210,7 +210,6 @@ assetInterruptPage.subheading6 = Other assets
 assetInterruptPage.paragraph9 = You need to give a description of the asset and an estimate of its current value.
 
 assetInterruptPage.paragraph10 = If the trust owns or has a controlling interest in a company registered outside the UK and EEA, you need to tell HMRC:
-assetInterruptPage.lead_in = The EEA includes:
 assetInterruptPage.bullet11 = the name of the company
 assetInterruptPage.bullet12 = the address of the company
 assetInterruptPage.bullet13 = which country’s laws govern the company
