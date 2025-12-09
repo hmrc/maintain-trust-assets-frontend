@@ -143,7 +143,7 @@ class WhatKindOfAssetSpec extends SpecBase with ScalaCheckPropertyChecks {
         val messages: MessagesImpl = MessagesImpl(Lang("en"), messagesApi)
         val result = asset.label(messages)
 
-        result mustBe "Company outside the UK or EEA"
+        result mustBe "Company registered outside the UK or EEA"
 
       }
 
@@ -152,7 +152,7 @@ class WhatKindOfAssetSpec extends SpecBase with ScalaCheckPropertyChecks {
         val messages: MessagesImpl = MessagesImpl(Lang("cy"), messagesApi)
         val result = asset.label(messages)
 
-        result mustBe "Cwmni sydd wedi’i leoli y tu allan i’r DU neu’r AEE"
+        result mustBe "Cwmni sydd wedi’i gofrestru y tu allan i’r DU neu’r AEE"
       }
     }
   }
