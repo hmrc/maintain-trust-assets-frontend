@@ -73,7 +73,7 @@ class ExtensionsSpec extends SpecBase {
           "passed Non-EEA Company text" in {
             val messageKey = WhatKindOfAsset.NonEeaBusiness.toString
             val string = messages(s"$prefix.$messageKey")
-            string.lowercaseFirstLetterOfFirstWord mustEqual "company outside the UK or EEA"
+            string.lowercaseFirstLetterOfFirstWord mustEqual "company registered outside the UK or EEA"
           }
 
           "return an empty string" when {
