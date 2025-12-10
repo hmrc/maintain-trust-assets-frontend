@@ -56,7 +56,7 @@ class ShareAnswerController @Inject()(
     implicit request =>
       val section: AnswerSection = printHelper(request.userAnswers, index, provisional, request.name)
       Ok(view(index, section))
-    }
+  }
 
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
@@ -68,6 +68,7 @@ class ShareAnswerController @Inject()(
               connector.amendSharesAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
                 response.status match {
                   case OK | NO_CONTENT => cleanAllAndRedirect(index)
+                  case _               => errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
                 }
               }
             } else {
@@ -80,8 +81,14 @@ class ShareAnswerController @Inject()(
                   ele.shareClassDisplay == asset.shareClassDisplay &&
                   ele.value == asset.value
               )
-              if (!matchFound) connector.addSharesAsset(request.userAnswers.identifier, asset).flatMap(_ => cleanAllAndRedirect(index))
-              else cleanAllAndRedirect(index)
+              if (!matchFound) {
+                connector.addSharesAsset(request.userAnswers.identifier, asset).flatMap { response =>
+                  response.status match {
+                    case OK | NO_CONTENT => cleanAllAndRedirect(index)
+                    case _               => errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
+                  }
+                }
+              } else cleanAllAndRedirect(index)
             }
           }
       }

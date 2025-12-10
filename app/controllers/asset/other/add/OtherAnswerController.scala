@@ -59,7 +59,7 @@ class OtherAnswerController @Inject()(
       val name: String = request.userAnswers.get(OtherAssetDescriptionPage(index)).getOrElse("")
       val section: AnswerSection = printHelper(userAnswers = request.userAnswers, index = index, provisional = provisional, name = name)
       Ok(view(index, section))
-    }
+  }
 
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
@@ -71,16 +71,25 @@ class OtherAnswerController @Inject()(
               connector.amendOtherAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
                 response.status match {
                   case OK | NO_CONTENT => cleanAllAndRedirect(index)
+                  case _               => errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
                 }
               }
             } else {
               val exists = data.other.exists(e => e.description.equalsIgnoreCase(asset.description) && e.value == asset.value)
-              if (!exists) connector.addOtherAsset(request.userAnswers.identifier, asset).flatMap(_ => cleanAllAndRedirect(index))
-              else cleanAllAndRedirect(index)
+              if (!exists) {
+                connector.addOtherAsset(request.userAnswers.identifier, asset).flatMap { response =>
+                  response.status match {
+                    case OK | NO_CONTENT => cleanAllAndRedirect(index)
+                    case _               => errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
+                  }
+                }
+              } else {
+                cleanAllAndRedirect(index)
+              }
             }
           }
       }
-    }
+  }
 
   private def cleanAllAndRedirect(index: Int)(implicit request: DataRequest[AnyContent]): Future[Result] = {
     val next = navigator.nextPage(OtherAnswerPage(index), NormalMode, request.userAnswers)

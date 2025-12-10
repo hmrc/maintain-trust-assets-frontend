@@ -1,10 +1,13 @@
-GET        /:index/value                          controllers.asset.money.AssetMoneyValueController.onPageLoad(index: Int, mode: Mode = NormalMode)
-POST       /:index/value                          controllers.asset.money.AssetMoneyValueController.onSubmit(index: Int, mode: Mode = NormalMode)
-GET        /:index/change-value                   controllers.asset.money.AssetMoneyValueController.onPageLoad(index: Int, mode: Mode = CheckMode)
-POST       /:index/change-value                   controllers.asset.money.AssetMoneyValueController.onSubmit(index: Int, mode: Mode = CheckMode)
+GET        /:index/value                                controllers.asset.money.AssetMoneyValueController.onPageLoad(index: Int, mode: Mode = NormalMode)
+POST       /:index/value                                controllers.asset.money.AssetMoneyValueController.onSubmit(index: Int, mode: Mode = NormalMode)
+GET        /:index/change-value                         controllers.asset.money.AssetMoneyValueController.onPageLoad(index: Int, mode: Mode = CheckMode)
+POST       /:index/change-value                         controllers.asset.money.AssetMoneyValueController.onSubmit(index: Int, mode: Mode = CheckMode)
 
-GET        /:index/remove                         controllers.asset.money.remove.RemoveAssetYesNoController.onPageLoad(index: Int)
-POST       /:index/remove                         controllers.asset.money.remove.RemoveAssetYesNoController.onSubmit(index: Int)
+GET        /:index/remove                               controllers.asset.money.remove.RemoveAssetYesNoController.onPageLoad(index: Int)
+POST       /:index/remove                               controllers.asset.money.remove.RemoveAssetYesNoController.onSubmit(index: Int)
 
-GET        /:index/check-answers                  controllers.asset.money.add.MoneyAnswerController.onPageLoad(index: Int)
-POST       /:index/check-answers                  controllers.asset.money.add.MoneyAnswerController.onSubmit(index: Int)
+GET        /:index/money-check-answers                  controllers.asset.money.add.MoneyAnswerController.onPageLoad(index: Int)
+POST       /:index/money-check-answers                  controllers.asset.money.add.MoneyAnswerController.onSubmit(index: Int)
+
+GET        /:index/check-answers                        controllers.asset.money.amend.MoneyAmendAnswersController.extractAndRender(index: Int)
+POST       /:index/check-answers                        controllers.asset.money.amend.MoneyAmendAnswersController.onSubmit(index: Int)
