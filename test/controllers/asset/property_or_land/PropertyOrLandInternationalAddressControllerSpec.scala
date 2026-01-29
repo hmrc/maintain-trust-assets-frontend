@@ -38,10 +38,11 @@ import scala.concurrent.Future
 
 class PropertyOrLandInternationalAddressControllerSpec extends SpecBase with IndexValidation {
 
-  val formProvider = new InternationalAddressFormProvider()
+  val formProvider             = new InternationalAddressFormProvider()
   val form: Form[NonUkAddress] = formProvider()
 
-  lazy val propertyOrLandInternationalAddressRoute: String = routes.PropertyOrLandInternationalAddressController.onPageLoad(index, NormalMode).url
+  lazy val propertyOrLandInternationalAddressRoute: String =
+    routes.PropertyOrLandInternationalAddressController.onPageLoad(index, NormalMode).url
 
   "PropertyOrLandInternationalAddress Controller" must {
 
@@ -51,7 +52,8 @@ class PropertyOrLandInternationalAddressControllerSpec extends SpecBase with Ind
 
       val request = FakeRequest(GET, propertyOrLandInternationalAddressRoute)
 
-      val view: PropertyOrLandInternationalAddressView = application.injector.instanceOf[PropertyOrLandInternationalAddressView]
+      val view: PropertyOrLandInternationalAddressView =
+        application.injector.instanceOf[PropertyOrLandInternationalAddressView]
 
       val result: Future[Result] = route(application, request).value
 
@@ -68,7 +70,9 @@ class PropertyOrLandInternationalAddressControllerSpec extends SpecBase with Ind
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = emptyUserAnswers
-        .set(PropertyOrLandInternationalAddressPage(index), NonUkAddress("line 1", "line 2", Some("line 3"), "country")).success.value
+        .set(PropertyOrLandInternationalAddressPage(index), NonUkAddress("line 1", "line 2", Some("line 3"), "country"))
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -83,7 +87,10 @@ class PropertyOrLandInternationalAddressControllerSpec extends SpecBase with Ind
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(NonUkAddress("line 1", "line 2", Some("line 3"), "country")), index, countryOptions, NormalMode)(request, messages).toString
+        view(form.fill(NonUkAddress("line 1", "line 2", Some("line 3"), "country")), index, countryOptions, NormalMode)(
+          request,
+          messages
+        ).toString
 
       application.stop()
     }

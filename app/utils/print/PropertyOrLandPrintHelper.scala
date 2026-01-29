@@ -24,9 +24,11 @@ import utils.AnswerRowConverter
 import viewmodels.{AnswerRow, AnswerSection}
 import javax.inject.Inject
 
-class PropertyOrLandPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) {
+class PropertyOrLandPrintHelper @Inject() (answerRowConverter: AnswerRowConverter) {
 
-  def apply(userAnswers: UserAnswers, index: Int, provisional: Boolean, name: String)(implicit messages: Messages): AnswerSection = {
+  def apply(userAnswers: UserAnswers, index: Int, provisional: Boolean, name: String)(implicit
+    messages: Messages
+  ): AnswerSection = {
 
     val bound: answerRowConverter.Bound = answerRowConverter.bind(userAnswers, name)
 
@@ -34,14 +36,46 @@ class PropertyOrLandPrintHelper @Inject()(answerRowConverter: AnswerRowConverter
       val mode: Mode = if (provisional) NormalMode else CheckMode
       Seq(
         bound.assetTypeQuestion(0),
-        bound.yesNoQuestion(PropertyOrLandAddressYesNoPage(index), "propertyOrLand.addressYesNo", PropertyOrLandAddressYesNoController.onPageLoad(index, mode).url),
-        bound.yesNoQuestion(PropertyOrLandAddressUkYesNoPage(index), "propertyOrLand.addressUkYesNo", PropertyOrLandAddressUkYesNoController.onPageLoad(index, mode).url),
-        bound.addressQuestion(PropertyOrLandUKAddressPage(index), "propertyOrLand.ukAddress", PropertyOrLandUKAddressController.onPageLoad(index, mode).url),
-        bound.addressQuestion(PropertyOrLandInternationalAddressPage(index), "propertyOrLand.internationalAddress", PropertyOrLandInternationalAddressController.onPageLoad(index, mode).url),
-        bound.stringQuestion(PropertyOrLandDescriptionPage(index), "propertyOrLand.description", PropertyOrLandDescriptionController.onPageLoad(index, mode).url),
-        bound.currencyQuestion(PropertyOrLandTotalValuePage(index), "propertyOrLand.totalValue", PropertyOrLandTotalValueController.onPageLoad(index, mode).url),
-        bound.yesNoQuestion(TrustOwnAllThePropertyOrLandPage(index), "propertyOrLand.trustOwnAllYesNo", TrustOwnAllThePropertyOrLandController.onPageLoad(index, mode).url),
-        bound.currencyQuestion(PropertyLandValueTrustPage(index), "propertyOrLand.valueInTrust", PropertyLandValueTrustController.onPageLoad(index, mode).url)
+        bound.yesNoQuestion(
+          PropertyOrLandAddressYesNoPage(index),
+          "propertyOrLand.addressYesNo",
+          PropertyOrLandAddressYesNoController.onPageLoad(index, mode).url
+        ),
+        bound.yesNoQuestion(
+          PropertyOrLandAddressUkYesNoPage(index),
+          "propertyOrLand.addressUkYesNo",
+          PropertyOrLandAddressUkYesNoController.onPageLoad(index, mode).url
+        ),
+        bound.addressQuestion(
+          PropertyOrLandUKAddressPage(index),
+          "propertyOrLand.ukAddress",
+          PropertyOrLandUKAddressController.onPageLoad(index, mode).url
+        ),
+        bound.addressQuestion(
+          PropertyOrLandInternationalAddressPage(index),
+          "propertyOrLand.internationalAddress",
+          PropertyOrLandInternationalAddressController.onPageLoad(index, mode).url
+        ),
+        bound.stringQuestion(
+          PropertyOrLandDescriptionPage(index),
+          "propertyOrLand.description",
+          PropertyOrLandDescriptionController.onPageLoad(index, mode).url
+        ),
+        bound.currencyQuestion(
+          PropertyOrLandTotalValuePage(index),
+          "propertyOrLand.totalValue",
+          PropertyOrLandTotalValueController.onPageLoad(index, mode).url
+        ),
+        bound.yesNoQuestion(
+          TrustOwnAllThePropertyOrLandPage(index),
+          "propertyOrLand.trustOwnAllYesNo",
+          TrustOwnAllThePropertyOrLandController.onPageLoad(index, mode).url
+        ),
+        bound.currencyQuestion(
+          PropertyLandValueTrustPage(index),
+          "propertyOrLand.valueInTrust",
+          PropertyLandValueTrustController.onPageLoad(index, mode).url
+        )
       ).flatten
     }
 

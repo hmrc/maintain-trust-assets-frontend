@@ -37,15 +37,15 @@ import scala.concurrent.Future
 
 class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
 
-  val mockTrustsConnector: TrustsConnector = mock[TrustsConnector]
+  val mockTrustsConnector: TrustsConnector       = mock[TrustsConnector]
   val mockTrustsStoreService: TrustsStoreService = mock[TrustsStoreService]
 
-  val identifier = "1234567890"
-  val startDate: LocalDate = LocalDate.parse("2019-06-01")
+  val identifier             = "1234567890"
+  val startDate: LocalDate   = LocalDate.parse("2019-06-01")
   val trustType: TypeOfTrust = TypeOfTrust.WillTrustOrIntestacyTrust
-  val is5mldEnabled = false
-  val isTaxable = false
-  val isUnderlyingData5mld = false
+  val is5mldEnabled          = false
+  val isTaxable              = false
+  val isUnderlyingData5mld   = false
 
   override def beforeEach(): Unit = {
     reset(mockTrustsConnector)
@@ -70,21 +70,29 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
     "populate user answers and redirect" in {
 
       when(mockTrustsConnector.getTrustDetails(any())(any(), any()))
-        .thenReturn(Future.successful(TrustDetails(startDate = startDate, typeOfTrust = Some(trustType), trustTaxable = Some(isTaxable))))
+        .thenReturn(
+          Future.successful(
+            TrustDetails(startDate = startDate, typeOfTrust = Some(trustType), trustTaxable = Some(isTaxable))
+          )
+        )
 
       when(mockTrustsConnector.getTrustMigrationFlag(any())(any(), any()))
         .thenReturn(Future.successful(TaxableMigrationFlag(Some(false))))
 
-      when(mockTrustsConnector.getAssets(any())(any(), any())).thenReturn(Future.successful(Assets(
-        monetary = List(AssetMonetaryAmount(100))
-      )))
-
+      when(mockTrustsConnector.getAssets(any())(any(), any())).thenReturn(
+        Future.successful(
+          Assets(
+            monetary = List(AssetMonetaryAmount(100))
+          )
+        )
+      )
 
       val application = applicationBuilder(userAnswers = None)
         .overrides(
           bind[TrustsConnector].toInstance(mockTrustsConnector),
           bind[TrustsStoreService].toInstance(mockTrustsStoreService)
-        ).build()
+        )
+        .build()
 
       val request = FakeRequest(GET, routes.IndexController.onPageLoad(identifier).url)
 
@@ -92,16 +100,18 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result) mustBe Some(controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(
+        controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad().url
+      )
 
       val uaCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(playbackRepository).set(uaCaptor.capture)
 
-      uaCaptor.getValue.internalId mustBe "id"
-      uaCaptor.getValue.identifier mustBe identifier
-      uaCaptor.getValue.whenTrustSetup mustBe startDate
-      uaCaptor.getValue.is5mldEnabled mustBe is5mldEnabled
-      uaCaptor.getValue.isTaxable mustBe isTaxable
+      uaCaptor.getValue.internalId           mustBe "id"
+      uaCaptor.getValue.identifier           mustBe identifier
+      uaCaptor.getValue.whenTrustSetup       mustBe startDate
+      uaCaptor.getValue.is5mldEnabled        mustBe is5mldEnabled
+      uaCaptor.getValue.isTaxable            mustBe isTaxable
       uaCaptor.getValue.isUnderlyingData5mld mustBe isUnderlyingData5mld
 
       verify(mockTrustsStoreService).updateTaskStatus(eqTo(identifier), eqTo(InProgress))(any(), any())
@@ -112,7 +122,9 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
     "default isTaxable to true if trustTaxable is None i.e. 4mld" in {
 
       when(mockTrustsConnector.getTrustDetails(any())(any(), any()))
-        .thenReturn(Future.successful(TrustDetails(startDate = startDate, typeOfTrust = Some(trustType), trustTaxable = None)))
+        .thenReturn(
+          Future.successful(TrustDetails(startDate = startDate, typeOfTrust = Some(trustType), trustTaxable = None))
+        )
 
       when(mockTrustsConnector.getTrustMigrationFlag(any())(any(), any()))
         .thenReturn(Future.successful(TaxableMigrationFlag(Some(false))))
@@ -130,7 +142,8 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
         .overrides(
           bind[TrustsConnector].toInstance(mockTrustsConnector),
           bind[TrustsStoreService].toInstance(mockTrustsStoreService)
-        ).build()
+        )
+        .build()
 
       val request = FakeRequest(GET, routes.IndexController.onPageLoad(identifier).url)
 
@@ -138,7 +151,9 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result) mustBe Some(controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(
+        controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad().url
+      )
 
       val uaCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(playbackRepository).set(uaCaptor.capture)
@@ -153,7 +168,9 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
     "migrating from non-taxable to taxable" in {
 
       when(mockTrustsConnector.getTrustDetails(any())(any(), any()))
-        .thenReturn(Future.successful(TrustDetails(startDate = startDate, typeOfTrust = Some(trustType), trustTaxable = None)))
+        .thenReturn(
+          Future.successful(TrustDetails(startDate = startDate, typeOfTrust = Some(trustType), trustTaxable = None))
+        )
 
       when(mockTrustsConnector.getTrustMigrationFlag(any())(any(), any()))
         .thenReturn(Future.successful(TaxableMigrationFlag(Some(true))))
@@ -171,7 +188,8 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
         .overrides(
           bind[TrustsConnector].toInstance(mockTrustsConnector),
           bind[TrustsStoreService].toInstance(mockTrustsStoreService)
-        ).build()
+        )
+        .build()
 
       val request = FakeRequest(GET, routes.IndexController.onPageLoad(identifier).url)
 
@@ -179,7 +197,9 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result) mustBe Some(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url)
+      redirectLocation(result) mustBe Some(
+        controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+      )
 
       val uaCaptor: ArgumentCaptor[UserAnswers] = ArgumentCaptor.forClass(classOf[UserAnswers])
       verify(playbackRepository).set(uaCaptor.capture)
@@ -191,4 +211,5 @@ class IndexControllerSpec extends SpecBase with BeforeAndAfterEach {
       application.stop()
     }
   }
+
 }

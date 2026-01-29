@@ -25,9 +25,8 @@ import pages.asset.noneeabusiness._
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Reads, __}
 
-final case class NonEeaBusinessAssetViewModel(`type`: WhatKindOfAsset,
-                                              name: Option[String],
-                                              status: Status) extends AssetViewModel {
+final case class NonEeaBusinessAssetViewModel(`type`: WhatKindOfAsset, name: Option[String], status: Status)
+    extends AssetViewModel {
 
   override val label: Option[String] = name
 }
@@ -38,6 +37,6 @@ object NonEeaBusinessAssetViewModel {
     (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].filter(_ == NonEeaBusiness) and
       (__ \ NamePage.key).readNullable[String] and
       (__ \ AssetStatus.key).readWithDefault[Status](InProgress)
-    )(NonEeaBusinessAssetViewModel.apply _)
+  )(NonEeaBusinessAssetViewModel.apply _)
 
 }

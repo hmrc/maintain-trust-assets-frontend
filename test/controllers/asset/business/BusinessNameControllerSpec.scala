@@ -32,11 +32,11 @@ import views.html.asset.business.BusinessNameView
 
 class BusinessNameControllerSpec extends SpecBase with IndexValidation {
 
-  val formProvider = new NameFormProvider()
-  val prefix: String = "business.name"
-  val maxLength: Int = 105
-  val form: Form[String] = formProvider.withConfig(maxLength, prefix)
-    val validAnswer: String = "Name"
+  val formProvider        = new NameFormProvider()
+  val prefix: String      = "business.name"
+  val maxLength: Int      = 105
+  val form: Form[String]  = formProvider.withConfig(maxLength, prefix)
+  val validAnswer: String = "Name"
 
   lazy val assetNameRoute: String = routes.BusinessNameController.onPageLoad(index, NormalMode).url
 
@@ -63,7 +63,9 @@ class BusinessNameControllerSpec extends SpecBase with IndexValidation {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers: UserAnswers = emptyUserAnswers
-        .set(BusinessNamePage(index), validAnswer).success.value
+        .set(BusinessNamePage(index), validAnswer)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -155,4 +157,5 @@ class BusinessNameControllerSpec extends SpecBase with IndexValidation {
     }
 
   }
+
 }

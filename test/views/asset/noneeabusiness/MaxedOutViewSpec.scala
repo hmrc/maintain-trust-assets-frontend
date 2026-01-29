@@ -35,7 +35,8 @@ class MaxedOutViewSpec extends OptionsViewBehaviours with TabularDataViewBehavio
 
       val max: Int = 76
 
-      val view: MaxedOutView = viewFor[MaxedOutView](Some(emptyUserAnswers.copy(is5mldEnabled = true, isTaxable = true)))
+      val view: MaxedOutView =
+        viewFor[MaxedOutView](Some(emptyUserAnswers.copy(is5mldEnabled = true, isTaxable = true)))
 
       def applyView(): HtmlFormat.Appendable =
         view.apply(
@@ -56,9 +57,16 @@ class MaxedOutViewSpec extends OptionsViewBehaviours with TabularDataViewBehavio
       "show maxed out assets content" in {
         val doc = asDocument(applyView())
 
-        assertContainsText(doc, s"You cannot add another company registered outside the UK or EEA as you have entered a maximum of $max.")
-        assertContainsText(doc, "You can add another company by removing an existing one, or write to HMRC with details of any additional companies registered outside the UK or EEA.")
+        assertContainsText(
+          doc,
+          s"You cannot add another company registered outside the UK or EEA as you have entered a maximum of $max."
+        )
+        assertContainsText(
+          doc,
+          "You can add another company by removing an existing one, or write to HMRC with details of any additional companies registered outside the UK or EEA."
+        )
       }
     }
   }
+
 }

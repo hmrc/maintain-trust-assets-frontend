@@ -25,11 +25,13 @@ import pages.asset.property_or_land._
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
-final case class PropertyOrLandAssetViewModel(`type`: WhatKindOfAsset,
-                                              hasAddress: Option[Boolean],
-                                              address: Option[String],
-                                              description: Option[String],
-                                              status: Status) extends AssetViewModel {
+final case class PropertyOrLandAssetViewModel(
+  `type`: WhatKindOfAsset,
+  hasAddress: Option[Boolean],
+  address: Option[String],
+  description: Option[String],
+  status: Status
+) extends AssetViewModel {
 
   override val label: Option[String] = if (address.isDefined) address else description
 }
@@ -47,8 +49,8 @@ object PropertyOrLandAssetViewModel extends AssetViewModelReads {
       (__ \ PropertyOrLandAddressYesNoPage.key).readNullable[Boolean] and
       addressLine1Reads and
       (__ \ PropertyOrLandDescriptionPage.key).readNullable[String] and
-      (__ \ AssetStatus.key).readWithDefault[Status](InProgress)
-      )(PropertyOrLandAssetViewModel.apply _)
+      (__ \ AssetStatus.key).readWithDefault[Status](InProgress))(PropertyOrLandAssetViewModel.apply _)
 
   }
+
 }

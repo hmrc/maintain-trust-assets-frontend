@@ -19,7 +19,6 @@ package pages.asset.property_or_land
 import models.UkAddress
 import pages.behaviours.PageBehaviours
 
-
 class PropertyOrLandUKAddressPageSpec extends PageBehaviours {
 
   val page = PropertyOrLandUKAddressPage(index)
@@ -32,4 +31,5 @@ class PropertyOrLandUKAddressPageSpec extends PageBehaviours {
 
     beRemovable[UkAddress](page)
   }
+
 }

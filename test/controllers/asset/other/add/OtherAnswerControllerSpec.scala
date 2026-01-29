@@ -43,11 +43,17 @@ class OtherAnswerControllerSpec extends SpecBase {
 
   val answers: UserAnswers =
     emptyUserAnswers
-      .set(WhatKindOfAssetPage(index), Other).success.value
-      .set(OtherAssetDescriptionPage(index), "Other asset").success.value
-      .set(OtherAssetValuePage(index), 4000L).success.value
+      .set(WhatKindOfAssetPage(index), Other)
+      .success
+      .value
+      .set(OtherAssetDescriptionPage(index), "Other asset")
+      .success
+      .value
+      .set(OtherAssetValuePage(index), 4000L)
+      .success
+      .value
 
-  private val mapped: OtherAssetType = OtherAssetType("Other asset", 4000L)
+  private val mapped: OtherAssetType    = OtherAssetType("Other asset", 4000L)
   private val different: OtherAssetType = OtherAssetType("Different asset", 999L)
 
   "OtherAnswer Controller" must {
@@ -60,8 +66,8 @@ class OtherAnswerControllerSpec extends SpecBase {
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[OtherAssetAnswersView]
-      val printHelper = application.injector.instanceOf[OtherPrintHelper]
+      val view          = application.injector.instanceOf[OtherAssetAnswersView]
+      val printHelper   = application.injector.instanceOf[OtherPrintHelper]
       val answerSection = printHelper(answers, index, provisional = true, description)
 
       status(result) mustEqual OK
@@ -75,7 +81,7 @@ class OtherAnswerControllerSpec extends SpecBase {
     "return INTERNAL_SERVER_ERROR when mapper returns None" in {
 
       val mockTrustConnector = mock[TrustsConnector]
-      val mockMapper = mock[OtherAssetMapper]
+      val mockMapper         = mock[OtherAssetMapper]
 
       when(mockMapper.apply(any())).thenReturn(None)
 
@@ -98,11 +104,13 @@ class OtherAnswerControllerSpec extends SpecBase {
     "amend branch: redirects on OK when amending the last existing other asset" in {
 
       val mockTrustConnector = mock[TrustsConnector]
-      val mockMapper = mock[OtherAssetMapper]
+      val mockMapper         = mock[OtherAssetMapper]
 
       when(mockMapper.apply(any())).thenReturn(Some(mapped))
       when(mockTrustConnector.getAssets(any())(any(), any()))
-        .thenReturn(Future.successful(models.assets.Assets(Nil, Nil, Nil, Nil, Nil, List(OtherAssetType("old", 1L)), Nil)))
+        .thenReturn(
+          Future.successful(models.assets.Assets(Nil, Nil, Nil, Nil, Nil, List(OtherAssetType("old", 1L)), Nil))
+        )
       when(mockTrustConnector.amendOtherAsset(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(HttpResponse(OK, "")))
 
@@ -118,7 +126,9 @@ class OtherAnswerControllerSpec extends SpecBase {
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController
+        .onPageLoad()
+        .url
 
       application.stop()
     }
@@ -126,11 +136,13 @@ class OtherAnswerControllerSpec extends SpecBase {
     "amend branch: also redirects on NO_CONTENT" in {
 
       val mockTrustConnector = mock[TrustsConnector]
-      val mockMapper = mock[OtherAssetMapper]
+      val mockMapper         = mock[OtherAssetMapper]
 
       when(mockMapper.apply(any())).thenReturn(Some(mapped))
       when(mockTrustConnector.getAssets(any())(any(), any()))
-        .thenReturn(Future.successful(models.assets.Assets(Nil, Nil, Nil, Nil, Nil, List(OtherAssetType("old", 1L)), Nil)))
+        .thenReturn(
+          Future.successful(models.assets.Assets(Nil, Nil, Nil, Nil, Nil, List(OtherAssetType("old", 1L)), Nil))
+        )
       when(mockTrustConnector.amendOtherAsset(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(HttpResponse(NO_CONTENT, "")))
 
@@ -146,7 +158,9 @@ class OtherAnswerControllerSpec extends SpecBase {
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController
+        .onPageLoad()
+        .url
 
       application.stop()
     }
@@ -154,7 +168,7 @@ class OtherAnswerControllerSpec extends SpecBase {
     "add branch: adds when asset does not already exist and redirects" in {
 
       val mockTrustConnector = mock[TrustsConnector]
-      val mockMapper = mock[OtherAssetMapper]
+      val mockMapper         = mock[OtherAssetMapper]
 
       when(mockMapper.apply(any())).thenReturn(Some(mapped))
       when(mockTrustConnector.getAssets(any())(any(), any()))
@@ -174,7 +188,9 @@ class OtherAnswerControllerSpec extends SpecBase {
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController
+        .onPageLoad()
+        .url
 
       application.stop()
     }
@@ -182,15 +198,23 @@ class OtherAnswerControllerSpec extends SpecBase {
     "exists branch: does not add when exact same asset already exists and redirects" in {
 
       val mockTrustConnector = mock[TrustsConnector]
-      val mockMapper = mock[OtherAssetMapper]
+      val mockMapper         = mock[OtherAssetMapper]
 
       when(mockMapper.apply(any())).thenReturn(Some(mapped))
       when(mockTrustConnector.getAssets(any())(any(), any()))
-        .thenReturn(Future.successful(models.assets.Assets(
-          Nil, Nil, Nil, Nil, Nil,
-          List(OtherAssetType("Other asset", 4000L), different),
-          Nil
-        )))
+        .thenReturn(
+          Future.successful(
+            models.assets.Assets(
+              Nil,
+              Nil,
+              Nil,
+              Nil,
+              Nil,
+              List(OtherAssetType("Other asset", 4000L), different),
+              Nil
+            )
+          )
+        )
 
       val application = applicationBuilder(userAnswers = Some(answers))
         .overrides(
@@ -204,7 +228,9 @@ class OtherAnswerControllerSpec extends SpecBase {
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController
+        .onPageLoad()
+        .url
 
       verify(mockTrustConnector, never()).addOtherAsset(any(), any())(any(), any())
 
@@ -239,4 +265,5 @@ class OtherAnswerControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

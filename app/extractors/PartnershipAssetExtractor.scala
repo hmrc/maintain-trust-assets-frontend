@@ -27,14 +27,12 @@ import scala.util.Try
 
 class PartnershipAssetExtractor extends AssetExtractor[PartnershipType] {
 
-  override def apply(answers: UserAnswers,
-                     partnershipType: PartnershipType,
-                     index: Int): Try[UserAnswers] = {
+  override def apply(answers: UserAnswers, partnershipType: PartnershipType, index: Int): Try[UserAnswers] =
 
-    super.apply(answers, partnershipType, index)
+    super
+      .apply(answers, partnershipType, index)
       .flatMap(_.set(PartnershipDescriptionPage(0), partnershipType.description))
       .flatMap(_.set(PartnershipStartDatePage(0), partnershipType.partnershipStart))
-  }
 
   override def indexPage: QuestionPage[Int] = IndexPage
 

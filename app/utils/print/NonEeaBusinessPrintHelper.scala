@@ -26,9 +26,11 @@ import viewmodels.{AnswerRow, AnswerSection}
 import javax.inject.Inject
 import pages.asset.noneeabusiness.add.StartDatePage
 
-class NonEeaBusinessPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) {
+class NonEeaBusinessPrintHelper @Inject() (answerRowConverter: AnswerRowConverter) {
 
-  def apply(userAnswers: UserAnswers, index: Int, provisional: Boolean, name: String)(implicit messages: Messages): AnswerSection = {
+  def apply(userAnswers: UserAnswers, index: Int, provisional: Boolean, name: String)(implicit
+    messages: Messages
+  ): AnswerSection = {
 
     val bound: answerRowConverter.Bound = answerRowConverter.bind(userAnswers, name)
 
@@ -36,13 +38,25 @@ class NonEeaBusinessPrintHelper @Inject()(answerRowConverter: AnswerRowConverter
       val mode: Mode = if (provisional) NormalMode else CheckMode
       Seq(
         bound.stringQuestion(NamePage(index), "nonEeaBusiness.name", NameController.onPageLoad(index, mode).url),
-        bound.addressQuestion(NonUkAddressPage(index), "nonEeaBusiness.internationalAddress", InternationalAddressController.onPageLoad(index, mode).url),
-        bound.countryQuestion(GoverningCountryPage(index), "nonEeaBusiness.governingCountry", GoverningCountryController.onPageLoad(index, mode).url),
-        if (mode == NormalMode) bound.dateQuestion(StartDatePage(index), "nonEeaBusiness.startDate", StartDateController.onPageLoad(index).url) else None
+        bound.addressQuestion(
+          NonUkAddressPage(index),
+          "nonEeaBusiness.internationalAddress",
+          InternationalAddressController.onPageLoad(index, mode).url
+        ),
+        bound.countryQuestion(
+          GoverningCountryPage(index),
+          "nonEeaBusiness.governingCountry",
+          GoverningCountryController.onPageLoad(index, mode).url
+        ),
+        if (mode == NormalMode)
+          bound
+            .dateQuestion(StartDatePage(index), "nonEeaBusiness.startDate", StartDateController.onPageLoad(index).url)
+        else None
       ).flatten
     }
 
     AnswerSection(headingKey = None, rows = answerRows)
 
   }
+
 }

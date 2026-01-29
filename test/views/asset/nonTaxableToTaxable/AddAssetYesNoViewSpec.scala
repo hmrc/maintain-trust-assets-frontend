@@ -50,4 +50,5 @@ class AddAssetYesNoViewSpec extends YesNoViewBehaviours {
     assertContainsText(doc, "land or property")
     assertContainsText(doc, "ownerships or controlling interests in non-European Economic Area companies")
   }
+
 }

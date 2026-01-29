@@ -27,19 +27,17 @@ import scala.util.Try
 
 class BusinessExtractor extends AssetExtractor[BusinessAssetType] {
 
-  override def apply(answers: UserAnswers,
-                     assetType: BusinessAssetType,
-                     index: Int): Try[UserAnswers] = {
+  override def apply(answers: UserAnswers, assetType: BusinessAssetType, index: Int): Try[UserAnswers] =
 
-    super.apply(answers, assetType, index)
+    super
+      .apply(answers, assetType, index)
       .flatMap(_.set(BusinessNamePage(index), assetType.orgName))
       .flatMap(_.set(BusinessDescriptionPage(index), assetType.businessDescription))
       .flatMap(answers => extractAddress(Some(assetType.address), answers))
       .flatMap(_.set(BusinessValuePage(index), assetType.businessValue))
-  }
 
-  override def ukAddressYesNoPage: QuestionPage[Boolean] = BusinessAddressUkYesNoPage(0)
-  override def ukAddressPage: QuestionPage[UkAddress] = BusinessUkAddressPage(0)
+  override def ukAddressYesNoPage: QuestionPage[Boolean]    = BusinessAddressUkYesNoPage(0)
+  override def ukAddressPage: QuestionPage[UkAddress]       = BusinessUkAddressPage(0)
   override def nonUkAddressPage: QuestionPage[NonUkAddress] = BusinessInternationalAddressPage(0)
 
   override def indexPage: QuestionPage[Int] = IndexPage

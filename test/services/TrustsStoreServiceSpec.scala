@@ -39,7 +39,8 @@ class TrustsStoreServiceSpec extends SpecBase {
 
     "return true when 5mld is enabled" in {
 
-      when(mockConnector.getFeature(any())(any(), any())).thenReturn(Future.successful(FeatureResponse("5mld", isEnabled = true)))
+      when(mockConnector.getFeature(any())(any(), any()))
+        .thenReturn(Future.successful(FeatureResponse("5mld", isEnabled = true)))
 
       val result = featureFlagService.is5mldEnabled()
 
@@ -50,7 +51,8 @@ class TrustsStoreServiceSpec extends SpecBase {
 
     "return false when 5mld is disabled" in {
 
-      when(mockConnector.getFeature(any())(any(), any())).thenReturn(Future.successful(FeatureResponse("5mld", isEnabled = false)))
+      when(mockConnector.getFeature(any())(any(), any()))
+        .thenReturn(Future.successful(FeatureResponse("5mld", isEnabled = false)))
 
       val result = featureFlagService.is5mldEnabled()
 
@@ -74,4 +76,5 @@ class TrustsStoreServiceSpec extends SpecBase {
       }
     }
   }
+
 }

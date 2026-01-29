@@ -35,16 +35,17 @@ import views.html.asset.WhatKindOfAssetView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class WhatKindOfAssetController @Inject()(
-                                           override val messagesApi: MessagesApi,
-                                           standardActionSets: StandardActionSets,
-                                           repository: PlaybackRepository,
-                                           navigator: AssetsNavigator,
-                                           formProvider: WhatKindOfAssetFormProvider,
-                                           val controllerComponents: MessagesControllerComponents,
-                                           view: WhatKindOfAssetView,
-                                           trustService: TrustService
-                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
+class WhatKindOfAssetController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  repository: PlaybackRepository,
+  navigator: AssetsNavigator,
+  formProvider: WhatKindOfAssetFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: WhatKindOfAssetView,
+  trustService: TrustService
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
 
   val form: Form[WhatKindOfAsset] = formProvider()
 
@@ -53,44 +54,44 @@ class WhatKindOfAssetController @Inject()(
     WhatKindOfAsset.options(kindsOfAsset)
   }
 
-  def onPageLoad(index: Int, mode: Mode = NormalMode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
-    implicit request =>
-
+  def onPageLoad(index: Int, mode: Mode = NormalMode): Action[AnyContent] =
+    standardActionSets.verifiedForIdentifier.async { implicit request =>
       for {
         assets: Assets <- trustService.getAssets(request.userAnswers.identifier)
       } yield {
         val preparedForm = request.userAnswers.get(WhatKindOfAssetPage(index)) match {
-          case None => form
+          case None        => form
           case Some(value) => form.fill(value)
         }
 
         Ok(view(preparedForm, index, options(assets)))
       }
 
-  }
+    }
 
-  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
-    implicit request =>
-      trustService.getAssets(request.userAnswers.identifier).flatMap{ assets: Assets =>
-        form.bindFromRequest().fold(
-          (formWithErrors: Form[_]) =>
-            Future.successful(BadRequest(view(formWithErrors, index, options(assets)))),
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async { implicit request =>
+    trustService.getAssets(request.userAnswers.identifier).flatMap { assets: Assets =>
+      form
+        .bindFromRequest()
+        .fold(
+          (formWithErrors: Form[_]) => Future.successful(BadRequest(view(formWithErrors, index, options(assets)))),
           value => {
             val correctIndex = value match {
-              case Money => assets.monetary.size
+              case Money          => assets.monetary.size
               case PropertyOrLand => assets.propertyOrLand.size
-              case Shares => assets.shares.size
-              case Business =>assets.business.size
-              case Partnership => assets.partnerShip.size
-              case Other => assets.other.size
-              case NonEeaBusiness =>assets.nonEEABusiness.size
+              case Shares         => assets.shares.size
+              case Business       => assets.business.size
+              case Partnership    => assets.partnerShip.size
+              case Other          => assets.other.size
+              case NonEeaBusiness => assets.nonEEABusiness.size
             }
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(WhatKindOfAssetPage(correctIndex), value))
-              _ <- repository.set(updatedAnswers)
+              _              <- repository.set(updatedAnswers)
             } yield Redirect(navigator.addAssetNowRoute(value, assets.partnerShip, Some(correctIndex)))
           }
         )
-      }
+    }
   }
+
 }

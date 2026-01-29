@@ -26,11 +26,13 @@ import java.time.LocalDate
 
 import pages.asset.noneeabusiness.add.StartDatePage
 
-final case class NonEeaBusinessAsset(override val whatKindOfAsset: WhatKindOfAsset,
-                                     name: String,
-                                     address: Address,
-                                     governingCountry: String,
-                                     startDate: LocalDate) extends Asset {
+final case class NonEeaBusinessAsset(
+  override val whatKindOfAsset: WhatKindOfAsset,
+  name: String,
+  address: Address,
+  governingCountry: String,
+  startDate: LocalDate
+) extends Asset {
 
   override val arg: String = name
 }
@@ -43,6 +45,6 @@ object NonEeaBusinessAsset {
       (__ \ NonUkAddressPage.key).read[Address] and
       (__ \ GoverningCountryPage.key).read[String] and
       (__ \ StartDatePage.key).read[LocalDate]
-    )(NonEeaBusinessAsset.apply _)
+  )(NonEeaBusinessAsset.apply _)
 
 }

@@ -30,8 +30,9 @@ class OtherAssetMapper extends Mapper[OtherAssetType] with Logging {
       (
         OtherAssetDescriptionPage(0).path.read[String] and
           OtherAssetValuePage(0).path.read[Long]
-        ) (OtherAssetType.apply _)
+      )(OtherAssetType.apply _)
 
     mapAnswersWithExplicitReads(answers, readFromUserAnswers)
   }
+
 }

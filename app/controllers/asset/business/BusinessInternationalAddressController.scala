@@ -34,23 +34,23 @@ import views.html.asset.business.BusinessInternationalAddressView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class BusinessInternationalAddressController @Inject()(
-                                                        override val messagesApi: MessagesApi,
-                                                        standardActionSets: StandardActionSets,
-                                                        nameAction: NameRequiredAction,
-                                                        repository: PlaybackRepository,
-                                                        @Business navigator: Navigator,
-                                                        formProvider: InternationalAddressFormProvider,
-                                                        val controllerComponents: MessagesControllerComponents,
-                                                        view: BusinessInternationalAddressView,
-                                                        val countryOptions: CountryOptionsNonUK
-                                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class BusinessInternationalAddressController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  nameAction: NameRequiredAction,
+  repository: PlaybackRepository,
+  @Business navigator: Navigator,
+  formProvider: InternationalAddressFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: BusinessInternationalAddressView,
+  val countryOptions: CountryOptionsNonUK
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   val form: Form[NonUkAddress] = formProvider()
 
   def onPageLoad(index: Int, mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
     implicit request =>
-
       val preparedForm = request.userAnswers.get(BusinessInternationalAddressPage(index)) match {
         case None        => form
         case Some(value) => form.fill(value)
@@ -67,23 +67,25 @@ class BusinessInternationalAddressController @Inject()(
 
   def onSubmit(index: Int, mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-
       request.userAnswers.get(BusinessNamePage(index)) match {
         case Some(businessName) =>
-          form.bindFromRequest().fold(
-            (formWithErrors: Form[_]) =>
-              Future.successful(BadRequest(view(formWithErrors, index, countryOptions.options(), mode, businessName))),
-
-            value => {
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(BusinessInternationalAddressPage(index), value))
-                _              <- repository.set(updatedAnswers)
-              } yield Redirect(navigator.nextPage(BusinessInternationalAddressPage(index), mode, updatedAnswers))
-            }
-          )
+          form
+            .bindFromRequest()
+            .fold(
+              (formWithErrors: Form[_]) =>
+                Future
+                  .successful(BadRequest(view(formWithErrors, index, countryOptions.options(), mode, businessName))),
+              value =>
+                for {
+                  updatedAnswers <-
+                    Future.fromTry(request.userAnswers.set(BusinessInternationalAddressPage(index), value))
+                  _              <- repository.set(updatedAnswers)
+                } yield Redirect(navigator.nextPage(BusinessInternationalAddressPage(index), mode, updatedAnswers))
+            )
 
         case None =>
           Future.successful(Redirect(controllers.asset.business.routes.BusinessNameController.onPageLoad(index, mode)))
       }
   }
+
 }

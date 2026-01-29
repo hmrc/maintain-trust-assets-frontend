@@ -38,107 +38,106 @@ import views.html.asset.noneeabusiness.{AddAnAssetYesNoView, AddNonEeaBusinessAs
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddNonEeaBusinessAssetController @Inject()(
-                                                  override val messagesApi: MessagesApi,
-                                                  standardActionSets: StandardActionSets,
-                                                  repository: PlaybackRepository,
-                                                  val appConfig: FrontendAppConfig,
-                                                  trustService: TrustService,
-                                                  trustsStoreConnector: TrustsStoreConnector,
-                                                  addAnotherFormProvider: AddAssetsFormProvider,
-                                                  yesNoFormProvider: YesNoFormProvider,
-                                                  val controllerComponents: MessagesControllerComponents,
-                                                  addAssetsView: AddNonEeaBusinessAssetView,
-                                                  yesNoView: AddAnAssetYesNoView,
-                                                  maxedOutView: MaxedOutView,
-                                                  errorHandler: ErrorHandler,
-                                                  viewHelper: AddAssetViewHelper
-                                                )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+class AddNonEeaBusinessAssetController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  repository: PlaybackRepository,
+  val appConfig: FrontendAppConfig,
+  trustService: TrustService,
+  trustsStoreConnector: TrustsStoreConnector,
+  addAnotherFormProvider: AddAssetsFormProvider,
+  yesNoFormProvider: YesNoFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  addAssetsView: AddNonEeaBusinessAssetView,
+  yesNoView: AddAnAssetYesNoView,
+  maxedOutView: MaxedOutView,
+  errorHandler: ErrorHandler,
+  viewHelper: AddAssetViewHelper
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport with Logging {
 
-  private val prefix = "addNonEeaBusinessAsset"
+  private val prefix                          = "addNonEeaBusinessAsset"
   private val addAnotherForm: Form[AddAssets] = addAnotherFormProvider.withPrefix(prefix)
-  private val yesNoForm: Form[Boolean] = yesNoFormProvider.withPrefix("addNonEeaBusinessAssetYesNo")
+  private val yesNoForm: Form[Boolean]        = yesNoFormProvider.withPrefix("addNonEeaBusinessAssetYesNo")
 
-  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
-    implicit request =>
-      for {
-        assets <- trustService.getAssets(request.userAnswers.identifier)
-        updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
-        _ <- repository.set(updatedAnswers)
-      } yield {
-        val assetRows = viewHelper.rows(assets, isNonTaxable = true)
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async { implicit request =>
+    for {
+      assets         <- trustService.getAssets(request.userAnswers.identifier)
+      updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
+      _              <- repository.set(updatedAnswers)
+    } yield {
+      val assetRows = viewHelper.rows(assets, isNonTaxable = true)
 
-        val maxLimit: Int = MAX_NON_EEA_BUSINESS_ASSETS
+      val maxLimit: Int = MAX_NON_EEA_BUSINESS_ASSETS
 
-        assets.nonEEABusiness.size match {
-          case 0 =>
-            Redirect(controllers.asset.routes.TrustOwnsNonEeaBusinessYesNoController.onPageLoad(NormalMode))
-          case c if c >= maxLimit =>
-            Ok(maxedOutView(assetRows.complete, Messages(s"$prefix.heading"), maxLimit, prefix))
-          case c =>
-            Ok(addAssetsView(addAnotherForm, assetRows.complete, Messages(s"$prefix.heading")))
-        }
+      assets.nonEEABusiness.size match {
+        case 0                  =>
+          Redirect(controllers.asset.routes.TrustOwnsNonEeaBusinessYesNoController.onPageLoad(NormalMode))
+        case c if c >= maxLimit =>
+          Ok(maxedOutView(assetRows.complete, Messages(s"$prefix.heading"), maxLimit, prefix))
+        case c                  =>
+          Ok(addAssetsView(addAnotherForm, assetRows.complete, Messages(s"$prefix.heading")))
       }
+    }
   }
 
-  def submitOne(): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
-    implicit request =>
-
-      yesNoForm.bindFromRequest().fold(
-        (formWithErrors: Form[_]) => {
-          Future.successful(BadRequest(yesNoView(formWithErrors)))
-        },
-        value => {
+  def submitOne(): Action[AnyContent] = standardActionSets.identifiedUserWithData.async { implicit request =>
+    yesNoForm
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[_]) => Future.successful(BadRequest(yesNoView(formWithErrors))),
+        value =>
           if (value) {
             for {
               cleanedAnswers <- Future.fromTry(request.userAnswers.cleanup)
               updatedAnswers <- Future.fromTry(cleanedAnswers.set(AddAnAssetYesNoPage, value))
-              _ <- repository.set(updatedAnswers)
+              _              <- repository.set(updatedAnswers)
             } yield Redirect(controllers.asset.noneeabusiness.routes.NameController.onPageLoad(0, NormalMode))
           } else {
             submitComplete()(request)
           }
-        }
       )
   }
 
-  def submitAnother(): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
-    implicit request =>
-
-      trustService.getAssets(request.userAnswers.identifier).flatMap { assets =>
-        addAnotherForm.bindFromRequest().fold(
+  def submitAnother(): Action[AnyContent] = standardActionSets.identifiedUserWithData.async { implicit request =>
+    trustService.getAssets(request.userAnswers.identifier).flatMap { assets =>
+      addAnotherForm
+        .bindFromRequest()
+        .fold(
           (formWithErrors: Form[_]) => {
 
             val assetRows = viewHelper.rows(assets, isNonTaxable = true)
 
-            Future.successful(BadRequest(addAssetsView(formWithErrors, assetRows.complete, Messages(s"$prefix.heading"))))
+            Future
+              .successful(BadRequest(addAssetsView(formWithErrors, assetRows.complete, Messages(s"$prefix.heading"))))
           },
           {
             case AddAssets.YesNow =>
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
-                _ <- repository.set(updatedAnswers)
-              } yield Redirect(controllers.asset.noneeabusiness.routes.NameController.onPageLoad(assets.nonEEABusiness.size, NormalMode))
+                _              <- repository.set(updatedAnswers)
+              } yield Redirect(
+                controllers.asset.noneeabusiness.routes.NameController
+                  .onPageLoad(assets.nonEEABusiness.size, NormalMode)
+              )
 
             case AddAssets.NoComplete =>
               submitComplete()(request)
           }
         )
-      } recoverWith {
-        case e =>
-          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
-            s" unable add a new asset due to an error getting assets from trusts ${e.getMessage}")
-          errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
-      }
+    } recoverWith { case e =>
+      logger.error(
+        s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
+          s" unable add a new asset due to an error getting assets from trusts ${e.getMessage}"
+      )
+      errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
+    }
   }
 
-  def submitComplete(): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
-    implicit request =>
-
-      for {
-        _ <- trustsStoreConnector.updateTaskStatus(request.userAnswers.identifier, Completed)
-      } yield {
-        Redirect(appConfig.maintainATrustOverview)
-      }
+  def submitComplete(): Action[AnyContent] = standardActionSets.identifiedUserWithData.async { implicit request =>
+    for {
+      _ <- trustsStoreConnector.updateTaskStatus(request.userAnswers.identifier, Completed)
+    } yield Redirect(appConfig.maintainATrustOverview)
   }
+
 }

@@ -26,15 +26,11 @@ import queries.Gettable
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class CompanyNameRequiredAction @Inject()(val executionContext: ExecutionContext, val messagesApi: MessagesApi)
-  extends ActionTransformer[DataRequest, NameRequest] with I18nSupport {
+class CompanyNameRequiredAction @Inject() (val executionContext: ExecutionContext, val messagesApi: MessagesApi)
+    extends ActionTransformer[DataRequest, NameRequest] with I18nSupport {
 
-  override protected def transform[A](request: DataRequest[A]): Future[NameRequest[A]] = {
-    Future.successful(NameRequest[A](request,
-      getName(request)
-    ))
-  }
-
+  override protected def transform[A](request: DataRequest[A]): Future[NameRequest[A]] =
+    Future.successful(NameRequest[A](request, getName(request)))
 
   private def getName[A](request: DataRequest[A]): String = {
     def getPage(page: Gettable[String]): Option[String] = request.userAnswers.get(page)
@@ -42,7 +38,8 @@ class CompanyNameRequiredAction @Inject()(val executionContext: ExecutionContext
     (getPage(ShareCompanyNamePage(0)), getPage(SharePortfolioNamePage(0))) match {
       case (Some(name), None) => name
       case (None, Some(name)) => name
-      case _ => request.messages(messagesApi)("shares.name.default")
+      case _                  => request.messages(messagesApi)("shares.name.default")
     }
   }
+
 }

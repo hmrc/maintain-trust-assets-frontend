@@ -41,19 +41,17 @@ class AssetsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
     "redirectToAddAssetPage" when {
 
       "migrating from non-taxable to taxable" must {
-        "redirect to taxable add-to page" in {
-
-          navigator.redirectToAddAssetPage(isMigratingToTaxable = true)
+        "redirect to taxable add-to page" in
+          navigator
+            .redirectToAddAssetPage(isMigratingToTaxable = true)
             .mustBe(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
-        }
       }
 
       "not migrating from non-taxable to taxable" must {
-        "redirect to non-taxable add-to page" in {
-
-          navigator.redirectToAddAssetPage(isMigratingToTaxable = false)
+        "redirect to non-taxable add-to page" in
+          navigator
+            .redirectToAddAssetPage(isMigratingToTaxable = false)
             .mustBe(controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad())
-        }
       }
     }
 
@@ -62,29 +60,27 @@ class AssetsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
       "migrating from non-taxable to taxable" when {
 
         "no assets exist" must {
-          "redirect to what-kind-of-asset page" in {
-
-            navigator.redirectFromInterruptPage(isMigratingToTaxable = true, noAssets = true)
+          "redirect to what-kind-of-asset page" in
+            navigator
+              .redirectFromInterruptPage(isMigratingToTaxable = true, noAssets = true)
               .mustBe(rts.WhatKindOfAssetController.onPageLoad(index))
-          }
         }
 
         "assets exist" must {
-          "redirect to add-to page" in {
-
-            navigator.redirectFromInterruptPage(isMigratingToTaxable = true, noAssets = false)
+          "redirect to add-to page" in
+            navigator
+              .redirectFromInterruptPage(isMigratingToTaxable = true, noAssets = false)
               .mustBe(nonTaxToTaxRts.AddAssetsController.onPageLoad())
-          }
         }
       }
 
       "not migrating from non-taxable to taxable" must {
-        "redirect to non-EEA business name page" in {
+        "redirect to non-EEA business name page" in
           forAll(arbitrary[Boolean]) { bool =>
-            navigator.redirectFromInterruptPage(isMigratingToTaxable = false, bool)
+            navigator
+              .redirectFromInterruptPage(isMigratingToTaxable = false, bool)
               .mustBe(controllers.asset.noneeabusiness.routes.NameController.onPageLoad(index, NormalMode))
           }
-        }
       }
     }
 
@@ -93,28 +89,28 @@ class AssetsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
       "migrating from non-taxable to taxable" when {
 
         "yes selected" must {
-          "redirect to interrupt page" in {
+          "redirect to interrupt page" in
             forAll(arbitrary[Boolean]) { bool =>
-              navigator.redirectFromAddAssetYesNoPage(value = true, isMigratingToTaxable = true, noAssets = bool)
+              navigator
+                .redirectFromAddAssetYesNoPage(value = true, isMigratingToTaxable = true, noAssets = bool)
                 .mustBe(controllers.asset.routes.AssetInterruptPageController.onPageLoad())
             }
-          }
         }
 
         "no selected" when {
 
           "no assets" must {
-            "redirect to task list" in {
-              navigator.redirectFromAddAssetYesNoPage(value = false, isMigratingToTaxable = true, noAssets = true)
+            "redirect to task list" in
+              navigator
+                .redirectFromAddAssetYesNoPage(value = false, isMigratingToTaxable = true, noAssets = true)
                 .mustBe(Call(GET, frontendAppConfig.maintainATrustOverview))
-            }
           }
 
           "there are assets" must {
-            "redirect to taxable add-to page" in {
-              navigator.redirectFromAddAssetYesNoPage(value = false, isMigratingToTaxable = true, noAssets = false)
+            "redirect to taxable add-to page" in
+              navigator
+                .redirectFromAddAssetYesNoPage(value = false, isMigratingToTaxable = true, noAssets = false)
                 .mustBe(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
-            }
           }
         }
       }
@@ -122,49 +118,49 @@ class AssetsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
       "not migrating from non-taxable to taxable" when {
 
         "yes selected" must {
-          "redirect to non-EEA business name page" in {
+          "redirect to non-EEA business name page" in
             forAll(arbitrary[Boolean]) { bool =>
-              navigator.redirectFromAddAssetYesNoPage(value = true, isMigratingToTaxable = false, noAssets = bool)
+              navigator
+                .redirectFromAddAssetYesNoPage(value = true, isMigratingToTaxable = false, noAssets = bool)
                 .mustBe(controllers.asset.noneeabusiness.routes.NameController.onPageLoad(index, NormalMode))
             }
-          }
         }
 
         "no selected" must {
-          "redirect to submit-complete route" in {
+          "redirect to submit-complete route" in
             forAll(arbitrary[Boolean]) { bool =>
-              navigator.redirectFromAddAssetYesNoPage(value = false, isMigratingToTaxable = false, noAssets = bool)
+              navigator
+                .redirectFromAddAssetYesNoPage(value = false, isMigratingToTaxable = false, noAssets = bool)
                 .mustBe(controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.submitComplete())
             }
-          }
         }
       }
     }
 
     "redirectFromEntryQuestion" when {
       "yes selected" must {
-        "redirect to interrupt page" in {
+        "redirect to interrupt page" in
           forAll(arbitrary[Boolean]) { bool =>
-            navigator.redirectFromEntryQuestion(value = true, isMigratingToTaxable = bool)
+            navigator
+              .redirectFromEntryQuestion(value = true, isMigratingToTaxable = bool)
               .mustBe(controllers.asset.routes.AssetInterruptPageController.onPageLoad())
           }
-        }
       }
 
       "no selected" when {
 
         "migrating from non-taxable to taxable" must {
-          "redirect to submit-complete route" in {
-            navigator.redirectFromEntryQuestion(value = false, isMigratingToTaxable = true)
+          "redirect to submit-complete route" in
+            navigator
+              .redirectFromEntryQuestion(value = false, isMigratingToTaxable = true)
               .mustBe(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.submitComplete())
-          }
         }
 
         "not migrating from non-taxable to taxable" must {
-          "redirect to submit-complete route" in {
-            navigator.redirectFromEntryQuestion(value = false, isMigratingToTaxable = false)
+          "redirect to submit-complete route" in
+            navigator
+              .redirectFromEntryQuestion(value = false, isMigratingToTaxable = false)
               .mustBe(controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.submitComplete())
-          }
         }
       }
     }
@@ -250,7 +246,9 @@ class AssetsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
           )
 
           navigator.addAssetRoute(assets, index).url mustBe
-            controllers.asset.property_or_land.routes.PropertyOrLandAddressYesNoController.onPageLoad(index, NormalMode).url
+            controllers.asset.property_or_land.routes.PropertyOrLandAddressYesNoController
+              .onPageLoad(index, NormalMode)
+              .url
         }
       }
 
@@ -410,7 +408,9 @@ class AssetsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
       "property or land" must {
         "redirect to property or land journey" in {
           navigator.addAssetNowRoute(PropertyOrLand, List[AssetType]()).url mustBe
-            controllers.asset.property_or_land.routes.PropertyOrLandAddressYesNoController.onPageLoad(index, NormalMode).url
+            controllers.asset.property_or_land.routes.PropertyOrLandAddressYesNoController
+              .onPageLoad(index, NormalMode)
+              .url
         }
       }
 
@@ -450,4 +450,5 @@ class AssetsNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Ge
       }
     }
   }
+
 }

@@ -20,8 +20,7 @@ import java.time.LocalDate
 
 import play.api.libs.json.{Format, Json}
 
-final case class PartnershipType(description: String,
-                                 partnershipStart: LocalDate) extends AssetType
+final case class PartnershipType(description: String, partnershipStart: LocalDate) extends AssetType
 
 object PartnershipType {
   implicit val partnershipTypeFormat: Format[PartnershipType] = Json.format[PartnershipType]

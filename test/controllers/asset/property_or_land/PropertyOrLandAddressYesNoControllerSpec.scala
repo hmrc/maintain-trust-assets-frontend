@@ -34,7 +34,8 @@ class PropertyOrLandAddressYesNoControllerSpec extends SpecBase with IndexValida
 
   val form: Form[Boolean] = new YesNoFormProvider().withPrefix("propertyOrLand.addressYesNo")
 
-  lazy val propertyOrLandAddressYesNoRoute: String = routes.PropertyOrLandAddressYesNoController.onPageLoad(index, NormalMode).url
+  lazy val propertyOrLandAddressYesNoRoute: String =
+    routes.PropertyOrLandAddressYesNoController.onPageLoad(index, NormalMode).url
 
   "PropertyOrLandAddressYesNo Controller" must {
 

@@ -31,10 +31,10 @@ import views.html.ErrorTemplate
 trait IndexValidation extends SpecBase with ScalaCheckPropertyChecks with MockitoSugar with Generators {
 
   def validateIndex[A, B](
-                           generator: Gen[A],
-                           createPage: Int => QuestionPage[A],
-                           requestForIndex: Int => Request[B]
-                         )(implicit writes: Writes[A], writeable: Writeable[B]): Unit = {
+    generator: Gen[A],
+    createPage: Int => QuestionPage[A],
+    requestForIndex: Int => Request[B]
+  )(implicit writes: Writes[A], writeable: Writeable[B]): Unit =
 
     "return not found if a given index is out of bounds" in {
       implicit val generatorDrivenConfig: PropertyCheckConfiguration = PropertyCheckConfiguration(
@@ -43,40 +43,38 @@ trait IndexValidation extends SpecBase with ScalaCheckPropertyChecks with Mockit
 
       val gen = for {
         answers <- Gen.listOf(generator).map(_.zipWithIndex)
-        index <- Gen.oneOf(
-          Gen.chooseNum(answers.size + 1, answers.size + 100),
-          Gen.chooseNum(-100, -1)
-        )
+        index   <- Gen.oneOf(
+                     Gen.chooseNum(answers.size + 1, answers.size + 100),
+                     Gen.chooseNum(-100, -1)
+                   )
       } yield (answers, index)
 
-      forAll(gen) {
-        case (answers, index) =>
+      forAll(gen) { case (answers, index) =>
 
-          val userAnswers = answers.foldLeft(emptyUserAnswers) {
-            case (uA, (answer, i)) =>
-              uA.set(createPage(i), answer).success.value
-          }
+        val userAnswers = answers.foldLeft(emptyUserAnswers) { case (uA, (answer, i)) =>
+          uA.set(createPage(i), answer).success.value
+        }
 
-          val application =
-            applicationBuilder(Some(userAnswers))
-              .build()
+        val application =
+          applicationBuilder(Some(userAnswers))
+            .build()
 
-          val result = route(application, requestForIndex(index)).value
+        val result = route(application, requestForIndex(index)).value
 
-          val view = application.injector.instanceOf[ErrorTemplate]
+        val view = application.injector.instanceOf[ErrorTemplate]
 
-          val applyView = view.apply(
-            messages("global.error.pageNotFound404.title"),
-            messages("global.error.pageNotFound404.heading"),
-            messages("global.error.pageNotFound404.message")
-          )(fakeRequest, messages)
+        val applyView = view.apply(
+          messages("global.error.pageNotFound404.title"),
+          messages("global.error.pageNotFound404.heading"),
+          messages("global.error.pageNotFound404.message")
+        )(fakeRequest, messages)
 
-          status(result) mustEqual NOT_FOUND
+        status(result) mustEqual NOT_FOUND
 
-          contentAsString(result) mustEqual applyView.toString
+        contentAsString(result) mustEqual applyView.toString
 
-          application.stop()
+        application.stop()
       }
     }
-  }
+
 }

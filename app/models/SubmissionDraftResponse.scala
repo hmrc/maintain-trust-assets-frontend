@@ -42,23 +42,24 @@ object RegistrationSubmission {
     implicit lazy val format: OFormat[AnswerRow] = Json.format[AnswerRow]
   }
 
-  case class AnswerSection(headingKey: Option[String],
-                           rows: Seq[AnswerRow],
-                           sectionKey: Option[String])
+  case class AnswerSection(headingKey: Option[String], rows: Seq[AnswerRow], sectionKey: Option[String])
 
   object AnswerSection {
     implicit lazy val format: OFormat[AnswerSection] = Json.format[AnswerSection]
   }
 
   // Set of data sent by sub-frontend, with user answers, status, any mapped pieces and answer sections.
-  case class DataSet(data: JsValue,
-                     status: Option[Status],
-                     registrationPieces: List[MappedPiece],
-                     answerSections: List[AnswerSection])
+  case class DataSet(
+    data: JsValue,
+    status: Option[Status],
+    registrationPieces: List[MappedPiece],
+    answerSections: List[AnswerSection]
+  )
 
   object DataSet {
     implicit lazy val format: OFormat[DataSet] = Json.format[DataSet]
   }
+
 }
 
 // Responses

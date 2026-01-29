@@ -32,30 +32,31 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ActiveSessionRepositoryImpl @Inject()(
-                                             mongo: MongoComponent,
-                                             config: FrontendAppConfig
-                                           )(implicit ec: ExecutionContext)
-  extends PlayMongoRepository[UtrSession](
-    mongoComponent = mongo,
-    collectionName = "session",
-    domainFormat = Format(UtrSession.reads, UtrSession.writes),
-    indexes = Seq(
-      IndexModel(
-        ascending("updatedAt"),
-        IndexOptions()
-          .unique(false)
-          .name("session-updated-at-index")
-          .expireAfter(config.cachettlSessionInSeconds, TimeUnit.SECONDS)),
-      IndexModel(
-        ascending("utr"),
-        IndexOptions()
-          .unique(false)
-          .name("utr-index")
-      )
-    ),
-    replaceIndexes = config.dropIndexes
-  )
+class ActiveSessionRepositoryImpl @Inject() (
+  mongo: MongoComponent,
+  config: FrontendAppConfig
+)(implicit ec: ExecutionContext)
+    extends PlayMongoRepository[UtrSession](
+      mongoComponent = mongo,
+      collectionName = "session",
+      domainFormat = Format(UtrSession.reads, UtrSession.writes),
+      indexes = Seq(
+        IndexModel(
+          ascending("updatedAt"),
+          IndexOptions()
+            .unique(false)
+            .name("session-updated-at-index")
+            .expireAfter(config.cachettlSessionInSeconds, TimeUnit.SECONDS)
+        ),
+        IndexModel(
+          ascending("utr"),
+          IndexOptions()
+            .unique(false)
+            .name("utr-index")
+        )
+      ),
+      replaceIndexes = config.dropIndexes
+    )
     with ActiveSessionRepository {
 
   private def selector(internalId: String): Bson =
@@ -73,10 +74,11 @@ class ActiveSessionRepositoryImpl @Inject()(
 
   override def set(session: UtrSession): Future[Boolean] = {
 
-    val find = selector(session.internalId)
+    val find          = selector(session.internalId)
     val updatedObject = session.copy(updatedAt = LocalDateTime.now)
-    val options = ReplaceOptions().upsert(true)
+    val options       = ReplaceOptions().upsert(true)
 
     collection.replaceOne(find, updatedObject, options).headOption().map(_.exists(_.wasAcknowledged()))
   }
+
 }

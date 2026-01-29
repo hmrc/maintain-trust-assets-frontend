@@ -26,8 +26,8 @@ import views.html.asset.business.BusinessDescriptionView
 class BusinessDescriptionViewSpec extends StringViewBehaviours {
 
   private val messageKeyPrefix: String = "business.description"
-  private val businessName: String = "Test"
-  override val form: Form[String] = new DescriptionFormProvider().withConfig(56, messageKeyPrefix)
+  private val businessName: String     = "Test"
+  override val form: Form[String]      = new DescriptionFormProvider().withConfig(56, messageKeyPrefix)
 
   private val view: BusinessDescriptionView = viewFor[BusinessDescriptionView](Some(emptyUserAnswers))
 
@@ -44,4 +44,5 @@ class BusinessDescriptionViewSpec extends StringViewBehaviours {
 
     behave like pageWithASubmitButton(applyView(form))
   }
+
 }

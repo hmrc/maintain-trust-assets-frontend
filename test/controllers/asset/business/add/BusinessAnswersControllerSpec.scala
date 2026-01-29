@@ -40,25 +40,35 @@ class BusinessAnswersControllerSpec extends SpecBase with MockitoSugar {
   private val name: String = "Business"
 
   private val answers: UserAnswers = emptyUserAnswers
-    .set(BusinessNamePage(index), name).success.value
-    .set(BusinessDescriptionPage(index), "test test test").success.value
-    .set(BusinessAddressUkYesNoPage(index), true).success.value
-    .set(BusinessUkAddressPage(index), UkAddress("Line 1", "Line 2", None, None, "NE11NE")).success.value
-    .set(BusinessValuePage(index), 12L).success.value
+    .set(BusinessNamePage(index), name)
+    .success
+    .value
+    .set(BusinessDescriptionPage(index), "test test test")
+    .success
+    .value
+    .set(BusinessAddressUkYesNoPage(index), true)
+    .success
+    .value
+    .set(BusinessUkAddressPage(index), UkAddress("Line 1", "Line 2", None, None, "NE11NE"))
+    .success
+    .value
+    .set(BusinessValuePage(index), 12L)
+    .success
+    .value
 
   private def businessExisting(
-                                org: String = name,
-                                desc: String = "test test test",
-                                line1: String = "Line 1",
-                                line2: String = "Line 2",
-                                postcode: String = "NE11NE",
-                                value: Long = 12L
-                              ): BusinessAssetType =
+    org: String = name,
+    desc: String = "test test test",
+    line1: String = "Line 1",
+    line2: String = "Line 2",
+    postcode: String = "NE11NE",
+    value: Long = 12L
+  ): BusinessAssetType =
     BusinessAssetType(
-      orgName             = org,
+      orgName = org,
       businessDescription = desc,
-      address             = UkAddress(line1, line2, None, None, postcode),
-      businessValue       = value
+      address = UkAddress(line1, line2, None, None, postcode),
+      businessValue = value
     )
 
   "BusinessAnswersController" must {
@@ -71,8 +81,8 @@ class BusinessAnswersControllerSpec extends SpecBase with MockitoSugar {
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[BusinessAnswersView]
-      val printHelper = application.injector.instanceOf[BusinessPrintHelper]
+      val view          = application.injector.instanceOf[BusinessAnswersView]
+      val printHelper   = application.injector.instanceOf[BusinessPrintHelper]
       val answerSection = printHelper(answers, index, provisional = true, name)
 
       status(result) mustEqual OK
@@ -105,7 +115,9 @@ class BusinessAnswersControllerSpec extends SpecBase with MockitoSugar {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController
+        .onPageLoad()
+        .url
 
       application.stop()
     }
@@ -182,8 +194,8 @@ class BusinessAnswersControllerSpec extends SpecBase with MockitoSugar {
         .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
         .build()
 
-      val matching   = businessExisting()
-      val different  = matching.copy(orgName = "Other Ltd")
+      val matching  = businessExisting()
+      val different = matching.copy(orgName = "Other Ltd")
       when(mockTrustConnector.getAssets(any())(any(), any()))
         .thenReturn(Future.successful(Assets(business = List(different, matching))))
 
@@ -245,4 +257,5 @@ class BusinessAnswersControllerSpec extends SpecBase with MockitoSugar {
       application.stop()
     }
   }
+
 }

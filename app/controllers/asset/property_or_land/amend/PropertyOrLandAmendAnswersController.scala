@@ -37,67 +37,68 @@ import views.html.asset.property_or_land.amend.AnswersView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class PropertyOrLandAmendAnswersController @Inject()(
-                                                      override val messagesApi: MessagesApi,
-                                                      standardActionSets: StandardActionSets,
-                                                      val controllerComponents: MessagesControllerComponents,
-                                                      view: AnswersView,
-                                                      service: TrustService,
-                                                      connector: TrustsConnector,
-                                                      val appConfig: FrontendAppConfig,
-                                                      playbackRepository: PlaybackRepository,
-                                                      printHelper: PropertyOrLandPrintHelper,
-                                                      mapper: PropertyOrLandMapper,
-                                                      nameAction: NameRequiredAction,
-                                                      extractor: PropertyOrLandExtractor,
-                                                      errorHandler: ErrorHandler
-                                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+class PropertyOrLandAmendAnswersController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  val controllerComponents: MessagesControllerComponents,
+  view: AnswersView,
+  service: TrustService,
+  connector: TrustsConnector,
+  val appConfig: FrontendAppConfig,
+  playbackRepository: PlaybackRepository,
+  printHelper: PropertyOrLandPrintHelper,
+  mapper: PropertyOrLandMapper,
+  nameAction: NameRequiredAction,
+  extractor: PropertyOrLandExtractor,
+  errorHandler: ErrorHandler
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport with Logging {
 
   private val provisional: Boolean = false
 
-  private def render(userAnswers: UserAnswers,
-                     index: Int,
-                     name: String)
-                    (implicit request: Request[AnyContent]): Result = {
+  private def render(userAnswers: UserAnswers, index: Int, name: String)(implicit
+    request: Request[AnyContent]
+  ): Result = {
     val section: AnswerSection = printHelper(userAnswers, index, provisional, name)
     Ok(view(section, index))
   }
 
   def extractAndRender(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-      service.getPropertyOrLandAsset(request.userAnswers.identifier, index) flatMap {
-        propertyOrLand =>
-          val extractedAnswers = extractor(request.userAnswers, propertyOrLand, index)
-          for {
-            extractedF <- Future.fromTry(extractedAnswers)
-            _ <- playbackRepository.set(extractedF)
-          } yield {
-            render(extractedF, index, propertyOrLand.name)
-          }
-      } recoverWith {
-        case e =>
-          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
-            s" error showing the user the check answers for PropertyOrLand Asset $index ${e.getMessage}")
-          errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
-      }
-  }
-
-  def renderFromUserAnswers(index: Int) : Action[AnyContent] = standardActionSets.verifiedForIdentifier.andThen(nameAction) {
-    implicit request =>
-      render(request.userAnswers, index, request.name)
-  }
-
-  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
-    implicit request =>
-      mapper(request.userAnswers).map {
-        asset =>
-          connector.amendPropertyOrLandAsset(request.userAnswers.identifier, index, asset).map(_ =>
-            Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
-          )
-      }.getOrElse {
-        logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
-          s" error mapping user answers to PropertyOrLand Asset $index")
+      service.getPropertyOrLandAsset(request.userAnswers.identifier, index) flatMap { propertyOrLand =>
+        val extractedAnswers = extractor(request.userAnswers, propertyOrLand, index)
+        for {
+          extractedF <- Future.fromTry(extractedAnswers)
+          _          <- playbackRepository.set(extractedF)
+        } yield render(extractedF, index, propertyOrLand.name)
+      } recoverWith { case e =>
+        logger.error(
+          s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
+            s" error showing the user the check answers for PropertyOrLand Asset $index ${e.getMessage}"
+        )
         errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
       }
   }
+
+  def renderFromUserAnswers(index: Int): Action[AnyContent] =
+    standardActionSets.verifiedForIdentifier.andThen(nameAction) { implicit request =>
+      render(request.userAnswers, index, request.name)
+    }
+
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async { implicit request =>
+    mapper(request.userAnswers)
+      .map { asset =>
+        connector
+          .amendPropertyOrLandAsset(request.userAnswers.identifier, index, asset)
+          .map(_ => Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()))
+      }
+      .getOrElse {
+        logger.error(
+          s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
+            s" error mapping user answers to PropertyOrLand Asset $index"
+        )
+        errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
+      }
+  }
+
 }

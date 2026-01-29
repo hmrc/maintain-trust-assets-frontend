@@ -31,10 +31,10 @@ class AssetInterruptViewSpec extends ViewBehaviours {
 
     behave like pageWithTitleAndCaption(applyView, "nonTaxableToTaxable.assetInterruptPage")
 
-    behave like pageWithGuidance(applyView,
+    behave like pageWithGuidance(
+      applyView,
       messageKeyPrefix = "nonTaxableToTaxable.assetInterruptPage",
-      expectedGuidanceKeys =
-        "subheading1",
+      expectedGuidanceKeys = "subheading1",
       "paragraph1",
       "subheading2",
       "paragraph2",
@@ -69,4 +69,5 @@ class AssetInterruptViewSpec extends ViewBehaviours {
 
     behave like pageWithBackLink(applyView)
   }
+
 }

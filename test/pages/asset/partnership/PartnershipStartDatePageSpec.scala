@@ -35,4 +35,5 @@ class PartnershipStartDatePageSpec extends PageBehaviours {
 
     beRemovable[LocalDate](PartnershipStartDatePage(index))
   }
+
 }

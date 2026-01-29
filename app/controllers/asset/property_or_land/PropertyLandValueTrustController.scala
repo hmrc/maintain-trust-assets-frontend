@@ -33,21 +33,22 @@ import models.Mode
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class PropertyLandValueTrustController @Inject()(
-                                                  override val messagesApi: MessagesApi,
-                                                  standardActionSets: StandardActionSets,
-                                                  repository: PlaybackRepository,
-                                                  @PropertyOrLand navigator: Navigator,
-                                                  formProvider: ValueFormProvider,
-                                                  val controllerComponents: MessagesControllerComponents,
-                                                  view: PropertyLandValueTrustView
-                                                )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class PropertyLandValueTrustController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  repository: PlaybackRepository,
+  @PropertyOrLand navigator: Navigator,
+  formProvider: ValueFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: PropertyLandValueTrustView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(index: Int, mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
     implicit request =>
       val form: Form[Long] = configuredForm(index)
-      val preparedForm = request.userAnswers.get(PropertyLandValueTrustPage(index)) match {
-        case None => form
+      val preparedForm     = request.userAnswers.get(PropertyLandValueTrustPage(index)) match {
+        case None        => form
         case Some(value) => form.fill(value)
       }
       Ok(view(preparedForm, index, mode))
@@ -56,22 +57,22 @@ class PropertyLandValueTrustController @Inject()(
   def onSubmit(index: Int, mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
       val form: Form[Long] = configuredForm(index)
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, index, mode))),
-        value => {
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(PropertyLandValueTrustPage(index), value))
-            _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(PropertyLandValueTrustPage(index), mode, updatedAnswers))
-        }
-      )
+      form
+        .bindFromRequest()
+        .fold(
+          (formWithErrors: Form[_]) => Future.successful(BadRequest(view(formWithErrors, index, mode))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(PropertyLandValueTrustPage(index), value))
+              _              <- repository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(PropertyLandValueTrustPage(index), mode, updatedAnswers))
+        )
   }
 
-  private def configuredForm(index: Int)(implicit request: DataRequest[AnyContent]): Form[Long] = {
+  private def configuredForm(index: Int)(implicit request: DataRequest[AnyContent]): Form[Long] =
     formProvider.withConfig(
       prefix = "propertyOrLand.valueInTrust",
       maxValue = request.userAnswers.get(PropertyOrLandTotalValuePage(index))
     )
-  }
+
 }

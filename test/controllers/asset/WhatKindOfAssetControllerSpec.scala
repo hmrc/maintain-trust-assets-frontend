@@ -40,7 +40,7 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
   private def whatKindOfAssetRoute(index: Int): String = routes.WhatKindOfAssetController.onPageLoad(index).url
 
   private val formProvider = new WhatKindOfAssetFormProvider()
-  private val form = formProvider()
+  private val form         = formProvider()
 
   private val mockTrustService: TrustService = mock[TrustService]
 
@@ -48,7 +48,7 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
 
   "WhatKindOfAsset Controller" must {
 
-    val options = optionsFor5mld
+    val options     = optionsFor5mld
     val baseAnswers = emptyUserAnswers.copy(is5mldEnabled = true)
 
     "return OK and the correct view for a GET" in {
@@ -78,7 +78,9 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = baseAnswers
-        .set(WhatKindOfAssetPage(index), Shares).success.value
+        .set(WhatKindOfAssetPage(index), Shares)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(
@@ -105,7 +107,9 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
     "display Money if the same index is an in progress Money asset" in {
 
       val userAnswers = baseAnswers
-        .set(WhatKindOfAssetPage(index), Money).success.value
+        .set(WhatKindOfAssetPage(index), Money)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(
@@ -168,7 +172,8 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
       .overrides(
         bind[AssetsNavigator].toInstance(mockNavigator),
         bind[TrustService].to(mockTrustService)
-      ).build()
+      )
+      .build()
 
     when(mockTrustService.getAssets(any())(any(), any())).thenReturn(Future.successful(Assets()))
 
@@ -215,4 +220,5 @@ class WhatKindOfAssetControllerSpec extends SpecBase with IndexValidation {
 
     application.stop()
   }
+
 }

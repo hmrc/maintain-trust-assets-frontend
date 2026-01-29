@@ -28,7 +28,7 @@ import java.time.LocalDate
 class PartnershipStartDateViewSpec extends QuestionViewBehaviours[LocalDate] {
 
   private val messageKeyPrefix: String = "partnership.startDate"
-  override val form: Form[LocalDate] = new StartDateFormProvider(frontendAppConfig).withConfig(messageKeyPrefix)
+  override val form: Form[LocalDate]   = new StartDateFormProvider(frontendAppConfig).withConfig(messageKeyPrefix)
 
   "PartnershipStartDateView view" must {
 
@@ -45,4 +45,5 @@ class PartnershipStartDateViewSpec extends QuestionViewBehaviours[LocalDate] {
 
     behave like pageWithBackLink(applyView(form))
   }
+
 }

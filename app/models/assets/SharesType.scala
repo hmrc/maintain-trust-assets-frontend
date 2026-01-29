@@ -19,14 +19,15 @@ package models.assets
 import models.ShareClass
 import play.api.libs.json.{Format, Json}
 
-final case class SharesType(numberOfShares: String,
-                            orgName: String,
-                            shareClass: String,
-                            typeOfShare: String,
-                            value: Long,
-                            isPortfolio: Option[Boolean] = None,
-                            shareClassDisplay: Option[ShareClass] = None
-                           ) extends AssetType
+final case class SharesType(
+  numberOfShares: String,
+  orgName: String,
+  shareClass: String,
+  typeOfShare: String,
+  value: Long,
+  isPortfolio: Option[Boolean] = None,
+  shareClassDisplay: Option[ShareClass] = None
+) extends AssetType
 
 object SharesType {
   implicit val sharesTypeFormat: Format[SharesType] = Json.format[SharesType]

@@ -32,10 +32,11 @@ import views.html.asset.property_or_land.PropertyOrLandDescriptionView
 
 class PropertyOrLandDescriptionControllerSpec extends SpecBase with IndexValidation {
 
-  val formProvider = new DescriptionFormProvider()
+  val formProvider       = new DescriptionFormProvider()
   val form: Form[String] = formProvider.withConfig(56, "propertyOrLand.description")
 
-  lazy val propertyOrLandDescriptionRoute: String = routes.PropertyOrLandDescriptionController.onPageLoad(index, NormalMode).url
+  lazy val propertyOrLandDescriptionRoute: String =
+    routes.PropertyOrLandDescriptionController.onPageLoad(index, NormalMode).url
 
   "PropertyOrLandDescription Controller" must {
 

@@ -25,10 +25,11 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.Future
 
 @Singleton
-class SessionTimeoutController @Inject()(val appConfig: FrontendAppConfig,
-                                         val config: Configuration,
-                                         mcc: MessagesControllerComponents) extends FrontendController(mcc) {
-
+class SessionTimeoutController @Inject() (
+  val appConfig: FrontendAppConfig,
+  val config: Configuration,
+  mcc: MessagesControllerComponents
+) extends FrontendController(mcc) {
 
   val keepAlive: Action[AnyContent] = Action.async { implicit request =>
     Future.successful(Ok.withSession(request.session))

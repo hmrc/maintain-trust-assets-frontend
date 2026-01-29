@@ -32,12 +32,11 @@ import views.html.asset.noneeabusiness.NameView
 
 class NameControllerSpec extends SpecBase with IndexValidation {
 
-  private val formProvider = new NameFormProvider()
-  private val prefix: String = "nonEeaBusiness.name"
-  private val maxLength: Int = 105
-  private val form: Form[String] = formProvider.withConfig(maxLength, prefix)
+  private val formProvider        = new NameFormProvider()
+  private val prefix: String      = "nonEeaBusiness.name"
+  private val maxLength: Int      = 105
+  private val form: Form[String]  = formProvider.withConfig(maxLength, prefix)
   private val validAnswer: String = "Name"
-
 
   private lazy val onPageLoadRoute: String = routes.NameController.onPageLoad(index, NormalMode).url
 
@@ -64,7 +63,9 @@ class NameControllerSpec extends SpecBase with IndexValidation {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers: UserAnswers = emptyUserAnswers
-        .set(NamePage(index), validAnswer).success.value
+        .set(NamePage(index), validAnswer)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -156,4 +157,5 @@ class NameControllerSpec extends SpecBase with IndexValidation {
     }
 
   }
+
 }

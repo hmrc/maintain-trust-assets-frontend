@@ -33,25 +33,25 @@ import views.html.asset.noneeabusiness.add.StartDateView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class StartDateController @Inject()(
-                                     override val messagesApi: MessagesApi,
-                                     standardActionSets: StandardActionSets,
-                                     nameAction: NameRequiredAction,
-                                     repository: PlaybackRepository,
-                                     @NonEeaBusiness navigator: Navigator,
-                                     formProvider: StartDateFormProvider,
-                                     val controllerComponents: MessagesControllerComponents,
-                                     view: StartDateView
-                                   )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class StartDateController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  nameAction: NameRequiredAction,
+  repository: PlaybackRepository,
+  @NonEeaBusiness navigator: Navigator,
+  formProvider: StartDateFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: StartDateView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   private val messagePrefix: String = "nonEeaBusiness.startDate"
 
   def onPageLoad(index: Int): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
-
-      val form = formProvider.withConfig(messagePrefix, request.userAnswers.whenTrustSetup)
+      val form         = formProvider.withConfig(messagePrefix, request.userAnswers.whenTrustSetup)
       val preparedForm = request.userAnswers.get(StartDatePage(index)) match {
-        case None => form
+        case None        => form
         case Some(value) => form.fill(value)
       }
 
@@ -60,18 +60,17 @@ class StartDateController @Inject()(
 
   def onSubmit(index: Int): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
     implicit request =>
-
       val form = formProvider.withConfig(messagePrefix, request.userAnswers.whenTrustSetup)
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(index, formWithErrors, request.name))),
-
-        value => {
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(StartDatePage(index), value))
-            _ <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(StartDatePage(index), NormalMode, updatedAnswers))
-        }
-      )
+      form
+        .bindFromRequest()
+        .fold(
+          (formWithErrors: Form[_]) => Future.successful(BadRequest(view(index, formWithErrors, request.name))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(StartDatePage(index), value))
+              _              <- repository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(StartDatePage(index), NormalMode, updatedAnswers))
+        )
   }
+
 }

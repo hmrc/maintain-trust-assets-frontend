@@ -29,38 +29,34 @@ import views.html.asset.noneeabusiness.AssetInterruptView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AssetInterruptPageController @Inject()(
-                                              override val messagesApi: MessagesApi,
-                                              standardActionSets: StandardActionSets,
-                                              repository: PlaybackRepository,
-                                              trustService: TrustService,
-                                              navigator: AssetsNavigator,
-                                              val controllerComponents: MessagesControllerComponents,
-                                              assetInterruptView: AssetInterruptView,
-                                              migrationAssetInterruptView: MigrationInteruptPage
-                                            )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class AssetInterruptPageController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  repository: PlaybackRepository,
+  trustService: TrustService,
+  navigator: AssetsNavigator,
+  val controllerComponents: MessagesControllerComponents,
+  assetInterruptView: AssetInterruptView,
+  migrationAssetInterruptView: MigrationInteruptPage
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
-    implicit request =>
-
-      Ok(
-        if (request.userAnswers.isMigratingToTaxable) {
-          migrationAssetInterruptView()
-        } else {
-          assetInterruptView()
-        }
-      )
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForIdentifier { implicit request =>
+    Ok(
+      if (request.userAnswers.isMigratingToTaxable) {
+        migrationAssetInterruptView()
+      } else {
+        assetInterruptView()
+      }
+    )
   }
 
-  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
-    implicit request =>
-      for {
-        updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
-        _ <- repository.set(request.userAnswers)
-        assets <- trustService.getAssets(updatedAnswers.identifier)
-      } yield {
-        Redirect(navigator.redirectFromInterruptPage(updatedAnswers.isMigratingToTaxable, assets.isEmpty))
-      }
+  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async { implicit request =>
+    for {
+      updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
+      _              <- repository.set(request.userAnswers)
+      assets         <- trustService.getAssets(updatedAnswers.identifier)
+    } yield Redirect(navigator.redirectFromInterruptPage(updatedAnswers.isMigratingToTaxable, assets.isEmpty))
   }
 
 }

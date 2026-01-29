@@ -27,4 +27,5 @@ class ShareClassFormProvider @Inject() extends Mappings {
     Form(
       "value" -> enumerable[ShareClass]("shares.class.error.required")
     )
+
 }

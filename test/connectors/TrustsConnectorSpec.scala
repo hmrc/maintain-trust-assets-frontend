@@ -32,7 +32,13 @@ import uk.gov.hmrc.http.HeaderCarrier
 
 import java.time.LocalDate
 
-class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures with BeforeAndAfterAll with BeforeAndAfterEach with IntegrationPatience {
+class TrustsConnectorSpec
+    extends SpecBase
+    with Generators
+    with ScalaFutures
+    with BeforeAndAfterAll
+    with BeforeAndAfterEach
+    with IntegrationPatience {
 
   implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
@@ -53,8 +59,8 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
     server.stop()
   }
 
-  val identifier = "1000000008"
-  val description = "description"
+  val identifier      = "1000000008"
+  val description     = "description"
   val date: LocalDate = LocalDate.parse("2019-02-03")
 
   private val trustsUrl: String = "/trusts"
@@ -72,7 +78,8 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
 
   private def addPropertyOrLandAssetUrl(identifier: String) = s"$assetsUrl/add-property-or-land/$identifier"
 
-  private def amendPropertyOrLandAssetUrl(identifier: String, index: Int) = s"$assetsUrl/amend-property-or-land/$identifier/$index"
+  private def amendPropertyOrLandAssetUrl(identifier: String, index: Int) =
+    s"$assetsUrl/amend-property-or-land/$identifier/$index"
 
   private def addSharesAssetUrl(identifier: String) = s"$assetsUrl/add-shares/$identifier"
 
@@ -80,7 +87,8 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
 
   private def addBusinessAssetUrl(identifier: String) = s"$assetsUrl/add-business/$identifier"
 
-  private def amendPartnershipAssetUrl(identifier: String, index: Int) = s"$assetsUrl/amend-partnership/$identifier/$index"
+  private def amendPartnershipAssetUrl(identifier: String, index: Int) =
+    s"$assetsUrl/amend-partnership/$identifier/$index"
 
   private def addPartnershipAssetUrl(identifier: String) = s"$assetsUrl/add-partnership/$identifier"
 
@@ -92,26 +100,29 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
 
   private def addNonEeaBusinessAssetUrl(identifier: String) = s"$assetsUrl/add-non-eea-business/$identifier"
 
-  private def amendNonEeaBusinessAssetUrl(identifier: String, index: Int) = s"$assetsUrl/amend-non-eea-business/$identifier/$index"
+  private def amendNonEeaBusinessAssetUrl(identifier: String, index: Int) =
+    s"$assetsUrl/amend-non-eea-business/$identifier/$index"
 
   private def removeAssetUrl(identifier: String) = s"$assetsUrl/$identifier/remove"
 
-  private def getTrustMigrationFlagUrl(identifier: String) = s"/trusts/$identifier/taxable-migration/migrating-to-taxable"
+  private def getTrustMigrationFlagUrl(identifier: String) =
+    s"/trusts/$identifier/taxable-migration/migrating-to-taxable"
 
-  val moneyAsset: AssetMonetaryAmount = AssetMonetaryAmount(123)
-  val propertyOrLandAsset: PropertyLandType = PropertyLandType(None, None, 123, None)
-  val sharesAsset: SharesType = SharesType("", "", "", "", 123)
-  val businessAsset: BusinessAssetType = BusinessAssetType("", "", NonUkAddress("", "", None, ""), 123)
-  val partnershipAsset: PartnershipType = PartnershipType("", LocalDate.now)
-  val otherAsset: OtherAssetType = OtherAssetType("", 123)
-  val nonEeaBusinessAsset: NonEeaBusinessType = NonEeaBusinessType(None, "orgName", NonUkAddress("", "", None, ""), "", LocalDate.now, None, provisional = true)
+  val moneyAsset: AssetMonetaryAmount         = AssetMonetaryAmount(123)
+  val propertyOrLandAsset: PropertyLandType   = PropertyLandType(None, None, 123, None)
+  val sharesAsset: SharesType                 = SharesType("", "", "", "", 123)
+  val businessAsset: BusinessAssetType        = BusinessAssetType("", "", NonUkAddress("", "", None, ""), 123)
+  val partnershipAsset: PartnershipType       = PartnershipType("", LocalDate.now)
+  val otherAsset: OtherAssetType              = OtherAssetType("", 123)
+
+  val nonEeaBusinessAsset: NonEeaBusinessType =
+    NonEeaBusinessType(None, "orgName", NonUkAddress("", "", None, ""), "", LocalDate.now, None, provisional = true)
 
   "trust connector" when {
 
     "getTrustsDetails" in {
 
-      val json = Json.parse(
-        """
+      val json = Json.parse("""
           |{
           | "startDate": "2019-02-03",
           | "lawCountry": "AD",
@@ -132,9 +143,10 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
         .configure(
           Seq(
             "microservice.services.trusts.port" -> server.port(),
-            "auditing.enabled" -> false
+            "auditing.enabled"                  -> false
           ): _*
-        ).build()
+        )
+        .build()
 
       val connector = application.injector.instanceOf[TrustsConnector]
 
@@ -145,9 +157,12 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
 
       val processed = connector.getTrustDetails(identifier)
 
-      whenReady(processed) {
-        r =>
-          r mustBe TrustDetails(startDate = date, typeOfTrust = Some(TypeOfTrust.WillTrustOrIntestacyTrust), trustTaxable = None)
+      whenReady(processed) { r =>
+        r mustBe TrustDetails(
+          startDate = date,
+          typeOfTrust = Some(TypeOfTrust.WillTrustOrIntestacyTrust),
+          trustTaxable = None
+        )
       }
 
     }
@@ -163,9 +178,10 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
             .configure(
               Seq(
                 "microservice.services.trusts.port" -> server.port(),
-                "auditing.enabled" -> false
+                "auditing.enabled"                  -> false
               ): _*
-            ).build()
+            )
+            .build()
 
           val connector = application.injector.instanceOf[TrustsConnector]
 
@@ -176,9 +192,8 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
 
           val processed = connector.isTrust5mld(identifier)
 
-          whenReady(processed) {
-            r =>
-              r mustBe true
+          whenReady(processed) { r =>
+            r mustBe true
           }
         }
       }
@@ -192,9 +207,10 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
             .configure(
               Seq(
                 "microservice.services.trusts.port" -> server.port(),
-                "auditing.enabled" -> false
+                "auditing.enabled"                  -> false
               ): _*
-            ).build()
+            )
+            .build()
 
           val connector = application.injector.instanceOf[TrustsConnector]
 
@@ -205,9 +221,8 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
 
           val processed = connector.isTrust5mld(identifier)
 
-          whenReady(processed) {
-            r =>
-              r mustBe false
+          whenReady(processed) { r =>
+            r mustBe false
           }
         }
       }
@@ -219,8 +234,7 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
 
         "return a default empty list of assets" in {
 
-          val json = Json.parse(
-            """
+          val json = Json.parse("""
               |{
               | "assets": {
               | }
@@ -231,9 +245,10 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
             .configure(
               Seq(
                 "microservice.services.trusts.port" -> server.port(),
-                "auditing.enabled" -> false
+                "auditing.enabled"                  -> false
               ): _*
-            ).build()
+            )
+            .build()
 
           val connector = application.injector.instanceOf[TrustsConnector]
 
@@ -244,9 +259,8 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
 
           val processed = connector.getAssets(identifier)
 
-          whenReady(processed) {
-            result =>
-              result mustBe Assets(Nil, Nil, Nil, Nil, Nil, Nil, Nil)
+          whenReady(processed) { result =>
+            result mustBe Assets(Nil, Nil, Nil, Nil, Nil, Nil, Nil)
           }
 
           application.stop()
@@ -257,8 +271,7 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
 
         "parse the response and return the assets" in {
 
-          val json = Json.parse(
-            """
+          val json = Json.parse("""
               | {
               |    "assets": {
               |        "monetary": [
@@ -275,9 +288,10 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
             .configure(
               Seq(
                 "microservice.services.trusts.port" -> server.port(),
-                "auditing.enabled" -> false
+                "auditing.enabled"                  -> false
               ): _*
-            ).build()
+            )
+            .build()
 
           val connector = application.injector.instanceOf[TrustsConnector]
 
@@ -288,15 +302,16 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
 
           val processed = connector.getAssets(identifier)
 
-          whenReady(processed) {
-            result =>
-              result mustBe Assets(monetary = List(AssetMonetaryAmount(1000)),
-                propertyOrLand = Nil,
-                shares = Nil,
-                business = Nil,
-                partnerShip = Nil,
-                other = Nil,
-                nonEEABusiness = Nil)
+          whenReady(processed) { result =>
+            result mustBe Assets(
+              monetary = List(AssetMonetaryAmount(1000)),
+              propertyOrLand = Nil,
+              shares = Nil,
+              business = Nil,
+              partnerShip = Nil,
+              other = Nil,
+              nonEEABusiness = Nil
+            )
           }
 
           application.stop()
@@ -310,9 +325,10 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
           .configure(
             Seq(
               "microservice.services.trusts.port" -> server.port(),
-              "auditing.enabled" -> false
+              "auditing.enabled"                  -> false
             ): _*
-          ).build()
+          )
+          .build()
 
         val connector = application.injector.instanceOf[TrustsConnector]
 
@@ -323,9 +339,8 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
 
         val processed = connector.addMoneyAsset(identifier, moneyAsset)
 
-        whenReady(processed) {
-          r =>
-            r.status mustBe OK
+        whenReady(processed) { r =>
+          r.status mustBe OK
         }
         application.stop()
       }
@@ -335,9 +350,10 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
           .configure(
             Seq(
               "microservice.services.trusts.port" -> server.port(),
-              "auditing.enabled" -> false
+              "auditing.enabled"                  -> false
             ): _*
-          ).build()
+          )
+          .build()
 
         val connector = application.injector.instanceOf[TrustsConnector]
 
@@ -348,9 +364,8 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
 
         val processed = connector.addMoneyAsset(identifier, moneyAsset)
 
-        whenReady(processed) {
-          r =>
-            r.status mustBe BAD_REQUEST
+        whenReady(processed) { r =>
+          r.status mustBe BAD_REQUEST
         }
 
         application.stop()
@@ -364,9 +379,10 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
           .configure(
             Seq(
               "microservice.services.trusts.port" -> server.port(),
-              "auditing.enabled" -> false
+              "auditing.enabled"                  -> false
             ): _*
-          ).build()
+          )
+          .build()
 
         val connector = application.injector.instanceOf[TrustsConnector]
 
@@ -377,9 +393,8 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
 
         val processed = connector.amendMoneyAsset(identifier, index, moneyAsset)
 
-        whenReady(processed) {
-          r =>
-            r.status mustBe OK
+        whenReady(processed) { r =>
+          r.status mustBe OK
         }
         application.stop()
       }
@@ -389,9 +404,10 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
           .configure(
             Seq(
               "microservice.services.trusts.port" -> server.port(),
-              "auditing.enabled" -> false
+              "auditing.enabled"                  -> false
             ): _*
-          ).build()
+          )
+          .build()
 
         val connector = application.injector.instanceOf[TrustsConnector]
 
@@ -402,9 +418,8 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
 
         val processed = connector.amendMoneyAsset(identifier, index, moneyAsset)
 
-        whenReady(processed) {
-          r =>
-            r.status mustBe BAD_REQUEST
+        whenReady(processed) { r =>
+          r.status mustBe BAD_REQUEST
         }
         application.stop()
       }
@@ -417,9 +432,10 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
           .configure(
             Seq(
               "microservice.services.trusts.port" -> server.port(),
-              "auditing.enabled" -> false
+              "auditing.enabled"                  -> false
             ): _*
-          ).build()
+          )
+          .build()
 
         val connector = application.injector.instanceOf[TrustsConnector]
 
@@ -430,9 +446,8 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
 
         val processed = connector.addPropertyOrLandAsset(identifier, propertyOrLandAsset)
 
-        whenReady(processed) {
-          r =>
-            r.status mustBe OK
+        whenReady(processed) { r =>
+          r.status mustBe OK
         }
         application.stop()
       }
@@ -442,9 +457,10 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
           .configure(
             Seq(
               "microservice.services.trusts.port" -> server.port(),
-              "auditing.enabled" -> false
+              "auditing.enabled"                  -> false
             ): _*
-          ).build()
+          )
+          .build()
 
         val connector = application.injector.instanceOf[TrustsConnector]
 
@@ -455,9 +471,8 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
 
         val processed = connector.addPropertyOrLandAsset(identifier, propertyOrLandAsset)
 
-        whenReady(processed) {
-          r =>
-            r.status mustBe BAD_REQUEST
+        whenReady(processed) { r =>
+          r.status mustBe BAD_REQUEST
         }
         application.stop()
       }
@@ -469,9 +484,10 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
           .configure(
             Seq(
               "microservice.services.trusts.port" -> server.port(),
-              "auditing.enabled" -> false
+              "auditing.enabled"                  -> false
             ): _*
-          ).build()
+          )
+          .build()
 
         val connector = application.injector.instanceOf[TrustsConnector]
 
@@ -482,9 +498,8 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
 
         val processed = connector.amendPropertyOrLandAsset(identifier, index, propertyOrLandAsset)
 
-        whenReady(processed) {
-          r =>
-            r.status mustBe OK
+        whenReady(processed) { r =>
+          r.status mustBe OK
         }
         application.stop()
       }
@@ -494,9 +509,10 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
           .configure(
             Seq(
               "microservice.services.trusts.port" -> server.port(),
-              "auditing.enabled" -> false
+              "auditing.enabled"                  -> false
             ): _*
-          ).build()
+          )
+          .build()
 
         val connector = application.injector.instanceOf[TrustsConnector]
 
@@ -507,9 +523,8 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
 
         val processed = connector.amendPropertyOrLandAsset(identifier, index, propertyOrLandAsset)
 
-        whenReady(processed) {
-          r =>
-            r.status mustBe BAD_REQUEST
+        whenReady(processed) { r =>
+          r.status mustBe BAD_REQUEST
         }
         application.stop()
       }
@@ -522,9 +537,10 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
           .configure(
             Seq(
               "microservice.services.trusts.port" -> server.port(),
-              "auditing.enabled" -> false
+              "auditing.enabled"                  -> false
             ): _*
-          ).build()
+          )
+          .build()
 
         val connector = application.injector.instanceOf[TrustsConnector]
 
@@ -535,9 +551,8 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
 
         val processed = connector.addSharesAsset(identifier, sharesAsset)
 
-        whenReady(processed) {
-          r =>
-            r.status mustBe OK
+        whenReady(processed) { r =>
+          r.status mustBe OK
         }
         application.stop()
       }
@@ -547,9 +562,10 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
           .configure(
             Seq(
               "microservice.services.trusts.port" -> server.port(),
-              "auditing.enabled" -> false
+              "auditing.enabled"                  -> false
             ): _*
-          ).build()
+          )
+          .build()
 
         val connector = application.injector.instanceOf[TrustsConnector]
 
@@ -560,9 +576,8 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
 
         val processed = connector.addSharesAsset(identifier, sharesAsset)
 
-        whenReady(processed) {
-          r =>
-            r.status mustBe BAD_REQUEST
+        whenReady(processed) { r =>
+          r.status mustBe BAD_REQUEST
         }
         application.stop()
       }
@@ -574,9 +589,10 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
           .configure(
             Seq(
               "microservice.services.trusts.port" -> server.port(),
-              "auditing.enabled" -> false
+              "auditing.enabled"                  -> false
             ): _*
-          ).build()
+          )
+          .build()
 
         val connector = application.injector.instanceOf[TrustsConnector]
 
@@ -587,9 +603,8 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
 
         val processed = connector.amendSharesAsset(identifier, index, sharesAsset)
 
-        whenReady(processed) {
-          r =>
-            r.status mustBe OK
+        whenReady(processed) { r =>
+          r.status mustBe OK
         }
         application.stop()
       }
@@ -599,9 +614,10 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
           .configure(
             Seq(
               "microservice.services.trusts.port" -> server.port(),
-              "auditing.enabled" -> false
+              "auditing.enabled"                  -> false
             ): _*
-          ).build()
+          )
+          .build()
 
         val connector = application.injector.instanceOf[TrustsConnector]
 
@@ -612,9 +628,8 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
 
         val processed = connector.amendSharesAsset(identifier, index, sharesAsset)
 
-        whenReady(processed) {
-          r =>
-            r.status mustBe BAD_REQUEST
+        whenReady(processed) { r =>
+          r.status mustBe BAD_REQUEST
         }
         application.stop()
       }
@@ -627,9 +642,10 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
           .configure(
             Seq(
               "microservice.services.trusts.port" -> server.port(),
-              "auditing.enabled" -> false
+              "auditing.enabled"                  -> false
             ): _*
-          ).build()
+          )
+          .build()
 
         val connector = application.injector.instanceOf[TrustsConnector]
 
@@ -640,9 +656,8 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
 
         val processed = connector.addBusinessAsset(identifier, businessAsset)
 
-        whenReady(processed) {
-          r =>
-            r.status mustBe OK
+        whenReady(processed) { r =>
+          r.status mustBe OK
         }
         application.stop()
       }
@@ -652,9 +667,10 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
           .configure(
             Seq(
               "microservice.services.trusts.port" -> server.port(),
-              "auditing.enabled" -> false
+              "auditing.enabled"                  -> false
             ): _*
-          ).build()
+          )
+          .build()
 
         val connector = application.injector.instanceOf[TrustsConnector]
 
@@ -665,9 +681,8 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
 
         val processed = connector.addBusinessAsset(identifier, businessAsset)
 
-        whenReady(processed) {
-          r =>
-            r.status mustBe BAD_REQUEST
+        whenReady(processed) { r =>
+          r.status mustBe BAD_REQUEST
         }
         application.stop()
       }
@@ -679,9 +694,10 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
           .configure(
             Seq(
               "microservice.services.trusts.port" -> server.port(),
-              "auditing.enabled" -> false
+              "auditing.enabled"                  -> false
             ): _*
-          ).build()
+          )
+          .build()
 
         val connector = application.injector.instanceOf[TrustsConnector]
 
@@ -692,9 +708,8 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
 
         val processed = connector.amendBusinessAsset(identifier, index, businessAsset)
 
-        whenReady(processed) {
-          r =>
-            r.status mustBe OK
+        whenReady(processed) { r =>
+          r.status mustBe OK
         }
         application.stop()
       }
@@ -704,9 +719,10 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
           .configure(
             Seq(
               "microservice.services.trusts.port" -> server.port(),
-              "auditing.enabled" -> false
+              "auditing.enabled"                  -> false
             ): _*
-          ).build()
+          )
+          .build()
 
         val connector = application.injector.instanceOf[TrustsConnector]
 
@@ -717,23 +733,23 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
 
         val processed = connector.amendBusinessAsset(identifier, index, businessAsset)
 
-        whenReady(processed) {
-          r =>
-            r.status mustBe BAD_REQUEST
+        whenReady(processed) { r =>
+          r.status mustBe BAD_REQUEST
         }
         application.stop()
       }
     }
 
-    "addPartnershipAsset" must {
+    "addPartnershipAsset"   must {
       "Return OK when the request is successful" in {
         val application = applicationBuilder()
           .configure(
             Seq(
               "microservice.services.trusts.port" -> server.port(),
-              "auditing.enabled" -> false
+              "auditing.enabled"                  -> false
             ): _*
-          ).build()
+          )
+          .build()
 
         val connector = application.injector.instanceOf[TrustsConnector]
 
@@ -744,9 +760,8 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
 
         val processed = connector.addPartnershipAsset(identifier, partnershipAsset)
 
-        whenReady(processed) {
-          r =>
-            r.status mustBe OK
+        whenReady(processed) { r =>
+          r.status mustBe OK
         }
         application.stop()
       }
@@ -756,9 +771,10 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
           .configure(
             Seq(
               "microservice.services.trusts.port" -> server.port(),
-              "auditing.enabled" -> false
+              "auditing.enabled"                  -> false
             ): _*
-          ).build()
+          )
+          .build()
 
         val connector = application.injector.instanceOf[TrustsConnector]
 
@@ -769,9 +785,8 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
 
         val processed = connector.addPartnershipAsset(identifier, partnershipAsset)
 
-        whenReady(processed) {
-          r =>
-            r.status mustBe BAD_REQUEST
+        whenReady(processed) { r =>
+          r.status mustBe BAD_REQUEST
         }
         application.stop()
       }
@@ -783,9 +798,10 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
           .configure(
             Seq(
               "microservice.services.trusts.port" -> server.port(),
-              "auditing.enabled" -> false
+              "auditing.enabled"                  -> false
             ): _*
-          ).build()
+          )
+          .build()
 
         val connector = application.injector.instanceOf[TrustsConnector]
 
@@ -796,9 +812,8 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
 
         val processed = connector.amendPartnershipAsset(identifier, index, partnershipAsset)
 
-        whenReady(processed) {
-          r =>
-            r.status mustBe OK
+        whenReady(processed) { r =>
+          r.status mustBe OK
         }
         application.stop()
       }
@@ -808,9 +823,10 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
           .configure(
             Seq(
               "microservice.services.trusts.port" -> server.port(),
-              "auditing.enabled" -> false
+              "auditing.enabled"                  -> false
             ): _*
-          ).build()
+          )
+          .build()
 
         val connector = application.injector.instanceOf[TrustsConnector]
 
@@ -821,23 +837,23 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
 
         val processed = connector.amendPartnershipAsset(identifier, index, partnershipAsset)
 
-        whenReady(processed) {
-          r =>
-            r.status mustBe BAD_REQUEST
+        whenReady(processed) { r =>
+          r.status mustBe BAD_REQUEST
         }
         application.stop()
       }
     }
 
-    "addOtherAsset" must {
+    "addOtherAsset"   must {
       "Return OK when the request is successful" in {
         val application = applicationBuilder()
           .configure(
             Seq(
               "microservice.services.trusts.port" -> server.port(),
-              "auditing.enabled" -> false
+              "auditing.enabled"                  -> false
             ): _*
-          ).build()
+          )
+          .build()
 
         val connector = application.injector.instanceOf[TrustsConnector]
 
@@ -848,9 +864,8 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
 
         val processed = connector.addOtherAsset(identifier, otherAsset)
 
-        whenReady(processed) {
-          r =>
-            r.status mustBe OK
+        whenReady(processed) { r =>
+          r.status mustBe OK
         }
         application.stop()
       }
@@ -860,9 +875,10 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
           .configure(
             Seq(
               "microservice.services.trusts.port" -> server.port(),
-              "auditing.enabled" -> false
+              "auditing.enabled"                  -> false
             ): _*
-          ).build()
+          )
+          .build()
 
         val connector = application.injector.instanceOf[TrustsConnector]
 
@@ -873,9 +889,8 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
 
         val processed = connector.addOtherAsset(identifier, otherAsset)
 
-        whenReady(processed) {
-          r =>
-            r.status mustBe BAD_REQUEST
+        whenReady(processed) { r =>
+          r.status mustBe BAD_REQUEST
         }
         application.stop()
       }
@@ -887,9 +902,10 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
           .configure(
             Seq(
               "microservice.services.trusts.port" -> server.port(),
-              "auditing.enabled" -> false
+              "auditing.enabled"                  -> false
             ): _*
-          ).build()
+          )
+          .build()
 
         val connector = application.injector.instanceOf[TrustsConnector]
 
@@ -900,9 +916,8 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
 
         val processed = connector.amendOtherAsset(identifier, index, otherAsset)
 
-        whenReady(processed) {
-          r =>
-            r.status mustBe OK
+        whenReady(processed) { r =>
+          r.status mustBe OK
         }
         application.stop()
       }
@@ -912,9 +927,10 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
           .configure(
             Seq(
               "microservice.services.trusts.port" -> server.port(),
-              "auditing.enabled" -> false
+              "auditing.enabled"                  -> false
             ): _*
-          ).build()
+          )
+          .build()
 
         val connector = application.injector.instanceOf[TrustsConnector]
 
@@ -925,23 +941,23 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
 
         val processed = connector.amendOtherAsset(identifier, index, otherAsset)
 
-        whenReady(processed) {
-          r =>
-            r.status mustBe BAD_REQUEST
+        whenReady(processed) { r =>
+          r.status mustBe BAD_REQUEST
         }
         application.stop()
       }
     }
 
-    "addNonEeaBusinessAsset" must {
+    "addNonEeaBusinessAsset"   must {
       "Return OK when the request is successful" in {
         val application = applicationBuilder()
           .configure(
             Seq(
               "microservice.services.trusts.port" -> server.port(),
-              "auditing.enabled" -> false
+              "auditing.enabled"                  -> false
             ): _*
-          ).build()
+          )
+          .build()
 
         val connector = application.injector.instanceOf[TrustsConnector]
 
@@ -952,9 +968,8 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
 
         val processed = connector.addNonEeaBusinessAsset(identifier, nonEeaBusinessAsset)
 
-        whenReady(processed) {
-          r =>
-            r.status mustBe OK
+        whenReady(processed) { r =>
+          r.status mustBe OK
         }
         application.stop()
       }
@@ -964,9 +979,10 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
           .configure(
             Seq(
               "microservice.services.trusts.port" -> server.port(),
-              "auditing.enabled" -> false
+              "auditing.enabled"                  -> false
             ): _*
-          ).build()
+          )
+          .build()
 
         val connector = application.injector.instanceOf[TrustsConnector]
 
@@ -977,9 +993,8 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
 
         val processed = connector.addNonEeaBusinessAsset(identifier, nonEeaBusinessAsset)
 
-        whenReady(processed) {
-          r =>
-            r.status mustBe BAD_REQUEST
+        whenReady(processed) { r =>
+          r.status mustBe BAD_REQUEST
         }
         application.stop()
       }
@@ -991,9 +1006,10 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
           .configure(
             Seq(
               "microservice.services.trusts.port" -> server.port(),
-              "auditing.enabled" -> false
+              "auditing.enabled"                  -> false
             ): _*
-          ).build()
+          )
+          .build()
 
         val connector = application.injector.instanceOf[TrustsConnector]
 
@@ -1004,9 +1020,8 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
 
         val processed = connector.amendNonEeaBusinessAsset(identifier, index, nonEeaBusinessAsset)
 
-        whenReady(processed) {
-          r =>
-            r.status mustBe OK
+        whenReady(processed) { r =>
+          r.status mustBe OK
         }
         application.stop()
       }
@@ -1016,9 +1031,10 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
           .configure(
             Seq(
               "microservice.services.trusts.port" -> server.port(),
-              "auditing.enabled" -> false
+              "auditing.enabled"                  -> false
             ): _*
-          ).build()
+          )
+          .build()
 
         val connector = application.injector.instanceOf[TrustsConnector]
 
@@ -1029,9 +1045,8 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
 
         val processed = connector.amendNonEeaBusinessAsset(identifier, index, nonEeaBusinessAsset)
 
-        whenReady(processed) {
-          r =>
-            r.status mustBe BAD_REQUEST
+        whenReady(processed) { r =>
+          r.status mustBe BAD_REQUEST
         }
         application.stop()
       }
@@ -1053,9 +1068,10 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
           .configure(
             Seq(
               "microservice.services.trusts.port" -> server.port(),
-              "auditing.enabled" -> false
+              "auditing.enabled"                  -> false
             ): _*
-          ).build()
+          )
+          .build()
 
         val connector = application.injector.instanceOf[TrustsConnector]
 
@@ -1066,9 +1082,8 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
 
         val processed = connector.removeAsset(identifier, trustee)
 
-        whenReady(processed) {
-          r =>
-            r.status mustBe OK
+        whenReady(processed) { r =>
+          r.status mustBe OK
         }
         application.stop()
       }
@@ -1087,9 +1102,10 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
           .configure(
             Seq(
               "microservice.services.trusts.port" -> server.port(),
-              "auditing.enabled" -> false
+              "auditing.enabled"                  -> false
             ): _*
-          ).build()
+          )
+          .build()
 
         val connector = application.injector.instanceOf[TrustsConnector]
 
@@ -1100,9 +1116,8 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
 
         val processed = connector.removeAsset(identifier, trustee)
 
-        whenReady(processed) {
-          r =>
-            r.status mustBe BAD_REQUEST
+        whenReady(processed) { r =>
+          r.status mustBe BAD_REQUEST
         }
         application.stop()
       }
@@ -1112,8 +1127,7 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
 
       "value defined" in {
 
-        val json = Json.parse(
-          """
+        val json = Json.parse("""
             |{
             | "value": true
             |}
@@ -1123,9 +1137,10 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
           .configure(
             Seq(
               "microservice.services.trusts.port" -> server.port(),
-              "auditing.enabled" -> false
+              "auditing.enabled"                  -> false
             ): _*
-          ).build()
+          )
+          .build()
 
         val connector = application.injector.instanceOf[TrustsConnector]
 
@@ -1145,8 +1160,7 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
 
       "value undefined" in {
 
-        val json = Json.parse(
-          """
+        val json = Json.parse("""
             |{}
             |""".stripMargin)
 
@@ -1154,9 +1168,10 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
           .configure(
             Seq(
               "microservice.services.trusts.port" -> server.port(),
-              "auditing.enabled" -> false
+              "auditing.enabled"                  -> false
             ): _*
-          ).build()
+          )
+          .build()
 
         val connector = application.injector.instanceOf[TrustsConnector]
 
@@ -1176,4 +1191,5 @@ class TrustsConnectorSpec extends SpecBase with Generators with ScalaFutures wit
     }
 
   }
+
 }

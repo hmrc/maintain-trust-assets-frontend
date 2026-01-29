@@ -31,42 +31,39 @@ import views.html.asset.noneeabusiness.TrustOwnsNonEeaBusinessYesNoView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class TrustOwnsNonEeaBusinessYesNoController @Inject()(
-                                                        override val messagesApi: MessagesApi,
-                                                        standardActionSets: StandardActionSets,
-                                                        repository: PlaybackRepository,
-                                                        navigator: AssetsNavigator,
-                                                        yesNoFormProvider: YesNoFormProvider,
-                                                        val controllerComponents: MessagesControllerComponents,
-                                                        view: TrustOwnsNonEeaBusinessYesNoView
-                                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class TrustOwnsNonEeaBusinessYesNoController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  repository: PlaybackRepository,
+  navigator: AssetsNavigator,
+  yesNoFormProvider: YesNoFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: TrustOwnsNonEeaBusinessYesNoView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   val form: Form[Boolean] = yesNoFormProvider.withPrefix("trustOwnsNonEeaBusinessYesNo")
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
-    implicit request =>
+  def onPageLoad(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier { implicit request =>
+    val preparedForm = request.userAnswers.get(TrustOwnsNonEeaBusinessYesNoPage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      val preparedForm = request.userAnswers.get(TrustOwnsNonEeaBusinessYesNoPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-
-      Ok(view(preparedForm, mode))
+    Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
-    implicit request =>
-
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
-
-        value => {
+  def onSubmit(mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[_]) => Future.successful(BadRequest(view(formWithErrors, mode))),
+        value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(TrustOwnsNonEeaBusinessYesNoPage, value))
             _              <- repository.set(updatedAnswers)
           } yield Redirect(navigator.redirectFromEntryQuestion(value, updatedAnswers.isMigratingToTaxable))
-        }
       )
   }
+
 }

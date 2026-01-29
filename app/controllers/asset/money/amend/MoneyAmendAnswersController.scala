@@ -35,70 +35,74 @@ import views.html.asset.money.amend.MoneyAmendAnswersView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class MoneyAmendAnswersController @Inject()(
-                                             override val messagesApi: MessagesApi,
-                                             standardActionSets: StandardActionSets,
-                                             val controllerComponents: MessagesControllerComponents,
-                                             view: MoneyAmendAnswersView,
-                                             service: TrustService,
-                                             connector: TrustsConnector,
-                                             val appConfig: FrontendAppConfig,
-                                             playbackRepository: PlaybackRepository,
-                                             printHelper: MoneyPrintHelper,
-                                             mapper: MoneyAssetMapper,
-                                             extractor: MoneyAssetExtractor,
-                                             errorHandler: ErrorHandler
-                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+class MoneyAmendAnswersController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  val controllerComponents: MessagesControllerComponents,
+  view: MoneyAmendAnswersView,
+  service: TrustService,
+  connector: TrustsConnector,
+  val appConfig: FrontendAppConfig,
+  playbackRepository: PlaybackRepository,
+  printHelper: MoneyPrintHelper,
+  mapper: MoneyAssetMapper,
+  extractor: MoneyAssetExtractor,
+  errorHandler: ErrorHandler
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport with Logging {
 
   private val provisional: Boolean = false
 
-  private def render(userAnswers: UserAnswers, index: Int, name: String)
-                    (implicit request: Request[AnyContent]): Result = {
+  private def render(userAnswers: UserAnswers, index: Int, name: String)(implicit
+    request: Request[AnyContent]
+  ): Result = {
     val section: AnswerSection = printHelper(userAnswers, index, provisional, name)
     Ok(view(section, index))
   }
 
   def extractAndRender(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-
       (for {
         moneyAsset       <- service.getMonetaryAsset(request.userAnswers.identifier, index)
         extractedAnswers <- Future.fromTry(extractor(request.userAnswers, moneyAsset, index))
         _                <- playbackRepository.set(extractedAnswers)
-      } yield {
-        render(extractedAnswers, index, moneyAsset.assetMonetaryAmount.toString)
-      }).recoverWith {
-        case e =>
-          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
-            s" error showing the user the check answers for Money Asset $index ${e.getMessage}")
-          errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
+      } yield render(extractedAnswers, index, moneyAsset.assetMonetaryAmount.toString)).recoverWith { case e =>
+        logger.error(
+          s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
+            s" error showing the user the check answers for Money Asset $index ${e.getMessage}"
+        )
+        errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
       }
   }
 
-  def renderFromUserAnswers(index: Int) : Action[AnyContent] = standardActionSets.verifiedForIdentifier {
+  def renderFromUserAnswers(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
     implicit request =>
       render(request.userAnswers, index, "")
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
-    implicit request =>
-      mapper(request.userAnswers) match {
-        case None =>
-          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
-            s" error mapping user answers to Money Asset $index")
-          errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async { implicit request =>
+    mapper(request.userAnswers) match {
+      case None =>
+        logger.error(
+          s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
+            s" error mapping user answers to Money Asset $index"
+        )
+        errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
 
-        case Some(asset) =>
-          connector.amendMoneyAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
-            response.status match {
-              case OK | NO_CONTENT =>
-                Future.successful(Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()))
-              case _ =>
-                logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
-                  s" unexpected response ${response.status} when amending Money Asset $index")
-                errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
-            }
+      case Some(asset) =>
+        connector.amendMoneyAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
+          response.status match {
+            case OK | NO_CONTENT =>
+              Future.successful(Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()))
+            case _               =>
+              logger.error(
+                s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
+                  s" unexpected response ${response.status} when amending Money Asset $index"
+              )
+              errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
           }
-      }
+        }
+    }
   }
+
 }

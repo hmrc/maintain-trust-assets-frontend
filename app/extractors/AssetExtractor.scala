@@ -27,15 +27,15 @@ import scala.util.Try
 
 trait AssetExtractor[T <: AssetType] {
 
-  def apply(answers: UserAnswers, asset: T, index: Int): Try[UserAnswers] = {
-    answers.deleteAtPath(basePath)
+  def apply(answers: UserAnswers, asset: T, index: Int): Try[UserAnswers] =
+    answers
+      .deleteAtPath(basePath)
       .flatMap(_.set(indexPage, index))
-  }
 
   def namePage: QuestionPage[String] = new EmptyPage[String]
 
-  def ukAddressYesNoPage: QuestionPage[Boolean] = new EmptyPage[Boolean]
-  def ukAddressPage: QuestionPage[UkAddress] = new EmptyPage[UkAddress]
+  def ukAddressYesNoPage: QuestionPage[Boolean]    = new EmptyPage[Boolean]
+  def ukAddressPage: QuestionPage[UkAddress]       = new EmptyPage[UkAddress]
   def nonUkAddressPage: QuestionPage[NonUkAddress] = new EmptyPage[NonUkAddress]
 
   def startDatePage: QuestionPage[LocalDate] = new EmptyPage[LocalDate]
@@ -44,16 +44,17 @@ trait AssetExtractor[T <: AssetType] {
 
   def basePath: JsPath
 
-  def extractAddress(address: Option[Address], answers: UserAnswers): Try[UserAnswers] = {
-      address match {
-        case Some(uk: UkAddress) => answers
+  def extractAddress(address: Option[Address], answers: UserAnswers): Try[UserAnswers] =
+    address match {
+      case Some(uk: UkAddress)       =>
+        answers
           .set(ukAddressYesNoPage, true)
           .flatMap(_.set(ukAddressPage, uk))
-        case Some(nonUk: NonUkAddress) => answers
+      case Some(nonUk: NonUkAddress) =>
+        answers
           .set(ukAddressYesNoPage, false)
           .flatMap(_.set(nonUkAddressPage, nonUk))
-        case None => Try(answers)
-      }
-  }
+      case None                      => Try(answers)
+    }
 
 }

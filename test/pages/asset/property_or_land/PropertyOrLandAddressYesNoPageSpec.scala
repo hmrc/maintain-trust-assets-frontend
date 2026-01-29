@@ -34,34 +34,45 @@ class PropertyOrLandAddressYesNoPageSpec extends PageBehaviours {
 
     "remove relevant data" when {
 
-      "set to false" in {
-        forAll(arbitrary[UserAnswers]) {
-          initial =>
-            val answers: UserAnswers = initial.set(page, true).success.value
-              .set(PropertyOrLandAddressUkYesNoPage(index), true).success.value
-              .set(PropertyOrLandInternationalAddressPage(index), NonUkAddress("line 1", "line 2", None, "France")).success.value
-              .set(PropertyOrLandUKAddressPage(index), UkAddress("line 1", "line2", None, None, "NE1 1NE")).success.value
+      "set to false" in
+        forAll(arbitrary[UserAnswers]) { initial =>
+          val answers: UserAnswers = initial
+            .set(page, true)
+            .success
+            .value
+            .set(PropertyOrLandAddressUkYesNoPage(index), true)
+            .success
+            .value
+            .set(PropertyOrLandInternationalAddressPage(index), NonUkAddress("line 1", "line 2", None, "France"))
+            .success
+            .value
+            .set(PropertyOrLandUKAddressPage(index), UkAddress("line 1", "line2", None, None, "NE1 1NE"))
+            .success
+            .value
 
-            val result = answers.set(page, false).success.value
+          val result = answers.set(page, false).success.value
 
-            result.get(PropertyOrLandAddressUkYesNoPage(index)) must not be defined
-            result.get(PropertyOrLandInternationalAddressPage(index)) must not be defined
-            result.get(PropertyOrLandUKAddressPage(index)) must not be defined
+          result.get(PropertyOrLandAddressUkYesNoPage(index))       must not be defined
+          result.get(PropertyOrLandInternationalAddressPage(index)) must not be defined
+          result.get(PropertyOrLandUKAddressPage(index))            must not be defined
         }
-      }
 
-      "set to true" in {
-        forAll(arbitrary[UserAnswers]) {
-          initial =>
-            val answers: UserAnswers = initial.set(page, false).success.value
-              .set(PropertyOrLandDescriptionPage(index), "Test").success.value
+      "set to true" in
+        forAll(arbitrary[UserAnswers]) { initial =>
+          val answers: UserAnswers = initial
+            .set(page, false)
+            .success
+            .value
+            .set(PropertyOrLandDescriptionPage(index), "Test")
+            .success
+            .value
 
-            val result = answers.set(page, true).success.value
+          val result = answers.set(page, true).success.value
 
-            result.get(PropertyOrLandDescriptionPage(index)) must not be defined
+          result.get(PropertyOrLandDescriptionPage(index)) must not be defined
         }
-      }
     }
 
   }
+
 }

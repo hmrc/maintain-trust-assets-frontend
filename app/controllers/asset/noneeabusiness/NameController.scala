@@ -32,22 +32,23 @@ import views.html.asset.noneeabusiness.NameView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class NameController @Inject()(
-                                override val messagesApi: MessagesApi,
-                                standardActionSets: StandardActionSets,
-                                repository: PlaybackRepository,
-                                @NonEeaBusiness navigator: Navigator,
-                                formProvider: NameFormProvider,
-                                val controllerComponents: MessagesControllerComponents,
-                                view: NameView
-                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class NameController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  repository: PlaybackRepository,
+  @NonEeaBusiness navigator: Navigator,
+  formProvider: NameFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: NameView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   private val form: Form[String] = formProvider.withConfig(105, "nonEeaBusiness.name")
 
   def onPageLoad(index: Int, mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
     implicit request =>
       val preparedForm = request.userAnswers.get(NamePage(index)) match {
-        case None => form
+        case None        => form
         case Some(value) => form.fill(value)
       }
       Ok(view(preparedForm, index, mode))
@@ -55,15 +56,16 @@ class NameController @Inject()(
 
   def onSubmit(index: Int, mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, index, mode))),
-        value => {
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(NamePage(index), value))
-            _ <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(NamePage(index), mode, updatedAnswers))
-        }
-      )
+      form
+        .bindFromRequest()
+        .fold(
+          (formWithErrors: Form[_]) => Future.successful(BadRequest(view(formWithErrors, index, mode))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(NamePage(index), value))
+              _              <- repository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(NamePage(index), mode, updatedAnswers))
+        )
   }
+
 }

@@ -33,61 +33,63 @@ import views.html.asset.money.remove.RemoveAssetYesNoView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class RemoveAssetYesNoController @Inject()(
-                                            override val messagesApi: MessagesApi,
-                                            standardActionSets: StandardActionSets,
-                                            formProvider: RemoveIndexFormProvider,
-                                            trustService: TrustService,
-                                            val controllerComponents: MessagesControllerComponents,
-                                            view: RemoveAssetYesNoView,
-                                            errorHandler: ErrorHandler
-                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+class RemoveAssetYesNoController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  formProvider: RemoveIndexFormProvider,
+  trustService: TrustService,
+  val controllerComponents: MessagesControllerComponents,
+  view: RemoveAssetYesNoView,
+  errorHandler: ErrorHandler
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport with Logging {
 
   private val messagesPrefix: String = "money.removeYesNo"
-  private val form = formProvider.apply(messagesPrefix)
+  private val form                   = formProvider.apply(messagesPrefix)
 
-  private def redirectToAddAssetsPage(): Result = Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
+  private def redirectToAddAssetsPage(): Result = Redirect(
+    controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
+  )
 
-  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
-    implicit request =>
-      trustService.getMonetaryAsset(request.userAnswers.identifier, index).map {
-        asset =>
-            Ok(view(form, index, currencyFormat(asset.assetMonetaryAmount.toString)))
-      } recoverWith {
-        case iobe: IndexOutOfBoundsException =>
-          logger.warn(s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
-            s" user cannot remove asset as asset was not found ${iobe.getMessage}: IndexOutOfBoundsException")
-          Future.successful(redirectToAddAssetsPage())
-        case _ =>
-          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
-            s" user cannot remove asset as asset was not found")
-          errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
-      }
+  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async { implicit request =>
+    trustService.getMonetaryAsset(request.userAnswers.identifier, index).map { asset =>
+      Ok(view(form, index, currencyFormat(asset.assetMonetaryAmount.toString)))
+    } recoverWith {
+      case iobe: IndexOutOfBoundsException =>
+        logger.warn(
+          s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
+            s" user cannot remove asset as asset was not found ${iobe.getMessage}: IndexOutOfBoundsException"
+        )
+        Future.successful(redirectToAddAssetsPage())
+      case _                               =>
+        logger.error(
+          s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
+            s" user cannot remove asset as asset was not found"
+        )
+        errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
+    }
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
-    implicit request =>
-      form.bindFromRequest().fold(
-        formWithErrors => {
-          trustService.getMonetaryAsset(request.userAnswers.identifier, index).map {
-            asset =>
-              BadRequest(view(formWithErrors, index, currencyFormat(asset.assetMonetaryAmount.toString)))
-          }
-        },
-        value => {
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
+        formWithErrors =>
+          trustService.getMonetaryAsset(request.userAnswers.identifier, index).map { asset =>
+            BadRequest(view(formWithErrors, index, currencyFormat(asset.assetMonetaryAmount.toString)))
+          },
+        value =>
           if (value) {
             removeAsset(request.userAnswers.identifier, index)
           } else {
             Future.successful(redirectToAddAssetsPage())
           }
-        }
       )
   }
 
+  private def removeAsset(identifier: String, index: Int)(implicit hc: HeaderCarrier): Future[Result] =
+    trustService
+      .removeAsset(identifier, RemoveAsset(AssetNameType.MoneyAssetNameType, index))
+      .map(_ => redirectToAddAssetsPage())
 
-  private def removeAsset(identifier: String, index: Int)(implicit hc: HeaderCarrier): Future[Result] = {
-    trustService.removeAsset(identifier, RemoveAsset(AssetNameType.MoneyAssetNameType, index)).map(_ =>
-      redirectToAddAssetsPage()
-    )
-  }
 }

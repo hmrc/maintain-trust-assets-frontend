@@ -36,52 +36,51 @@ final case class WhatKindOfAssetPage(index: Int) extends QuestionPage[WhatKindOf
 
   override def toString: String = key
 
-  override def cleanup(value: Option[WhatKindOfAsset], userAnswers: UserAnswers): Try[UserAnswers] = {
+  override def cleanup(value: Option[WhatKindOfAsset], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(Money) =>
+      case Some(Money)          =>
         doCleanup(userAnswers, WhatKindOfAsset.values.filterNot(_ == Money))
       case Some(PropertyOrLand) =>
         doCleanup(userAnswers, WhatKindOfAsset.values.filterNot(_ == PropertyOrLand))
-      case Some(Shares) =>
+      case Some(Shares)         =>
         doCleanup(userAnswers, WhatKindOfAsset.values.filterNot(_ == Shares))
-      case Some(Business) =>
+      case Some(Business)       =>
         doCleanup(userAnswers, WhatKindOfAsset.values.filterNot(_ == Business))
-      case Some(Partnership) =>
+      case Some(Partnership)    =>
         doCleanup(userAnswers, WhatKindOfAsset.values.filterNot(_ == Partnership))
-      case Some(Other) =>
+      case Some(Other)          =>
         doCleanup(userAnswers, WhatKindOfAsset.values.filterNot(_ == Other))
       case Some(NonEeaBusiness) =>
         doCleanup(userAnswers, WhatKindOfAsset.values.filterNot(_ == NonEeaBusiness))
-      case _ => super.cleanup(value, userAnswers)
+      case _                    => super.cleanup(value, userAnswers)
     }
-  }
 
-  private def doCleanup(userAnswers: UserAnswers, cleanup: List[WhatKindOfAsset]): Try[UserAnswers] = {
-    cleanup.foldLeft[Try[UserAnswers]](Success(userAnswers))((updatedAnswers, asset) => {
+  private def doCleanup(userAnswers: UserAnswers, cleanup: List[WhatKindOfAsset]): Try[UserAnswers] =
+    cleanup.foldLeft[Try[UserAnswers]](Success(userAnswers))((updatedAnswers, asset) =>
       updatedAnswers match {
         case Success(ua) =>
           asset match {
-            case Money => removeMoney(ua)
+            case Money          => removeMoney(ua)
             case PropertyOrLand => removePropertyOrLand(ua)
-            case Shares => removeShare(ua)
-            case Business => removeBusiness(ua)
-            case Partnership => removePartnership(ua)
-            case Other => removeOther(ua)
+            case Shares         => removeShare(ua)
+            case Business       => removeBusiness(ua)
+            case Partnership    => removePartnership(ua)
+            case Other          => removeOther(ua)
             case NonEeaBusiness => removeNonEeaBusiness(ua)
           }
-        case _ =>
+        case _           =>
           updatedAnswers
       }
-    })
-  }
+    )
 
-  private def removeMoney(userAnswers: UserAnswers) : Try[UserAnswers] = {
-    userAnswers.remove(AssetMoneyValuePage(index))
+  private def removeMoney(userAnswers: UserAnswers): Try[UserAnswers] =
+    userAnswers
+      .remove(AssetMoneyValuePage(index))
       .flatMap(removeStatus)
-  }
 
-  private def removeShare(userAnswers: UserAnswers): Try[UserAnswers] = {
-    userAnswers.remove(SharesInAPortfolioPage(index))
+  private def removeShare(userAnswers: UserAnswers): Try[UserAnswers] =
+    userAnswers
+      .remove(SharesInAPortfolioPage(index))
       .flatMap(_.remove(ShareCompanyNamePage(index)))
       .flatMap(_.remove(SharesOnStockExchangePage(index)))
       .flatMap(_.remove(ShareClassPage(index)))
@@ -92,10 +91,10 @@ final case class WhatKindOfAssetPage(index: Int) extends QuestionPage[WhatKindOf
       .flatMap(_.remove(SharePortfolioQuantityInTrustPage(index)))
       .flatMap(_.remove(SharePortfolioValueInTrustPage(index)))
       .flatMap(removeStatus)
-  }
 
-  private def removePropertyOrLand(userAnswers: UserAnswers) : Try[UserAnswers] = {
-    userAnswers.remove(PropertyOrLandAddressYesNoPage(index))
+  private def removePropertyOrLand(userAnswers: UserAnswers): Try[UserAnswers] =
+    userAnswers
+      .remove(PropertyOrLandAddressYesNoPage(index))
       .flatMap(_.remove(PropertyOrLandAddressUkYesNoPage(index)))
       .flatMap(_.remove(PropertyOrLandUKAddressPage(index)))
       .flatMap(_.remove(PropertyOrLandInternationalAddressPage(index)))
@@ -104,41 +103,40 @@ final case class WhatKindOfAssetPage(index: Int) extends QuestionPage[WhatKindOf
       .flatMap(_.remove(PropertyOrLandDescriptionPage(index)))
       .flatMap(_.remove(PropertyLandValueTrustPage(index)))
       .flatMap(removeStatus)
-  }
 
-  private def removeOther(userAnswers: UserAnswers): Try[UserAnswers] = {
-    userAnswers.remove(pages.asset.other.OtherAssetDescriptionPage(index))
+  private def removeOther(userAnswers: UserAnswers): Try[UserAnswers] =
+    userAnswers
+      .remove(pages.asset.other.OtherAssetDescriptionPage(index))
       .flatMap(_.remove(pages.asset.other.OtherAssetValuePage(index)))
       .flatMap(removeStatus)
-  }
 
-  private def removePartnership(userAnswers: UserAnswers): Try[UserAnswers] = {
-    userAnswers.remove(PartnershipDescriptionPage(index))
+  private def removePartnership(userAnswers: UserAnswers): Try[UserAnswers] =
+    userAnswers
+      .remove(PartnershipDescriptionPage(index))
       .flatMap(_.remove(PartnershipStartDatePage(index)))
       .flatMap(removeStatus)
-  }
 
-  private def removeBusiness(userAnswers: UserAnswers): Try[UserAnswers] = {
-    userAnswers.remove(BusinessNamePage(0))
+  private def removeBusiness(userAnswers: UserAnswers): Try[UserAnswers] =
+    userAnswers
+      .remove(BusinessNamePage(0))
       .flatMap(_.remove(BusinessDescriptionPage(0)))
       .flatMap(_.remove(BusinessAddressUkYesNoPage(0)))
       .flatMap(_.remove(BusinessUkAddressPage(0)))
       .flatMap(_.remove(BusinessInternationalAddressPage(0)))
       .flatMap(_.remove(BusinessValuePage(0)))
       .flatMap(removeStatus)
-  }
 
-  private def removeNonEeaBusiness(userAnswers: UserAnswers): Try[UserAnswers] = {
-    userAnswers.remove(noneeabusiness.NamePage(index))
+  private def removeNonEeaBusiness(userAnswers: UserAnswers): Try[UserAnswers] =
+    userAnswers
+      .remove(noneeabusiness.NamePage(index))
       .flatMap(_.remove(noneeabusiness.NonUkAddressPage(index)))
       .flatMap(_.remove(noneeabusiness.GoverningCountryPage(index)))
       .flatMap(_.remove(noneeabusiness.add.StartDatePage(index)))
       .flatMap(removeStatus)
-  }
 
-  private def removeStatus(userAnswers: UserAnswers): Try[UserAnswers] = {
+  private def removeStatus(userAnswers: UserAnswers): Try[UserAnswers] =
     userAnswers.remove(AssetStatus(index))
-  }
+
 }
 
 object WhatKindOfAssetPage {

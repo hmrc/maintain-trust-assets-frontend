@@ -31,29 +31,23 @@ class OtherNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Gen
 
   "Other Navigator" must {
 
-    "go to other asset value from other asset description" in {
+    "go to other asset value from other asset description" in
+      forAll(arbitrary[UserAnswers]) { userAnswers =>
+        val answers = userAnswers.set(OtherAssetDescriptionPage(index), "Description").success.value
 
-      forAll(arbitrary[UserAnswers]) {
-        userAnswers =>
-
-          val answers = userAnswers.set(OtherAssetDescriptionPage(index), "Description").success.value
-
-          navigator.nextPage(OtherAssetDescriptionPage(index), NormalMode, answers)
-            .mustBe(OtherAssetValueController.onPageLoad(index, NormalMode))
+        navigator
+          .nextPage(OtherAssetDescriptionPage(index), NormalMode, answers)
+          .mustBe(OtherAssetValueController.onPageLoad(index, NormalMode))
       }
-    }
 
-    "go to check answers from other asset value" in {
+    "go to check answers from other asset value" in
+      forAll(arbitrary[UserAnswers]) { userAnswers =>
+        val answers = userAnswers.set(OtherAssetValuePage(index), 4000L).success.value
 
-      forAll(arbitrary[UserAnswers]) {
-        userAnswers =>
-
-          val answers = userAnswers.set(OtherAssetValuePage(index), 4000L).success.value
-
-          navigator.nextPage(OtherAssetValuePage(index), NormalMode, answers)
-            .mustBe(OtherAnswerController.onPageLoad(index))
+        navigator
+          .nextPage(OtherAssetValuePage(index), NormalMode, answers)
+          .mustBe(OtherAnswerController.onPageLoad(index))
       }
-    }
   }
 
 }

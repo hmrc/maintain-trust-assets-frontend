@@ -31,8 +31,9 @@ class PartnershipAssetMapper extends Mapper[PartnershipType] {
       (
         PartnershipDescriptionPage(0).path.read[String] and
           PartnershipStartDatePage(0).path.read[LocalDate]
-        ) (PartnershipType.apply _)
+      )(PartnershipType.apply _)
 
     mapAnswersWithExplicitReads(answers, readFromUserAnswers)
   }
+
 }

@@ -28,4 +28,5 @@ class BusinessValuePageSpec extends PageBehaviours {
 
     beRemovable[Long](BusinessValuePage(index))
   }
+
 }

@@ -22,7 +22,7 @@ import forms.mappings.Mappings
 import javax.inject.Inject
 import play.api.data.Form
 
-class QuantityFormProvider @Inject()(config: FrontendAppConfig) extends Mappings {
+class QuantityFormProvider @Inject() (config: FrontendAppConfig) extends Mappings {
 
   def withPrefix(prefix: String): Form[Long] =
     Form(
@@ -34,4 +34,5 @@ class QuantityFormProvider @Inject()(config: FrontendAppConfig) extends Mappings
         maxValueKey = s"$prefix.error.length"
       )
     )
+
 }

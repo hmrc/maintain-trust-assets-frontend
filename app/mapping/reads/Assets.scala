@@ -19,7 +19,7 @@ package mapping.reads
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 
-case object Assets extends QuestionPage[List[Asset]]{
+case object Assets extends QuestionPage[List[Asset]] {
 
   override def path: JsPath = JsPath \ toString
 

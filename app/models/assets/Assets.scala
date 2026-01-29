@@ -16,31 +16,33 @@
 
 package models.assets
 
-
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
 trait AssetType
 
-case class Assets(monetary: List[AssetMonetaryAmount] = Nil,
-                  propertyOrLand: List[PropertyLandType] = Nil,
-                  shares: List[SharesType] = Nil,
-                  business: List[BusinessAssetType] = Nil,
-                  partnerShip: List[PartnershipType] = Nil,
-                  other: List[OtherAssetType] = Nil,
-                  nonEEABusiness: List[NonEeaBusinessType] = Nil) {
+case class Assets(
+  monetary: List[AssetMonetaryAmount] = Nil,
+  propertyOrLand: List[PropertyLandType] = Nil,
+  shares: List[SharesType] = Nil,
+  business: List[BusinessAssetType] = Nil,
+  partnerShip: List[PartnershipType] = Nil,
+  other: List[OtherAssetType] = Nil,
+  nonEEABusiness: List[NonEeaBusinessType] = Nil
+) {
 
   def isEmpty: Boolean = this match {
     case Assets(Nil, Nil, Nil, Nil, Nil, Nil, Nil) => true
-    case _ => false
+    case _                                         => false
   }
-
 
   def totalSizeCount: Int = List(monetary, propertyOrLand, shares, business, partnerShip, other, nonEEABusiness)
     .count(_.nonEmpty)
+
 }
 
 object Assets {
+
   implicit val reads: Reads[Assets] = (
     (__ \ "assets" \ "monetary").readWithDefault[List[AssetMonetaryAmount]](Nil)
       and (__ \ "assets" \ "propertyOrLand").readWithDefault[List[PropertyLandType]](Nil)
@@ -49,5 +51,6 @@ object Assets {
       and (__ \ "assets" \ "partnerShip").readWithDefault[List[PartnershipType]](Nil)
       and (__ \ "assets" \ "other").readWithDefault[List[OtherAssetType]](Nil)
       and (__ \ "assets" \ "nonEEABusiness").readWithDefault[List[NonEeaBusinessType]](Nil)
-    ).apply(Assets.apply _)
+  ).apply(Assets.apply _)
+
 }

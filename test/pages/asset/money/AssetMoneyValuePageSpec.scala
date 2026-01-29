@@ -18,7 +18,6 @@ package pages.asset.money
 
 import pages.behaviours.PageBehaviours
 
-
 class AssetMoneyValuePageSpec extends PageBehaviours {
 
   "AssetMoneyValuePage" must {
@@ -29,4 +28,5 @@ class AssetMoneyValuePageSpec extends PageBehaviours {
 
     beRemovable[Long](AssetMoneyValuePage(index))
   }
+
 }

@@ -33,22 +33,23 @@ import views.html.asset.other.OtherAssetValueView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class OtherAssetValueController @Inject()(
-                                           override val messagesApi: MessagesApi,
-                                           standardActionSets: StandardActionSets,
-                                           nameAction: NameRequiredAction,
-                                           repository: PlaybackRepository,
-                                           @Other navigator: Navigator,
-                                           formProvider: ValueFormProvider,
-                                           val controllerComponents: MessagesControllerComponents,
-                                           view: OtherAssetValueView
-                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class OtherAssetValueController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  nameAction: NameRequiredAction,
+  repository: PlaybackRepository,
+  @Other navigator: Navigator,
+  formProvider: ValueFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: OtherAssetValueView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   private val form: Form[Long] = formProvider.withConfig(prefix = "other.value")
 
-  def onPageLoad(index: Int, mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
-    implicit request =>
-      val description = request.userAnswers.get(OtherAssetDescriptionPage(index)).getOrElse("")
+  def onPageLoad(index: Int, mode: Mode): Action[AnyContent] =
+    (standardActionSets.verifiedForIdentifier andThen nameAction) { implicit request =>
+      val description  = request.userAnswers.get(OtherAssetDescriptionPage(index)).getOrElse("")
       val preparedForm = request.userAnswers.get(OtherAssetValuePage(index)) match {
         case Some(value) => form.fill(value)
         case None        => form
@@ -56,19 +57,21 @@ class OtherAssetValueController @Inject()(
       Ok(view(preparedForm, index, mode, description))
     }
 
-  def onSubmit(index: Int, mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
-    implicit request =>
+  def onSubmit(index: Int, mode: Mode): Action[AnyContent] =
+    (standardActionSets.verifiedForIdentifier andThen nameAction).async { implicit request =>
       val description = request.userAnswers.get(OtherAssetDescriptionPage(index)).getOrElse("")
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, index, mode, description))),
-        value => {
-          val answers = request.userAnswers.set(OtherAssetValuePage(index), value)
-          for {
-            updatedAnswers <- Future.fromTry(answers)
-            _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(OtherAssetValuePage(index), mode, updatedAnswers))
-        }
-      )
-  }
+      form
+        .bindFromRequest()
+        .fold(
+          (formWithErrors: Form[_]) => Future.successful(BadRequest(view(formWithErrors, index, mode, description))),
+          value => {
+            val answers = request.userAnswers.set(OtherAssetValuePage(index), value)
+            for {
+              updatedAnswers <- Future.fromTry(answers)
+              _              <- repository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(OtherAssetValuePage(index), mode, updatedAnswers))
+          }
+        )
+    }
+
 }

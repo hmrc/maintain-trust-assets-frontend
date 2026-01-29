@@ -26,13 +26,11 @@ import scala.util.Try
 
 class MoneyAssetExtractor extends AssetExtractor[AssetMonetaryAmount] {
 
-  override def apply(answers: UserAnswers,
-                     assetMonetaryAmount: AssetMonetaryAmount,
-                     index: Int): Try[UserAnswers] = {
+  override def apply(answers: UserAnswers, assetMonetaryAmount: AssetMonetaryAmount, index: Int): Try[UserAnswers] =
 
-    super.apply(answers, assetMonetaryAmount, index)
+    super
+      .apply(answers, assetMonetaryAmount, index)
       .flatMap(_.set(AssetMoneyValuePage(0), assetMonetaryAmount.assetMonetaryAmount))
-  }
 
   override def indexPage: QuestionPage[Int] = IndexPage
 

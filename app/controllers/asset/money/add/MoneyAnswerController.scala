@@ -33,54 +33,55 @@ import scala.concurrent.{ExecutionContext, Future}
 import models.requests.DataRequest
 import repositories.PlaybackRepository
 
-class MoneyAnswerController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       standardActionSets: StandardActionSets,
-                                       nameAction: NameRequiredAction,
-                                       connector: TrustsConnector,
-                                       service: TrustService,
-                                       view: MoneyAnswersView,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       errorHandler: ErrorHandler,
-                                       mapper: MoneyAssetMapper,
-                                       printHelper: MoneyPrintHelper,
-                                       repository: PlaybackRepository
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class MoneyAnswerController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  nameAction: NameRequiredAction,
+  connector: TrustsConnector,
+  service: TrustService,
+  view: MoneyAnswersView,
+  val controllerComponents: MessagesControllerComponents,
+  errorHandler: ErrorHandler,
+  mapper: MoneyAssetMapper,
+  printHelper: MoneyPrintHelper,
+  repository: PlaybackRepository
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   private val provisional: Boolean = true
 
   def onPageLoad(index: Int): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
-      val section: AnswerSection = printHelper(userAnswers = request.userAnswers, index = index, provisional = provisional, name = request.name)
+      val section: AnswerSection =
+        printHelper(userAnswers = request.userAnswers, index = index, provisional = provisional, name = request.name)
       Ok(view(index, section))
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
-    implicit request =>
-      mapper(request.userAnswers) match {
-        case None => errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
-        case Some(asset) =>
-          connector.getAssets(request.userAnswers.identifier).flatMap { data =>
-            if (data.monetary.nonEmpty && (data.monetary.size - 1 == index)) {
-              connector.amendMoneyAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async { implicit request =>
+    mapper(request.userAnswers) match {
+      case None        => errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
+      case Some(asset) =>
+        connector.getAssets(request.userAnswers.identifier).flatMap { data =>
+          if (data.monetary.nonEmpty && (data.monetary.size - 1 == index)) {
+            connector.amendMoneyAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
+              response.status match {
+                case OK | NO_CONTENT => cleanAllAndRedirect()
+                case _               => errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
+              }
+            }
+          } else {
+            val exists = data.monetary.exists(e => e.assetMonetaryAmount == asset.assetMonetaryAmount)
+            if (!exists) {
+              connector.addMoneyAsset(request.userAnswers.identifier, asset).flatMap { response =>
                 response.status match {
                   case OK | NO_CONTENT => cleanAllAndRedirect()
                   case _               => errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
                 }
               }
-            } else {
-              val exists = data.monetary.exists(e => e.assetMonetaryAmount == asset.assetMonetaryAmount)
-              if (!exists) {
-                connector.addMoneyAsset(request.userAnswers.identifier, asset).flatMap { response =>
-                  response.status match {
-                    case OK | NO_CONTENT => cleanAllAndRedirect()
-                    case _               => errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
-                  }
-                }
-              } else cleanAllAndRedirect()
-            }
+            } else cleanAllAndRedirect()
           }
-      }
+        }
+    }
   }
 
   private def cleanAllAndRedirect()(implicit request: DataRequest[AnyContent]): Future[Result] = {
@@ -90,4 +91,5 @@ class MoneyAnswerController @Inject()(
       cleaned => repository.set(cleaned).map(_ => Redirect(next))
     )
   }
+
 }

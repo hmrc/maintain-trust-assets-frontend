@@ -24,9 +24,11 @@ import utils.AnswerRowConverter
 import viewmodels.{AnswerRow, AnswerSection}
 import javax.inject.Inject
 
-class SharesPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) {
+class SharesPrintHelper @Inject() (answerRowConverter: AnswerRowConverter) {
 
-  def apply(userAnswers: UserAnswers, index: Int, provisional: Boolean, name: String)(implicit messages: Messages): AnswerSection = {
+  def apply(userAnswers: UserAnswers, index: Int, provisional: Boolean, name: String)(implicit
+    messages: Messages
+  ): AnswerSection = {
 
     val bound: answerRowConverter.Bound = answerRowConverter.bind(userAnswers, name)
 
@@ -34,16 +36,56 @@ class SharesPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) {
       val mode: Mode = if (provisional) NormalMode else CheckMode
       Seq(
         bound.assetTypeQuestion(index),
-        bound.yesNoQuestion(SharesInAPortfolioPage(index), "shares.inAPortfolioYesNo", SharesInAPortfolioController.onPageLoad(index, mode).url),
-        bound.stringQuestion(ShareCompanyNamePage(index), "shares.companyName", ShareCompanyNameController.onPageLoad(index, mode).url),
-        bound.stringQuestion(SharePortfolioNamePage(index), "shares.portfolioName", SharePortfolioNameController.onPageLoad(index, mode).url),
-        bound.yesNoQuestion(SharesOnStockExchangePage(index), "shares.onStockExchangeYesNo", SharesOnStockExchangeController.onPageLoad(index, mode).url),
-        bound.yesNoQuestion(SharePortfolioOnStockExchangePage(index), "shares.portfolioOnStockExchangeYesNo", SharePortfolioOnStockExchangeController.onPageLoad(index, mode).url),
-        bound.shareClassQuestion(ShareClassPage(index), "shares.class", ShareClassController.onPageLoad(index, mode).url),
-        bound.numberQuestion(ShareQuantityInTrustPage(index), "shares.quantityInTrust", ShareQuantityInTrustController.onPageLoad(index, mode).url),
-        bound.numberQuestion(SharePortfolioQuantityInTrustPage(index), "shares.portfolioQuantityInTrust", SharePortfolioQuantityInTrustController.onPageLoad(index, mode).url),
-        bound.currencyQuestion(ShareValueInTrustPage(index), "shares.valueInTrust", ShareValueInTrustController.onPageLoad(index, mode).url),
-        bound.currencyQuestion(SharePortfolioValueInTrustPage(index), "shares.portfolioValueInTrust", SharePortfolioValueInTrustController.onPageLoad(index, mode).url)
+        bound.yesNoQuestion(
+          SharesInAPortfolioPage(index),
+          "shares.inAPortfolioYesNo",
+          SharesInAPortfolioController.onPageLoad(index, mode).url
+        ),
+        bound.stringQuestion(
+          ShareCompanyNamePage(index),
+          "shares.companyName",
+          ShareCompanyNameController.onPageLoad(index, mode).url
+        ),
+        bound.stringQuestion(
+          SharePortfolioNamePage(index),
+          "shares.portfolioName",
+          SharePortfolioNameController.onPageLoad(index, mode).url
+        ),
+        bound.yesNoQuestion(
+          SharesOnStockExchangePage(index),
+          "shares.onStockExchangeYesNo",
+          SharesOnStockExchangeController.onPageLoad(index, mode).url
+        ),
+        bound.yesNoQuestion(
+          SharePortfolioOnStockExchangePage(index),
+          "shares.portfolioOnStockExchangeYesNo",
+          SharePortfolioOnStockExchangeController.onPageLoad(index, mode).url
+        ),
+        bound.shareClassQuestion(
+          ShareClassPage(index),
+          "shares.class",
+          ShareClassController.onPageLoad(index, mode).url
+        ),
+        bound.numberQuestion(
+          ShareQuantityInTrustPage(index),
+          "shares.quantityInTrust",
+          ShareQuantityInTrustController.onPageLoad(index, mode).url
+        ),
+        bound.numberQuestion(
+          SharePortfolioQuantityInTrustPage(index),
+          "shares.portfolioQuantityInTrust",
+          SharePortfolioQuantityInTrustController.onPageLoad(index, mode).url
+        ),
+        bound.currencyQuestion(
+          ShareValueInTrustPage(index),
+          "shares.valueInTrust",
+          ShareValueInTrustController.onPageLoad(index, mode).url
+        ),
+        bound.currencyQuestion(
+          SharePortfolioValueInTrustPage(index),
+          "shares.portfolioValueInTrust",
+          SharePortfolioValueInTrustController.onPageLoad(index, mode).url
+        )
       ).flatten
     }
 

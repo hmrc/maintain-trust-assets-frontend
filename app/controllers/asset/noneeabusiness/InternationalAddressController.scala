@@ -34,40 +34,43 @@ import views.html.asset.noneeabusiness.InternationalAddressView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class InternationalAddressController @Inject()(
-                                                override val messagesApi: MessagesApi,
-                                                standardActionSets: StandardActionSets,
-                                                nameAction: NameRequiredAction,
-                                                repository: PlaybackRepository,
-                                                @NonEeaBusiness navigator: Navigator,
-                                                formProvider: InternationalAddressFormProvider,
-                                                val controllerComponents: MessagesControllerComponents,
-                                                view: InternationalAddressView,
-                                                val countryOptions: CountryOptionsNonUK
-                                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class InternationalAddressController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  nameAction: NameRequiredAction,
+  repository: PlaybackRepository,
+  @NonEeaBusiness navigator: Navigator,
+  formProvider: InternationalAddressFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: InternationalAddressView,
+  val countryOptions: CountryOptionsNonUK
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   private val form: Form[NonUkAddress] = formProvider()
 
-  def onPageLoad(index: Int, mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
-    implicit request =>
+  def onPageLoad(index: Int, mode: Mode): Action[AnyContent] =
+    (standardActionSets.verifiedForIdentifier andThen nameAction) { implicit request =>
       val preparedForm = request.userAnswers.get(NonUkAddressPage(index)) match {
-        case None => form
+        case None        => form
         case Some(value) => form.fill(value)
       }
       Ok(view(preparedForm, countryOptions.options(), index, mode, request.name))
-  }
+    }
 
-  def onSubmit(index: Int, mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
-    implicit request =>
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, countryOptions.options(), index, mode, request.name))),
-        value => {
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(NonUkAddressPage(index), value))
-            _ <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(NonUkAddressPage(index), mode, updatedAnswers))
-        }
-      )
-  }
+  def onSubmit(index: Int, mode: Mode): Action[AnyContent] =
+    (standardActionSets.verifiedForIdentifier andThen nameAction).async { implicit request =>
+      form
+        .bindFromRequest()
+        .fold(
+          (formWithErrors: Form[_]) =>
+            Future.successful(BadRequest(view(formWithErrors, countryOptions.options(), index, mode, request.name))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(NonUkAddressPage(index), value))
+              _              <- repository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(NonUkAddressPage(index), mode, updatedAnswers))
+        )
+    }
+
 }

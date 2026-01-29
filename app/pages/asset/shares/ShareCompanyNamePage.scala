@@ -22,7 +22,7 @@ import play.api.libs.json.JsPath
 
 case class ShareCompanyNamePage(index: Int) extends QuestionPage[String] {
 
-  override def path: JsPath = basePath \  toString
+  override def path: JsPath = basePath \ toString
 
   override def toString: String = key
 }

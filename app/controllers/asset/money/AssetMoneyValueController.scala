@@ -34,40 +34,43 @@ import views.html.asset.money.AssetMoneyValueView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AssetMoneyValueController @Inject()(
-                                           override val messagesApi: MessagesApi,
-                                           standardActionSets: StandardActionSets,
-                                           repository: PlaybackRepository,
-                                           nameAction: NameRequiredAction,
-                                           @Money navigator: Navigator,
-                                           formProvider: ValueFormProvider,
-                                           val controllerComponents: MessagesControllerComponents,
-                                           view: AssetMoneyValueView,
-                                           connector: TrustsConnector,
-                                           trustService: TrustService
-                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class AssetMoneyValueController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  repository: PlaybackRepository,
+  nameAction: NameRequiredAction,
+  @Money navigator: Navigator,
+  formProvider: ValueFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: AssetMoneyValueView,
+  connector: TrustsConnector,
+  trustService: TrustService
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   private val form: Form[Long] = formProvider.withConfig(prefix = "money.value")
 
-  def onPageLoad(index: Int, mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
-    implicit request =>
-        val preparedForm = request.userAnswers.get(AssetMoneyValuePage(index)) match {
-          case Some(value) => form.fill(value)
-          case None    => form
-        }
-        Ok(view(preparedForm, index, mode))
+  def onPageLoad(index: Int, mode: Mode): Action[AnyContent] =
+    (standardActionSets.verifiedForIdentifier andThen nameAction) { implicit request =>
+      val preparedForm = request.userAnswers.get(AssetMoneyValuePage(index)) match {
+        case Some(value) => form.fill(value)
+        case None        => form
+      }
+      Ok(view(preparedForm, index, mode))
     }
 
   def onSubmit(index: Int, mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-      form.bindFromRequest().fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, index, mode))),
-        value => {
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(AssetMoneyValuePage(index), value))
-            _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(AssetMoneyValuePage(index), mode, updatedAnswers))
-        }
-      )
-    }
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, index, mode))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(AssetMoneyValuePage(index), value))
+              _              <- repository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(AssetMoneyValuePage(index), mode, updatedAnswers))
+        )
+  }
+
 }

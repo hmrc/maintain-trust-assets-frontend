@@ -25,8 +25,7 @@ import org.scalatest.matchers.must.Matchers
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.business._
 
-class BusinessAssetMapperSpec extends SpecBase with Matchers
-  with OptionValues with Generators {
+class BusinessAssetMapperSpec extends SpecBase with Matchers with OptionValues with Generators {
 
   val mapper: BusinessAssetMapper = injector.instanceOf[BusinessAssetMapper]
 
@@ -38,7 +37,9 @@ class BusinessAssetMapperSpec extends SpecBase with Matchers
 
       val userAnswers =
         emptyUserAnswers
-          .set(WhatKindOfAssetPage(index), WhatKindOfAsset.Business).success.value
+          .set(WhatKindOfAssetPage(index), WhatKindOfAsset.Business)
+          .success
+          .value
 
       mapper(userAnswers).isDefined mustBe false
     }
@@ -48,12 +49,27 @@ class BusinessAssetMapperSpec extends SpecBase with Matchers
       "uk address" in {
 
         val userAnswers = emptyUserAnswers
-          .set(WhatKindOfAssetPage(index), WhatKindOfAsset.Business).success.value
-          .set(BusinessNamePage(index), "businessName").success.value
-          .set(BusinessDescriptionPage(index), "businessDesc").success.value
-          .set(BusinessAddressUkYesNoPage(index), true).success.value
-          .set(BusinessUkAddressPage(index), UkAddress("26", "Grangetown", Some("Tyne and Wear"), Some("Newcastle"), "Z99 2YY")).success.value
-          .set(BusinessValuePage(index), assetValue).success.value
+          .set(WhatKindOfAssetPage(index), WhatKindOfAsset.Business)
+          .success
+          .value
+          .set(BusinessNamePage(index), "businessName")
+          .success
+          .value
+          .set(BusinessDescriptionPage(index), "businessDesc")
+          .success
+          .value
+          .set(BusinessAddressUkYesNoPage(index), true)
+          .success
+          .value
+          .set(
+            BusinessUkAddressPage(index),
+            UkAddress("26", "Grangetown", Some("Tyne and Wear"), Some("Newcastle"), "Z99 2YY")
+          )
+          .success
+          .value
+          .set(BusinessValuePage(index), assetValue)
+          .success
+          .value
 
         val result = mapper(userAnswers).get
 
@@ -75,12 +91,24 @@ class BusinessAssetMapperSpec extends SpecBase with Matchers
       "international address" in {
 
         val userAnswers = emptyUserAnswers
-          .set(WhatKindOfAssetPage(index), WhatKindOfAsset.Business).success.value
-          .set(BusinessNamePage(index), "businessName").success.value
-          .set(BusinessDescriptionPage(index), "businessDesc").success.value
-          .set(BusinessAddressUkYesNoPage(index), false).success.value
-          .set(BusinessInternationalAddressPage(index), NonUkAddress("1", "Broadway", Some("New York"), "US")).success.value
-          .set(BusinessValuePage(index), assetValue).success.value
+          .set(WhatKindOfAssetPage(index), WhatKindOfAsset.Business)
+          .success
+          .value
+          .set(BusinessNamePage(index), "businessName")
+          .success
+          .value
+          .set(BusinessDescriptionPage(index), "businessDesc")
+          .success
+          .value
+          .set(BusinessAddressUkYesNoPage(index), false)
+          .success
+          .value
+          .set(BusinessInternationalAddressPage(index), NonUkAddress("1", "Broadway", Some("New York"), "US"))
+          .success
+          .value
+          .set(BusinessValuePage(index), assetValue)
+          .success
+          .value
 
         val result = mapper(userAnswers).get
 
@@ -99,4 +127,5 @@ class BusinessAssetMapperSpec extends SpecBase with Matchers
       }
     }
   }
+
 }

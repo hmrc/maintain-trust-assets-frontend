@@ -30,4 +30,5 @@ class SharesOnStockExchangePageSpec extends PageBehaviours {
 
     beRemovable[Boolean](page)
   }
+
 }

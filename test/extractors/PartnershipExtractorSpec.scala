@@ -26,7 +26,7 @@ import java.time.LocalDate
 
 class PartnershipExtractorSpec extends SpecBase {
 
-    private val description: String = "PartnershipDescription"
+  private val description: String  = "PartnershipDescription"
   private val startDate: LocalDate = LocalDate.now()
 
   private val extractor = new PartnershipAssetExtractor()
@@ -48,10 +48,11 @@ class PartnershipExtractorSpec extends SpecBase {
 
       val result = extractor(baseAnswers, partnershipAsset, index).get
 
-      result.get(IndexPage).get mustBe index
+      result.get(IndexPage).get                     mustBe index
       result.get(PartnershipDescriptionPage(index)) mustBe Some(description)
-      result.get(PartnershipStartDatePage(index)) mustBe Some(startDate)
+      result.get(PartnershipStartDatePage(index))   mustBe Some(startDate)
 
     }
   }
+
 }

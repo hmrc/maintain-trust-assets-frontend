@@ -47,13 +47,12 @@ class WhatKindOfAssetViewSpec extends ViewBehaviours {
 
         val doc = asDocument(applyView(form))
 
-        for (option <- WhatKindOfAsset.options()) {
+        for (option <- WhatKindOfAsset.options())
           assertContainsRadioButton(doc, option.id, "value", option.value, isChecked = false)
-        }
       }
     }
 
-    for (option <- WhatKindOfAsset.options()) {
+    for (option <- WhatKindOfAsset.options())
 
       s"rendered with a value of '${option.value}'" must {
 
@@ -63,15 +62,14 @@ class WhatKindOfAssetViewSpec extends ViewBehaviours {
 
           assertContainsRadioButton(doc, option.id, "value", option.value, isChecked = true)
 
-          for (unselectedOption <- WhatKindOfAsset.options().filterNot(o => o == option)) {
+          for (unselectedOption <- WhatKindOfAsset.options().filterNot(o => o == option))
             assertContainsRadioButton(doc, unselectedOption.id, "value", unselectedOption.value, isChecked = false)
-          }
         }
       }
-    }
 
     behave like pageWithBackLink(applyView(form))
 
     behave like pageWithASubmitButton(applyView(form))
   }
+
 }

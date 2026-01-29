@@ -34,57 +34,64 @@ class PropertyOrLandAddressUkYesNoPageSpec extends PageBehaviours {
 
     "remove relevant data" when {
 
-      "set to true" in {
-        forAll(arbitrary[UserAnswers]) {
-          initial =>
-            val answers: UserAnswers = initial.set(page, false).success.value
-              .set(PropertyOrLandInternationalAddressPage(index), NonUkAddress("line 1", "line 2", None, "France")).success.value
+      "set to true" in
+        forAll(arbitrary[UserAnswers]) { initial =>
+          val answers: UserAnswers = initial
+            .set(page, false)
+            .success
+            .value
+            .set(PropertyOrLandInternationalAddressPage(index), NonUkAddress("line 1", "line 2", None, "France"))
+            .success
+            .value
 
-            val result = answers.set(page, true).success.value
+          val result = answers.set(page, true).success.value
 
-            result.get(PropertyOrLandInternationalAddressPage(index)) must not be defined
+          result.get(PropertyOrLandInternationalAddressPage(index)) must not be defined
         }
-      }
 
-      "set to false" in {
-        forAll(arbitrary[UserAnswers]) {
-          initial =>
-            val answers: UserAnswers = initial.set(page, true).success.value
-              .set(PropertyOrLandUKAddressPage(index), UkAddress("line 1", "line 2", None, None, "NE1 1NE")).success.value
+      "set to false" in
+        forAll(arbitrary[UserAnswers]) { initial =>
+          val answers: UserAnswers = initial
+            .set(page, true)
+            .success
+            .value
+            .set(PropertyOrLandUKAddressPage(index), UkAddress("line 1", "line 2", None, None, "NE1 1NE"))
+            .success
+            .value
 
-            val result = answers.set(page, false).success.value
+          val result = answers.set(page, false).success.value
 
-            result.get(PropertyOrLandUKAddressPage(index)) must not be defined
+          result.get(PropertyOrLandUKAddressPage(index)) must not be defined
         }
-      }
     }
 
     "keep relevant data" when {
 
-      "set to true and UK address already defined" in {
-        forAll(arbitrary[UserAnswers]) {
-          initial =>
-            val answers: UserAnswers = initial
-              .set(PropertyOrLandUKAddressPage(index), UkAddress("line 1", "line 2", None, None, "NE1 1NE")).success.value
+      "set to true and UK address already defined" in
+        forAll(arbitrary[UserAnswers]) { initial =>
+          val answers: UserAnswers = initial
+            .set(PropertyOrLandUKAddressPage(index), UkAddress("line 1", "line 2", None, None, "NE1 1NE"))
+            .success
+            .value
 
-            val result = answers.set(page, true).success.value
+          val result = answers.set(page, true).success.value
 
-            result.get(PropertyOrLandUKAddressPage(index)) must be(defined)
+          result.get(PropertyOrLandUKAddressPage(index)) must be(defined)
         }
-      }
 
-      "set to false and international address already defined" in {
-        forAll(arbitrary[UserAnswers]) {
-          initial =>
-            val answers: UserAnswers = initial
-              .set(PropertyOrLandInternationalAddressPage(index), NonUkAddress("line 1", "line 2", None, "France")).success.value
+      "set to false and international address already defined" in
+        forAll(arbitrary[UserAnswers]) { initial =>
+          val answers: UserAnswers = initial
+            .set(PropertyOrLandInternationalAddressPage(index), NonUkAddress("line 1", "line 2", None, "France"))
+            .success
+            .value
 
-            val result = answers.set(page, false).success.value
+          val result = answers.set(page, false).success.value
 
-            result.get(PropertyOrLandInternationalAddressPage(index)) must be(defined)
+          result.get(PropertyOrLandInternationalAddressPage(index)) must be(defined)
         }
-      }
     }
 
   }
+
 }

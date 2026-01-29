@@ -36,19 +36,20 @@ import views.html.asset.partnership.PartnershipAnswersView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class PartnershipAnswerController @Inject()(
-                                             override val messagesApi: MessagesApi,
-                                             standardActionSets: StandardActionSets,
-                                             nameAction: NameRequiredAction,
-                                             connector: TrustsConnector,
-                                             @Partnership navigator: Navigator,
-                                             view: PartnershipAnswersView,
-                                             val controllerComponents: MessagesControllerComponents,
-                                             errorHandler: ErrorHandler,
-                                             mapper: PartnershipAssetMapper,
-                                             printHelper: PartnershipPrintHelper,
-                                             repository: PlaybackRepository
-                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class PartnershipAnswerController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  nameAction: NameRequiredAction,
+  connector: TrustsConnector,
+  @Partnership navigator: Navigator,
+  view: PartnershipAnswersView,
+  val controllerComponents: MessagesControllerComponents,
+  errorHandler: ErrorHandler,
+  mapper: PartnershipAssetMapper,
+  printHelper: PartnershipPrintHelper,
+  repository: PlaybackRepository
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   private val provisional: Boolean = true
 
@@ -58,35 +59,34 @@ class PartnershipAnswerController @Inject()(
       Ok(view(index, section))
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
-    implicit request =>
-      mapper(request.userAnswers) match {
-        case None => errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
-        case Some(asset) =>
-          connector.getAssets(request.userAnswers.identifier).flatMap { data =>
-            if (data.partnerShip.nonEmpty && (data.partnerShip.size - 1 == index)) {
-              connector.amendPartnershipAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async { implicit request =>
+    mapper(request.userAnswers) match {
+      case None        => errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
+      case Some(asset) =>
+        connector.getAssets(request.userAnswers.identifier).flatMap { data =>
+          if (data.partnerShip.nonEmpty && (data.partnerShip.size - 1 == index)) {
+            connector.amendPartnershipAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
+              response.status match {
+                case OK | NO_CONTENT => cleanAllAndRedirect(index)
+                case _               => errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
+              }
+            }
+          } else {
+            val exists = data.partnerShip.exists(ele =>
+              ele.description.equalsIgnoreCase(asset.description) &&
+                ele.partnershipStart == asset.partnershipStart
+            )
+            if (!exists) {
+              connector.addPartnershipAsset(request.userAnswers.identifier, asset).flatMap { response =>
                 response.status match {
                   case OK | NO_CONTENT => cleanAllAndRedirect(index)
                   case _               => errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
                 }
               }
-            } else {
-              val exists = data.partnerShip.exists(ele =>
-                ele.description.equalsIgnoreCase(asset.description) &&
-                  ele.partnershipStart == asset.partnershipStart
-              )
-              if (!exists) {
-                connector.addPartnershipAsset(request.userAnswers.identifier, asset).flatMap { response =>
-                  response.status match {
-                    case OK | NO_CONTENT => cleanAllAndRedirect(index)
-                    case _               => errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
-                  }
-                }
-              } else cleanAllAndRedirect(index)
-            }
+            } else cleanAllAndRedirect(index)
           }
-      }
+        }
+    }
   }
 
   private def cleanAllAndRedirect(index: Int)(implicit request: DataRequest[AnyContent]): Future[Result] = {
@@ -96,4 +96,5 @@ class PartnershipAnswerController @Inject()(
       ua => repository.set(ua).map(_ => Redirect(next))
     )
   }
+
 }

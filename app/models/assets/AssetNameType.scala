@@ -30,12 +30,13 @@ object AssetNameType {
   case object NonEeaBusinessAssetNameType extends AssetNameType
 
   val writesToTrusts: Writes[AssetNameType] = Writes {
-    case MoneyAssetNameType => JsString("monetary")
+    case MoneyAssetNameType          => JsString("monetary")
     case PropertyOrLandAssetNameType => JsString("propertyOrLand")
-    case SharesAssetNameType => JsString("shares")
-    case BusinessAssetNameType => JsString("business")
-    case PartnershipAssetNameType => JsString("partnerShip")
-    case OtherAssetNameType => JsString("other")
+    case SharesAssetNameType         => JsString("shares")
+    case BusinessAssetNameType       => JsString("business")
+    case PartnershipAssetNameType    => JsString("partnerShip")
+    case OtherAssetNameType          => JsString("other")
     case NonEeaBusinessAssetNameType => JsString("nonEEABusiness")
   }
+
 }

@@ -45,4 +45,5 @@ class SharePortfolioNameViewSpec extends StringViewBehaviours {
     behave like pageWithASubmitButton(applyView(form))
 
   }
+
 }

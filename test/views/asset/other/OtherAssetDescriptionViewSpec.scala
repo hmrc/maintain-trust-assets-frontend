@@ -45,4 +45,5 @@ class OtherAssetDescriptionViewSpec extends StringViewBehaviours {
     behave like pageWithASubmitButton(applyView(form))
 
   }
+
 }

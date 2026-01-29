@@ -32,22 +32,23 @@ import models.Mode
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class OtherAssetDescriptionController @Inject()(
-                                                 override val messagesApi: MessagesApi,
-                                                 standardActionSets: StandardActionSets,
-                                                 repository: PlaybackRepository,
-                                                 @Other navigator: Navigator,
-                                                 formProvider: DescriptionFormProvider,
-                                                 val controllerComponents: MessagesControllerComponents,
-                                                 view: OtherAssetDescriptionView
-                                               )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class OtherAssetDescriptionController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  repository: PlaybackRepository,
+  @Other navigator: Navigator,
+  formProvider: DescriptionFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: OtherAssetDescriptionView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   private val form: Form[String] = formProvider.withConfig(length = 56, prefix = "other.description")
 
   def onPageLoad(index: Int, mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
     implicit request =>
       val preparedForm = request.userAnswers.get(OtherAssetDescriptionPage(index)) match {
-        case None => form
+        case None        => form
         case Some(value) => form.fill(value)
       }
       Ok(view(preparedForm, index, mode))
@@ -55,16 +56,18 @@ class OtherAssetDescriptionController @Inject()(
 
   def onSubmit(index: Int, mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, index, mode))),
-        value => {
-          val answers = request.userAnswers.set(OtherAssetDescriptionPage(index), value)
-          for {
-            updatedAnswers <- Future.fromTry(answers)
-            _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(OtherAssetDescriptionPage(index), mode, updatedAnswers))
-        }
-      )
+      form
+        .bindFromRequest()
+        .fold(
+          (formWithErrors: Form[_]) => Future.successful(BadRequest(view(formWithErrors, index, mode))),
+          value => {
+            val answers = request.userAnswers.set(OtherAssetDescriptionPage(index), value)
+            for {
+              updatedAnswers <- Future.fromTry(answers)
+              _              <- repository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(OtherAssetDescriptionPage(index), mode, updatedAnswers))
+          }
+        )
   }
+
 }

@@ -38,10 +38,18 @@ class AssetInterruptPageControllerSpec extends SpecBase {
       "nonEEA" in {
 
         val is5mldEnabled: Boolean = true
-        val isTaxable: Boolean = true
-        val migrating: Boolean = false
+        val isTaxable: Boolean     = true
+        val migrating: Boolean     = false
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(is5mldEnabled = is5mldEnabled, isTaxable = isTaxable, isMigratingToTaxable = migrating))).build()
+        val application = applicationBuilder(userAnswers =
+          Some(
+            emptyUserAnswers.copy(
+              is5mldEnabled = is5mldEnabled,
+              isTaxable = isTaxable,
+              isMigratingToTaxable = migrating
+            )
+          )
+        ).build()
 
         val request = FakeRequest(GET, routes.AssetInterruptPageController.onPageLoad().url)
 
@@ -60,10 +68,18 @@ class AssetInterruptPageControllerSpec extends SpecBase {
       "migrating" in {
 
         val is5mldEnabled: Boolean = true
-        val isTaxable: Boolean = true
-        val migrating: Boolean = true
+        val isTaxable: Boolean     = true
+        val migrating: Boolean     = true
 
-        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers.copy(is5mldEnabled = is5mldEnabled, isTaxable = isTaxable, isMigratingToTaxable = migrating))).build()
+        val application = applicationBuilder(userAnswers =
+          Some(
+            emptyUserAnswers.copy(
+              is5mldEnabled = is5mldEnabled,
+              isTaxable = isTaxable,
+              isMigratingToTaxable = migrating
+            )
+          )
+        ).build()
 
         val request = FakeRequest(GET, routes.AssetInterruptPageController.onPageLoad().url)
 
@@ -113,4 +129,5 @@ class AssetInterruptPageControllerSpec extends SpecBase {
       }
     }
   }
+
 }

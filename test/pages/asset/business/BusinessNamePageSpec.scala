@@ -28,4 +28,5 @@ class BusinessNamePageSpec extends PageBehaviours {
 
     beRemovable[String](BusinessNamePage(index))
   }
+
 }

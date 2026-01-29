@@ -18,7 +18,6 @@ package pages.asset.shares
 
 import pages.behaviours.PageBehaviours
 
-
 class SharePortfolioQuantityInTrustPageSpec extends PageBehaviours {
 
   val page: SharePortfolioQuantityInTrustPage = SharePortfolioQuantityInTrustPage(index)
@@ -31,4 +30,5 @@ class SharePortfolioQuantityInTrustPageSpec extends PageBehaviours {
 
     beRemovable[Long](page)
   }
+
 }

@@ -33,16 +33,17 @@ import models.Mode
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class BusinessAddressUkYesNoController @Inject()(
-                                                  override val messagesApi: MessagesApi,
-                                                  standardActionSets: StandardActionSets,
-                                                  nameAction: NameRequiredAction,
-                                                  repository: PlaybackRepository,
-                                                  @Business navigator: Navigator,
-                                                  formProvider: YesNoFormProvider,
-                                                  val controllerComponents: MessagesControllerComponents,
-                                                  view: BusinessAddressUkYesNoView
-                                                )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class BusinessAddressUkYesNoController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  nameAction: NameRequiredAction,
+  repository: PlaybackRepository,
+  @Business navigator: Navigator,
+  formProvider: YesNoFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: BusinessAddressUkYesNoView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   private val form: Form[Boolean] = formProvider.withPrefix("business.addressUkYesNo")
 
@@ -57,15 +58,16 @@ class BusinessAddressUkYesNoController @Inject()(
 
   def onSubmit(index: Int, mode: Mode): Action[AnyContent] =
     (standardActionSets.verifiedForIdentifier andThen nameAction).async { implicit request =>
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, index, mode, request.name))),
-        value => {
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(BusinessAddressUkYesNoPage(index), value))
-            _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(BusinessAddressUkYesNoPage(index), mode, updatedAnswers))
-        }
-      )
+      form
+        .bindFromRequest()
+        .fold(
+          (formWithErrors: Form[_]) => Future.successful(BadRequest(view(formWithErrors, index, mode, request.name))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(BusinessAddressUkYesNoPage(index), value))
+              _              <- repository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(BusinessAddressUkYesNoPage(index), mode, updatedAnswers))
+        )
     }
+
 }

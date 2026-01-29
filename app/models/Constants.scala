@@ -18,14 +18,15 @@ package models
 
 object Constants {
 
-  final val MAX_MONEY_ASSETS = 1
+  final val MAX_MONEY_ASSETS            = 1
   final val MAX_PROPERTY_OR_LAND_ASSETS = 10
-  final val MAX_SHARES_ASSETS = 10
-  final val MAX_BUSINESS_ASSETS = 10
+  final val MAX_SHARES_ASSETS           = 10
+  final val MAX_BUSINESS_ASSETS         = 10
   final val MAX_NON_EEA_BUSINESS_ASSETS = 25
-  final val MAX_PARTNERSHIP_ASSETS = 10
-  final val MAX_OTHER_ASSETS = 10
+  final val MAX_PARTNERSHIP_ASSETS      = 10
+  final val MAX_OTHER_ASSETS            = 10
 
   final val MAX_ALL_ASSETS = MAX_MONEY_ASSETS + MAX_PROPERTY_OR_LAND_ASSETS + MAX_SHARES_ASSETS + MAX_BUSINESS_ASSETS +
     MAX_PARTNERSHIP_ASSETS + MAX_OTHER_ASSETS + MAX_NON_EEA_BUSINESS_ASSETS
+
 }

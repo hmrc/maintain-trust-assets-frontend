@@ -26,7 +26,7 @@ import views.html.asset.shares.SharesOnStockExchangeView
 class SharesOnStockExchangeViewSpec extends YesNoViewBehaviours {
 
   private val messageKeyPrefix: String = "shares.onStockExchangeYesNo"
-  private val companyName: String = "Company"
+  private val companyName: String      = "Company"
 
   override val form: Form[Boolean] = new YesNoFormProvider().withPrefix(messageKeyPrefix)
 
@@ -46,4 +46,5 @@ class SharesOnStockExchangeViewSpec extends YesNoViewBehaviours {
     behave like pageWithASubmitButton(applyView(form))
 
   }
+
 }

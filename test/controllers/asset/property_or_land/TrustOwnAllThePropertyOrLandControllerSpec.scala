@@ -34,7 +34,8 @@ class TrustOwnAllThePropertyOrLandControllerSpec extends SpecBase with IndexVali
 
   val form: Form[Boolean] = new YesNoFormProvider().withPrefix("propertyOrLand.trustOwnAllYesNo")
 
-  lazy val trustOwnAllThePropertyOrLandRoute: String = routes.TrustOwnAllThePropertyOrLandController.onPageLoad(index, NormalMode).url
+  lazy val trustOwnAllThePropertyOrLandRoute: String =
+    routes.TrustOwnAllThePropertyOrLandController.onPageLoad(index, NormalMode).url
 
   "TrustOwnAllThePropertyOrLand Controller" must {
 

@@ -25,10 +25,12 @@ import pages.asset.other._
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{Reads, __}
 
-final case class OtherAsset(override val whatKindOfAsset: WhatKindOfAsset,
-                            description: String,
-                            value: Long,
-                            startDate: LocalDate) extends Asset {
+final case class OtherAsset(
+  override val whatKindOfAsset: WhatKindOfAsset,
+  description: String,
+  value: Long,
+  startDate: LocalDate
+) extends Asset {
 
   override val arg: String = description
 }
@@ -40,6 +42,6 @@ object OtherAsset {
       (__ \ OtherAssetDescriptionPage.key).read[String] and
       (__ \ OtherAssetValuePage.key).read[Long] and
       (__ \ StartDatePage).read[LocalDate]
-    )(OtherAsset.apply _)
+  )(OtherAsset.apply _)
 
 }

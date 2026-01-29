@@ -28,4 +28,5 @@ class OtherAssetValuePageSpec extends PageBehaviours {
 
     beRemovable[Long](OtherAssetValuePage(index))
   }
+
 }

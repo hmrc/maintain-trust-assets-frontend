@@ -27,10 +27,7 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.WireMockHelper
 
-class TrustsStoreConnectorSpec extends SpecBase
-  with ScalaFutures
-  with IntegrationPatience
-  with WireMockHelper {
+class TrustsStoreConnectorSpec extends SpecBase with ScalaFutures with IntegrationPatience with WireMockHelper {
 
   implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
@@ -47,9 +44,10 @@ class TrustsStoreConnectorSpec extends SpecBase
           .configure(
             Seq(
               "microservice.services.trusts-store.port" -> server.port(),
-              "auditing.enabled" -> false
+              "auditing.enabled"                        -> false
             ): _*
-          ).build()
+          )
+          .build()
 
         val connector = application.injector.instanceOf[TrustsStoreConnector]
 
@@ -60,9 +58,8 @@ class TrustsStoreConnectorSpec extends SpecBase
 
         val futureResult = connector.updateTaskStatus(identifier, Completed)
 
-        whenReady(futureResult) {
-          r =>
-            r.status mustBe OK
+        whenReady(futureResult) { r =>
+          r.status mustBe OK
         }
 
         application.stop()
@@ -73,9 +70,10 @@ class TrustsStoreConnectorSpec extends SpecBase
           .configure(
             Seq(
               "microservice.services.trusts-store.port" -> server.port(),
-              "auditing.enabled" -> false
+              "auditing.enabled"                        -> false
             ): _*
-          ).build()
+          )
+          .build()
 
         val connector = application.injector.instanceOf[TrustsStoreConnector]
 
@@ -86,9 +84,8 @@ class TrustsStoreConnectorSpec extends SpecBase
 
         val futureResult = connector.updateTaskStatus(identifier, Completed)
 
-        whenReady(futureResult) {
-          r =>
-            r.status mustBe INTERNAL_SERVER_ERROR
+        whenReady(futureResult) { r =>
+          r.status mustBe INTERNAL_SERVER_ERROR
         }
 
         application.stop()
@@ -98,7 +95,7 @@ class TrustsStoreConnectorSpec extends SpecBase
     ".getFeature" must {
 
       val feature = "5mld"
-      val url = s"/trusts-store/features/$feature"
+      val url     = s"/trusts-store/features/$feature"
 
       "return a feature flag of true if 5mld is enabled" in {
 
@@ -106,9 +103,10 @@ class TrustsStoreConnectorSpec extends SpecBase
           .configure(
             Seq(
               "microservice.services.trusts-store.port" -> server.port(),
-              "auditing.enabled" -> false
+              "auditing.enabled"                        -> false
             ): _*
-          ).build()
+          )
+          .build()
 
         val connector = application.injector.instanceOf[TrustsStoreConnector]
 
@@ -127,9 +125,8 @@ class TrustsStoreConnectorSpec extends SpecBase
 
         val futureResult = connector.getFeature(feature)
 
-        whenReady(futureResult) {
-          r =>
-            r mustBe FeatureResponse(feature, isEnabled = true)
+        whenReady(futureResult) { r =>
+          r mustBe FeatureResponse(feature, isEnabled = true)
         }
 
         application.stop()
@@ -141,9 +138,10 @@ class TrustsStoreConnectorSpec extends SpecBase
           .configure(
             Seq(
               "microservice.services.trusts-store.port" -> server.port(),
-              "auditing.enabled" -> false
+              "auditing.enabled"                        -> false
             ): _*
-          ).build()
+          )
+          .build()
 
         val connector = application.injector.instanceOf[TrustsStoreConnector]
 
@@ -162,9 +160,8 @@ class TrustsStoreConnectorSpec extends SpecBase
 
         val futureResult = connector.getFeature(feature)
 
-        whenReady(futureResult) {
-          r =>
-            r mustBe FeatureResponse(feature, isEnabled = false)
+        whenReady(futureResult) { r =>
+          r mustBe FeatureResponse(feature, isEnabled = false)
         }
 
         application.stop()

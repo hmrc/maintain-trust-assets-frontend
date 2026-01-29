@@ -32,57 +32,58 @@ import views.html.asset.partnership.RemovePartnershipAssetYesNoView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class RemovePartnershipAssetYesNoController @Inject()(
-                                                       override val messagesApi: MessagesApi,
-                                                       standardActionSets: StandardActionSets,
-                                                       formProvider: RemoveIndexFormProvider,
-                                                       trustService: TrustService,
-                                                       val controllerComponents: MessagesControllerComponents,
-                                                       view: RemovePartnershipAssetYesNoView,
-                                                       errorHandler: ErrorHandler
-                                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+class RemovePartnershipAssetYesNoController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  formProvider: RemoveIndexFormProvider,
+  trustService: TrustService,
+  val controllerComponents: MessagesControllerComponents,
+  view: RemovePartnershipAssetYesNoView,
+  errorHandler: ErrorHandler
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport with Logging {
 
   private val messagesPrefix: String = "partnership.removeYesNo"
-  private val form = formProvider.apply(messagesPrefix)
+  private val form                   = formProvider.apply(messagesPrefix)
 
-  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
-    implicit request =>
-      trustService.getPartnershipAsset(request.userAnswers.identifier, index).map {
-        asset =>
-          Ok(view(form, index, asset.description))
-      } recoverWith {
-        case iobe: IndexOutOfBoundsException =>
-          logger.warn(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
-            s" user cannot remove partnership asset as asset was not found ${iobe.getMessage}: IndexOutOfBoundsException")
-          Future.successful(Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()))
-        case _ =>
-          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
-            s" user cannot remove partnership asset as asset was not found")
-          errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
-      }
+  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async { implicit request =>
+    trustService.getPartnershipAsset(request.userAnswers.identifier, index).map { asset =>
+      Ok(view(form, index, asset.description))
+    } recoverWith {
+      case iobe: IndexOutOfBoundsException =>
+        logger.warn(
+          s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
+            s" user cannot remove partnership asset as asset was not found ${iobe.getMessage}: IndexOutOfBoundsException"
+        )
+        Future.successful(Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()))
+      case _                               =>
+        logger.error(
+          s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
+            s" user cannot remove partnership asset as asset was not found"
+        )
+        errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
+    }
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
-    implicit request =>
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) => {
-          trustService.getPartnershipAsset(request.userAnswers.identifier, index) map {
-            asset =>
-              BadRequest(view(formWithErrors, index, asset.description))
-          }
-        },
-        value => {
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[_]) =>
+          trustService.getPartnershipAsset(request.userAnswers.identifier, index) map { asset =>
+            BadRequest(view(formWithErrors, index, asset.description))
+          },
+        value =>
           if (value) {
-            trustService.getPartnershipAsset(request.userAnswers.identifier, index) flatMap {
-              _ =>
-                trustService.removeAsset(request.userAnswers.identifier, RemoveAsset(AssetNameType.PartnershipAssetNameType, index)).map(_ =>
-                  Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
-                )
+            trustService.getPartnershipAsset(request.userAnswers.identifier, index) flatMap { _ =>
+              trustService
+                .removeAsset(request.userAnswers.identifier, RemoveAsset(AssetNameType.PartnershipAssetNameType, index))
+                .map(_ => Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()))
             }
           } else {
             Future.successful(Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()))
           }
-        }
       )
   }
+
 }

@@ -32,10 +32,10 @@ trait ModelGenerators {
   implicit lazy val arbitraryUkAddress: Arbitrary[UkAddress] =
     Arbitrary {
       for {
-        line1 <- arbitrary[String]
-        line2 <- arbitrary[String]
-        line3 <- arbitrary[String]
-        line4 <- arbitrary[String]
+        line1    <- arbitrary[String]
+        line2    <- arbitrary[String]
+        line3    <- arbitrary[String]
+        line4    <- arbitrary[String]
         postcode <- arbitrary[String]
       } yield UkAddress(line1, line2, Some(line3), Some(line4), postcode)
     }
@@ -57,23 +57,21 @@ trait ModelGenerators {
       Gen.oneOf(AddAssets.values)
     }
 
-  implicit lazy val arbitraryLocalDate: Arbitrary[LocalDate] = {
+  implicit lazy val arbitraryLocalDate: Arbitrary[LocalDate] =
     Arbitrary {
       for {
-        year <- Gen.choose(min = 1500, max = 2099)
+        year  <- Gen.choose(min = 1500, max = 2099)
         month <- Gen.choose(1, 12)
-        day <- Gen.choose(
-          min = 1,
-          max = month match {
-            case 2 if year % 4 == 0 => 29
-            case 2 => 28
-            case 4 | 6 | 9 | 11 => 30
-            case _ => 31
-          }
-        )
-      } yield {
-        LocalDate.of(year, month, day)
-      }
+        day   <- Gen.choose(
+                   min = 1,
+                   max = month match {
+                     case 2 if year % 4 == 0 => 29
+                     case 2              => 28
+                     case 4 | 6 | 9 | 11 => 30
+                     case _              => 31
+                   }
+                 )
+      } yield LocalDate.of(year, month, day)
     }
-  }
+
 }

@@ -32,10 +32,10 @@ import views.html.asset.shares.ShareValueInTrustView
 
 class ShareValueInTrustControllerSpec extends SpecBase with ModelGenerators with IndexValidation {
 
-  val formProvider = new ValueFormProvider(frontendAppConfig)
-  val form: Form[Long] = formProvider.withConfig(prefix = "shares.valueInTrust")
+  val formProvider      = new ValueFormProvider(frontendAppConfig)
+  val form: Form[Long]  = formProvider.withConfig(prefix = "shares.valueInTrust")
   val validAnswer: Long = 4000L
-  val companyName = "Company"
+  val companyName       = "Company"
 
   lazy val shareValueInTrustRoute: String = routes.ShareValueInTrustController.onPageLoad(index, NormalMode).url
 
@@ -64,8 +64,12 @@ class ShareValueInTrustControllerSpec extends SpecBase with ModelGenerators with
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val ua = emptyUserAnswers
-        .set(ShareCompanyNamePage(index), "Company").success.value
-        .set(ShareValueInTrustPage(index), validAnswer).success.value
+        .set(ShareCompanyNamePage(index), "Company")
+        .success
+        .value
+        .set(ShareValueInTrustPage(index), validAnswer)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(ua)).build()
 

@@ -36,19 +36,20 @@ class StartDateControllerSpec extends SpecBase with IndexValidation {
   private val name = "Test"
 
   private val trustStartDate: LocalDate = LocalDate.parse("1996-02-03")
-  private val validAnswer: LocalDate = LocalDate.parse("1996-02-03")
-  private val toEarlyDate: LocalDate = LocalDate.parse("1996-02-02")
+  private val validAnswer: LocalDate    = LocalDate.parse("1996-02-03")
+  private val toEarlyDate: LocalDate    = LocalDate.parse("1996-02-02")
 
-  private val formProvider = new StartDateFormProvider(frontendAppConfig)
+  private val formProvider   = new StartDateFormProvider(frontendAppConfig)
   private val prefix: String = "nonEeaBusiness.startDate"
-  private val form = formProvider.withConfig(prefix, trustStartDate)
+  private val form           = formProvider.withConfig(prefix, trustStartDate)
 
   private lazy val onPageLoadRoute = routes.StartDateController.onPageLoad(index).url
 
-
-  private val baseAnswers: UserAnswers = emptyUserAnswers.copy(whenTrustSetup = trustStartDate)
-    .set(NamePage(index), name).success.value
-
+  private val baseAnswers: UserAnswers = emptyUserAnswers
+    .copy(whenTrustSetup = trustStartDate)
+    .set(NamePage(index), name)
+    .success
+    .value
 
   "StartDateController" must {
 
@@ -73,7 +74,9 @@ class StartDateControllerSpec extends SpecBase with IndexValidation {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = baseAnswers
-        .set(StartDatePage(index), validAnswer).success.value
+        .set(StartDatePage(index), validAnswer)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -100,9 +103,9 @@ class StartDateControllerSpec extends SpecBase with IndexValidation {
       val request =
         FakeRequest(POST, onPageLoadRoute)
           .withFormUrlEncodedBody(
-            "value.day" -> validAnswer.getDayOfMonth.toString,
+            "value.day"   -> validAnswer.getDayOfMonth.toString,
             "value.month" -> validAnswer.getMonthValue.toString,
-            "value.year" -> validAnswer.getYear.toString
+            "value.year"  -> validAnswer.getYear.toString
           )
 
       val result = route(application, request).value
@@ -121,16 +124,18 @@ class StartDateControllerSpec extends SpecBase with IndexValidation {
       val request =
         FakeRequest(POST, onPageLoadRoute)
           .withFormUrlEncodedBody(
-            "value.day" -> toEarlyDate.getDayOfMonth.toString,
+            "value.day"   -> toEarlyDate.getDayOfMonth.toString,
             "value.month" -> toEarlyDate.getMonthValue.toString,
-            "value.year" -> toEarlyDate.getYear.toString
+            "value.year"  -> toEarlyDate.getYear.toString
           )
 
-      val boundForm = form.bind(Map(
-        "value.day" -> toEarlyDate.getDayOfMonth.toString,
-        "value.month" -> toEarlyDate.getMonthValue.toString,
-        "value.year" -> toEarlyDate.getYear.toString
-      ))
+      val boundForm = form.bind(
+        Map(
+          "value.day"   -> toEarlyDate.getDayOfMonth.toString,
+          "value.month" -> toEarlyDate.getMonthValue.toString,
+          "value.year"  -> toEarlyDate.getYear.toString
+        )
+      )
 
       val view = application.injector.instanceOf[StartDateView]
 
@@ -187,9 +192,9 @@ class StartDateControllerSpec extends SpecBase with IndexValidation {
       val request =
         FakeRequest(POST, onPageLoadRoute)
           .withFormUrlEncodedBody(
-            "value.day" -> validAnswer.getDayOfMonth.toString,
+            "value.day"   -> validAnswer.getDayOfMonth.toString,
             "value.month" -> validAnswer.getMonthValue.toString,
-            "value.year" -> validAnswer.getYear.toString
+            "value.year"  -> validAnswer.getYear.toString
           )
 
       val result = route(application, request).value

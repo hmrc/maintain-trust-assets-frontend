@@ -18,8 +18,7 @@ package models.assets
 
 import play.api.libs.json.{Format, Json}
 
-final case class OtherAssetType(description: String,
-                                value: Long) extends AssetType
+final case class OtherAssetType(description: String, value: Long) extends AssetType
 
 object OtherAssetType {
   implicit val otherAssetTypeFormat: Format[OtherAssetType] = Json.format[OtherAssetType]

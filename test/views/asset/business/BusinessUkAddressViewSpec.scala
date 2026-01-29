@@ -26,7 +26,7 @@ import views.html.asset.business.BusinessUkAddressView
 class BusinessUkAddressViewSpec extends UkAddressViewBehaviours {
 
   private val messageKeyPrefix: String = "business.ukAddress"
-  private val businessName: String = "Test"
+  private val businessName: String     = "Test"
 
   override val form = new UKAddressFormProvider()()
 
@@ -46,4 +46,5 @@ class BusinessUkAddressViewSpec extends UkAddressViewBehaviours {
     behave like pageWithASubmitButton(applyView(form))
 
   }
+
 }

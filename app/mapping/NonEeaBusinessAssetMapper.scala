@@ -36,8 +36,9 @@ class NonEeaBusinessAssetMapper extends Mapper[NonEeaBusinessType] {
           StartDatePage(0).path.read[LocalDate] and
           Reads(_ => JsSuccess(None)) and
           Reads(_ => JsSuccess(true))
-        ) (NonEeaBusinessType.apply _)
+      )(NonEeaBusinessType.apply _)
 
     mapAnswersWithExplicitReads(answers, readFromUserAnswers)
   }
+
 }

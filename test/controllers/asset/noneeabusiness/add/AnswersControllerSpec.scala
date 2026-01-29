@@ -43,30 +43,41 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
   private val name: String = "Noneeabusiness"
 
   private def userAnswers(migrating: Boolean): UserAnswers =
-    emptyUserAnswers.copy(isMigratingToTaxable = migrating)
-      .set(NamePage(index), name).success.value
-      .set(NonUkAddressPage(index), NonUkAddress("Line 1", "Line 2", Some("Line 3"), "FR")).success.value
-      .set(GoverningCountryPage(index), "FR").success.value
-      .set(StartDatePage(index), LocalDate.parse("1996-02-03")).success.value
+    emptyUserAnswers
+      .copy(isMigratingToTaxable = migrating)
+      .set(NamePage(index), name)
+      .success
+      .value
+      .set(NonUkAddressPage(index), NonUkAddress("Line 1", "Line 2", Some("Line 3"), "FR"))
+      .success
+      .value
+      .set(GoverningCountryPage(index), "FR")
+      .success
+      .value
+      .set(StartDatePage(index), LocalDate.parse("1996-02-03"))
+      .success
+      .value
 
   private def nonEeaExisting(
-                              org: String,
-                              line1: String,
-                              gov: String,
-                              start: LocalDate,
-                              end: Option[LocalDate]
-                            ): NonEeaBusinessType =
+    org: String,
+    line1: String,
+    gov: String,
+    start: LocalDate,
+    end: Option[LocalDate]
+  ): NonEeaBusinessType =
     NonEeaBusinessType(
-      lineNo        = None,
-      orgName       = org,
-      address       = NonUkAddress(line1, "Line 2", None, "FR"),
+      lineNo = None,
+      orgName = org,
+      address = NonUkAddress(line1, "Line 2", None, "FR"),
       govLawCountry = gov,
-      startDate     = start,
-      endDate       = end,
-      provisional   = true
+      startDate = start,
+      endDate = end,
+      provisional = true
     )
 
-  private lazy val getRoute: String  = controllers.asset.noneeabusiness.add.routes.AnswersController.onPageLoad(index).url
+  private lazy val getRoute: String  =
+    controllers.asset.noneeabusiness.add.routes.AnswersController.onPageLoad(index).url
+
   private lazy val postRoute: String = controllers.asset.noneeabusiness.add.routes.AnswersController.onSubmit(index).url
 
   "AnswersController (add – Non-EEA Business)" must {
@@ -99,7 +110,7 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
 
       val navigator = application.injector.instanceOf[AssetsNavigator]
 
-      val moneyAsset = AssetMonetaryAmount(4000L)
+      val moneyAsset     = AssetMonetaryAmount(4000L)
       val assets: Assets = Assets(monetary = List(moneyAsset))
 
       when(mockTrustsConnector.amendNonEeaBusinessAsset(any(), any(), any())(any(), any()))
@@ -132,7 +143,7 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
 
       val navigator = application.injector.instanceOf[AssetsNavigator]
 
-      val moneyAsset = AssetMonetaryAmount(4000L)
+      val moneyAsset     = AssetMonetaryAmount(4000L)
       val assets: Assets = Assets(monetary = List(moneyAsset))
 
       when(mockTrustsConnector.amendNonEeaBusinessAsset(any(), any(), any())(any(), any()))
@@ -159,12 +170,12 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
       val mockTrustsConnector = mock[TrustsConnector]
       val answers             = userAnswers(migrating = false)
 
-      val existing = nonEeaExisting(
-        org   = name,
+      val existing      = nonEeaExisting(
+        org = name,
         line1 = "Line 1",
-        gov   = "FR",
+        gov = "FR",
         start = LocalDate.parse("1996-02-03"),
-        end   = None
+        end = None
       )
       val assetsWithOne = Assets(nonEEABusiness = List(existing))
 
@@ -190,12 +201,12 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
       val mockTrustsConnector = mock[TrustsConnector]
       val answers             = userAnswers(migrating = false)
 
-      val existing = nonEeaExisting(
-        org   = name,
+      val existing      = nonEeaExisting(
+        org = name,
         line1 = "Line 1",
-        gov   = "FR",
+        gov = "FR",
         start = LocalDate.parse("1996-02-03"),
-        end   = None
+        end = None
       )
       val assetsWithOne = Assets(nonEEABusiness = List(existing))
 
@@ -245,14 +256,14 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
       val mockTrustsConnector = mock[TrustsConnector]
       val answers             = userAnswers(migrating = false)
 
-      val matching = nonEeaExisting(
-        org   = name,
+      val matching  = nonEeaExisting(
+        org = name,
         line1 = "Line 1",
-        gov   = "FR",
+        gov = "FR",
         start = LocalDate.parse("1996-02-03"),
-        end   = None
+        end = None
       )
-      val other = matching.copy(orgName = "Other Co")
+      val other     = matching.copy(orgName = "Other Co")
       val assetsTwo = Assets(nonEEABusiness = List(other, matching))
 
       val application = applicationBuilder(userAnswers = Some(answers))
@@ -317,4 +328,5 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
       application.stop()
     }
   }
+
 }

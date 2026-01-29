@@ -32,22 +32,23 @@ import models.Mode
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class SharesInAPortfolioController @Inject()(
-                                              override val messagesApi: MessagesApi,
-                                              standardActionSets: StandardActionSets,
-                                              repository: PlaybackRepository,
-                                              @Shares navigator: Navigator,
-                                              formProvider: YesNoFormProvider,
-                                              val controllerComponents: MessagesControllerComponents,
-                                              view: SharesInAPortfolioView
-                                            )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class SharesInAPortfolioController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  repository: PlaybackRepository,
+  @Shares navigator: Navigator,
+  formProvider: YesNoFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: SharesInAPortfolioView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   val form: Form[Boolean] = formProvider.withPrefix("shares.inAPortfolioYesNo")
 
   def onPageLoad(index: Int, mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
     implicit request =>
       val preparedForm = request.userAnswers.get(SharesInAPortfolioPage(index)) match {
-        case None => form
+        case None        => form
         case Some(value) => form.fill(value)
       }
       Ok(view(preparedForm, index, mode))
@@ -55,16 +56,16 @@ class SharesInAPortfolioController @Inject()(
 
   def onSubmit(index: Int, mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, index, mode))),
-
-        value => {
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(SharesInAPortfolioPage(index), value))
-            _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(SharesInAPortfolioPage(index), mode, updatedAnswers))
-        }
-      )
+      form
+        .bindFromRequest()
+        .fold(
+          (formWithErrors: Form[_]) => Future.successful(BadRequest(view(formWithErrors, index, mode))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(SharesInAPortfolioPage(index), value))
+              _              <- repository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(SharesInAPortfolioPage(index), mode, updatedAnswers))
+        )
   }
+
 }

@@ -32,49 +32,48 @@ import utils.Session
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class IndexController @Inject()(
-                                 val controllerComponents: MessagesControllerComponents,
-                                 actions: StandardActionSets,
-                                 cacheRepository: PlaybackRepository,
-                                 connector: TrustsConnector,
-                                 trustsStoreService: TrustsStoreService,
-                                 trustService: TrustService,
-                                 navigator: AssetsNavigator
-                               )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+class IndexController @Inject() (
+  val controllerComponents: MessagesControllerComponents,
+  actions: StandardActionSets,
+  cacheRepository: PlaybackRepository,
+  connector: TrustsConnector,
+  trustsStoreService: TrustsStoreService,
+  trustService: TrustService,
+  navigator: AssetsNavigator
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport with Logging {
 
   def onPageLoad(identifier: String): Action[AnyContent] =
-    (actions.auth andThen actions.saveSession(identifier) andThen actions.getData).async {
-      implicit request =>
+    (actions.auth andThen actions.saveSession(identifier) andThen actions.getData).async { implicit request =>
+      logger.info(
+        s"[Session ID: ${Session.id(hc)}][UTR/URN: $identifier]" +
+          s" user has started to maintain assets"
+      )
+      for {
+        assets <- trustService.getAssets(identifier)
 
-        logger.info(s"[Session ID: ${Session.id(hc)}][UTR/URN: $identifier]" +
-          s" user has started to maintain assets")
-        for {
-          assets <- trustService.getAssets(identifier)
-
-          details <- connector.getTrustDetails(identifier)
-          is5mldEnabled <- trustsStoreService.is5mldEnabled()
-          isMigrating <- connector.getTrustMigrationFlag(identifier)
-          isUnderlyingData5mld <- connector.isTrust5mld(identifier)
-          ua <- Future.successful(
-            request.userAnswers.getOrElse {
-              UserAnswers(
-                internalId = request.user.internalId,
-                identifier = identifier,
-                sessionId = Session.id(hc),
-                newId = s"${request.user.internalId}-$identifier-${Session.id(hc)}",
-                whenTrustSetup = details.startDate,
-                is5mldEnabled = is5mldEnabled,
-                isTaxable = details.trustTaxable.getOrElse(true),
-                isMigratingToTaxable = isMigrating.migratingFromNonTaxableToTaxable,
-                isUnderlyingData5mld = isUnderlyingData5mld
-              )
-            }
-          )
-          _ <- cacheRepository.set(ua)
-          _ <- trustsStoreService.updateTaskStatus(identifier, InProgress)
-        } yield {
-          Redirect(navigator.redirectToAddAssetPage(ua.isMigratingToTaxable, Some(assets.totalSizeCount)))
-        }
+        details              <- connector.getTrustDetails(identifier)
+        is5mldEnabled        <- trustsStoreService.is5mldEnabled()
+        isMigrating          <- connector.getTrustMigrationFlag(identifier)
+        isUnderlyingData5mld <- connector.isTrust5mld(identifier)
+        ua                   <- Future.successful(
+                                  request.userAnswers.getOrElse {
+                                    UserAnswers(
+                                      internalId = request.user.internalId,
+                                      identifier = identifier,
+                                      sessionId = Session.id(hc),
+                                      newId = s"${request.user.internalId}-$identifier-${Session.id(hc)}",
+                                      whenTrustSetup = details.startDate,
+                                      is5mldEnabled = is5mldEnabled,
+                                      isTaxable = details.trustTaxable.getOrElse(true),
+                                      isMigratingToTaxable = isMigrating.migratingFromNonTaxableToTaxable,
+                                      isUnderlyingData5mld = isUnderlyingData5mld
+                                    )
+                                  }
+                                )
+        _                    <- cacheRepository.set(ua)
+        _                    <- trustsStoreService.updateTaskStatus(identifier, InProgress)
+      } yield Redirect(navigator.redirectToAddAssetPage(ua.isMigratingToTaxable, Some(assets.totalSizeCount)))
     }
 
 }

@@ -34,16 +34,18 @@ import views.html.asset.noneeabusiness.GoverningCountryView
 
 class GoverningCountryControllerSpec extends SpecBase with IndexValidation {
 
-  private val formProvider = new CountryFormProvider()
-  private val prefix: String = "nonEeaBusiness.governingCountry"
-  private val form: Form[String] = formProvider.withPrefix(prefix)
-  private val name = "Test"
+  private val formProvider        = new CountryFormProvider()
+  private val prefix: String      = "nonEeaBusiness.governingCountry"
+  private val form: Form[String]  = formProvider.withPrefix(prefix)
+  private val name                = "Test"
   private val validAnswer: String = "GB"
 
   private lazy val onPageLoadRoute: String = routes.GoverningCountryController.onPageLoad(index, NormalMode).url
 
   private val baseAnswers: UserAnswers = emptyUserAnswers
-    .set(NamePage(index), name).success.value
+    .set(NamePage(index), name)
+    .success
+    .value
 
   private val countryOptions: Seq[InputOption] = injector.instanceOf[CountryOptions].options()
 
@@ -70,7 +72,9 @@ class GoverningCountryControllerSpec extends SpecBase with IndexValidation {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = baseAnswers
-        .set(GoverningCountryPage(index), validAnswer).success.value
+        .set(GoverningCountryPage(index), validAnswer)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -161,4 +165,5 @@ class GoverningCountryControllerSpec extends SpecBase with IndexValidation {
     }
 
   }
+
 }

@@ -25,9 +25,8 @@ import pages.asset.business.BusinessNamePage
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
-final case class BusinessAssetViewModel(`type`: WhatKindOfAsset,
-                                        name: Option[String],
-                                        override val status: Status) extends AssetViewModel {
+final case class BusinessAssetViewModel(`type`: WhatKindOfAsset, name: Option[String], override val status: Status)
+    extends AssetViewModel {
 
   override val label: Option[String] = name
 }
@@ -38,6 +37,6 @@ object BusinessAssetViewModel {
     (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].filter(_ == Business) and
       (__ \ BusinessNamePage(0)).readNullable[String] and
       (__ \ AssetStatus.key).readWithDefault[Status](InProgress)
-    )(BusinessAssetViewModel.apply _)
+  )(BusinessAssetViewModel.apply _)
 
 }

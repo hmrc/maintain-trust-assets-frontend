@@ -33,11 +33,18 @@ class Module extends AbstractModule {
     bind(classOf[AuthenticationService]).to(classOf[AuthenticationServiceImpl]).asEagerSingleton()
 
     bind(classOf[Navigator]).annotatedWith(classOf[Money]).to(classOf[MoneyNavigator]).asEagerSingleton()
-    bind(classOf[Navigator]).annotatedWith(classOf[PropertyOrLand]).to(classOf[PropertyOrLandNavigator]).asEagerSingleton()
+    bind(classOf[Navigator])
+      .annotatedWith(classOf[PropertyOrLand])
+      .to(classOf[PropertyOrLandNavigator])
+      .asEagerSingleton()
     bind(classOf[Navigator]).annotatedWith(classOf[Shares]).to(classOf[SharesNavigator]).asEagerSingleton()
     bind(classOf[Navigator]).annotatedWith(classOf[Business]).to(classOf[BusinessNavigator]).asEagerSingleton()
     bind(classOf[Navigator]).annotatedWith(classOf[Partnership]).to(classOf[PartnershipNavigator]).asEagerSingleton()
     bind(classOf[Navigator]).annotatedWith(classOf[Other]).to(classOf[OtherNavigator]).asEagerSingleton()
-    bind(classOf[Navigator]).annotatedWith(classOf[NonEeaBusiness]).to(classOf[NonEeaBusinessNavigator]).asEagerSingleton()
+    bind(classOf[Navigator])
+      .annotatedWith(classOf[NonEeaBusiness])
+      .to(classOf[NonEeaBusinessNavigator])
+      .asEagerSingleton()
   }
+
 }

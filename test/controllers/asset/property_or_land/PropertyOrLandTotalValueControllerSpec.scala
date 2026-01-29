@@ -32,11 +32,12 @@ import views.html.asset.property_or_land.PropertyOrLandTotalValueView
 
 class PropertyOrLandTotalValueControllerSpec extends SpecBase with IndexValidation {
 
-  val formProvider = new ValueFormProvider(frontendAppConfig)
-  val form: Form[Long] = formProvider.withConfig(prefix = "propertyOrLand.totalValue")
+  val formProvider      = new ValueFormProvider(frontendAppConfig)
+  val form: Form[Long]  = formProvider.withConfig(prefix = "propertyOrLand.totalValue")
   val validAnswer: Long = 4000L
 
-  lazy val propertyOrLandTotalValueRoute: String = routes.PropertyOrLandTotalValueController.onPageLoad(index, NormalMode).url
+  lazy val propertyOrLandTotalValueRoute: String =
+    routes.PropertyOrLandTotalValueController.onPageLoad(index, NormalMode).url
 
   "PropertyOrLandTotalValue Controller" must {
 
@@ -152,4 +153,5 @@ class PropertyOrLandTotalValueControllerSpec extends SpecBase with IndexValidati
     }
 
   }
+
 }

@@ -25,8 +25,7 @@ import org.scalatest.matchers.must.Matchers
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.money.AssetMoneyValuePage
 
-class MoneyAssetMapperSpec extends SpecBase with Matchers
-  with OptionValues with Generators {
+class MoneyAssetMapperSpec extends SpecBase with Matchers with OptionValues with Generators {
 
   val moneyAssetMapper: MoneyAssetMapper = injector.instanceOf[MoneyAssetMapper]
 
@@ -38,7 +37,9 @@ class MoneyAssetMapperSpec extends SpecBase with Matchers
 
       val userAnswers =
         emptyUserAnswers
-          .set(WhatKindOfAssetPage(index), Money).success.value
+          .set(WhatKindOfAssetPage(index), Money)
+          .success
+          .value
 
       moneyAssetMapper(userAnswers).isDefined mustBe false
     }
@@ -47,8 +48,12 @@ class MoneyAssetMapperSpec extends SpecBase with Matchers
 
       val userAnswers =
         emptyUserAnswers
-          .set(WhatKindOfAssetPage(index), Money).success.value
-          .set(AssetMoneyValuePage(index), assetValue1).success.value
+          .set(WhatKindOfAssetPage(index), Money)
+          .success
+          .value
+          .set(AssetMoneyValuePage(index), assetValue1)
+          .success
+          .value
 
       val result = moneyAssetMapper(userAnswers).get
 
@@ -56,4 +61,5 @@ class MoneyAssetMapperSpec extends SpecBase with Matchers
         AssetMonetaryAmount(assetValue1)
     }
   }
+
 }

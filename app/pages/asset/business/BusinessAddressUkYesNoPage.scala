@@ -28,7 +28,7 @@ case class BusinessAddressUkYesNoPage(index: Int) extends QuestionPage[Boolean] 
 
   override def toString: String = "businessAddressUkYesNo"
 
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
       case Some(true) =>
         userAnswers.remove(BusinessInternationalAddressPage(index))
@@ -38,5 +38,5 @@ case class BusinessAddressUkYesNoPage(index: Int) extends QuestionPage[Boolean] 
 
       case _ => super.cleanup(value, userAnswers)
     }
-  }
+
 }

@@ -21,13 +21,13 @@ import play.api.data.FormError
 
 class QuantityFormProviderSpec extends LongFieldBehaviours {
 
-  private val prefix: String = "shares.portfolioQuantityInTrust"
-  private val fieldName = "value"
-  private val requiredKey = s"$prefix.error.required"
-  private val minValueKey = s"$prefix.error.zero"
+  private val prefix: String        = "shares.portfolioQuantityInTrust"
+  private val fieldName             = "value"
+  private val requiredKey           = s"$prefix.error.required"
+  private val minValueKey           = s"$prefix.error.zero"
   private val invalidOnlyNumbersKey = s"$prefix.error.invalid"
   private val invalidWholeNumberKey = s"$prefix.error.wholeNumber"
-  private val maxValueKey = s"$prefix.error.length"
+  private val maxValueKey           = s"$prefix.error.length"
 
   "QuantityFormProvider" must {
 
@@ -48,4 +48,5 @@ class QuantityFormProviderSpec extends LongFieldBehaviours {
       requiredError = FormError(fieldName, requiredKey)
     )
   }
+
 }

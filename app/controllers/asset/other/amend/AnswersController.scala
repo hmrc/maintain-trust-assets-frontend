@@ -36,65 +36,67 @@ import views.html.asset.other.amend.AnswersView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AnswersController @Inject()(
-                                   override val messagesApi: MessagesApi,
-                                   standardActionSets: StandardActionSets,
-                                   val controllerComponents: MessagesControllerComponents,
-                                   view: AnswersView,
-                                   service: TrustService,
-                                   connector: TrustsConnector,
-                                   val appConfig: FrontendAppConfig,
-                                   playbackRepository: PlaybackRepository,
-                                   printHelper: OtherPrintHelper,
-                                   mapper: OtherAssetMapper,
-                                   extractor: OtherAssetExtractor,
-                                   errorHandler: ErrorHandler
-                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+class AnswersController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  val controllerComponents: MessagesControllerComponents,
+  view: AnswersView,
+  service: TrustService,
+  connector: TrustsConnector,
+  val appConfig: FrontendAppConfig,
+  playbackRepository: PlaybackRepository,
+  printHelper: OtherPrintHelper,
+  mapper: OtherAssetMapper,
+  extractor: OtherAssetExtractor,
+  errorHandler: ErrorHandler
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport with Logging {
 
   private val provisional: Boolean = false
 
-  private def render(userAnswers: UserAnswers, index: Int, name: String)
-                    (implicit request: Request[AnyContent]): Result = {
+  private def render(userAnswers: UserAnswers, index: Int, name: String)(implicit
+    request: Request[AnyContent]
+  ): Result = {
     val section: AnswerSection = printHelper(userAnswers, index, provisional, name)
     Ok(view(section, index))
   }
 
   def extractAndRender(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-
-      service.getOtherAsset(request.userAnswers.identifier, index) flatMap {
-        otherAsset =>
-          val extractedAnswers = extractor(request.userAnswers, otherAsset, index)
-          for {
-            extractedF <- Future.fromTry(extractedAnswers)
-            _ <- playbackRepository.set(extractedF)
-          } yield {
-            render(extractedF, index, otherAsset.description)
-          }
-      } recoverWith {
-        case e =>
-          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
-            s" error showing the user the check answers for Other Asset $index ${e.getMessage}")
-          errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
+      service.getOtherAsset(request.userAnswers.identifier, index) flatMap { otherAsset =>
+        val extractedAnswers = extractor(request.userAnswers, otherAsset, index)
+        for {
+          extractedF <- Future.fromTry(extractedAnswers)
+          _          <- playbackRepository.set(extractedF)
+        } yield render(extractedF, index, otherAsset.description)
+      } recoverWith { case e =>
+        logger.error(
+          s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
+            s" error showing the user the check answers for Other Asset $index ${e.getMessage}"
+        )
+        errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
       }
   }
 
-  def renderFromUserAnswers(index: Int) : Action[AnyContent] = standardActionSets.verifiedForIdentifier {
+  def renderFromUserAnswers(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
     implicit request =>
       render(request.userAnswers, index, "")
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
-    implicit request =>
-      mapper(request.userAnswers).map {
-        asset =>
-          connector.amendOtherAsset(request.userAnswers.identifier, index, asset).map(_ =>
-            Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
-          )
-      }.getOrElse {
-        logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
-          s" error mapping user answers to Other Asset $index")
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async { implicit request =>
+    mapper(request.userAnswers)
+      .map { asset =>
+        connector
+          .amendOtherAsset(request.userAnswers.identifier, index, asset)
+          .map(_ => Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()))
+      }
+      .getOrElse {
+        logger.error(
+          s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
+            s" error mapping user answers to Other Asset $index"
+        )
         errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
       }
   }
+
 }

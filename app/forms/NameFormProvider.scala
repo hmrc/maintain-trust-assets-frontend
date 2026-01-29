@@ -25,9 +25,11 @@ class NameFormProvider @Inject() extends Mappings {
   def withConfig(length: Int, prefix: String): Form[String] =
     Form(
       "value" -> text(s"$prefix.error.required")
-        .verifying(maxLength(length, s"$prefix.error.length"),
+        .verifying(
+          maxLength(length, s"$prefix.error.length"),
           isNotEmpty("value", s"$prefix.error.required"),
           regexp(Validation.nameRegex, s"$prefix.error.invalid")
         )
     )
+
 }

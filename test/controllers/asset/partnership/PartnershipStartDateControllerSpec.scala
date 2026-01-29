@@ -33,10 +33,10 @@ import java.time.{LocalDate, ZoneOffset}
 class PartnershipStartDateControllerSpec extends SpecBase with IndexValidation {
 
   private val prefix: String = "partnership.startDate"
-  private val validAnswer = LocalDate.now(ZoneOffset.UTC)
+  private val validAnswer    = LocalDate.now(ZoneOffset.UTC)
 
   private val formProvider = new StartDateFormProvider(frontendAppConfig)
-  private val form = formProvider.withConfig(prefix)
+  private val form         = formProvider.withConfig(prefix)
 
   private lazy val partnershipStartDateRoute = routes.PartnershipStartDateController.onPageLoad(index, NormalMode).url
 
@@ -90,9 +90,9 @@ class PartnershipStartDateControllerSpec extends SpecBase with IndexValidation {
       val request =
         FakeRequest(POST, partnershipStartDateRoute)
           .withFormUrlEncodedBody(
-            "value.day" -> validAnswer.getDayOfMonth.toString,
+            "value.day"   -> validAnswer.getDayOfMonth.toString,
             "value.month" -> validAnswer.getMonthValue.toString,
-            "value.year" -> validAnswer.getYear.toString
+            "value.year"  -> validAnswer.getYear.toString
           )
 
       val result = route(application, request).value
@@ -147,9 +147,9 @@ class PartnershipStartDateControllerSpec extends SpecBase with IndexValidation {
       val request =
         FakeRequest(POST, partnershipStartDateRoute)
           .withFormUrlEncodedBody(
-            "value.day" -> validAnswer.getDayOfMonth.toString,
+            "value.day"   -> validAnswer.getDayOfMonth.toString,
             "value.month" -> validAnswer.getMonthValue.toString,
-            "value.year" -> validAnswer.getYear.toString
+            "value.year"  -> validAnswer.getYear.toString
           )
 
       val result = route(application, request).value

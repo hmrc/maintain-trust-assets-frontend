@@ -26,20 +26,18 @@ import utils.countryOptions.CountryOptions
 import java.time.LocalDate
 import javax.inject.Inject
 
-class CheckAnswersFormatters @Inject()(languageUtils: LanguageUtils,
-                                       countryOptions: CountryOptions) {
+class CheckAnswersFormatters @Inject() (languageUtils: LanguageUtils, countryOptions: CountryOptions) {
 
   def formatDate(date: LocalDate)(implicit messages: Messages): Html = {
     val formattedDate: String = languageUtils.Dates.formatDate(date)
     escape(formattedDate)
   }
 
-  def addressFormatter(address: Address)(implicit messages: Messages): Html = {
+  def addressFormatter(address: Address)(implicit messages: Messages): Html =
     address match {
-      case a: UkAddress => ukAddress(a)
+      case a: UkAddress    => ukAddress(a)
       case a: NonUkAddress => internationalAddress(a)
     }
-  }
 
   private def ukAddress(address: UkAddress): Html = {
 
@@ -66,30 +64,28 @@ class CheckAnswersFormatters @Inject()(languageUtils: LanguageUtils,
     breakLines(lines)
   }
 
-  def country(code: String)(implicit messages: Messages): String = {
+  def country(code: String)(implicit messages: Messages): String =
     countryOptions.options().find(_.value.equals(code)).map(_.label).getOrElse("")
-  }
 
-  private def breakLines(lines: Seq[Html]): Html = {
+  private def breakLines(lines: Seq[Html]): Html =
     Html(lines.mkString("<br />"))
-  }
+
 }
 
 object CheckAnswersFormatters {
 
-  def yesOrNo(answer: Boolean)(implicit messages: Messages): Html = {
+  def yesOrNo(answer: Boolean)(implicit messages: Messages): Html =
     if (answer) {
       escape(messages("site.yes"))
     } else {
       escape(messages("site.no"))
     }
-  }
 
   def currency(value: String): Html = escape(currencyFormat(value))
 
   def currencyFormat(value: String): String = s"£$value"
 
-  def formatEnum[T](key: String, answer: T)(implicit messages: Messages): Html = {
+  def formatEnum[T](key: String, answer: T)(implicit messages: Messages): Html =
     escape(messages(s"$key.$answer"))
-  }
+
 }

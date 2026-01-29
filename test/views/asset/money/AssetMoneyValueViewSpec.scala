@@ -42,4 +42,5 @@ class AssetMoneyValueViewSpec extends LongViewBehaviours {
 
     behave like longPage(form, applyView, messageKeyPrefix)
   }
+
 }

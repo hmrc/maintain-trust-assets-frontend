@@ -35,11 +35,12 @@ import views.html.asset.property_or_land.remove.RemoveAssetYesNoView
 
 import scala.concurrent.Future
 
-class PropertyOrLandPropertyOrLandRemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChecks with ScalaFutures {
+class PropertyOrLandPropertyOrLandRemoveAssetYesNoControllerSpec
+    extends SpecBase with ScalaCheckPropertyChecks with ScalaFutures {
 
   val messagesPrefix = "propertyOrLand.removeYesNo"
 
-  lazy val formProvider = new RemoveIndexFormProvider()
+  lazy val formProvider        = new RemoveIndexFormProvider()
   lazy val form: Form[Boolean] = formProvider(messagesPrefix)
 
   lazy val formRoute: Call = routes.PropertyOrLandRemoveAssetYesNoController.onSubmit(0)
@@ -60,7 +61,6 @@ class PropertyOrLandPropertyOrLandRemoveAssetYesNoControllerSpec extends SpecBas
   "PropertyOrLandPropertyOrLandRemoveAssetYesNoController" when {
 
     "return OK and the correct view for a GET" in {
-
 
       when(mockConnector.getAssets(any())(any(), any()))
         .thenReturn(Future.successful(Assets(Nil, propertyOrLandAssets, Nil, Nil, Nil, Nil, Nil)))
@@ -86,7 +86,6 @@ class PropertyOrLandPropertyOrLandRemoveAssetYesNoControllerSpec extends SpecBas
 
       "redirect to the 'add asset' page when valid data is submitted and migrating" in {
 
-
         val answers = userAnswers(migrating = true)
 
         val application = applicationBuilder(userAnswers = Some(answers))
@@ -101,7 +100,9 @@ class PropertyOrLandPropertyOrLandRemoveAssetYesNoControllerSpec extends SpecBas
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController
+          .onPageLoad()
+          .url
 
         application.stop()
       }
@@ -110,7 +111,6 @@ class PropertyOrLandPropertyOrLandRemoveAssetYesNoControllerSpec extends SpecBas
     "removing an old asset" must {
 
       "redirect to the 'add asset' page, removing the asset when migrating" in {
-
 
         val answers = userAnswers(migrating = true)
 
@@ -132,7 +132,9 @@ class PropertyOrLandPropertyOrLandRemoveAssetYesNoControllerSpec extends SpecBas
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController
+          .onPageLoad()
+          .url
 
         application.stop()
       }
@@ -140,8 +142,9 @@ class PropertyOrLandPropertyOrLandRemoveAssetYesNoControllerSpec extends SpecBas
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(bind[TrustsConnector].toInstance(mockConnector)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[TrustsConnector].toInstance(mockConnector))
+        .build()
 
       val request =
         FakeRequest(POST, routes.PropertyOrLandRemoveAssetYesNoController.onSubmit(index).url)
@@ -163,7 +166,6 @@ class PropertyOrLandPropertyOrLandRemoveAssetYesNoControllerSpec extends SpecBas
 
     "redirect to Session Expired for a GET if no existing data is found" in {
 
-
       val application = applicationBuilder(userAnswers = None).build()
 
       val request = FakeRequest(GET, routes.PropertyOrLandRemoveAssetYesNoController.onPageLoad(index).url)
@@ -178,7 +180,6 @@ class PropertyOrLandPropertyOrLandRemoveAssetYesNoControllerSpec extends SpecBas
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
-
 
       val application = applicationBuilder(userAnswers = None).build()
 
@@ -195,4 +196,5 @@ class PropertyOrLandPropertyOrLandRemoveAssetYesNoControllerSpec extends SpecBas
       application.stop()
     }
   }
+
 }

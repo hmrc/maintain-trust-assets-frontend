@@ -24,10 +24,10 @@ import java.time.{LocalDate, ZoneOffset}
 
 class EndDateFormProviderSpec extends DateBehaviours with FakeTrustsApp {
 
-  private val min = frontendAppConfig.minDate
-  private val max = LocalDate.now(ZoneOffset.UTC)
+  private val min            = frontendAppConfig.minDate
+  private val max            = LocalDate.now(ZoneOffset.UTC)
   private val prefix: String = "partnership.endDate"
-  private val form = new EndDateFormProvider().withConfig(prefix, min)
+  private val form           = new EndDateFormProvider().withConfig(prefix, min)
 
   ".value" should {
 
@@ -40,15 +40,20 @@ class EndDateFormProviderSpec extends DateBehaviours with FakeTrustsApp {
 
     behave like mandatoryDateField(form, "value", s"$prefix.error.required.all")
 
-    behave like dateFieldWithMax(form, "value",
+    behave like dateFieldWithMax(
+      form,
+      "value",
       max = max,
       FormError("value", s"$prefix.error.future", List("day", "month", "year"))
     )
 
-    behave like dateFieldWithMin(form, "value",
+    behave like dateFieldWithMin(
+      form,
+      "value",
       min = min,
       FormError("value", s"$prefix.error.beforeAssetStartDate", List("day", "month", "year"))
     )
 
   }
+
 }

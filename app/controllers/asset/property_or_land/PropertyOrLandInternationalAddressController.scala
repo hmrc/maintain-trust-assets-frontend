@@ -34,40 +34,44 @@ import models.Mode
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class PropertyOrLandInternationalAddressController @Inject()(
-                                                              override val messagesApi: MessagesApi,
-                                                              standardActionSets: StandardActionSets,
-                                                              nameAction: NameRequiredAction,
-                                                              repository: PlaybackRepository,
-                                                              @PropertyOrLand navigator: Navigator,
-                                                              formProvider: InternationalAddressFormProvider,
-                                                              val controllerComponents: MessagesControllerComponents,
-                                                              view: PropertyOrLandInternationalAddressView,
-                                                              val countryOptions: CountryOptionsNonUK
-                                                            )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class PropertyOrLandInternationalAddressController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  nameAction: NameRequiredAction,
+  repository: PlaybackRepository,
+  @PropertyOrLand navigator: Navigator,
+  formProvider: InternationalAddressFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: PropertyOrLandInternationalAddressView,
+  val countryOptions: CountryOptionsNonUK
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider()
 
-  def onPageLoad(index: Int, mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
-    implicit request =>
+  def onPageLoad(index: Int, mode: Mode): Action[AnyContent] =
+    (standardActionSets.verifiedForIdentifier andThen nameAction) { implicit request =>
       val preparedForm = request.userAnswers.get(PropertyOrLandInternationalAddressPage(index)) match {
-        case None => form
+        case None        => form
         case Some(value) => form.fill(value)
       }
       Ok(view(preparedForm, index, countryOptions.options(), mode))
-  }
+    }
 
-  def onSubmit(index: Int, mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
-    implicit request =>
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, index, countryOptions.options(), mode))),
-        value => {
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(PropertyOrLandInternationalAddressPage(index), value))
-            _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(PropertyOrLandInternationalAddressPage(index), mode, updatedAnswers))
-        }
-      )
-  }
+  def onSubmit(index: Int, mode: Mode): Action[AnyContent] =
+    (standardActionSets.verifiedForIdentifier andThen nameAction).async { implicit request =>
+      form
+        .bindFromRequest()
+        .fold(
+          (formWithErrors: Form[_]) =>
+            Future.successful(BadRequest(view(formWithErrors, index, countryOptions.options(), mode))),
+          value =>
+            for {
+              updatedAnswers <-
+                Future.fromTry(request.userAnswers.set(PropertyOrLandInternationalAddressPage(index), value))
+              _              <- repository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(PropertyOrLandInternationalAddressPage(index), mode, updatedAnswers))
+        )
+    }
+
 }

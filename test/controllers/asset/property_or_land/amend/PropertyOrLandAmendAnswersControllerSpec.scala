@@ -39,10 +39,10 @@ import scala.concurrent.Future
 
 class PropertyOrLandAmendAnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures {
 
-  private lazy val answersRoute = routes.PropertyOrLandAmendAnswersController.extractAndRender(index).url
+  private lazy val answersRoute       = routes.PropertyOrLandAmendAnswersController.extractAndRender(index).url
   private lazy val submitAnswersRoute = routes.PropertyOrLandAmendAnswersController.onSubmit(index).url
 
-  private val name: String = "BusinessName"
+  private val name: String    = "BusinessName"
   private val valueFull: Long = 790L
 
   private val propertyOrLandAsset = PropertyLandType(
@@ -52,13 +52,23 @@ class PropertyOrLandAmendAnswersControllerSpec extends SpecBase with MockitoSuga
     valuePrevious = None
   )
 
-  def userAnswers: UserAnswers = emptyUserAnswers.copy(isMigratingToTaxable = true)
-    .set(IndexPage, index).success.value
-    .set(PropertyOrLandAddressYesNoPage(index), false).success.value
-    .set(PropertyOrLandDescriptionPage(index), name).success.value
-    .set(PropertyOrLandTotalValuePage(index), valueFull).success.value
-    .set(TrustOwnAllThePropertyOrLandPage(index), true).success.value
-
+  def userAnswers: UserAnswers = emptyUserAnswers
+    .copy(isMigratingToTaxable = true)
+    .set(IndexPage, index)
+    .success
+    .value
+    .set(PropertyOrLandAddressYesNoPage(index), false)
+    .success
+    .value
+    .set(PropertyOrLandDescriptionPage(index), name)
+    .success
+    .value
+    .set(PropertyOrLandTotalValuePage(index), valueFull)
+    .success
+    .value
+    .set(TrustOwnAllThePropertyOrLandPage(index), true)
+    .success
+    .value
 
   "PropertyOrLandAmendAnswersController" must {
 
@@ -79,8 +89,8 @@ class PropertyOrLandAmendAnswersControllerSpec extends SpecBase with MockitoSuga
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[AnswersView]
-      val printHelper = application.injector.instanceOf[PropertyOrLandPrintHelper]
+      val view          = application.injector.instanceOf[AnswersView]
+      val printHelper   = application.injector.instanceOf[PropertyOrLandPrintHelper]
       val answerSection = printHelper(userAnswers, index, provisional = false, name)
 
       status(result) mustEqual OK
@@ -88,7 +98,6 @@ class PropertyOrLandAmendAnswersControllerSpec extends SpecBase with MockitoSuga
       contentAsString(result) mustEqual
         view(answerSection, index)(request, messages).toString
     }
-
 
     "return INTERNAL_SERVER_ERROR when service fails" in {
 
@@ -119,7 +128,8 @@ class PropertyOrLandAmendAnswersControllerSpec extends SpecBase with MockitoSuga
           .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
           .build()
 
-      when(mockTrustConnector.amendPropertyOrLandAsset(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+      when(mockTrustConnector.amendPropertyOrLandAsset(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val request = FakeRequest(POST, submitAnswersRoute)
 
@@ -127,10 +137,13 @@ class PropertyOrLandAmendAnswersControllerSpec extends SpecBase with MockitoSuga
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController
+        .onPageLoad()
+        .url
 
       application.stop()
     }
 
   }
+
 }

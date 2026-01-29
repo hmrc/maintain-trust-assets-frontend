@@ -42,13 +42,18 @@ import scala.concurrent.Future
 
 class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures {
 
-  private lazy val answersRoute = controllers.asset.noneeabusiness.amend.routes.AnswersController.extractAndRender(index).url
-  private lazy val submitAnswersRoute = controllers.asset.noneeabusiness.amend.routes.AnswersController.onSubmit(index).url
-  private lazy val renderFromUaRoute = controllers.asset.noneeabusiness.amend.routes.AnswersController.renderFromUserAnswers(index).url
+  private lazy val answersRoute       =
+    controllers.asset.noneeabusiness.amend.routes.AnswersController.extractAndRender(index).url
 
-  private val name: String = "OrgName"
-  private val date: LocalDate = LocalDate.parse("1996-02-03")
-  private val country: String = "FR"
+  private lazy val submitAnswersRoute =
+    controllers.asset.noneeabusiness.amend.routes.AnswersController.onSubmit(index).url
+
+  private lazy val renderFromUaRoute  =
+    controllers.asset.noneeabusiness.amend.routes.AnswersController.renderFromUserAnswers(index).url
+
+  private val name: String               = "OrgName"
+  private val date: LocalDate            = LocalDate.parse("1996-02-03")
+  private val country: String            = "FR"
   private val nonUkAddress: NonUkAddress = NonUkAddress("Line 1", "Line 2", None, "FR")
 
   private val nonEeaBusinessAsset = NonEeaBusinessType(
@@ -65,12 +70,23 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
     nonEEABusiness = List(nonEeaBusinessAsset)
   )
 
-  def userAnswers(migrating: Boolean): UserAnswers = emptyUserAnswers.copy(isMigratingToTaxable = migrating)
-    .set(NamePage(index), name).success.value
-    .set(IndexPage, index).success.value
-    .set(NonUkAddressPage(index), nonUkAddress).success.value
-    .set(GoverningCountryPage(index), country).success.value
-    .set(StartDatePage(index), date).success.value
+  def userAnswers(migrating: Boolean): UserAnswers = emptyUserAnswers
+    .copy(isMigratingToTaxable = migrating)
+    .set(NamePage(index), name)
+    .success
+    .value
+    .set(IndexPage, index)
+    .success
+    .value
+    .set(NonUkAddressPage(index), nonUkAddress)
+    .success
+    .value
+    .set(GoverningCountryPage(index), country)
+    .success
+    .value
+    .set(StartDatePage(index), date)
+    .success
+    .value
 
   "Answers Controller" must {
 
@@ -93,8 +109,8 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[AnswersView]
-      val printHelper = application.injector.instanceOf[NonEeaBusinessPrintHelper]
+      val view          = application.injector.instanceOf[AnswersView]
+      val printHelper   = application.injector.instanceOf[NonEeaBusinessPrintHelper]
       val answerSection = printHelper(answers, index, provisional = false, name)
 
       status(result) mustEqual OK
@@ -123,7 +139,7 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
     "return INTERNAL_SERVER_ERROR when extract fails" in {
 
       val failingService: TrustService = mock[TrustService]
-      val answers = userAnswers(migrating = false)
+      val answers                      = userAnswers(migrating = false)
 
       val application = applicationBuilder(userAnswers = Some(answers))
         .overrides(
@@ -146,7 +162,7 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
     "redirect after successful submit" in {
 
       val mockTrustConnector = mock[TrustsConnector]
-      val answers = userAnswers(migrating = true)
+      val answers            = userAnswers(migrating = true)
 
       val application =
         applicationBuilder(userAnswers = Some(answers), affinityGroup = Agent)
@@ -162,7 +178,9 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController
+        .onPageLoad()
+        .url
 
       application.stop()
     }
@@ -170,7 +188,7 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
     "return INTERNAL_SERVER_ERROR when mapper returns None" in {
 
       val mockMapper = mock[NonEeaBusinessAssetMapper]
-      val answers = userAnswers(migrating = false)
+      val answers    = userAnswers(migrating = false)
 
       val application =
         applicationBuilder(userAnswers = Some(answers))
@@ -188,4 +206,5 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
       application.stop()
     }
   }
+
 }

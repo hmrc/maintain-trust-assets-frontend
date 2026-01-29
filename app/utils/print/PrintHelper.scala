@@ -22,26 +22,24 @@ import viewmodels.{AnswerRow, AnswerSection}
 
 trait PrintHelper {
 
-  def checkDetailsSection(userAnswers: UserAnswers,
-                          arg: String = "",
-                          mode: Mode)
-                         (implicit messages: Messages): Seq[AnswerSection] = {
+  def checkDetailsSection(userAnswers: UserAnswers, arg: String = "", mode: Mode)(implicit
+    messages: Messages
+  ): Seq[AnswerSection] =
 
-    Seq(section(
-      userAnswers = userAnswers,
-      arg = arg,
-      mode = mode,
-      headingKey = None
-    ))
-  }
+    Seq(
+      section(
+        userAnswers = userAnswers,
+        arg = arg,
+        mode = mode,
+        headingKey = None
+      )
+    )
 
   val assetType: String
 
-  def printSection(userAnswers: UserAnswers,
-                   arg: String = "",
-                   mode: Mode,
-                   specificIndex: Int)
-                  (implicit messages: Messages): AnswerSection = {
+  def printSection(userAnswers: UserAnswers, arg: String = "", mode: Mode, specificIndex: Int)(implicit
+    messages: Messages
+  ): AnswerSection =
 
     section(
       userAnswers = userAnswers,
@@ -49,26 +47,19 @@ trait PrintHelper {
       mode = mode,
       headingKey = Some(messages(s"answerPage.section.$assetType.subheading", specificIndex + 1))
     )
-  }
 
-  private def section(userAnswers: UserAnswers,
-                      arg: String,
-                      mode: Mode,
-                      headingKey: Option[String])
-                     (implicit messages: Messages): AnswerSection = {
+  private def section(userAnswers: UserAnswers, arg: String, mode: Mode, headingKey: Option[String])(implicit
+    messages: Messages
+  ): AnswerSection =
 
     AnswerSection(
       headingKey = headingKey match {
         case Some(key) => Some(messages(key))
-        case _ => None
+        case _         => None
       },
       rows = answerRows(userAnswers, arg, mode)
     )
-  }
 
-  def answerRows(userAnswers: UserAnswers,
-                 arg: String,
-                 mode: Mode)
-                (implicit messages: Messages): Seq[AnswerRow]
+  def answerRows(userAnswers: UserAnswers, arg: String, mode: Mode)(implicit messages: Messages): Seq[AnswerRow]
 
 }

@@ -28,4 +28,5 @@ class PropertyLandValueTrustPageSpec extends PageBehaviours {
 
     beRemovable[Long](PropertyLandValueTrustPage(index))
   }
+
 }

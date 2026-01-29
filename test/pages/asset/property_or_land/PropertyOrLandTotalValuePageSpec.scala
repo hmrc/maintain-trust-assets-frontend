@@ -18,7 +18,6 @@ package pages.asset.property_or_land
 
 import pages.behaviours.PageBehaviours
 
-
 class PropertyOrLandTotalValuePageSpec extends PageBehaviours {
 
   val page = PropertyOrLandTotalValuePage(index)
@@ -31,4 +30,5 @@ class PropertyOrLandTotalValuePageSpec extends PageBehaviours {
 
     beRemovable[Long](page)
   }
+
 }

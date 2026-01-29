@@ -40,13 +40,21 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
   val messagesPrefix = "nonEeaBusiness.removeYesNo"
 
-  lazy val formProvider = new RemoveIndexFormProvider()
+  lazy val formProvider        = new RemoveIndexFormProvider()
   lazy val form: Form[Boolean] = formProvider(messagesPrefix)
 
   lazy val formRoute: Call = routes.RemoveAssetYesNoController.onSubmit(0)
 
   private def createAsset(id: Int, provisional: Boolean): NonEeaBusinessType =
-    NonEeaBusinessType(None, s"OrgName $id", NonUkAddress("L1", "L2", Some("L3"), "FR"), "FR", LocalDate.now, None, provisional)
+    NonEeaBusinessType(
+      None,
+      s"OrgName $id",
+      NonUkAddress("L1", "L2", Some("L3"), "FR"),
+      "FR",
+      LocalDate.now,
+      None,
+      provisional
+    )
 
   private def userAnswers(migrating: Boolean): UserAnswers =
     emptyUserAnswers.copy(isMigratingToTaxable = migrating)
@@ -95,7 +103,9 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController
+        .onPageLoad()
+        .url
 
       application.stop()
     }
@@ -140,7 +150,9 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad().url
+        redirectLocation(
+          result
+        ).value mustEqual controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad().url
 
         application.stop()
       }
@@ -163,7 +175,9 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController
+          .onPageLoad()
+          .url
 
         application.stop()
       }
@@ -175,7 +189,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
         val mockTrustService: TrustService = mock[TrustService]
 
-        val i = 2
+        val i       = 2
         val answers = userAnswers(migrating = false)
 
         when(mockTrustService.getNonEeaBusinessAsset(any(), any())(any(), any()))
@@ -195,7 +209,9 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad().url
+        redirectLocation(
+          result
+        ).value mustEqual controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad().url
 
         verify(mockTrustService, times(1)).removeAsset(any(), any())(any(), any())
 
@@ -206,7 +222,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
         val mockTrustService: TrustService = mock[TrustService]
 
-        val i = 1
+        val i       = 1
         val answers = userAnswers(migrating = true)
 
         when(mockTrustService.getNonEeaBusinessAsset(any(), any())(any(), any()))
@@ -226,7 +242,9 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController
+          .onPageLoad()
+          .url
 
         verify(mockTrustService, times(1)).removeAsset(any(), any())(any(), any())
 
@@ -255,7 +273,11 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.asset.noneeabusiness.remove.routes.RemoveAssetEndDateController.onPageLoad(index).url
+        redirectLocation(
+          result
+        ).value mustEqual controllers.asset.noneeabusiness.remove.routes.RemoveAssetEndDateController
+          .onPageLoad(index)
+          .url
 
         application.stop()
       }
@@ -322,4 +344,5 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
       application.stop()
     }
   }
+
 }

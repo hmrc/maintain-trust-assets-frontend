@@ -33,40 +33,41 @@ import models.Mode
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class PropertyOrLandAddressYesNoController @Inject()(
-                                                      override val messagesApi: MessagesApi,
-                                                      standardActionSets: StandardActionSets,
-                                                      nameAction: NameRequiredAction,
-                                                      repository: PlaybackRepository,
-                                                      @PropertyOrLand navigator: Navigator,
-                                                      yesNoFormProvider: YesNoFormProvider,
-                                                      val controllerComponents: MessagesControllerComponents,
-                                                      view: PropertyOrLandAddressYesNoView
-                                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class PropertyOrLandAddressYesNoController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  nameAction: NameRequiredAction,
+  repository: PlaybackRepository,
+  @PropertyOrLand navigator: Navigator,
+  yesNoFormProvider: YesNoFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: PropertyOrLandAddressYesNoView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   val form: Form[Boolean] = yesNoFormProvider.withPrefix("propertyOrLand.addressYesNo")
 
-  def onPageLoad(index: Int, mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
-    implicit request =>
+  def onPageLoad(index: Int, mode: Mode): Action[AnyContent] =
+    (standardActionSets.verifiedForIdentifier andThen nameAction) { implicit request =>
       val preparedForm = request.userAnswers.get(PropertyOrLandAddressYesNoPage(index)) match {
-        case None => form
+        case None        => form
         case Some(value) => form.fill(value)
       }
       Ok(view(preparedForm, index, mode))
-  }
+    }
 
-  def onSubmit(index: Int, mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
-    implicit request =>
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, index, mode))),
+  def onSubmit(index: Int, mode: Mode): Action[AnyContent] =
+    (standardActionSets.verifiedForIdentifier andThen nameAction).async { implicit request =>
+      form
+        .bindFromRequest()
+        .fold(
+          (formWithErrors: Form[_]) => Future.successful(BadRequest(view(formWithErrors, index, mode))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(PropertyOrLandAddressYesNoPage(index), value))
+              _              <- repository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(PropertyOrLandAddressYesNoPage(index), mode, updatedAnswers))
+        )
+    }
 
-        value => {
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(PropertyOrLandAddressYesNoPage(index), value))
-            _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(PropertyOrLandAddressYesNoPage(index), mode, updatedAnswers))
-        }
-      )
-  }
 }

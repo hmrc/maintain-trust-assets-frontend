@@ -24,9 +24,9 @@ import views.html.asset.property_or_land.remove.RemoveAssetYesNoView
 
 class RemoveAssetYesNoViewSpec extends YesNoViewBehaviours {
 
-  val messageKeyPrefix = "propertyOrLand.removeYesNo"
+  val messageKeyPrefix    = "propertyOrLand.removeYesNo"
   val form: Form[Boolean] = (new YesNoFormProvider).withPrefix(messageKeyPrefix)
-  val name: String = "Name"
+  val name: String        = "Name"
 
   "RemoveAssetYesNo view" must {
 
@@ -41,4 +41,5 @@ class RemoveAssetYesNoViewSpec extends YesNoViewBehaviours {
 
     behave like yesNoPage(form, applyView, messageKeyPrefix, Seq(name))
   }
+
 }

@@ -23,10 +23,12 @@ trait LongViewBehaviours extends QuestionViewBehaviours[Long] {
 
   val answer: Long = 100L
 
-  def longPage(form: Form[Long],
-               createView: Form[Long] => HtmlFormat.Appendable,
-               messageKeyPrefix: String,
-               expectedHintKey: Option[String] = None): Unit = {
+  def longPage(
+    form: Form[Long],
+    createView: Form[Long] => HtmlFormat.Appendable,
+    messageKeyPrefix: String,
+    expectedHintKey: Option[String] = None
+  ): Unit =
 
     "behave like a page with a long value field" when {
 
@@ -34,7 +36,7 @@ trait LongViewBehaviours extends QuestionViewBehaviours[Long] {
 
         "contain a label for the value" in {
 
-          val doc = asDocument(createView(form))
+          val doc              = asDocument(createView(form))
           val expectedHintText = expectedHintKey map (k => messages(k))
           assertContainsLabel(doc, "value", messages(s"$messageKeyPrefix.heading"), expectedHintText)
         }
@@ -65,7 +67,7 @@ trait LongViewBehaviours extends QuestionViewBehaviours[Long] {
 
         "show an error associated to the value field" in {
 
-          val doc = asDocument(createView(form.withError(error)))
+          val doc       = asDocument(createView(form.withError(error)))
           val errorSpan = doc.getElementsByClass("govuk-error-message").first
           errorSpan.text mustBe (messages("error.browser.title.prefix") + " " + messages(errorMessage))
         }
@@ -73,17 +75,24 @@ trait LongViewBehaviours extends QuestionViewBehaviours[Long] {
         "show an error prefix in the browser title" in {
 
           val doc = asDocument(createView(form.withError(error)))
-          assertEqualsValue(doc, "title", mockViewUtils.breadcrumbTitle(s"""${messages("error.browser.title.prefix")} ${messages(s"$messageKeyPrefix.title")}""")(fakeRequest, messages))
+          assertEqualsValue(
+            doc,
+            "title",
+            mockViewUtils.breadcrumbTitle(
+              s"""${messages("error.browser.title.prefix")} ${messages(s"$messageKeyPrefix.title")}"""
+            )(fakeRequest, messages)
+          )
         }
       }
     }
-  }
 
-  def longPageWithDynamicTitle(form: Form[Long],
-                               createView: Form[Long] => HtmlFormat.Appendable,
-                               messageKeyPrefix: String,
-                               messageKeyParam: String,
-                               expectedHintKey: Option[String] = None): Unit = {
+  def longPageWithDynamicTitle(
+    form: Form[Long],
+    createView: Form[Long] => HtmlFormat.Appendable,
+    messageKeyPrefix: String,
+    messageKeyParam: String,
+    expectedHintKey: Option[String] = None
+  ): Unit =
 
     "behave like a page with a long value field with a dynamic title" when {
 
@@ -91,7 +100,7 @@ trait LongViewBehaviours extends QuestionViewBehaviours[Long] {
 
         "contain a label for the value" in {
 
-          val doc = asDocument(createView(form))
+          val doc              = asDocument(createView(form))
           val expectedHintText = expectedHintKey map (k => messages(k))
           assertContainsLabel(doc, "value", messages(s"$messageKeyPrefix.heading", messageKeyParam), expectedHintText)
         }
@@ -122,7 +131,7 @@ trait LongViewBehaviours extends QuestionViewBehaviours[Long] {
 
         "show an error in the value field's label" in {
 
-          val doc = asDocument(createView(form.withError(error)))
+          val doc       = asDocument(createView(form.withError(error)))
           val errorSpan = doc.getElementsByClass("govuk-error-message").first
           errorSpan.text mustBe s"""${messages(errorPrefix)} ${messages(errorMessage)}"""
         }
@@ -130,9 +139,15 @@ trait LongViewBehaviours extends QuestionViewBehaviours[Long] {
         "show an error prefix in the browser title" in {
 
           val doc = asDocument(createView(form.withError(error)))
-          assertEqualsValue(doc, "title", mockViewUtils.breadcrumbTitle(s"""${messages("error.browser.title.prefix")} ${messages(s"$messageKeyPrefix.title", messageKeyParam)}""")(fakeRequest, messages))
+          assertEqualsValue(
+            doc,
+            "title",
+            mockViewUtils.breadcrumbTitle(
+              s"""${messages("error.browser.title.prefix")} ${messages(s"$messageKeyPrefix.title", messageKeyParam)}"""
+            )(fakeRequest, messages)
+          )
         }
       }
     }
-  }
+
 }

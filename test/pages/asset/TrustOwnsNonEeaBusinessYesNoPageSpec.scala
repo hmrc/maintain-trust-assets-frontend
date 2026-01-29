@@ -28,4 +28,5 @@ class TrustOwnsNonEeaBusinessYesNoPageSpec extends PageBehaviours {
 
     beRemovable[Boolean](TrustOwnsNonEeaBusinessYesNoPage)
   }
+
 }

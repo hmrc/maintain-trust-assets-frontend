@@ -17,4 +17,3 @@
 package viewmodels
 
 case class AddRow(name: String, typeLabel: String, changeUrl: String, removeUrl: String)
-
