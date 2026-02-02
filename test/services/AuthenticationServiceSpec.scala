@@ -39,7 +39,7 @@ class AuthenticationServiceSpec
 
   private val utr = "0987654321"
 
-  private val agentEnrolment  =
+  private val agentEnrolment =
     Enrolment("HMRC-AS-AGENT", List(EnrolmentIdentifier("AgentReferenceNumber", "SomeVal")), "Activated", None)
 
   private val trustsEnrolment = Enrolment("HMRC-TERS-ORG", List(EnrolmentIdentifier("SAUTR", utr)), "Activated", None)
@@ -51,7 +51,7 @@ class AuthenticationServiceSpec
     )
   )
 
-  implicit private val hc: HeaderCarrier                    = HeaderCarrier()
+  implicit private val hc: HeaderCarrier = HeaderCarrier()
 
   implicit private val dataRequest: DataRequest[AnyContent] =
     DataRequest[AnyContent](fakeRequest, emptyUserAnswers, AgentUser("internalId", enrolments, "SomeVal"))

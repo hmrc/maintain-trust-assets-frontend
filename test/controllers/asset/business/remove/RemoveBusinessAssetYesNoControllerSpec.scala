@@ -37,11 +37,11 @@ import scala.concurrent.Future
 
 class RemoveBusinessAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChecks with ScalaFutures {
 
-  lazy val formProvider                       = new RemoveIndexFormProvider()
-  lazy val form: Form[Boolean]                = formProvider(messagesPrefix)
-  lazy val formRoute: Call                    = routes.RemoveBusinessAssetYesNoController.onSubmit(0)
-  val messagesPrefix                          = "business.removeYesNo"
-  val mockConnector: TrustsConnector          = mock[TrustsConnector]
+  lazy val formProvider              = new RemoveIndexFormProvider()
+  lazy val form: Form[Boolean]       = formProvider(messagesPrefix)
+  lazy val formRoute: Call           = routes.RemoveBusinessAssetYesNoController.onSubmit(0)
+  val messagesPrefix                 = "business.removeYesNo"
+  val mockConnector: TrustsConnector = mock[TrustsConnector]
 
   val businessAssets: List[BusinessAssetType] = List(
     createAsset(0, provisional = false),

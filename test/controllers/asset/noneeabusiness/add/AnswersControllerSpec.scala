@@ -75,7 +75,7 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
       provisional = true
     )
 
-  private lazy val getRoute: String  =
+  private lazy val getRoute: String =
     controllers.asset.noneeabusiness.add.routes.AnswersController.onPageLoad(index).url
 
   private lazy val postRoute: String = controllers.asset.noneeabusiness.add.routes.AnswersController.onSubmit(index).url

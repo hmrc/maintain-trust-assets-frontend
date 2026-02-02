@@ -45,13 +45,13 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAfterEach {
 
-  lazy val addAssetsRoute: String      = controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
-  lazy val addOnePostRoute: String     = controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.submitOne().url
+  lazy val addAssetsRoute: String  = controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+  lazy val addOnePostRoute: String = controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.submitOne().url
 
   lazy val addAnotherPostRoute: String =
     controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.submitAnother(index).url
 
-  lazy val completePostRoute: String   =
+  lazy val completePostRoute: String =
     controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.submitComplete().url
 
   val prefix                        = "nonTaxableToTaxable.addAssets"

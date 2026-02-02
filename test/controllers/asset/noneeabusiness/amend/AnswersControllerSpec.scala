@@ -42,13 +42,13 @@ import scala.concurrent.Future
 
 class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures {
 
-  private lazy val answersRoute       =
+  private lazy val answersRoute =
     controllers.asset.noneeabusiness.amend.routes.AnswersController.extractAndRender(index).url
 
   private lazy val submitAnswersRoute =
     controllers.asset.noneeabusiness.amend.routes.AnswersController.onSubmit(index).url
 
-  private lazy val renderFromUaRoute  =
+  private lazy val renderFromUaRoute =
     controllers.asset.noneeabusiness.amend.routes.AnswersController.renderFromUserAnswers(index).url
 
   private val name: String               = "OrgName"

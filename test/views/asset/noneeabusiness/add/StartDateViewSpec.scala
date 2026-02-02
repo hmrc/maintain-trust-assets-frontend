@@ -28,10 +28,10 @@ class StartDateViewSpec extends QuestionViewBehaviours[LocalDate] {
 
   private val messageKeyPrefix: String = "nonEeaBusiness.startDate"
 
-  override val form: Form[LocalDate]   =
+  override val form: Form[LocalDate] =
     new StartDateFormProvider(frontendAppConfig).withConfig(messageKeyPrefix, LocalDate.now())
 
-  private val name: String             = "Test"
+  private val name: String = "Test"
 
   "StartDateView view" must {
 

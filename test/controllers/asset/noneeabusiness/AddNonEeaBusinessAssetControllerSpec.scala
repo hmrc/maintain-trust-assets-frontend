@@ -44,16 +44,16 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AddNonEeaBusinessAssetControllerSpec extends SpecBase with Generators with BeforeAndAfterEach {
 
-  lazy val addAssetsRoute: String      =
+  lazy val addAssetsRoute: String =
     controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad().url
 
-  lazy val addOnePostRoute: String     =
+  lazy val addOnePostRoute: String =
     controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.submitOne().url
 
   lazy val addAnotherPostRoute: String =
     controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.submitAnother().url
 
-  lazy val completePostRoute: String   =
+  lazy val completePostRoute: String =
     controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.submitComplete().url
 
   val prefix                                      = "addNonEeaBusinessAsset"

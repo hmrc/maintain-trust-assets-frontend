@@ -39,12 +39,12 @@ class TrustServiceSpec() extends AnyFreeSpec with MockitoSugar with Matchers wit
   val mockConnector: TrustsConnector = mock[TrustsConnector]
   val date: LocalDate                = LocalDate.parse("2019-02-03")
 
-  val moneyAsset: AssetMonetaryAmount         = AssetMonetaryAmount(123)
-  val propertyOrLandAsset: PropertyLandType   = PropertyLandType(None, None, 123, None)
-  val sharesAsset: SharesType                 = SharesType("", "", "", "", 123)
-  val businessAsset: BusinessAssetType        = BusinessAssetType("", "", NonUkAddress("", "", None, ""), 123)
-  val partnershipAsset: PartnershipType       = PartnershipType("", LocalDate.now)
-  val otherAsset: OtherAssetType              = OtherAssetType("", 123)
+  val moneyAsset: AssetMonetaryAmount       = AssetMonetaryAmount(123)
+  val propertyOrLandAsset: PropertyLandType = PropertyLandType(None, None, 123, None)
+  val sharesAsset: SharesType               = SharesType("", "", "", "", 123)
+  val businessAsset: BusinessAssetType      = BusinessAssetType("", "", NonUkAddress("", "", None, ""), 123)
+  val partnershipAsset: PartnershipType     = PartnershipType("", LocalDate.now)
+  val otherAsset: OtherAssetType            = OtherAssetType("", 123)
 
   val nonEeaBusinessAsset: NonEeaBusinessType =
     NonEeaBusinessType(None, "orgName", NonUkAddress("", "", None, ""), "", LocalDate.now, None, provisional = true)
