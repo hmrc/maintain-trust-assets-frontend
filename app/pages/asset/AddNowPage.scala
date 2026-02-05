@@ -17,7 +17,7 @@
 package pages.asset
 
 import models.WhatKindOfAsset._
-import models.{WhatKindOfAsset, UserAnswers}
+import models.{UserAnswers, WhatKindOfAsset}
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 
@@ -29,7 +29,7 @@ case object AddNowPage extends QuestionPage[WhatKindOfAsset] {
 
   override def toString: String = "addNow"
 
-  override def cleanup(value: Option[WhatKindOfAsset], userAnswers: UserAnswers): Try[UserAnswers] = {
+  override def cleanup(value: Option[WhatKindOfAsset], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
 
       case Some(Money) =>
@@ -56,6 +56,5 @@ case object AddNowPage extends QuestionPage[WhatKindOfAsset] {
       case _ =>
         super.cleanup(value, userAnswers)
     }
-  }
 
 }

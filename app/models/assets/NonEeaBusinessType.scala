@@ -21,13 +21,15 @@ import java.time.LocalDate
 import models.Address
 import play.api.libs.json.{Format, Json}
 
-final case class NonEeaBusinessType(lineNo: Option[String],
-                              orgName: String,
-                              address: Address,
-                              govLawCountry: String,
-                              startDate: LocalDate,
-                              endDate: Option[LocalDate],
-                              provisional: Boolean) extends AssetType
+final case class NonEeaBusinessType(
+  lineNo: Option[String],
+  orgName: String,
+  address: Address,
+  govLawCountry: String,
+  startDate: LocalDate,
+  endDate: Option[LocalDate],
+  provisional: Boolean
+) extends AssetType
 
 object NonEeaBusinessType {
   implicit val format: Format[NonEeaBusinessType] = Json.format[NonEeaBusinessType]

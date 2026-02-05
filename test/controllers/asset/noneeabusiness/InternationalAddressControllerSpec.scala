@@ -34,16 +34,17 @@ import views.html.asset.noneeabusiness.InternationalAddressView
 
 class InternationalAddressControllerSpec extends SpecBase with IndexValidation {
 
-  private val formProvider = new InternationalAddressFormProvider()
-  private val form: Form[NonUkAddress] = formProvider()
-  private val name = "Test"
+  private val formProvider              = new InternationalAddressFormProvider()
+  private val form: Form[NonUkAddress]  = formProvider()
+  private val name                      = "Test"
   private val validAnswer: NonUkAddress = NonUkAddress("value 1", "value 2", Some("value 3"), "FR")
-
 
   private lazy val onPageLoadRoute: String = routes.InternationalAddressController.onPageLoad(index, NormalMode).url
 
   private val baseAnswers: UserAnswers = emptyUserAnswers
-    .set(NamePage(index), name).success.value
+    .set(NamePage(index), name)
+    .success
+    .value
 
   private val countryOptions: Seq[InputOption] = injector.instanceOf[CountryOptionsNonUK].options()
 
@@ -70,7 +71,9 @@ class InternationalAddressControllerSpec extends SpecBase with IndexValidation {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = baseAnswers
-        .set(NonUkAddressPage(index), validAnswer).success.value
+        .set(NonUkAddressPage(index), validAnswer)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -171,4 +174,5 @@ class InternationalAddressControllerSpec extends SpecBase with IndexValidation {
     }
 
   }
+
 }

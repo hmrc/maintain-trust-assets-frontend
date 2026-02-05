@@ -31,9 +31,12 @@ class SessionExpiredViewSpec extends ViewBehaviours {
 
     behave like normalPage(applyView, "session_expired")
 
-    behave like pageWithGuidance(applyView,
+    behave like pageWithGuidance(
+      applyView,
       messageKeyPrefix = "session_expired",
-      expectedGuidanceKeys = "guidance", "guidance.2"
+      expectedGuidanceKeys = "guidance",
+      "guidance.2"
     )
   }
+
 }

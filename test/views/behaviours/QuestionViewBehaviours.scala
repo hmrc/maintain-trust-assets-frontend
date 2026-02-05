@@ -21,18 +21,20 @@ import play.twirl.api.HtmlFormat
 
 trait QuestionViewBehaviours[A] extends ViewBehaviours {
 
-  val errorKey = "value"
-  val errorPrefix = "site.error"
-  val errorMessage = "error.number"
+  val errorKey         = "value"
+  val errorPrefix      = "site.error"
+  val errorMessage     = "error.number"
   val error: FormError = FormError(errorKey, errorMessage)
 
   val form: Form[A]
 
-  def pageWithDateFields(form: Form[A],
-                         createView: Form[A] => HtmlFormat.Appendable,
-                         messageKeyPrefix: String,
-                         key: String,
-                         args: String*): Unit = {
+  def pageWithDateFields(
+    form: Form[A],
+    createView: Form[A] => HtmlFormat.Appendable,
+    messageKeyPrefix: String,
+    key: String,
+    args: String*
+  ): Unit = {
 
     val fields = Seq(s"$key.day", s"$key.month", s"$key.year")
 
@@ -40,18 +42,17 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
 
       "rendered" must {
 
-        for (field <- fields) {
+        for (field <- fields)
 
           s"contain an input for $field" in {
             val doc = asDocument(createView(form))
             assertRenderedById(doc, field)
           }
-        }
 
         "not render an error summary" in {
 
           val doc = asDocument(createView(form))
-           assertNotRenderedByClass(doc, "govuk-error-summary")
+          assertNotRenderedByClass(doc, "govuk-error-summary")
         }
       }
 
@@ -60,7 +61,13 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
         "show an error prefix in the browser title" in {
 
           val doc = asDocument(createView(form.withError(error)))
-          assertEqualsValue(doc, "title", mockViewUtils.breadcrumbTitle(s"""${messages("error.browser.title.prefix")} ${messages(s"$messageKeyPrefix.title", args: _*)}""")(fakeRequest, messages))
+          assertEqualsValue(
+            doc,
+            "title",
+            mockViewUtils.breadcrumbTitle(
+              s"""${messages("error.browser.title.prefix")} ${messages(s"$messageKeyPrefix.title", args: _*)}"""
+            )(fakeRequest, messages)
+          )
         }
       }
 
@@ -80,4 +87,5 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
       }
     }
   }
+
 }

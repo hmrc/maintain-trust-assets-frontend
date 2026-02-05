@@ -44,4 +44,5 @@ class PropertyOrLandDescriptionViewSpec extends StringViewBehaviours {
 
     behave like pageWithASubmitButton(applyView(form))
   }
+
 }

@@ -18,7 +18,6 @@ package pages.asset.partnership
 
 import pages.behaviours.PageBehaviours
 
-
 class PartnershipDescriptionPageSpec extends PageBehaviours {
 
   "PartnershipDescriptionPage" must {
@@ -29,4 +28,5 @@ class PartnershipDescriptionPageSpec extends PageBehaviours {
 
     beRemovable[String](PartnershipDescriptionPage(index))
   }
+
 }

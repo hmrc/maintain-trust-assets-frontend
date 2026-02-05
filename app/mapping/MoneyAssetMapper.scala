@@ -24,8 +24,10 @@ import play.api.libs.json.Reads
 class MoneyAssetMapper extends Mapper[AssetMonetaryAmount] {
 
   def apply(answers: UserAnswers): Option[AssetMonetaryAmount] = {
-    val readFromUserAnswers: Reads[AssetMonetaryAmount] = AssetMoneyValuePage(0).path.read[Long].map(AssetMonetaryAmount.apply)
+    val readFromUserAnswers: Reads[AssetMonetaryAmount] =
+      AssetMoneyValuePage(0).path.read[Long].map(AssetMonetaryAmount.apply)
 
     mapAnswersWithExplicitReads(answers, readFromUserAnswers)
   }
+
 }

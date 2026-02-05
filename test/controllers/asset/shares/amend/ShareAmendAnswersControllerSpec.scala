@@ -40,11 +40,11 @@ import scala.concurrent.Future
 
 class ShareAmendAnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures {
 
-  private lazy val answersRoute = routes.ShareAmendAnswersController.extractAndRender(index).url
+  private lazy val answersRoute       = routes.ShareAmendAnswersController.extractAndRender(index).url
   private lazy val submitAnswersRoute = routes.ShareAmendAnswersController.onSubmit(index).url
 
-    private val name: String = "ShareName"
-  private val quantity: Long = 5
+  private val name: String     = "ShareName"
+  private val quantity: Long   = 5
   private val assetValue: Long = 790L
 
   private val shareAsset = SharesType(
@@ -57,13 +57,27 @@ class ShareAmendAnswersControllerSpec extends SpecBase with MockitoSugar with Sc
   )
 
   private val userAnswers: UserAnswers = emptyUserAnswers
-    .set(IndexPage, index).success.value
-    .set(SharesInAPortfolioPage(index), true).success.value
-    .set(SharePortfolioNamePage(index), name).success.value
-    .set(SharePortfolioQuantityInTrustPage(index), quantity).success.value
-    .set(ShareClassPage(index), ShareClass.Deferred).success.value
-    .set(SharePortfolioOnStockExchangePage(index), false).success.value
-    .set(SharePortfolioValueInTrustPage(index), assetValue).success.value
+    .set(IndexPage, index)
+    .success
+    .value
+    .set(SharesInAPortfolioPage(index), true)
+    .success
+    .value
+    .set(SharePortfolioNamePage(index), name)
+    .success
+    .value
+    .set(SharePortfolioQuantityInTrustPage(index), quantity)
+    .success
+    .value
+    .set(ShareClassPage(index), ShareClass.Deferred)
+    .success
+    .value
+    .set(SharePortfolioOnStockExchangePage(index), false)
+    .success
+    .value
+    .set(SharePortfolioValueInTrustPage(index), assetValue)
+    .success
+    .value
 
   "ShareAmendAnswersController" must {
 
@@ -84,8 +98,8 @@ class ShareAmendAnswersControllerSpec extends SpecBase with MockitoSugar with Sc
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[ShareAmendAnswersView]
-      val printHelper = application.injector.instanceOf[SharesPrintHelper]
+      val view          = application.injector.instanceOf[ShareAmendAnswersView]
+      val printHelper   = application.injector.instanceOf[SharesPrintHelper]
       val answerSection = printHelper(userAnswers, index, provisional = false, name)
 
       status(result) mustEqual OK
@@ -103,7 +117,8 @@ class ShareAmendAnswersControllerSpec extends SpecBase with MockitoSugar with Sc
           .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
           .build()
 
-      when(mockTrustConnector.amendSharesAsset(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+      when(mockTrustConnector.amendSharesAsset(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val request = FakeRequest(POST, submitAnswersRoute)
 
@@ -111,9 +126,12 @@ class ShareAmendAnswersControllerSpec extends SpecBase with MockitoSugar with Sc
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController
+        .onPageLoad()
+        .url
 
       application.stop()
     }
   }
+
 }

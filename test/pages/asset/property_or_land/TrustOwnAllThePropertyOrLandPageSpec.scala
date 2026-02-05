@@ -34,18 +34,22 @@ class TrustOwnAllThePropertyOrLandPageSpec extends PageBehaviours {
 
     "remove relevant data" when {
 
-      "set to true" in {
-        forAll(arbitrary[UserAnswers]) {
-          initial =>
-            val answers: UserAnswers = initial.set(page, false).success.value
-              .set(PropertyLandValueTrustPage(index), 100L).success.value
+      "set to true" in
+        forAll(arbitrary[UserAnswers]) { initial =>
+          val answers: UserAnswers = initial
+            .set(page, false)
+            .success
+            .value
+            .set(PropertyLandValueTrustPage(index), 100L)
+            .success
+            .value
 
-            val result = answers.set(page, true).success.value
+          val result = answers.set(page, true).success.value
 
-            result.get(PropertyLandValueTrustPage(index)) must not be defined
+          result.get(PropertyLandValueTrustPage(index)) must not be defined
         }
-      }
 
     }
   }
+
 }

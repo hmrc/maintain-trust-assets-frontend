@@ -20,7 +20,7 @@ import pages.QuestionPage
 import play.api.libs.json.JsPath
 import viewmodels.AssetViewModel
 
-case object Assets extends QuestionPage[List[AssetViewModel]]{
+case object Assets extends QuestionPage[List[AssetViewModel]] {
 
   override def path: JsPath = JsPath \ toString
 

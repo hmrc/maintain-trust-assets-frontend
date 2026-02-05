@@ -31,4 +31,5 @@ class PropertyOrLandNonUkAddressPageSpec extends PageBehaviours {
 
     beRemovable[NonUkAddress](page)
   }
+
 }

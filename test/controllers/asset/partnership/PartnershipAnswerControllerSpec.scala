@@ -38,7 +38,7 @@ import scala.concurrent.Future
 class PartnershipAnswerControllerSpec extends SpecBase {
 
   val validDate: LocalDate = LocalDate.now(ZoneOffset.UTC)
-  val name: String = "Description"
+  val name: String         = "Description"
 
   private val partnershipAnswerRoute = "/maintain-a-trust/trust-assets/partnership/0/partnership-check-answers"
 
@@ -46,9 +46,15 @@ class PartnershipAnswerControllerSpec extends SpecBase {
 
     val answers =
       emptyUserAnswers
-        .set(WhatKindOfAssetPage(index), Partnership).success.value
-        .set(PartnershipDescriptionPage(index), "Partnership Description").success.value
-        .set(PartnershipStartDatePage(index), validDate).success.value
+        .set(WhatKindOfAssetPage(index), Partnership)
+        .success
+        .value
+        .set(PartnershipDescriptionPage(index), "Partnership Description")
+        .success
+        .value
+        .set(PartnershipStartDatePage(index), validDate)
+        .success
+        .value
 
     "on GET" must {
 
@@ -60,8 +66,8 @@ class PartnershipAnswerControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[PartnershipAnswersView]
-        val printHelper = application.injector.instanceOf[PartnershipPrintHelper]
+        val view          = application.injector.instanceOf[PartnershipAnswersView]
+        val printHelper   = application.injector.instanceOf[PartnershipPrintHelper]
         val answerSection = printHelper(answers, index, provisional = true, name)
 
         status(result) mustEqual OK
@@ -91,7 +97,7 @@ class PartnershipAnswerControllerSpec extends SpecBase {
 
       "return INTERNAL_SERVER_ERROR when mapper returns None" in {
         val mockTrustConnector = mock[TrustsConnector]
-        val mockMapper = mock[PartnershipAssetMapper]
+        val mockMapper         = mock[PartnershipAssetMapper]
 
         when(mockMapper.apply(any())).thenReturn(None)
 
@@ -113,15 +119,25 @@ class PartnershipAnswerControllerSpec extends SpecBase {
 
       "take the amend branch and redirect when amending the last existing partnership asset (status OK)" in {
         val mockTrustConnector = mock[TrustsConnector]
-        val mockMapper = mock[PartnershipAssetMapper]
+        val mockMapper         = mock[PartnershipAssetMapper]
 
         val mapped = PartnershipType("Partnership Description", validDate)
 
         when(mockMapper.apply(any())).thenReturn(Some(mapped))
         when(mockTrustConnector.getAssets(any())(any(), any()))
-          .thenReturn(Future.successful(models.assets.Assets(
-            Nil, Nil, Nil, Nil, List(PartnershipType("Old partnership", validDate.minusDays(2))), Nil, Nil
-          )))
+          .thenReturn(
+            Future.successful(
+              models.assets.Assets(
+                Nil,
+                Nil,
+                Nil,
+                Nil,
+                List(PartnershipType("Old partnership", validDate.minusDays(2))),
+                Nil,
+                Nil
+              )
+            )
+          )
         when(mockTrustConnector.amendPartnershipAsset(any(), any(), any())(any(), any()))
           .thenReturn(Future.successful(HttpResponse(OK, "")))
 
@@ -137,22 +153,34 @@ class PartnershipAnswerControllerSpec extends SpecBase {
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController
+          .onPageLoad()
+          .url
 
         application.stop()
       }
 
       "also redirect when amending the last existing partnership asset (status NO_CONTENT)" in {
         val mockTrustConnector = mock[TrustsConnector]
-        val mockMapper = mock[PartnershipAssetMapper]
+        val mockMapper         = mock[PartnershipAssetMapper]
 
         val mapped = PartnershipType("Partnership Description", validDate)
 
         when(mockMapper.apply(any())).thenReturn(Some(mapped))
         when(mockTrustConnector.getAssets(any())(any(), any()))
-          .thenReturn(Future.successful(models.assets.Assets(
-            Nil, Nil, Nil, Nil, List(PartnershipType("Old partnership", validDate.minusDays(2))), Nil, Nil
-          )))
+          .thenReturn(
+            Future.successful(
+              models.assets.Assets(
+                Nil,
+                Nil,
+                Nil,
+                Nil,
+                List(PartnershipType("Old partnership", validDate.minusDays(2))),
+                Nil,
+                Nil
+              )
+            )
+          )
         when(mockTrustConnector.amendPartnershipAsset(any(), any(), any())(any(), any()))
           .thenReturn(Future.successful(HttpResponse(NO_CONTENT, "")))
 
@@ -168,22 +196,34 @@ class PartnershipAnswerControllerSpec extends SpecBase {
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController
+          .onPageLoad()
+          .url
 
         application.stop()
       }
 
       "take the add branch when asset does not already exist and redirect" in {
         val mockTrustConnector = mock[TrustsConnector]
-        val mockMapper = mock[PartnershipAssetMapper]
+        val mockMapper         = mock[PartnershipAssetMapper]
 
         val mapped = PartnershipType("Partnership Description", validDate)
 
         when(mockMapper.apply(any())).thenReturn(Some(mapped))
         when(mockTrustConnector.getAssets(any())(any(), any()))
-          .thenReturn(Future.successful(models.assets.Assets(
-            Nil, Nil, Nil, Nil, Nil, Nil, Nil
-          )))
+          .thenReturn(
+            Future.successful(
+              models.assets.Assets(
+                Nil,
+                Nil,
+                Nil,
+                Nil,
+                Nil,
+                Nil,
+                Nil
+              )
+            )
+          )
         when(mockTrustConnector.addPartnershipAsset(any(), any())(any(), any()))
           .thenReturn(Future.successful(HttpResponse(OK, "")))
 
@@ -199,27 +239,37 @@ class PartnershipAnswerControllerSpec extends SpecBase {
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController
+          .onPageLoad()
+          .url
 
         application.stop()
       }
 
       "take the exists branch (duplicate found) and redirect without adding" in {
         val mockTrustConnector = mock[TrustsConnector]
-        val mockMapper = mock[PartnershipAssetMapper]
+        val mockMapper         = mock[PartnershipAssetMapper]
 
         val mapped = PartnershipType("Partnership Description", validDate)
 
         when(mockMapper.apply(any())).thenReturn(Some(mapped))
         when(mockTrustConnector.getAssets(any())(any(), any()))
-          .thenReturn(Future.successful(models.assets.Assets(
-            Nil, Nil, Nil, Nil,
-            List(
-              PartnershipType("Partnership Description", validDate),
-              PartnershipType("Another partnership", validDate.minusDays(5))
-            ),
-            Nil, Nil
-          )))
+          .thenReturn(
+            Future.successful(
+              models.assets.Assets(
+                Nil,
+                Nil,
+                Nil,
+                Nil,
+                List(
+                  PartnershipType("Partnership Description", validDate),
+                  PartnershipType("Another partnership", validDate.minusDays(5))
+                ),
+                Nil,
+                Nil
+              )
+            )
+          )
 
         val application = applicationBuilder(userAnswers = Some(answers))
           .overrides(
@@ -233,7 +283,9 @@ class PartnershipAnswerControllerSpec extends SpecBase {
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController
+          .onPageLoad()
+          .url
 
         verify(mockTrustConnector, never()).addPartnershipAsset(any(), any())(any(), any())
 
@@ -255,4 +307,5 @@ class PartnershipAnswerControllerSpec extends SpecBase {
       }
     }
   }
+
 }

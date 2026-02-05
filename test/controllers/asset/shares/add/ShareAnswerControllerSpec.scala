@@ -35,17 +35,29 @@ class ShareAnswerControllerSpec extends SpecBase {
 
   private lazy val shareAnswerRoute: String = routes.ShareAnswerController.onPageLoad(index).url
 
-  val name: String = "OrgName"
+  val name: String     = "OrgName"
   val assetValue: Long = 300L
-  val quantity: Long = 20L
+  val quantity: Long   = 20L
 
   val answers: UserAnswers = emptyUserAnswers
-    .set(SharesInAPortfolioPage(index), true).success.value
-    .set(SharePortfolioNamePage(index), name).success.value
-    .set(SharePortfolioQuantityInTrustPage(index), quantity).success.value
-    .set(ShareClassPage(index), ShareClass.Other).success.value
-    .set(SharePortfolioOnStockExchangePage(index), false).success.value
-    .set(SharePortfolioValueInTrustPage(index), assetValue).success.value
+    .set(SharesInAPortfolioPage(index), true)
+    .success
+    .value
+    .set(SharePortfolioNamePage(index), name)
+    .success
+    .value
+    .set(SharePortfolioQuantityInTrustPage(index), quantity)
+    .success
+    .value
+    .set(ShareClassPage(index), ShareClass.Other)
+    .success
+    .value
+    .set(SharePortfolioOnStockExchangePage(index), false)
+    .success
+    .value
+    .set(SharePortfolioValueInTrustPage(index), assetValue)
+    .success
+    .value
 
   "ShareAnswer Controller" must {
 
@@ -56,8 +68,12 @@ class ShareAnswerControllerSpec extends SpecBase {
         val name: String = "Company Name"
 
         val answers = emptyUserAnswers
-          .set(SharesInAPortfolioPage(index), false).success.value
-          .set(ShareCompanyNamePage(index), name).success.value
+          .set(SharesInAPortfolioPage(index), false)
+          .success
+          .value
+          .set(ShareCompanyNamePage(index), name)
+          .success
+          .value
 
         val application = applicationBuilder(userAnswers = Some(answers)).build()
 
@@ -65,8 +81,8 @@ class ShareAnswerControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[ShareAnswersView]
-        val printHelper = application.injector.instanceOf[SharesPrintHelper]
+        val view          = application.injector.instanceOf[ShareAnswersView]
+        val printHelper   = application.injector.instanceOf[SharesPrintHelper]
         val answerSection = printHelper(answers, index, provisional = true, name)
 
         status(result) mustEqual OK
@@ -82,8 +98,12 @@ class ShareAnswerControllerSpec extends SpecBase {
         val name: String = "Portfolio Name"
 
         val answers = emptyUserAnswers
-          .set(SharesInAPortfolioPage(index), true).success.value
-          .set(SharePortfolioNamePage(index), name).success.value
+          .set(SharesInAPortfolioPage(index), true)
+          .success
+          .value
+          .set(SharePortfolioNamePage(index), name)
+          .success
+          .value
 
         val application = applicationBuilder(userAnswers = Some(answers)).build()
 
@@ -91,8 +111,8 @@ class ShareAnswerControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[ShareAnswersView]
-        val printHelper = application.injector.instanceOf[SharesPrintHelper]
+        val view          = application.injector.instanceOf[ShareAnswersView]
+        val printHelper   = application.injector.instanceOf[SharesPrintHelper]
         val answerSection = printHelper(answers, index, provisional = true, name)
 
         status(result) mustEqual OK
@@ -106,7 +126,9 @@ class ShareAnswerControllerSpec extends SpecBase {
       "no name" in {
 
         val answers = emptyUserAnswers
-          .set(SharesInAPortfolioPage(index), true).success.value
+          .set(SharesInAPortfolioPage(index), true)
+          .success
+          .value
 
         val application = applicationBuilder(userAnswers = Some(answers)).build()
 
@@ -114,8 +136,8 @@ class ShareAnswerControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[ShareAnswersView]
-        val printHelper = application.injector.instanceOf[SharesPrintHelper]
+        val view          = application.injector.instanceOf[ShareAnswersView]
+        val printHelper   = application.injector.instanceOf[SharesPrintHelper]
         val answerSection = printHelper(answers, index, provisional = true, "name")
 
         status(result) mustEqual OK
@@ -148,7 +170,9 @@ class ShareAnswerControllerSpec extends SpecBase {
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController
+        .onPageLoad()
+        .url
 
       application.stop()
     }
@@ -167,4 +191,5 @@ class ShareAnswerControllerSpec extends SpecBase {
     }
 
   }
+
 }

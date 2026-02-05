@@ -45,19 +45,22 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAfterEach {
 
-
-  lazy val addAssetsRoute: String = controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+  lazy val addAssetsRoute: String  = controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
   lazy val addOnePostRoute: String = controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.submitOne().url
-  lazy val addAnotherPostRoute: String = controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.submitAnother(index).url
-  lazy val completePostRoute: String = controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.submitComplete().url
 
-  val prefix = "nonTaxableToTaxable.addAssets"
+  lazy val addAnotherPostRoute: String =
+    controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.submitAnother(index).url
+
+  lazy val completePostRoute: String =
+    controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.submitComplete().url
+
+  val prefix                        = "nonTaxableToTaxable.addAssets"
   val addAssetForm: Form[AddAssets] = new AddAssetsFormProvider().withPrefix(prefix)
-  val yesNoForm: Form[Boolean] = new YesNoFormProvider().withPrefix("addAssetsYesNo")
+  val yesNoForm: Form[Boolean]      = new YesNoFormProvider().withPrefix("addAssetsYesNo")
 
   val mockStoreConnector: TrustsStoreConnector = mock[TrustsStoreConnector]
-  val mockViewHelper: AddAssetViewHelper = mock[AddAssetViewHelper]
-  val mockNavigator: AssetsNavigator = mock[AssetsNavigator]
+  val mockViewHelper: AddAssetViewHelper       = mock[AddAssetViewHelper]
+  val mockNavigator: AssetsNavigator           = mock[AssetsNavigator]
 
   val fakeAddRow: AddRow = AddRow("Name", "Type", "change-url", "remove-url")
 
@@ -156,7 +159,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
 
     "there are no assets" must {
 
-      val assets: Assets = Assets(Nil, Nil, Nil, Nil, Nil, Nil, Nil)
+      val assets: Assets           = Assets(Nil, Nil, Nil, Nil, Nil, Nil, Nil)
       val fakeService: FakeService = new FakeService(assets)
 
       "redirect to AddAssetsYesNoController for a GET" in {
@@ -164,14 +167,17 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
             bind(classOf[TrustService]).toInstance(fakeService)
-          ).build()
+          )
+          .build()
 
         val request = FakeRequest(GET, addAssetsRoute)
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetYesNoController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetYesNoController
+          .onPageLoad()
+          .url
 
         application.stop()
       }
@@ -188,7 +194,9 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual controllers.asset.routes.WhatKindOfAssetController.onPageLoad(index).url
+        redirectLocation(result).value mustEqual controllers.asset.routes.WhatKindOfAssetController
+          .onPageLoad(index)
+          .url
 
         application.stop()
       }
@@ -199,7 +207,8 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
           .overrides(
             bind(classOf[TrustService]).toInstance(fakeService),
             bind(classOf[TrustsStoreConnector]).toInstance(mockStoreConnector)
-          ).build()
+          )
+          .build()
 
         val request = FakeRequest(POST, addOnePostRoute)
           .withFormUrlEncodedBody(("value", "false"))
@@ -240,9 +249,9 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
 
     "there is one asset" must {
 
-      val assets: Assets = Assets(Nil, Nil, Nil, Nil, Nil, Nil, List(nonEeaBusiness))
+      val assets: Assets           = Assets(Nil, Nil, Nil, Nil, Nil, Nil, List(nonEeaBusiness))
       val fakeService: FakeService = new FakeService(assets)
-      val fakeAddRows = fakeAddRow :: Nil
+      val fakeAddRows              = fakeAddRow :: Nil
 
       "return OK and the correct view for a GET" in {
 
@@ -252,7 +261,8 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
           .overrides(
             bind(classOf[TrustService]).toInstance(fakeService),
             bind(classOf[AddAssetViewHelper]).toInstance(mockViewHelper)
-          ).build()
+          )
+          .build()
 
         val request = FakeRequest(GET, addAssetsRoute)
 
@@ -274,10 +284,10 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
 
     "there are existing assets" must {
 
-      val numberOfAssets = 3
-      val assets: Assets = Assets(Nil, Nil, Nil, Nil, Nil, Nil, List.fill(numberOfAssets)(nonEeaBusiness))
+      val numberOfAssets           = 3
+      val assets: Assets           = Assets(Nil, Nil, Nil, Nil, Nil, Nil, List.fill(numberOfAssets)(nonEeaBusiness))
       val fakeService: FakeService = new FakeService(assets)
-      val fakeAddRows = List.fill(numberOfAssets)(fakeAddRow)
+      val fakeAddRows              = List.fill(numberOfAssets)(fakeAddRow)
 
       "return OK and the correct view for a GET" in {
 
@@ -288,7 +298,8 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
             bind[Navigator].qualifiedWith(classOf[AssetsAnnotations]).toInstance(fakeNavigator),
             bind(classOf[TrustService]).toInstance(fakeService),
             bind(classOf[AddAssetViewHelper]).toInstance(mockViewHelper)
-          ).build()
+          )
+          .build()
 
         val request = FakeRequest(GET, addAssetsRoute)
 
@@ -299,7 +310,10 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual
-          view(addAssetForm, fakeAddRows, s"You have added $numberOfAssets assets", Nil, index)(request, messages).toString
+          view(addAssetForm, fakeAddRows, s"You have added $numberOfAssets assets", Nil, index)(
+            request,
+            messages
+          ).toString
 
         verify(mockViewHelper).rows(eqTo(assets), eqTo(false))(any())
 
@@ -312,7 +326,8 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
           .overrides(
             bind(classOf[TrustService]).toInstance(fakeService),
             bind(classOf[AssetsNavigator]).toInstance(mockNavigator)
-          ).build()
+          )
+          .build()
 
         val request = FakeRequest(POST, addAnotherPostRoute)
           .withFormUrlEncodedBody(("value", AddAssets.YesNow.toString))
@@ -333,7 +348,8 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
           .overrides(
             bind(classOf[TrustService]).toInstance(fakeService),
             bind(classOf[TrustsStoreConnector]).toInstance(mockStoreConnector)
-          ).build()
+          )
+          .build()
 
         val request = FakeRequest(POST, addAnotherPostRoute)
           .withFormUrlEncodedBody(("value", AddAssets.NoComplete.toString))
@@ -356,7 +372,8 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
           .overrides(
             bind(classOf[TrustService]).toInstance(fakeService),
             bind(classOf[AddAssetViewHelper]).toInstance(mockViewHelper)
-          ).build()
+          )
+          .build()
 
         val request = FakeRequest(POST, addAnotherPostRoute)
           .withFormUrlEncodedBody(("value", "invalid value"))
@@ -369,7 +386,13 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
 
         status(result) mustEqual BAD_REQUEST
 
-        contentAsString(result) mustEqual view(boundForm, fakeAddRows, s"You have added $numberOfAssets assets", Nil, index)(request, messages).toString
+        contentAsString(result) mustEqual view(
+          boundForm,
+          fakeAddRows,
+          s"You have added $numberOfAssets assets",
+          Nil,
+          index
+        )(request, messages).toString
 
         verify(mockViewHelper).rows(eqTo(assets), eqTo(false))(any())
 
@@ -383,7 +406,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
 
         "one type maxed out" in {
 
-          val assets: Assets = Assets(
+          val assets: Assets           = Assets(
             monetary = Nil,
             propertyOrLand = Nil,
             shares = Nil,
@@ -393,7 +416,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
             nonEEABusiness = List.fill(MAX_NON_EEA_BUSINESS_ASSETS)(nonEeaBusiness)
           )
           val fakeService: FakeService = new FakeService(assets)
-          val fakeAddRows = List.fill(MAX_NON_EEA_BUSINESS_ASSETS)(fakeAddRow)
+          val fakeAddRows              = List.fill(MAX_NON_EEA_BUSINESS_ASSETS)(fakeAddRow)
 
           when(mockViewHelper.rows(any(), any())(any())).thenReturn(AddToRows(fakeAddRows))
 
@@ -402,7 +425,8 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
               bind[Navigator].qualifiedWith(classOf[AssetsAnnotations]).toInstance(fakeNavigator),
               bind(classOf[TrustService]).toInstance(fakeService),
               bind(classOf[AddAssetViewHelper]).toInstance(mockViewHelper)
-            ).build()
+            )
+            .build()
 
           val request = FakeRequest(GET, addAssetsRoute)
 
@@ -410,8 +434,12 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
 
           status(result) mustEqual OK
 
-          contentAsString(result) must include("You cannot add another company registered outside the UK or EEA asset as you have entered a maximum of 25.")
-          contentAsString(result) must include("If you have further assets to add within this type, write to HMRC with their details.")
+          contentAsString(result) must include(
+            "You cannot add another company registered outside the UK or EEA asset as you have entered a maximum of 25."
+          )
+          contentAsString(result) must include(
+            "If you have further assets to add within this type, write to HMRC with their details."
+          )
 
           verify(mockViewHelper).rows(eqTo(assets), eqTo(false))(any())
 
@@ -420,7 +448,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
 
         "more than one type maxed out" in {
 
-          val assets: Assets = Assets(
+          val assets: Assets           = Assets(
             monetary = List.fill(MAX_MONEY_ASSETS)(money),
             propertyOrLand = Nil,
             shares = Nil,
@@ -430,7 +458,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
             nonEEABusiness = List.fill(MAX_NON_EEA_BUSINESS_ASSETS)(nonEeaBusiness)
           )
           val fakeService: FakeService = new FakeService(assets)
-          val fakeAddRows = List.fill(MAX_MONEY_ASSETS + MAX_NON_EEA_BUSINESS_ASSETS)(fakeAddRow)
+          val fakeAddRows              = List.fill(MAX_MONEY_ASSETS + MAX_NON_EEA_BUSINESS_ASSETS)(fakeAddRow)
 
           when(mockViewHelper.rows(any(), any())(any())).thenReturn(AddToRows(fakeAddRows))
 
@@ -439,7 +467,8 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
               bind[Navigator].qualifiedWith(classOf[AssetsAnnotations]).toInstance(fakeNavigator),
               bind(classOf[TrustService]).toInstance(fakeService),
               bind(classOf[AddAssetViewHelper]).toInstance(mockViewHelper)
-            ).build()
+            )
+            .build()
 
           val request = FakeRequest(GET, addAssetsRoute)
 
@@ -448,7 +477,9 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
           status(result) mustEqual OK
 
           contentAsString(result) must include("You have entered the maximum number of assets for:")
-          contentAsString(result) must include("If you have further assets to add within these types, write to HMRC with their details.")
+          contentAsString(result) must include(
+            "If you have further assets to add within these types, write to HMRC with their details."
+          )
 
           verify(mockViewHelper).rows(eqTo(assets), eqTo(false))(any())
 
@@ -457,7 +488,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
 
         "all types maxed out" in {
 
-          val assets: Assets = Assets(
+          val assets: Assets           = Assets(
             monetary = List.fill(MAX_MONEY_ASSETS)(money),
             propertyOrLand = List.fill(MAX_PROPERTY_OR_LAND_ASSETS)(propertyOrLand),
             shares = List.fill(MAX_SHARES_ASSETS)(share),
@@ -467,7 +498,7 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
             nonEEABusiness = List.fill(MAX_NON_EEA_BUSINESS_ASSETS)(nonEeaBusiness)
           )
           val fakeService: FakeService = new FakeService(assets)
-          val fakeAddRows = List.fill(MAX_ALL_ASSETS)(fakeAddRow)
+          val fakeAddRows              = List.fill(MAX_ALL_ASSETS)(fakeAddRow)
 
           when(mockViewHelper.rows(any(), any())(any())).thenReturn(AddToRows(fakeAddRows))
 
@@ -476,7 +507,8 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
               bind[Navigator].qualifiedWith(classOf[AssetsAnnotations]).toInstance(fakeNavigator),
               bind(classOf[TrustService]).toInstance(fakeService),
               bind(classOf[AddAssetViewHelper]).toInstance(mockViewHelper)
-            ).build()
+            )
+            .build()
 
           val request = FakeRequest(GET, addAssetsRoute)
 
@@ -490,7 +522,9 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
 
           content mustEqual view(fakeAddRows, "You have added 76 assets", 76, prefix)(request, messages).toString
           content must include("You cannot add another asset as you have entered a maximum of 76.")
-          content must include("You can add another asset by removing an existing one, or write to HMRC with details of any additional assets.")
+          content must include(
+            "You can add another asset by removing an existing one, or write to HMRC with details of any additional assets."
+          )
 
           verify(mockViewHelper).rows(eqTo(assets), eqTo(false))(any())
 
@@ -503,7 +537,8 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
             bind(classOf[TrustsStoreConnector]).toInstance(mockStoreConnector)
-          ).build()
+          )
+          .build()
 
         val request = FakeRequest(POST, completePostRoute)
           .withFormUrlEncodedBody(("value", AddAssets.NoComplete.toString))
@@ -520,34 +555,59 @@ class AddAssetsControllerSpec extends SpecBase with Generators with BeforeAndAft
     }
   }
 
-
   class FakeService(testAssets: Assets) extends TrustService {
 
     override def getAssets(identifier: String)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[Assets] =
       Future.successful(testAssets)
 
-    override def getMonetaryAsset(identifier: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[AssetMonetaryAmount] =
+    override def getMonetaryAsset(identifier: String, index: Int)(implicit
+      hc: HeaderCarrier,
+      ex: ExecutionContext
+    ): Future[AssetMonetaryAmount] =
       Future.successful(testAssets.monetary(index))
 
-    override def getPropertyOrLandAsset(identifier: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[PropertyLandType] =
+    override def getPropertyOrLandAsset(identifier: String, index: Int)(implicit
+      hc: HeaderCarrier,
+      ex: ExecutionContext
+    ): Future[PropertyLandType] =
       Future.successful(testAssets.propertyOrLand(index))
 
-    override def getSharesAsset(identifier: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[SharesType] =
+    override def getSharesAsset(identifier: String, index: Int)(implicit
+      hc: HeaderCarrier,
+      ex: ExecutionContext
+    ): Future[SharesType] =
       Future.successful(testAssets.shares(index))
 
-    override def getBusinessAsset(identifier: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[BusinessAssetType] =
+    override def getBusinessAsset(identifier: String, index: Int)(implicit
+      hc: HeaderCarrier,
+      ex: ExecutionContext
+    ): Future[BusinessAssetType] =
       Future.successful(testAssets.business(index))
 
-    override def getOtherAsset(identifier: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[OtherAssetType] =
+    override def getOtherAsset(identifier: String, index: Int)(implicit
+      hc: HeaderCarrier,
+      ex: ExecutionContext
+    ): Future[OtherAssetType] =
       Future.successful(testAssets.other(index))
 
-    override def getPartnershipAsset(identifier: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[PartnershipType] =
+    override def getPartnershipAsset(identifier: String, index: Int)(implicit
+      hc: HeaderCarrier,
+      ex: ExecutionContext
+    ): Future[PartnershipType] =
       Future.successful(testAssets.partnerShip(index))
 
-    override def getNonEeaBusinessAsset(identifier: String, index: Int)(implicit hc: HeaderCarrier, ex: ExecutionContext): Future[NonEeaBusinessType] =
+    override def getNonEeaBusinessAsset(identifier: String, index: Int)(implicit
+      hc: HeaderCarrier,
+      ex: ExecutionContext
+    ): Future[NonEeaBusinessType] =
       Future.successful(testAssets.nonEEABusiness(index))
 
-    override def removeAsset(identifier: String, asset: RemoveAsset)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[HttpResponse] =
+    override def removeAsset(identifier: String, asset: RemoveAsset)(implicit
+      hc: HeaderCarrier,
+      ec: ExecutionContext
+    ): Future[HttpResponse] =
       Future.successful(HttpResponse(OK, ""))
+
   }
+
 }

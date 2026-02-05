@@ -34,7 +34,8 @@ class SharePortfolioOnStockExchangeControllerSpec extends SpecBase with ModelGen
 
   val form: Form[Boolean] = new YesNoFormProvider().withPrefix("shares.portfolioOnStockExchangeYesNo")
 
-  lazy val sharePortfolioOnStockExchangeRoute: String = routes.SharePortfolioOnStockExchangeController.onPageLoad(index, NormalMode).url
+  lazy val sharePortfolioOnStockExchangeRoute: String =
+    routes.SharePortfolioOnStockExchangeController.onPageLoad(index, NormalMode).url
 
   "SharePortfolioOnStockExchange Controller" must {
 

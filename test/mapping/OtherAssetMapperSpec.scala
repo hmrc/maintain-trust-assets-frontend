@@ -25,8 +25,7 @@ import org.scalatest.matchers.must.Matchers
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.other.{OtherAssetDescriptionPage, OtherAssetValuePage}
 
-class OtherAssetMapperSpec extends SpecBase with Matchers
-  with OptionValues with Generators {
+class OtherAssetMapperSpec extends SpecBase with Matchers with OptionValues with Generators {
 
   val otherAssetMapper: OtherAssetMapper = injector.instanceOf[OtherAssetMapper]
 
@@ -38,7 +37,9 @@ class OtherAssetMapperSpec extends SpecBase with Matchers
 
       val userAnswers =
         emptyUserAnswers
-          .set(WhatKindOfAssetPage(index), Other).success.value
+          .set(WhatKindOfAssetPage(index), Other)
+          .success
+          .value
 
       otherAssetMapper(userAnswers).isDefined mustBe false
     }
@@ -47,10 +48,15 @@ class OtherAssetMapperSpec extends SpecBase with Matchers
 
       val userAnswers =
         emptyUserAnswers
-          .set(WhatKindOfAssetPage(index), Other).success.value
-          .set(OtherAssetDescriptionPage(index), "Description").success.value
-          .set(OtherAssetValuePage(index), assetValue1).success.value
-
+          .set(WhatKindOfAssetPage(index), Other)
+          .success
+          .value
+          .set(OtherAssetDescriptionPage(index), "Description")
+          .success
+          .value
+          .set(OtherAssetValuePage(index), assetValue1)
+          .success
+          .value
 
       val result = otherAssetMapper(userAnswers).get
 
@@ -58,4 +64,5 @@ class OtherAssetMapperSpec extends SpecBase with Matchers
         OtherAssetType("Description", assetValue1)
     }
   }
+
 }

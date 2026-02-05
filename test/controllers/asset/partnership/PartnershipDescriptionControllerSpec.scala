@@ -31,9 +31,10 @@ import views.html.asset.partnership.PartnershipDescriptionView
 class PartnershipDescriptionControllerSpec extends SpecBase with IndexValidation {
 
   private val formProvider = new DescriptionFormProvider()
-  private val form = formProvider.withConfig(56, "partnership.description")
+  private val form         = formProvider.withConfig(56, "partnership.description")
 
-  private lazy val partnershipDescriptionRoute = routes.PartnershipDescriptionController.onPageLoad(index, NormalMode).url
+  private lazy val partnershipDescriptionRoute =
+    routes.PartnershipDescriptionController.onPageLoad(index, NormalMode).url
 
   "PartnershipDescription Controller" must {
 

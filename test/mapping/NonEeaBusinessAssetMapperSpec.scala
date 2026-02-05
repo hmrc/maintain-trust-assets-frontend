@@ -32,10 +32,10 @@ class NonEeaBusinessAssetMapperSpec extends SpecBase {
 
   private val baseAnswers = emptyUserAnswers.copy(is5mldEnabled = true)
 
-  private val name: String = "Name"
-  private val country: String = "FR"
+  private val name: String               = "Name"
+  private val country: String            = "FR"
   private val nonUkAddress: NonUkAddress = NonUkAddress("Line 1", "Line 2", Some("Line 3"), country)
-  private val date: LocalDate = LocalDate.parse("1996-02-03")
+  private val date: LocalDate            = LocalDate.parse("1996-02-03")
 
   "NonEeaBusinessAssetMapper" must {
 
@@ -49,23 +49,41 @@ class NonEeaBusinessAssetMapperSpec extends SpecBase {
       }
     }
 
-
     "be able to create a non-EEA business asset" when {
 
       "one asset" in {
 
         val answers = baseAnswers
-          .set(WhatKindOfAssetPage(index), NonEeaBusiness).success.value
-          .set(NamePage(index), name).success.value
-          .set(NonUkAddressPage(index), nonUkAddress).success.value
-          .set(GoverningCountryPage(index), country).success.value
-          .set(StartDatePage(index), date).success.value
+          .set(WhatKindOfAssetPage(index), NonEeaBusiness)
+          .success
+          .value
+          .set(NamePage(index), name)
+          .success
+          .value
+          .set(NonUkAddressPage(index), nonUkAddress)
+          .success
+          .value
+          .set(GoverningCountryPage(index), country)
+          .success
+          .value
+          .set(StartDatePage(index), date)
+          .success
+          .value
 
         val result = mapper(answers).get
 
         result mustBe
-          NonEeaBusinessType(lineNo = None, orgName = name, address = nonUkAddress, govLawCountry = country, startDate = date, endDate = None, provisional = true)
+          NonEeaBusinessType(
+            lineNo = None,
+            orgName = name,
+            address = nonUkAddress,
+            govLawCountry = country,
+            startDate = date,
+            endDate = None,
+            provisional = true
+          )
       }
     }
   }
+
 }

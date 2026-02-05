@@ -25,19 +25,30 @@ import viewmodels.{AnswerRow, AnswerSection}
 
 import javax.inject.Inject
 
-class PartnershipPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) {
+class PartnershipPrintHelper @Inject() (answerRowConverter: AnswerRowConverter) {
 
-  def apply(userAnswers: UserAnswers, index: Int, provisional: Boolean, name: String)(implicit messages: Messages): AnswerSection = {
+  def apply(userAnswers: UserAnswers, index: Int, provisional: Boolean, name: String)(implicit
+    messages: Messages
+  ): AnswerSection = {
 
     val bound: answerRowConverter.Bound = answerRowConverter.bind(userAnswers, name)
-    val mode: Mode = if (provisional) NormalMode else CheckMode
+    val mode: Mode                      = if (provisional) NormalMode else CheckMode
 
     def answerRows: Seq[AnswerRow] = Seq(
       bound.assetTypeQuestion(index),
-      bound.stringQuestion(PartnershipDescriptionPage(index), "partnership.description", PartnershipDescriptionController.onPageLoad(index, mode).url),
-      bound.dateQuestion(PartnershipStartDatePage(index), "partnership.startDate", PartnershipStartDateController.onPageLoad(index, mode).url)
+      bound.stringQuestion(
+        PartnershipDescriptionPage(index),
+        "partnership.description",
+        PartnershipDescriptionController.onPageLoad(index, mode).url
+      ),
+      bound.dateQuestion(
+        PartnershipStartDatePage(index),
+        "partnership.startDate",
+        PartnershipStartDateController.onPageLoad(index, mode).url
+      )
     ).flatten
 
     AnswerSection(headingKey = None, rows = answerRows)
   }
+
 }

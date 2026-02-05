@@ -25,27 +25,24 @@ import pages.asset.shares._
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
-final case class ShareAssetViewModel(`type`: WhatKindOfAsset,
-                                     name: Option[String],
-                                     status: Status) extends AssetViewModel {
+final case class ShareAssetViewModel(`type`: WhatKindOfAsset, name: Option[String], status: Status)
+    extends AssetViewModel {
 
   override val label: Option[String] = name
 }
 
 object ShareAssetViewModel extends AssetViewModelReads {
 
-
-
   implicit lazy val reads: Reads[ShareAssetViewModel] = {
 
-    val nameReads : Reads[Option[String]] =
+    val nameReads: Reads[Option[String]] =
       (__ \ SharePortfolioNamePage.key).read[String].map(_.toOption) orElse
         (__ \ ShareCompanyNamePage.key).readNullable[String]
 
     ((__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].filter(_ == Shares) and
       nameReads and
-      (__ \ AssetStatus.key).readWithDefault[Status](InProgress)
-      )(ShareAssetViewModel.apply _)
+      (__ \ AssetStatus.key).readWithDefault[Status](InProgress))(ShareAssetViewModel.apply _)
 
   }
+
 }

@@ -30,21 +30,19 @@ import scala.util.Try
 
 class NonEeaBusinessExtractor extends AssetExtractor[NonEeaBusinessType] {
 
-  override def apply(answers: UserAnswers,
-                     noneEaBusiness: NonEeaBusinessType,
-                     index: Int): Try[UserAnswers] = {
+  override def apply(answers: UserAnswers, noneEaBusiness: NonEeaBusinessType, index: Int): Try[UserAnswers] =
 
-    super.apply(answers, noneEaBusiness, index)
+    super
+      .apply(answers, noneEaBusiness, index)
       .flatMap(_.set(NamePage(index), noneEaBusiness.orgName))
       .flatMap(_.set(GoverningCountryPage(index), noneEaBusiness.govLawCountry))
       .flatMap(answers => extractAddress(Some(noneEaBusiness.address), answers))
       .flatMap(_.set(StartDatePage(index), noneEaBusiness.startDate))
-  }
 
   override def namePage: QuestionPage[String] = NamePage(0)
 
-  override def ukAddressYesNoPage: QuestionPage[Boolean] = UkAddressYesNoPage
-  override def ukAddressPage: QuestionPage[UkAddress] = UkAddressPage
+  override def ukAddressYesNoPage: QuestionPage[Boolean]    = UkAddressYesNoPage
+  override def ukAddressPage: QuestionPage[UkAddress]       = UkAddressPage
   override def nonUkAddressPage: QuestionPage[NonUkAddress] = NonUkAddressPage(0)
 
   override def startDatePage: QuestionPage[LocalDate] = StartDatePage(0)

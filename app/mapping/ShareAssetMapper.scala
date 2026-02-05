@@ -29,14 +29,14 @@ class ShareAssetMapper extends Mapper[SharesType] {
   def apply(answers: UserAnswers): Option[SharesType] = {
     val readFromUserAnswers: Reads[SharesType] =
       SharesInAPortfolioPage(0).path.read[Boolean].flatMap {
-        case true => readPortfolio
+        case true  => readPortfolio
         case false => readNonPortfolio
       }
 
     mapAnswersWithExplicitReads(answers, readFromUserAnswers)
   }
 
-  private def readPortfolio: Reads[SharesType] = {
+  private def readPortfolio: Reads[SharesType] =
     (
       readStringToLong(SharePortfolioQuantityInTrustPage(0)) and
         SharePortfolioNamePage(0).path.read[String] and
@@ -45,10 +45,9 @@ class ShareAssetMapper extends Mapper[SharesType] {
         SharePortfolioValueInTrustPage(0).path.read[Long] and
         Reads(_ => JsSuccess(Some(true))) and
         Reads(_ => JsSuccess(Some(ShareClass.Other)))
-    ) (SharesType.apply _)
-  }
+    )(SharesType.apply _)
 
-  private def readNonPortfolio: Reads[SharesType] = {
+  private def readNonPortfolio: Reads[SharesType] =
     (
       readStringToLong(ShareQuantityInTrustPage(0)) and
         ShareCompanyNamePage(0).path.read[String] and
@@ -57,17 +56,15 @@ class ShareAssetMapper extends Mapper[SharesType] {
         ShareValueInTrustPage(0).path.read[Long] and
         Reads(_ => JsSuccess(Some(false))) and
         ShareClassPage(0).path.read[ShareClass].map(Some(_))
-      ) (SharesType.apply _)
-  }
+    )(SharesType.apply _)
 
-  private def readStringToLong(page: QuestionPage[Long]): Reads[String] = {
+  private def readStringToLong(page: QuestionPage[Long]): Reads[String] =
     page.path.read[Long].map(_.toString)
-  }
 
-  private def onStockExchange(page: QuestionPage[Boolean]): Reads[String] = {
+  private def onStockExchange(page: QuestionPage[Boolean]): Reads[String] =
     page.path.read[Boolean].flatMap {
-      case true => Reads(_ => JsSuccess(QUOTED))
+      case true  => Reads(_ => JsSuccess(QUOTED))
       case false => Reads(_ => JsSuccess(UNQUOTED))
     }
-  }
+
 }

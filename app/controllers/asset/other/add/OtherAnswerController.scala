@@ -37,58 +37,59 @@ import views.html.asset.other.add.OtherAssetAnswersView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class OtherAnswerController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       standardActionSets: StandardActionSets,
-                                       nameAction: NameRequiredAction,
-                                       connector: TrustsConnector,
-                                       @Other navigator: Navigator,
-                                       view: OtherAssetAnswersView,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       printHelper: OtherPrintHelper,
-                                       mapper: OtherAssetMapper,
-                                       errorHandler: ErrorHandler,
-                                       repository: PlaybackRepository
-                                     )(implicit ec: ExecutionContext)
-  extends FrontendBaseController with I18nSupport {
+class OtherAnswerController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  nameAction: NameRequiredAction,
+  connector: TrustsConnector,
+  @Other navigator: Navigator,
+  view: OtherAssetAnswersView,
+  val controllerComponents: MessagesControllerComponents,
+  printHelper: OtherPrintHelper,
+  mapper: OtherAssetMapper,
+  errorHandler: ErrorHandler,
+  repository: PlaybackRepository
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   private val provisional: Boolean = true
 
   def onPageLoad(index: Int): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
     implicit request =>
-      val name: String = request.userAnswers.get(OtherAssetDescriptionPage(index)).getOrElse("")
-      val section: AnswerSection = printHelper(userAnswers = request.userAnswers, index = index, provisional = provisional, name = name)
+      val name: String           = request.userAnswers.get(OtherAssetDescriptionPage(index)).getOrElse("")
+      val section: AnswerSection =
+        printHelper(userAnswers = request.userAnswers, index = index, provisional = provisional, name = name)
       Ok(view(index, section))
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
-    implicit request =>
-      mapper(request.userAnswers) match {
-        case None => errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
-        case Some(asset) =>
-          connector.getAssets(request.userAnswers.identifier).flatMap { data =>
-            if (data.other.nonEmpty && (data.other.size - 1 == index)) {
-              connector.amendOtherAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async { implicit request =>
+    mapper(request.userAnswers) match {
+      case None        => errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
+      case Some(asset) =>
+        connector.getAssets(request.userAnswers.identifier).flatMap { data =>
+          if (data.other.nonEmpty && (data.other.size - 1 == index)) {
+            connector.amendOtherAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
+              response.status match {
+                case OK | NO_CONTENT => cleanAllAndRedirect(index)
+                case _               => errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
+              }
+            }
+          } else {
+            val exists =
+              data.other.exists(e => e.description.equalsIgnoreCase(asset.description) && e.value == asset.value)
+            if (!exists) {
+              connector.addOtherAsset(request.userAnswers.identifier, asset).flatMap { response =>
                 response.status match {
                   case OK | NO_CONTENT => cleanAllAndRedirect(index)
                   case _               => errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
                 }
               }
             } else {
-              val exists = data.other.exists(e => e.description.equalsIgnoreCase(asset.description) && e.value == asset.value)
-              if (!exists) {
-                connector.addOtherAsset(request.userAnswers.identifier, asset).flatMap { response =>
-                  response.status match {
-                    case OK | NO_CONTENT => cleanAllAndRedirect(index)
-                    case _               => errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
-                  }
-                }
-              } else {
-                cleanAllAndRedirect(index)
-              }
+              cleanAllAndRedirect(index)
             }
           }
-      }
+        }
+    }
   }
 
   private def cleanAllAndRedirect(index: Int)(implicit request: DataRequest[AnyContent]): Future[Result] = {
@@ -98,4 +99,5 @@ class OtherAnswerController @Inject()(
       ua => repository.set(ua).map(_ => Redirect(next))
     )
   }
+
 }

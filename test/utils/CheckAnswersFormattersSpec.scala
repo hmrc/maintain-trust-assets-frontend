@@ -89,13 +89,13 @@ class CheckAnswersFormattersSpec extends SpecBase {
 
           "lines 3 and 4 provided" in {
             val address: UkAddress = UkAddress("Line 1", "Line 2", Some("Line 3"), Some("Line 4"), "AB1 1AB")
-            val result: Html = checkAnswersFormatters.addressFormatter(address)
+            val result: Html       = checkAnswersFormatters.addressFormatter(address)
             result mustBe Html("Line 1<br />Line 2<br />Line 3<br />Line 4<br />AB1 1AB")
           }
 
           "lines 3 and 4 not provided" in {
             val address: UkAddress = UkAddress("Line 1", "Line 2", None, None, "AB1 1AB")
-            val result: Html = checkAnswersFormatters.addressFormatter(address)
+            val result: Html       = checkAnswersFormatters.addressFormatter(address)
             result mustBe Html("Line 1<br />Line 2<br />AB1 1AB")
           }
         }
@@ -106,17 +106,18 @@ class CheckAnswersFormattersSpec extends SpecBase {
 
           "line 3 provided" in {
             val address: NonUkAddress = NonUkAddress("Line 1", "Line 2", Some("Line 3"), "FR")
-            val result: Html = checkAnswersFormatters.addressFormatter(address)
+            val result: Html          = checkAnswersFormatters.addressFormatter(address)
             result mustBe Html("Line 1<br />Line 2<br />Line 3<br />France")
           }
 
           "line 3 not provided" in {
             val address: NonUkAddress = NonUkAddress("Line 1", "Line 2", None, "FR")
-            val result: Html = checkAnswersFormatters.addressFormatter(address)
+            val result: Html          = checkAnswersFormatters.addressFormatter(address)
             result mustBe Html("Line 1<br />Line 2<br />France")
           }
         }
       }
     }
   }
+
 }

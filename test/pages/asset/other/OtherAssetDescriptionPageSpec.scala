@@ -28,4 +28,5 @@ class OtherAssetDescriptionPageSpec extends PageBehaviours {
 
     beRemovable[String](OtherAssetDescriptionPage(index))
   }
+
 }

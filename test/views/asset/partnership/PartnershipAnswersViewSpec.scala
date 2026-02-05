@@ -36,4 +36,5 @@ class PartnershipAnswersViewSpec extends ViewBehaviours {
 
     behave like pageWithBackLink(applyView())
   }
+
 }

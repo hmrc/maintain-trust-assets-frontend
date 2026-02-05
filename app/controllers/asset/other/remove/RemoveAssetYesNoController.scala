@@ -32,57 +32,58 @@ import views.html.asset.other.remove.RemoveAssetYesNoView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class RemoveAssetYesNoController @Inject()(
-                                            override val messagesApi: MessagesApi,
-                                            standardActionSets: StandardActionSets,
-                                            formProvider: RemoveIndexFormProvider,
-                                            trustService: TrustService,
-                                            val controllerComponents: MessagesControllerComponents,
-                                            view: RemoveAssetYesNoView,
-                                            errorHandler: ErrorHandler
-                                          )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+class RemoveAssetYesNoController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  formProvider: RemoveIndexFormProvider,
+  trustService: TrustService,
+  val controllerComponents: MessagesControllerComponents,
+  view: RemoveAssetYesNoView,
+  errorHandler: ErrorHandler
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport with Logging {
 
   private val messagesPrefix: String = "other.removeYesNo"
-  private val form = formProvider.apply(messagesPrefix)
+  private val form                   = formProvider.apply(messagesPrefix)
 
-  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
-    implicit request =>
-      trustService.getOtherAsset(request.userAnswers.identifier, index).map {
-        asset =>
-          Ok(view(form, index, asset.description))
-      } recoverWith {
-        case iobe: IndexOutOfBoundsException =>
-          logger.warn(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
-            s" user cannot remove asset as asset was not found ${iobe.getMessage}: IndexOutOfBoundsException")
-          Future.successful(Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()))
-        case _ =>
-          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
-            s" user cannot remove asset as asset was not found")
-          errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
-      }
+  def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async { implicit request =>
+    trustService.getOtherAsset(request.userAnswers.identifier, index).map { asset =>
+      Ok(view(form, index, asset.description))
+    } recoverWith {
+      case iobe: IndexOutOfBoundsException =>
+        logger.warn(
+          s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
+            s" user cannot remove asset as asset was not found ${iobe.getMessage}: IndexOutOfBoundsException"
+        )
+        Future.successful(Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()))
+      case _                               =>
+        logger.error(
+          s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
+            s" user cannot remove asset as asset was not found"
+        )
+        errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
+    }
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
-    implicit request =>
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) => {
-          trustService.getOtherAsset(request.userAnswers.identifier, index).map {
-            asset =>
-              BadRequest(view(formWithErrors, index, asset.description))
-          }
-        },
-        value => {
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[_]) =>
+          trustService.getOtherAsset(request.userAnswers.identifier, index).map { asset =>
+            BadRequest(view(formWithErrors, index, asset.description))
+          },
+        value =>
           if (value) {
-            trustService.getOtherAsset(request.userAnswers.identifier, index).flatMap {
-              _ =>
-                trustService.removeAsset(request.userAnswers.identifier, RemoveAsset(AssetNameType.OtherAssetNameType, index)).map(_ =>
-                  Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
-                )
+            trustService.getOtherAsset(request.userAnswers.identifier, index).flatMap { _ =>
+              trustService
+                .removeAsset(request.userAnswers.identifier, RemoveAsset(AssetNameType.OtherAssetNameType, index))
+                .map(_ => Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()))
             }
           } else {
             Future.successful(Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()))
           }
-        }
       )
   }
+
 }

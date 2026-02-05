@@ -32,15 +32,17 @@ import views.html.asset.business.BusinessUkAddressView
 
 class BusinessUkAddressControllerSpec extends SpecBase with IndexValidation {
 
-  val formProvider = new UKAddressFormProvider()
-  val form: Form[UkAddress] = formProvider()
-    val businessName = "Test"
+  val formProvider           = new UKAddressFormProvider()
+  val form: Form[UkAddress]  = formProvider()
+  val businessName           = "Test"
   val validAnswer: UkAddress = UkAddress("value 1", "value 2", Some("value 3"), Some("value 4"), "AB1 1AB")
 
   lazy val assetUkAddressRoute: String = routes.BusinessUkAddressController.onPageLoad(index, NormalMode).url
 
   val baseAnswers: UserAnswers = emptyUserAnswers
-    .set(BusinessNamePage(index), businessName).success.value
+    .set(BusinessNamePage(index), businessName)
+    .success
+    .value
 
   "AssetUkAddress Controller" must {
 
@@ -65,7 +67,9 @@ class BusinessUkAddressControllerSpec extends SpecBase with IndexValidation {
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val userAnswers = baseAnswers
-        .set(BusinessUkAddressPage(index), validAnswer).success.value
+        .set(BusinessUkAddressPage(index), validAnswer)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
 
@@ -162,4 +166,5 @@ class BusinessUkAddressControllerSpec extends SpecBase with IndexValidation {
     }
 
   }
+
 }

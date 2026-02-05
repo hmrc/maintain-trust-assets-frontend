@@ -26,7 +26,7 @@ import views.html.asset.shares.ShareQuantityInTrustView
 class ShareQuantityInTrustViewSpec extends LongViewBehaviours {
 
   private val messageKeyPrefix = "shares.quantityInTrust"
-  private val companyName = "Company"
+  private val companyName      = "Company"
 
   override val form: Form[Long] = new QuantityFormProvider(frontendAppConfig).withPrefix(messageKeyPrefix)
 
@@ -39,8 +39,15 @@ class ShareQuantityInTrustViewSpec extends LongViewBehaviours {
 
     behave like pageWithBackLink(applyView(form))
 
-    behave like longPageWithDynamicTitle(form, applyView, messageKeyPrefix, companyName, Some(messages(s"$messageKeyPrefix.hint")))
+    behave like longPageWithDynamicTitle(
+      form,
+      applyView,
+      messageKeyPrefix,
+      companyName,
+      Some(messages(s"$messageKeyPrefix.hint"))
+    )
 
     pageWithASubmitButton(applyView(form))
   }
+
 }

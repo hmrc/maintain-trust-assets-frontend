@@ -29,7 +29,7 @@ import play.api.mvc.Call
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class NonEeaBusinessNavigator @Inject()() extends Navigator {
+class NonEeaBusinessNavigator @Inject() () extends Navigator {
 
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
     routes(mode)(page)(userAnswers)
@@ -38,21 +38,20 @@ class NonEeaBusinessNavigator @Inject()() extends Navigator {
     simpleNavigation(mode)
 
   def simpleNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
-    case NamePage(index) => _ => rts.InternationalAddressController.onPageLoad(index,mode)
-    case NonUkAddressPage(index) => _ => rts.GoverningCountryController.onPageLoad(index,mode)
+    case NamePage(index)             => _ => rts.InternationalAddressController.onPageLoad(index, mode)
+    case NonUkAddressPage(index)     => _ => rts.GoverningCountryController.onPageLoad(index, mode)
     case GoverningCountryPage(index) => ua => navigateToStartDateOrCheckAnswers(ua, mode, index)
-    case StartDatePage(index) => _ => addRts.AnswersController.onPageLoad(index)
+    case StartDatePage(index)        => _ => addRts.AnswersController.onPageLoad(index)
   }
 
-  private def navigateToStartDateOrCheckAnswers(ua: UserAnswers, mode: Mode, index: Int): Call = {
+  private def navigateToStartDateOrCheckAnswers(ua: UserAnswers, mode: Mode, index: Int): Call =
     if (mode == NormalMode) {
       addRts.StartDateController.onPageLoad(index)
     } else {
       ua.get(IndexPage) match {
         case Some(indexPage: Int) => amendRts.AnswersController.renderFromUserAnswers(indexPage)
-        case None => controllers.routes.SessionExpiredController.onPageLoad
+        case None                 => controllers.routes.SessionExpiredController.onPageLoad
       }
     }
-  }
 
 }

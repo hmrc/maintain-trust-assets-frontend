@@ -31,8 +31,6 @@ class AddNonEeaBusinessAssetViewSpec extends OptionsViewBehaviours with TabularD
     AddRow("Company 2", WhatKindOfAsset.NonEeaBusiness.toString, "#", "#")
   )
 
-
-
   private val messageKeyPrefix: String = "addNonEeaBusinessAsset"
 
   private val form: Form[AddAssets] = new AddAssetsFormProvider().withPrefix(messageKeyPrefix)
@@ -88,4 +86,5 @@ class AddNonEeaBusinessAssetViewSpec extends OptionsViewBehaviours with TabularD
     }
 
   }
+
 }

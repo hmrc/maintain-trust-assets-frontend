@@ -34,6 +34,7 @@ object AssetViewModel {
 
     def or[B >: A](b: Reads[B]): Reads[B] =
       a.map[B](identity).orElse(b)
+
   }
 
   implicit def convertToSupertype[A, B >: A](a: Reads[A]): Reads[B] =

@@ -32,9 +32,9 @@ import views.html.asset.shares.ShareClassView
 
 class ShareClassControllerSpec extends SpecBase with ModelGenerators with IndexValidation {
 
-  val formProvider = new ShareClassFormProvider()
+  val formProvider           = new ShareClassFormProvider()
   val form: Form[ShareClass] = formProvider()
-  val companyName = "Company"
+  val companyName            = "Company"
 
   lazy val shareClassRoute: String = routes.ShareClassController.onPageLoad(index, NormalMode).url
 
@@ -63,8 +63,12 @@ class ShareClassControllerSpec extends SpecBase with ModelGenerators with IndexV
     "populate the view correctly on a GET when the question has previously been answered" in {
 
       val ua = emptyUserAnswers
-        .set(ShareCompanyNamePage(index), "Company").success.value
-        .set(ShareClassPage(index), ShareClass.allValues.head).success.value
+        .set(ShareCompanyNamePage(index), "Company")
+        .success
+        .value
+        .set(ShareClassPage(index), ShareClass.allValues.head)
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(ua)).build()
 

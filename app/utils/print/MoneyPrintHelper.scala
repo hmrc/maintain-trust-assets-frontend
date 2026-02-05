@@ -25,9 +25,11 @@ import viewmodels.{AnswerRow, AnswerSection}
 
 import javax.inject.Inject
 
-class MoneyPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) {
+class MoneyPrintHelper @Inject() (answerRowConverter: AnswerRowConverter) {
 
-  def apply(userAnswers: UserAnswers, index: Int, provisional: Boolean, name: String)(implicit messages: Messages): AnswerSection = {
+  def apply(userAnswers: UserAnswers, index: Int, provisional: Boolean, name: String)(implicit
+    messages: Messages
+  ): AnswerSection = {
 
     val bound: answerRowConverter.Bound = answerRowConverter.bind(userAnswers, name)
 
@@ -35,9 +37,14 @@ class MoneyPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) {
       val mode: Mode = if (provisional) NormalMode else CheckMode
       Seq(
         bound.assetTypeQuestion(index),
-        bound.currencyQuestion(AssetMoneyValuePage(index), "money.value", AssetMoneyValueController.onPageLoad(index, mode).url)
+        bound.currencyQuestion(
+          AssetMoneyValuePage(index),
+          "money.value",
+          AssetMoneyValueController.onPageLoad(index, mode).url
+        )
       ).flatten
     }
     AnswerSection(headingKey = None, rows = answerRows)
   }
+
 }

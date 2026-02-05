@@ -27,8 +27,7 @@ import pages.asset.partnership._
 
 import java.time.LocalDate
 
-class PartnershipAssetMapperSpec extends SpecBase with Matchers
-  with OptionValues with Generators {
+class PartnershipAssetMapperSpec extends SpecBase with Matchers with OptionValues with Generators {
 
   val partnershipAssetMapper: PartnershipAssetMapper = injector.instanceOf[PartnershipAssetMapper]
 
@@ -38,7 +37,9 @@ class PartnershipAssetMapperSpec extends SpecBase with Matchers
 
       val userAnswers =
         emptyUserAnswers
-          .set(WhatKindOfAssetPage(index), WhatKindOfAsset.Partnership).success.value
+          .set(WhatKindOfAssetPage(index), WhatKindOfAsset.Partnership)
+          .success
+          .value
 
       partnershipAssetMapper(userAnswers) mustNot be(defined)
     }
@@ -47,13 +48,20 @@ class PartnershipAssetMapperSpec extends SpecBase with Matchers
 
       val userAnswers =
         emptyUserAnswers
-          .set(WhatKindOfAssetPage(index), WhatKindOfAsset.Partnership).success.value
-          .set(PartnershipDescriptionPage(index), "Partnership Description").success.value
-          .set(PartnershipStartDatePage(index), LocalDate.now).success.value
+          .set(WhatKindOfAssetPage(index), WhatKindOfAsset.Partnership)
+          .success
+          .value
+          .set(PartnershipDescriptionPage(index), "Partnership Description")
+          .success
+          .value
+          .set(PartnershipStartDatePage(index), LocalDate.now)
+          .success
+          .value
 
       partnershipAssetMapper(userAnswers).value mustBe PartnershipType("Partnership Description", LocalDate.now)
 
     }
 
   }
+
 }

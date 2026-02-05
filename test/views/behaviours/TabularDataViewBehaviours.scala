@@ -42,16 +42,16 @@ trait TabularDataViewBehaviours extends ViewSpecBase {
       val changeLink = element.getElementsByClass("hmrc-add-to-a-list__change").first()
 
       changeLink.getElementsByTag("a").attr("href") must include(item.changeUrl)
-      changeLink.text must include(s"Change ${item.name}")
+      changeLink.text                               must include(s"Change ${item.name}")
 
       val removeLink = element.getElementsByClass("hmrc-add-to-a-list__remove").first()
 
       removeLink.getElementsByTag("a").attr("href") must include(item.removeUrl)
-      removeLink.text must include(s"Remove ${item.name}")
+      removeLink.text                               must include(s"Remove ${item.name}")
     }
   }
 
-  def pageWithNoTabularData(view: HtmlFormat.Appendable): Unit = {
+  def pageWithNoTabularData(view: HtmlFormat.Appendable): Unit =
 
     "behave like a page with no tabular data" when {
 
@@ -66,9 +66,8 @@ trait TabularDataViewBehaviours extends ViewSpecBase {
         assertElementNotPresent(doc, "dl")
       }
     }
-  }
 
-  def pageWithInProgressTabularData(view: HtmlFormat.Appendable, data: Seq[AddRow]): Unit = {
+  def pageWithInProgressTabularData(view: HtmlFormat.Appendable, data: Seq[AddRow]): Unit =
 
     "behave like a page with incomplete tabular data" should {
 
@@ -89,9 +88,8 @@ trait TabularDataViewBehaviours extends ViewSpecBase {
         assertDataList(doc, "data-list--inprogress", data)
       }
     }
-  }
 
-  def pageWithCompleteTabularData(view: HtmlFormat.Appendable, data: Seq[AddRow]): Unit = {
+  def pageWithCompleteTabularData(view: HtmlFormat.Appendable, data: Seq[AddRow]): Unit =
 
     "behave like a page with complete tabular data" should {
 
@@ -112,11 +110,8 @@ trait TabularDataViewBehaviours extends ViewSpecBase {
         assertDataList(doc, "data-list--complete", data)
       }
     }
-  }
 
-  def pageWithTabularData(view: HtmlFormat.Appendable,
-                          inProgressData: Seq[AddRow],
-                          completeData: Seq[AddRow]): Unit = {
+  def pageWithTabularData(view: HtmlFormat.Appendable, inProgressData: Seq[AddRow], completeData: Seq[AddRow]): Unit =
 
     "behave like a page with complete and incomplete tabular data" should {
 
@@ -138,7 +133,5 @@ trait TabularDataViewBehaviours extends ViewSpecBase {
         assertDataList(doc, "data-list--complete", completeData)
       }
     }
-  }
 
 }
-

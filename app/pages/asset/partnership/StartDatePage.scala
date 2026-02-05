@@ -22,7 +22,7 @@ import pages.QuestionPage
 import play.api.libs.json.JsPath
 import sections.Assets
 
-case object  StartDatePage extends QuestionPage[LocalDate] {
+case object StartDatePage extends QuestionPage[LocalDate] {
 
   override def path: JsPath = Assets.path \ toString
 

@@ -32,16 +32,17 @@ import views.html.asset.shares.ShareClassView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ShareClassController @Inject()(
-                                      override val messagesApi: MessagesApi,
-                                      standardActionSets: StandardActionSets,
-                                      nameAction: CompanyNameRequiredAction,
-                                      repository: PlaybackRepository,
-                                      @Shares navigator: Navigator,
-                                      formProvider: ShareClassFormProvider,
-                                      val controllerComponents: MessagesControllerComponents,
-                                      view: ShareClassView
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
+class ShareClassController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  nameAction: CompanyNameRequiredAction,
+  repository: PlaybackRepository,
+  @Shares navigator: Navigator,
+  formProvider: ShareClassFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: ShareClassView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport with Enumerable.Implicits {
 
   private val form = formProvider()
 
@@ -51,23 +52,25 @@ class ShareClassController @Inject()(
         case None        => form
         case Some(value) => form.fill(value)
       }
-      val companyName = request.userAnswers.get(ShareCompanyNamePage(index)).getOrElse("")
+      val companyName  = request.userAnswers.get(ShareCompanyNamePage(index)).getOrElse("")
       Ok(view(preparedForm, index, mode, companyName))
     }
 
   def onSubmit(index: Int, mode: Mode): Action[AnyContent] =
     (standardActionSets.verifiedForIdentifier andThen nameAction).async { implicit request =>
-      form.bindFromRequest().fold(
-        formWithErrors => {
-          val companyName = request.userAnswers.get(ShareCompanyNamePage(index)).getOrElse("")
-          Future.successful(BadRequest(view(formWithErrors, index, mode, companyName)))
-        },
-        value => {
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(ShareClassPage(index), value))
-            _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(ShareClassPage(index), mode, updatedAnswers))
-        }
-      )
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => {
+            val companyName = request.userAnswers.get(ShareCompanyNamePage(index)).getOrElse("")
+            Future.successful(BadRequest(view(formWithErrors, index, mode, companyName)))
+          },
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(ShareClassPage(index), value))
+              _              <- repository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(ShareClassPage(index), mode, updatedAnswers))
+        )
     }
+
 }

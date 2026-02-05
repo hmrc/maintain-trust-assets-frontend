@@ -36,19 +36,20 @@ import views.html.asset.property_or_land.add.PropertyOrLandAnswersView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class PropertyOrLandAnswerController @Inject()(
-                                                override val messagesApi: MessagesApi,
-                                                @PropertyOrLand navigator: Navigator,
-                                                standardActionSets: StandardActionSets,
-                                                nameAction: NameRequiredAction,
-                                                view: PropertyOrLandAnswersView,
-                                                val controllerComponents: MessagesControllerComponents,
-                                                printHelper: PropertyOrLandPrintHelper,
-                                                connector: TrustsConnector,
-                                                mapper: PropertyOrLandMapper,
-                                                errorHandler: ErrorHandler,
-                                                repository: PlaybackRepository
-                                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class PropertyOrLandAnswerController @Inject() (
+  override val messagesApi: MessagesApi,
+  @PropertyOrLand navigator: Navigator,
+  standardActionSets: StandardActionSets,
+  nameAction: NameRequiredAction,
+  view: PropertyOrLandAnswersView,
+  val controllerComponents: MessagesControllerComponents,
+  printHelper: PropertyOrLandPrintHelper,
+  connector: TrustsConnector,
+  mapper: PropertyOrLandMapper,
+  errorHandler: ErrorHandler,
+  repository: PlaybackRepository
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   private val provisional: Boolean = true
 
@@ -61,7 +62,7 @@ class PropertyOrLandAnswerController @Inject()(
   def onSubmit(index: Int): Action[AnyContent] =
     standardActionSets.verifiedForIdentifier.async { implicit request =>
       mapper(request.userAnswers) match {
-        case None => errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
+        case None        => errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
         case Some(asset) =>
           connector.getAssets(request.userAnswers.identifier).flatMap { data =>
             if (data.propertyOrLand.nonEmpty && (data.propertyOrLand.size - 1 == index)) {
@@ -100,4 +101,5 @@ class PropertyOrLandAnswerController @Inject()(
       cleanedUa => repository.set(cleanedUa).map(_ => Redirect(next))
     )
   }
+
 }

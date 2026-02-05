@@ -33,58 +33,56 @@ import views.html.asset.nonTaxableToTaxable.AddAssetYesNoView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AddAssetYesNoController @Inject()(
-                                         override val messagesApi: MessagesApi,
-                                         standardActionSets: StandardActionSets,
-                                         repository: PlaybackRepository,
-                                         navigator: AssetsNavigator,
-                                         yesNoFormProvider: YesNoFormProvider,
-                                         trustService: TrustService,
-                                         val controllerComponents: MessagesControllerComponents,
-                                         view: AddAssetYesNoView,
-                                         trustStoreConnector: TrustsStoreConnector
-                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class AddAssetYesNoController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  repository: PlaybackRepository,
+  navigator: AssetsNavigator,
+  yesNoFormProvider: YesNoFormProvider,
+  trustService: TrustService,
+  val controllerComponents: MessagesControllerComponents,
+  view: AddAssetYesNoView,
+  trustStoreConnector: TrustsStoreConnector
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   private val form: Form[Boolean] = yesNoFormProvider.withPrefix("nonTaxableToTaxable.addAssetYesNo")
 
-  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
-    implicit request =>
+  def onPageLoad(): Action[AnyContent] = standardActionSets.verifiedForIdentifier { implicit request =>
+    val preparedForm = request.userAnswers.get(AddAssetsYesNoPage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      val preparedForm = request.userAnswers.get(AddAssetsYesNoPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
-
-      Ok(view(preparedForm))
+    Ok(view(preparedForm))
   }
 
-  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
-    implicit request =>
-
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors))),
-
-        value => {
-
+  def onSubmit(): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async { implicit request =>
+    form
+      .bindFromRequest()
+      .fold(
+        (formWithErrors: Form[_]) => Future.successful(BadRequest(view(formWithErrors))),
+        value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(AddAssetsYesNoPage, value))
-            _ <- repository.set(updatedAnswers)
-            assets <- trustService.getAssets(request.userAnswers.identifier)
-            _ <- if (!value) { // If answered no don't want to add
-              if (assets.isEmpty) {
-                // If no assets, set task to in progress
-                trustStoreConnector.updateTaskStatus(request.userAnswers.identifier, InProgress).map(_ => ())
-              } else {
-                // Has a taxable asset or Non-EEA company therefore can set task to completed
-                trustStoreConnector.updateTaskStatus(request.userAnswers.identifier, Completed).map(_ => ())
-              }
-            } else {
-              // Do nothing and continue in the journey if adding an asset, status is decided later
-              Future.successful(())
-            }
-          } yield Redirect(navigator.redirectFromAddAssetYesNoPage(value, updatedAnswers.isMigratingToTaxable, assets.isEmpty))
-        }
+            _              <- repository.set(updatedAnswers)
+            assets         <- trustService.getAssets(request.userAnswers.identifier)
+            _              <- if (!value) { // If answered no don't want to add
+                                if (assets.isEmpty) {
+                                  // If no assets, set task to in progress
+                                  trustStoreConnector.updateTaskStatus(request.userAnswers.identifier, InProgress).map(_ => ())
+                                } else {
+                                  // Has a taxable asset or Non-EEA company therefore can set task to completed
+                                  trustStoreConnector.updateTaskStatus(request.userAnswers.identifier, Completed).map(_ => ())
+                                }
+                              } else {
+                                // Do nothing and continue in the journey if adding an asset, status is decided later
+                                Future.successful(())
+                              }
+          } yield Redirect(
+            navigator.redirectFromAddAssetYesNoPage(value, updatedAnswers.isMigratingToTaxable, assets.isEmpty)
+          )
       )
   }
+
 }

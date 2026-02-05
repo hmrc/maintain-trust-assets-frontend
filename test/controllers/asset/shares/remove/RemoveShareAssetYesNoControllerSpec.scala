@@ -40,15 +40,15 @@ class RemoveShareAssetYesNoControllerSpec extends SpecBase with ScalaCheckProper
 
   val messagesPrefix = "shares.removeYesNo"
 
-  lazy val formProvider = new RemoveIndexFormProvider()
+  lazy val formProvider        = new RemoveIndexFormProvider()
   lazy val form: Form[Boolean] = formProvider(messagesPrefix)
 
   lazy val formRoute: Call = routes.RemoveShareAssetYesNoController.onSubmit(0)
 
   val mockConnector: TrustsConnector = mock[TrustsConnector]
 
-  private val name: String = "ShareName"
-  private val quantity: Int = 5
+  private val name: String     = "ShareName"
+  private val quantity: Int    = 5
   private val assetValue: Long = 790L
 
   def createAsset(id: Int): SharesType =
@@ -72,7 +72,6 @@ class RemoveShareAssetYesNoControllerSpec extends SpecBase with ScalaCheckProper
   "RemoveShareAssetYesNoController" when {
 
     "return OK and the correct view for a GET" in {
-
 
       when(mockConnector.getAssets(any())(any(), any()))
         .thenReturn(Future.successful(Assets(Nil, Nil, shareAssets, Nil, Nil, Nil, Nil)))
@@ -98,7 +97,6 @@ class RemoveShareAssetYesNoControllerSpec extends SpecBase with ScalaCheckProper
 
       "redirect to the 'add asset' page when valid data is submitted and migrating" in {
 
-
         val answers = userAnswers(migrating = true)
 
         val application = applicationBuilder(userAnswers = Some(answers))
@@ -113,7 +111,9 @@ class RemoveShareAssetYesNoControllerSpec extends SpecBase with ScalaCheckProper
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController
+          .onPageLoad()
+          .url
 
         application.stop()
       }
@@ -122,7 +122,6 @@ class RemoveShareAssetYesNoControllerSpec extends SpecBase with ScalaCheckProper
     "removing an old asset" must {
 
       "redirect to the 'add asset' page, removing the asset when migrating" in {
-
 
         val answers = userAnswers(migrating = true)
 
@@ -144,7 +143,9 @@ class RemoveShareAssetYesNoControllerSpec extends SpecBase with ScalaCheckProper
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController
+          .onPageLoad()
+          .url
 
         application.stop()
       }
@@ -152,8 +153,9 @@ class RemoveShareAssetYesNoControllerSpec extends SpecBase with ScalaCheckProper
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(bind[TrustsConnector].toInstance(mockConnector)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[TrustsConnector].toInstance(mockConnector))
+        .build()
 
       val request =
         FakeRequest(POST, routes.RemoveShareAssetYesNoController.onSubmit(index).url)
@@ -175,7 +177,6 @@ class RemoveShareAssetYesNoControllerSpec extends SpecBase with ScalaCheckProper
 
     "redirect to Session Expired for a GET if no existing data is found" in {
 
-
       val application = applicationBuilder(userAnswers = None).build()
 
       val request = FakeRequest(GET, routes.RemoveShareAssetYesNoController.onPageLoad(index).url)
@@ -190,7 +191,6 @@ class RemoveShareAssetYesNoControllerSpec extends SpecBase with ScalaCheckProper
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
-
 
       val application = applicationBuilder(userAnswers = None).build()
 
@@ -207,4 +207,5 @@ class RemoveShareAssetYesNoControllerSpec extends SpecBase with ScalaCheckProper
       application.stop()
     }
   }
+
 }

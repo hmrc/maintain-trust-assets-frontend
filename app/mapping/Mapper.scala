@@ -23,15 +23,17 @@ import play.api.libs.json.{JsError, JsSuccess, Reads}
 
 import scala.reflect.{ClassTag, classTag}
 
-class Mapper[T <: AssetType : ClassTag] extends Logging {
+class Mapper[T <: AssetType: ClassTag] extends Logging {
 
-  def mapAnswersWithExplicitReads(answers: UserAnswers, reads: Reads[T]): Option[T] = {
+  def mapAnswersWithExplicitReads(answers: UserAnswers, reads: Reads[T]): Option[T] =
     answers.data.validate[T](reads) match {
       case JsSuccess(value, _) =>
         Some(value)
-      case JsError(errors) =>
-        logger.error(s"[UTR: ${answers.identifier}] Failed to rehydrate ${classTag[T].runtimeClass.getSimpleName} from UserAnswers due to $errors")
+      case JsError(errors)     =>
+        logger.error(
+          s"[UTR: ${answers.identifier}] Failed to rehydrate ${classTag[T].runtimeClass.getSimpleName} from UserAnswers due to $errors"
+        )
         None
     }
-  }
+
 }

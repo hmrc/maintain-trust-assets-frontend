@@ -31,10 +31,10 @@ class AssetInterruptViewSpec extends ViewBehaviours {
 
     behave like pageWithTitleAndCaption(applyView, "assetInterruptPage")
 
-    behave like pageWithGuidance(applyView,
+    behave like pageWithGuidance(
+      applyView,
       messageKeyPrefix = "assetInterruptPage",
-      expectedGuidanceKeys =
-      "paragraph10",
+      expectedGuidanceKeys = "paragraph10",
       "bullet11",
       "bullet12",
       "bullet13",
@@ -43,4 +43,5 @@ class AssetInterruptViewSpec extends ViewBehaviours {
 
     behave like pageWithBackLink(applyView)
   }
+
 }

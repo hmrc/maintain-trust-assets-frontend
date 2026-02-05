@@ -17,11 +17,11 @@
 package utils
 
 object Constants {
-  final val GB = "GB"
-  final val ES = "ES"
+  final val GB             = "GB"
+  final val ES             = "ES"
   final val UNITED_KINGDOM = "United Kingdom"
-  final val SPAIN = "Spain"
+  final val SPAIN          = "Spain"
 
-  final val QUOTED = "Quoted"
+  final val QUOTED   = "Quoted"
   final val UNQUOTED = "Unquoted"
 }

@@ -26,13 +26,13 @@ class ShareAnswerPageSpec extends SpecBase {
 
     "return the correct JsPath for a given index" in {
       val index = 0
-      val page = ShareAnswerPage(index)
+      val page  = ShareAnswerPage(index)
 
       page.path mustBe (JsPath \ "assets" \ "shares" \ index \ "answersComplete")
     }
 
     "produce distinct paths for different indexes" in {
-      val firstPage = ShareAnswerPage(0)
+      val firstPage  = ShareAnswerPage(0)
       val secondPage = ShareAnswerPage(1)
 
       firstPage.path must not be secondPage.path
@@ -40,7 +40,7 @@ class ShareAnswerPageSpec extends SpecBase {
 
     "read the boolean value at the path from JSON" in {
       val index = 1
-      val page = ShareAnswerPage(index)
+      val page  = ShareAnswerPage(index)
 
       val json = Json.obj(
         "assets" -> Json.obj(
@@ -55,4 +55,5 @@ class ShareAnswerPageSpec extends SpecBase {
       result mustBe false
     }
   }
+
 }

@@ -47,4 +47,5 @@ class PropertyOrLandInternationalAddressViewSpec extends InternationalAddressVie
     behave like pageWithASubmitButton(applyView(form))
 
   }
+
 }

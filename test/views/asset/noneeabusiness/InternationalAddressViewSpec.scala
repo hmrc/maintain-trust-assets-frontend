@@ -28,7 +28,7 @@ import views.html.asset.noneeabusiness.InternationalAddressView
 class InternationalAddressViewSpec extends InternationalAddressViewBehaviours {
 
   private val messageKeyPrefix: String = "nonEeaBusiness.internationalAddress"
-  private val name: String = "Test"
+  private val name: String             = "Test"
 
   override val form = new InternationalAddressFormProvider()()
 
@@ -49,4 +49,5 @@ class InternationalAddressViewSpec extends InternationalAddressViewBehaviours {
 
     behave like pageWithASubmitButton(applyView(form))
   }
+
 }

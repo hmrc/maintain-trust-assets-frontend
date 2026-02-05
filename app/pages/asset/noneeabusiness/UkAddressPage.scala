@@ -16,7 +16,7 @@
 
 package pages.asset.noneeabusiness
 
-import models.{UkAddress}
+import models.UkAddress
 import pages.QuestionPage
 import play.api.libs.json.JsPath
 

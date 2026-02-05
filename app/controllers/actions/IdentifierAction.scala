@@ -33,26 +33,27 @@ import utils.Session
 
 import scala.concurrent.{ExecutionContext, Future}
 
-trait IdentifierAction extends ActionBuilder[IdentifierRequest, AnyContent] with ActionFunction[Request, IdentifierRequest]
+trait IdentifierAction
+    extends ActionBuilder[IdentifierRequest, AnyContent] with ActionFunction[Request, IdentifierRequest]
 
-class AuthenticatedIdentifierAction @Inject()(
-                                               config: FrontendAppConfig,
-                                               trustsAuthFunctions: TrustsAuthorisedFunctions,
-                                               val parser: BodyParsers.Default,
-                                               playbackAuthenticationService: AuthenticationService
-                                             )
-                                             (implicit val executionContext: ExecutionContext) extends IdentifierAction with Logging {
+class AuthenticatedIdentifierAction @Inject() (
+  config: FrontendAppConfig,
+  trustsAuthFunctions: TrustsAuthorisedFunctions,
+  val parser: BodyParsers.Default,
+  playbackAuthenticationService: AuthenticationService
+)(implicit val executionContext: ExecutionContext)
+    extends IdentifierAction with Logging {
 
-  private def authoriseAgent[A](internalId: String,
-                                enrolments: Enrolments,
-                                block: IdentifierRequest[A] => Future[Result])
-                               (implicit request: Request[A], hc: HeaderCarrier) = {
+  private def authoriseAgent[A](
+    internalId: String,
+    enrolments: Enrolments,
+    block: IdentifierRequest[A] => Future[Result]
+  )(implicit request: Request[A], hc: HeaderCarrier) =
 
     playbackAuthenticationService.authenticateAgent() flatMap {
-      case Right(arn) => block(IdentifierRequest(request, AgentUser(internalId, enrolments, arn)))
+      case Right(arn)           => block(IdentifierRequest(request, AgentUser(internalId, enrolments, arn)))
       case Left(result: Result) => Future.successful(result)
     }
-  }
 
   override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
 
@@ -63,16 +64,17 @@ class AuthenticatedIdentifierAction @Inject()(
       Retrievals.allEnrolments
 
     trustsAuthFunctions.authorised().retrieve(retrievals) {
-      case Some(internalId) ~ Some(Agent) ~ enrolments =>
+      case Some(internalId) ~ Some(Agent) ~ enrolments        =>
         authoriseAgent(internalId, enrolments, block)(request, hc)
       case Some(internalId) ~ Some(Organisation) ~ enrolments =>
         block(IdentifierRequest(request, OrganisationUser(internalId, enrolments)))
-      case Some(_) ~ _ ~ _ =>
+      case Some(_) ~ _ ~ _                                    =>
         logger.info(s"[Session ID: ${Session.id(hc)}] Unauthorised due to affinityGroup being Individual")
         Future.successful(Redirect(controllers.routes.UnauthorisedController.onPageLoad))
-      case _ =>
+      case _                                                  =>
         logger.warn(s"[Session ID: ${Session.id(hc)}] Unable to retrieve internal id")
         throw new UnauthorizedException("Unable to retrieve internal Id")
     } recover trustsAuthFunctions.recoverFromAuthorisation
   }
+
 }

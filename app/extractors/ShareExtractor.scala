@@ -28,23 +28,25 @@ import scala.util.Try
 
 class ShareExtractor extends AssetExtractor[SharesType] {
 
-  override def apply(answers: UserAnswers,
-                     assetType: SharesType,
-                     index: Int): Try[UserAnswers] = {
+  override def apply(answers: UserAnswers, assetType: SharesType, index: Int): Try[UserAnswers] =
 
     super.apply(answers, assetType, index).flatMap { updatedAnswers =>
       assetType.isPortfolio match {
         case Some(true) =>
           populatePages(
-            updatedAnswers, assetType, index,
+            updatedAnswers,
+            assetType,
+            index,
             SharePortfolioQuantityInTrustPage(0),
             SharePortfolioNamePage(0),
             SharePortfolioOnStockExchangePage(0),
             SharePortfolioValueInTrustPage(0)
           )
-        case _ =>
+        case _          =>
           populatePages(
-            updatedAnswers, assetType, index,
+            updatedAnswers,
+            assetType,
+            index,
             ShareQuantityInTrustPage(0),
             ShareCompanyNamePage(0),
             SharesOnStockExchangePage(0),
@@ -52,21 +54,21 @@ class ShareExtractor extends AssetExtractor[SharesType] {
           )
       }
     }
-  }
 
   private def populatePages(
-                             answers: UserAnswers,
-                             assetType: SharesType,
-                             index: Int,
-                             quantityPage: QuestionPage[Long],
-                             namePage: QuestionPage[String],
-                             stockExchangePage: QuestionPage[Boolean],
-                             valuePage: QuestionPage[Long]
-                           ): Try[UserAnswers] = {
+    answers: UserAnswers,
+    assetType: SharesType,
+    index: Int,
+    quantityPage: QuestionPage[Long],
+    namePage: QuestionPage[String],
+    stockExchangePage: QuestionPage[Boolean],
+    valuePage: QuestionPage[Long]
+  ): Try[UserAnswers] = {
 
     val shareClass = assetType.shareClassDisplay.getOrElse(ShareClass.fromDES(assetType.shareClass))
 
-    answers.set(quantityPage, assetType.numberOfShares.toLong)
+    answers
+      .set(quantityPage, assetType.numberOfShares.toLong)
       .flatMap(_.set(namePage, assetType.orgName))
       .flatMap(_.set(SharesInAPortfolioPage(index), assetType.isPortfolio.getOrElse(false)))
       .flatMap(_.set(ShareClassPage(0), shareClass))

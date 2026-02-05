@@ -19,13 +19,15 @@ package models.assets
 import models.Address
 import play.api.libs.json.{Format, Json}
 
-final case class PropertyLandType(buildingLandName: Option[String],
-                                  address: Option[Address],
-                                  valueFull: Long,
-                                  valuePrevious: Option[Long]) extends AssetType {
+final case class PropertyLandType(
+  buildingLandName: Option[String],
+  address: Option[Address],
+  valueFull: Long,
+  valuePrevious: Option[Long]
+) extends AssetType {
 
-  val descriptionOrAddress : Option[String] = buildingLandName orElse address.map(_.line1)
-  val name: String = descriptionOrAddress.getOrElse("")
+  val descriptionOrAddress: Option[String] = buildingLandName orElse address.map(_.line1)
+  val name: String                         = descriptionOrAddress.getOrElse("")
 }
 
 object PropertyLandType {

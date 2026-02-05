@@ -33,7 +33,7 @@ import views.html.asset.noneeabusiness.TrustOwnsNonEeaBusinessYesNoView
 
 class TrustOwnsNonEeaBusinessYesNoControllerSpec extends SpecBase {
 
-  private val form: Form[Boolean] = new YesNoFormProvider().withPrefix("trustOwnsNonEeaBusinessYesNo")
+  private val form: Form[Boolean]  = new YesNoFormProvider().withPrefix("trustOwnsNonEeaBusinessYesNo")
   private val validAnswer: Boolean = true
 
   lazy val onPageLoadRoute: String = TrustOwnsNonEeaBusinessYesNoController.onPageLoad(NormalMode).url
@@ -151,4 +151,5 @@ class TrustOwnsNonEeaBusinessYesNoControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

@@ -27,4 +27,5 @@ class WhatKindOfAssetFormProvider @Inject() extends Mappings {
     Form(
       "value" -> enumerable[WhatKindOfAsset]("whatKindOfAsset.error.required")
     )
+
 }

@@ -24,17 +24,17 @@ import play.api.mvc.Call
 
 import javax.inject.Inject
 
-class MoneyNavigator @Inject()() extends Navigator {
+class MoneyNavigator @Inject() () extends Navigator {
 
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
     routes(mode)(page)(userAnswers)
 
   def routes(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
     case AssetMoneyValuePage(index) => ua => navigateToCheckAnswers(ua, mode, index)
-    case MoneyAnswerPage(index) => _ => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
+    case MoneyAnswerPage(index)     => _ => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
   }
 
-  private def navigateToCheckAnswers(ua: UserAnswers, mode: Mode, index: Int): Call = {
+  private def navigateToCheckAnswers(ua: UserAnswers, mode: Mode, index: Int): Call =
     if (mode == NormalMode) {
       AssetNavigator.routeToIndex(
         List.empty,
@@ -44,8 +44,8 @@ class MoneyNavigator @Inject()() extends Navigator {
     } else {
       ua.get(AssetMoneyValuePage(index)) match {
         case Some(moneyVlue) => controllers.asset.money.add.routes.MoneyAnswerController.onPageLoad(index)
-        case None => controllers.routes.SessionExpiredController.onPageLoad
+        case None            => controllers.routes.SessionExpiredController.onPageLoad
       }
     }
-  }
+
 }

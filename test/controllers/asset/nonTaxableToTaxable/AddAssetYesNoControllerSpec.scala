@@ -51,9 +51,9 @@ class AddAssetYesNoControllerSpec extends SpecBase with IndexValidation with Sca
   lazy val addAssetYesNoPostRoute: String =
     controllers.asset.nonTaxableToTaxable.routes.AddAssetYesNoController.onSubmit().url
 
-  private val mockTrustService: TrustService = mock[TrustService]
+  private val mockTrustService: TrustService                = mock[TrustService]
   private val mockTrustStoreConnector: TrustsStoreConnector = mock[TrustsStoreConnector]
-  private val mockNavigator: AssetsNavigator = mock[AssetsNavigator]
+  private val mockNavigator: AssetsNavigator                = mock[AssetsNavigator]
 
   override def emptyUserAnswers: UserAnswers = super.emptyUserAnswers.copy(isMigratingToTaxable = true)
 
@@ -171,7 +171,15 @@ class AddAssetYesNoControllerSpec extends SpecBase with IndexValidation with Sca
         .build()
 
       val nonEEACompanies = List(
-        NonEeaBusinessType(None, "Non-eea Business", address = UkAddress("line 1", "line 2", None, None, "ne981zz"), "GB", LocalDate.now, None, provisional = false)
+        NonEeaBusinessType(
+          None,
+          "Non-eea Business",
+          address = UkAddress("line 1", "line 2", None, None, "ne981zz"),
+          "GB",
+          LocalDate.now,
+          None,
+          provisional = false
+        )
       )
 
       when(mockTrustService.getAssets(any())(any(), any()))

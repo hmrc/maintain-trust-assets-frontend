@@ -32,29 +32,30 @@ import views.ViewUtils
 
 import java.time.LocalDate
 
-trait SpecBase extends PlaySpec
-  with GuiceOneAppPerSuite
-  with TryValues
-  with ScalaFutures
-  with IntegrationPatience
-  with Mocked
-  with FakeTrustsApp
-  with OptionValues
-  with EitherValues {
+trait SpecBase
+    extends PlaySpec
+    with GuiceOneAppPerSuite
+    with TryValues
+    with ScalaFutures
+    with IntegrationPatience
+    with Mocked
+    with FakeTrustsApp
+    with OptionValues
+    with EitherValues {
 
   val defaultAppConfigurations: Map[String, Any] = Map(
-    "auditing.enabled" -> false,
-    "metrics.enabled" -> false,
+    "auditing.enabled"      -> false,
+    "metrics.enabled"       -> false,
     "play.filters.disabled" -> List("play.filters.csrf.CSRFFilter", "play.filters.csp.CSPFilter")
   )
 
   final val ENGLISH = "en"
-  final val WELSH = "cy"
+  final val WELSH   = "cy"
 
   lazy val userInternalId = "internalId"
-  lazy val userUtr = "internalId"
-  lazy val userSessionId = "internalId"
-  lazy val newId = s"$userInternalId-$userUtr-$userSessionId"
+  lazy val userUtr        = "internalId"
+  lazy val userSessionId  = "internalId"
+  lazy val newId          = s"$userInternalId-$userUtr-$userSessionId"
 
   val index: Int = 0
 
@@ -64,8 +65,10 @@ trait SpecBase extends PlaySpec
 
   val fakeNavigator = new FakeNavigator()
 
-  protected def applicationBuilder(userAnswers: Option[UserAnswers] = None,
-                                   affinityGroup: AffinityGroup = AffinityGroup.Organisation): GuiceApplicationBuilder =
+  protected def applicationBuilder(
+    userAnswers: Option[UserAnswers] = None,
+    affinityGroup: AffinityGroup = AffinityGroup.Organisation
+  ): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
       .overrides(
         bind[IdentifierAction].toInstance(new FakeIdentifierAction(bodyParsers, affinityGroup)),
@@ -77,4 +80,5 @@ trait SpecBase extends PlaySpec
         bind[ViewUtils].toInstance(mockViewUtils)
       )
       .configure(defaultAppConfigurations)
+
 }

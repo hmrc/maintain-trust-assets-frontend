@@ -42,10 +42,10 @@ class NonEeaBusinessNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
 
         val page = NamePage(index)
 
-        forAll(arbitrary[UserAnswers]) {
-          userAnswers =>
-            navigator.nextPage(page, mode, userAnswers)
-              .mustBe(rts.InternationalAddressController.onPageLoad(index, mode))
+        forAll(arbitrary[UserAnswers]) { userAnswers =>
+          navigator
+            .nextPage(page, mode, userAnswers)
+            .mustBe(rts.InternationalAddressController.onPageLoad(index, mode))
         }
       }
 
@@ -53,10 +53,10 @@ class NonEeaBusinessNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
 
         val page = NonUkAddressPage(index)
 
-        forAll(arbitrary[UserAnswers]) {
-          userAnswers =>
-            navigator.nextPage(page, mode, userAnswers)
-              .mustBe(rts.GoverningCountryController.onPageLoad(index, mode))
+        forAll(arbitrary[UserAnswers]) { userAnswers =>
+          navigator
+            .nextPage(page, mode, userAnswers)
+            .mustBe(rts.GoverningCountryController.onPageLoad(index, mode))
         }
       }
 
@@ -64,10 +64,10 @@ class NonEeaBusinessNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
 
         val page = GoverningCountryPage(index)
 
-        forAll(arbitrary[UserAnswers]) {
-          userAnswers =>
-            navigator.nextPage(page, mode, userAnswers)
-              .mustBe(addRts.StartDateController.onPageLoad(index))
+        forAll(arbitrary[UserAnswers]) { userAnswers =>
+          navigator
+            .nextPage(page, mode, userAnswers)
+            .mustBe(addRts.StartDateController.onPageLoad(index))
         }
       }
 
@@ -75,10 +75,10 @@ class NonEeaBusinessNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
 
         val page = StartDatePage(index)
 
-        forAll(arbitrary[UserAnswers]) {
-          userAnswers =>
-            navigator.nextPage(page, mode, userAnswers)
-              .mustBe(addRts.AnswersController.onPageLoad(index))
+        forAll(arbitrary[UserAnswers]) { userAnswers =>
+          navigator
+            .nextPage(page, mode, userAnswers)
+            .mustBe(addRts.AnswersController.onPageLoad(index))
         }
       }
     }
@@ -91,10 +91,10 @@ class NonEeaBusinessNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
 
         val page = NamePage(index)
 
-        forAll(arbitrary[UserAnswers]) {
-          userAnswers =>
-            navigator.nextPage(page, mode, userAnswers.set(IndexPage, index).success.value)
-              .mustBe(rts.InternationalAddressController.onPageLoad(index, mode))
+        forAll(arbitrary[UserAnswers]) { userAnswers =>
+          navigator
+            .nextPage(page, mode, userAnswers.set(IndexPage, index).success.value)
+            .mustBe(rts.InternationalAddressController.onPageLoad(index, mode))
         }
       }
 
@@ -102,10 +102,10 @@ class NonEeaBusinessNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
 
         val page = NonUkAddressPage(index)
 
-        forAll(arbitrary[UserAnswers]) {
-          userAnswers =>
-            navigator.nextPage(page, mode, userAnswers.set(IndexPage, index).success.value)
-              .mustBe(rts.GoverningCountryController.onPageLoad(index, mode))
+        forAll(arbitrary[UserAnswers]) { userAnswers =>
+          navigator
+            .nextPage(page, mode, userAnswers.set(IndexPage, index).success.value)
+            .mustBe(rts.GoverningCountryController.onPageLoad(index, mode))
         }
       }
 
@@ -113,12 +113,13 @@ class NonEeaBusinessNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks
 
         val page = GoverningCountryPage(index)
 
-        forAll(arbitrary[UserAnswers]) {
-          userAnswers =>
-            navigator.nextPage(page, mode, userAnswers.set(IndexPage, index).success.value)
-              .mustBe(amendRts.AnswersController.renderFromUserAnswers(index))
+        forAll(arbitrary[UserAnswers]) { userAnswers =>
+          navigator
+            .nextPage(page, mode, userAnswers.set(IndexPage, index).success.value)
+            .mustBe(amendRts.AnswersController.renderFromUserAnswers(index))
         }
       }
     }
   }
+
 }

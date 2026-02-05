@@ -37,19 +37,20 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import play.api.Logging
 
-class BusinessAnswersController @Inject()(
-                                           override val messagesApi: MessagesApi,
-                                           @Business navigator: Navigator,
-                                           standardActionSets: StandardActionSets,
-                                           nameAction: NameRequiredAction,
-                                           view: BusinessAnswersView,
-                                           val controllerComponents: MessagesControllerComponents,
-                                           printHelper: BusinessPrintHelper,
-                                           connector: TrustsConnector,
-                                           mapper: BusinessAssetMapper,
-                                           errorHandler: ErrorHandler,
-                                           repository: PlaybackRepository
-                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+class BusinessAnswersController @Inject() (
+  override val messagesApi: MessagesApi,
+  @Business navigator: Navigator,
+  standardActionSets: StandardActionSets,
+  nameAction: NameRequiredAction,
+  view: BusinessAnswersView,
+  val controllerComponents: MessagesControllerComponents,
+  printHelper: BusinessPrintHelper,
+  connector: TrustsConnector,
+  mapper: BusinessAssetMapper,
+  errorHandler: ErrorHandler,
+  repository: PlaybackRepository
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport with Logging {
 
   private val provisional: Boolean = true
 
@@ -59,53 +60,53 @@ class BusinessAnswersController @Inject()(
       Ok(view(index, section))
     }
 
-  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
-    implicit request =>
-      mapper(request.userAnswers) match {
-        case None => errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
-        case Some(asset) =>
-          connector.getAssets(request.userAnswers.identifier).flatMap { data =>
-            if (data.business.nonEmpty && (data.business.size - 1 == index)) {
-              connector.amendBusinessAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async { implicit request =>
+    mapper(request.userAnswers) match {
+      case None        => errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
+      case Some(asset) =>
+        connector.getAssets(request.userAnswers.identifier).flatMap { data =>
+          if (data.business.nonEmpty && (data.business.size - 1 == index)) {
+            connector.amendBusinessAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
+              response.status match {
+                case OK | CREATED | NO_CONTENT =>
+                  cleanAllAndRedirect(index)
+                case other                     =>
+                  logger.error(s"amendBusinessAsset failed with status: $other, body: ${response.body.take(500)}")
+                  errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
+              }
+            }
+          } else {
+            val exists = data.business.exists(e =>
+              e.orgName.equalsIgnoreCase(asset.orgName) &&
+                e.businessDescription.equalsIgnoreCase(asset.businessDescription) &&
+                e.address == asset.address &&
+                e.businessValue == asset.businessValue
+            )
+            if (!exists) {
+              connector.addBusinessAsset(request.userAnswers.identifier, asset).flatMap { response =>
                 response.status match {
                   case OK | CREATED | NO_CONTENT =>
                     cleanAllAndRedirect(index)
-                  case other =>
-                    logger.error(s"amendBusinessAsset failed with status: $other, body: ${response.body.take(500)}")
+                  case other                     =>
+                    logger.error(s"addBusinessAsset failed with status: $other, body: ${response.body.take(500)}")
                     errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
                 }
               }
             } else {
-              val exists = data.business.exists(e =>
-                e.orgName.equalsIgnoreCase(asset.orgName) &&
-                  e.businessDescription.equalsIgnoreCase(asset.businessDescription) &&
-                  e.address == asset.address &&
-                  e.businessValue == asset.businessValue
-              )
-              if (!exists) {
-                connector.addBusinessAsset(request.userAnswers.identifier, asset).flatMap { response =>
-                  response.status match {
-                    case OK | CREATED | NO_CONTENT =>
-                      cleanAllAndRedirect(index)
-                    case other =>
-                      logger.error(s"addBusinessAsset failed with status: $other, body: ${response.body.take(500)}")
-                      errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
-                  }
-                }
-              } else {
-                cleanAllAndRedirect(index)
-              }
+              cleanAllAndRedirect(index)
             }
           }
-      }
+        }
+    }
   }
 
   private def cleanAllAndRedirect(index: Int)(implicit request: DataRequest[AnyContent]): Future[Result] = {
     val next = navigator.nextPage(BusinessAnswerPage(index), NormalMode, request.userAnswers)
 
     request.userAnswers.cleanupPreservingBusiness.fold(
-      _          => Future.successful(Redirect(next)),
-      cleanedUa  => repository.set(cleanedUa).map(_ => Redirect(next))
+      _ => Future.successful(Redirect(next)),
+      cleanedUa => repository.set(cleanedUa).map(_ => Redirect(next))
     )
   }
+
 }

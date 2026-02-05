@@ -41,19 +41,25 @@ import scala.concurrent.Future
 
 class PartnershipAmendAnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures {
 
-  private lazy val answersRoute = routes.PartnershipAmendAnswersController.extractAndRender(index).url
+  private lazy val answersRoute       = routes.PartnershipAmendAnswersController.extractAndRender(index).url
   private lazy val submitAnswersRoute = routes.PartnershipAmendAnswersController.onSubmit(index).url
 
   val validDate: LocalDate = LocalDate.now(ZoneOffset.UTC)
-  val name: String = "Description"
+  val name: String         = "Description"
 
   private val partnershipType = PartnershipType(name, validDate)
 
   val answers =
     emptyUserAnswers
-      .set(WhatKindOfAssetPage(index), Partnership).success.value
-      .set(PartnershipDescriptionPage(index), name).success.value
-      .set(PartnershipStartDatePage(index), validDate).success.value
+      .set(WhatKindOfAssetPage(index), Partnership)
+      .success
+      .value
+      .set(PartnershipDescriptionPage(index), name)
+      .success
+      .value
+      .set(PartnershipStartDatePage(index), validDate)
+      .success
+      .value
 
   "BusinessAmendAnswersController" must {
 
@@ -67,26 +73,22 @@ class PartnershipAmendAnswersControllerSpec extends SpecBase with MockitoSugar w
         )
         .build()
 
-
       when(mockService.getPartnershipAsset(any(), any())(any(), any()))
         .thenReturn(Future.successful(partnershipType))
-
 
       val request = FakeRequest(GET, answersRoute)
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[PartnershipAmendAnswersView]
-      val printHelper = application.injector.instanceOf[PartnershipPrintHelper]
+      val view          = application.injector.instanceOf[PartnershipAmendAnswersView]
+      val printHelper   = application.injector.instanceOf[PartnershipPrintHelper]
       val answerSection = printHelper(answers, index, provisional = false, name)
-
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
         view(answerSection, index)(request, messages).toString
     }
-
 
     "return INTERNAL_SERVER_ERROR when service fails" in {
 
@@ -109,7 +111,6 @@ class PartnershipAmendAnswersControllerSpec extends SpecBase with MockitoSugar w
 
     }
 
-
     "redirect to the 'add asset' page when submitted and migrating to taxable" in {
 
       val mockTrustConnector = mock[TrustsConnector]
@@ -119,7 +120,8 @@ class PartnershipAmendAnswersControllerSpec extends SpecBase with MockitoSugar w
           .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
           .build()
 
-      when(mockTrustConnector.amendPartnershipAsset(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+      when(mockTrustConnector.amendPartnershipAsset(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val request = FakeRequest(POST, submitAnswersRoute)
 
@@ -127,7 +129,9 @@ class PartnershipAmendAnswersControllerSpec extends SpecBase with MockitoSugar w
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController
+        .onPageLoad()
+        .url
 
       application.stop()
     }
@@ -161,4 +165,5 @@ class PartnershipAmendAnswersControllerSpec extends SpecBase with MockitoSugar w
     }
 
   }
+
 }

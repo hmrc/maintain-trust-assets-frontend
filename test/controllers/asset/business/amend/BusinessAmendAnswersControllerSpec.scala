@@ -41,13 +41,13 @@ import scala.concurrent.Future
 
 class BusinessAmendAnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures {
 
-  private lazy val answersRoute = routes.BusinessAmendAnswersController.extractAndRender(index).url
+  private lazy val answersRoute       = routes.BusinessAmendAnswersController.extractAndRender(index).url
   private lazy val submitAnswersRoute = routes.BusinessAmendAnswersController.onSubmit(index).url
 
-  private val name: String = "BusinessName"
-  private val description: String = "BusinessDescription"
+  private val name: String                       = "BusinessName"
+  private val description: String                = "BusinessDescription"
   private val internationalAddress: NonUkAddress = NonUkAddress("", "", None, "")
-  private val valueFull: Long = 790L
+  private val valueFull: Long                    = 790L
 
   private val businessAsset = BusinessAssetType(
     orgName = name,
@@ -56,19 +56,32 @@ class BusinessAmendAnswersControllerSpec extends SpecBase with MockitoSugar with
     businessValue = valueFull
   )
 
-  def userAnswers: UserAnswers = UserAnswers("internalId",
+  def userAnswers: UserAnswers = UserAnswers(
+    "internalId",
     "identifier",
     "sessionId",
     "internalId-identifier-sessionId",
     LocalDate.now,
-    isMigratingToTaxable = true)
-    .set(IndexPage, index).success.value
-    .set(BusinessAddressUkYesNoPage(index), false).success.value
-    .set(BusinessInternationalAddressPage(index), internationalAddress).success.value
-    .set(BusinessNamePage(index), name).success.value
-    .set(BusinessDescriptionPage(index), description).success.value
-    .set(BusinessValuePage(index), valueFull).success.value
-
+    isMigratingToTaxable = true
+  )
+    .set(IndexPage, index)
+    .success
+    .value
+    .set(BusinessAddressUkYesNoPage(index), false)
+    .success
+    .value
+    .set(BusinessInternationalAddressPage(index), internationalAddress)
+    .success
+    .value
+    .set(BusinessNamePage(index), name)
+    .success
+    .value
+    .set(BusinessDescriptionPage(index), description)
+    .success
+    .value
+    .set(BusinessValuePage(index), valueFull)
+    .success
+    .value
 
   "BusinessAmendAnswersController" must {
 
@@ -89,8 +102,8 @@ class BusinessAmendAnswersControllerSpec extends SpecBase with MockitoSugar with
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[BusinessAmendAnswersView]
-      val printHelper = application.injector.instanceOf[BusinessPrintHelper]
+      val view          = application.injector.instanceOf[BusinessAmendAnswersView]
+      val printHelper   = application.injector.instanceOf[BusinessPrintHelper]
       val answerSection = printHelper(userAnswers, index, provisional = false, name)
 
       status(result) mustEqual OK
@@ -98,7 +111,6 @@ class BusinessAmendAnswersControllerSpec extends SpecBase with MockitoSugar with
       contentAsString(result) mustEqual
         view(answerSection, index)(request, messages).toString
     }
-
 
     "return INTERNAL_SERVER_ERROR when service fails" in {
 
@@ -121,7 +133,6 @@ class BusinessAmendAnswersControllerSpec extends SpecBase with MockitoSugar with
 
     }
 
-
     "redirect to the 'add asset' page when submitted and migrating to taxable" in {
 
       val mockTrustConnector = mock[TrustsConnector]
@@ -131,7 +142,8 @@ class BusinessAmendAnswersControllerSpec extends SpecBase with MockitoSugar with
           .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
           .build()
 
-      when(mockTrustConnector.amendBusinessAsset(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+      when(mockTrustConnector.amendBusinessAsset(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val request = FakeRequest(POST, submitAnswersRoute)
 
@@ -139,7 +151,9 @@ class BusinessAmendAnswersControllerSpec extends SpecBase with MockitoSugar with
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController
+        .onPageLoad()
+        .url
 
       application.stop()
     }
@@ -172,4 +186,5 @@ class BusinessAmendAnswersControllerSpec extends SpecBase with MockitoSugar with
     }
 
   }
+
 }

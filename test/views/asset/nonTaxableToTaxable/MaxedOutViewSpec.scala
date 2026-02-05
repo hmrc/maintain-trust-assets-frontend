@@ -52,8 +52,12 @@ class MaxedOutViewSpec extends OptionsViewBehaviours with TabularDataViewBehavio
         val doc = asDocument(applyView())
 
         assertContainsText(doc, s"You cannot add another asset as you have entered a maximum of $max.")
-        assertContainsText(doc, "You can add another asset by removing an existing one, or write to HMRC with details of any additional assets.")
+        assertContainsText(
+          doc,
+          "You can add another asset by removing an existing one, or write to HMRC with details of any additional assets."
+        )
       }
     }
   }
+
 }

@@ -23,16 +23,15 @@ import play.api.data.Form
 class DescriptionFormProvider @Inject() extends Mappings {
 
   def withConfig(length: Int, prefix: String): Form[String] =
-  Form(
-    "value" -> text(s"$prefix.error.required")
-      .verifying(
-        firstError(
-          isNotEmpty("value", s"$prefix.error.required"),
-          maxLength(length, s"$prefix.error.length"),
-          regexp(Validation.descriptionRegex, s"$prefix.error.invalid")
+    Form(
+      "value" -> text(s"$prefix.error.required")
+        .verifying(
+          firstError(
+            isNotEmpty("value", s"$prefix.error.required"),
+            maxLength(length, s"$prefix.error.length"),
+            regexp(Validation.descriptionRegex, s"$prefix.error.invalid")
+          )
         )
-      )
-  )
-
+    )
 
 }

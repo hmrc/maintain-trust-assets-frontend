@@ -25,9 +25,9 @@ import utils.Constants.{QUOTED, UNQUOTED}
 
 class ShareExtractorSpec extends SpecBase {
 
-    private val name: String = "OrgName"
+  private val name: String     = "OrgName"
   private val assetValue: Long = 300L
-  private val quantity: Long = 20
+  private val quantity: Long   = 20
 
   private val extractor = new ShareExtractor()
 
@@ -35,7 +35,8 @@ class ShareExtractorSpec extends SpecBase {
 
     "Populate user answers" when {
 
-      val baseAnswers: UserAnswers = emptyUserAnswers.copy(is5mldEnabled = true, isTaxable = true, isUnderlyingData5mld = false)
+      val baseAnswers: UserAnswers =
+        emptyUserAnswers.copy(is5mldEnabled = true, isTaxable = true, isUnderlyingData5mld = false)
 
       "portfolio with UnQuoted shares" in {
         val sharesAsset = SharesType(
@@ -49,13 +50,13 @@ class ShareExtractorSpec extends SpecBase {
 
         val result = extractor(baseAnswers, sharesAsset, index).get
 
-        result.get(IndexPage) mustBe Some(index)
-        result.get(SharesInAPortfolioPage(index)) mustBe Some(true)
+        result.get(IndexPage)                                mustBe Some(index)
+        result.get(SharesInAPortfolioPage(index))            mustBe Some(true)
         result.get(SharePortfolioQuantityInTrustPage(index)) mustBe Some(quantity)
-        result.get(SharePortfolioNamePage(index)) mustBe Some(name)
-        result.get(ShareClassPage(index)) mustBe Some(ShareClass.Other)
+        result.get(SharePortfolioNamePage(index))            mustBe Some(name)
+        result.get(ShareClassPage(index))                    mustBe Some(ShareClass.Other)
         result.get(SharePortfolioOnStockExchangePage(index)) mustBe Some(false)
-        result.get(SharePortfolioValueInTrustPage(index)) mustBe Some(assetValue)
+        result.get(SharePortfolioValueInTrustPage(index))    mustBe Some(assetValue)
       }
 
       "portfolio with Quoted shares" in {
@@ -70,13 +71,13 @@ class ShareExtractorSpec extends SpecBase {
 
         val result = extractor(baseAnswers, sharesAsset, index).get
 
-        result.get(IndexPage) mustBe Some(index)
-        result.get(SharesInAPortfolioPage(index)) mustBe Some(true)
+        result.get(IndexPage)                                mustBe Some(index)
+        result.get(SharesInAPortfolioPage(index))            mustBe Some(true)
         result.get(SharePortfolioQuantityInTrustPage(index)) mustBe Some(quantity)
-        result.get(SharePortfolioNamePage(index)) mustBe Some(name)
-        result.get(ShareClassPage(index)) mustBe Some(ShareClass.Other)
+        result.get(SharePortfolioNamePage(index))            mustBe Some(name)
+        result.get(ShareClassPage(index))                    mustBe Some(ShareClass.Other)
         result.get(SharePortfolioOnStockExchangePage(index)) mustBe Some(true)
-        result.get(SharePortfolioValueInTrustPage(index)) mustBe Some(assetValue)
+        result.get(SharePortfolioValueInTrustPage(index))    mustBe Some(assetValue)
       }
 
       "non-portfolio with UnQuoted shares" in {
@@ -92,13 +93,13 @@ class ShareExtractorSpec extends SpecBase {
 
         val result = extractor(baseAnswers, sharesAsset, index).get
 
-        result.get(IndexPage) mustBe Some(index)
-        result.get(SharesInAPortfolioPage(index)) mustBe Some(false)
-        result.get(ShareQuantityInTrustPage(index)) mustBe Some(quantity)
-        result.get(ShareCompanyNamePage(index)) mustBe Some(name)
-        result.get(ShareClassPage(index)) mustBe Some(ShareClass.Deferred)
+        result.get(IndexPage)                        mustBe Some(index)
+        result.get(SharesInAPortfolioPage(index))    mustBe Some(false)
+        result.get(ShareQuantityInTrustPage(index))  mustBe Some(quantity)
+        result.get(ShareCompanyNamePage(index))      mustBe Some(name)
+        result.get(ShareClassPage(index))            mustBe Some(ShareClass.Deferred)
         result.get(SharesOnStockExchangePage(index)) mustBe Some(false)
-        result.get(ShareValueInTrustPage(index)) mustBe Some(assetValue)
+        result.get(ShareValueInTrustPage(index))     mustBe Some(assetValue)
       }
 
       "non-portfolio with Quoted shares" in {
@@ -114,13 +115,13 @@ class ShareExtractorSpec extends SpecBase {
 
         val result = extractor(baseAnswers, sharesAsset, index).get
 
-        result.get(IndexPage) mustBe Some(index)
-        result.get(SharesInAPortfolioPage(index)) mustBe Some(false)
-        result.get(ShareQuantityInTrustPage(index)) mustBe Some(quantity)
-        result.get(ShareCompanyNamePage(index)) mustBe Some(name)
-        result.get(ShareClassPage(index)) mustBe Some(ShareClass.Deferred)
+        result.get(IndexPage)                        mustBe Some(index)
+        result.get(SharesInAPortfolioPage(index))    mustBe Some(false)
+        result.get(ShareQuantityInTrustPage(index))  mustBe Some(quantity)
+        result.get(ShareCompanyNamePage(index))      mustBe Some(name)
+        result.get(ShareClassPage(index))            mustBe Some(ShareClass.Deferred)
         result.get(SharesOnStockExchangePage(index)) mustBe Some(true)
-        result.get(ShareValueInTrustPage(index)) mustBe Some(assetValue)
+        result.get(ShareValueInTrustPage(index))     mustBe Some(assetValue)
       }
     }
 

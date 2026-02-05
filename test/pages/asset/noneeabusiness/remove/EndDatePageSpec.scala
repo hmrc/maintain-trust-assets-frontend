@@ -32,4 +32,5 @@ class EndDatePageSpec extends PageBehaviours {
 
     beRemovable[LocalDate](page)
   }
+
 }

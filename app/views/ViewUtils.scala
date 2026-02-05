@@ -30,64 +30,59 @@ import scala.collection.immutable
 
 class ViewUtils {
 
-  def breadcrumbTitle[T <: RequestHeader](title: String)(implicit request: T, messages: Messages): String = {
+  def breadcrumbTitle[T <: RequestHeader](title: String)(implicit request: T, messages: Messages): String =
     s"$title ${section.fold("")(x => s"- ${messages(x)} ")}- ${messages("service.name")} - GOV.UK"
-  }
 
   @tailrec
-  private def section[T <: RequestHeader](implicit request: T): Option[String] = {
+  private def section[T <: RequestHeader](implicit request: T): Option[String] =
     request match {
       case x: NameRequest[_] => section(x.request)
       case x: DataRequest[_] => Some(s"entities.${if (x.userAnswers.isMigratingToTaxable) "assets" else "nonTaxable"}")
-      case _ => None
+      case _                 => None
     }
-  }
 
 }
 
 object ViewUtils {
 
-  def errorPrefix(form: Form[_])(implicit messages: Messages): String = {
+  def errorPrefix(form: Form[_])(implicit messages: Messages): String =
     if (form.hasErrors || form.hasGlobalErrors) messages("error.browser.title.prefix") else ""
-  }
 
   def mapRadioOptionsToRadioItems(field: Field, inputs: Seq[RadioOption])(implicit messages: Messages): Seq[RadioItem] =
-    inputs.map(
-      a => {
-        RadioItem(
-          id = Some(a.id),
-          value = Some(a.value),
-          checked = field.value.contains(a.value),
-          content = Text(messages(a.messageKey)),
-          attributes = Map.empty
-        )
-      }
+    inputs.map(a =>
+      RadioItem(
+        id = Some(a.id),
+        value = Some(a.value),
+        checked = field.value.contains(a.value),
+        content = Text(messages(a.messageKey)),
+        attributes = Map.empty
+      )
     )
 
-  def errorHref(error: FormError, radioOptions: Seq[RadioOption] = Nil): String = {
+  def errorHref(error: FormError, radioOptions: Seq[RadioOption] = Nil): String =
     error.args match {
       case x if x.contains("day") || x.contains("month") || x.contains("year") =>
         s"${error.key}.${error.args.head}"
-      case _ if error.message.toLowerCase.contains("yesno") =>
+      case _ if error.message.toLowerCase.contains("yesno")                    =>
         s"${error.key}-yes"
-      case _ if radioOptions.nonEmpty =>
+      case _ if radioOptions.nonEmpty                                          =>
         radioOptions.head.id
-      case _ =>
-        val isSingleDateField = error.message.toLowerCase.contains("date") && !error.message.toLowerCase.contains("yesno")
+      case _                                                                   =>
+        val isSingleDateField =
+          error.message.toLowerCase.contains("date") && !error.message.toLowerCase.contains("yesno")
         if (error.key.toLowerCase.contains("date") || isSingleDateField) {
           s"${error.key}.day"
         } else {
           s"${error.key}"
         }
     }
-  }
 
   //  Copied over from the play-frontend-hmrc view utils
 
   private[views] def govukPluralisedI18nAttributes(
-                                                    translationKey: String,
-                                                    pluralForms: Option[Map[String, String]]
-                                                  ): immutable.Iterable[Html] =
+    translationKey: String,
+    pluralForms: Option[Map[String, String]]
+  ): immutable.Iterable[Html] =
     pluralForms.getOrElse(Map.empty).map { case (k, v) =>
       Html(s"""data-i18n.$translationKey.${HtmlFormat.escape(k)}="${HtmlFormat.escape(v)}" """)
     }

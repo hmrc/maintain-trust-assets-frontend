@@ -69,4 +69,5 @@ class AddAssetViewSpec extends OptionsViewBehaviours with TabularDataViewBehavio
     }
 
   }
+
 }

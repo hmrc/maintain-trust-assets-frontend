@@ -37,16 +37,15 @@ import scala.concurrent.Future
 
 class RemoveAssetEndDateControllerSpec extends SpecBase with ScalaCheckPropertyChecks with ScalaFutures {
 
-
   lazy val formRoute: Call = routes.RemoveAssetEndDateController.onSubmit(0)
 
   private val assetStartDate: LocalDate = LocalDate.parse("1996-02-03")
-  private val validAnswer: LocalDate = LocalDate.parse("1996-02-03")
-  private val toEarlyDate: LocalDate = LocalDate.parse("1996-02-02")
+  private val validAnswer: LocalDate    = LocalDate.parse("1996-02-03")
+  private val toEarlyDate: LocalDate    = LocalDate.parse("1996-02-02")
 
-  private val formProvider = new EndDateFormProvider()
+  private val formProvider   = new EndDateFormProvider()
   private val prefix: String = "nonEeaBusiness.endDate"
-  private val form = formProvider.withConfig(prefix, assetStartDate)
+  private val form           = formProvider.withConfig(prefix, assetStartDate)
 
   val mockConnector: TrustsConnector = mock[TrustsConnector]
 
@@ -64,7 +63,6 @@ class RemoveAssetEndDateControllerSpec extends SpecBase with ScalaCheckPropertyC
   "RemoveAssetEndDateController" when {
 
     "return OK and the correct view for a GET" in {
-
 
       when(mockConnector.getAssets(any())(any(), any()))
         .thenReturn(Future.successful(Assets(Nil, Nil, Nil, Nil, Nil, Nil, nonEeaAssets)))
@@ -107,16 +105,18 @@ class RemoveAssetEndDateControllerSpec extends SpecBase with ScalaCheckPropertyC
         val request =
           FakeRequest(POST, routes.RemoveAssetEndDateController.onSubmit(index).url)
             .withFormUrlEncodedBody(
-              "value.day" -> validAnswer.getDayOfMonth.toString,
+              "value.day"   -> validAnswer.getDayOfMonth.toString,
               "value.month" -> validAnswer.getMonthValue.toString,
-              "value.year" -> validAnswer.getYear.toString
+              "value.year"  -> validAnswer.getYear.toString
             )
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad().url
+        redirectLocation(
+          result
+        ).value mustEqual controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad().url
 
         application.stop()
       }
@@ -140,16 +140,18 @@ class RemoveAssetEndDateControllerSpec extends SpecBase with ScalaCheckPropertyC
         val request =
           FakeRequest(POST, routes.RemoveAssetEndDateController.onSubmit(index).url)
             .withFormUrlEncodedBody(
-              "value.day" -> validAnswer.getDayOfMonth.toString,
+              "value.day"   -> validAnswer.getDayOfMonth.toString,
               "value.month" -> validAnswer.getMonthValue.toString,
-              "value.year" -> validAnswer.getYear.toString
+              "value.year"  -> validAnswer.getYear.toString
             )
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController
+          .onPageLoad()
+          .url
 
         application.stop()
       }
@@ -158,7 +160,6 @@ class RemoveAssetEndDateControllerSpec extends SpecBase with ScalaCheckPropertyC
     "removing an old asset" must {
 
       "redirect to the 'add non-eea asset' page, removing the asset and not migrating" in {
-
 
         val answers = userAnswers(migrating = false)
 
@@ -175,22 +176,23 @@ class RemoveAssetEndDateControllerSpec extends SpecBase with ScalaCheckPropertyC
         val request =
           FakeRequest(POST, routes.RemoveAssetEndDateController.onSubmit(index).url)
             .withFormUrlEncodedBody(
-              "value.day" -> validAnswer.getDayOfMonth.toString,
+              "value.day"   -> validAnswer.getDayOfMonth.toString,
               "value.month" -> validAnswer.getMonthValue.toString,
-              "value.year" -> validAnswer.getYear.toString
+              "value.year"  -> validAnswer.getYear.toString
             )
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad().url
+        redirectLocation(
+          result
+        ).value mustEqual controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad().url
 
         application.stop()
       }
 
       "redirect to the 'add asset' page, removing the asset when migrating" in {
-
 
         val answers = userAnswers(migrating = true)
 
@@ -207,23 +209,25 @@ class RemoveAssetEndDateControllerSpec extends SpecBase with ScalaCheckPropertyC
         val request =
           FakeRequest(POST, routes.RemoveAssetEndDateController.onSubmit(index).url)
             .withFormUrlEncodedBody(
-              "value.day" -> validAnswer.getDayOfMonth.toString,
+              "value.day"   -> validAnswer.getDayOfMonth.toString,
               "value.month" -> validAnswer.getMonthValue.toString,
-              "value.year" -> validAnswer.getYear.toString
+              "value.year"  -> validAnswer.getYear.toString
             )
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController
+          .onPageLoad()
+          .url
 
         application.stop()
       }
     }
 
     "return a Bad Request and errors when the entered date is before the asset start date" in {
-            val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[TrustsConnector].toInstance(mockConnector))
         .build()
 
@@ -233,16 +237,18 @@ class RemoveAssetEndDateControllerSpec extends SpecBase with ScalaCheckPropertyC
       val request =
         FakeRequest(POST, routes.RemoveAssetEndDateController.onSubmit(index).url)
           .withFormUrlEncodedBody(
-            "value.day" -> toEarlyDate.getDayOfMonth.toString,
+            "value.day"   -> toEarlyDate.getDayOfMonth.toString,
             "value.month" -> toEarlyDate.getMonthValue.toString,
-            "value.year" -> toEarlyDate.getYear.toString
+            "value.year"  -> toEarlyDate.getYear.toString
           )
 
-      val boundForm = form.bind(Map(
-        "value.day" -> toEarlyDate.getDayOfMonth.toString,
-        "value.month" -> toEarlyDate.getMonthValue.toString,
-        "value.year" -> toEarlyDate.getYear.toString
-      ))
+      val boundForm = form.bind(
+        Map(
+          "value.day"   -> toEarlyDate.getDayOfMonth.toString,
+          "value.month" -> toEarlyDate.getMonthValue.toString,
+          "value.year"  -> toEarlyDate.getYear.toString
+        )
+      )
 
       val view = application.injector.instanceOf[RemoveAssetEndDateView]
 
@@ -258,8 +264,9 @@ class RemoveAssetEndDateControllerSpec extends SpecBase with ScalaCheckPropertyC
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(bind[TrustsConnector].toInstance(mockConnector)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[TrustsConnector].toInstance(mockConnector))
+        .build()
 
       val request =
         FakeRequest(POST, routes.RemoveAssetEndDateController.onSubmit(index).url)
@@ -281,7 +288,6 @@ class RemoveAssetEndDateControllerSpec extends SpecBase with ScalaCheckPropertyC
 
     "redirect to Session Expired for a GET if no existing data is found" in {
 
-
       val application = applicationBuilder(userAnswers = None).build()
 
       val request = FakeRequest(GET, routes.RemoveAssetEndDateController.onPageLoad(index).url)
@@ -297,15 +303,14 @@ class RemoveAssetEndDateControllerSpec extends SpecBase with ScalaCheckPropertyC
 
     "redirect to Session Expired for a POST if no existing data is found" in {
 
-
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
         FakeRequest(POST, routes.RemoveAssetEndDateController.onSubmit(index).url)
           .withFormUrlEncodedBody(
-            "value.day" -> validAnswer.getDayOfMonth.toString,
+            "value.day"   -> validAnswer.getDayOfMonth.toString,
             "value.month" -> validAnswer.getMonthValue.toString,
-            "value.year" -> validAnswer.getYear.toString
+            "value.year"  -> validAnswer.getYear.toString
           )
 
       val result = route(application, request).value
@@ -317,4 +322,5 @@ class RemoveAssetEndDateControllerSpec extends SpecBase with ScalaCheckPropertyC
       application.stop()
     }
   }
+
 }

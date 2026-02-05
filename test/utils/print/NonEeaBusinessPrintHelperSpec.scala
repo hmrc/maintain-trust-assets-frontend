@@ -31,22 +31,46 @@ class NonEeaBusinessPrintHelperSpec extends SpecBase {
 
   private val helper: NonEeaBusinessPrintHelper = injector.instanceOf[NonEeaBusinessPrintHelper]
 
-  private val name: String = "Name"
-  private val country: String = "FR"
+  private val name: String               = "Name"
+  private val country: String            = "FR"
   private val nonUkAddress: NonUkAddress = NonUkAddress("Line 1", "Line 2", None, country)
-  private val date: LocalDate = LocalDate.parse("1996-02-03")
+  private val date: LocalDate            = LocalDate.parse("1996-02-03")
 
   private val userAnswers: UserAnswers = emptyUserAnswers
-    .set(NamePage(index), name).success.value
-    .set(NonUkAddressPage(index), nonUkAddress).success.value
-    .set(GoverningCountryPage(index), country).success.value
-    .set(StartDatePage(index), date).success.value
+    .set(NamePage(index), name)
+    .success
+    .value
+    .set(NonUkAddressPage(index), nonUkAddress)
+    .success
+    .value
+    .set(GoverningCountryPage(index), country)
+    .success
+    .value
+    .set(StartDatePage(index), date)
+    .success
+    .value
 
   private val assetRows: Seq[AnswerRow] = Seq(
-    AnswerRow(label = messages("nonEeaBusiness.name.checkYourAnswersLabel"), Html(name), NameController.onPageLoad(index, NormalMode).url),
-    AnswerRow(label = messages("nonEeaBusiness.internationalAddress.checkYourAnswersLabel", name), Html("Line 1<br />Line 2<br />France"), InternationalAddressController.onPageLoad(index, NormalMode).url),
-    AnswerRow(label = messages("nonEeaBusiness.governingCountry.checkYourAnswersLabel", name), Html("France"), GoverningCountryController.onPageLoad(index, NormalMode).url),
-    AnswerRow(label = messages("nonEeaBusiness.startDate.checkYourAnswersLabel", name), Html("3 February 1996"), StartDateController.onPageLoad(index).url)
+    AnswerRow(
+      label = messages("nonEeaBusiness.name.checkYourAnswersLabel"),
+      Html(name),
+      NameController.onPageLoad(index, NormalMode).url
+    ),
+    AnswerRow(
+      label = messages("nonEeaBusiness.internationalAddress.checkYourAnswersLabel", name),
+      Html("Line 1<br />Line 2<br />France"),
+      InternationalAddressController.onPageLoad(index, NormalMode).url
+    ),
+    AnswerRow(
+      label = messages("nonEeaBusiness.governingCountry.checkYourAnswersLabel", name),
+      Html("France"),
+      GoverningCountryController.onPageLoad(index, NormalMode).url
+    ),
+    AnswerRow(
+      label = messages("nonEeaBusiness.startDate.checkYourAnswersLabel", name),
+      Html("3 February 1996"),
+      StartDateController.onPageLoad(index).url
+    )
   )
 
   "NonEeaBusinessPrintHelper" when {
@@ -65,4 +89,5 @@ class NonEeaBusinessPrintHelperSpec extends SpecBase {
       }
     }
   }
+
 }

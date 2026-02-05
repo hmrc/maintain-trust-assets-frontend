@@ -39,21 +39,27 @@ import scala.concurrent.Future
 
 class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures {
 
-  private lazy val answersRoute = controllers.asset.other.amend.routes.AnswersController.extractAndRender(index).url
+  private lazy val answersRoute       = controllers.asset.other.amend.routes.AnswersController.extractAndRender(index).url
   private lazy val submitAnswersRoute = controllers.asset.other.amend.routes.AnswersController.onSubmit(index).url
 
-    private val name: String = "Other Asset"
+  private val name: String = "Other Asset"
 
   private val otherAsset = OtherAssetType(
     description = "Other Asset",
     value = 4000
   )
 
-  def userAnswers: UserAnswers = emptyUserAnswers.copy(isMigratingToTaxable = true)
-    .set(IndexPage, index).success.value
-    .set(OtherAssetDescriptionPage(index), "Other Asset").success.value
-    .set(OtherAssetValuePage(index), 4000L).success.value
-
+  def userAnswers: UserAnswers = emptyUserAnswers
+    .copy(isMigratingToTaxable = true)
+    .set(IndexPage, index)
+    .success
+    .value
+    .set(OtherAssetDescriptionPage(index), "Other Asset")
+    .success
+    .value
+    .set(OtherAssetValuePage(index), 4000L)
+    .success
+    .value
 
   "Asset Answers Controller" must {
 
@@ -74,8 +80,8 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[AnswersView]
-      val printHelper = application.injector.instanceOf[OtherPrintHelper]
+      val view          = application.injector.instanceOf[AnswersView]
+      val printHelper   = application.injector.instanceOf[OtherPrintHelper]
       val answerSection = printHelper(userAnswers, index, provisional = false, name)
 
       status(result) mustEqual OK
@@ -85,7 +91,6 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
 
       application.stop()
     }
-
 
     "return to Error page when internal server error occured For GET" in {
 
@@ -119,10 +124,11 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
           .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
           .build()
 
-      val moneyAsset = AssetMonetaryAmount(4000L)
+      val moneyAsset     = AssetMonetaryAmount(4000L)
       val assets: Assets = Assets(monetary = List(moneyAsset))
       when(mockTrustConnector.getAssets(any())(any(), any())).thenReturn(Future.successful(assets))
-      when(mockTrustConnector.amendOtherAsset(any(), any(), any())(any(), any())).thenReturn(Future.successful(HttpResponse(OK, "")))
+      when(mockTrustConnector.amendOtherAsset(any(), any(), any())(any(), any()))
+        .thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val request = FakeRequest(POST, submitAnswersRoute)
 
@@ -130,10 +136,13 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController
+        .onPageLoad()
+        .url
 
       application.stop()
     }
 
   }
+
 }

@@ -31,4 +31,5 @@ class NonUkAddressPageSpec extends PageBehaviours {
 
     beRemovable[NonUkAddress](page)
   }
+
 }

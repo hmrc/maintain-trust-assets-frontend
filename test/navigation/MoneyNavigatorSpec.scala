@@ -26,38 +26,32 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import pages.asset.WhatKindOfAssetPage
 import pages.asset.money.AssetMoneyValuePage
 
-
 class MoneyNavigatorSpec extends SpecBase with ScalaCheckPropertyChecks with Generators {
 
   private val navigator: Navigator = injector.instanceOf[MoneyNavigator]
 
   "Money Navigator" must {
 
-    "go to AddAssetsPage from AssetMoneyValue page when the amount submitted" in {
+    "go to AddAssetsPage from AssetMoneyValue page when the amount submitted" in
+      forAll(arbitrary[UserAnswers]) { userAnswers =>
+        val answers = userAnswers.set(WhatKindOfAssetPage(index), Money).success.value
 
-      forAll(arbitrary[UserAnswers]) {
-        userAnswers =>
-
-          val answers = userAnswers.set(WhatKindOfAssetPage(index), Money).success.value
-
-          navigator.nextPage(AssetMoneyValuePage(index), NormalMode, answers)
-            .mustBe(MoneyAnswerController.onPageLoad(index))
+        navigator
+          .nextPage(AssetMoneyValuePage(index), NormalMode, answers)
+          .mustBe(MoneyAnswerController.onPageLoad(index))
       }
-    }
   }
 
   "Money Navigator" must {
 
-    "go to check answers page from money asset value page" in {
+    "go to check answers page from money asset value page" in
+      forAll(arbitrary[UserAnswers]) { userAnswers =>
+        val answers = userAnswers.set(AssetMoneyValuePage(index), 5000L).success.value
 
-      forAll(arbitrary[UserAnswers]) {
-        userAnswers =>
-
-          val answers = userAnswers.set(AssetMoneyValuePage(index), 5000L).success.value
-
-          navigator.nextPage(AssetMoneyValuePage(index), NormalMode, answers)
-            .mustBe(MoneyAnswerController.onPageLoad(index))
+        navigator
+          .nextPage(AssetMoneyValuePage(index), NormalMode, answers)
+          .mustBe(MoneyAnswerController.onPageLoad(index))
       }
-    }
   }
+
 }

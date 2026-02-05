@@ -37,67 +37,68 @@ import views.html.asset.shares.amend.ShareAmendAnswersView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ShareAmendAnswersController @Inject()(
-                                             override val messagesApi: MessagesApi,
-                                             standardActionSets: StandardActionSets,
-                                             val controllerComponents: MessagesControllerComponents,
-                                             nameAction: CompanyNameRequiredAction,
-                                             view: ShareAmendAnswersView,
-                                             service: TrustService,
-                                             connector: TrustsConnector,
-                                             val appConfig: FrontendAppConfig,
-                                             playbackRepository: PlaybackRepository,
-                                             printHelper: SharesPrintHelper,
-                                             mapper: ShareAssetMapper,
-                                             extractor: ShareExtractor,
-                                             errorHandler: ErrorHandler
-                                           )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+class ShareAmendAnswersController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  val controllerComponents: MessagesControllerComponents,
+  nameAction: CompanyNameRequiredAction,
+  view: ShareAmendAnswersView,
+  service: TrustService,
+  connector: TrustsConnector,
+  val appConfig: FrontendAppConfig,
+  playbackRepository: PlaybackRepository,
+  printHelper: SharesPrintHelper,
+  mapper: ShareAssetMapper,
+  extractor: ShareExtractor,
+  errorHandler: ErrorHandler
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport with Logging {
 
   private val provisional: Boolean = false
 
-  private def render(userAnswers: UserAnswers,
-                     index: Int,
-                     name: String)
-                    (implicit request: Request[AnyContent]): Result = {
+  private def render(userAnswers: UserAnswers, index: Int, name: String)(implicit
+    request: Request[AnyContent]
+  ): Result = {
     val section: AnswerSection = printHelper(userAnswers, index, provisional, name)
     Ok(view(section, index))
   }
 
   def extractAndRender(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-      service.getSharesAsset(request.userAnswers.identifier, index) flatMap {
-        shareType =>
-          val extractedAnswers = extractor(request.userAnswers, shareType, index)
-          for {
-            extractedF <- Future.fromTry(extractedAnswers)
-            _ <- playbackRepository.set(extractedF)
-          } yield {
-            render(extractedF, index, shareType.orgName)
-          }
-      } recoverWith {
-        case e =>
-          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
-            s" error showing the user the check answers for Share Asset $index ${e.getMessage}")
-          errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
-      }
-  }
-
-  def renderFromUserAnswers(index: Int) : Action[AnyContent] = standardActionSets.verifiedForIdentifier.andThen(nameAction) {
-    implicit request =>
-      render(request.userAnswers, index, request.name)
-  }
-
-  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
-    implicit request =>
-      mapper(request.userAnswers).map {
-        asset =>
-          connector.amendSharesAsset(request.userAnswers.identifier, index, asset).map(_ =>
-            Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
-          )
-      }.getOrElse {
-        logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
-          s" error mapping user answers to Share Asset $index")
+      service.getSharesAsset(request.userAnswers.identifier, index) flatMap { shareType =>
+        val extractedAnswers = extractor(request.userAnswers, shareType, index)
+        for {
+          extractedF <- Future.fromTry(extractedAnswers)
+          _          <- playbackRepository.set(extractedF)
+        } yield render(extractedF, index, shareType.orgName)
+      } recoverWith { case e =>
+        logger.error(
+          s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
+            s" error showing the user the check answers for Share Asset $index ${e.getMessage}"
+        )
         errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
       }
   }
+
+  def renderFromUserAnswers(index: Int): Action[AnyContent] =
+    standardActionSets.verifiedForIdentifier.andThen(nameAction) { implicit request =>
+      render(request.userAnswers, index, request.name)
+    }
+
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async { implicit request =>
+    mapper(request.userAnswers)
+      .map { asset =>
+        connector
+          .amendSharesAsset(request.userAnswers.identifier, index, asset)
+          .map(_ => Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()))
+      }
+      .getOrElse {
+        logger.error(
+          s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
+            s" error mapping user answers to Share Asset $index"
+        )
+        errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
+      }
+  }
+
 }

@@ -33,42 +33,42 @@ import models.Mode
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class PartnershipStartDateController @Inject()(
-                                                override val messagesApi: MessagesApi,
-                                                standardActionSets: StandardActionSets,
-                                                nameAction: NameRequiredAction,
-                                                repository: PlaybackRepository,
-                                                @Partnership navigator: Navigator,
-                                                formProvider: StartDateFormProvider,
-                                                val controllerComponents: MessagesControllerComponents,
-                                                view: PartnershipStartDateView
-                                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class PartnershipStartDateController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  nameAction: NameRequiredAction,
+  repository: PlaybackRepository,
+  @Partnership navigator: Navigator,
+  formProvider: StartDateFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: PartnershipStartDateView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider.withConfig("partnership.startDate")
 
-  def onPageLoad(index: Int, mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
-    implicit request =>
-
+  def onPageLoad(index: Int, mode: Mode): Action[AnyContent] =
+    (standardActionSets.verifiedForIdentifier andThen nameAction) { implicit request =>
       val preparedForm = request.userAnswers.get(PartnershipStartDatePage(index)) match {
-        case None => form
+        case None        => form
         case Some(value) => form.fill(value)
       }
 
       Ok(view(preparedForm, index, mode))
-  }
+    }
 
-  def onSubmit(index: Int, mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
-    implicit request =>
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, index, mode))),
+  def onSubmit(index: Int, mode: Mode): Action[AnyContent] =
+    (standardActionSets.verifiedForIdentifier andThen nameAction).async { implicit request =>
+      form
+        .bindFromRequest()
+        .fold(
+          (formWithErrors: Form[_]) => Future.successful(BadRequest(view(formWithErrors, index, mode))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(PartnershipStartDatePage(index), value))
+              _              <- repository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(PartnershipStartDatePage(index), mode, updatedAnswers))
+        )
+    }
 
-        value => {
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(PartnershipStartDatePage(index), value))
-            _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(PartnershipStartDatePage(index), mode, updatedAnswers))
-        }
-      )
-  }
 }

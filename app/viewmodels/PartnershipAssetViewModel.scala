@@ -25,9 +25,8 @@ import pages.asset.partnership.PartnershipDescriptionPage
 import play.api.libs.functional.syntax._
 import play.api.libs.json._
 
-final case class PartnershipAssetViewModel(`type`: WhatKindOfAsset,
-                                           description: Option[String],
-                                           status: Status) extends AssetViewModel {
+final case class PartnershipAssetViewModel(`type`: WhatKindOfAsset, description: Option[String], status: Status)
+    extends AssetViewModel {
 
   override val label: Option[String] = description
 }
@@ -38,5 +37,6 @@ object PartnershipAssetViewModel {
     (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].filter(_ == Partnership) and
       (__ \ PartnershipDescriptionPage.key).readNullable[String] and
       (__ \ AssetStatus.key).readWithDefault[Status](InProgress)
-    )(PartnershipAssetViewModel.apply _)
+  )(PartnershipAssetViewModel.apply _)
+
 }

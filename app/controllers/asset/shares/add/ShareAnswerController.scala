@@ -36,19 +36,20 @@ import views.html.asset.shares.add.ShareAnswersView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class ShareAnswerController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       standardActionSets: StandardActionSets,
-                                       @Shares navigator: Navigator,
-                                       view: ShareAnswersView,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       nameAction: CompanyNameRequiredAction,
-                                       printHelper: SharesPrintHelper,
-                                       connector: TrustsConnector,
-                                       mapper: ShareAssetMapper,
-                                       errorHandler: ErrorHandler,
-                                       repository: PlaybackRepository
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class ShareAnswerController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  @Shares navigator: Navigator,
+  view: ShareAnswersView,
+  val controllerComponents: MessagesControllerComponents,
+  nameAction: CompanyNameRequiredAction,
+  printHelper: SharesPrintHelper,
+  connector: TrustsConnector,
+  mapper: ShareAssetMapper,
+  errorHandler: ErrorHandler,
+  repository: PlaybackRepository
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   private val provisional: Boolean = true
 
@@ -58,42 +59,40 @@ class ShareAnswerController @Inject()(
       Ok(view(index, section))
   }
 
-  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
-    implicit request =>
-      mapper(request.userAnswers) match {
-        case None => errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
-        case Some(asset) =>
-          connector.getAssets(request.userAnswers.identifier).flatMap { data =>
-            if (data.shares.nonEmpty && (data.shares.size - 1 == index)) {
-              connector.amendSharesAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async { implicit request =>
+    mapper(request.userAnswers) match {
+      case None        => errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
+      case Some(asset) =>
+        connector.getAssets(request.userAnswers.identifier).flatMap { data =>
+          if (data.shares.nonEmpty && (data.shares.size - 1 == index)) {
+            connector.amendSharesAsset(request.userAnswers.identifier, index, asset).flatMap { response =>
+              response.status match {
+                case OK | NO_CONTENT => cleanAllAndRedirect(index)
+                case _               => errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
+              }
+            }
+          } else {
+            val matchFound = data.shares.exists(ele =>
+              ele.orgName.equalsIgnoreCase(asset.orgName) &&
+                ele.isPortfolio == asset.isPortfolio &&
+                ele.shareClass.equalsIgnoreCase(asset.shareClass) &&
+                ele.typeOfShare.equalsIgnoreCase(asset.typeOfShare) &&
+                ele.numberOfShares.equalsIgnoreCase(asset.numberOfShares) &&
+                ele.shareClassDisplay == asset.shareClassDisplay &&
+                ele.value == asset.value
+            )
+            if (!matchFound) {
+              connector.addSharesAsset(request.userAnswers.identifier, asset).flatMap { response =>
                 response.status match {
                   case OK | NO_CONTENT => cleanAllAndRedirect(index)
                   case _               => errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
                 }
               }
-            } else {
-              val matchFound = data.shares.exists(ele =>
-                ele.orgName.equalsIgnoreCase(asset.orgName) &&
-                  ele.isPortfolio == asset.isPortfolio &&
-                  ele.shareClass.equalsIgnoreCase(asset.shareClass) &&
-                  ele.typeOfShare.equalsIgnoreCase(asset.typeOfShare) &&
-                  ele.numberOfShares.equalsIgnoreCase(asset.numberOfShares) &&
-                  ele.shareClassDisplay == asset.shareClassDisplay &&
-                  ele.value == asset.value
-              )
-              if (!matchFound) {
-                connector.addSharesAsset(request.userAnswers.identifier, asset).flatMap { response =>
-                  response.status match {
-                    case OK | NO_CONTENT => cleanAllAndRedirect(index)
-                    case _               => errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
-                  }
-                }
-              } else cleanAllAndRedirect(index)
-            }
+            } else cleanAllAndRedirect(index)
           }
-      }
+        }
+    }
   }
-
 
   private def cleanAllAndRedirect(index: Int)(implicit request: DataRequest[AnyContent]): Future[Result] = {
     val next = navigator.nextPage(ShareAnswerPage(index), NormalMode, request.userAnswers)
@@ -102,4 +101,5 @@ class ShareAnswerController @Inject()(
       cleanedUa => repository.set(cleanedUa).map(_ => Redirect(next))
     )
   }
+
 }

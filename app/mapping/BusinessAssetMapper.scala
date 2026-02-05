@@ -30,12 +30,13 @@ class BusinessAssetMapper extends Mapper[BusinessAssetType] {
         BusinessNamePage(0).path.read[String] and
           BusinessDescriptionPage(0).path.read[String] and
           BusinessAddressUkYesNoPage(0).path.read[Boolean].flatMap {
-            case true => BusinessUkAddressPage(0).path.read[UkAddress].widen[Address]
+            case true  => BusinessUkAddressPage(0).path.read[UkAddress].widen[Address]
             case false => BusinessInternationalAddressPage(0).path.read[NonUkAddress].widen[Address]
           } and
           BusinessValuePage(0).path.read[Long]
-        ) (BusinessAssetType.apply _)
+      )(BusinessAssetType.apply _)
 
     mapAnswersWithExplicitReads(answers, readFromUserAnswers)
   }
+
 }

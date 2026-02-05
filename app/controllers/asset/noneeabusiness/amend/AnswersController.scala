@@ -37,70 +37,68 @@ import views.html.asset.noneeabusiness.amend.AnswersView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AnswersController @Inject()(
-                                   override val messagesApi: MessagesApi,
-                                   standardActionSets: StandardActionSets,
-                                   val controllerComponents: MessagesControllerComponents,
-                                   view: AnswersView,
-                                   service: TrustService,
-                                   connector: TrustsConnector,
-                                   val appConfig: FrontendAppConfig,
-                                   playbackRepository: PlaybackRepository,
-                                   printHelper: NonEeaBusinessPrintHelper,
-                                   mapper: NonEeaBusinessAssetMapper,
-                                   nameAction: NameRequiredAction,
-                                   extractor: NonEeaBusinessExtractor,
-                                   errorHandler: ErrorHandler,
-                                   navigator: AssetsNavigator
-                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+class AnswersController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  val controllerComponents: MessagesControllerComponents,
+  view: AnswersView,
+  service: TrustService,
+  connector: TrustsConnector,
+  val appConfig: FrontendAppConfig,
+  playbackRepository: PlaybackRepository,
+  printHelper: NonEeaBusinessPrintHelper,
+  mapper: NonEeaBusinessAssetMapper,
+  nameAction: NameRequiredAction,
+  extractor: NonEeaBusinessExtractor,
+  errorHandler: ErrorHandler,
+  navigator: AssetsNavigator
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport with Logging {
 
   private val provisional: Boolean = false
 
-  private def render(userAnswers: UserAnswers,
-                     index: Int,
-                     name: String)
-                    (implicit request: Request[AnyContent]): Result = {
+  private def render(userAnswers: UserAnswers, index: Int, name: String)(implicit
+    request: Request[AnyContent]
+  ): Result =
 
-    Ok(view(answerSections = printHelper(userAnswers, index,provisional, name),index = index))
-  }
+    Ok(view(answerSections = printHelper(userAnswers, index, provisional, name), index = index))
 
   def extractAndRender(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-
-      service.getNonEeaBusinessAsset(request.userAnswers.identifier, index) flatMap {
-        nonEeaBusiness =>
-          val extractedAnswers = extractor(request.userAnswers, nonEeaBusiness, index)
-          for {
-            extractedF <- Future.fromTry(extractedAnswers)
-            _ <- playbackRepository.set(extractedF)
-          } yield {
-            render(extractedF, index, nonEeaBusiness.orgName)
-          }
-      } recoverWith {
-        case e =>
-          logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
-            s" error showing the user the check answers for NonEeaBusiness Asset $index ${e.getMessage}")
-          errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
-      }
-  }
-
-  def renderFromUserAnswers(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.andThen(nameAction) {
-    implicit request =>
-      render(request.userAnswers, index, request.name)
-  }
-
-  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
-    implicit request =>
-
-      mapper(request.userAnswers).map {
-        asset =>
-          connector.amendNonEeaBusinessAsset(request.userAnswers.identifier, index, asset).map(_ =>
-            Redirect(navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable))
-          )
-      }.getOrElse {
-        logger.error(s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
-          s" error mapping user answers to NonEeaBusiness Asset $index, isNew: $provisional")
+      service.getNonEeaBusinessAsset(request.userAnswers.identifier, index) flatMap { nonEeaBusiness =>
+        val extractedAnswers = extractor(request.userAnswers, nonEeaBusiness, index)
+        for {
+          extractedF <- Future.fromTry(extractedAnswers)
+          _          <- playbackRepository.set(extractedF)
+        } yield render(extractedF, index, nonEeaBusiness.orgName)
+      } recoverWith { case e =>
+        logger.error(
+          s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
+            s" error showing the user the check answers for NonEeaBusiness Asset $index ${e.getMessage}"
+        )
         errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
       }
   }
+
+  def renderFromUserAnswers(index: Int): Action[AnyContent] =
+    standardActionSets.verifiedForIdentifier.andThen(nameAction) { implicit request =>
+      render(request.userAnswers, index, request.name)
+    }
+
+  def onSubmit(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async { implicit request =>
+    mapper(request.userAnswers)
+      .map { asset =>
+        connector
+          .amendNonEeaBusinessAsset(request.userAnswers.identifier, index, asset)
+          .map(_ => Redirect(navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable)))
+      }
+      .getOrElse {
+        logger.error(
+          s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
+            s" error mapping user answers to NonEeaBusiness Asset $index, isNew: $provisional"
+        )
+        errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
+      }
+  }
+
 }

@@ -21,66 +21,48 @@ import play.api.data.{Form, FormError}
 
 trait StringFieldBehaviours extends FieldBehaviours with OptionalFieldBehaviours {
 
-  def fieldWithMinLength(form: Form[_],
-                         fieldName: String,
-                         minLength: Int,
-                         lengthError: FormError): Unit = {
+  def fieldWithMinLength(form: Form[_], fieldName: String, minLength: Int, lengthError: FormError): Unit =
 
     s"not bind strings shorter than $minLength characters" in {
 
       val length = if (minLength > 0 && minLength < 2) minLength else minLength - 1
 
-      forAll(stringsWithMaxLength(length) -> "shortString") {
-        string =>
+      forAll(stringsWithMaxLength(length) -> "shortString") { string =>
+        val result = form.bind(Map(fieldName -> string)).apply(fieldName)
+        result.errors shouldEqual Seq(lengthError)
+      }
+    }
+
+  def fieldWithMaxLength(form: Form[_], fieldName: String, maxLength: Int, lengthError: FormError): Unit =
+
+    s"not bind strings longer than $maxLength characters" in
+      forAll(stringsLongerThan(maxLength) -> "longString") { string =>
+        val result = form.bind(Map(fieldName -> string)).apply(fieldName)
+        result.errors shouldEqual Seq(lengthError)
+      }
+
+  def fieldWithRegexpWithGenerator(
+    form: Form[_],
+    fieldName: String,
+    regexp: String,
+    generator: Gen[String],
+    error: FormError
+  ): Unit =
+
+    s"not bind strings which do not match $regexp" in
+      forAll(generator) { string =>
+        whenever(!string.matches(regexp) && string.nonEmpty) {
           val result = form.bind(Map(fieldName -> string)).apply(fieldName)
-          result.errors shouldEqual Seq(lengthError)
+          result.errors shouldEqual Seq(error)
+        }
       }
-    }
 
-  }
-
-  def fieldWithMaxLength(form: Form[_],
-                         fieldName: String,
-                         maxLength: Int,
-                         lengthError: FormError
-                        ): Unit = {
-
-    s"not bind strings longer than $maxLength characters" in {
-
-      forAll(stringsLongerThan(maxLength) -> "longString") {
-        string =>
-          val result = form.bind(Map(fieldName -> string)).apply(fieldName)
-          result.errors shouldEqual Seq(lengthError)
-      }
-    }
-  }
-
-  def fieldWithRegexpWithGenerator(form: Form[_],
-                                   fieldName: String,
-                                   regexp: String,
-                                   generator: Gen[String],
-                                   error: FormError): Unit = {
-
-    s"not bind strings which do not match $regexp" in {
-      forAll(generator) {
-        string =>
-          whenever(!string.matches(regexp) && string.nonEmpty) {
-            val result = form.bind(Map(fieldName -> string)).apply(fieldName)
-            result.errors shouldEqual Seq(error)
-          }
-      }
-    }
-  }
-
-  def nonEmptyField(form: Form[_],
-                    fieldName: String,
-                    requiredError: FormError): Unit = {
+  def nonEmptyField(form: Form[_], fieldName: String, requiredError: FormError): Unit =
 
     "not bind spaces" in {
 
       val result = form.bind(Map(fieldName -> "    ")).apply(fieldName)
       result.errors shouldBe Seq(requiredError)
     }
-  }
 
 }

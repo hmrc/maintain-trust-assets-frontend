@@ -25,30 +25,31 @@ import pages.asset.property_or_land._
 import play.api.libs.functional.syntax._
 import play.api.libs.json.{JsSuccess, Reads, __}
 
-final case class PropertyOrLandAsset(override val whatKindOfAsset: WhatKindOfAsset,
-                                     propertyOrLandDescription: Option[String],
-                                     address: Option[Address],
-                                     propertyLandValueTrust: Option[Long],
-                                     propertyOrLandTotalValue: Long,
-                                     startDate: LocalDate) extends Asset
+final case class PropertyOrLandAsset(
+  override val whatKindOfAsset: WhatKindOfAsset,
+  propertyOrLandDescription: Option[String],
+  address: Option[Address],
+  propertyLandValueTrust: Option[Long],
+  propertyOrLandTotalValue: Long,
+  startDate: LocalDate
+) extends Asset
 
 object PropertyOrLandAsset {
 
   implicit lazy val reads: Reads[PropertyOrLandAsset] = {
 
-    val optionalAddressReads: Reads[Option[Address]] = {
+    val optionalAddressReads: Reads[Option[Address]] =
       (__ \ PropertyOrLandUKAddressPage.key).read[Address].map(Some(_): Option[Address]) orElse
         (__ \ PropertyOrLandInternationalAddressPage.key).read[Address].map(Some(_): Option[Address]) orElse
         Reads(_ => JsSuccess(None: Option[Address]))
-    }
 
     ((__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].filter(_ == PropertyOrLand) and
       (__ \ PropertyOrLandDescriptionPage.key).readNullable[String] and
       optionalAddressReads and
       (__ \ PropertyLandValueTrustPage.key).readNullable[Long] and
       (__ \ PropertyOrLandTotalValuePage.key).read[Long] and
-      (__ \ StartDatePage).read[LocalDate]
-      )(PropertyOrLandAsset.apply _)
+      (__ \ StartDatePage).read[LocalDate])(PropertyOrLandAsset.apply _)
 
   }
+
 }

@@ -36,4 +36,5 @@ class ShareAnswersViewSpec extends ViewBehaviours {
 
     behave like pageWithBackLink(applyView())
   }
+
 }

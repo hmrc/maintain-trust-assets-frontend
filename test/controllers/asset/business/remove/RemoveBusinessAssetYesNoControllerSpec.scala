@@ -37,11 +37,12 @@ import scala.concurrent.Future
 
 class RemoveBusinessAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChecks with ScalaFutures {
 
-  lazy val formProvider = new RemoveIndexFormProvider()
-  lazy val form: Form[Boolean] = formProvider(messagesPrefix)
-  lazy val formRoute: Call = routes.RemoveBusinessAssetYesNoController.onSubmit(0)
-  val messagesPrefix = "business.removeYesNo"
+  lazy val formProvider              = new RemoveIndexFormProvider()
+  lazy val form: Form[Boolean]       = formProvider(messagesPrefix)
+  lazy val formRoute: Call           = routes.RemoveBusinessAssetYesNoController.onSubmit(0)
+  val messagesPrefix                 = "business.removeYesNo"
   val mockConnector: TrustsConnector = mock[TrustsConnector]
+
   val businessAssets: List[BusinessAssetType] = List(
     createAsset(0, provisional = false),
     createAsset(1, provisional = true),
@@ -56,7 +57,6 @@ class RemoveBusinessAssetYesNoControllerSpec extends SpecBase with ScalaCheckPro
   "RemoveBusinessAssetYesNoController" when {
 
     "return OK and the correct view for a GET" in {
-
 
       when(mockConnector.getAssets(any())(any(), any()))
         .thenReturn(Future.successful(Assets(Nil, Nil, Nil, businessAssets, Nil, Nil, Nil)))
@@ -95,11 +95,12 @@ class RemoveBusinessAssetYesNoControllerSpec extends SpecBase with ScalaCheckPro
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController
+        .onPageLoad()
+        .url
 
       application.stop()
     }
-
 
     "return INTERNAL_SERVER_ERROR when service fails" in {
 
@@ -139,7 +140,9 @@ class RemoveBusinessAssetYesNoControllerSpec extends SpecBase with ScalaCheckPro
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController
+          .onPageLoad()
+          .url
 
         application.stop()
       }
@@ -169,7 +172,9 @@ class RemoveBusinessAssetYesNoControllerSpec extends SpecBase with ScalaCheckPro
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController
+          .onPageLoad()
+          .url
 
         application.stop()
       }
@@ -177,7 +182,9 @@ class RemoveBusinessAssetYesNoControllerSpec extends SpecBase with ScalaCheckPro
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).overrides(bind[TrustsConnector].toInstance(mockConnector)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[TrustsConnector].toInstance(mockConnector))
+        .build()
 
       val request =
         FakeRequest(POST, routes.RemoveBusinessAssetYesNoController.onSubmit(index).url)
@@ -229,4 +236,5 @@ class RemoveBusinessAssetYesNoControllerSpec extends SpecBase with ScalaCheckPro
       application.stop()
     }
   }
+
 }

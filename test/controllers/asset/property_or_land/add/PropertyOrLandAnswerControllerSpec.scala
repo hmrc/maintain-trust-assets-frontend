@@ -37,18 +37,28 @@ import scala.concurrent.Future
 class PropertyOrLandAnswerControllerSpec extends SpecBase {
 
   lazy val propertyOrLandAnswerRoute: String = routes.PropertyOrLandAnswerController.onPageLoad(index).url
-  val name: String = "Description"
-  private val totalValue: Long = 10000L
+  val name: String                           = "Description"
+  private val totalValue: Long               = 10000L
 
   "PropertyOrLandAnswer Controller" must {
 
     val answers =
       emptyUserAnswers
-        .set(WhatKindOfAssetPage(index), PropertyOrLand).success.value
-        .set(PropertyOrLandAddressYesNoPage(index), false).success.value
-        .set(PropertyOrLandDescriptionPage(index), "Property Land Description").success.value
-        .set(PropertyOrLandTotalValuePage(index), totalValue).success.value
-        .set(TrustOwnAllThePropertyOrLandPage(index), true).success.value
+        .set(WhatKindOfAssetPage(index), PropertyOrLand)
+        .success
+        .value
+        .set(PropertyOrLandAddressYesNoPage(index), false)
+        .success
+        .value
+        .set(PropertyOrLandDescriptionPage(index), "Property Land Description")
+        .success
+        .value
+        .set(PropertyOrLandTotalValuePage(index), totalValue)
+        .success
+        .value
+        .set(TrustOwnAllThePropertyOrLandPage(index), true)
+        .success
+        .value
 
     "property or land does not have an address and total value is owned by the trust" must {
 
@@ -60,8 +70,8 @@ class PropertyOrLandAnswerControllerSpec extends SpecBase {
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[PropertyOrLandAnswersView]
-        val printHelper = application.injector.instanceOf[PropertyOrLandPrintHelper]
+        val view          = application.injector.instanceOf[PropertyOrLandAnswersView]
+        val printHelper   = application.injector.instanceOf[PropertyOrLandPrintHelper]
         val answerSection = printHelper(answers, index, provisional = true, name)
 
         status(result) mustEqual OK
@@ -94,7 +104,9 @@ class PropertyOrLandAnswerControllerSpec extends SpecBase {
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController
+        .onPageLoad()
+        .url
 
       application.stop()
     }
@@ -120,7 +132,9 @@ class PropertyOrLandAnswerControllerSpec extends SpecBase {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController
+        .onPageLoad()
+        .url
 
       application.stop()
     }
@@ -139,4 +153,5 @@ class PropertyOrLandAnswerControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

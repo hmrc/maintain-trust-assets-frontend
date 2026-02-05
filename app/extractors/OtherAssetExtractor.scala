@@ -27,14 +27,12 @@ import scala.util.Try
 
 class OtherAssetExtractor extends AssetExtractor[OtherAssetType] {
 
-  override def apply(answers: UserAnswers,
-                     otherAssetType: OtherAssetType,
-                     index: Int): Try[UserAnswers] = {
+  override def apply(answers: UserAnswers, otherAssetType: OtherAssetType, index: Int): Try[UserAnswers] =
 
-    super.apply(answers, otherAssetType, index)
+    super
+      .apply(answers, otherAssetType, index)
       .flatMap(_.set(OtherAssetDescriptionPage(0), otherAssetType.description))
       .flatMap(_.set(OtherAssetValuePage(0), otherAssetType.value))
-  }
 
   override def indexPage: QuestionPage[Int] = IndexPage
 

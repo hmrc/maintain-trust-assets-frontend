@@ -40,10 +40,11 @@ class RemovePartnershipAssetYesNoControllerSpec extends SpecBase with ScalaCheck
 
   val messagesPrefix = "partnership.removeYesNo"
 
-  lazy val formProvider = new RemoveIndexFormProvider()
+  lazy val formProvider        = new RemoveIndexFormProvider()
   lazy val form: Form[Boolean] = formProvider(messagesPrefix)
 
-  lazy val formRoute: Call = controllers.asset.partnership.remove.routes.RemovePartnershipAssetYesNoController.onSubmit(0)
+  lazy val formRoute: Call =
+    controllers.asset.partnership.remove.routes.RemovePartnershipAssetYesNoController.onSubmit(0)
 
   val mockConnector: TrustsConnector = mock[TrustsConnector]
 
@@ -62,7 +63,6 @@ class RemovePartnershipAssetYesNoControllerSpec extends SpecBase with ScalaCheck
 
     "return OK and the correct view for a GET" in {
 
-
       when(mockConnector.getAssets(any())(any(), any()))
         .thenReturn(Future.successful(Assets(Nil, Nil, Nil, Nil, assets, Nil, Nil)))
 
@@ -70,7 +70,10 @@ class RemovePartnershipAssetYesNoControllerSpec extends SpecBase with ScalaCheck
         .overrides(bind[TrustsConnector].toInstance(mockConnector))
         .build()
 
-      val request = FakeRequest(GET, controllers.asset.partnership.remove.routes.RemovePartnershipAssetYesNoController.onPageLoad(index).url)
+      val request = FakeRequest(
+        GET,
+        controllers.asset.partnership.remove.routes.RemovePartnershipAssetYesNoController.onPageLoad(index).url
+      )
 
       val result = route(application, request).value
 
@@ -87,7 +90,6 @@ class RemovePartnershipAssetYesNoControllerSpec extends SpecBase with ScalaCheck
 
       "redirect to the 'add asset' page when valid data is submitted and migrating" in {
 
-
         val answers = userAnswers(migrating = true)
 
         val application = applicationBuilder(userAnswers = Some(answers))
@@ -95,14 +97,19 @@ class RemovePartnershipAssetYesNoControllerSpec extends SpecBase with ScalaCheck
           .build()
 
         val request =
-          FakeRequest(POST, controllers.asset.partnership.remove.routes.RemovePartnershipAssetYesNoController.onSubmit(index).url)
+          FakeRequest(
+            POST,
+            controllers.asset.partnership.remove.routes.RemovePartnershipAssetYesNoController.onSubmit(index).url
+          )
             .withFormUrlEncodedBody(("value", "false"))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController
+          .onPageLoad()
+          .url
 
         application.stop()
       }
@@ -111,7 +118,6 @@ class RemovePartnershipAssetYesNoControllerSpec extends SpecBase with ScalaCheck
     "removing an old asset" must {
 
       "redirect to the 'add asset' page, removing the asset when migrating" in {
-
 
         val answers = userAnswers(migrating = true)
 
@@ -126,14 +132,19 @@ class RemovePartnershipAssetYesNoControllerSpec extends SpecBase with ScalaCheck
           .thenReturn(Future.successful(HttpResponse(200, "")))
 
         val request =
-          FakeRequest(POST, controllers.asset.partnership.remove.routes.RemovePartnershipAssetYesNoController.onSubmit(index).url)
+          FakeRequest(
+            POST,
+            controllers.asset.partnership.remove.routes.RemovePartnershipAssetYesNoController.onSubmit(index).url
+          )
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController
+          .onPageLoad()
+          .url
 
         application.stop()
       }
@@ -141,13 +152,15 @@ class RemovePartnershipAssetYesNoControllerSpec extends SpecBase with ScalaCheck
 
     "return a Bad Request and errors when invalid data is submitted" in {
 
-
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[TrustsConnector].toInstance(mockConnector))
         .build()
 
       val request =
-        FakeRequest(POST, controllers.asset.partnership.remove.routes.RemovePartnershipAssetYesNoController.onSubmit(index).url)
+        FakeRequest(
+          POST,
+          controllers.asset.partnership.remove.routes.RemovePartnershipAssetYesNoController.onSubmit(index).url
+        )
           .withFormUrlEncodedBody(("value", ""))
 
       val boundForm = form.bind(Map("value" -> ""))
@@ -166,10 +179,12 @@ class RemovePartnershipAssetYesNoControllerSpec extends SpecBase with ScalaCheck
 
     "redirect to Session Expired for a GET if no existing data is found" in {
 
-
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, controllers.asset.partnership.remove.routes.RemovePartnershipAssetYesNoController.onPageLoad(index).url)
+      val request = FakeRequest(
+        GET,
+        controllers.asset.partnership.remove.routes.RemovePartnershipAssetYesNoController.onPageLoad(index).url
+      )
 
       val result = route(application, request).value
 
@@ -182,11 +197,13 @@ class RemovePartnershipAssetYesNoControllerSpec extends SpecBase with ScalaCheck
 
     "redirect to Session Expired for a POST if no existing data is found" in {
 
-
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
-        FakeRequest(POST, controllers.asset.partnership.remove.routes.RemovePartnershipAssetYesNoController.onSubmit(index).url)
+        FakeRequest(
+          POST,
+          controllers.asset.partnership.remove.routes.RemovePartnershipAssetYesNoController.onSubmit(index).url
+        )
           .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value
@@ -198,4 +215,5 @@ class RemovePartnershipAssetYesNoControllerSpec extends SpecBase with ScalaCheck
       application.stop()
     }
   }
+
 }

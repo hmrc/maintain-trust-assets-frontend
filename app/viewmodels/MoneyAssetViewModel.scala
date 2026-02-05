@@ -26,9 +26,8 @@ import play.api.libs.functional.syntax._
 import play.api.libs.json._
 import utils.CheckAnswersFormatters.currencyFormat
 
-final case class MoneyAssetViewModel(`type`: WhatKindOfAsset,
-                                     value: Option[String],
-                                     status: Status) extends AssetViewModel {
+final case class MoneyAssetViewModel(`type`: WhatKindOfAsset, value: Option[String], status: Status)
+    extends AssetViewModel {
 
   override val label: Option[String] = value.map(currencyFormat)
 }
@@ -39,6 +38,6 @@ object MoneyAssetViewModel {
     (__ \ WhatKindOfAssetPage.key).read[WhatKindOfAsset].filter(_ == Money) and
       (__ \ AssetMoneyValuePage.key).readNullable[Long].map(_.map(_.toString)) and
       (__ \ AssetStatus.key).readWithDefault[Status](InProgress)
-    )(MoneyAssetViewModel.apply _)
+  )(MoneyAssetViewModel.apply _)
 
 }

@@ -29,4 +29,5 @@ class BusinessNonUkAddressPageSpec extends PageBehaviours {
 
     beRemovable[NonUkAddress](BusinessInternationalAddressPage(index))
   }
+
 }

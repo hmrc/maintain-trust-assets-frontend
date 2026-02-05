@@ -21,9 +21,9 @@ import play.api.data.FormError
 
 class ValueFormProviderSpec extends LongFieldBehaviours {
 
-  private val prefix: String = "propertyOrLand.valueInTrust"
-  private val fieldName = "value"
-  private val requiredKey = s"$prefix.error.required"
+  private val prefix: String        = "propertyOrLand.valueInTrust"
+  private val fieldName             = "value"
+  private val requiredKey           = s"$prefix.error.required"
   private val invalidOnlyNumbersKey = s"$prefix.error.invalid"
   private val invalidWholeNumberKey = s"$prefix.error.wholeNumber"
 
@@ -32,8 +32,8 @@ class ValueFormProviderSpec extends LongFieldBehaviours {
     "min value provided" must {
 
       val minValue: Long = 100L
-      val minValueKey = s"$prefix.error.lessThanValueInTrust"
-      val maxValueKey = s"$prefix.error.length"
+      val minValueKey    = s"$prefix.error.lessThanValueInTrust"
+      val maxValueKey    = s"$prefix.error.length"
 
       val form = new ValueFormProvider(frontendAppConfig)
         .withConfig(prefix = prefix, minValue = Some(minValue))
@@ -58,8 +58,8 @@ class ValueFormProviderSpec extends LongFieldBehaviours {
     "max value provided" must {
 
       val maxValue: Long = 100L
-      val maxValueKey = s"$prefix.error.moreThanTotal"
-      val minValueKey = s"$prefix.error.zero"
+      val maxValueKey    = s"$prefix.error.moreThanTotal"
+      val minValueKey    = s"$prefix.error.zero"
 
       val form = new ValueFormProvider(frontendAppConfig)
         .withConfig(prefix = prefix, maxValue = Some(maxValue))
@@ -104,4 +104,5 @@ class ValueFormProviderSpec extends LongFieldBehaviours {
       )
     }
   }
+
 }

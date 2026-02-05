@@ -18,7 +18,6 @@ package pages.asset.property_or_land
 
 import pages.behaviours.PageBehaviours
 
-
 class PropertyOrLandDescriptionPageSpec extends PageBehaviours {
 
   val page = PropertyOrLandDescriptionPage(index)
@@ -31,4 +30,5 @@ class PropertyOrLandDescriptionPageSpec extends PageBehaviours {
 
     beRemovable[String](page)
   }
+
 }

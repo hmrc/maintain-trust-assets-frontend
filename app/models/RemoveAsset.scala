@@ -26,12 +26,12 @@ case class RemoveAsset(`type`: AssetNameType, index: Int, endDate: LocalDate)
 
 object RemoveAsset {
 
-  implicit val writes : Writes[RemoveAsset] =
+  implicit val writes: Writes[RemoveAsset] =
     (
       (JsPath \ "type").write[AssetNameType](AssetNameType.writesToTrusts) and
         (JsPath \ "index").write[Int] and
         (JsPath \ "endDate").write[LocalDate]
-      ).apply(unlift(RemoveAsset.unapply))
+    ).apply(unlift(RemoveAsset.unapply))
 
-  def apply(`type`: AssetNameType, index: Int): RemoveAsset =  RemoveAsset(`type`, index, LocalDate.now)
+  def apply(`type`: AssetNameType, index: Int): RemoveAsset = RemoveAsset(`type`, index, LocalDate.now)
 }

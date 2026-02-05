@@ -32,22 +32,23 @@ import models.Mode
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class PartnershipDescriptionController @Inject()(
-                                                  override val messagesApi: MessagesApi,
-                                                  standardActionSets: StandardActionSets,
-                                                  repository: PlaybackRepository,
-                                                  @Partnership navigator: Navigator,
-                                                  formProvider: DescriptionFormProvider,
-                                                  val controllerComponents: MessagesControllerComponents,
-                                                  view: PartnershipDescriptionView
-                                                )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class PartnershipDescriptionController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  repository: PlaybackRepository,
+  @Partnership navigator: Navigator,
+  formProvider: DescriptionFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: PartnershipDescriptionView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   private val form = formProvider.withConfig(56, "partnership.description")
 
   def onPageLoad(index: Int, mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
     implicit request =>
       val preparedForm = request.userAnswers.get(PartnershipDescriptionPage(index)) match {
-        case None => form
+        case None        => form
         case Some(value) => form.fill(value)
       }
       Ok(view(preparedForm, index, mode))
@@ -55,15 +56,16 @@ class PartnershipDescriptionController @Inject()(
 
   def onSubmit(index: Int, mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, index, mode))),
-        value => {
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(PartnershipDescriptionPage(index), value))
-            _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(PartnershipDescriptionPage(index), mode, updatedAnswers))
-        }
-      )
+      form
+        .bindFromRequest()
+        .fold(
+          (formWithErrors: Form[_]) => Future.successful(BadRequest(view(formWithErrors, index, mode))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(PartnershipDescriptionPage(index), value))
+              _              <- repository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(PartnershipDescriptionPage(index), mode, updatedAnswers))
+        )
   }
+
 }

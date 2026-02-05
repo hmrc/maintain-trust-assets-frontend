@@ -27,9 +27,9 @@ import java.time.LocalDate
 
 class NonEeaBusinessExtractorSpec extends SpecBase {
 
-  private val name: String = "OrgName"
-  private val date: LocalDate = LocalDate.parse("1996-02-03")
-  private val country: String = "FR"
+  private val name: String               = "OrgName"
+  private val date: LocalDate            = LocalDate.parse("1996-02-03")
+  private val country: String            = "FR"
   private val nonUkAddress: NonUkAddress = NonUkAddress("Line 1", "Line 2", None, "FR")
 
   private val extractor = new NonEeaBusinessExtractor()
@@ -38,7 +38,8 @@ class NonEeaBusinessExtractorSpec extends SpecBase {
 
     "Populate user answers" when {
 
-      val baseAnswers: UserAnswers = emptyUserAnswers.copy(is5mldEnabled = true, isTaxable = true, isUnderlyingData5mld = false)
+      val baseAnswers: UserAnswers =
+        emptyUserAnswers.copy(is5mldEnabled = true, isTaxable = true, isUnderlyingData5mld = false)
 
       "has nonEeaBusiness asset data" in {
 
@@ -54,11 +55,11 @@ class NonEeaBusinessExtractorSpec extends SpecBase {
 
         val result = extractor(baseAnswers, nonEeaBusiness, index).get
 
-        result.get(IndexPage).get mustBe index
-        result.get(NamePage(index)).get mustBe name
-        result.get(NonUkAddressPage(index)).get mustBe nonUkAddress
+        result.get(IndexPage).get                   mustBe index
+        result.get(NamePage(index)).get             mustBe name
+        result.get(NonUkAddressPage(index)).get     mustBe nonUkAddress
         result.get(GoverningCountryPage(index)).get mustBe country
-        result.get(StartDatePage(index)).get mustBe date
+        result.get(StartDatePage(index)).get        mustBe date
       }
 
     }

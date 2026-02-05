@@ -33,16 +33,17 @@ import views.html.asset.business.BusinessValueView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class BusinessValueController @Inject()(
-                                         override val messagesApi: MessagesApi,
-                                         standardActionSets: StandardActionSets,
-                                         nameAction: NameRequiredAction,
-                                         repository: PlaybackRepository,
-                                         @Business navigator: Navigator,
-                                         formProvider: ValueFormProvider,
-                                         val controllerComponents: MessagesControllerComponents,
-                                         view: BusinessValueView
-                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class BusinessValueController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  nameAction: NameRequiredAction,
+  repository: PlaybackRepository,
+  @Business navigator: Navigator,
+  formProvider: ValueFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: BusinessValueView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   private val form: Form[Long] = formProvider.withConfig(prefix = "business.currentValue")
 
@@ -58,17 +59,18 @@ class BusinessValueController @Inject()(
 
   def onSubmit(index: Int, mode: Mode): Action[AnyContent] =
     (standardActionSets.verifiedForIdentifier andThen nameAction).async { implicit request =>
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, index, mode, request.name))),
-        value => {
-          val answers = request.userAnswers.set(BusinessValuePage(index), value)
-          for {
-            updatedAnswers <- Future.fromTry(answers)
-            _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(BusinessValuePage(index), mode, updatedAnswers))
-        }
-      )
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, index, mode, request.name))),
+          value => {
+            val answers = request.userAnswers.set(BusinessValuePage(index), value)
+            for {
+              updatedAnswers <- Future.fromTry(answers)
+              _              <- repository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(BusinessValuePage(index), mode, updatedAnswers))
+          }
+        )
     }
 
 }

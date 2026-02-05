@@ -29,4 +29,5 @@ class AddAssetsPageSpec extends PageBehaviours {
 
     beRemovable[AddAssets](AddAssetsPage)
   }
+
 }

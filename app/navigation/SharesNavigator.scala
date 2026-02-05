@@ -26,7 +26,7 @@ import play.api.mvc.Call
 
 import javax.inject.Inject
 
-class SharesNavigator @Inject()() extends Navigator() {
+class SharesNavigator @Inject() () extends Navigator() {
 
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
     routes(mode)(page)(userAnswers)
@@ -37,42 +37,46 @@ class SharesNavigator @Inject()() extends Navigator() {
       nonPortfolioRoutes(mode) orElse
       yesNoNavigation(mode)
 
-  def simpleNavigation: PartialFunction[Page, UserAnswers => Call] = {
-    case ShareAnswerPage(index) => _ => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
+  def simpleNavigation: PartialFunction[Page, UserAnswers => Call] = { case ShareAnswerPage(index) =>
+    _ => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
   }
 
   private def portfolioRoutes(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
-    case SharePortfolioNamePage(index)  => _ => SharePortfolioOnStockExchangeController.onPageLoad(index, mode)
-    case SharePortfolioOnStockExchangePage(index) => _ => SharePortfolioQuantityInTrustController.onPageLoad(index, mode)
+    case SharePortfolioNamePage(index)            => _ => SharePortfolioOnStockExchangeController.onPageLoad(index, mode)
+    case SharePortfolioOnStockExchangePage(index) =>
+      _ => SharePortfolioQuantityInTrustController.onPageLoad(index, mode)
     case SharePortfolioQuantityInTrustPage(index) => _ => SharePortfolioValueInTrustController.onPageLoad(index, mode)
-    case SharePortfolioValueInTrustPage(index) => ua => navigateToCheckAnswers(ua, mode, index)
+    case SharePortfolioValueInTrustPage(index)    => ua => navigateToCheckAnswers(ua, mode, index)
   }
 
   private def nonPortfolioRoutes(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
-    case ShareCompanyNamePage(index) => _ => SharesOnStockExchangeController.onPageLoad(index, mode)
+    case ShareCompanyNamePage(index)      => _ => SharesOnStockExchangeController.onPageLoad(index, mode)
     case SharesOnStockExchangePage(index) => _ => ShareClassController.onPageLoad(index, mode)
-    case ShareClassPage(index) => _ => ShareQuantityInTrustController.onPageLoad(index, mode)
+    case ShareClassPage(index)            => _ => ShareQuantityInTrustController.onPageLoad(index, mode)
     case ShareQuantityInTrustPage(index)  => _ => ShareValueInTrustController.onPageLoad(index, mode)
-    case ShareValueInTrustPage(index) => ua => navigateToCheckAnswers(ua, mode, index)
+    case ShareValueInTrustPage(index)     => ua => navigateToCheckAnswers(ua, mode, index)
   }
 
   private def yesNoNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
-    case SharesInAPortfolioPage(index) => ua => yesNoNav(
-      ua = ua,
-      fromPage = SharesInAPortfolioPage(index),
-      yesCall = SharePortfolioNameController.onPageLoad(index, mode),
-      noCall = ShareCompanyNameController.onPageLoad(index, mode)
-    )
+    case SharesInAPortfolioPage(index) =>
+      ua =>
+        yesNoNav(
+          ua = ua,
+          fromPage = SharesInAPortfolioPage(index),
+          yesCall = SharePortfolioNameController.onPageLoad(index, mode),
+          noCall = ShareCompanyNameController.onPageLoad(index, mode)
+        )
   }
 
-  private def navigateToCheckAnswers(ua: UserAnswers, mode: Mode, index: Int): Call = {
+  private def navigateToCheckAnswers(ua: UserAnswers, mode: Mode, index: Int): Call =
     if (mode == NormalMode) {
       controllers.asset.shares.add.routes.ShareAnswerController.onPageLoad(index)
     } else {
       ua.get(IndexPage) match {
-        case Some(indexPage) => controllers.asset.shares.amend.routes.ShareAmendAnswersController.renderFromUserAnswers(indexPage)
-        case None => controllers.routes.SessionExpiredController.onPageLoad
+        case Some(indexPage) =>
+          controllers.asset.shares.amend.routes.ShareAmendAnswersController.renderFromUserAnswers(indexPage)
+        case None            => controllers.routes.SessionExpiredController.onPageLoad
       }
     }
-  }
+
 }

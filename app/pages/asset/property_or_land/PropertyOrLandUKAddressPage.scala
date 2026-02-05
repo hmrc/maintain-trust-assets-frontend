@@ -16,7 +16,7 @@
 
 package pages.asset.property_or_land
 
-import models.{UkAddress}
+import models.UkAddress
 import pages.QuestionPage
 import pages.asset.property_or_land.PropertyOrLandUKAddressPage.key
 import play.api.libs.json.JsPath

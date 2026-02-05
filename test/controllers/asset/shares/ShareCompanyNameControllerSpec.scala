@@ -32,7 +32,7 @@ import views.html.asset.shares.ShareCompanyNameView
 
 class ShareCompanyNameControllerSpec extends SpecBase with ModelGenerators with IndexValidation {
 
-  val formProvider = new NameFormProvider()
+  val formProvider       = new NameFormProvider()
   val form: Form[String] = formProvider.withConfig(53, "shares.companyName")
 
   lazy val shareCompanyNameRoute: String = routes.ShareCompanyNameController.onPageLoad(index, NormalMode).url

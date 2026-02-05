@@ -27,25 +27,29 @@ import uk.gov.hmrc.hmrcfrontend.config.ContactFrontendConfig
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 @Singleton
-class FrontendAppConfig @Inject()(val configuration: Configuration,
-                                  contactFrontendConfig: ContactFrontendConfig, servicesConfig: ServicesConfig) {
+class FrontendAppConfig @Inject() (
+  val configuration: Configuration,
+  contactFrontendConfig: ContactFrontendConfig,
+  servicesConfig: ServicesConfig
+) {
 
-  final val ENGLISH = "en"
-  final val WELSH = "cy"
+  final val ENGLISH         = "en"
+  final val WELSH           = "cy"
   final val UK_COUNTRY_CODE = "GB"
 
   val repositoryKey: String = "assets"
 
-  val appName: String = configuration.get[String]("appName")
+  val appName: String        = configuration.get[String]("appName")
   val analyticsToken: String = configuration.get[String](s"google-analytics.token")
 
-  val betaFeedbackUrl = s"${contactFrontendConfig.baseUrl.get}/contact/beta-feedback?service=${contactFrontendConfig.serviceId.get}"
+  val betaFeedbackUrl =
+    s"${contactFrontendConfig.baseUrl.get}/contact/beta-feedback?service=${contactFrontendConfig.serviceId.get}"
 
   lazy val countdownLength: Int = configuration.get[Int]("timeout.countdown")
-  lazy val timeoutLength: Int = configuration.get[Int]("timeout.length")
+  lazy val timeoutLength: Int   = configuration.get[Int]("timeout.length")
 
-  lazy val authUrl: String = servicesConfig.baseUrl("auth")
-  lazy val loginUrl: String = configuration.get[String]("urls.login")
+  lazy val authUrl: String          = servicesConfig.baseUrl("auth")
+  lazy val loginUrl: String         = configuration.get[String]("urls.login")
   lazy val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
 
   lazy val logoutUrl: String = configuration.get[String]("urls.logout")
@@ -61,15 +65,15 @@ class FrontendAppConfig @Inject()(val configuration: Configuration,
 
   lazy val maintainATrustOverview: String = configuration.get[String]("urls.maintainATrustOverview")
 
-  lazy val locationCanonicalList: String = configuration.get[String]("location.canonical.list.all")
+  lazy val locationCanonicalList: String   = configuration.get[String]("location.canonical.list.all")
   lazy val locationCanonicalListCY: String = configuration.get[String]("location.canonical.list.allCY")
 
   lazy val languageTranslationEnabled: Boolean =
     configuration.get[Boolean]("microservice.services.features.welsh-translation")
 
-  private val day: Int = configuration.get[Int]("minimumDate.day")
-  private val month: Int = configuration.get[Int]("minimumDate.month")
-  private val year: Int = configuration.get[Int]("minimumDate.year")
+  private val day: Int        = configuration.get[Int]("minimumDate.day")
+  private val month: Int      = configuration.get[Int]("minimumDate.month")
+  private val year: Int       = configuration.get[Int]("minimumDate.year")
   lazy val minDate: LocalDate = LocalDate.of(year, month, day)
 
   lazy val assetValueUpperLimitExclusive: Long = configuration.get[Long]("assetValueUpperLimitExclusive")
@@ -86,14 +90,16 @@ class FrontendAppConfig @Inject()(val configuration: Configuration,
   def helplineUrl(implicit messages: Messages): String = {
     val path = messages.lang.code match {
       case WELSH => "urls.welshHelpline"
-      case _ => "urls.trustsHelpline"
+      case _     => "urls.trustsHelpline"
     }
 
     configuration.get[String](path)
   }
 
   val cachettlplaybackInSeconds: Long = configuration.get[Long]("mongodb.playback.ttlSeconds")
-  val cachettlSessionInSeconds: Long = configuration.get[Long]("mongodb.session.ttlSeconds")
-  val dropIndexes: Boolean = configuration.getOptional[Boolean]("microservice.services.features.mongo.dropIndexes").getOrElse(false)
+  val cachettlSessionInSeconds: Long  = configuration.get[Long]("mongodb.session.ttlSeconds")
+
+  val dropIndexes: Boolean =
+    configuration.getOptional[Boolean]("microservice.services.features.mongo.dropIndexes").getOrElse(false)
 
 }

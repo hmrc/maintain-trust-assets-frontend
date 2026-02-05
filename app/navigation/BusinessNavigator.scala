@@ -26,7 +26,7 @@ import play.api.mvc.Call
 
 import javax.inject.Inject
 
-class BusinessNavigator @Inject()() extends Navigator {
+class BusinessNavigator @Inject() () extends Navigator {
 
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
     routes(mode)(page)(userAnswers)
@@ -36,24 +36,26 @@ class BusinessNavigator @Inject()() extends Navigator {
       yesNoNavigation(mode)
 
   def simpleNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
-    case BusinessNamePage(index) => _ => BusinessDescriptionController.onPageLoad(index, mode)
-    case BusinessDescriptionPage(index) => _ => BusinessAddressUkYesNoController.onPageLoad(index, mode)
-    case BusinessUkAddressPage(index) => _ => BusinessValueController.onPageLoad(index, mode)
+    case BusinessNamePage(index)                 => _ => BusinessDescriptionController.onPageLoad(index, mode)
+    case BusinessDescriptionPage(index)          => _ => BusinessAddressUkYesNoController.onPageLoad(index, mode)
+    case BusinessUkAddressPage(index)            => _ => BusinessValueController.onPageLoad(index, mode)
     case BusinessInternationalAddressPage(index) => _ => BusinessValueController.onPageLoad(index, mode)
-    case BusinessValuePage(index) => ua => navigateToCheckAnswers(ua, mode, index)
-    case BusinessAnswerPage(index) => _ => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
+    case BusinessValuePage(index)                => ua => navigateToCheckAnswers(ua, mode, index)
+    case BusinessAnswerPage(index)               => _ => controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()
   }
 
   private def yesNoNavigation(mode: Mode): PartialFunction[Page, UserAnswers => Call] = {
-    case BusinessAddressUkYesNoPage(index) => ua => yesNoNav(
-      ua = ua,
-      fromPage = BusinessAddressUkYesNoPage(index),
-      yesCall = BusinessUkAddressController.onPageLoad(index, mode),
-      noCall = BusinessInternationalAddressController.onPageLoad(index, mode)
-    )
+    case BusinessAddressUkYesNoPage(index) =>
+      ua =>
+        yesNoNav(
+          ua = ua,
+          fromPage = BusinessAddressUkYesNoPage(index),
+          yesCall = BusinessUkAddressController.onPageLoad(index, mode),
+          noCall = BusinessInternationalAddressController.onPageLoad(index, mode)
+        )
   }
 
-  private def navigateToCheckAnswers(ua: UserAnswers, mode: Mode, index: Int): Call = {
+  private def navigateToCheckAnswers(ua: UserAnswers, mode: Mode, index: Int): Call =
     if (mode == NormalMode) {
       AssetNavigator.routeToIndex(
         List.empty,
@@ -62,9 +64,10 @@ class BusinessNavigator @Inject()() extends Navigator {
       )
     } else {
       ua.get(IndexPage) match {
-        case Some(indexPage: Int) => controllers.asset.business.amend.routes.BusinessAmendAnswersController.renderFromUserAnswers(indexPage)
-        case None => controllers.routes.SessionExpiredController.onPageLoad
+        case Some(indexPage: Int) =>
+          controllers.asset.business.amend.routes.BusinessAmendAnswersController.renderFromUserAnswers(indexPage)
+        case None                 => controllers.routes.SessionExpiredController.onPageLoad
       }
     }
-  }
+
 }

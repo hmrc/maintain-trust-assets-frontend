@@ -24,11 +24,11 @@ import pages.asset.business.amend.IndexPage
 
 class BusinessExtractorSpec extends SpecBase {
 
-    private val name: String = "BusinessName"
-  private val description: String = "BusinessDescription"
-  private val valueFull: Long = 790L
+  private val name: String               = "BusinessName"
+  private val description: String        = "BusinessDescription"
+  private val valueFull: Long            = 790L
   private val nonUkAddress: NonUkAddress = NonUkAddress("Line 1", "Line 2", None, "FR")
-  private val ukAddress: UkAddress = UkAddress("Line 1", "Line 2", None, None, "postCode")
+  private val ukAddress: UkAddress       = UkAddress("Line 1", "Line 2", None, None, "postCode")
 
   private val extractor = new BusinessExtractor()
 
@@ -36,7 +36,8 @@ class BusinessExtractorSpec extends SpecBase {
 
     "Populate user answers" when {
 
-      val baseAnswers: UserAnswers = emptyUserAnswers.copy(is5mldEnabled = true, isTaxable = true, isUnderlyingData5mld = false)
+      val baseAnswers: UserAnswers =
+        emptyUserAnswers.copy(is5mldEnabled = true, isTaxable = true, isUnderlyingData5mld = false)
 
       "has a none uk address asset data" in {
 
@@ -49,12 +50,12 @@ class BusinessExtractorSpec extends SpecBase {
 
         val result = extractor(baseAnswers, businessAsset, index).get
 
-        result.get(IndexPage).get mustBe index
-        result.get(BusinessNamePage(index)) mustBe Some(name)
-        result.get(BusinessDescriptionPage(index)) mustBe Some(description)
-        result.get(BusinessAddressUkYesNoPage(index)) mustBe Some(false)
+        result.get(IndexPage).get                           mustBe index
+        result.get(BusinessNamePage(index))                 mustBe Some(name)
+        result.get(BusinessDescriptionPage(index))          mustBe Some(description)
+        result.get(BusinessAddressUkYesNoPage(index))       mustBe Some(false)
         result.get(BusinessInternationalAddressPage(index)) mustBe Some(nonUkAddress)
-        result.get(BusinessValuePage(index)) mustBe Some(valueFull)
+        result.get(BusinessValuePage(index))                mustBe Some(valueFull)
       }
 
       "has a uk address asset data" in {
@@ -68,13 +69,14 @@ class BusinessExtractorSpec extends SpecBase {
 
         val result = extractor(baseAnswers, businessAsset, index).get
 
-        result.get(IndexPage).get mustBe index
-        result.get(BusinessNamePage(index)) mustBe Some(name)
-        result.get(BusinessDescriptionPage(index)) mustBe Some(description)
+        result.get(IndexPage).get                     mustBe index
+        result.get(BusinessNamePage(index))           mustBe Some(name)
+        result.get(BusinessDescriptionPage(index))    mustBe Some(description)
         result.get(BusinessAddressUkYesNoPage(index)) mustBe Some(true)
-        result.get(BusinessUkAddressPage(index)) mustBe Some(ukAddress)
-        result.get(BusinessValuePage(index)) mustBe Some(valueFull)
+        result.get(BusinessUkAddressPage(index))      mustBe Some(ukAddress)
+        result.get(BusinessValuePage(index))          mustBe Some(valueFull)
       }
     }
   }
+
 }

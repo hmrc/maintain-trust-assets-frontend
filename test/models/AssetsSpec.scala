@@ -29,8 +29,7 @@ class AssetsSpec extends AnyWordSpec with Matchers {
     "deserialise from backend JSON" when {
 
       "we have the monetary Assets" in {
-        val json = Json.parse(
-          """
+        val json = Json.parse("""
             | {
             |    "assets": {
             |        "monetary": [
@@ -44,18 +43,19 @@ class AssetsSpec extends AnyWordSpec with Matchers {
 
         val assets = json.as[Assets]
 
-        assets mustBe Assets(monetary = List(AssetMonetaryAmount(1000)),
+        assets mustBe Assets(
+          monetary = List(AssetMonetaryAmount(1000)),
           propertyOrLand = Nil,
           shares = Nil,
           business = Nil,
           partnerShip = Nil,
           other = Nil,
-          nonEEABusiness = Nil)
+          nonEEABusiness = Nil
+        )
       }
 
       "we have the propertyOrLand Assets" in {
-        val json = Json.parse(
-          """
+        val json = Json.parse("""
             | {
             |    "assets": {
             |        "propertyOrLand": [
@@ -71,18 +71,19 @@ class AssetsSpec extends AnyWordSpec with Matchers {
 
         val assets = json.as[Assets]
 
-        assets mustBe Assets(monetary = Nil,
+        assets mustBe Assets(
+          monetary = Nil,
           propertyOrLand = List(PropertyLandType(Some("PropertyOrLand Name"), None, 1000, Some(500))),
           shares = Nil,
           business = Nil,
           partnerShip = Nil,
           other = Nil,
-          nonEEABusiness = Nil)
+          nonEEABusiness = Nil
+        )
       }
 
       "we have the shares Assets" in {
-        val json = Json.parse(
-          """
+        val json = Json.parse("""
             | {
             |    "assets": {
             |        "shares": [
@@ -100,7 +101,8 @@ class AssetsSpec extends AnyWordSpec with Matchers {
 
         val assets = json.as[Assets]
 
-        assets mustBe Assets(monetary = Nil,
+        assets mustBe Assets(
+          monetary = Nil,
           propertyOrLand = Nil,
           shares = List(SharesType("999999999999", "Shares Ltd", "Other", "Unquoted", 999999999999L)),
           business = Nil,
@@ -111,8 +113,7 @@ class AssetsSpec extends AnyWordSpec with Matchers {
       }
 
       "we have the business Assets" in {
-        val json = Json.parse(
-          """
+        val json = Json.parse("""
             | {
             |    "assets": {
             |        "business": [
@@ -144,11 +145,13 @@ class AssetsSpec extends AnyWordSpec with Matchers {
             line2 = "Test Village",
             line3 = Some("Test line3"),
             line4 = Some("Test line4"),
-            postcode = "Z99 2YY"),
+            postcode = "Z99 2YY"
+          ),
           businessValue = 1000L
         )
 
-        assets mustBe Assets(monetary = Nil,
+        assets mustBe Assets(
+          monetary = Nil,
           propertyOrLand = Nil,
           shares = Nil,
           business = List(businessAsset),
@@ -158,10 +161,8 @@ class AssetsSpec extends AnyWordSpec with Matchers {
         )
       }
 
-
       "we have the other Assets" in {
-        val json = Json.parse(
-          """
+        val json = Json.parse("""
             | {
             |    "assets": {
             |        "other": [
@@ -176,7 +177,8 @@ class AssetsSpec extends AnyWordSpec with Matchers {
 
         val assets = json.as[Assets]
 
-        assets mustBe Assets(monetary = Nil,
+        assets mustBe Assets(
+          monetary = Nil,
           propertyOrLand = Nil,
           shares = Nil,
           business = Nil,
@@ -187,8 +189,7 @@ class AssetsSpec extends AnyWordSpec with Matchers {
       }
 
       "we have the partnership Assets" in {
-        val json = Json.parse(
-          """
+        val json = Json.parse("""
             | {
             |    "assets": {
             |        "partnerShip": [
@@ -203,7 +204,8 @@ class AssetsSpec extends AnyWordSpec with Matchers {
 
         val assets = json.as[Assets]
 
-        assets mustBe Assets(monetary = Nil,
+        assets mustBe Assets(
+          monetary = Nil,
           propertyOrLand = Nil,
           shares = Nil,
           business = Nil,
@@ -214,8 +216,7 @@ class AssetsSpec extends AnyWordSpec with Matchers {
       }
 
       "we have the nonEEABusiness Assets" in {
-        val json = Json.parse(
-          """
+        val json = Json.parse("""
             | {
             |    "assets": {
             |        "nonEEABusiness": [
@@ -243,17 +244,14 @@ class AssetsSpec extends AnyWordSpec with Matchers {
         val monEEAAsset1 = NonEeaBusinessType(
           lineNo = Some("1"),
           orgName = "Panda care Ltd",
-          address = NonUkAddress(
-            line1 = "1010 EASY ST",
-            line2 = "OTTAWA",
-            line3 = Some("ONTARIO"),
-            country = "CA"),
+          address = NonUkAddress(line1 = "1010 EASY ST", line2 = "OTTAWA", line3 = Some("ONTARIO"), country = "CA"),
           govLawCountry = "CA",
           startDate = LocalDate.of(2020, 1, 5),
           endDate = None,
           provisional = true
         )
-        assets mustBe Assets(monetary = Nil,
+        assets mustBe Assets(
+          monetary = Nil,
           propertyOrLand = Nil,
           shares = Nil,
           business = Nil,
@@ -264,4 +262,5 @@ class AssetsSpec extends AnyWordSpec with Matchers {
       }
     }
   }
+
 }

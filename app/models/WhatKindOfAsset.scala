@@ -23,9 +23,11 @@ import play.api.i18n.Messages
 import viewmodels._
 
 sealed trait WhatKindOfAsset {
+
   implicit class AssetLabel(asset: WhatKindOfAsset) {
     def label(implicit messages: Messages): String = messages(s"$prefix.$asset")
   }
+
 }
 
 object WhatKindOfAsset extends Enumerable.Implicits {
@@ -39,14 +41,19 @@ object WhatKindOfAsset extends Enumerable.Implicits {
   case object NonEeaBusiness extends WithName("NonEeaBusiness") with WhatKindOfAsset
 
   val values: List[WhatKindOfAsset] = List(
-    Money, PropertyOrLand, Shares, Business, NonEeaBusiness, Partnership, Other
+    Money,
+    PropertyOrLand,
+    Shares,
+    Business,
+    NonEeaBusiness,
+    Partnership,
+    Other
   )
 
   val prefix: String = "whatKindOfAsset"
 
-  def options(kindsOfAsset: List[WhatKindOfAsset] = values): List[RadioOption] = kindsOfAsset.map {
-    value =>
-      RadioOption(prefix, value.toString)
+  def options(kindsOfAsset: List[WhatKindOfAsset] = values): List[RadioOption] = kindsOfAsset.map { value =>
+    RadioOption(prefix, value.toString)
   }
 
   implicit val enumerable: Enumerable[WhatKindOfAsset] =
@@ -54,16 +61,14 @@ object WhatKindOfAsset extends Enumerable.Implicits {
 
   case class AssetSize(kindOfAsset: WhatKindOfAsset, size: Int, maxSize: Int)
 
-  def nonMaxedOutOptions(assets: Assets): List[AssetSize] = {
+  def nonMaxedOutOptions(assets: Assets): List[AssetSize] =
     assetSizes(assets)
       .filterNot(x => x.size >= x.maxSize)
-  }
 
-  def maxedOutOptions(assets: Assets): List[(String, Int)] = {
+  def maxedOutOptions(assets: Assets): List[(String, Int)] =
     assetSizes(assets)
       .filter(x => x.size >= x.maxSize)
       .map(x => (s"$prefix.${x.kindOfAsset}", x.size))
-  }
 
   private def assetSizes(assets: Assets) = List(
     AssetSize(Money, assets.monetary.size, MAX_MONEY_ASSETS),

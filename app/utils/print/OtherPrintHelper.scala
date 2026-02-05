@@ -24,9 +24,11 @@ import utils.AnswerRowConverter
 import viewmodels.{AnswerRow, AnswerSection}
 import javax.inject.Inject
 
-class OtherPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) {
+class OtherPrintHelper @Inject() (answerRowConverter: AnswerRowConverter) {
 
-  def apply(userAnswers: UserAnswers, index: Int, provisional: Boolean, name: String)(implicit messages: Messages): AnswerSection = {
+  def apply(userAnswers: UserAnswers, index: Int, provisional: Boolean, name: String)(implicit
+    messages: Messages
+  ): AnswerSection = {
 
     val bound: answerRowConverter.Bound = answerRowConverter.bind(userAnswers, name)
 
@@ -34,8 +36,16 @@ class OtherPrintHelper @Inject()(answerRowConverter: AnswerRowConverter) {
       val mode: Mode = if (provisional) NormalMode else CheckMode
       Seq(
         bound.assetTypeQuestion(index),
-        bound.stringQuestion(OtherAssetDescriptionPage(index), "other.description", OtherAssetDescriptionController.onPageLoad(index, mode).url),
-        bound.currencyQuestion(OtherAssetValuePage(index), "other.value", OtherAssetValueController.onPageLoad(index, mode).url)
+        bound.stringQuestion(
+          OtherAssetDescriptionPage(index),
+          "other.description",
+          OtherAssetDescriptionController.onPageLoad(index, mode).url
+        ),
+        bound.currencyQuestion(
+          OtherAssetValuePage(index),
+          "other.value",
+          OtherAssetValueController.onPageLoad(index, mode).url
+        )
       ).flatten
     }
 

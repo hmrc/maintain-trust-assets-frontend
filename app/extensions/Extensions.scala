@@ -27,5 +27,7 @@ object Extensions {
     } else {
       str.head.toLower.toString + str.tail
     }
+
   }
+
 }

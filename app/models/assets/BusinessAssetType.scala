@@ -19,10 +19,8 @@ package models.assets
 import models.Address
 import play.api.libs.json.{Format, Json}
 
-final case class BusinessAssetType(orgName: String,
-                             businessDescription: String,
-                             address: Address,
-                             businessValue: Long) extends AssetType
+final case class BusinessAssetType(orgName: String, businessDescription: String, address: Address, businessValue: Long)
+    extends AssetType
 
 object BusinessAssetType {
   implicit val businessAssetTypeFormat: Format[BusinessAssetType] = Json.format[BusinessAssetType]

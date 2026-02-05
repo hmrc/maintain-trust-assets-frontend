@@ -32,22 +32,23 @@ import models.Mode
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class SharePortfolioQuantityInTrustController @Inject()(
-                                                         override val messagesApi: MessagesApi,
-                                                         standardActionSets: StandardActionSets,
-                                                         repository: PlaybackRepository,
-                                                         @Shares navigator: Navigator,
-                                                         formProvider: QuantityFormProvider,
-                                                         val controllerComponents: MessagesControllerComponents,
-                                                         view: SharePortfolioQuantityInTrustView
-                                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class SharePortfolioQuantityInTrustController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  repository: PlaybackRepository,
+  @Shares navigator: Navigator,
+  formProvider: QuantityFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: SharePortfolioQuantityInTrustView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   private val form: Form[Long] = formProvider.withPrefix("shares.portfolioQuantityInTrust")
 
   def onPageLoad(index: Int, mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier {
     implicit request =>
       val preparedForm = request.userAnswers.get(SharePortfolioQuantityInTrustPage(index)) match {
-        case None => form
+        case None        => form
         case Some(value) => form.fill(value)
       }
       Ok(view(preparedForm, index, mode))
@@ -55,15 +56,16 @@ class SharePortfolioQuantityInTrustController @Inject()(
 
   def onSubmit(index: Int, mode: Mode): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, index, mode))),
-        value => {
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(SharePortfolioQuantityInTrustPage(index), value))
-            _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(SharePortfolioQuantityInTrustPage(index), mode, updatedAnswers))
-        }
-      )
+      form
+        .bindFromRequest()
+        .fold(
+          (formWithErrors: Form[_]) => Future.successful(BadRequest(view(formWithErrors, index, mode))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(SharePortfolioQuantityInTrustPage(index), value))
+              _              <- repository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(SharePortfolioQuantityInTrustPage(index), mode, updatedAnswers))
+        )
   }
+
 }

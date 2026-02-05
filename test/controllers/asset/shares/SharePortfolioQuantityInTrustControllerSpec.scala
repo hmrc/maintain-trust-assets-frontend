@@ -32,11 +32,12 @@ import views.html.asset.shares.SharePortfolioQuantityInTrustView
 
 class SharePortfolioQuantityInTrustControllerSpec extends SpecBase with ModelGenerators with IndexValidation {
 
-  private val formProvider = new QuantityFormProvider(frontendAppConfig)
-  private val form: Form[Long] = formProvider.withPrefix("shares.portfolioQuantityInTrust")
+  private val formProvider      = new QuantityFormProvider(frontendAppConfig)
+  private val form: Form[Long]  = formProvider.withPrefix("shares.portfolioQuantityInTrust")
   private val validAnswer: Long = 4000L
 
-  private lazy val sharePortfolioQuantityInTrustRoute: String = routes.SharePortfolioQuantityInTrustController.onPageLoad(index, NormalMode).url
+  private lazy val sharePortfolioQuantityInTrustRoute: String =
+    routes.SharePortfolioQuantityInTrustController.onPageLoad(index, NormalMode).url
 
   "SharePortfolioQuantityInTrust Controller" must {
 

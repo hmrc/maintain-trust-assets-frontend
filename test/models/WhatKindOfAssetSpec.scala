@@ -36,10 +36,8 @@ class WhatKindOfAssetSpec extends SpecBase with ScalaCheckPropertyChecks {
 
       val gen = Gen.oneOf(WhatKindOfAsset.values)
 
-      forAll(gen) {
-        whatKindOfAsset =>
-
-          JsString(whatKindOfAsset.toString).validate[WhatKindOfAsset].asOpt.value mustEqual whatKindOfAsset
+      forAll(gen) { whatKindOfAsset =>
+        JsString(whatKindOfAsset.toString).validate[WhatKindOfAsset].asOpt.value mustEqual whatKindOfAsset
       }
     }
 
@@ -47,10 +45,8 @@ class WhatKindOfAssetSpec extends SpecBase with ScalaCheckPropertyChecks {
 
       val gen = arbitrary[String] suchThat (!WhatKindOfAsset.values.map(_.toString).contains(_))
 
-      forAll(gen) {
-        invalidValue =>
-
-          JsString(invalidValue).validate[WhatKindOfAsset] mustEqual JsError("error.invalid")
+      forAll(gen) { invalidValue =>
+        JsString(invalidValue).validate[WhatKindOfAsset] mustEqual JsError("error.invalid")
       }
     }
 
@@ -58,10 +54,8 @@ class WhatKindOfAssetSpec extends SpecBase with ScalaCheckPropertyChecks {
 
       val gen = Gen.oneOf(WhatKindOfAsset.values)
 
-      forAll(gen) {
-        whatKindOfAsset =>
-
-          Json.toJson(whatKindOfAsset) mustEqual JsString(whatKindOfAsset.toString)
+      forAll(gen) { whatKindOfAsset =>
+        Json.toJson(whatKindOfAsset) mustEqual JsString(whatKindOfAsset.toString)
       }
     }
 
@@ -70,7 +64,7 @@ class WhatKindOfAssetSpec extends SpecBase with ScalaCheckPropertyChecks {
       "no assets" in {
 
         val kindsOfAsset = WhatKindOfAsset.nonMaxedOutOptions(Assets()).map(_.kindOfAsset)
-        val options = WhatKindOfAsset.options(kindsOfAsset)
+        val options      = WhatKindOfAsset.options(kindsOfAsset)
 
         options mustBe List(
           RadioOption("whatKindOfAsset", Money.toString),
@@ -86,10 +80,10 @@ class WhatKindOfAssetSpec extends SpecBase with ScalaCheckPropertyChecks {
 
       "there is a 'Money' asset" in {
 
-        val moneyAsset = AssetMonetaryAmount(4000L)
+        val moneyAsset     = AssetMonetaryAmount(4000L)
         val assets: Assets = Assets(monetary = List(moneyAsset))
-        val kindsOfAsset = WhatKindOfAsset.nonMaxedOutOptions(assets).map(_.kindOfAsset)
-        val options = WhatKindOfAsset.options(kindsOfAsset)
+        val kindsOfAsset   = WhatKindOfAsset.nonMaxedOutOptions(assets).map(_.kindOfAsset)
+        val options        = WhatKindOfAsset.options(kindsOfAsset)
 
         options mustBe List(
           RadioOption("whatKindOfAsset", PropertyOrLand.toString),
@@ -102,10 +96,10 @@ class WhatKindOfAssetSpec extends SpecBase with ScalaCheckPropertyChecks {
       }
 
       "there are a 10 Completed 'other' assets" in {
-        val generator = for (_ <- 1 to 10) yield OtherAssetType("desc", 200L)
-        val assets = Assets(other = generator.toList)
+        val generator    = for (_ <- 1 to 10) yield OtherAssetType("desc", 200L)
+        val assets       = Assets(other = generator.toList)
         val kindsOfAsset = WhatKindOfAsset.nonMaxedOutOptions(assets).map(_.kindOfAsset)
-        val options = WhatKindOfAsset.options(kindsOfAsset)
+        val options      = WhatKindOfAsset.options(kindsOfAsset)
 
         options mustBe List(
           RadioOption("whatKindOfAsset", Money.toString),
@@ -118,10 +112,20 @@ class WhatKindOfAssetSpec extends SpecBase with ScalaCheckPropertyChecks {
       }
 
       "there are a 25 non-EEA business assets" in {
-        val generator = for (i <- 1 to 25) yield NonEeaBusinessType(Some(s"$i"), "orgName", UkAddress("line1", "line2", None, None, "NE981ZZ"), "GB", LocalDate.now, None, provisional = false)
-        val assets = Assets(nonEEABusiness = generator.toList)
+        val generator    =
+          for (i <- 1 to 25)
+            yield NonEeaBusinessType(
+              Some(s"$i"),
+              "orgName",
+              UkAddress("line1", "line2", None, None, "NE981ZZ"),
+              "GB",
+              LocalDate.now,
+              None,
+              provisional = false
+            )
+        val assets       = Assets(nonEEABusiness = generator.toList)
         val kindsOfAsset = WhatKindOfAsset.nonMaxedOutOptions(assets).map(_.kindOfAsset)
-        val options = WhatKindOfAsset.options(kindsOfAsset)
+        val options      = WhatKindOfAsset.options(kindsOfAsset)
 
         options mustBe List(
           RadioOption("whatKindOfAsset", Money.toString),
@@ -141,7 +145,7 @@ class WhatKindOfAssetSpec extends SpecBase with ScalaCheckPropertyChecks {
       "English" in {
 
         val messages: MessagesImpl = MessagesImpl(Lang("en"), messagesApi)
-        val result = asset.label(messages)
+        val result                 = asset.label(messages)
 
         result mustBe "Company registered outside the UK or EEA"
 
@@ -150,10 +154,11 @@ class WhatKindOfAssetSpec extends SpecBase with ScalaCheckPropertyChecks {
       "Welsh" in {
 
         val messages: MessagesImpl = MessagesImpl(Lang("cy"), messagesApi)
-        val result = asset.label(messages)
+        val result                 = asset.label(messages)
 
         result mustBe "Cwmni sydd wedi’i gofrestru y tu allan i’r DU neu’r AEE"
       }
     }
   }
+
 }

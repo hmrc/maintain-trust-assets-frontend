@@ -28,11 +28,12 @@ final case class SharesInAPortfolioPage(index: Int) extends QuestionPage[Boolean
 
   override def toString: String = "sharesInPortfolioYesNo"
 
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] = {
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
       case Some(true) =>
 
-        userAnswers.remove(SharesOnStockExchangePage(index))
+        userAnswers
+          .remove(SharesOnStockExchangePage(index))
           .flatMap(_.remove(ShareCompanyNamePage(index)))
           .flatMap(_.remove(ShareClassPage(index)))
           .flatMap(_.remove(ShareQuantityInTrustPage(index)))
@@ -41,7 +42,8 @@ final case class SharesInAPortfolioPage(index: Int) extends QuestionPage[Boolean
 
       case Some(false) =>
 
-        userAnswers.remove(SharePortfolioNamePage(index))
+        userAnswers
+          .remove(SharePortfolioNamePage(index))
           .flatMap(_.remove(SharePortfolioOnStockExchangePage(index)))
           .flatMap(_.remove(SharePortfolioQuantityInTrustPage(index)))
           .flatMap(_.remove(SharePortfolioValueInTrustPage(index)))
@@ -49,5 +51,5 @@ final case class SharesInAPortfolioPage(index: Int) extends QuestionPage[Boolean
 
       case _ => super.cleanup(value, userAnswers)
     }
-  }
+
 }

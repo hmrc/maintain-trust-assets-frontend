@@ -29,10 +29,9 @@ import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
 class LogoutControllerSpec extends SpecBase with MockitoSugar {
   // Mocks
-  val mockAppConfig = mock[FrontendAppConfig]
-  val mockAuditConnector = mock[AuditConnector]
+  val mockAppConfig              = mock[FrontendAppConfig]
+  val mockAuditConnector         = mock[AuditConnector]
   implicit val hc: HeaderCarrier = HeaderCarrier()
-
 
   "LogoutController" should {
 
@@ -45,7 +44,6 @@ class LogoutControllerSpec extends SpecBase with MockitoSugar {
         .overrides(bind[FrontendAppConfig].toInstance(mockAppConfig))
         .build()
 
-
       val request = FakeRequest(GET, routes.LogoutController.logout().url)
 
       val result = route(application, request).value
@@ -55,8 +53,7 @@ class LogoutControllerSpec extends SpecBase with MockitoSugar {
       redirectLocation(result) mustBe Some(frontendAppConfig.logoutUrl)
 
       verify(mockAuditConnector, times(1))
-        .sendExplicitAudit(eqTo("trusts"), org.mockito.ArgumentMatchers.any[Map[String, String]]
-        )(any(), any())
+        .sendExplicitAudit(eqTo("trusts"), org.mockito.ArgumentMatchers.any[Map[String, String]])(any(), any())
 
       application.stop()
 
@@ -80,13 +77,15 @@ class LogoutControllerSpec extends SpecBase with MockitoSugar {
 
       val result = route(application, request).value
 
-      status(result) mustBe SEE_OTHER
+      status(result)           mustBe SEE_OTHER
       redirectLocation(result) mustBe Some(frontendAppConfig.logoutUrl)
 
-      verify(mockAuditConnector, never()).sendExplicitAudit(any(), org.mockito.ArgumentMatchers.any[Map[String, String]])(any(), any())
+      verify(mockAuditConnector, never())
+        .sendExplicitAudit(any(), org.mockito.ArgumentMatchers.any[Map[String, String]])(any(), any())
 
       application.stop()
     }
 
   }
+
 }

@@ -150,4 +150,5 @@ class PropertyOrLandAddressUkYesNoControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

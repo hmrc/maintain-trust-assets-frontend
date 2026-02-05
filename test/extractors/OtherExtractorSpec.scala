@@ -30,7 +30,8 @@ class OtherExtractorSpec extends SpecBase {
 
     "Populate user answers" when {
 
-      val baseAnswers: UserAnswers = emptyUserAnswers.copy(is5mldEnabled = true, isTaxable = true, isUnderlyingData5mld = false)
+      val baseAnswers: UserAnswers =
+        emptyUserAnswers.copy(is5mldEnabled = true, isTaxable = true, isUnderlyingData5mld = false)
 
       "has asset data" in {
 
@@ -41,10 +42,11 @@ class OtherExtractorSpec extends SpecBase {
 
         val result = extractor(baseAnswers, otherAsset, index).get
 
-        result.get(IndexPage) mustBe Some(index)
+        result.get(IndexPage)                        mustBe Some(index)
         result.get(OtherAssetDescriptionPage(index)) mustBe Some("Other Asset")
-        result.get(OtherAssetValuePage(index)) mustBe Some(4000)
+        result.get(OtherAssetValuePage(index))       mustBe Some(4000)
       }
     }
   }
+
 }

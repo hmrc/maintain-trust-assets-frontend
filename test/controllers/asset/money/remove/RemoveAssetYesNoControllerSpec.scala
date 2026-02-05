@@ -38,9 +38,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
   val messagesPrefix = "money.removeYesNo"
 
-
-
-  lazy val formProvider = new RemoveIndexFormProvider()
+  lazy val formProvider        = new RemoveIndexFormProvider()
   lazy val form: Form[Boolean] = formProvider(messagesPrefix)
 
   lazy val formRoute: Call = controllers.asset.money.remove.routes.RemoveAssetYesNoController.onSubmit(index)
@@ -60,7 +58,8 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
         .overrides(bind[TrustsConnector].toInstance(mockConnector))
         .build()
 
-      val request = FakeRequest(GET, controllers.asset.money.remove.routes.RemoveAssetYesNoController.onPageLoad(index).url)
+      val request =
+        FakeRequest(GET, controllers.asset.money.remove.routes.RemoveAssetYesNoController.onPageLoad(index).url)
 
       val result = route(application, request).value
 
@@ -89,12 +88,13 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController
+          .onPageLoad()
+          .url
 
         application.stop()
       }
     }
-
 
     "removing a new asset" must {
 
@@ -118,7 +118,9 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController
+          .onPageLoad()
+          .url
 
         application.stop()
       }
@@ -127,7 +129,8 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
     "return a Bad Request and errors when invalid data is submitted" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-        .overrides(bind[TrustsConnector].toInstance(mockConnector)).build()
+        .overrides(bind[TrustsConnector].toInstance(mockConnector))
+        .build()
 
       val request =
         FakeRequest(POST, controllers.asset.money.remove.routes.RemoveAssetYesNoController.onSubmit(index).url)
@@ -151,7 +154,8 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request = FakeRequest(GET, controllers.asset.money.remove.routes.RemoveAssetYesNoController.onPageLoad(index).url)
+      val request =
+        FakeRequest(GET, controllers.asset.money.remove.routes.RemoveAssetYesNoController.onPageLoad(index).url)
 
       val result = route(application, request).value
 
@@ -179,4 +183,5 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
       application.stop()
     }
   }
+
 }

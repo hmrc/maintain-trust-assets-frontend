@@ -27,4 +27,5 @@ class AddAssetsFormProvider @Inject() extends Mappings {
     Form(
       "value" -> enumerable[AddAssets](s"$prefix.error.required")
     )
+
 }

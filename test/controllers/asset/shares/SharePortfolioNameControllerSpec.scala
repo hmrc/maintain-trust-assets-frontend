@@ -32,7 +32,7 @@ import views.html.asset.shares.SharePortfolioNameView
 
 class SharePortfolioNameControllerSpec extends SpecBase with ModelGenerators with IndexValidation {
 
-  val formProvider = new NameFormProvider()
+  val formProvider       = new NameFormProvider()
   val form: Form[String] = formProvider.withConfig(53, "shares.portfolioName")
 
   lazy val sharePortfolioNameRoute: String = routes.SharePortfolioNameController.onPageLoad(index, NormalMode).url

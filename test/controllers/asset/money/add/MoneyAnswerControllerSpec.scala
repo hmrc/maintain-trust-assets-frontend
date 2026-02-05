@@ -44,9 +44,12 @@ class MoneyAnswerControllerSpec extends SpecBase {
 
   val answers: UserAnswers =
     emptyUserAnswers
-      .set(WhatKindOfAssetPage(index), Money).success.value
-      .set(AssetMoneyValuePage(index), 4000L).success.value
-
+      .set(WhatKindOfAssetPage(index), Money)
+      .success
+      .value
+      .set(AssetMoneyValuePage(index), 4000L)
+      .success
+      .value
 
   "MoneyAnswer Controller" must {
 
@@ -58,8 +61,8 @@ class MoneyAnswerControllerSpec extends SpecBase {
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[MoneyAnswersView]
-      val printHelper = application.injector.instanceOf[MoneyPrintHelper]
+      val view          = application.injector.instanceOf[MoneyAnswersView]
+      val printHelper   = application.injector.instanceOf[MoneyPrintHelper]
       val answerSection = printHelper(answers, index, provisional = true, description)
 
       status(result) mustEqual OK
@@ -102,11 +105,12 @@ class MoneyAnswerControllerSpec extends SpecBase {
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+      redirectLocation(result).value mustEqual controllers.asset.nonTaxableToTaxable.routes.AddAssetsController
+        .onPageLoad()
+        .url
 
       application.stop()
     }
-
 
     "redirect to Session Expired for a GET if no existing data is found" in {
 
@@ -122,4 +126,5 @@ class MoneyAnswerControllerSpec extends SpecBase {
       application.stop()
     }
   }
+
 }

@@ -33,39 +33,41 @@ import models.Mode
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class ShareQuantityInTrustController @Inject()(
-                                                override val messagesApi: MessagesApi,
-                                                standardActionSets: StandardActionSets,
-                                                nameAction: CompanyNameRequiredAction,
-                                                repository: PlaybackRepository,
-                                                @Shares navigator: Navigator,
-                                                formProvider: QuantityFormProvider,
-                                                val controllerComponents: MessagesControllerComponents,
-                                                view: ShareQuantityInTrustView
-                                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class ShareQuantityInTrustController @Inject() (
+  override val messagesApi: MessagesApi,
+  standardActionSets: StandardActionSets,
+  nameAction: CompanyNameRequiredAction,
+  repository: PlaybackRepository,
+  @Shares navigator: Navigator,
+  formProvider: QuantityFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: ShareQuantityInTrustView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   private val form: Form[Long] = formProvider.withPrefix("shares.quantityInTrust")
 
-  def onPageLoad(index: Int, mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction) {
-    implicit request =>
+  def onPageLoad(index: Int, mode: Mode): Action[AnyContent] =
+    (standardActionSets.verifiedForIdentifier andThen nameAction) { implicit request =>
       val preparedForm = request.userAnswers.get(ShareQuantityInTrustPage(index)) match {
-        case None => form
+        case None        => form
         case Some(value) => form.fill(value)
       }
       Ok(view(preparedForm, index, mode, request.name))
-  }
+    }
 
-  def onSubmit(index: Int, mode: Mode): Action[AnyContent] = (standardActionSets.verifiedForIdentifier andThen nameAction).async {
-    implicit request =>
-      form.bindFromRequest().fold(
-        (formWithErrors: Form[_]) =>
-          Future.successful(BadRequest(view(formWithErrors, index, mode, request.name))),
-        value => {
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(ShareQuantityInTrustPage(index), value))
-            _              <- repository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(ShareQuantityInTrustPage(index), mode, updatedAnswers))
-        }
-      )
-  }
+  def onSubmit(index: Int, mode: Mode): Action[AnyContent] =
+    (standardActionSets.verifiedForIdentifier andThen nameAction).async { implicit request =>
+      form
+        .bindFromRequest()
+        .fold(
+          (formWithErrors: Form[_]) => Future.successful(BadRequest(view(formWithErrors, index, mode, request.name))),
+          value =>
+            for {
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(ShareQuantityInTrustPage(index), value))
+              _              <- repository.set(updatedAnswers)
+            } yield Redirect(navigator.nextPage(ShareQuantityInTrustPage(index), mode, updatedAnswers))
+        )
+    }
+
 }
