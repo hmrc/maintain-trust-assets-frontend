@@ -17,21 +17,29 @@
 package mapping
 
 import java.time.LocalDate
-import models.{Address, UserAnswers}
+import models.{Address, NonUkAddress, UkAddress, UserAnswers}
 import models.assets.NonEeaBusinessType
 import pages.asset.noneeabusiness.add.StartDatePage
-import pages.asset.noneeabusiness.{GoverningCountryPage, NamePage, NonUkAddressPage}
+import pages.asset.noneeabusiness.{GoverningCountryPage, NamePage, NonUkAddressPage, UkAddressPage, UkAddressYesNoPage}
 import play.api.libs.json.{JsSuccess, Reads}
 import play.api.libs.functional.syntax._
 
 class NonEeaBusinessAssetMapper extends Mapper[NonEeaBusinessType] {
 
   def apply(answers: UserAnswers): Option[NonEeaBusinessType] = {
+    val isUkAddress = answers.get(UkAddressYesNoPage).contains(true)
+
+    val addressReads: Reads[Address] = if (isUkAddress) {
+      UkAddressPage.path.read[UkAddress].widen[Address]
+    } else {
+      NonUkAddressPage(0).path.read[NonUkAddress].widen[Address]
+    }
+
     val readFromUserAnswers: Reads[NonEeaBusinessType] =
       (
         Reads(_ => JsSuccess(None)) and
           NamePage(0).path.read[String] and
-          NonUkAddressPage(0).path.read[Address] and
+          addressReads and
           GoverningCountryPage(0).path.read[String] and
           StartDatePage(0).path.read[LocalDate] and
           Reads(_ => JsSuccess(None)) and
