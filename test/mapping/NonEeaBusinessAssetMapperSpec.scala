@@ -17,7 +17,7 @@
 package mapping
 
 import base.SpecBase
-import models.NonUkAddress
+import models.{NonUkAddress, UkAddress}
 import models.WhatKindOfAsset.NonEeaBusiness
 import models.assets.NonEeaBusinessType
 import pages.asset._
@@ -35,6 +35,7 @@ class NonEeaBusinessAssetMapperSpec extends SpecBase {
   private val name: String               = "Name"
   private val country: String            = "FR"
   private val nonUkAddress: NonUkAddress = NonUkAddress("Line 1", "Line 2", Some("Line 3"), country)
+  private val ukAddress: UkAddress       = UkAddress("Line 1", "Line 2", Some("Line 3"), Some("Line 4"), "AB1 1AB")
   private val date: LocalDate            = LocalDate.parse("1996-02-03")
 
   "NonEeaBusinessAssetMapper" must {
@@ -51,7 +52,7 @@ class NonEeaBusinessAssetMapperSpec extends SpecBase {
 
     "be able to create a non-EEA business asset" when {
 
-      "one asset" in {
+      "non-UK address" in {
 
         val answers = baseAnswers
           .set(WhatKindOfAssetPage(index), NonEeaBusiness)
@@ -77,6 +78,42 @@ class NonEeaBusinessAssetMapperSpec extends SpecBase {
             lineNo = None,
             orgName = name,
             address = nonUkAddress,
+            govLawCountry = country,
+            startDate = date,
+            endDate = None,
+            provisional = true
+          )
+      }
+
+      "UK address" in {
+
+        val answers = baseAnswers
+          .set(WhatKindOfAssetPage(index), NonEeaBusiness)
+          .success
+          .value
+          .set(NamePage(index), name)
+          .success
+          .value
+          .set(UkAddressYesNoPage, true)
+          .success
+          .value
+          .set(UkAddressPage, ukAddress)
+          .success
+          .value
+          .set(GoverningCountryPage(index), country)
+          .success
+          .value
+          .set(StartDatePage(index), date)
+          .success
+          .value
+
+        val result = mapper(answers).get
+
+        result mustBe
+          NonEeaBusinessType(
+            lineNo = None,
+            orgName = name,
+            address = ukAddress,
             govLawCountry = country,
             startDate = date,
             endDate = None,
