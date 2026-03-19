@@ -1,17 +1,14 @@
 import play.sbt.routes.RoutesKeys
 import uk.gov.hmrc.DefaultBuildSettings
 
-lazy val appName: String = "maintain-trust-assets-frontend"
-
 ThisBuild / scalaVersion := "2.13.18"
 ThisBuild / majorVersion := 0
 
-lazy val microservice = (project in file("."))
+lazy val microservice = Project("maintain-trust-assets-frontend", file("."))
   .enablePlugins(PlayScala, SbtDistributablesPlugin)
   .disablePlugins(JUnitXmlReportPlugin) // Required to prevent https://github.com/scalatest/scalatest/issues/1427
   .settings(
     CodeCoverageSettings(),
-    name := appName,
     RoutesKeys.routesImport += "models._",
     TwirlKeys.templateImports ++= Seq(
       "play.twirl.api.HtmlFormat",
