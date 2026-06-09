@@ -16,17 +16,20 @@
 
 package controllers.asset.business.remove
 
-import controllers.actions.StandardActionSets
+import controllers.actions.{IndexAndGenericExceptionRecovery, StandardActionSets}
 import forms.RemoveIndexFormProvider
 import handlers.ErrorHandler
+
 import javax.inject.Inject
 import models.RemoveAsset
 import models.assets.AssetNameType
+import models.assets.AssetNameType.BusinessAssetNameType
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import views.html.OutOfBoundsPageNotFoundView
 import views.html.asset.business.remove.RemoveBusinessAssetYesNoView
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,9 +41,10 @@ class RemoveBusinessAssetYesNoController @Inject() (
   trustService: TrustService,
   val controllerComponents: MessagesControllerComponents,
   view: RemoveBusinessAssetYesNoView,
-  errorHandler: ErrorHandler
+  val outOfBoundsView: OutOfBoundsPageNotFoundView,
+  val errorHandler: ErrorHandler
 )(implicit ec: ExecutionContext)
-    extends FrontendBaseController with I18nSupport with Logging {
+    extends FrontendBaseController with I18nSupport with Logging with IndexAndGenericExceptionRecovery {
 
   private val messagesPrefix: String = "business.removeYesNo"
   private val form                   = formProvider.apply(messagesPrefix)
@@ -52,16 +56,7 @@ class RemoveBusinessAssetYesNoController @Inject() (
         Ok(view(form, index, asset.orgName))
       }
       .recoverWith {
-        case iobe: IndexOutOfBoundsException =>
-          logger.warn(
-            s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}] user cannot remove asset as asset was not found: ${iobe.getMessage}"
-          )
-          Future.successful(Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()))
-        case _                               =>
-          logger.error(
-            s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}] user cannot remove asset as asset was not found"
-          )
-          errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
+        recoverIndexAndGenericException(BusinessAssetNameType, index, request.userAnswers.identifier, "onPageLoad")
       }
   }
 
@@ -87,24 +82,13 @@ class RemoveBusinessAssetYesNoController @Inject() (
                     Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad())
                   }
               }
-              .recoverWith {
-                case iobe: IndexOutOfBoundsException =>
-                  logger.warn(
-                    s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}] user cannot remove asset as asset was not found: ${iobe.getMessage}"
-                  )
-                  Future
-                    .successful(Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()))
-                case e                               =>
-                  logger.error(
-                    s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}] Unexpected error removing asset: ${e.getMessage}",
-                    e
-                  )
-                  errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
-              }
           } else {
             Future.successful(Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()))
           }
       )
+      .recoverWith {
+        recoverIndexAndGenericException(BusinessAssetNameType, index, request.userAnswers.identifier, "onSubmit")
+      }
   }
 
 }

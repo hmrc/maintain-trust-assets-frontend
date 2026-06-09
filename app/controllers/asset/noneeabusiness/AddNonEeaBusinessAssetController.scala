@@ -100,38 +100,41 @@ class AddNonEeaBusinessAssetController @Inject() (
   }
 
   def submitAnother(): Action[AnyContent] = standardActionSets.identifiedUserWithData.async { implicit request =>
-    trustService.getAssets(request.userAnswers.identifier).flatMap { assets =>
-      addAnotherForm
-        .bindFromRequest()
-        .fold(
-          (formWithErrors: Form[_]) => {
+    trustService
+      .getAssets(request.userAnswers.identifier)
+      .flatMap { assets =>
+        addAnotherForm
+          .bindFromRequest()
+          .fold(
+            (formWithErrors: Form[_]) => {
 
-            val assetRows = viewHelper.rows(assets, isNonTaxable = true)
+              val assetRows = viewHelper.rows(assets, isNonTaxable = true)
 
-            Future
-              .successful(BadRequest(addAssetsView(formWithErrors, assetRows.complete, Messages(s"$prefix.heading"))))
-          },
-          {
-            case AddAssets.YesNow =>
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
-                _              <- repository.set(updatedAnswers)
-              } yield Redirect(
-                controllers.asset.noneeabusiness.routes.NameController
-                  .onPageLoad(assets.nonEEABusiness.size, NormalMode)
-              )
+              Future
+                .successful(BadRequest(addAssetsView(formWithErrors, assetRows.complete, Messages(s"$prefix.heading"))))
+            },
+            {
+              case AddAssets.YesNow =>
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
+                  _              <- repository.set(updatedAnswers)
+                } yield Redirect(
+                  controllers.asset.noneeabusiness.routes.NameController
+                    .onPageLoad(assets.nonEEABusiness.size, NormalMode)
+                )
 
-            case AddAssets.NoComplete =>
-              submitComplete()(request)
-          }
+              case AddAssets.NoComplete =>
+                submitComplete()(request)
+            }
+          )
+      }
+      .recoverWith { case e =>
+        logger.error(
+          s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
+            s" unable add a new asset due to an error getting assets from trusts ${e.getMessage}"
         )
-    } recoverWith { case e =>
-      logger.error(
-        s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
-          s" unable add a new asset due to an error getting assets from trusts ${e.getMessage}"
-      )
-      errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
-    }
+        errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
+      }
   }
 
   def submitComplete(): Action[AnyContent] = standardActionSets.identifiedUserWithData.async { implicit request =>

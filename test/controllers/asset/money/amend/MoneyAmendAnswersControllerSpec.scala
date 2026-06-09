@@ -14,74 +14,53 @@
  * limitations under the License.
  */
 
-package controllers.asset.shares.amend
+package controllers.asset.money.amend
 
 import base.SpecBase
 import connectors.TrustsConnector
-import models.assets.SharesType
-import models.{ShareClass, UserAnswers}
+import controllers.routes._
+import models.UserAnswers
+import models.assets.AssetMonetaryAmount
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
-import pages.asset.shares._
-import pages.asset.shares.amend.IndexPage
+import pages.asset.money.AssetMoneyValuePage
+import pages.asset.money.amend.IndexPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.TrustService
 import uk.gov.hmrc.auth.core.AffinityGroup.Agent
 import uk.gov.hmrc.http.HttpResponse
-import utils.Constants.UNQUOTED
-import utils.print.SharesPrintHelper
+import utils.print.MoneyPrintHelper
 import views.html.OutOfBoundsPageNotFoundView
-import views.html.asset.shares.amend.ShareAmendAnswersView
+import views.html.asset.money.amend.MoneyAmendAnswersView
 
 import scala.concurrent.Future
 
-class ShareAmendAnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures {
+class MoneyAmendAnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures {
 
-  private lazy val answersRoute       = routes.ShareAmendAnswersController.extractAndRender(index).url
-  private lazy val submitAnswersRoute = routes.ShareAmendAnswersController.onSubmit(index).url
+  private lazy val answersRoute       =
+    controllers.asset.money.amend.routes.MoneyAmendAnswersController.extractAndRender(index).url
+  private lazy val submitAnswersRoute =
+    controllers.asset.money.amend.routes.MoneyAmendAnswersController.onSubmit(index).url
 
-  private val name: String     = "ShareName"
-  private val quantity: Long   = 5
-  private val assetValue: Long = 790L
+  private val assetValue: Long = 4000L
+  private val name: String     = assetValue.toString
 
-  private val shareAsset = SharesType(
-    numberOfShares = quantity.toString,
-    orgName = name,
-    shareClass = ShareClass.toDES(ShareClass.Deferred),
-    typeOfShare = UNQUOTED,
-    value = assetValue,
-    isPortfolio = Some(true)
-  )
+  private val moneyAsset = AssetMonetaryAmount(assetValue)
 
   private val userAnswers: UserAnswers =
     emptyUserAnswers
       .set(IndexPage, index)
       .success
       .value
-      .set(SharesInAPortfolioPage(index), true)
-      .success
-      .value
-      .set(SharePortfolioNamePage(index), name)
-      .success
-      .value
-      .set(SharePortfolioQuantityInTrustPage(index), quantity)
-      .success
-      .value
-      .set(ShareClassPage(index), ShareClass.Deferred)
-      .success
-      .value
-      .set(SharePortfolioOnStockExchangePage(index), false)
-      .success
-      .value
-      .set(SharePortfolioValueInTrustPage(index), assetValue)
+      .set(AssetMoneyValuePage(index), assetValue)
       .success
       .value
 
-  "ShareAmendAnswersController" must {
+  "MoneyAmendAnswersController" must {
 
     "return OK and the correct view for a GET for a given index" in {
       val mockService: TrustService = mock[TrustService]
@@ -92,25 +71,27 @@ class ShareAmendAnswersControllerSpec extends SpecBase with MockitoSugar with Sc
         )
         .build()
 
-      when(mockService.getSharesAsset(any(), any())(any(), any()))
-        .thenReturn(Future.successful(shareAsset))
+      when(mockService.getMonetaryAsset(any(), any())(any(), any()))
+        .thenReturn(Future.successful(moneyAsset))
 
       val request = FakeRequest(GET, answersRoute)
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[ShareAmendAnswersView]
+      val view = application.injector.instanceOf[MoneyAmendAnswersView]
 
-      val printHelper = application.injector.instanceOf[SharesPrintHelper]
+      val printHelper = application.injector.instanceOf[MoneyPrintHelper]
 
       val answerSection = printHelper(userAnswers, index, provisional = false, name)
 
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual view(answerSection, index)(request, messages).toString
+
+      application.stop()
     }
 
-    "return Not Found and the out of bounds page when getSharesAsset throws IndexOutOfBoundsException" in {
+    "return INTERNAL_SERVER_ERROR when service fails" in {
       val mockService: TrustService = mock[TrustService]
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
@@ -119,7 +100,28 @@ class ShareAmendAnswersControllerSpec extends SpecBase with MockitoSugar with Sc
         )
         .build()
 
-      when(mockService.getSharesAsset(any(), any())(any(), any()))
+      when(mockService.getMonetaryAsset(any(), any())(any(), any()))
+        .thenReturn(Future.failed(new Exception("failed")))
+
+      val request = FakeRequest(GET, answersRoute)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual INTERNAL_SERVER_ERROR
+
+      application.stop()
+    }
+
+    "return Not Found and the out of bounds page when getMonetaryAsset throws IndexOutOfBoundsException" in {
+      val mockService: TrustService = mock[TrustService]
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(
+          bind[TrustService].toInstance(mockService)
+        )
+        .build()
+
+      when(mockService.getMonetaryAsset(any(), any())(any(), any()))
         .thenReturn(Future.failed(new IndexOutOfBoundsException("")))
 
       val request = FakeRequest(GET, answersRoute)
@@ -131,6 +133,8 @@ class ShareAmendAnswersControllerSpec extends SpecBase with MockitoSugar with Sc
       status(result) mustEqual NOT_FOUND
 
       contentAsString(result) mustEqual view()(request, messages).toString
+
+      application.stop()
     }
 
     "redirect to the 'add asset' page when submitted and migrating to taxable" in {
@@ -140,7 +144,7 @@ class ShareAmendAnswersControllerSpec extends SpecBase with MockitoSugar with Sc
         .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
         .build()
 
-      when(mockTrustConnector.amendSharesAsset(any(), any(), any())(any(), any()))
+      when(mockTrustConnector.amendMoneyAsset(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(HttpResponse(OK, "")))
 
       val request = FakeRequest(POST, submitAnswersRoute)
@@ -155,6 +159,33 @@ class ShareAmendAnswersControllerSpec extends SpecBase with MockitoSugar with Sc
 
       application.stop()
     }
-  }
 
+    "redirect to Session Expired for a GET if no existing data is found" in {
+      val application = applicationBuilder(userAnswers = None).build()
+
+      val request = FakeRequest(GET, answersRoute)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad.url
+
+      application.stop()
+    }
+
+    "redirect to Session Expired for a POST if no existing data is found" in {
+      val application = applicationBuilder(userAnswers = None).build()
+
+      val request = FakeRequest(POST, submitAnswersRoute)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad.url
+
+      application.stop()
+    }
+  }
 }

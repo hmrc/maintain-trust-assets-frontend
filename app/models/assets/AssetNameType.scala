@@ -18,7 +18,17 @@ package models.assets
 
 import play.api.libs.json.{JsString, Writes}
 
-sealed trait AssetNameType
+trait AssetNameHelper {
+
+  override def toString(): String =
+    this.getClass.getSimpleName
+      .split("NameType")
+      .headOption
+      .getOrElse("[error: could not derive asset name]")
+
+}
+
+sealed trait AssetNameType extends AssetNameHelper
 
 object AssetNameType {
   case object MoneyAssetNameType extends AssetNameType

@@ -33,14 +33,18 @@ import services.TrustService
 import uk.gov.hmrc.auth.core.AffinityGroup.Agent
 import uk.gov.hmrc.http.HttpResponse
 import utils.print.OtherPrintHelper
+import views.html.OutOfBoundsPageNotFoundView
 import views.html.asset.other.amend.AnswersView
 
 import scala.concurrent.Future
 
 class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures {
 
-  private lazy val answersRoute       = controllers.asset.other.amend.routes.AnswersController.extractAndRender(index).url
-  private lazy val submitAnswersRoute = controllers.asset.other.amend.routes.AnswersController.onSubmit(index).url
+  private lazy val answersRoute       =
+    controllers.asset.other.amend.routes.AnswersController.extractAndRender(index).url
+
+  private lazy val submitAnswersRoute =
+    controllers.asset.other.amend.routes.AnswersController.onSubmit(index).url
 
   private val name: String = "Other Asset"
 
@@ -49,22 +53,22 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
     value = 4000
   )
 
-  def userAnswers: UserAnswers = emptyUserAnswers
-    .copy(isMigratingToTaxable = true)
-    .set(IndexPage, index)
-    .success
-    .value
-    .set(OtherAssetDescriptionPage(index), "Other Asset")
-    .success
-    .value
-    .set(OtherAssetValuePage(index), 4000L)
-    .success
-    .value
+  def userAnswers: UserAnswers =
+    emptyUserAnswers
+      .copy(isMigratingToTaxable = true)
+      .set(IndexPage, index)
+      .success
+      .value
+      .set(OtherAssetDescriptionPage(index), "Other Asset")
+      .success
+      .value
+      .set(OtherAssetValuePage(index), 4000L)
+      .success
+      .value
 
   "Asset Answers Controller" must {
 
     "return OK and the correct view for a GET for a given index" in {
-
       val mockService: TrustService = mock[TrustService]
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
@@ -80,20 +84,20 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
 
       val result = route(application, request).value
 
-      val view          = application.injector.instanceOf[AnswersView]
-      val printHelper   = application.injector.instanceOf[OtherPrintHelper]
+      val view = application.injector.instanceOf[AnswersView]
+
+      val printHelper = application.injector.instanceOf[OtherPrintHelper]
+
       val answerSection = printHelper(userAnswers, index, provisional = false, name)
 
       status(result) mustEqual OK
 
-      contentAsString(result) mustEqual
-        view(answerSection, index)(request, messages).toString
+      contentAsString(result) mustEqual view(answerSection, index)(request, messages).toString
 
       application.stop()
     }
 
     "return to Error page when internal server error occured For GET" in {
-
       val mockService: TrustService = mock[TrustService]
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
@@ -112,21 +116,46 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
       status(result) mustEqual INTERNAL_SERVER_ERROR
 
       application.stop()
+    }
 
+    "return Not Found and the out of bounds page when getOtherAsset throws IndexOutOfBoundsException" in {
+      val mockService: TrustService = mock[TrustService]
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(
+          bind[TrustService].toInstance(mockService)
+        )
+        .build()
+
+      when(mockService.getOtherAsset(any(), any())(any(), any()))
+        .thenReturn(Future.failed(new IndexOutOfBoundsException("")))
+
+      val request = FakeRequest(GET, answersRoute)
+
+      val result = route(application, request).value
+
+      val view = application.injector.instanceOf[OutOfBoundsPageNotFoundView]
+
+      status(result) mustEqual NOT_FOUND
+
+      contentAsString(result) mustEqual view()(request, messages).toString
+
+      application.stop()
     }
 
     "redirect to the 'add asset' page when submitted and migrating to taxable" in {
-
       val mockTrustConnector = mock[TrustsConnector]
 
-      val application =
-        applicationBuilder(userAnswers = Some(userAnswers), affinityGroup = Agent)
-          .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
-          .build()
+      val application = applicationBuilder(userAnswers = Some(userAnswers), affinityGroup = Agent)
+        .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
+        .build()
 
-      val moneyAsset     = AssetMonetaryAmount(4000L)
+      val moneyAsset = AssetMonetaryAmount(4000L)
+
       val assets: Assets = Assets(monetary = List(moneyAsset))
+
       when(mockTrustConnector.getAssets(any())(any(), any())).thenReturn(Future.successful(assets))
+
       when(mockTrustConnector.amendOtherAsset(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(HttpResponse(OK, "")))
 
@@ -142,7 +171,6 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
 
       application.stop()
     }
-
   }
 
 }

@@ -116,42 +116,45 @@ class AddAssetsController @Inject() (
 
   def submitAnother(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async {
     implicit request =>
-      trustService.getAssets(request.userAnswers.identifier).flatMap { assets: Assets =>
-        addAnotherForm
-          .bindFromRequest()
-          .fold(
-            (formWithErrors: Form[_]) => {
-              val assetRows = viewHelper.rows(assets, isNonTaxable = false)
-              Future.successful(
-                BadRequest(
-                  addAssetsView(
-                    form = formWithErrors,
-                    completeAssets = assetRows.complete,
-                    heading = heading(assetRows.count),
-                    maxedOut = WhatKindOfAsset.maxedOutOptions(assets),
-                    index
+      trustService
+        .getAssets(request.userAnswers.identifier)
+        .flatMap { assets: Assets =>
+          addAnotherForm
+            .bindFromRequest()
+            .fold(
+              (formWithErrors: Form[_]) => {
+                val assetRows = viewHelper.rows(assets, isNonTaxable = false)
+                Future.successful(
+                  BadRequest(
+                    addAssetsView(
+                      form = formWithErrors,
+                      completeAssets = assetRows.complete,
+                      heading = heading(assetRows.count),
+                      maxedOut = WhatKindOfAsset.maxedOutOptions(assets),
+                      index
+                    )
                   )
                 )
-              )
-            },
-            {
-              case AddAssets.YesNow =>
-                for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
-                  _              <- repository.set(updatedAnswers)
-                } yield Redirect(navigator.addAssetRoute(assets, index))
+              },
+              {
+                case AddAssets.YesNow =>
+                  for {
+                    updatedAnswers <- Future.fromTry(request.userAnswers.cleanup)
+                    _              <- repository.set(updatedAnswers)
+                  } yield Redirect(navigator.addAssetRoute(assets, index))
 
-              case AddAssets.NoComplete =>
-                submitComplete()(request)
-            }
+                case AddAssets.NoComplete =>
+                  submitComplete()(request)
+              }
+            )
+        }
+        .recoverWith { case e =>
+          logger.error(
+            s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
+              s" unable add a new asset due to an error getting assets from trusts ${e.getMessage}"
           )
-      } recoverWith { case e =>
-        logger.error(
-          s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
-            s" unable add a new asset due to an error getting assets from trusts ${e.getMessage}"
-        )
-        errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
-      }
+          errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
+        }
   }
 
   def submitComplete(): Action[AnyContent] = standardActionSets.identifiedUserWithData.async { implicit request =>

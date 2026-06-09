@@ -24,6 +24,7 @@ import extractors.NonEeaBusinessExtractor
 import handlers.ErrorHandler
 import mapping.NonEeaBusinessAssetMapper
 import models.UserAnswers
+import models.assets.AssetNameType.NonEeaBusinessAssetNameType
 import navigation.AssetsNavigator
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -32,6 +33,7 @@ import repositories.PlaybackRepository
 import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.NonEeaBusinessPrintHelper
+import views.html.OutOfBoundsPageNotFoundView
 import views.html.asset.noneeabusiness.amend.AnswersView
 
 import javax.inject.Inject
@@ -42,6 +44,7 @@ class AnswersController @Inject() (
   standardActionSets: StandardActionSets,
   val controllerComponents: MessagesControllerComponents,
   view: AnswersView,
+  val outOfBoundsView: OutOfBoundsPageNotFoundView,
   service: TrustService,
   connector: TrustsConnector,
   val appConfig: FrontendAppConfig,
@@ -50,10 +53,10 @@ class AnswersController @Inject() (
   mapper: NonEeaBusinessAssetMapper,
   nameAction: NameRequiredAction,
   extractor: NonEeaBusinessExtractor,
-  errorHandler: ErrorHandler,
+  val errorHandler: ErrorHandler,
   navigator: AssetsNavigator
 )(implicit ec: ExecutionContext)
-    extends FrontendBaseController with I18nSupport with Logging {
+    extends FrontendBaseController with I18nSupport with Logging with IndexAndGenericExceptionRecovery {
 
   private val provisional: Boolean = false
 
@@ -65,18 +68,18 @@ class AnswersController @Inject() (
 
   def extractAndRender(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-      service.getNonEeaBusinessAsset(request.userAnswers.identifier, index) flatMap { nonEeaBusiness =>
-        val extractedAnswers = extractor(request.userAnswers, nonEeaBusiness, index)
-        for {
-          extractedF <- Future.fromTry(extractedAnswers)
-          _          <- playbackRepository.set(extractedF)
-        } yield render(extractedF, index, nonEeaBusiness.orgName)
-      } recoverWith { case e =>
-        logger.error(
-          s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
-            s" error showing the user the check answers for NonEeaBusiness Asset $index ${e.getMessage}"
+      (for {
+        nonEeaBusiness  <- service.getNonEeaBusinessAsset(request.userAnswers.identifier, index)
+        extractedAnswers = extractor(request.userAnswers, nonEeaBusiness, index)
+        extractedF      <- Future.fromTry(extractedAnswers)
+        _               <- playbackRepository.set(extractedF)
+      } yield render(extractedF, index, nonEeaBusiness.orgName)).recoverWith {
+        recoverIndexAndGenericException(
+          NonEeaBusinessAssetNameType,
+          index,
+          request.userAnswers.identifier,
+          "extractAndRender"
         )
-        errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
       }
   }
 

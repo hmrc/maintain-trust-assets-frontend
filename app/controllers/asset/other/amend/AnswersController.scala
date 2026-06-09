@@ -21,9 +21,11 @@ import connectors.TrustsConnector
 import controllers.actions._
 import extractors.OtherAssetExtractor
 import handlers.ErrorHandler
+
 import javax.inject.Inject
 import mapping.OtherAssetMapper
 import models.UserAnswers
+import models.assets.AssetNameType.OtherAssetNameType
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
@@ -32,6 +34,7 @@ import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.OtherPrintHelper
 import viewmodels.AnswerSection
+import views.html.OutOfBoundsPageNotFoundView
 import views.html.asset.other.amend.AnswersView
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -41,6 +44,7 @@ class AnswersController @Inject() (
   standardActionSets: StandardActionSets,
   val controllerComponents: MessagesControllerComponents,
   view: AnswersView,
+  val outOfBoundsView: OutOfBoundsPageNotFoundView,
   service: TrustService,
   connector: TrustsConnector,
   val appConfig: FrontendAppConfig,
@@ -48,9 +52,9 @@ class AnswersController @Inject() (
   printHelper: OtherPrintHelper,
   mapper: OtherAssetMapper,
   extractor: OtherAssetExtractor,
-  errorHandler: ErrorHandler
+  val errorHandler: ErrorHandler
 )(implicit ec: ExecutionContext)
-    extends FrontendBaseController with I18nSupport with Logging {
+    extends FrontendBaseController with I18nSupport with Logging with IndexAndGenericExceptionRecovery {
 
   private val provisional: Boolean = false
 
@@ -63,18 +67,13 @@ class AnswersController @Inject() (
 
   def extractAndRender(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-      service.getOtherAsset(request.userAnswers.identifier, index) flatMap { otherAsset =>
-        val extractedAnswers = extractor(request.userAnswers, otherAsset, index)
-        for {
-          extractedF <- Future.fromTry(extractedAnswers)
-          _          <- playbackRepository.set(extractedF)
-        } yield render(extractedF, index, otherAsset.description)
-      } recoverWith { case e =>
-        logger.error(
-          s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
-            s" error showing the user the check answers for Other Asset $index ${e.getMessage}"
-        )
-        errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
+      (for {
+        otherAsset      <- service.getOtherAsset(request.userAnswers.identifier, index)
+        extractedAnswers = extractor(request.userAnswers, otherAsset, index)
+        extractedF      <- Future.fromTry(extractedAnswers)
+        _               <- playbackRepository.set(extractedF)
+      } yield render(extractedF, index, otherAsset.description)).recoverWith {
+        recoverIndexAndGenericException(OtherAssetNameType, index, request.userAnswers.identifier, "extractAndRender")
       }
   }
 
