@@ -43,6 +43,7 @@ class MoneyAmendAnswersControllerSpec extends SpecBase with MockitoSugar with Sc
 
   private lazy val answersRoute       =
     controllers.asset.money.amend.routes.MoneyAmendAnswersController.extractAndRender(index).url
+
   private lazy val submitAnswersRoute =
     controllers.asset.money.amend.routes.MoneyAmendAnswersController.onSubmit(index).url
 
@@ -188,4 +189,5 @@ class MoneyAmendAnswersControllerSpec extends SpecBase with MockitoSugar with Sc
       application.stop()
     }
   }
+
 }

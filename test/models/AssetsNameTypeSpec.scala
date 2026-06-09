@@ -23,25 +23,25 @@ import org.scalatest.wordspec.AnyWordSpec
 
 class AssetsNameTypeSpec extends AnyWordSpec with Matchers {
 
-  case class NameTypeWithExpected(assetNameType: AssetNameType, expectedToString: String)
+  case class NameTypeWithExpectedResult(assetNameType: AssetNameType, expectedToString: String)
 
   object TestClass extends AssetNameHelper
 
   "AssetsNameType.toString" must {
     "derive the expected asset name" in
       List(
-        NameTypeWithExpected(MoneyAssetNameType, "MoneyAsset"),
-        NameTypeWithExpected(PropertyOrLandAssetNameType, "PropertyOrLandAsset"),
-        NameTypeWithExpected(SharesAssetNameType, "SharesAsset"),
-        NameTypeWithExpected(BusinessAssetNameType, "BusinessAsset"),
-        NameTypeWithExpected(PartnershipAssetNameType, "PartnershipAsset"),
-        NameTypeWithExpected(OtherAssetNameType, "OtherAsset"),
-        NameTypeWithExpected(NonEeaBusinessAssetNameType, "NonEeaBusinessAsset")
+        NameTypeWithExpectedResult(MoneyAssetNameType, "MoneyAsset"),
+        NameTypeWithExpectedResult(PropertyOrLandAssetNameType, "PropertyOrLandAsset"),
+        NameTypeWithExpectedResult(SharesAssetNameType, "SharesAsset"),
+        NameTypeWithExpectedResult(BusinessAssetNameType, "BusinessAsset"),
+        NameTypeWithExpectedResult(PartnershipAssetNameType, "PartnershipAsset"),
+        NameTypeWithExpectedResult(OtherAssetNameType, "OtherAsset"),
+        NameTypeWithExpectedResult(NonEeaBusinessAssetNameType, "NonEeaBusinessAsset")
       )
         .foreach(testCase => testCase.assetNameType.toString() mustEqual (testCase.expectedToString))
 
     "show the expected error string if the asset name could not be derived" in { // broke
-      TestClass.toString() mustEqual("[error: could not derive asset name]")
+      TestClass.toString() mustEqual "[error: could not derive asset name]"
     }
 
   }

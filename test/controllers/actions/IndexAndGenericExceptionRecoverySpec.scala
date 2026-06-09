@@ -38,7 +38,7 @@ class IndexAndGenericExceptionRecoverySpec extends SpecBase with ScalaFutures {
   private val handler: ErrorHandler             = injector.instanceOf[ErrorHandler]
 
   private class TestRecovery
-    extends FrontendBaseController with I18nSupport with Logging with IndexAndGenericExceptionRecovery {
+      extends FrontendBaseController with I18nSupport with Logging with IndexAndGenericExceptionRecovery {
 
     override val controllerComponents: MessagesControllerComponents =
       injector.instanceOf[MessagesControllerComponents]
