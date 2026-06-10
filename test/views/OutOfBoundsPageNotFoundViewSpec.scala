@@ -38,6 +38,7 @@ class OutOfBoundsPageNotFoundViewSpec extends ViewBehaviours {
     "link bullet1 to the trust overview" in {
       val links = asDocument(applyView(migrating = true))
         .select("ul.govuk-list--bullet li a.govuk-link")
+
       links.get(0).text()       mustBe messages(s"$messageKeyPrefix.bullet1")
       links.get(0).attr("href") mustBe frontendAppConfig.maintainATrustOverview
     }
@@ -46,6 +47,7 @@ class OutOfBoundsPageNotFoundViewSpec extends ViewBehaviours {
       val link = asDocument(applyView(migrating = true))
         .select("ul.govuk-list--bullet li a.govuk-link")
         .get(1)
+
       link.text()       mustBe messages(s"$messageKeyPrefix.bullet2")
       link.attr("href") mustBe
         controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
@@ -55,6 +57,7 @@ class OutOfBoundsPageNotFoundViewSpec extends ViewBehaviours {
       val link = asDocument(applyView(migrating = false))
         .select("ul.govuk-list--bullet li a.govuk-link")
         .get(1)
+
       link.attr("href") mustBe
         controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad().url
     }
