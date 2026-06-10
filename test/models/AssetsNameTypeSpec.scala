@@ -20,30 +20,47 @@ import models.assets.AssetNameType._
 import models.assets._
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+import play.api.libs.json.{JsString, Json}
 
 class AssetsNameTypeSpec extends AnyWordSpec with Matchers {
-
-  case class NameTypeWithExpectedResult(assetNameType: AssetNameType, expectedToString: String)
-
-  object TestClass extends AssetNameHelper
 
   "AssetsNameType.toString" must {
     "derive the expected asset name" in
       List(
-        NameTypeWithExpectedResult(MoneyAssetNameType, "MoneyAsset"),
-        NameTypeWithExpectedResult(PropertyOrLandAssetNameType, "PropertyOrLandAsset"),
-        NameTypeWithExpectedResult(SharesAssetNameType, "SharesAsset"),
-        NameTypeWithExpectedResult(BusinessAssetNameType, "BusinessAsset"),
-        NameTypeWithExpectedResult(PartnershipAssetNameType, "PartnershipAsset"),
-        NameTypeWithExpectedResult(OtherAssetNameType, "OtherAsset"),
-        NameTypeWithExpectedResult(NonEeaBusinessAssetNameType, "NonEeaBusinessAsset")
+        (MoneyAssetNameType, "MoneyAsset"),
+        (PropertyOrLandAssetNameType, "PropertyOrLandAsset"),
+        (SharesAssetNameType, "SharesAsset"),
+        (BusinessAssetNameType, "BusinessAsset"),
+        (PartnershipAssetNameType, "PartnershipAsset"),
+        (OtherAssetNameType, "OtherAsset"),
+        (NonEeaBusinessAssetNameType, "NonEeaBusinessAsset")
       )
-        .foreach(testCase => testCase.assetNameType.toString() mustEqual (testCase.expectedToString))
+        .foreach { testCase =>
+          val assetNameType  = testCase._1
+          val expectedResult = testCase._2
 
-    "show the expected error string if the asset name could not be derived" in {
-      TestClass.toString() mustEqual "[error: could not derive asset name]"
-    }
+          assetNameType.toString() mustEqual expectedResult
+        }
+  }
 
+  "AssetsNameType.writesToTrusts" must {
+
+    "serialise each asset name type to the value expected by the trusts backend" in
+      List[(AssetNameType, String)](
+        (MoneyAssetNameType, "monetary"),
+        (PropertyOrLandAssetNameType, "propertyOrLand"),
+        (SharesAssetNameType, "shares"),
+        (BusinessAssetNameType, "business"),
+        (PartnershipAssetNameType, "partnerShip"),
+        (OtherAssetNameType, "other"),
+        (NonEeaBusinessAssetNameType, "nonEEABusiness")
+      )
+        .foreach { testCase =>
+          val assetNameType  = testCase._1
+          val expectedResult = testCase._2
+
+          Json.toJson(assetNameType)(AssetNameType.writesToTrusts) mustEqual JsString(expectedResult)
+        }
   }
 
 }
