@@ -40,7 +40,7 @@ class AssetsNameTypeSpec extends AnyWordSpec with Matchers {
       )
         .foreach(testCase => testCase.assetNameType.toString() mustEqual (testCase.expectedToString))
 
-    "show the expected error string if the asset name could not be derived" in { // broke
+    "show the expected error string if the asset name could not be derived" in {
       TestClass.toString() mustEqual "[error: could not derive asset name]"
     }
 

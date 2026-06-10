@@ -20,11 +20,16 @@ import play.api.libs.json.{JsString, Writes}
 
 trait AssetNameHelper {
 
-  override def toString(): String =
-    this.getClass.getSimpleName
+  override def toString(): String = {
+    val simpleName = this.getClass.getSimpleName
+
+    simpleName
       .split("NameType")
-      .headOption
-      .getOrElse("[error: could not derive asset name]")
+      .toList match {
+      case head :: _ if simpleName.contains("NameType") => head
+      case _                                            => "[error: could not derive asset name]"
+    }
+  }
 
 }
 
