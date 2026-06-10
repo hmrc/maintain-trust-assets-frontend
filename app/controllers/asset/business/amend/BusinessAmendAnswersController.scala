@@ -79,7 +79,8 @@ class BusinessAmendAnswersController @Inject() (
           BusinessAssetNameType,
           index,
           request.userAnswers.identifier,
-          "extractAndRender"
+          "extractAndRender",
+          request.userAnswers.isMigratingToTaxable
         )
       }
   }

@@ -97,7 +97,7 @@ class PropertyOrLandPropertyOrLandRemoveAssetYesNoControllerSpec
 
       status(result) mustEqual NOT_FOUND
 
-      contentAsString(result) mustEqual view()(request, messages).toString
+      contentAsString(result) mustEqual view(isMigratingToTaxable = false)(request, messages).toString
 
       application.stop()
     }
@@ -173,7 +173,7 @@ class PropertyOrLandPropertyOrLandRemoveAssetYesNoControllerSpec
 
       status(result) mustEqual NOT_FOUND
 
-      contentAsString(result) mustEqual view()(request, messages).toString
+      contentAsString(result) mustEqual view(isMigratingToTaxable = true)(request, messages).toString
 
       application.stop()
     }

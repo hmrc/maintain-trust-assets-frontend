@@ -38,7 +38,8 @@ trait IndexAndGenericExceptionRecovery {
     assetName: AssetNameType,
     index: Int,
     identifier: String,
-    callingMethod: String
+    callingMethod: String,
+    isMigratingToTaxable: Boolean
   )(implicit
     hc: HeaderCarrier,
     ec: ExecutionContext,
@@ -50,7 +51,7 @@ trait IndexAndGenericExceptionRecovery {
           s"no $assetName at index $index, IndexOutOfBoundsException - showing page not found"
       )
 
-      Future.successful(NotFound(outOfBoundsView()))
+      Future.successful(NotFound(outOfBoundsView(isMigratingToTaxable)))
     case e                            =>
       logger.error(s"${logStart(identifier, callingMethod)}: error at index $index: ${e.getMessage}", e)
 

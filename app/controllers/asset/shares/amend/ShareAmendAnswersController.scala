@@ -75,7 +75,13 @@ class ShareAmendAnswersController @Inject() (
         extractedF      <- Future.fromTry(extractedAnswers)
         _               <- playbackRepository.set(extractedF)
       } yield render(extractedF, index, shareType.orgName)).recoverWith {
-        recoverIndexAndGenericException(SharesAssetNameType, index, request.userAnswers.identifier, "extractAndRender")
+        recoverIndexAndGenericException(
+          SharesAssetNameType,
+          index,
+          request.userAnswers.identifier,
+          "extractAndRender",
+          request.userAnswers.isMigratingToTaxable
+        )
       }
   }
 

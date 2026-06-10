@@ -63,7 +63,8 @@ class RemoveAssetYesNoController @Inject() (
           NonEeaBusinessAssetNameType,
           index,
           request.userAnswers.identifier,
-          "onPageLoad"
+          "onPageLoad",
+          request.userAnswers.isMigratingToTaxable
         )
       }
   }
@@ -94,7 +95,13 @@ class RemoveAssetYesNoController @Inject() (
           }
       )
       .recoverWith {
-        recoverIndexAndGenericException(NonEeaBusinessAssetNameType, index, request.userAnswers.identifier, "onSubmit")
+        recoverIndexAndGenericException(
+          NonEeaBusinessAssetNameType,
+          index,
+          request.userAnswers.identifier,
+          "onSubmit",
+          request.userAnswers.isMigratingToTaxable
+        )
       }
   }
 

@@ -71,7 +71,13 @@ class MoneyAmendAnswersController @Inject() (
         extractedAnswers <- Future.fromTry(extractor(request.userAnswers, moneyAsset, index))
         _                <- playbackRepository.set(extractedAnswers)
       } yield render(extractedAnswers, index, moneyAsset.assetMonetaryAmount.toString)).recoverWith {
-        recoverIndexAndGenericException(MoneyAssetNameType, index, request.userAnswers.identifier, "extractAndRender")
+        recoverIndexAndGenericException(
+          MoneyAssetNameType,
+          index,
+          request.userAnswers.identifier,
+          "extractAndRender",
+          request.userAnswers.isMigratingToTaxable
+        )
       }
   }
 

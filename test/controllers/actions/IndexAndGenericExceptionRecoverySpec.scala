@@ -47,7 +47,7 @@ class IndexAndGenericExceptionRecoverySpec extends SpecBase with ScalaFutures {
     override def outOfBoundsView: OutOfBoundsPageNotFoundView = view
 
     def expose: PartialFunction[Throwable, Future[Result]] =
-      recoverIndexAndGenericException(OtherAssetNameType, 0, "1234567890", "testMethod")
+      recoverIndexAndGenericException(OtherAssetNameType, 0, "1234567890", "testMethod", true)
 
   }
 
@@ -64,7 +64,7 @@ class IndexAndGenericExceptionRecoverySpec extends SpecBase with ScalaFutures {
       val result = pf(new IndexOutOfBoundsException("stale index"))
 
       status(result) mustEqual NOT_FOUND
-      contentAsString(result) mustEqual view()(rh, messages).toString
+      contentAsString(result) mustEqual view(isMigratingToTaxable = true)(rh, messages).toString
     }
 
     "return Internal Server Error on any other exception" in {

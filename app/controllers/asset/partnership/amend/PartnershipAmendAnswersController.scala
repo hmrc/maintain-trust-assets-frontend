@@ -78,7 +78,8 @@ class PartnershipAmendAnswersController @Inject() (
           PartnershipAssetNameType,
           index,
           request.userAnswers.identifier,
-          "extractAndRender"
+          "extractAndRender",
+          request.userAnswers.isMigratingToTaxable
         )
       }
   }

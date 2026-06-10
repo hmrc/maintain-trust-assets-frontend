@@ -56,7 +56,13 @@ class RemoveBusinessAssetYesNoController @Inject() (
         Ok(view(form, index, asset.orgName))
       }
       .recoverWith {
-        recoverIndexAndGenericException(BusinessAssetNameType, index, request.userAnswers.identifier, "onPageLoad")
+        recoverIndexAndGenericException(
+          BusinessAssetNameType,
+          index,
+          request.userAnswers.identifier,
+          "onPageLoad",
+          request.userAnswers.isMigratingToTaxable
+        )
       }
   }
 
@@ -87,7 +93,13 @@ class RemoveBusinessAssetYesNoController @Inject() (
           }
       )
       .recoverWith {
-        recoverIndexAndGenericException(BusinessAssetNameType, index, request.userAnswers.identifier, "onSubmit")
+        recoverIndexAndGenericException(
+          BusinessAssetNameType,
+          index,
+          request.userAnswers.identifier,
+          "onSubmit",
+          request.userAnswers.isMigratingToTaxable
+        )
       }
   }
 

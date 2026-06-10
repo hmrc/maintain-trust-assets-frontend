@@ -56,7 +56,13 @@ class RemovePartnershipAssetYesNoController @Inject() (
         Ok(view(form, index, asset.description))
       }
       .recoverWith {
-        recoverIndexAndGenericException(PartnershipAssetNameType, index, request.userAnswers.identifier, "onPageLoad")
+        recoverIndexAndGenericException(
+          PartnershipAssetNameType,
+          index,
+          request.userAnswers.identifier,
+          "onPageLoad",
+          request.userAnswers.isMigratingToTaxable
+        )
       }
   }
 
@@ -80,7 +86,13 @@ class RemovePartnershipAssetYesNoController @Inject() (
           }
       )
       .recoverWith {
-        recoverIndexAndGenericException(PartnershipAssetNameType, index, request.userAnswers.identifier, "onSubmit")
+        recoverIndexAndGenericException(
+          PartnershipAssetNameType,
+          index,
+          request.userAnswers.identifier,
+          "onSubmit",
+          request.userAnswers.isMigratingToTaxable
+        )
       }
   }
 

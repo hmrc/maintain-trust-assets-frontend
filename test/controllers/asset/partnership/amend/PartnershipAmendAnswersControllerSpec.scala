@@ -129,7 +129,7 @@ class PartnershipAmendAnswersControllerSpec extends SpecBase with MockitoSugar w
 
       status(result) mustEqual NOT_FOUND
 
-      contentAsString(result) mustEqual view()(request, messages).toString
+      contentAsString(result) mustEqual view(isMigratingToTaxable = false)(request, messages).toString
     }
 
     "redirect to the 'add asset' page when submitted and migrating to taxable" in {

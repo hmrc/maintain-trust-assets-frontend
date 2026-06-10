@@ -182,7 +182,7 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
 
       status(result) mustEqual NOT_FOUND
 
-      contentAsString(result) mustEqual view()(request, messages).toString
+      contentAsString(result) mustEqual view(isMigratingToTaxable = false)(request, messages).toString
 
       application.stop()
     }

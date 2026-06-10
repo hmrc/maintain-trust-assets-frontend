@@ -78,7 +78,8 @@ class AnswersController @Inject() (
           NonEeaBusinessAssetNameType,
           index,
           request.userAnswers.identifier,
-          "extractAndRender"
+          "extractAndRender",
+          request.userAnswers.isMigratingToTaxable
         )
       }
   }

@@ -61,7 +61,8 @@ class PropertyOrLandRemoveAssetYesNoController @Inject() (
           PropertyOrLandAssetNameType,
           index,
           request.userAnswers.identifier,
-          "onPageLoad"
+          "onPageLoad",
+          request.userAnswers.isMigratingToTaxable
         )
       }
   }
@@ -89,7 +90,13 @@ class PropertyOrLandRemoveAssetYesNoController @Inject() (
           }
       )
       .recoverWith {
-        recoverIndexAndGenericException(PropertyOrLandAssetNameType, index, request.userAnswers.identifier, "onSubmit")
+        recoverIndexAndGenericException(
+          PropertyOrLandAssetNameType,
+          index,
+          request.userAnswers.identifier,
+          "onSubmit",
+          request.userAnswers.isMigratingToTaxable
+        )
       }
   }
 

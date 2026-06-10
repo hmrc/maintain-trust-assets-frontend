@@ -24,32 +24,39 @@ class OutOfBoundsPageNotFoundViewSpec extends ViewBehaviours {
 
   private val messageKeyPrefix: String = "outOfBoundsPageNotFound"
 
+  private def applyView(migrating: Boolean): HtmlFormat.Appendable = {
+    val ua   = emptyUserAnswers.copy(isMigratingToTaxable = migrating)
+    val view = viewFor[OutOfBoundsPageNotFoundView](Some(ua))
+    view.apply(migrating)(fakeRequest, messages)
+  }
+
   "OutOfBoundsPageNotFound view" must {
 
-    val view = viewFor[OutOfBoundsPageNotFoundView](Some(emptyUserAnswers))
+    behave like normalPage(applyView(migrating = true), messageKeyPrefix)
+    behave like pageWithBackLink(applyView(migrating = true))
 
-    val applyView: HtmlFormat.Appendable = view.apply()(fakeRequest, messages)
+    "link bullet1 to the trust overview" in {
+      val links = asDocument(applyView(migrating = true))
+        .select("ul.govuk-list--bullet li a.govuk-link")
+      links.get(0).text()       mustBe messages(s"$messageKeyPrefix.bullet1")
+      links.get(0).attr("href") mustBe frontendAppConfig.maintainATrustOverview
+    }
 
-    behave like normalPage(applyView, messageKeyPrefix)
+    "link bullet2 to the migrating add-assets page when migrating to taxable" in {
+      val link = asDocument(applyView(migrating = true))
+        .select("ul.govuk-list--bullet li a.govuk-link")
+        .get(1)
+      link.text()       mustBe messages(s"$messageKeyPrefix.bullet2")
+      link.attr("href") mustBe
+        controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad().url
+    }
 
-    behave like pageWithBackLink(applyView)
-
-    "display the bullet point links with the correct text and hrefs" in {
-      val doc = asDocument(applyView)
-
-      val links = doc.select("ul.govuk-list--bullet li a.govuk-link")
-      links.size() mustBe 2
-
-      val overviewLink = links.get(0)
-
-      overviewLink.text()       mustBe messages(s"$messageKeyPrefix.bullet1")
-      overviewLink.attr("href") mustBe frontendAppConfig.maintainATrustOverview
-
-      val addBeneficiaryLink = links.get(1)
-
-      addBeneficiaryLink.text()       mustBe messages(s"$messageKeyPrefix.bullet2")
-      addBeneficiaryLink.attr("href") mustBe
-        controllers.asset.routes.AssetInterruptPageController.onPageLoad().url
+    "link bullet2 to the non-EEA add-assets page when not migrating" in {
+      val link = asDocument(applyView(migrating = false))
+        .select("ul.govuk-list--bullet li a.govuk-link")
+        .get(1)
+      link.attr("href") mustBe
+        controllers.asset.noneeabusiness.routes.AddNonEeaBusinessAssetController.onPageLoad().url
     }
   }
 

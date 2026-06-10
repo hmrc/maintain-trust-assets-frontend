@@ -181,7 +181,7 @@ class BusinessAmendAnswersControllerSpec extends SpecBase with MockitoSugar with
       status(result) mustEqual NOT_FOUND
 
       contentAsString(result) mustEqual
-        view()(request, messages).toString
+        view(isMigratingToTaxable = true)(request, messages).toString
 
       application.stop()
     }

@@ -15,32 +15,34 @@
  *@
 
 @import config.FrontendAppConfig
+@import navigation.AssetsNavigator
 @import views.html.components.Heading
 
 @this(
-  mainTemplate: MainTemplate,
-  config: FrontendAppConfig,
-  heading: Heading
+    mainTemplate: MainTemplate,
+    config: FrontendAppConfig,
+    navigator: AssetsNavigator,
+    heading: Heading
 )
 
-@()(implicit request: RequestHeader, messages: Messages)
+@(isMigratingToTaxable: Boolean)(implicit request: RequestHeader, messages: Messages)
 
 @mainTemplate(
-  title = messages("outOfBoundsPageNotFound.title"),
-  showBackLink = true
+    title = messages("outOfBoundsPageNotFound.title"),
+    showBackLink = true
 ) {
 
-  @heading("outOfBoundsPageNotFound.heading")
+@heading("outOfBoundsPageNotFound.heading")
 
-    <p class="govuk-body">@messages("outOfBoundsPageNotFound.p1")</p>
-    <p class="govuk-body">@messages("outOfBoundsPageNotFound.p2")</p>
+<p class="govuk-body">@messages("outOfBoundsPageNotFound.p1")</p>
+<p class="govuk-body">@messages("outOfBoundsPageNotFound.p2")</p>
 
-    <ul class="govuk-list govuk-list--bullet">
-      <li>
+<ul class="govuk-list govuk-list--bullet">
+    <li>
         <a class="govuk-link" href="@config.maintainATrustOverview">@messages("outOfBoundsPageNotFound.bullet1")</a>
-      </li>
-      <li>
-        <a class="govuk-link" href="@controllers.asset.routes.AssetInterruptPageController.onPageLoad().url">@messages("outOfBoundsPageNotFound.bullet2")</a>
-      </li>
-    </ul>
+    </li>
+    <li>
+        <a class="govuk-link" href="@navigator.redirectToAddAssetPage(isMigratingToTaxable).url">@messages("outOfBoundsPageNotFound.bullet2")</a>
+    </li>
+</ul>
 }

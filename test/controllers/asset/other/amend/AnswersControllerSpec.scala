@@ -40,7 +40,7 @@ import scala.concurrent.Future
 
 class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures {
 
-  private lazy val answersRoute       =
+  private lazy val answersRoute =
     controllers.asset.other.amend.routes.AnswersController.extractAndRender(index).url
 
   private lazy val submitAnswersRoute =
@@ -138,7 +138,7 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
 
       status(result) mustEqual NOT_FOUND
 
-      contentAsString(result) mustEqual view()(request, messages).toString
+      contentAsString(result) mustEqual view(isMigratingToTaxable = true)(request, messages).toString
 
       application.stop()
     }

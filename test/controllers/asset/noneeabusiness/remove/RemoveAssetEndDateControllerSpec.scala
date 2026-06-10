@@ -19,8 +19,8 @@ package controllers.asset.noneeabusiness.remove
 import base.SpecBase
 import connectors.TrustsConnector
 import forms.EndDateFormProvider
-import models.{NonUkAddress, UserAnswers}
 import models.assets._
+import models.{NonUkAddress, UserAnswers}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
@@ -29,7 +29,6 @@ import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import services.TrustService
 import uk.gov.hmrc.http.HttpResponse
 import views.html.OutOfBoundsPageNotFoundView
 import views.html.asset.noneeabusiness.remove.RemoveAssetEndDateView
@@ -103,7 +102,7 @@ class RemoveAssetEndDateControllerSpec extends SpecBase with ScalaCheckPropertyC
 
       status(result) mustEqual NOT_FOUND
 
-      contentAsString(result) mustEqual view()(request, messages).toString
+      contentAsString(result) mustEqual view(isMigratingToTaxable = false)(request, messages).toString
 
       application.stop()
     }
@@ -261,7 +260,7 @@ class RemoveAssetEndDateControllerSpec extends SpecBase with ScalaCheckPropertyC
 
       status(result) mustEqual NOT_FOUND
 
-      contentAsString(result) mustEqual view()(request, messages).toString
+      contentAsString(result) mustEqual view(isMigratingToTaxable = true)(request, messages).toString
 
       application.stop()
     }

@@ -61,7 +61,13 @@ class RemoveAssetYesNoController @Inject() (
         Ok(view(form, index, currencyFormat(asset.assetMonetaryAmount.toString)))
       }
       .recoverWith {
-        recoverIndexAndGenericException(MoneyAssetNameType, index, request.userAnswers.identifier, "onPageLoad")
+        recoverIndexAndGenericException(
+          MoneyAssetNameType,
+          index,
+          request.userAnswers.identifier,
+          "onPageLoad",
+          request.userAnswers.isMigratingToTaxable
+        )
       }
   }
 
@@ -81,7 +87,13 @@ class RemoveAssetYesNoController @Inject() (
           }
       )
       .recoverWith {
-        recoverIndexAndGenericException(MoneyAssetNameType, index, request.userAnswers.identifier, "onSubmit")
+        recoverIndexAndGenericException(
+          MoneyAssetNameType,
+          index,
+          request.userAnswers.identifier,
+          "onSubmit",
+          request.userAnswers.isMigratingToTaxable
+        )
       }
   }
 

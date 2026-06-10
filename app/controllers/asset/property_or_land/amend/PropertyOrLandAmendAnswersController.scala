@@ -78,7 +78,8 @@ class PropertyOrLandAmendAnswersController @Inject() (
           PropertyOrLandAssetNameType,
           index,
           request.userAnswers.identifier,
-          "extractAndRender"
+          "extractAndRender",
+          request.userAnswers.isMigratingToTaxable
         )
       }
   }

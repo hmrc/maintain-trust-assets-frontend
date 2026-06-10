@@ -62,7 +62,8 @@ class RemoveAssetEndDateController @Inject() (
           NonEeaBusinessAssetNameType,
           index,
           request.userAnswers.identifier,
-          "onPageLoad"
+          "onPageLoad",
+          request.userAnswers.isMigratingToTaxable
         )
       }
   }
@@ -90,7 +91,8 @@ class RemoveAssetEndDateController @Inject() (
           NonEeaBusinessAssetNameType,
           index,
           request.userAnswers.identifier,
-          "onSubmit"
+          "onSubmit",
+          request.userAnswers.isMigratingToTaxable
         )
       }
   }

@@ -73,7 +73,13 @@ class AnswersController @Inject() (
         extractedF      <- Future.fromTry(extractedAnswers)
         _               <- playbackRepository.set(extractedF)
       } yield render(extractedF, index, otherAsset.description)).recoverWith {
-        recoverIndexAndGenericException(OtherAssetNameType, index, request.userAnswers.identifier, "extractAndRender")
+        recoverIndexAndGenericException(
+          OtherAssetNameType,
+          index,
+          request.userAnswers.identifier,
+          "extractAndRender",
+          request.userAnswers.isMigratingToTaxable
+        )
       }
   }
 
