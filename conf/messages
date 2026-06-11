@@ -598,3 +598,10 @@ nonTaxableToTaxable.addAssets.maxedOut.moreThan1 = You have entered the maximum 
 nonTaxableToTaxable.addAssets.maxedOut.moreThan1.paragraph = Check the assets you have added. If you have further assets to add within these types, write to HMRC with their details.
 nonTaxableToTaxable.addAssets.maxedOut.p1 = You cannot add another asset as you have entered a maximum of {0}.
 nonTaxableToTaxable.addAssets.maxedOut.p2 = You can add another asset by removing an existing one, or write to HMRC with details of any additional assets.
+
+outOfBoundsPageNotFound.title = Page not found
+outOfBoundsPageNotFound.heading = Page not found
+outOfBoundsPageNotFound.p1 = The page you are looking for cannot be found.
+outOfBoundsPageNotFound.p2 = To continue making changes to your trust you can:
+outOfBoundsPageNotFound.bullet1 = go to the trust overview
+outOfBoundsPageNotFound.bullet2 = add or change details for an asset

@@ -22,9 +22,11 @@ import controllers.actions._
 import controllers.actions.business.NameRequiredAction
 import extractors.BusinessExtractor
 import handlers.ErrorHandler
+
 import javax.inject.Inject
 import mapping.BusinessAssetMapper
 import models.UserAnswers
+import models.assets.AssetNameType.BusinessAssetNameType
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
@@ -33,6 +35,7 @@ import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.BusinessPrintHelper
 import viewmodels.AnswerSection
+import views.html.OutOfBoundsPageNotFoundView
 import views.html.asset.business.amend.BusinessAmendAnswersView
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -42,6 +45,7 @@ class BusinessAmendAnswersController @Inject() (
   standardActionSets: StandardActionSets,
   val controllerComponents: MessagesControllerComponents,
   view: BusinessAmendAnswersView,
+  val outOfBoundsView: OutOfBoundsPageNotFoundView,
   service: TrustService,
   connector: TrustsConnector,
   val appConfig: FrontendAppConfig,
@@ -50,9 +54,9 @@ class BusinessAmendAnswersController @Inject() (
   mapper: BusinessAssetMapper,
   nameAction: NameRequiredAction,
   extractor: BusinessExtractor,
-  errorHandler: ErrorHandler
+  val errorHandler: ErrorHandler
 )(implicit ec: ExecutionContext)
-    extends FrontendBaseController with I18nSupport with Logging {
+    extends FrontendBaseController with I18nSupport with Logging with IndexAndGenericExceptionRecovery {
 
   private val provisional: Boolean = false
 
@@ -65,18 +69,19 @@ class BusinessAmendAnswersController @Inject() (
 
   def extractAndRender(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-      service.getBusinessAsset(request.userAnswers.identifier, index) flatMap { businessType =>
-        val extractedAnswers = extractor(request.userAnswers, businessType, index)
-        for {
-          extractedF <- Future.fromTry(extractedAnswers)
-          _          <- playbackRepository.set(extractedF)
-        } yield render(extractedF, index, businessType.orgName)
-      } recoverWith { case e =>
-        logger.error(
-          s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
-            s" error showing the user the check answers for Business Asset $index ${e.getMessage}"
+      (for {
+        businessType    <- service.getBusinessAsset(request.userAnswers.identifier, index)
+        extractedAnswers = extractor(request.userAnswers, businessType, index)
+        extractedF      <- Future.fromTry(extractedAnswers)
+        _               <- playbackRepository.set(extractedF)
+      } yield render(extractedF, index, businessType.orgName)).recoverWith {
+        recoverIndexAndGenericException(
+          BusinessAssetNameType,
+          index,
+          request.userAnswers.identifier,
+          "extractAndRender",
+          request.userAnswers.isMigratingToTaxable
         )
-        errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
       }
   }
 

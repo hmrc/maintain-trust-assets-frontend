@@ -22,9 +22,9 @@ import controllers.actions._
 import controllers.actions.property_or_land.NameRequiredAction
 import extractors.PropertyOrLandExtractor
 import handlers.ErrorHandler
-import javax.inject.Inject
 import mapping.PropertyOrLandMapper
 import models.UserAnswers
+import models.assets.AssetNameType.PropertyOrLandAssetNameType
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
@@ -33,8 +33,10 @@ import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.PropertyOrLandPrintHelper
 import viewmodels.AnswerSection
+import views.html.OutOfBoundsPageNotFoundView
 import views.html.asset.property_or_land.amend.AnswersView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class PropertyOrLandAmendAnswersController @Inject() (
@@ -42,6 +44,7 @@ class PropertyOrLandAmendAnswersController @Inject() (
   standardActionSets: StandardActionSets,
   val controllerComponents: MessagesControllerComponents,
   view: AnswersView,
+  val outOfBoundsView: OutOfBoundsPageNotFoundView,
   service: TrustService,
   connector: TrustsConnector,
   val appConfig: FrontendAppConfig,
@@ -50,9 +53,9 @@ class PropertyOrLandAmendAnswersController @Inject() (
   mapper: PropertyOrLandMapper,
   nameAction: NameRequiredAction,
   extractor: PropertyOrLandExtractor,
-  errorHandler: ErrorHandler
+  val errorHandler: ErrorHandler
 )(implicit ec: ExecutionContext)
-    extends FrontendBaseController with I18nSupport with Logging {
+    extends FrontendBaseController with I18nSupport with Logging with IndexAndGenericExceptionRecovery {
 
   private val provisional: Boolean = false
 
@@ -65,18 +68,19 @@ class PropertyOrLandAmendAnswersController @Inject() (
 
   def extractAndRender(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-      service.getPropertyOrLandAsset(request.userAnswers.identifier, index) flatMap { propertyOrLand =>
-        val extractedAnswers = extractor(request.userAnswers, propertyOrLand, index)
-        for {
-          extractedF <- Future.fromTry(extractedAnswers)
-          _          <- playbackRepository.set(extractedF)
-        } yield render(extractedF, index, propertyOrLand.name)
-      } recoverWith { case e =>
-        logger.error(
-          s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
-            s" error showing the user the check answers for PropertyOrLand Asset $index ${e.getMessage}"
+      (for {
+        propertyOrLand  <- service.getPropertyOrLandAsset(request.userAnswers.identifier, index)
+        extractedAnswers = extractor(request.userAnswers, propertyOrLand, index)
+        extractedF      <- Future.fromTry(extractedAnswers)
+        _               <- playbackRepository.set(extractedF)
+      } yield render(extractedF, index, propertyOrLand.name)).recoverWith {
+        recoverIndexAndGenericException(
+          PropertyOrLandAssetNameType,
+          index,
+          request.userAnswers.identifier,
+          "extractAndRender",
+          request.userAnswers.isMigratingToTaxable
         )
-        errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
       }
   }
 

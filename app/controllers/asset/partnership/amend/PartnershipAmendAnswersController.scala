@@ -24,6 +24,7 @@ import extractors.PartnershipAssetExtractor
 import handlers.ErrorHandler
 import mapping.PartnershipAssetMapper
 import models.UserAnswers
+import models.assets.AssetNameType.PartnershipAssetNameType
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
@@ -32,6 +33,7 @@ import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.PartnershipPrintHelper
 import viewmodels.AnswerSection
+import views.html.OutOfBoundsPageNotFoundView
 import views.html.asset.partnership.PartnershipAmendAnswersView
 
 import javax.inject.Inject
@@ -42,6 +44,7 @@ class PartnershipAmendAnswersController @Inject() (
   standardActionSets: StandardActionSets,
   val controllerComponents: MessagesControllerComponents,
   view: PartnershipAmendAnswersView,
+  val outOfBoundsView: OutOfBoundsPageNotFoundView,
   service: TrustService,
   connector: TrustsConnector,
   val appConfig: FrontendAppConfig,
@@ -50,9 +53,9 @@ class PartnershipAmendAnswersController @Inject() (
   mapper: PartnershipAssetMapper,
   nameAction: NameRequiredAction,
   extractor: PartnershipAssetExtractor,
-  errorHandler: ErrorHandler
+  val errorHandler: ErrorHandler
 )(implicit ec: ExecutionContext)
-    extends FrontendBaseController with I18nSupport with Logging {
+    extends FrontendBaseController with I18nSupport with Logging with IndexAndGenericExceptionRecovery {
 
   private val provisional: Boolean = false
 
@@ -65,18 +68,19 @@ class PartnershipAmendAnswersController @Inject() (
 
   def extractAndRender(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-      service.getPartnershipAsset(request.userAnswers.identifier, index) flatMap { partnershipType =>
-        val extractedAnswers = extractor(request.userAnswers, partnershipType, index)
-        for {
-          extractedF <- Future.fromTry(extractedAnswers)
-          _          <- playbackRepository.set(extractedF)
-        } yield render(extractedF, index, partnershipType.description)
-      } recoverWith { case e =>
-        logger.error(
-          s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
-            s" error showing the user the check answers for Partnership Asset $index ${e.getMessage}"
+      (for {
+        partnershipType <- service.getPartnershipAsset(request.userAnswers.identifier, index)
+        extractedAnswers = extractor(request.userAnswers, partnershipType, index)
+        extractedF      <- Future.fromTry(extractedAnswers)
+        _               <- playbackRepository.set(extractedF)
+      } yield render(extractedF, index, partnershipType.description)).recoverWith {
+        recoverIndexAndGenericException(
+          PartnershipAssetNameType,
+          index,
+          request.userAnswers.identifier,
+          "extractAndRender",
+          request.userAnswers.isMigratingToTaxable
         )
-        errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
       }
   }
 

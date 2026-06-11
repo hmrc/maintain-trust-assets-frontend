@@ -31,6 +31,7 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpResponse
+import views.html.OutOfBoundsPageNotFoundView
 import views.html.asset.partnership.RemovePartnershipAssetYesNoView
 
 import java.time.LocalDate
@@ -57,12 +58,12 @@ class RemovePartnershipAssetYesNoControllerSpec extends SpecBase with ScalaCheck
     createAsset(2, provisional = true)
   )
 
-  def userAnswers(migrating: Boolean): UserAnswers = emptyUserAnswers.copy(isMigratingToTaxable = migrating)
+  def userAnswers(migrating: Boolean): UserAnswers =
+    emptyUserAnswers.copy(isMigratingToTaxable = migrating)
 
   "Other RemovePartnershipAssetYesNo Controller" when {
 
     "return OK and the correct view for a GET" in {
-
       when(mockConnector.getAssets(any())(any(), any()))
         .thenReturn(Future.successful(Assets(Nil, Nil, Nil, Nil, assets, Nil, Nil)))
 
@@ -86,22 +87,43 @@ class RemovePartnershipAssetYesNoControllerSpec extends SpecBase with ScalaCheck
       application.stop()
     }
 
+    "return Not Found and the out of bounds page for a GET when getAssets throws IndexOutOfBoundsException" in {
+      when(mockConnector.getAssets(any())(any(), any()))
+        .thenReturn(Future.failed(new IndexOutOfBoundsException("")))
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[TrustsConnector].toInstance(mockConnector))
+        .build()
+
+      val request = FakeRequest(
+        GET,
+        controllers.asset.partnership.remove.routes.RemovePartnershipAssetYesNoController.onPageLoad(index).url
+      )
+
+      val result = route(application, request).value
+
+      val view = application.injector.instanceOf[OutOfBoundsPageNotFoundView]
+
+      status(result) mustEqual NOT_FOUND
+
+      contentAsString(result) mustEqual view(isMigratingToTaxable = false)(request, messages).toString
+
+      application.stop()
+    }
+
     "not removing the asset" must {
-
       "redirect to the 'add asset' page when valid data is submitted and migrating" in {
-
         val answers = userAnswers(migrating = true)
 
         val application = applicationBuilder(userAnswers = Some(answers))
           .overrides(bind[TrustsConnector].toInstance(mockConnector))
           .build()
 
-        val request =
-          FakeRequest(
-            POST,
-            controllers.asset.partnership.remove.routes.RemovePartnershipAssetYesNoController.onSubmit(index).url
-          )
-            .withFormUrlEncodedBody(("value", "false"))
+        val request = FakeRequest(
+          POST,
+          controllers.asset.partnership.remove.routes.RemovePartnershipAssetYesNoController.onSubmit(index).url
+        )
+          .withFormUrlEncodedBody(("value", "false"))
 
         val result = route(application, request).value
 
@@ -116,9 +138,7 @@ class RemovePartnershipAssetYesNoControllerSpec extends SpecBase with ScalaCheck
     }
 
     "removing an old asset" must {
-
       "redirect to the 'add asset' page, removing the asset when migrating" in {
-
         val answers = userAnswers(migrating = true)
 
         val application = applicationBuilder(userAnswers = Some(answers))
@@ -131,12 +151,11 @@ class RemovePartnershipAssetYesNoControllerSpec extends SpecBase with ScalaCheck
         when(mockConnector.removeAsset(any(), any())(any(), any()))
           .thenReturn(Future.successful(HttpResponse(200, "")))
 
-        val request =
-          FakeRequest(
-            POST,
-            controllers.asset.partnership.remove.routes.RemovePartnershipAssetYesNoController.onSubmit(index).url
-          )
-            .withFormUrlEncodedBody(("value", "true"))
+        val request = FakeRequest(
+          POST,
+          controllers.asset.partnership.remove.routes.RemovePartnershipAssetYesNoController.onSubmit(index).url
+        )
+          .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
 
@@ -150,18 +169,46 @@ class RemovePartnershipAssetYesNoControllerSpec extends SpecBase with ScalaCheck
       }
     }
 
+    "return Not Found and the out of bounds page for a POST when getAssets throws IndexOutOfBoundsException" in {
+      val answers = userAnswers(migrating = true)
+
+      val application = applicationBuilder(userAnswers = Some(answers))
+        .overrides(bind[TrustsConnector].toInstance(mockConnector))
+        .build()
+
+      when(mockConnector.getAssets(any())(any(), any()))
+        .thenReturn(Future.failed(new IndexOutOfBoundsException("")))
+
+      val request = FakeRequest(
+        POST,
+        controllers.asset.partnership.remove.routes.RemovePartnershipAssetYesNoController.onSubmit(index).url
+      )
+        .withFormUrlEncodedBody(("value", "true"))
+
+      val result = route(application, request).value
+
+      val view = application.injector.instanceOf[OutOfBoundsPageNotFoundView]
+
+      status(result) mustEqual NOT_FOUND
+
+      contentAsString(result) mustEqual view(isMigratingToTaxable = true)(request, messages).toString
+
+      application.stop()
+    }
+
     "return a Bad Request and errors when invalid data is submitted" in {
+      when(mockConnector.getAssets(any())(any(), any()))
+        .thenReturn(Future.successful(Assets(Nil, Nil, Nil, Nil, assets, Nil, Nil)))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[TrustsConnector].toInstance(mockConnector))
         .build()
 
-      val request =
-        FakeRequest(
-          POST,
-          controllers.asset.partnership.remove.routes.RemovePartnershipAssetYesNoController.onSubmit(index).url
-        )
-          .withFormUrlEncodedBody(("value", ""))
+      val request = FakeRequest(
+        POST,
+        controllers.asset.partnership.remove.routes.RemovePartnershipAssetYesNoController.onSubmit(index).url
+      )
+        .withFormUrlEncodedBody(("value", ""))
 
       val boundForm = form.bind(Map("value" -> ""))
 
@@ -171,14 +218,12 @@ class RemovePartnershipAssetYesNoControllerSpec extends SpecBase with ScalaCheck
 
       status(result) mustEqual BAD_REQUEST
 
-      contentAsString(result) mustEqual
-        view(boundForm, index, s"Partnership Asset $index")(request, messages).toString
+      contentAsString(result) mustEqual view(boundForm, index, s"Partnership Asset $index")(request, messages).toString
 
       application.stop()
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {
-
       val application = applicationBuilder(userAnswers = None).build()
 
       val request = FakeRequest(
@@ -196,15 +241,13 @@ class RemovePartnershipAssetYesNoControllerSpec extends SpecBase with ScalaCheck
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
-
       val application = applicationBuilder(userAnswers = None).build()
 
-      val request =
-        FakeRequest(
-          POST,
-          controllers.asset.partnership.remove.routes.RemovePartnershipAssetYesNoController.onSubmit(index).url
-        )
-          .withFormUrlEncodedBody(("value", "true"))
+      val request = FakeRequest(
+        POST,
+        controllers.asset.partnership.remove.routes.RemovePartnershipAssetYesNoController.onSubmit(index).url
+      )
+        .withFormUrlEncodedBody(("value", "true"))
 
       val result = route(application, request).value
 
