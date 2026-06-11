@@ -35,7 +35,6 @@ import services.TrustService
 import uk.gov.hmrc.auth.core.AffinityGroup.Agent
 import uk.gov.hmrc.http.HttpResponse
 import utils.print.NonEeaBusinessPrintHelper
-import views.html.OutOfBoundsPageNotFoundView
 import views.html.asset.noneeabusiness.amend.AnswersView
 
 import java.time.LocalDate
@@ -71,28 +70,28 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
     nonEEABusiness = List(nonEeaBusinessAsset)
   )
 
-  def userAnswers(migrating: Boolean): UserAnswers =
-    emptyUserAnswers
-      .copy(isMigratingToTaxable = migrating)
-      .set(NamePage(index), name)
-      .success
-      .value
-      .set(IndexPage, index)
-      .success
-      .value
-      .set(NonUkAddressPage(index), nonUkAddress)
-      .success
-      .value
-      .set(GoverningCountryPage(index), country)
-      .success
-      .value
-      .set(StartDatePage(index), date)
-      .success
-      .value
+  def userAnswers(migrating: Boolean): UserAnswers = emptyUserAnswers
+    .copy(isMigratingToTaxable = migrating)
+    .set(NamePage(index), name)
+    .success
+    .value
+    .set(IndexPage, index)
+    .success
+    .value
+    .set(NonUkAddressPage(index), nonUkAddress)
+    .success
+    .value
+    .set(GoverningCountryPage(index), country)
+    .success
+    .value
+    .set(StartDatePage(index), date)
+    .success
+    .value
 
   "Answers Controller" must {
 
     "return OK and the correct view for a GET for a given index" in {
+
       val mockService: TrustService = mock[TrustService]
 
       val answers = userAnswers(migrating = false)
@@ -110,20 +109,20 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[AnswersView]
-
-      val printHelper = application.injector.instanceOf[NonEeaBusinessPrintHelper]
-
+      val view          = application.injector.instanceOf[AnswersView]
+      val printHelper   = application.injector.instanceOf[NonEeaBusinessPrintHelper]
       val answerSection = printHelper(answers, index, provisional = false, name)
 
       status(result) mustEqual OK
 
-      contentAsString(result) mustEqual view(answerSection, index)(request, messages).toString
+      contentAsString(result) mustEqual
+        view(answerSection, index)(request, messages).toString
 
       application.stop()
     }
 
     "render from existing user answers" in {
+
       val answers = userAnswers(migrating = false)
 
       val application = applicationBuilder(userAnswers = Some(answers)).build()
@@ -138,9 +137,9 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
     }
 
     "return INTERNAL_SERVER_ERROR when extract fails" in {
-      val failingService: TrustService = mock[TrustService]
 
-      val answers = userAnswers(migrating = false)
+      val failingService: TrustService = mock[TrustService]
+      val answers                      = userAnswers(migrating = false)
 
       val application = applicationBuilder(userAnswers = Some(answers))
         .overrides(
@@ -160,41 +159,15 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
       application.stop()
     }
 
-    "return Not Found and the out of bounds page when getNonEeaBusinessAsset throws IndexOutOfBoundsException" in {
-      val mockService: TrustService = mock[TrustService]
-
-      val answers = userAnswers(migrating = false)
-
-      val application = applicationBuilder(userAnswers = Some(answers))
-        .overrides(
-          bind[TrustService].toInstance(mockService)
-        )
-        .build()
-
-      when(mockService.getNonEeaBusinessAsset(any(), any())(any(), any()))
-        .thenReturn(Future.failed(new IndexOutOfBoundsException("")))
-
-      val request = FakeRequest(GET, answersRoute)
-
-      val result = route(application, request).value
-
-      val view = application.injector.instanceOf[OutOfBoundsPageNotFoundView]
-
-      status(result) mustEqual NOT_FOUND
-
-      contentAsString(result) mustEqual view(isMigratingToTaxable = false)(request, messages).toString
-
-      application.stop()
-    }
-
     "redirect after successful submit" in {
+
       val mockTrustConnector = mock[TrustsConnector]
+      val answers            = userAnswers(migrating = true)
 
-      val answers = userAnswers(migrating = true)
-
-      val application = applicationBuilder(userAnswers = Some(answers), affinityGroup = Agent)
-        .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
-        .build()
+      val application =
+        applicationBuilder(userAnswers = Some(answers), affinityGroup = Agent)
+          .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
+          .build()
 
       when(mockTrustConnector.amendNonEeaBusinessAsset(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(HttpResponse(OK, "")))
@@ -213,13 +186,14 @@ class AnswersControllerSpec extends SpecBase with MockitoSugar with ScalaFutures
     }
 
     "return INTERNAL_SERVER_ERROR when mapper returns None" in {
+
       val mockMapper = mock[NonEeaBusinessAssetMapper]
+      val answers    = userAnswers(migrating = false)
 
-      val answers = userAnswers(migrating = false)
-
-      val application = applicationBuilder(userAnswers = Some(answers))
-        .overrides(bind[NonEeaBusinessAssetMapper].toInstance(mockMapper))
-        .build()
+      val application =
+        applicationBuilder(userAnswers = Some(answers))
+          .overrides(bind[NonEeaBusinessAssetMapper].toInstance(mockMapper))
+          .build()
 
       when(mockMapper(any)).thenReturn(None)
 

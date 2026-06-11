@@ -34,7 +34,6 @@ import services.TrustService
 import uk.gov.hmrc.auth.core.AffinityGroup.Agent
 import uk.gov.hmrc.http.HttpResponse
 import utils.print.PartnershipPrintHelper
-import views.html.OutOfBoundsPageNotFoundView
 import views.html.asset.partnership.PartnershipAmendAnswersView
 
 import java.time.{LocalDate, ZoneOffset}
@@ -50,20 +49,22 @@ class PartnershipAmendAnswersControllerSpec extends SpecBase with MockitoSugar w
 
   private val partnershipType = PartnershipType(name, validDate)
 
-  val answers = emptyUserAnswers
-    .set(WhatKindOfAssetPage(index), Partnership)
-    .success
-    .value
-    .set(PartnershipDescriptionPage(index), name)
-    .success
-    .value
-    .set(PartnershipStartDatePage(index), validDate)
-    .success
-    .value
+  val answers =
+    emptyUserAnswers
+      .set(WhatKindOfAssetPage(index), Partnership)
+      .success
+      .value
+      .set(PartnershipDescriptionPage(index), name)
+      .success
+      .value
+      .set(PartnershipStartDatePage(index), validDate)
+      .success
+      .value
 
   "BusinessAmendAnswersController" must {
 
     "return OK and the correct view for a GET for a given index" in {
+
       val mockService: TrustService = mock[TrustService]
 
       val application = applicationBuilder(userAnswers = Some(answers))
@@ -79,18 +80,18 @@ class PartnershipAmendAnswersControllerSpec extends SpecBase with MockitoSugar w
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[PartnershipAmendAnswersView]
-
-      val printHelper = application.injector.instanceOf[PartnershipPrintHelper]
-
+      val view          = application.injector.instanceOf[PartnershipAmendAnswersView]
+      val printHelper   = application.injector.instanceOf[PartnershipPrintHelper]
       val answerSection = printHelper(answers, index, provisional = false, name)
 
       status(result) mustEqual OK
 
-      contentAsString(result) mustEqual view(answerSection, index)(request, messages).toString
+      contentAsString(result) mustEqual
+        view(answerSection, index)(request, messages).toString
     }
 
     "return INTERNAL_SERVER_ERROR when service fails" in {
+
       val mockService = mock[TrustService]
 
       val application = applicationBuilder(Some(answers))
@@ -107,37 +108,17 @@ class PartnershipAmendAnswersControllerSpec extends SpecBase with MockitoSugar w
       val result = route(application, request).value
 
       status(result) mustEqual INTERNAL_SERVER_ERROR
-    }
 
-    "return Not Found and the out of bounds page when getPartnershipAsset throws IndexOutOfBoundsException" in {
-      val mockService = mock[TrustService]
-
-      val application = applicationBuilder(Some(answers))
-        .overrides(
-          bind[TrustService].toInstance(mockService)
-        )
-        .build()
-
-      when(mockService.getPartnershipAsset(any(), any())(any(), any()))
-        .thenReturn(Future.failed(new IndexOutOfBoundsException("")))
-
-      val request = FakeRequest(GET, answersRoute)
-
-      val result = route(application, request).value
-
-      val view = application.injector.instanceOf[OutOfBoundsPageNotFoundView]
-
-      status(result) mustEqual NOT_FOUND
-
-      contentAsString(result) mustEqual view(isMigratingToTaxable = false)(request, messages).toString
     }
 
     "redirect to the 'add asset' page when submitted and migrating to taxable" in {
+
       val mockTrustConnector = mock[TrustsConnector]
 
-      val application = applicationBuilder(userAnswers = Some(answers), affinityGroup = Agent)
-        .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
-        .build()
+      val application =
+        applicationBuilder(userAnswers = Some(answers), affinityGroup = Agent)
+          .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
+          .build()
 
       when(mockTrustConnector.amendPartnershipAsset(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(HttpResponse(OK, "")))
@@ -156,6 +137,7 @@ class PartnershipAmendAnswersControllerSpec extends SpecBase with MockitoSugar w
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {
+
       val application = applicationBuilder(userAnswers = None).build()
 
       val request = FakeRequest(GET, answersRoute)
@@ -163,13 +145,13 @@ class PartnershipAmendAnswersControllerSpec extends SpecBase with MockitoSugar w
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-
       redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad.url
 
       application.stop()
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
+
       val application = applicationBuilder(userAnswers = None).build()
 
       val request = FakeRequest(POST, submitAnswersRoute)
@@ -177,11 +159,11 @@ class PartnershipAmendAnswersControllerSpec extends SpecBase with MockitoSugar w
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-
       redirectLocation(result).value mustEqual SessionExpiredController.onPageLoad.url
 
       application.stop()
     }
+
   }
 
 }

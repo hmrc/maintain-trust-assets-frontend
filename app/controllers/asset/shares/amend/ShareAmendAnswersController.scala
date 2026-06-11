@@ -22,11 +22,9 @@ import controllers.actions._
 import controllers.actions.shares.CompanyNameRequiredAction
 import extractors.ShareExtractor
 import handlers.ErrorHandler
-
 import javax.inject.Inject
 import mapping.ShareAssetMapper
 import models.UserAnswers
-import models.assets.AssetNameType.SharesAssetNameType
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
@@ -35,7 +33,6 @@ import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.SharesPrintHelper
 import viewmodels.AnswerSection
-import views.html.OutOfBoundsPageNotFoundView
 import views.html.asset.shares.amend.ShareAmendAnswersView
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -46,7 +43,6 @@ class ShareAmendAnswersController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   nameAction: CompanyNameRequiredAction,
   view: ShareAmendAnswersView,
-  val outOfBoundsView: OutOfBoundsPageNotFoundView,
   service: TrustService,
   connector: TrustsConnector,
   val appConfig: FrontendAppConfig,
@@ -54,9 +50,9 @@ class ShareAmendAnswersController @Inject() (
   printHelper: SharesPrintHelper,
   mapper: ShareAssetMapper,
   extractor: ShareExtractor,
-  val errorHandler: ErrorHandler
+  errorHandler: ErrorHandler
 )(implicit ec: ExecutionContext)
-    extends FrontendBaseController with I18nSupport with Logging with IndexAndGenericExceptionRecovery {
+    extends FrontendBaseController with I18nSupport with Logging {
 
   private val provisional: Boolean = false
 
@@ -69,19 +65,18 @@ class ShareAmendAnswersController @Inject() (
 
   def extractAndRender(index: Int): Action[AnyContent] = standardActionSets.verifiedForIdentifier.async {
     implicit request =>
-      (for {
-        shareType       <- service.getSharesAsset(request.userAnswers.identifier, index)
-        extractedAnswers = extractor(request.userAnswers, shareType, index)
-        extractedF      <- Future.fromTry(extractedAnswers)
-        _               <- playbackRepository.set(extractedF)
-      } yield render(extractedF, index, shareType.orgName)).recoverWith {
-        recoverIndexAndGenericException(
-          SharesAssetNameType,
-          index,
-          request.userAnswers.identifier,
-          "extractAndRender",
-          request.userAnswers.isMigratingToTaxable
+      service.getSharesAsset(request.userAnswers.identifier, index) flatMap { shareType =>
+        val extractedAnswers = extractor(request.userAnswers, shareType, index)
+        for {
+          extractedF <- Future.fromTry(extractedAnswers)
+          _          <- playbackRepository.set(extractedF)
+        } yield render(extractedF, index, shareType.orgName)
+      } recoverWith { case e =>
+        logger.error(
+          s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
+            s" error showing the user the check answers for Share Asset $index ${e.getMessage}"
         )
+        errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
       }
   }
 

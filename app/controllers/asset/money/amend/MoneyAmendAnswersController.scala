@@ -23,7 +23,6 @@ import extractors.MoneyAssetExtractor
 import handlers.ErrorHandler
 import mapping.MoneyAssetMapper
 import models.UserAnswers
-import models.assets.AssetNameType.MoneyAssetNameType
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
@@ -32,9 +31,7 @@ import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.print.MoneyPrintHelper
 import viewmodels.AnswerSection
-import views.html.OutOfBoundsPageNotFoundView
 import views.html.asset.money.amend.MoneyAmendAnswersView
-
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -43,7 +40,6 @@ class MoneyAmendAnswersController @Inject() (
   standardActionSets: StandardActionSets,
   val controllerComponents: MessagesControllerComponents,
   view: MoneyAmendAnswersView,
-  val outOfBoundsView: OutOfBoundsPageNotFoundView,
   service: TrustService,
   connector: TrustsConnector,
   val appConfig: FrontendAppConfig,
@@ -51,9 +47,9 @@ class MoneyAmendAnswersController @Inject() (
   printHelper: MoneyPrintHelper,
   mapper: MoneyAssetMapper,
   extractor: MoneyAssetExtractor,
-  val errorHandler: ErrorHandler
+  errorHandler: ErrorHandler
 )(implicit ec: ExecutionContext)
-    extends FrontendBaseController with I18nSupport with Logging with IndexAndGenericExceptionRecovery {
+    extends FrontendBaseController with I18nSupport with Logging {
 
   private val provisional: Boolean = false
 
@@ -70,14 +66,12 @@ class MoneyAmendAnswersController @Inject() (
         moneyAsset       <- service.getMonetaryAsset(request.userAnswers.identifier, index)
         extractedAnswers <- Future.fromTry(extractor(request.userAnswers, moneyAsset, index))
         _                <- playbackRepository.set(extractedAnswers)
-      } yield render(extractedAnswers, index, moneyAsset.assetMonetaryAmount.toString)).recoverWith {
-        recoverIndexAndGenericException(
-          MoneyAssetNameType,
-          index,
-          request.userAnswers.identifier,
-          "extractAndRender",
-          request.userAnswers.isMigratingToTaxable
+      } yield render(extractedAnswers, index, moneyAsset.assetMonetaryAmount.toString)).recoverWith { case e =>
+        logger.error(
+          s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
+            s" error showing the user the check answers for Money Asset $index ${e.getMessage}"
         )
+        errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
       }
   }
 

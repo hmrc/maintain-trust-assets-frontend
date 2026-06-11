@@ -33,7 +33,6 @@ import services.TrustService
 import uk.gov.hmrc.auth.core.AffinityGroup.Agent
 import uk.gov.hmrc.http.HttpResponse
 import utils.print.PropertyOrLandPrintHelper
-import views.html.OutOfBoundsPageNotFoundView
 import views.html.asset.property_or_land.amend.AnswersView
 
 import scala.concurrent.Future
@@ -53,28 +52,28 @@ class PropertyOrLandAmendAnswersControllerSpec extends SpecBase with MockitoSuga
     valuePrevious = None
   )
 
-  def userAnswers: UserAnswers =
-    emptyUserAnswers
-      .copy(isMigratingToTaxable = true)
-      .set(IndexPage, index)
-      .success
-      .value
-      .set(PropertyOrLandAddressYesNoPage(index), false)
-      .success
-      .value
-      .set(PropertyOrLandDescriptionPage(index), name)
-      .success
-      .value
-      .set(PropertyOrLandTotalValuePage(index), valueFull)
-      .success
-      .value
-      .set(TrustOwnAllThePropertyOrLandPage(index), true)
-      .success
-      .value
+  def userAnswers: UserAnswers = emptyUserAnswers
+    .copy(isMigratingToTaxable = true)
+    .set(IndexPage, index)
+    .success
+    .value
+    .set(PropertyOrLandAddressYesNoPage(index), false)
+    .success
+    .value
+    .set(PropertyOrLandDescriptionPage(index), name)
+    .success
+    .value
+    .set(PropertyOrLandTotalValuePage(index), valueFull)
+    .success
+    .value
+    .set(TrustOwnAllThePropertyOrLandPage(index), true)
+    .success
+    .value
 
   "PropertyOrLandAmendAnswersController" must {
 
     "return OK and the correct view for a GET for a given index" in {
+
       val mockService: TrustService = mock[TrustService]
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
@@ -90,18 +89,18 @@ class PropertyOrLandAmendAnswersControllerSpec extends SpecBase with MockitoSuga
 
       val result = route(application, request).value
 
-      val view = application.injector.instanceOf[AnswersView]
-
-      val printHelper = application.injector.instanceOf[PropertyOrLandPrintHelper]
-
+      val view          = application.injector.instanceOf[AnswersView]
+      val printHelper   = application.injector.instanceOf[PropertyOrLandPrintHelper]
       val answerSection = printHelper(userAnswers, index, provisional = false, name)
 
       status(result) mustEqual OK
 
-      contentAsString(result) mustEqual view(answerSection, index)(request, messages).toString
+      contentAsString(result) mustEqual
+        view(answerSection, index)(request, messages).toString
     }
 
     "return INTERNAL_SERVER_ERROR when service fails" in {
+
       val mockService: TrustService = mock[TrustService]
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
@@ -120,35 +119,14 @@ class PropertyOrLandAmendAnswersControllerSpec extends SpecBase with MockitoSuga
       status(result) mustEqual INTERNAL_SERVER_ERROR
     }
 
-    "return Not Found and the out of bounds page when getPropertyOrLandAsset throws IndexOutOfBoundsException" in {
-      val mockService: TrustService = mock[TrustService]
-
-      val application = applicationBuilder(userAnswers = Some(userAnswers))
-        .overrides(
-          bind[TrustService].toInstance(mockService)
-        )
-        .build()
-
-      when(mockService.getPropertyOrLandAsset(any(), any())(any(), any()))
-        .thenReturn(Future.failed(new IndexOutOfBoundsException("")))
-
-      val request = FakeRequest(GET, answersRoute)
-
-      val result = route(application, request).value
-
-      val view = application.injector.instanceOf[OutOfBoundsPageNotFoundView]
-
-      status(result) mustEqual NOT_FOUND
-
-      contentAsString(result) mustEqual view(isMigratingToTaxable = true)(request, messages).toString
-    }
-
     "redirect to the 'add asset' page when submitted and migrating to taxable" in {
+
       val mockTrustConnector = mock[TrustsConnector]
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers), affinityGroup = Agent)
-        .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
-        .build()
+      val application =
+        applicationBuilder(userAnswers = Some(userAnswers), affinityGroup = Agent)
+          .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
+          .build()
 
       when(mockTrustConnector.amendPropertyOrLandAsset(any(), any(), any())(any(), any()))
         .thenReturn(Future.successful(HttpResponse(OK, "")))
@@ -165,6 +143,7 @@ class PropertyOrLandAmendAnswersControllerSpec extends SpecBase with MockitoSuga
 
       application.stop()
     }
+
   }
 
 }

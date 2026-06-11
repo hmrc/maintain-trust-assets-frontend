@@ -16,12 +16,11 @@
 
 package controllers.asset.noneeabusiness.remove
 
-import controllers.actions.{IndexAndGenericExceptionRecovery, StandardActionSets}
+import controllers.actions.StandardActionSets
 import forms.EndDateFormProvider
 import handlers.ErrorHandler
 import models.RemoveAsset
 import models.assets.AssetNameType
-import models.assets.AssetNameType.NonEeaBusinessAssetNameType
 import navigation.AssetsNavigator
 import play.api.Logging
 import play.api.data.Form
@@ -29,7 +28,6 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.OutOfBoundsPageNotFoundView
 import views.html.asset.noneeabusiness.remove.RemoveAssetEndDateView
 
 import javax.inject.Inject
@@ -42,59 +40,49 @@ class RemoveAssetEndDateController @Inject() (
   trustService: TrustService,
   val controllerComponents: MessagesControllerComponents,
   view: RemoveAssetEndDateView,
-  val outOfBoundsView: OutOfBoundsPageNotFoundView,
-  val errorHandler: ErrorHandler,
+  errorHandler: ErrorHandler,
   navigator: AssetsNavigator
 )(implicit ec: ExecutionContext)
-    extends FrontendBaseController with I18nSupport with Logging with IndexAndGenericExceptionRecovery {
+    extends FrontendBaseController with I18nSupport with Logging {
 
   private val messagePrefix: String = "nonEeaBusiness.endDate"
 
   def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async { implicit request =>
-    trustService
-      .getNonEeaBusinessAsset(request.userAnswers.identifier, index)
-      .map { asset =>
-        val form = formProvider.withConfig(messagePrefix, asset.startDate)
-        Ok(view(form, index, asset.orgName))
-      }
-      .recoverWith {
-        recoverIndexAndGenericException(
-          NonEeaBusinessAssetNameType,
-          index,
-          request.userAnswers.identifier,
-          "onPageLoad",
-          request.userAnswers.isMigratingToTaxable
+    trustService.getNonEeaBusinessAsset(request.userAnswers.identifier, index).map { asset =>
+      val form = formProvider.withConfig(messagePrefix, asset.startDate)
+      Ok(view(form, index, asset.orgName))
+    } recoverWith {
+      case iobe: IndexOutOfBoundsException =>
+        logger.warn(
+          s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
+            s" user cannot remove asset as asset was not found ${iobe.getMessage}: IndexOutOfBoundsException"
         )
-      }
+        Future.successful(Redirect(navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable)))
+      case _                               =>
+        logger.error(
+          s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
+            s" user cannot remove asset as asset was not found"
+        )
+        errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
+    }
   }
 
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async { implicit request =>
-    trustService
-      .getNonEeaBusinessAsset(request.userAnswers.identifier, index)
-      .flatMap { asset =>
-        val form = formProvider.withConfig(messagePrefix, asset.startDate)
-        form
-          .bindFromRequest()
-          .fold(
-            (formWithErrors: Form[_]) => Future.successful(BadRequest(view(formWithErrors, index, asset.orgName))),
-            endDate =>
-              trustService
-                .removeAsset(
-                  request.userAnswers.identifier,
-                  RemoveAsset(AssetNameType.NonEeaBusinessAssetNameType, index, endDate)
-                )
-                .map(_ => Redirect(navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable)))
-          )
-      }
-      .recoverWith {
-        recoverIndexAndGenericException(
-          NonEeaBusinessAssetNameType,
-          index,
-          request.userAnswers.identifier,
-          "onSubmit",
-          request.userAnswers.isMigratingToTaxable
+    trustService.getNonEeaBusinessAsset(request.userAnswers.identifier, index).flatMap { asset =>
+      val form = formProvider.withConfig(messagePrefix, asset.startDate)
+      form
+        .bindFromRequest()
+        .fold(
+          (formWithErrors: Form[_]) => Future.successful(BadRequest(view(formWithErrors, index, asset.orgName))),
+          endDate =>
+            trustService
+              .removeAsset(
+                request.userAnswers.identifier,
+                RemoveAsset(AssetNameType.NonEeaBusinessAssetNameType, index, endDate)
+              )
+              .map(_ => Redirect(navigator.redirectToAddAssetPage(request.userAnswers.isMigratingToTaxable)))
         )
-      }
+    }
   }
 
 }

@@ -18,39 +18,16 @@ package models.assets
 
 import play.api.libs.json.{JsString, Writes}
 
-sealed trait AssetNameType {
-  def toString(): String
-}
+sealed trait AssetNameType
 
 object AssetNameType {
-
-  case object MoneyAssetNameType extends AssetNameType {
-    override def toString(): String = "MoneyAsset"
-  }
-
-  case object PropertyOrLandAssetNameType extends AssetNameType {
-    override def toString(): String = "PropertyOrLandAsset"
-  }
-
-  case object SharesAssetNameType extends AssetNameType {
-    override def toString(): String = "SharesAsset"
-  }
-
-  case object BusinessAssetNameType extends AssetNameType {
-    override def toString(): String = "BusinessAsset"
-  }
-
-  case object PartnershipAssetNameType extends AssetNameType {
-    override def toString(): String = "PartnershipAsset"
-  }
-
-  case object OtherAssetNameType extends AssetNameType {
-    override def toString(): String = "OtherAsset"
-  }
-
-  case object NonEeaBusinessAssetNameType extends AssetNameType {
-    override def toString(): String = "NonEeaBusinessAsset"
-  }
+  case object MoneyAssetNameType extends AssetNameType
+  case object PropertyOrLandAssetNameType extends AssetNameType
+  case object SharesAssetNameType extends AssetNameType
+  case object BusinessAssetNameType extends AssetNameType
+  case object PartnershipAssetNameType extends AssetNameType
+  case object OtherAssetNameType extends AssetNameType
+  case object NonEeaBusinessAssetNameType extends AssetNameType
 
   val writesToTrusts: Writes[AssetNameType] = Writes {
     case MoneyAssetNameType          => JsString("monetary")

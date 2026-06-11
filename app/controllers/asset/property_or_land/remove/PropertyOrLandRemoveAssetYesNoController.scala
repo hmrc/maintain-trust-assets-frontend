@@ -16,21 +16,18 @@
 
 package controllers.asset.property_or_land.remove
 
-import controllers.actions.{IndexAndGenericExceptionRecovery, StandardActionSets}
+import controllers.actions.StandardActionSets
 import forms.RemoveIndexFormProvider
 import handlers.ErrorHandler
-
 import javax.inject.Inject
 import models.RemoveAsset
 import models.assets.AssetNameType
-import models.assets.AssetNameType.PropertyOrLandAssetNameType
 import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
 import services.TrustService
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.OutOfBoundsPageNotFoundView
 import views.html.asset.property_or_land.remove.RemoveAssetYesNoView
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -42,29 +39,30 @@ class PropertyOrLandRemoveAssetYesNoController @Inject() (
   trustService: TrustService,
   val controllerComponents: MessagesControllerComponents,
   view: RemoveAssetYesNoView,
-  val outOfBoundsView: OutOfBoundsPageNotFoundView,
-  val errorHandler: ErrorHandler
+  errorHandler: ErrorHandler
 )(implicit ec: ExecutionContext)
-    extends FrontendBaseController with I18nSupport with Logging with IndexAndGenericExceptionRecovery {
+    extends FrontendBaseController with I18nSupport with Logging {
 
   private val messagesPrefix: String = "propertyOrLand.removeYesNo"
   private val form                   = formProvider.apply(messagesPrefix)
 
   def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async { implicit request =>
-    trustService
-      .getPropertyOrLandAsset(request.userAnswers.identifier, index)
-      .map { asset =>
-        Ok(view(form, index, asset.name))
-      }
-      .recoverWith {
-        recoverIndexAndGenericException(
-          PropertyOrLandAssetNameType,
-          index,
-          request.userAnswers.identifier,
-          "onPageLoad",
-          request.userAnswers.isMigratingToTaxable
+    trustService.getPropertyOrLandAsset(request.userAnswers.identifier, index).map { asset =>
+      Ok(view(form, index, asset.name))
+    } recoverWith {
+      case iobe: IndexOutOfBoundsException =>
+        logger.warn(
+          s"[Session ID: ${utils.Session.id(hc)}][UTR: ${request.userAnswers.identifier}]" +
+            s" user cannot remove asset as asset was not found ${iobe.getMessage}: IndexOutOfBoundsException"
         )
-      }
+        Future.successful(Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()))
+      case _                               =>
+        logger.error(
+          s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
+            s" user cannot remove asset as asset was not found"
+        )
+        errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
+    }
   }
 
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async { implicit request =>
@@ -89,15 +87,6 @@ class PropertyOrLandRemoveAssetYesNoController @Inject() (
             Future.successful(Redirect(controllers.asset.nonTaxableToTaxable.routes.AddAssetsController.onPageLoad()))
           }
       )
-      .recoverWith {
-        recoverIndexAndGenericException(
-          PropertyOrLandAssetNameType,
-          index,
-          request.userAnswers.identifier,
-          "onSubmit",
-          request.userAnswers.isMigratingToTaxable
-        )
-      }
   }
 
 }

@@ -34,7 +34,6 @@ import services.TrustService
 import uk.gov.hmrc.auth.core.AffinityGroup.Agent
 import uk.gov.hmrc.http.HttpResponse
 import utils.print.BusinessPrintHelper
-import views.html.OutOfBoundsPageNotFoundView
 import views.html.asset.business.amend.BusinessAmendAnswersView
 
 import java.time.LocalDate
@@ -158,34 +157,6 @@ class BusinessAmendAnswersControllerSpec extends SpecBase with MockitoSugar with
 
       application.stop()
     }
-
-    "return Not Found and the out of bounds page when getAssets throws IndexOutOfBoundsException" in {
-      val answersRoute = routes.BusinessAmendAnswersController.extractAndRender(-1).url
-
-      val mockTrustConnector = mock[TrustsConnector]
-
-      when(mockTrustConnector.getAssets(any())(any(), any()))
-        .thenReturn(Future.failed(new IndexOutOfBoundsException("")))
-
-      val application =
-        applicationBuilder(userAnswers = Some(userAnswers), affinityGroup = Agent)
-          .overrides(bind[TrustsConnector].toInstance(mockTrustConnector))
-          .build()
-
-      val request = FakeRequest(GET, answersRoute)
-
-      val result = route(application, request).value
-
-      val view = application.injector.instanceOf[OutOfBoundsPageNotFoundView]
-
-      status(result) mustEqual NOT_FOUND
-
-      contentAsString(result) mustEqual
-        view(isMigratingToTaxable = true)(request, messages).toString
-
-      application.stop()
-    }
-
     "redirect to Session Expired for a GET if no existing data is found" in {
 
       val application = applicationBuilder(userAnswers = None).build()

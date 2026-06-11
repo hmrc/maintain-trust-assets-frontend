@@ -16,12 +16,11 @@
 
 package controllers.asset.money.remove
 
-import controllers.actions.{IndexAndGenericExceptionRecovery, StandardActionSets}
+import controllers.actions.StandardActionSets
 import forms.RemoveIndexFormProvider
 import handlers.ErrorHandler
 import models.RemoveAsset
 import models.assets.AssetNameType
-import models.assets.AssetNameType.MoneyAssetNameType
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc._
@@ -29,7 +28,6 @@ import services.TrustService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.CheckAnswersFormatters.currencyFormat
-import views.html.OutOfBoundsPageNotFoundView
 import views.html.asset.money.remove.RemoveAssetYesNoView
 
 import javax.inject.Inject
@@ -42,10 +40,9 @@ class RemoveAssetYesNoController @Inject() (
   trustService: TrustService,
   val controllerComponents: MessagesControllerComponents,
   view: RemoveAssetYesNoView,
-  val outOfBoundsView: OutOfBoundsPageNotFoundView,
-  val errorHandler: ErrorHandler
+  errorHandler: ErrorHandler
 )(implicit ec: ExecutionContext)
-    extends FrontendBaseController with I18nSupport with Logging with IndexAndGenericExceptionRecovery {
+    extends FrontendBaseController with I18nSupport with Logging {
 
   private val messagesPrefix: String = "money.removeYesNo"
   private val form                   = formProvider.apply(messagesPrefix)
@@ -55,20 +52,22 @@ class RemoveAssetYesNoController @Inject() (
   )
 
   def onPageLoad(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async { implicit request =>
-    trustService
-      .getMonetaryAsset(request.userAnswers.identifier, index)
-      .map { asset =>
-        Ok(view(form, index, currencyFormat(asset.assetMonetaryAmount.toString)))
-      }
-      .recoverWith {
-        recoverIndexAndGenericException(
-          MoneyAssetNameType,
-          index,
-          request.userAnswers.identifier,
-          "onPageLoad",
-          request.userAnswers.isMigratingToTaxable
+    trustService.getMonetaryAsset(request.userAnswers.identifier, index).map { asset =>
+      Ok(view(form, index, currencyFormat(asset.assetMonetaryAmount.toString)))
+    } recoverWith {
+      case iobe: IndexOutOfBoundsException =>
+        logger.warn(
+          s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
+            s" user cannot remove asset as asset was not found ${iobe.getMessage}: IndexOutOfBoundsException"
         )
-      }
+        Future.successful(redirectToAddAssetsPage())
+      case _                               =>
+        logger.error(
+          s"[Session ID: ${utils.Session.id(hc)}][UTR/URN: ${request.userAnswers.identifier}]" +
+            s" user cannot remove asset as asset was not found"
+        )
+        errorHandler.internalServerErrorTemplate.map(InternalServerError(_))
+    }
   }
 
   def onSubmit(index: Int): Action[AnyContent] = standardActionSets.identifiedUserWithData.async { implicit request =>
@@ -86,15 +85,6 @@ class RemoveAssetYesNoController @Inject() (
             Future.successful(redirectToAddAssetsPage())
           }
       )
-      .recoverWith {
-        recoverIndexAndGenericException(
-          MoneyAssetNameType,
-          index,
-          request.userAnswers.identifier,
-          "onSubmit",
-          request.userAnswers.isMigratingToTaxable
-        )
-      }
   }
 
   private def removeAsset(identifier: String, index: Int)(implicit hc: HeaderCarrier): Future[Result] =

@@ -30,7 +30,6 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HttpResponse
-import views.html.OutOfBoundsPageNotFoundView
 import views.html.asset.money.remove.RemoveAssetYesNoView
 
 import scala.concurrent.Future
@@ -41,7 +40,8 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
   lazy val formProvider        = new RemoveIndexFormProvider()
   lazy val form: Form[Boolean] = formProvider(messagesPrefix)
-  lazy val formRoute: Call     = controllers.asset.money.remove.routes.RemoveAssetYesNoController.onSubmit(index)
+
+  lazy val formRoute: Call = controllers.asset.money.remove.routes.RemoveAssetYesNoController.onSubmit(index)
 
   val mockConnector: TrustsConnector = mock[TrustsConnector]
 
@@ -50,6 +50,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
   "RemoveAssetYesNo Controller" when {
 
     "return OK and the correct view for a GET" in {
+
       when(mockConnector.getAssets(any())(any(), any()))
         .thenReturn(Future.successful(Assets(moneyAsset, Nil, Nil, Nil, Nil, Nil, Nil)))
 
@@ -71,30 +72,10 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
       application.stop()
     }
 
-    "return Not Found and the out of bounds page for a GET when getAssets throws IndexOutOfBoundsException" in {
-      when(mockConnector.getAssets(any())(any(), any()))
-        .thenReturn(Future.failed(new IndexOutOfBoundsException("")))
-
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-        .overrides(bind[TrustsConnector].toInstance(mockConnector))
-        .build()
-
-      val request =
-        FakeRequest(GET, controllers.asset.money.remove.routes.RemoveAssetYesNoController.onPageLoad(index).url)
-
-      val result = route(application, request).value
-
-      val view = application.injector.instanceOf[OutOfBoundsPageNotFoundView]
-
-      status(result) mustEqual NOT_FOUND
-
-      contentAsString(result) mustEqual view(isMigratingToTaxable = false)(request, messages).toString
-
-      application.stop()
-    }
-
     "not removing the asset" must {
+
       "redirect to the add to page when valid data is submitted" in {
+
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(bind[TrustsConnector].toInstance(mockConnector))
           .build()
@@ -116,7 +97,9 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
     }
 
     "removing a new asset" must {
+
       "redirect to the add to page, removing the asset" in {
+
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(bind[TrustsConnector].toInstance(mockConnector))
           .build()
@@ -143,34 +126,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
       }
     }
 
-    "return Not Found and the out of bounds page for a POST when getAssets throws IndexOutOfBoundsException" in {
-
-      when(mockConnector.removeAsset(any(), any())(any(), any()))
-        .thenReturn(Future.failed(new IndexOutOfBoundsException("")))
-
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-        .overrides(bind[TrustsConnector].toInstance(mockConnector))
-        .build()
-
-      val request =
-        FakeRequest(POST, controllers.asset.money.remove.routes.RemoveAssetYesNoController.onSubmit(index).url)
-          .withFormUrlEncodedBody(("value", "true"))
-
-      val result = route(application, request).value
-
-      val view = application.injector.instanceOf[OutOfBoundsPageNotFoundView]
-
-      status(result) mustEqual NOT_FOUND
-
-      contentAsString(result) mustEqual view(isMigratingToTaxable = false)(request, messages).toString
-
-      application.stop()
-    }
-
     "return a Bad Request and errors when invalid data is submitted" in {
-
-      when(mockConnector.getAssets(any())(any(), any()))
-        .thenReturn(Future.successful(Assets(moneyAsset, Nil, Nil, Nil, Nil, Nil, Nil)))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[TrustsConnector].toInstance(mockConnector))
@@ -188,12 +144,14 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
 
       status(result) mustEqual BAD_REQUEST
 
-      contentAsString(result) mustEqual view(boundForm, index, "£4000")(request, messages).toString
+      contentAsString(result) mustEqual
+        view(boundForm, index, "£4000")(request, messages).toString
 
       application.stop()
     }
 
     "redirect to Session Expired for a GET if no existing data is found" in {
+
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =
@@ -209,6 +167,7 @@ class RemoveAssetYesNoControllerSpec extends SpecBase with ScalaCheckPropertyChe
     }
 
     "redirect to Session Expired for a POST if no existing data is found" in {
+
       val application = applicationBuilder(userAnswers = None).build()
 
       val request =

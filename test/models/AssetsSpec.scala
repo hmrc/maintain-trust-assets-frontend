@@ -261,7 +261,6 @@ class AssetsSpec extends AnyWordSpec with Matchers {
         )
       }
     }
-
   }
 
 }

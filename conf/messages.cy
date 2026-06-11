@@ -587,10 +587,3 @@ nonTaxableToTaxable.assetInterruptPage.subheading6=Partneriaethau
 nonTaxableToTaxable.assetInterruptPage.subheading7=Asedion eraill
 nonTaxableToTaxable.assetInterruptPage.tellus=Rhowch y canlynol i ni:
 nonTaxableToTaxable.assetInterruptPage.title=Gwybodaeth y mae angen i chi ei gwybod er mwyn ychwanegu asedion
-
-outOfBoundsPageNotFound.title = Heb ddod o hyd i’r dudalen
-outOfBoundsPageNotFound.heading = Heb ddod o hyd i’r dudalen
-outOfBoundsPageNotFound.p1 = Ni ellir dod o hyd i’r dudalen yr ydych yn chwilio amdani.
-outOfBoundsPageNotFound.p2 = Er mwyn parhau i gofrestru ymddiriedolaeth gallwch wneud y canlynol:
-outOfBoundsPageNotFound.bullet1 = mynd i drosolwg yr ymddiriedolaeth
-outOfBoundsPageNotFound.bullet2 = ychwanegu neu newid manylion ar gyfer ased
