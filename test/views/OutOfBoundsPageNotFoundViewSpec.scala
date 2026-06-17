@@ -33,7 +33,7 @@ class OutOfBoundsPageNotFoundViewSpec extends ViewBehaviours {
   "OutOfBoundsPageNotFound view" must {
 
     behave like normalPage(applyView(migrating = true), messageKeyPrefix)
-    behave like pageWithBackLink(applyView(migrating = true))
+    behave like pageWithoutBackLink(applyView(migrating = true))
 
     "link bullet1 to the trust overview" in {
       val links = asDocument(applyView(migrating = true))
