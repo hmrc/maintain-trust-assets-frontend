@@ -118,6 +118,13 @@ trait ViewBehaviours extends ViewSpecBase {
       }
     }
 
+  def pageWithoutBackLink(view: HtmlFormat.Appendable): Unit =
+
+    "behave like a page without a back link" in {
+      val doc = asDocument(view)
+      assertNotRenderedById(doc, "back-link")
+    }
+
   def pageWithBackLink(view: HtmlFormat.Appendable): Unit =
 
     "behave like a page with a back link" in {
