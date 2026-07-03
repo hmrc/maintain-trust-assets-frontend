@@ -23,8 +23,7 @@ lazy val microservice = Project("maintain-trust-assets-frontend", file("."))
     ),
     PlayKeys.playDefaultPort := 9800,
     scalacOptions ++= Seq("-feature", "-Wconf:src=routes/.*:s", "-Wconf:cat=unused-imports&src=html/.*:s"),
-    libraryDependencies ++= AppDependencies(),
-
+    libraryDependencies ++= AppDependencies()
   )
 
 lazy val it = project
