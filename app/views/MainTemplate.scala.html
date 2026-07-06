@@ -61,7 +61,6 @@
 
     @stylesheets()
     @autocompleteCss()
-    @autocompleteJavascript()
 }
 
 @beforeContentBlock = {
@@ -87,6 +86,7 @@
     ),
     templateOverrides = TemplateOverrides(
         additionalHeadBlock = Some(additionalHead),
-        beforeContentBlock = Some(beforeContentBlock)
+        beforeContentBlock = Some(beforeContentBlock),
+        additionalScriptsBlock= Some(autocompleteJavascript())
     )
 ))(mainContentWithGetHelp)
