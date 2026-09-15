@@ -32,10 +32,15 @@ class LogoutControllerSpec extends SpecBase with MockitoSugar {
   val mockAppConfig              = mock[FrontendAppConfig]
   val mockAuditConnector         = mock[AuditConnector]
   implicit val hc: HeaderCarrier = HeaderCarrier()
+  private val expectedLogoutUrl =
+    "http://localhost:9514/feedback/trusts?useServiceNavigation"
 
   "LogoutController" should {
 
     "redirect to logoutUrl with feedbackId in session and send audit if auditing is enabled" in {
+
+      frontendAppConfig.logoutUrl mustBe expectedLogoutUrl
+
       when(mockAppConfig.logoutUrl).thenReturn(frontendAppConfig.logoutUrl)
       when(mockAppConfig.logoutAudit).thenReturn(true)
 
@@ -50,7 +55,7 @@ class LogoutControllerSpec extends SpecBase with MockitoSugar {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result) mustBe Some(frontendAppConfig.logoutUrl)
+      redirectLocation(result) mustBe Some(expectedLogoutUrl)
 
       verify(mockAuditConnector, times(1))
         .sendExplicitAudit(eqTo("trusts"), org.mockito.ArgumentMatchers.any[Map[String, String]])(any(), any())
@@ -78,7 +83,7 @@ class LogoutControllerSpec extends SpecBase with MockitoSugar {
       val result = route(application, request).value
 
       status(result)           mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(frontendAppConfig.logoutUrl)
+      redirectLocation(result) mustBe Some(expectedLogoutUrl)
 
       verify(mockAuditConnector, never())
         .sendExplicitAudit(any(), org.mockito.ArgumentMatchers.any[Map[String, String]])(any(), any())
