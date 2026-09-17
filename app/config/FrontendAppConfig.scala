@@ -23,13 +23,11 @@ import play.api.i18n.{Lang, Messages}
 import play.api.mvc.Call
 
 import java.time.LocalDate
-import uk.gov.hmrc.hmrcfrontend.config.ContactFrontendConfig
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 @Singleton
 class FrontendAppConfig @Inject() (
   val configuration: Configuration,
-  contactFrontendConfig: ContactFrontendConfig,
   servicesConfig: ServicesConfig
 ) {
 
@@ -41,9 +39,6 @@ class FrontendAppConfig @Inject() (
 
   val appName: String        = configuration.get[String]("appName")
   val analyticsToken: String = configuration.get[String](s"google-analytics.token")
-
-  val betaFeedbackUrl =
-    s"${contactFrontendConfig.baseUrl.get}/contact/beta-feedback?service=${contactFrontendConfig.serviceId.get}"
 
   lazy val countdownLength: Int = configuration.get[Int]("timeout.countdown")
   lazy val timeoutLength: Int   = configuration.get[Int]("timeout.length")
