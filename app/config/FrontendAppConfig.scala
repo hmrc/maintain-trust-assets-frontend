@@ -17,10 +17,8 @@
 package config
 
 import com.google.inject.{Inject, Singleton}
-import controllers.routes
 import play.api.Configuration
 import play.api.i18n.{Lang, Messages}
-import play.api.mvc.Call
 
 import java.time.LocalDate
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
@@ -40,14 +38,12 @@ class FrontendAppConfig @Inject() (
   val appName: String        = configuration.get[String]("appName")
   val analyticsToken: String = configuration.get[String](s"google-analytics.token")
 
-  lazy val countdownLength: Int = configuration.get[Int]("timeout.countdown")
-  lazy val timeoutLength: Int   = configuration.get[Int]("timeout.length")
-
-  lazy val authUrl: String          = servicesConfig.baseUrl("auth")
+  lazy val countdownLength: Int     = configuration.get[Int]("timeout.countdown")
+  lazy val timeoutLength: Int       = configuration.get[Int]("timeout.length")
   lazy val loginUrl: String         = configuration.get[String]("urls.login")
   lazy val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
 
-  lazy val logoutUrl: String =  s"${configuration.get[String]("urls.logout")}?useServiceNavigation"
+  lazy val logoutUrl: String = s"${configuration.get[String]("urls.logout")}?useServiceNavigation"
 
   lazy val logoutAudit: Boolean =
     configuration.get[Boolean]("microservice.services.features.auditing.logout")
@@ -78,9 +74,6 @@ class FrontendAppConfig @Inject() (
     "english" -> Lang(ENGLISH),
     "cymraeg" -> Lang(WELSH)
   )
-
-  def routeToSwitchLanguage: String => Call =
-    (lang: String) => routes.LanguageSwitchController.switchToLanguage(lang)
 
   def helplineUrl(implicit messages: Messages): String = {
     val path = messages.lang.code match {

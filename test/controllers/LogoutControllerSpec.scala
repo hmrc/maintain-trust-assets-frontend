@@ -32,7 +32,8 @@ class LogoutControllerSpec extends SpecBase with MockitoSugar {
   val mockAppConfig              = mock[FrontendAppConfig]
   val mockAuditConnector         = mock[AuditConnector]
   implicit val hc: HeaderCarrier = HeaderCarrier()
-  private val expectedLogoutUrl =
+
+  private val expectedLogoutUrl  =
     "http://localhost:9514/feedback/trusts?useServiceNavigation"
 
   "LogoutController" should {
