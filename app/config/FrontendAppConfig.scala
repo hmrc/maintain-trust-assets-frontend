@@ -59,9 +59,6 @@ class FrontendAppConfig @Inject() (
   lazy val locationCanonicalList: String   = configuration.get[String]("location.canonical.list.all")
   lazy val locationCanonicalListCY: String = configuration.get[String]("location.canonical.list.allCY")
 
-  lazy val languageTranslationEnabled: Boolean =
-    configuration.get[Boolean]("microservice.services.features.welsh-translation")
-
   private val day: Int        = configuration.get[Int]("minimumDate.day")
   private val month: Int      = configuration.get[Int]("minimumDate.month")
   private val year: Int       = configuration.get[Int]("minimumDate.year")
