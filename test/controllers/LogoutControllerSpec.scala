@@ -27,23 +27,25 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
+import java.net.URLEncoder
+
 class LogoutControllerSpec extends SpecBase with MockitoSugar {
   // Mocks
   val mockAppConfig              = mock[FrontendAppConfig]
   val mockAuditConnector         = mock[AuditConnector]
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  private val expectedLogoutUrl =
-    "http://localhost:9514/feedback/trusts?useServiceNavigation"
-
   "LogoutController" should {
 
     "redirect to logoutUrl with feedbackId in session and send audit if auditing is enabled" in {
 
-      frontendAppConfig.logoutUrl mustBe expectedLogoutUrl
-
       when(mockAppConfig.logoutUrl).thenReturn(frontendAppConfig.logoutUrl)
       when(mockAppConfig.logoutAudit).thenReturn(true)
+      when(mockAppConfig.logoutWithBasGatewayUrl).thenReturn(frontendAppConfig.logoutWithBasGatewayUrl)
+      when(mockAppConfig.feedbackFrontendUrl).thenReturn(frontendAppConfig.feedbackFrontendUrl)
+
+      val continueUrl = URLEncoder.encode(mockAppConfig.feedbackFrontendUrl, "UTF-8")
+      val expectedUrl = s"${frontendAppConfig.logoutWithBasGatewayUrl}?continue=$continueUrl"
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[AuditConnector].toInstance(mockAuditConnector))
@@ -56,7 +58,7 @@ class LogoutControllerSpec extends SpecBase with MockitoSugar {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result) mustBe Some(expectedLogoutUrl)
+      redirectLocation(result).value mustBe expectedUrl
 
       verify(mockAuditConnector, times(1))
         .sendExplicitAudit(eqTo("trusts"), org.mockito.ArgumentMatchers.any[Map[String, String]])(any(), any())
@@ -71,6 +73,8 @@ class LogoutControllerSpec extends SpecBase with MockitoSugar {
 
       when(mockAppConfig.logoutUrl).thenReturn(frontendAppConfig.logoutUrl)
       when(mockAppConfig.logoutAudit).thenReturn(false)
+      when(mockAppConfig.logoutWithBasGatewayUrl).thenReturn(frontendAppConfig.logoutWithBasGatewayUrl)
+      when(mockAppConfig.feedbackFrontendUrl).thenReturn(frontendAppConfig.feedbackFrontendUrl)
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(
@@ -83,8 +87,8 @@ class LogoutControllerSpec extends SpecBase with MockitoSugar {
 
       val result = route(application, request).value
 
-      status(result)           mustBe SEE_OTHER
-      redirectLocation(result) mustBe Some(expectedLogoutUrl)
+      status(result)               mustBe SEE_OTHER
+      redirectLocation(result).value must include("useServiceNavigation")
 
       verify(mockAuditConnector, never())
         .sendExplicitAudit(any(), org.mockito.ArgumentMatchers.any[Map[String, String]])(any(), any())
